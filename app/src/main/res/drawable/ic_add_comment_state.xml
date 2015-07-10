@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<animated-selector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:constantSize="true">
+
+    <item
+        android:id="@+id/focused"
+        android:state_activated="true"
+        android:drawable="@drawable/ic_add_comment" />
+
+    <item
+        android:id="@+id/not_focused"
+        android:drawable="@drawable/ic_comment_lines" />
+
+    <transition
+        android:fromId="@id/not_focused"
+        android:toId="@id/focused">
+
+        <animated-vector
+            android:drawable="@drawable/ic_comment_lines">
+
+            <target
+                android:name="@string/comment_line_1"
+                android:animation="@animator/comment_lines_add_1" />
+
+            <target
+                android:name="@string/comment_line_2"
+                android:animation="@animator/comment_lines_add_2" />
+
+            <target
+                android:name="@string/comment_line_3"
+                android:animation="@animator/comment_lines_add_3" />
+
+            <target
+                android:name="@string/comment_line_add_group"
+                android:animation="@animator/comment_lines_add_rotate" />
+
+        </animated-vector>
+
+    </transition>
+
+    <!-- todo work out why the f this doesn't work?! -->
+    <!--<transition
+        android:fromId="@id/focused"
+        android:toId="@id/not_focused">
+
+        <animated-vector
+            android:drawable="@drawable/ic_add_comment">
+
+            <target
+                android:name="@string/comment_line_1"
+                android:animation="@animator/comment_add_lines_1" />
+
+            <target
+                android:name="@string/comment_line_2"
+                android:animation="@animator/comment_add_lines_2" />
+
+            <target
+                android:name="@string/comment_line_3"
+                android:animation="@animator/comment_add_lines_3" />
+
+            <target
+                android:name="@string/comment_line_add_group"
+                android:animation="@animator/comment_lines_add_rotate" />
+
+        </animated-vector>
+
+    </transition>-->
+
+</animated-selector>

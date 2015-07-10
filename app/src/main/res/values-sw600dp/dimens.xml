@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<resources>
+
+    <!-- standard metrics -->
+    <dimen name="spacing_normal">16dp</dimen>
+    <dimen name="spacing_micro">8dp</dimen>
+    <dimen name="padding_normal">24dp</dimen>
+    <dimen name="keyline_1">80dp</dimen>
+    <dimen name="touch_raise">9dp</dimen>
+
+    <!-- grid -->
+    <dimen name="grid_icon_with_padding">56dp</dimen> <!-- 24dp icon + 2 * @dimen/spacing_normal -->
+
+</resources>

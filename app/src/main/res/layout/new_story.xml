@@ -1,0 +1,143 @@
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<com.example.android.plaid.ui.widget.ElasticDragDismissFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/draggable_frame"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:elevation="@dimen/z_card"
+    app:dragDismissFraction="0.2"
+    app:dragDismissScale="0.95"
+    app:clampDragAtDismissDistance="false">
+
+    <LinearLayout
+        android:id="@+id/new_story_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Toolbar
+            android:id="@+id/new_story_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:actionBarSize"
+            android:title="@string/new_story_title"
+            style="@style/Widget.Plaid.Toolbar.Accent" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:nestedScrollingEnabled="true"
+            android:clipToPadding="false"
+            android:paddingTop="@dimen/padding_normal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_normal"
+                    android:text="@string/new_story_instructions"
+                    android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+
+                <!--<com.example.android.plaid.ui.widget.FloatLabel-->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_normal"
+                    android:layout_marginStart="@dimen/padding_normal"
+                    app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
+
+                    <EditText
+                        android:id="@+id/new_story_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/new_story_post_title"
+                        android:inputType="textCapWords"/>
+
+                </android.support.design.widget.TextInputLayout>
+                <!--</com.example.android.plaid.ui.widget.FloatLabel>-->
+
+                <!--<com.example.android.plaid.ui.widget.FloatLabel-->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_normal"
+                    android:layout_marginStart="@dimen/padding_normal"
+                    app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
+
+                    <EditText
+                        android:id="@+id/new_story_url"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/new_story_url_hint"
+                        android:inputType="textUri"/>
+
+                </android.support.design.widget.TextInputLayout>
+                <!--</com.example.android.plaid.ui.widget.FloatLabel>-->
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_normal"
+                    android:text="@string/new_story_link_or_comment"
+                    android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+
+                <!--<com.example.android.plaid.ui.widget.FloatLabel-->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_normal"
+                    android:layout_marginStart="@dimen/padding_normal"
+                    app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
+
+                    <EditText
+                        android:id="@+id/new_story_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:hint="@string/new_story_comment_hint"
+                        android:inputType="textMultiLine|textCapSentences"
+                        android:maxHeight="180dp"/>
+
+                </android.support.design.widget.TextInputLayout>
+                <!--</com.example.android.plaid.ui.widget.FloatLabel>-->
+
+                <Button
+                    android:id="@+id/new_story_post"
+                    android:layout_width="match_parent"
+                    android:layout_height="?android:actionBarSize"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/post_story"
+                    android:padding="@dimen/spacing_micro"
+                    android:stateListAnimator="@animator/raise"
+                    android:text="@string/new_story_post"
+                    android:textAppearance="@style/TextAppearance.Button"
+                    android:theme="@style/PlaidDarkOverlay"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</com.example.android.plaid.ui.widget.ElasticDragDismissFrameLayout>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="40dp"
+        android:height="40dp"
+        android:viewportWidth="72"
+        android:viewportHeight="72">
+    <path
+        android:pathData="M36.000000,36.000000m-30.000000,0.000000a30.000000,30.000000 0.000000,1.000000 1.000000,60.000000 0.000000a30.000000,30.000000 0.000000,1.000000 1.000000,-60.000000 0.000000"
+        android:fillColor="#FF6602"/>
+    <path
+        android:pathData="M23.778809,20.746582L28.374298,20.726257L36.114899,36.445999L43.956848,20.726257L48.227928,20.726257L37.906219,40.022224L37.906219,52.647243L34.097809,52.647243L34.097809,40.022224L23.778809,20.746582Z"
+        android:fillColor="#FFFFFF"/>
+</vector>

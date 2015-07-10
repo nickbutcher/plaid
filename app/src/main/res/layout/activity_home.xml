@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.HomeActivity"
+    android:clipToPadding="false">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:id="@+id/status_bar_background"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/status_bar_back" />
+
+        <com.example.android.plaid.ui.widget.ImmersiveGridView
+            android:id="@+id/stories_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="@integer/num_columns"
+            android:scrollbarStyle="outsideOverlay"
+            android:clipToPadding="false"
+            android:layoutAnimation="@anim/layout_grid_enter"
+            android:elevation="1dp" />
+
+        <Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:actionBarSize"
+            android:title="@string/app_name"
+            android:outlineProvider="none"
+            android:elevation="1dp"
+            style="@style/Widget.Plaid.HomeToolbar" />
+
+        <ProgressBar
+            android:id="@android:id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            style="?android:indeterminateProgressStyle" />
+
+        <ViewStub
+            android:id="@+id/stub_no_connection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout="@layout/no_connection" />
+
+        <View
+            android:id="@+id/scrim"
+            android:visibility="invisible"
+            android:background="@color/scrim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:onClick="hideNewPost"
+            android:elevation="1dp"/>
+
+        <include
+            layout="@layout/new_story"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom" />
+
+        <ImageButton
+            android:id="@+id/fab"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:elevation="@dimen/z_fab"
+            android:background="@drawable/fab"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="@dimen/padding_normal"
+            android:layout_marginBottom="@dimen/padding_normal"
+            android:stateListAnimator="@animator/raise"
+            android:src="@drawable/ic_add_dark" />
+
+    </FrameLayout>
+
+    <!-- filter drawer -->
+    <LinearLayout
+        android:id="@+id/filters_pane"
+        android:layout_width="@dimen/drawer_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:orientation="vertical"
+        android:elevation="@dimen/z_drawer"
+        android:background="@color/background_dark"
+        android:fitsSystemWindows="true">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/filters"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingTop="@dimen/spacing_normal"
+            android:paddingBottom="@dimen/spacing_normal"
+            android:clipToPadding="false"
+            tools:listitem="@layout/filter_item" />
+
+        <Toolbar
+            android:id="@+id/filters_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:actionBarSize"
+            android:background="@color/immersive_bars"
+            android:theme="@style/PlaidDarkOverlay" />
+
+    </LinearLayout>
+
+</android.support.v4.widget.DrawerLayout>

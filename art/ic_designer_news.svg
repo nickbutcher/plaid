@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="60px" height="45px" viewBox="0 0 60 45" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.1.1 (8761) - http://www.bohemiancoding.com/sketch -->
+    <title>ic_designer_news</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="ic_designer_news" sketch:type="MSLayerGroup" transform="translate(-6.000000, -14.000000)">
+            <path d="M17.1627907,14 C17.1627906,13.9999999 17.1627907,59 17.1627907,59 L59.9993687,59 C63.3134259,59 66,56.319808 66,53.0010878 L66,14 C66,14.0000003 17.1627908,14.0000001 17.1627907,14 Z" id="Page" fill="#286FDC" sketch:type="MSShapeGroup"></path>
+            <path d="M12.2015504,58.9659063 C12.2015504,58.9882607 12.2015504,59 12.2015504,59 L17.1627907,59 L17.1627907,53.8793103 C17.1627907,53.8793103 17.1562649,53.8793103 17.1436867,53.8793103 C16.92427,56.5412527 14.8400713,58.6739811 12.2015504,58.9659063 Z" id="Fold" fill="#286FDC" sketch:type="MSShapeGroup"></path>
+            <path d="M6,33.7068966 C5.99999993,33.7068966 5.99999999,53.4180093 5.99999999,53.4180093 C5.99999999,56.5008576 8.50514812,59 11.5813953,59 L11.5813953,59 C14.6639149,59 17.1627907,56.5055787 17.1627907,53.4180092 C17.1627907,53.4180092 17.1627907,33.7068965 17.1627907,33.7068966 C17.1627907,33.7068966 6.00000007,33.7068965 6,33.7068966 Z" id="Back" fill="#0E418B" sketch:type="MSShapeGroup"></path>
+            <rect id="Line-5" fill="#1750A4" sketch:type="MSShapeGroup" x="21.9689922" y="47.8275862" width="11.1627907" height="3.72413793"></rect>
+            <rect id="Line-4" fill="#1750A4" sketch:type="MSShapeGroup" x="21.9689922" y="42.0862069" width="16.8992248" height="3.72413793"></rect>
+            <rect id="Line-3" fill="#1750A4" sketch:type="MSShapeGroup" x="44.2945736" y="29.9827586" width="16.8992248" height="15.8275862"></rect>
+            <rect id="Line-2" fill="#1750A4" sketch:type="MSShapeGroup" x="21.9689922" y="36.0344828" width="16.8992248" height="3.72413793"></rect>
+            <rect id="Line-1" fill="#1750A4" sketch:type="MSShapeGroup" x="21.9689922" y="29.9827586" width="16.8992248" height="3.72413793"></rect>
+            <rect id="Headline" fill="#1750A4" sketch:type="MSShapeGroup" x="21.9689922" y="18.6551724" width="39.2248062" height="6.67241379"></rect>
+        </g>
+    </g>
+</svg>

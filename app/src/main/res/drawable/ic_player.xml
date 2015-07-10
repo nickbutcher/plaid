@@ -1,0 +1,41 @@
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="@dimen/avatar_size"
+        android:height="@dimen/avatar_size"
+        android:viewportWidth="40"
+        android:viewportHeight="40">
+    <path
+        android:name="background_circle"
+        android:pathData="M0 20 a20 20 0 1 1 40 0 a20 20 0 1 1 -40 0"
+        android:fillColor="@color/content_placeholder" />
+    <path
+        android:name="head"
+        android:pathData="M20 21 C24.42,21 28,17.41 28,13 C28,8.58 24.42,5 20,5 C15.58,5 12,8.58 12,13 C12,17.41 15.58,21 20,21 L20,21 Z"
+        android:fillColor="#bdbdbd"/>
+    <path
+        android:name="body"
+        android:pathData="M35.9026294,32.1304715 C34.8229215,27.3796285 25.0318323,25 20,25 C14.9681677,25 5.17707851,27.3796285 4.0973706268,32.1304715 C7.75177112,36.9139757 13.51549576,40 20,40 C26.4845042,40 32.2482289,36.9139757 35.9026294,32.1304715 L35.9026294,32.1304715 Z"
+        android:fillColor="#bdbdbd"/>
+    <path
+        android:name="headband"
+        android:pathData="M14.70699,7 L25.29301,7 C26.2161988,7.81495046 26.9496871,8.83977573 27.4189991,10 L12.58100095,10 C13.05031289,8.83977573 13.78380117,7.81495046 14.70699,7 L14.70699,7 Z"
+        android:fillColor="#9e9e9e"/>
+    <path
+        android:name="vest"
+        android:pathData="M10.08459598,26.9680986 C9.83194125,29.2357989 9.63742316,33.7350647 9.52052425,37.0379803 L9.52052425,37.0379803 C12.5679619,38.9163497 16.1574309,40 20,40 C23.7313405,40 27.2240216,38.9781773 30.2134832,37.1990918 C30.0719243,33.5723259 30.0842153,29.2940082 30.0934867,27.0394045 C28.8919454,26.5522657 27.6007016,26.1523415 26.3145406,25.8396911 C26.1793446,28.0716548 25.3381749,32.9832711 20.12392,32.9832713 C14.932241,32.9832714 14.8003517,27.5541997 14.7115826,25.6081745 C13.15724038,25.9321367 11.55789718,26.3854803 10.08459598,26.9680986 L10.08459598,26.9680986 Z"
+        android:fillColor="#9e9e9e"/>
+</vector>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="60px" height="60px" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch Beta 3.3 (11970) - http://www.bohemiancoding.com/sketch -->
+    <title>Imported Layers</title>
+    <desc>Created with Sketch Beta.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Imported-Layers" sketch:type="MSLayerGroup" transform="translate(-6.000000, -6.000000)">
+            <rect id="bounds" sketch:type="MSShapeGroup" x="0" y="0" width="72" height="72"></rect>
+            <path d="M66,36 C66,52.5685 52.5685,66 36,66 C19.4315,66 6,52.5685 6,36 C6,19.4315 19.4315,6 36,6 C52.5685,6 66,19.4315 66,36" id="Fill-1" fill="#DA552F" sketch:type="MSShapeGroup"></path>
+            <path d="M40,21 L25.5,21 L25.5,51 L31.5,51 L31.5,42 L40,42 C45.799,42 50.5,37.299 50.5,31.5 C50.5,25.701 45.799,21 40,21 L40,21 Z M40,36 L40,36 L31.5,36 L31.5,27 L40,27 C42.48525,27 44.49975,29.01475 44.49975,31.5 C44.49975,33.98525 42.48525,35.99975 40,36 L40,36 Z" id="Fill-2" fill="#FFFFFF" sketch:type="MSShapeGroup"></path>
+        </g>
+    </g>
+</svg>

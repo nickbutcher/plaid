@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.3.2 (12043) - http://www.bohemiancoding.com/sketch -->
+    <title>ic_player</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="ic_player-copy" sketch:type="MSLayerGroup">
+            <circle id="background" fill="#E0E0E0" sketch:type="MSShapeGroup" cx="20" cy="20" r="20"></circle>
+            <g id="player" transform="translate(4.000000, 5.000000)" sketch:type="MSShapeGroup">
+                <path d="M31.9026294,27.1304715 C30.8229215,22.3796285 21.0318323,20 16,20 C10.9681677,20 1.17707851,22.3796285 0.0973706268,27.1304715 C3.75177112,31.9139757 9.51549576,35 16,35 C22.4845042,35 28.2482289,31.9139757 31.9026294,27.1304715 L31.9026294,27.1304715 Z" id="body" fill="#BDBDBD"></path>
+                <path d="M16,16 C20.42,16 24,12.41 24,8 C24,3.58 20.42,0 16,0 C11.58,0 8,3.58 8,8 C8,12.41 11.58,16 16,16 L16,16 Z" id="head" fill="#BDBDBD"></path>
+                <path d="M6.08459598,21.9680986 C5.83194125,24.2357989 5.63742316,28.7350647 5.52052425,32.0379803 L5.52052425,32.0379803 C8.5679619,33.9163497 12.1574309,35 16,35 C19.7313405,35 23.2240216,33.9781773 26.2134832,32.1990918 C26.0719243,28.5723259 26.0842153,24.2940082 26.0934867,22.0394045 C24.8919454,21.5522657 23.6007016,21.1523415 22.3145406,20.8396911 C22.1793446,23.0716548 21.3381749,27.9832711 16.12392,27.9832713 C10.932241,27.9832714 10.8003517,22.5541997 10.7115826,20.6081745 C9.15724038,20.9321367 7.55789718,21.3854803 6.08459598,21.9680986 L6.08459598,21.9680986 Z" id="vest" fill="#9E9E9E"></path>
+                <path d="M10.70699,2 L21.29301,2 C22.2161988,2.81495046 22.9496871,3.83977573 23.4189991,5 L8.58100095,5 C9.05031289,3.83977573 9.78380117,2.81495046 10.70699,2 L10.70699,2 Z" id="headband" fill="#9E9E9E"></path>
+            </g>
+        </g>
+    </g>
+</svg>
