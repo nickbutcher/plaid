@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/scrim"  />
+
+    <FrameLayout
+        android:id="@+id/search_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:actionBarSize"
+        android:outlineProvider="bounds"
+        android:elevation="@dimen/z_app_bar"
+        android:theme="@style/SearchViewTheme">
+
+        <View
+            android:id="@+id/search_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0"
+            android:background="@color/background_dark" />
+
+        <SearchView
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/padding_normal"
+            android:alpha="0"
+            android:iconifiedByDefault="false" />
+
+        <!-- wrapping layout needed for the touch ripple -->
+        <FrameLayout
+            android:id="@+id/searchback_container"
+            android:layout_width="96dp"
+            android:layout_height="match_parent"
+            android:paddingStart="4dp"
+            android:background="@android:color/transparent">
+
+            <ImageButton
+                android:id="@+id/searchback"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="start|center_vertical"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_search_24dp" />
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/results_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?android:actionBarSize"
+        android:background="@color/background_dark"
+        android:elevation="@dimen/z_app_bar">
+
+        <ProgressBar
+            android:id="@android:id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/spacing_huge"
+            android:paddingBottom="@dimen/spacing_huge"
+            android:visibility="gone"
+            android:indeterminate="true"
+            android:indeterminateTint="?android:colorAccent"
+            android:indeterminateTintMode="src_in" />
+
+        <ViewStub
+            android:id="@+id/stub_no_search_results"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/no_search_results" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/search_results"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            android:scrollbarStyle="outsideOverlay"
+            android:clipToPadding="false"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/fab"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:elevation="@dimen/z_fab"
+            android:background="@drawable/fab"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="@dimen/padding_normal"
+            android:layout_marginBottom="@dimen/padding_normal"
+            android:stateListAnimator="@animator/raise"
+            android:src="@drawable/ic_save_24dp"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/results_scrim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/scrim"
+            android:visibility="gone" />
+
+        <FrameLayout
+            android:id="@+id/confirm_save_container"
+            android:layout_width="448dp"
+            android:layout_height="448dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="@dimen/padding_normal"
+            android:layout_marginBottom="@dimen/padding_normal"
+            android:translationX="196dp"
+            android:translationY="196dp"
+            android:elevation="@dimen/z_fab"
+            android:background="@drawable/fab"
+            android:visibility="gone"
+            android:theme="@style/ExpandedFabTheme">
+
+            <LinearLayout
+                android:layout_width="252dp"
+                android:layout_height="252dp"
+                android:layout_gravity="start|top"
+                android:gravity="bottom|end"
+                android:orientation="vertical">
+
+                <CheckBox
+                    android:id="@+id/save_dribbble"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/padding_normal"
+                    android:paddingEnd="@dimen/padding_normal"
+                    android:paddingBottom="@dimen/padding_normal"
+                    android:checked="true"
+                    android:text="@string/confirm_save_dribbble_search"
+                    android:textAppearance="@android:style/TextAppearance.Material.Body2"  />
+
+                <CheckBox
+                    android:id="@+id/save_designer_news"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/padding_normal"
+                    android:paddingEnd="@dimen/padding_normal"
+                    android:paddingBottom="@dimen/padding_normal"
+                    android:checked="true"
+                    android:text="@string/confirm_save_designer_news_search"
+                    android:textAppearance="@android:style/TextAppearance.Material.Body2" />
+
+                <Button
+                    android:id="@+id/save_confirmed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableEnd="@drawable/ic_save_24dp"
+                    android:drawablePadding="@dimen/padding_normal"
+                    android:padding="@dimen/padding_normal"
+                    android:text="@string/confirm_save_search"
+                    style="?android:borderlessButtonStyle" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+</FrameLayout>

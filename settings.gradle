@@ -1,0 +1,2 @@
+include ':app', ':bypass'
+project(':bypass').projectDir = new File(rootDir, 'third_party/bypass')

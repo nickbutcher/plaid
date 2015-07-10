@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<io.plaidapp.ui.widget.ElasticDragDismissFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/draggable_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:dragDismissDistance="@dimen/drag_dismiss_distance"
+    app:dragDismissScale="0.95"
+    tools:context="io.plaidapp.ui.DribbbleShot">
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_light"
+        android:transitionName="@string/transition_shot_background"
+        android:transitionGroup="false">
+
+        <io.plaidapp.ui.widget.ParallaxScrimageView
+            android:id="@+id/shot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/shot_collapsed_app_bar_height"
+            android:foreground="@drawable/mid_grey_ripple"
+            android:stateListAnimator="@animator/app_bar_pin"
+            android:transitionName="@string/transition_shot"
+            android:background="@color/light_grey"
+            app:scrimColor="@color/scrim"
+            app:scrimAlpha="0"
+            app:maxScrimAlpha="0.4"
+            app:parallaxFactor="-0.5"/>
+
+        <!-- We're 'faking' a toolbar here as we just want a back button.
+             This approach lets the borderless ripple extend beyond the back button's bounds,
+             toolbar clips it. Wrapping layout needed for the ripple. -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:elevation="@dimen/z_fab_over_touchable_app_bar">
+
+            <!-- animate alpha in DribbleShot#enterAnimation
+                 margins push out parent for the borderless ripple -->
+            <ImageButton
+                android:id="@+id/back"
+                android:layout_width="?android:actionBarSize"
+                android:layout_height="?android:actionBarSize"
+                android:layout_marginEnd="@dimen/padding_normal"
+                android:layout_marginBottom="@dimen/padding_normal"
+                android:src="@drawable/ic_arrow_back"
+                android:alpha="0"
+                android:background="@drawable/mid_grey_ripple" />
+
+        </FrameLayout>
+
+        <ListView
+            android:id="@+id/dribbble_comments"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/padding_normal"
+            android:clipToPadding="false"
+            android:listSelector="@android:color/transparent"
+            android:divider="@null"
+            android:dividerHeight="@dimen/divider_height"
+            android:headerDividersEnabled="false"
+            android:footerDividersEnabled="true"
+            android:nestedScrollingEnabled="true"
+            android:overScrollMode="never"
+            android:overScrollFooter="@android:color/transparent" /> <!-- http://stackoverflow.com/a/24394230 -->
+
+        <io.plaidapp.ui.widget.FABToggle
+            android:id="@+id/fab_heart"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:elevation="@dimen/z_fab_over_touchable_app_bar"
+            android:background="@drawable/fab_dribbble_fav"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/padding_normal"
+            android:stateListAnimator="@animator/raise"
+            android:src="@drawable/fab_heart"
+            android:alpha="0" />
+
+    </FrameLayout>
+
+</io.plaidapp.ui.widget.ElasticDragDismissFrameLayout>

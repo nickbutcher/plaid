@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<!--<vector--><!--xmlns:android="http://schemas.android.com/apk/res/android"--><!--android:width="24dp"--><!--android:height="24dp"--><!--android:viewportWidth="48"--><!--android:viewportHeight="48">-->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="56dp"
+    android:height="56dp"
+    android:viewportHeight="56"
+    android:viewportWidth="56">
+
+    <path
+        android:fillColor="@color/fab_heart_empty"
+        android:pathData="@string/heart_empty_path_56dp" />
+
+    <path
+        android:name="activity_circle"
+        android:pathData="@string/activity_circle_stroke"
+        android:strokeColor="@color/fab_heart_empty"
+        android:strokeWidth="4"
+        android:strokeAlpha="0" />
+
+    <group
+        android:name="activity_circle_progress"
+        android:pivotX="28"
+        android:pivotY="28">
+
+        <path
+            android:name="activity_circle_progress_bar"
+            android:pathData="@string/activity_circle_stroke"
+            android:strokeColor="@color/fab_heart_progress_bar"
+            android:strokeWidth="4"
+            android:strokeLineCap="square"
+            android:trimPathStart="1" />
+
+    </group>
+
+    <!-- When 'emptying' the progress bar, we animate activity_circle_progress_bar as the
+         'left' emptying bar but need another path for the right emptying bar. -->
+    <path
+        android:name="progress_bar_empty_right"
+        android:pathData="@string/progress_bar_empty_right"
+        android:strokeColor="@color/fab_heart_progress_bar"
+        android:strokeAlpha="0"
+        android:strokeWidth="4"
+        android:strokeLineCap="square" />
+
+    <group android:name="filled">
+
+        <clip-path
+            android:name="clip"
+            android:pathData="@string/heart_clip_hidden" />
+
+        <path
+            android:fillColor="@color/fab_heart_full"
+            android:pathData="@string/heart_full_path_56dp" />
+
+    </group>
+
+</vector>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="144px" height="144px" viewBox="0 0 144 144" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.0.3 (7891) - http://www.bohemiancoding.com/sketch -->
+    <title>ic_pocket</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="ic_pocket" sketch:type="MSLayerGroup" fill="#FFFFFF">
+            <path d="M72.5029855,92.4843576 C70.2594071,92.663256 67.9517311,91.9167247 66.205912,90.2308067 L40.5399662,65.4454909 C37.3042494,62.3207955 37.2200689,57.1800145 40.3387658,53.9505093 C43.4511168,50.7275755 48.60395,50.6314202 51.8337668,53.7504181 L72.5029855,73.7104505 L93.1722042,53.7504181 C96.402021,50.6314202 101.554854,50.7275755 104.667205,53.9505093 C107.785902,57.1800145 107.701722,62.3207955 104.466005,65.4454909 L78.8000589,90.2308067 C77.0542398,91.9167247 74.7465638,92.663256 72.5029855,92.4843576 Z M132,77.5806452 L132,26.7745532 C132,23.0330708 128.981207,20 125.258695,20 L18.7413052,20 C15.0181851,20 12,23.0348928 12,26.7745532 C12,26.7745532 11.9999998,77.5806452 12,77.5806452 C12,104.14376 38.862915,125 72,125 C104.854936,125 131.542091,103.831481 131.99417,77.5806452 L132,77.5806452 Z" id="Pocket" sketch:type="MSShapeGroup"></path>
+        </g>
+    </g>
+</svg>

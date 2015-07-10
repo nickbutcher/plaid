@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:alignmentMode="alignBounds"
+    android:columnCount="3"
+    android:rowCount="7"
+    android:useDefaultMargins="false"
+    android:background="@android:color/transparent">
+    <!-- transparent background needed for the ripple on the spacer -->
+
+    <!-- spacer for the image -->
+    <io.plaidapp.ui.widget.FourThreeView
+        android:id="@+id/shot_spacer"
+        android:layout_columnSpan="3"
+        android:background="@drawable/mid_grey_bounded_ripple" />
+
+    <include
+        layout="@layout/dribbble_shot_title"
+        android:id="@+id/shot_title"
+        android:layout_columnSpan="3"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/spacing_large" />
+
+    <io.plaidapp.ui.widget.BaselineGridTextView
+        android:id="@+id/shot_description"
+        android:layout_columnSpan="3"
+        android:paddingStart="@dimen/padding_normal"
+        android:paddingEnd="@dimen/padding_normal"
+        android:textColorLink="@color/dribbble_links"
+        android:textColorHighlight="@color/dribbble_link_highlight"
+        tools:text="Check out this sweet eye candy!"
+        style="@style/Widget.Plaid.DribbbleShotDescription" />
+
+    <LinearLayout
+        android:id="@+id/shot_actions"
+        android:layout_columnSpan="3"
+        android:layout_width="match_parent"
+        android:paddingStart="@dimen/padding_normal"
+        android:paddingTop="@dimen/spacing_large"
+        android:paddingEnd="@dimen/padding_normal">
+
+        <Button
+            android:id="@+id/shot_like_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_heart_full_24dp_grey"
+            tools:text="33 likes"
+            style="@style/Widget.Plaid.DribbleShotAction" />
+
+        <Button
+            android:id="@+id/shot_view_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_views_24dp"
+            android:background="@null"
+            tools:text="33 views"
+            style="@style/Widget.Plaid.DribbleShotAction" />
+
+        <Button
+            android:id="@+id/shot_share_action"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:drawableTop="@drawable/ic_action_share_24dp"
+            android:text="@string/share"
+            style="@style/Widget.Plaid.DribbleShotAction" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/player_name"
+        android:layout_gravity="end"
+        android:layout_width="wrap_content"
+        android:gravity="end"
+        android:layout_marginTop="@dimen/padding_normal"
+        android:paddingTop="@dimen/avatar_padding"
+        android:textAppearance="@style/TextAppearance.CommentAuthor"
+        android:clickable="false"
+        tools:text="—Nick B" />
+
+    <io.plaidapp.ui.widget.ForegroundImageView
+        android:id="@+id/player_avatar"
+        android:layout_width="@dimen/avatar_bounds"
+        android:layout_height="@dimen/avatar_bounds"
+        android:gravity="center_horizontal"
+        android:layout_marginStart="@dimen/avatar_margin"
+        android:layout_rowSpan="2"
+        android:padding="@dimen/avatar_padding"
+        android:textColorLink="@color/dribbble_links"
+        android:textColorHighlight="@color/dribbble"
+        android:stateListAnimator="@animator/raise"
+        android:src="@drawable/avatar_placeholder"
+        android:foreground="@drawable/mid_grey_ripple" />
+
+    <!-- can't use a marginEnd on the above image view as it pushes in the whole column so instead
+         add another column to contain the below space element -->
+
+    <Space
+        android:layout_width="@dimen/avatar_margin"
+        android:layout_rowSpan="2" />
+
+    <TextView
+        android:id="@+id/shot_time_ago"
+        android:layout_gravity="end"
+        android:gravity="end"
+        android:textAppearance="@style/TextAppearance.CommentTimestamp"
+        tools:text="3 hours ago" />
+
+    <!-- GridLayout seems to ignore layout_marginBottom so add another row with a space -->
+
+    <Space
+        android:layout_height="@dimen/avatar_margin"
+        android:layout_columnSpan="3" />
+
+</GridLayout>

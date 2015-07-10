@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<resources>
+
+    <!-- app palette -->
+    <color name="primary">#69F0AE</color>
+    <color name="accent">#69F0AE</color>
+    <color name="primary_super_dark">#11261c</color> <!-- same hue & sat, 15% brightness -->
+    <color name="accent_dark">#8f69F0AE</color>
+
+    <!-- common colours -->
+    <color name="text_primary_dark">#de000000</color>
+    <color name="text_secondary_dark">#8a000000</color>
+    <color name="text_primary_light">#ffffffff</color>
+    <color name="text_secondary_light">#b3ffffff</color> <!-- 70% -->
+    <color name="text_disabled_light">#4dffffff</color> <!-- 30% -->
+    <color name="ripple_light">#99ffffff</color>
+    <color name="ripple_dark">@color/mid_grey</color>
+    <color name="background_light">#fafafa</color>
+    <color name="background_dark">#ff333333</color>
+    <color name="immersive_bars">#99000000</color>
+    <color name="status_bar_back">#ff676767</color> <!-- this is blended with immersive_bars to produce the desired status bar color i.e. background_super_dark -->
+    <color name="background_super_dark">#ff292929</color>
+    <color name="scrim">#99323232</color>
+    <color name="mid_grey">#40808080</color>
+    <color name="light_grey">#fff5f5f5</color>
+    <color name="grey_300">#ffE0E0E0</color>
+    <color name="content_placeholder">#ffe0e0e0</color>
+    <color name="dark_icon">#99000000</color> <!-- 60% black-->
+    <color name="divider">#1f000000</color> <!-- 12% black -->
+
+    <!-- text (most text uses material theme colours) -->
+    <color name="hint_disabled_dark">#43000000</color> <!-- 26% black -->
+    <color name="text_on_accent">#8f000000</color>
+
+    <!-- designer news -->
+    <!-- spec colors -->
+    <color name="designer_news">#03a9f4</color> <!--light blue 500 -->-->
+    <color name="designer_news_dark">#039be5</color> <!-- light blue 600 -->
+    <color name="designer_news_link_highlight">#b303a9f4</color>
+
+    <!-- brand colors -->
+    <!--<color name="designer_news">#2d72d9</color>-->
+    <!--<color name="designer_news_dark">#245bae</color>-->
+    <!--<color name="designer_news_link_highlight">#b32d72d9</color>-->
+
+    <color name="designer_news_super_dark">#000133</color>
+    <color name="designer_news_quote_line">#ffeceef1</color>
+    <color name="designer_news_quote">#73000000</color>
+
+    <!-- dribbble -->
+    <!--<color name="dribbble">#ffea4c89</color>-->
+    <color name="dribbble">#fff06292</color> <!-- pink 300 -->
+    <color name="dribbble_dark">#ec407a</color> <!-- pink 400 -->
+    <color name="dribbble_super_dark">#ff33292d</color>
+    <color name="dribbble_link_highlight">#b3f06292</color>
+    <color name="fab_heart_empty">@color/text_primary_light</color>
+    <color name="fab_heart_progress_bar">#deffffff</color> <!-- 87% white-->
+    <color name="fab_heart_full">#ffffffff</color>
+    <color name="gif_badge_light_image">#40000000</color>
+    <color name="gif_badge_dark_image">#b3ffffff</color>
+
+    <!-- hacker news -->
+    <color name="hacker_news">#ffe48529</color>
+    <!--<color name="hacker_news">#ff6600</color> site -->
+    <!--<color name="hacker_news">#ff9800</color>  orange 500 -->
+    <color name="hacker_news_dark">#e65100</color>
+    <color name="hacker_news_light">#ffcc80</color>
+
+    <!-- product hunt-->
+    <color name="product_hunt">#EF6C00</color>
+    <!-- brand color -->
+    <!--<color name="product_hunt">#d9512b</color>-->
+
+    <!-- search -->
+    <color name="search_background_scrim">#33000000</color>
+
+</resources>

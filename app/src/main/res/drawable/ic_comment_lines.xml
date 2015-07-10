@@ -1,0 +1,55 @@
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="24dp"
+        android:height="24dp"
+        android:viewportWidth="@integer/comment_lines_add_viewport_width"
+        android:viewportHeight="@integer/comment_lines_add_viewport_height">
+
+    <path
+        android:name="comment_bubble"
+        android:pathData="@string/path_comment_bubble"
+        android:fillColor="@color/comment_bubble" />
+
+    <group
+        android:name="@string/comment_line_add_group"
+        android:pivotX="@integer/comment_lines_add_center_x"
+        android:pivotY="@integer/comment_lines_add_center_y">
+
+        <path
+            android:name="@string/comment_line_1"
+            android:pathData="@string/path_comment_line_1"
+            android:strokeWidth="@integer/comment_line_stroke_width"
+            android:strokeLineCap="square"
+            android:strokeColor="@color/comment_line_stroke_color" />
+
+        <path
+            android:name="@string/comment_line_2"
+            android:pathData="@string/path_comment_line_2"
+            android:strokeWidth="@integer/comment_line_stroke_width"
+            android:strokeLineCap="square"
+            android:strokeColor="@color/comment_line_stroke_color" />
+
+        <path
+            android:name="@string/comment_line_3"
+            android:pathData="@string/path_comment_line_3"
+            android:strokeWidth="@integer/comment_line_stroke_width"
+            android:strokeLineCap="square"
+            android:strokeColor="@color/comment_line_stroke_color" />
+
+    </group>
+
+</vector>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<resources>
+
+    <!-- global -->
+    <string name="app_name">Plaid</string>
+    <string name="no_comments">no comments</string>
+    <string name="login_to">Log in to</string>
+    <string name="need_login">Woah there chief. First you\'ll need&#160;to</string> <!-- &#160; == nbsp -->
+    <string name="dribbble_logged_in_as">Logged in as</string>
+
+    <!-- main screen -->
+    <string name="search">Search</string>
+    <string name="filter">Filter</string>
+    <string name="about">About</string>
+    <string name="dribbble_login">Log in to Dribbble</string>
+    <string name="dribbble_log_out">Log out of Dribbble</string>
+    <string name="dribbble_logged_out">Logged out of Dribbble</string>
+    <string name="designer_news_login">Log in to Designer News</string>
+    <string name="designer_news_log_out">Log out of Designer News</string>
+    <string name="designer_news_logged_out">Logged out of Designer News</string>
+    <string name="add">Add</string>
+    <string name="edit">Edit</string>
+    <string name="no_filters_selected">No filters selected, press the filter button above (&#2228;)\nor swipe from the&#160;right</string>
+
+    <!-- data sources / filters -->
+    <string name="source_designer_news_popular">Popular Designer News</string>
+    <string name="source_designer_news_recent">Recent Designer News</string>
+    <string name="source_dribbble_popular">Popular Dribbbles</string>
+    <string name="source_dribbble_following">Dribbble following</string>
+    <string name="source_dribbble_user_likes">My Dribbble likes</string>
+    <string name="source_dribbble_user_shots">My Dribbble shots</string>
+    <string name="source_dribbble_recent">Recent Dribbbles</string>
+    <string name="source_dribbble_debuts">Dribbble Debuts</string>
+    <string name="source_dribbble_animated">Dribbble Animated</string>
+    <string name="source_dribbble_search_material_design">Material Design</string>
+    <string name="source_product_hunt">Product Hunt</string>
+
+    <!-- Search -->
+    <string name="search_hint">Search Dribbble &amp; Designer News</string>
+    <string name="no_search_results">No results for\n“%1$s”</string>
+    <string name="confirm_save_dribbble_search">Save Dribbble</string>
+    <string name="confirm_save_designer_news_search">Save Designer News</string>
+    <string name="confirm_save_search">Save</string>
+
+    <!-- new designer news story -->
+    <string name="new_story_title">Post a story to Designer News</string>
+    <string name="new_story_instructions">Submit a link or provide a comment to start a discussion.</string>
+    <string name="new_story_link_or_comment">Include a url <b>or</b> a comment</string>
+    <string name="new_story_post_title">Post title</string>
+    <string name="new_story_url">Url</string>
+    <!--<string name="new_story_url_hint">http://ducksarethebest.com</string>-->
+    <string name="new_story_url_hint">Link</string>
+    <string name="new_story_comment">Comment</string>
+    <!--<string name="new_story_comment_hint">Enter your comment.  Be nice, or else.</string>-->
+    <string name="new_story_comment_hint">Comment</string>
+    <string name="new_story_post">Post</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- designer news login -->
+    <string name="username">Username</string>
+    <string name="get_accounts_permission_primer_message">Autocomplete email addresses</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign up</string>
+    <string name="dn_login_action">Log in</string>
+
+    <!-- designer news story -->
+    <string name="upvote_story">Upvote story</string>
+
+
+    <!-- dribbble shot screen -->
+    <!-- using strings for the number of views/likes as we run them through NumberFormat -->
+    <plurals name="likes">
+        <item quantity="zero">no likes</item>
+        <item quantity="one">%s like</item>
+        <item quantity="other">%s likes</item>
+    </plurals>
+    <plurals name="views">
+        <item quantity="zero">no views</item>
+        <item quantity="one">%s view</item>
+        <item quantity="other">%s views</item>
+    </plurals>
+    <string name="share">share</string>
+
+    <!-- dribbble login -->
+
+    <!-- about screen -->
+    <string name="title_activity_about">About Plaid</string>
+
+    <!-- transition shared elements -->
+    <string name="transition_shot" translatable="false">shot</string>
+    <string name="transition_shot_title" translatable="false">shot_title</string>
+    <string name="transition_shot_background" translatable="false">shot_background</string>
+    <string name="transition_story_title" translatable="false">story_title</string>
+    <string name="transition_story_title_background" translatable="false">story_title_background</string>
+    <string name="transition_story_background" translatable="false">transition_story_background</string>
+    <string name="transition_dribbble_login" translatable="false">dribbble_login</string>
+    <string name="transition_designer_news_login" translatable="false">transition_designer_news_login</string>
+    <string name="transition_new_designer_news_post" translatable="false">new_designer_news_post</string>
+
+    <!-- content authorities -->
+    <string name="share_authority"  translatable="false">io.plaidapp.shareprovider</string>
+
+    <!-- placeholder -->
+    <string name="hipster_ipsum">Slow-carb scenester Odd Future seitan, migas mlkshk High Life cardigan Wes Anderson. Scenester mumblecore normcore lumbersexual Odd Future. Authentic mustache distillery, kale chips hoodie health goth gluten-free Odd Future letterpress kitsch hella put a bird on it narwhal Wes Anderson irony. Fashion axe Thundercats farm-to-table chia Wes Anderson, try-hard hella scenester selvage. Four dollar toast drinking vinegar plaid sustainable, polaroid stumptown organic cray 90\'s taxidermy migas blog McSweeney\'s Williamsburg meditation. Typewriter kitsch Brooklyn, raw denim occupy Shoreditch twee whatever Pitchfork plaid mlkshk cray flannel. Chillwave PBRB whatever Echo Park. Swag pickled put a bird on it deep v, selvage kitsch cliche shabby chic Brooklyn whatever. Brunch mumblecore +1 chia, single-origin coffee you probably haven\'t heard of them hella distillery sustainable. Biodiesel small batch gluten-free blog put a bird on it Tumblr. Readymade keffiyeh tilde, PBR health goth skateboard leggings fashion axe. High Life tofu squid meditation, kogi street art cronut pour-over selvage. Hella readymade stumptown, tote bag Bushwick mustache Tumblr migas butcher iPhone. Vinyl tofu Intelligentsia XOXO, pork belly Helvetica ugh photo booth 8-bit four loko.</string>
+
+</resources>

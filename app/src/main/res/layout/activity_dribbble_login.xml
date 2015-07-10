@@ -1,0 +1,65 @@
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:onClick="dismiss"
+    tools:context="io.plaidapp.ui.DribbbleLogin">
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_xlarge"
+        android:padding="@dimen/spacing_large"
+        android:paddingTop="@dimen/spacing_xlarge"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:elevation="@dimen/z_fab"
+        android:background="@drawable/dialog_background"
+        android:transitionName="@string/transition_dribbble_login">
+
+        <io.plaidapp.ui.widget.BaselineGridTextView
+            android:id="@+id/login_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:text="@string/need_login"
+            style="@style/Widget.Plaid.DialogText" />
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="@dimen/padding_normal"
+            android:layout_marginBottom="@dimen/spacing_micro"
+            android:text="@string/login_to"
+            android:textAppearance="@style/TextAppearance.DarkButton"
+            android:drawableEnd="@drawable/dribbble_logo"
+            android:drawablePadding="@dimen/spacing_micro"
+            android:onClick="doLogin" />
+
+        <include layout="@layout/loading" />
+
+    </LinearLayout>
+
+</FrameLayout>

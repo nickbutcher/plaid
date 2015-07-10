@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<resources>
+    <string name="connection_line_mask_hidden">M26,159 L26,159 L32,159 L32,159 Z</string>
+    <string name="connection_line_mask_shown">M26,67 L26,159 L32,159 L32,67 Z</string>
+    <string name="phone_button">M24,206.5 C24,206.5 27.6392462,206.449997 28,206.449997 C28.3607538,206.449997 32,206.5 32,206.5</string>
+    <string name="phone_button_frown">M23.6061137,207.020699 C23.6061137,207.020699 26.2397148,206 28.494994,206 C30.7502732,206 32.753258,207.020699 32.753258,207.020699</string>
+</resources>

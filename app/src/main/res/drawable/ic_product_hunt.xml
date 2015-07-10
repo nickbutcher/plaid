@@ -1,0 +1,27 @@
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="40dp"
+        android:height="40dp"
+        android:viewportWidth="72"
+        android:viewportHeight="72">
+    <path
+        android:pathData="M66.0,36.0C66.0,52.5685 52.5685,66.0 36.0,66.0C19.4315,66.0 6.0,52.5685 6.0,36.0C6.0,19.4315 19.4315,6.0 36.0,6.0C52.5685,6.0 66.0,19.4315 66.0,36.0"
+        android:fillColor="@color/product_hunt"/>
+    <path
+        android:pathData="M40.0,21.0L25.5,21.0L25.5,51.0L31.5,51.0L31.5,42.0L40.0,42.0C45.799,42.0 50.5,37.299 50.5,31.5C50.5,25.701 45.799,21.0 40.0,21.0L40.0,21.0ZM40.0,36.0L40.0,36.0L31.5,36.0L31.5,27.0L40.0,27.0C42.48525,27.0 44.49975,29.01475 44.49975,31.5C44.49975,33.98525 42.48525,35.99975 40.0,36.0L40.0,36.0Z"
+        android:fillColor="#FFFFFF"/>
+</vector>

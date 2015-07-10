@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<resources>
+
+    <!-- FAB -->
+    <string name="heart_empty_path_56dp">M32.95,19 C31.036,19 29.199,19.8828338 28,21.2724796 C26.801,19.8828338 24.964,19 23.05,19 C19.6565,19 17,21.6321526 17,24.9945504 C17,29.1089918 20.74,32.4713896 26.405,37.5667575 L28,39 L29.595,37.5667575 C35.26,32.4713896 39,29.1089918 39,24.9945504 C39,21.6321526 36.3435,19 32.95,19 L32.95,19 Z M28.1155,35.9536785 L28,36.0572207 L27.8845,35.9536785 C22.654,31.2506812 19.2,28.1444142 19.2,24.9945504 C19.2,22.8201635 20.8555,21.1798365 23.05,21.1798365 C24.744,21.1798365 26.394,22.2643052 26.9715,23.7520436 L29.023,23.7520436 C29.606,22.2643052 31.256,21.1798365 32.95,21.1798365 C35.1445,21.1798365 36.8,22.8201635 36.8,24.9945504 C36.8,28.1444142 33.346,31.2506812 28.1155,35.9536785 L28.1155,35.9536785 Z</string>
+    <string name="heart_full_path_56dp">M28,39 L26.405,37.5667575 C20.74,32.4713896 17,29.1089918 17,24.9945504 C17,21.6321526 19.6565,19 23.05,19 C24.964,19 26.801,19.8828338 28,21.2724796 C29.199,19.8828338 31.036,19 32.95,19 C36.3435,19 39,21.6321526 39,24.9945504 C39,29.1089918 35.26,32.4713896 29.595,37.5667575 L28,39 L28,39 Z</string>
+    <string name="heart_clip_hidden">M18 37 L38 37 L38 37 L18 37 Z</string>
+    <string name="heart_clip_shown">M0 0 L56 0 L56 56 L0 56 Z</string>
+    <!-- Circle path generated at: http://complexdan.com/svg-circleellipse-to-path-converter/ -->
+    <string name="activity_circle_stroke">M2,28a26,26 0 1,0 52,0a26,26 0 1,0 -52,0</string>
+    <!-- Arc path generated at: http://users.ecs.soton.ac.uk/rfp07r/interactive-svg-examples/arc.html -->
+    <string name="progress_bar_empty_right">M28 2 a26 26 0 1,1 0 52</string>
+
+    <integer name="show_activity_bar_time">@android:integer/config_mediumAnimTime</integer>
+    <integer name="activity_bar_progress_time">1500</integer>
+    <integer name="activity_done_time">1400</integer>
+    <integer name="hide_activity_bar_time">@android:integer/config_mediumAnimTime</integer>
+    <integer name="heart_fill_delay">1500</integer>
+    <integer name="heart_fill_time">@android:integer/config_mediumAnimTime</integer>
+    <integer name="duration_immediate">1</integer>
+    <integer name="empty_progress_delay">1401</integer> <!-- activity_done_time + duration_immediate -->
+    <integer name="empty_progress_time">@android:integer/config_mediumAnimTime</integer>
+
+
+    <!-- comment -->
+    <string name="heart_empty_path_24dp">M16.05,5 C14.484,5 12.981,5.70626703 12,6.81798365 C11.019,5.70626703 9.516,5 7.95,5 C5.1735,5 3,7.10572207 3,9.79564033 C3,13.0871935 6.06,15.7771117 10.695,19.853406 L12,21 L13.305,19.853406 C17.94,15.7771117 21,13.0871935 21,9.79564033 C21,7.10572207 18.8265,5 16.05,5 L16.05,5 Z M12.0945,18.5629428 L12,18.6457766 L11.9055,18.5629428 C7.626,14.800545 4.8,12.3155313 4.8,9.79564033 C4.8,8.05613079 6.1545,6.74386921 7.95,6.74386921 C9.336,6.74386921 10.686,7.61144414 11.1585,8.80163488 L12.837,8.80163488 C13.314,7.61144414 14.664,6.74386921 16.05,6.74386921 C17.8455,6.74386921 19.2,8.05613079 19.2,9.79564033 C19.2,12.3155313 16.374,14.800545 12.0945,18.5629428 L12.0945,18.5629428 Z</string>
+    <string name="heart_full_path_24dp">M12,21 L10.695,19.853406 C6.06,15.7771117 3,13.0871935 3,9.79564033 C3,7.10572207 5.1735,5 7.95,5 C9.516,5 11.019,5.70626703 12,6.81798365 C12.981,5.70626703 14.484,5 16.05,5 C18.8265,5 21,7.10572207 21,9.79564033 C21,13.0871935 17.94,15.7771117 13.305,19.853406 L12,21 L12,21 Z</string>
+
+
+</resources>
