@@ -18,7 +18,7 @@
 
 <resources>
 
-    <style name="Plaid" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Plaid" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primary_dark</item>
         <item name="android:colorBackground">@color/background_light</item>

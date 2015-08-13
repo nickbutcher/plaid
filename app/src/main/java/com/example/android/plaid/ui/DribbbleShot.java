@@ -103,6 +103,7 @@ public class DribbbleShot extends Activity {
 
     protected final static String EXTRA_SHOT = "shot";
     private static final int RC_LOGIN = 0;
+    private static final float SCRIM_ADJUSTMENT = 0.05f;
 
     @Bind(R.id.draggable_frame) ElasticDragDismissFrameLayout draggableFrame;
     @Bind(R.id.back) ImageButton back;
@@ -147,9 +148,9 @@ public class DribbbleShot extends Activity {
             float twentyFourDip = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24,
                     DribbbleShot.this.getResources().getDisplayMetrics());
             Palette.from(bitmap)
+                    .maximumColorCount(3)
                     .clearFilters()
-                            //.setRegion(0, 0, bitmap.getWidth(), (int) (twentyFourDip /
-                            // imageScale))
+                    .setRegion(0, 0, bitmap.getWidth(), (int) (twentyFourDip / imageScale))
                     .generate(new Palette.PaletteAsyncListener() {
                         @Override
                         public void onGenerated(Palette palette) {
@@ -161,15 +162,17 @@ public class DribbbleShot extends Activity {
                                 isDark = lightness == ColorUtils.IS_DARK;
                             }
                             int statusBarColor = getWindow().getStatusBarColor();
-                            if (isDark && palette.getDarkMutedSwatch() != null) {
-                                statusBarColor = palette.getDarkMutedSwatch().getRgb();
-                            } else if (!isDark && palette.getLightMutedSwatch() != null) {
-                                statusBarColor = palette.getLightMutedSwatch().getRgb();
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    imageView.setSystemUiVisibility(
-                                            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                            Palette.Swatch topColor = ColorUtils.getMostPopulousSwatch(palette);
+                            if (topColor != null) {
+                                statusBarColor = ColorUtils.scrimify(topColor.getRgb(),
+                                        isDark, SCRIM_ADJUSTMENT);
+                                if (!isDark) {
+                                    back.setColorFilter(getColor(R.color.dark_icon));
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        imageView.setSystemUiVisibility(
+                                                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                                    }
                                 }
-                                back.setColorFilter(getColor(R.color.dark_icon));
                             }
 
                             if (statusBarColor != getWindow().getStatusBarColor()) {
