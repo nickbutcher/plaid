@@ -261,9 +261,8 @@ public class FabOverlapTextView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (MeasureSpec.getMode(widthMeasureSpec) != MeasureSpec.EXACTLY) {
-            throw new IllegalArgumentException("FabOverlapTextView requires a layout_width of " +
-                    "match parent");
+        if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.UNSPECIFIED) {
+            throw new IllegalArgumentException("FabOverlapTextView requires a constrained width");
         }
         int layoutWidth = MeasureSpec.getSize(widthMeasureSpec) - getPaddingLeft() -
                 getPaddingRight();

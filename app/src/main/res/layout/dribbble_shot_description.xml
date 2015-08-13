@@ -35,7 +35,12 @@
         android:layout_columnSpan="3"
         android:background="@drawable/mid_grey_bounded_ripple" />
 
-    <include layout="@layout/dribbble_shot_title"/>
+    <include
+        layout="@layout/dribbble_shot_title"
+        android:id="@+id/shot_title"
+        android:layout_columnSpan="3"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/spacing_large" />
 
     <com.example.android.plaid.ui.widget.BaselineGridTextView
         android:id="@+id/shot_description"
