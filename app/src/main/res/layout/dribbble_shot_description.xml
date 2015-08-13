@@ -35,39 +35,7 @@
         android:layout_columnSpan="3"
         android:background="@drawable/mid_grey_bounded_ripple" />
 
-    <!--<com.example.android.plaid.ui.widget.BaselineGridTextView-->
-        <!--android:id="@+id/shot_title"-->
-        <!--android:layout_columnSpan="3"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:paddingStart="@dimen/padding_normal"-->
-        <!--app:topPaddingHint="@dimen/padding_normal"-->
-        <!--android:paddingEnd="@dimen/padding_room_for_fab"-->
-        <!--android:paddingBottom="@dimen/padding_normal"-->
-        <!--android:layout_marginBottom="@dimen/spacing_large"-->
-        <!--android:textAppearance="@style/TextAppearance.DribbbleShotTitle"-->
-        <!--android:background="@color/light_grey"-->
-        <!--tools:text="Dribbble shot title" />-->
-
-    <com.example.android.plaid.ui.widget.FabOverlapTextView
-        android:id="@+id/shot_title"
-        android:layout_columnSpan="3"
-        android:layout_width="match_parent"
-        android:paddingStart="@dimen/padding_normal"
-        app:topPaddingHint="@dimen/padding_normal"
-        android:paddingEnd="@dimen/padding_normal"
-        android:paddingBottom="@dimen/padding_normal"
-        android:layout_marginBottom="@dimen/spacing_large"
-        android:background="@color/light_grey"
-        android:textAppearance="@style/TextAppearance.DribbbleShotTitle"
-        android:textColor="@color/text_primary_dark"
-        android:textSize="24sp"
-        app:lineHeightHint="32sp"
-        app:font="roboto-mono-regular"
-        app:fabGravity="bottom|end"
-        app:fabOverlayHeight="@dimen/half_fab_plus_single_padding"
-        app:fabOverlayWidth="@dimen/fab_plus_single_padding"
-        app:fabId="@+id/fab_heart"
-        tools:text="Dribbble shot title" />
+    <include layout="@layout/dribbble_shot_title"/>
 
     <com.example.android.plaid.ui.widget.BaselineGridTextView
         android:id="@+id/shot_description"

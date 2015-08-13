@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.transition.ChangeBounds;
 import android.transition.TransitionValues;
 import android.util.AttributeSet;
@@ -62,7 +63,8 @@ public class CircleMorph extends ChangeBounds {
         if (view.getWidth() <= 0 || view.getHeight() <= 0) {
             return;
         }
-        transitionValues.values.put(PROPERTY_COLOR, view.getContext().getColor(R.color.dribbble));
+        transitionValues.values.put(PROPERTY_COLOR,
+                ContextCompat.getColor(view.getContext(), R.color.dribbble));
         transitionValues.values.put(PROPERTY_CORNER_RADIUS, view.getHeight() / 2);
     }
 
@@ -73,8 +75,8 @@ public class CircleMorph extends ChangeBounds {
         if (view.getWidth() <= 0 || view.getHeight() <= 0) {
             return;
         }
-        transitionValues.values.put(PROPERTY_COLOR, view.getContext().getColor(R.color
-                .background_light));
+        transitionValues.values.put(PROPERTY_COLOR,
+                ContextCompat.getColor(view.getContext(), R.color.background_light));
         transitionValues.values.put(PROPERTY_CORNER_RADIUS, view.getResources()
                 .getDimensionPixelSize(R.dimen.dialog_corners));
     }

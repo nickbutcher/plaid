@@ -14,11 +14,17 @@
   limitations under the License.
   -->
 
-<FrameLayout
+<com.example.android.plaid.ui.widget.ElasticDragDismissFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:plaid="http://schemas.android.com/apk/res-auto"
     android:id="@+id/comments_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_light"
+    android:transitionName="@string/transition_story_background"
+    plaid:dragDismissDistance="@dimen/drag_dismiss_distance"
+    plaid:dragElasticity="0.2"
+    plaid:dragDismissScale="0.95">
 
     <!-- toolbar & description added as header to listview.
          see layout/designer_news_story_description -->
@@ -31,4 +37,6 @@
         android:clipToPadding="false"
         android:divider="@null" />
 
-</FrameLayout>
+    <include layout="@layout/designer_news_story_fab"/>
+
+</com.example.android.plaid.ui.widget.ElasticDragDismissFrameLayout>

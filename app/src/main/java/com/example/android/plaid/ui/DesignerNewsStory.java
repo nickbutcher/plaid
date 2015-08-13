@@ -27,6 +27,7 @@ import android.graphics.Path;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.customtabs.CustomTabsSession;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.transition.ArcMotion;
@@ -124,7 +125,7 @@ public class DesignerNewsStory extends Activity {
         upvoteStory.setAction(UpvoteStoryService.ACTION_UPVOTE);
         PendingIntent pendingIntent = PendingIntent.getService(context, 0, upvoteStory, 0);
         return new CustomTabUiBuilder()
-                .setToolbarColor(context.getColor(R.color.designer_news))
+                .setToolbarColor(ContextCompat.getColor(context, R.color.designer_news))
                 .setActionButton(ImageUtils.vectorToBitmap(context, R.drawable.ic_thumb_up),
                         pendingIntent);
     }
@@ -149,12 +150,13 @@ public class DesignerNewsStory extends Activity {
         });
 
         markdown = new Bypass(this, new Bypass.Options()
-                .setBlockQuoteLineColor(getColor(R.color.designer_news_quote_line))
+                .setBlockQuoteLineColor(
+                        ContextCompat.getColor(this, R.color.designer_news_quote_line))
                 .setBlockQuoteLineWidth(2) // dps
                 .setBlockQuoteLineIndent(8) // dps
                 .setPreImageLinebreakHeight(4) //dps
                 .setBlockQuoteIndentSize(TypedValue.COMPLEX_UNIT_DIP, 2f)
-                .setBlockQuoteTextColor(getColor(R.color.designer_news_quote)));
+                .setBlockQuoteTextColor(ContextCompat.getColor(this, R.color.designer_news_quote)));
 
         View storyDescription = getLayoutInflater().inflate(R.layout
                 .designer_news_story_description, commentsList, false);
@@ -167,9 +169,7 @@ public class DesignerNewsStory extends Activity {
             collapsingToolbar.setTitle(story.title);
             toolbarBackground = (PinnedOffsetView) findViewById(R.id.story_title_background);
             commentsList.setOnScrollListener(new AbsListView.OnScrollListener() {
-                @Override
-                public void onScrollStateChanged(AbsListView view, int scrollState) {
-                }
+                @Override public void onScrollStateChanged(AbsListView view, int scrollState) { }
 
                 @Override
                 public void onScroll(AbsListView view, int firstVisibleItem, int
@@ -270,8 +270,8 @@ public class DesignerNewsStory extends Activity {
         // animate from the FAB colour to the placeholder background color
         Animator background = ObjectAnimator.ofArgb(fabExpand,
                 "backgroundColor",
-                getColor(R.color.designer_news),
-                getColor(R.color.background_light))
+                ContextCompat.getColor(this, R.color.designer_news),
+                ContextCompat.getColor(this, R.color.background_light))
                 .setDuration(fabExpandDuration);
 
         // fade out the fab (rapidly)

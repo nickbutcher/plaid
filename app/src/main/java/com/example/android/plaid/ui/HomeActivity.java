@@ -33,6 +33,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -219,9 +220,9 @@ public class HomeActivity extends Activity {
             // animate from the FAB colour to our dialog colour
             Animator background = ObjectAnimator.ofArgb(newPostContainer,
                     "backgroundColor",
-                    getColor(R.color.accent),
-                    //getResources().getColor(R.color.designer_news))
-                    getColor(R.color.background_light))
+                    ContextCompat.getColor(HomeActivity.this, R.color.accent),
+                    //getResources().ContextCompat.getColor(this, R.color.designer_news))
+                    ContextCompat.getColor(HomeActivity.this, R.color.background_light))
                     .setDuration(ANIMATION_DURATION_MED);
 
             // rise up in Z
@@ -233,7 +234,7 @@ public class HomeActivity extends Activity {
             scrim.setVisibility(View.VISIBLE);
             Animator scrimColour = ObjectAnimator.ofArgb(scrim,
                     "backgroundColor",
-                    getColor(R.color.scrim))
+                    ContextCompat.getColor(HomeActivity.this, R.color.scrim))
                     .setDuration(ANIMATION_DURATION_SLOOOOW);
             Animator scrimBounds = ViewAnimationUtils.createCircularReveal(
                     scrim,
@@ -339,8 +340,8 @@ public class HomeActivity extends Activity {
         grid.setOnScrollListener(gridScroll);
         drawer.setDrawerListener(
                 new SystemBarDrawerTinter(
-                        getColor(R.color.immersive_bars),
-                        getColor(R.color.background_super_dark)));
+                        ContextCompat.getColor(this, R.color.immersive_bars),
+                        ContextCompat.getColor(this, R.color.background_super_dark)));
         filtersList.setLayoutManager(new LinearLayoutManager(this));
         filtersToolbar.inflateMenu(R.menu.filters);
         filtersToolbar.setOnMenuItemClickListener(mFiltersMenuClick);
@@ -441,7 +442,7 @@ public class HomeActivity extends Activity {
         Bitmap overviewIcon = ImageUtils.vectorToBitmap(this, R.drawable.ic_launcher_silhouette);
         setTaskDescription(new ActivityManager.TaskDescription(getString(R.string.app_name),
                 overviewIcon,
-                getColor(R.color.primary)));
+                ContextCompat.getColor(this, R.color.primary)));
         overviewIcon.recycle();
     }
 
@@ -561,7 +562,7 @@ public class HomeActivity extends Activity {
             case R.id.menu_search:
                 searchMenuItem = item;
                 View v = LayoutInflater.from(this).inflate(R.layout.search_action_view, null);
-                //v.setBackground(new MorphDrawable(getColor(R.color.background_dark),
+                //v.setBackground(new MorphDrawable(ContextCompat.getColor(this, R.color.background_dark),
                 // getResources().getDimension(R.dimen.dialog_corners)));
                 item.setActionView(v);
                 ActivityOptions options =
@@ -857,8 +858,8 @@ public class HomeActivity extends Activity {
         // animate from our dialog colour back to the FAB colour
         Animator background = ObjectAnimator.ofArgb(newPostContainer,
                 "backgroundColor",
-                getColor(R.color.background_light),
-                getColor(R.color.accent))
+                ContextCompat.getColor(this, R.color.background_light),
+                ContextCompat.getColor(this, R.color.accent))
                 .setDuration(ANIMATION_DURATION_MED);
 
         // lower up in Z

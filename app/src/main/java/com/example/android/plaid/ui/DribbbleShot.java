@@ -33,6 +33,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -110,7 +111,7 @@ public class DribbbleShot extends Activity {
     @Bind(R.id.shot) ParallaxScrimageView imageView;
     @Bind(R.id.fab_heart) FABToggle fab;
     private View shotSpacer;
-    private FabOverlapTextView title;
+    private View title;
     private TextView description;
     private TextView playerName;
     private ImageView playerAvatar;
@@ -167,7 +168,8 @@ public class DribbbleShot extends Activity {
                                 statusBarColor = ColorUtils.scrimify(topColor.getRgb(),
                                         isDark, SCRIM_ADJUSTMENT);
                                 if (!isDark) {
-                                    back.setColorFilter(getColor(R.color.dark_icon));
+                                    back.setColorFilter(ContextCompat.getColor(
+                                            DribbbleShot.this, R.color.dark_icon));
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                         imageView.setSystemUiVisibility(
                                                 View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -342,8 +344,7 @@ public class DribbbleShot extends Activity {
         View shotDescription = getLayoutInflater().inflate(R.layout.dribbble_shot_description,
                 commentsList, false);
         shotSpacer = shotDescription.findViewById(R.id.shot_spacer);
-        //title = (TextView) shotDescription.findViewById(R.id.shot_title);
-        title = (FabOverlapTextView) shotDescription.findViewById(R.id.shot_title);
+        title = shotDescription.findViewById(R.id.shot_title);
         description = (TextView) shotDescription.findViewById(R.id.shot_description);
         playerName = (TextView) shotDescription.findViewById(R.id.player_name);
         playerAvatar = (ImageView) shotDescription.findViewById(R.id.player_avatar);
@@ -396,7 +397,11 @@ public class DribbbleShot extends Activity {
             }
         });
 
-        title.setText(shot.title);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ((FabOverlapTextView) title).setText(shot.title);
+        } else {
+            ((TextView) title).setText(shot.title);
+        }
         if (!TextUtils.isEmpty(shot.description)) {
             HtmlUtils.setTextWithNiceLinks(description, shot.getParsedDescription(description));
         } else {

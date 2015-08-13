@@ -18,6 +18,7 @@ package com.example.android.plaid.ui.util.glide;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 
 import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
@@ -71,9 +72,8 @@ public class DribbbleTarget extends GlideDrawableImageViewTarget implements Pale
                     cornerSize, cornerSize);
             boolean isDark = ColorUtils.isDark(corner);
             corner.recycle();
-            badgedImageView.setBadgeColor(
-                    isDark ? getView().getContext().getColor(R.color.gif_badge_dark_image)
-                            : getView().getContext().getColor(R.color.gif_badge_light_image));
+            badgedImageView.setBadgeColor(ContextCompat.getColor(getView().getContext(),
+                    isDark ? R.color.gif_badge_dark_image : R.color.gif_badge_light_image));
         }
     }
 

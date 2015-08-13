@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.ColorMatrixColorFilter;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.transition.ArcMotion;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -327,7 +328,8 @@ public class FeedAdapter extends ArrayAdapter<PlaidItem> {
             @Override
             public void onClick(View view) {
                 iv.setTransitionName(iv.getResources().getString(R.string.transition_shot));
-                iv.setBackgroundColor(getContext().getColor(R.color.background_light));
+                iv.setBackgroundColor(
+                        ContextCompat.getColor(getContext(), R.color.background_light));
                 Intent intent = new Intent();
                 intent.setClass(getContext(), DribbbleShot.class);
                 intent.putExtra(DribbbleShot.EXTRA_SHOT, shot);

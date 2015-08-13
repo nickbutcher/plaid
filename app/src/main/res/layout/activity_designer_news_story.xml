@@ -76,27 +76,6 @@
 
     </com.example.android.plaid.ui.widget.CollapsingTitleLayout>
 
-    <ImageButton
-        android:id="@+id/fab"
-        android:layout_width="@dimen/fab_size"
-        android:layout_height="@dimen/fab_size"
-        android:elevation="@dimen/z_fab"
-        android:background="@drawable/fab"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/padding_normal"
-        android:layout_marginBottom="@dimen/padding_normal"
-        android:stateListAnimator="@animator/raise"
-        android:src="@drawable/ic_news" />
-
-    <!-- we use this view during the fab click animation. It provides placeholder UI for the
-         chrome custom tab. Its background is faded from the fab color to white (controlled by
-         DesignerNewsStory#doFabExpand) and the foreground drawable imitates a toolbar -->
-    <FrameLayout
-        android:id="@+id/fab_expand"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:foreground="@drawable/designer_news_custom_tab_placeholder"
-        android:elevation="@dimen/z_dialog"
-        android:visibility="invisible" />
+    <include layout="@layout/designer_news_story_fab"/>
 
 </com.example.android.plaid.ui.widget.ElasticDragDismissFrameLayout>
