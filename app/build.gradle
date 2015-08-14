@@ -16,6 +16,12 @@
 
 apply plugin: 'com.android.application'
 
+// query git for the the SHA, Tag and commit count. Use these to automate versioning.
+def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+def gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
+def gitCommitCount =
+        Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
+
 android {
     compileSdkVersion 23
     buildToolsVersion '22.0.1'
@@ -24,8 +30,9 @@ android {
         applicationId "com.android.example.plaid"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 1
-        versionName '0.5'
+        versionCode gitCommitCount
+        versionName gitTag
+        buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
     }
     buildTypes {
         release {
