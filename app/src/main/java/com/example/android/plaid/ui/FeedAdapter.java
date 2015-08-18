@@ -27,15 +27,14 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.ColorMatrixColorFilter;
-import android.net.Uri;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.transition.ArcMotion;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -49,8 +48,7 @@ import com.example.android.plaid.data.PlaidItem;
 import com.example.android.plaid.data.PlaidItemComparator;
 import com.example.android.plaid.data.api.designernews.model.Story;
 import com.example.android.plaid.data.api.dribbble.model.Shot;
-import com.example.android.plaid.data.api.hackernews.HackerNewsService;
-import com.example.android.plaid.data.api.hackernews.model.Post;
+import com.example.android.plaid.data.api.producthunt.model.Post;
 import com.example.android.plaid.data.pocket.PocketUtils;
 import com.example.android.plaid.ui.util.ObservableColorMatrix;
 import com.example.android.plaid.ui.util.glide.DribbbleTarget;
@@ -59,132 +57,125 @@ import com.example.android.plaid.ui.widget.BadgedFourThreeImageView;
 import org.chromium.customtabsclient.CustomTabActivityManager;
 import org.chromium.customtabsclient.CustomTabUiBuilder;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
- * Created by nickbutcher on 7/16/14.
+ * Adapter for the main screen grid of items
  */
-public class FeedAdapter extends ArrayAdapter<PlaidItem> {
+public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    public static final float DUPE_WEIGHT_BOOST = 0.4f;
     private static final int TYPE_DESIGNER_NEWS_STORY = 0;
     private static final int TYPE_DRIBBBLE_SHOT = 1;
-    private static final int TYPE_HACKER_NEWS_POST = 2;
-    private static final int TYPE_PRODUCT_HINT_POST = 3;
+    private static final int TYPE_PRODUCT_HUNT_POST = 2;
+    public static final float DUPE_WEIGHT_BOOST = 0.4f;
+
+    // we need to hold on to an activity ref for the shared element transitions :/
+    private final Activity host;
     private final LayoutInflater layoutInflater;
     private final PlaidItemComparator comparator;
     private final boolean pocketIsInstalled;
 
-    public FeedAdapter(Context context, boolean pocketInstalled) {
-        super(context, R.layout.designer_news_story_item);
+    private List<PlaidItem> items;
+
+    public FeedAdapter(Activity hostActivity, boolean pocketInstalled) {
+        host = hostActivity;
         pocketIsInstalled = pocketInstalled;
-        layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        layoutInflater = (LayoutInflater) hostActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         comparator = new PlaidItemComparator();
+        items = new ArrayList<>();
+        setHasStableIds(true);
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup container) {
-
-        switch (getItemViewType(position)) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (viewType) {
             case TYPE_DESIGNER_NEWS_STORY:
-                if (view == null) {
-                    view = newDesignerNewsStoryView(position, container);
-                }
-                bindDesignerNewsStoryView((Story) getItem(position), position, view);
-                break;
+                return new DesignerNewsStoryHolder(
+                        layoutInflater.inflate(R.layout.designer_news_story_item, parent, false),
+                        pocketIsInstalled);
             case TYPE_DRIBBBLE_SHOT:
-                if (view == null) {
-                    view = newDribbbleShotView(position, container);
-                }
-                bindDribbbleShotView((Shot) getItem(position), position, view);
-                break;
-            case TYPE_HACKER_NEWS_POST:
-                if (view == null) {
-                    view = newHackerNewsPostView(position, container);
-                }
-                bindHackerNewsPostView((Post) getItem(position), position, view);
-                break;
-            case TYPE_PRODUCT_HINT_POST:
-                if (view == null) {
-                    view = newProductHuntPostView(position, container);
-                }
-                bindProductHuntPostView((com.example.android.plaid.data.api.producthunt.model
-                        .Post) getItem(position), position, view);
-                break;
+                return new DribbbleShotHolder(
+                        layoutInflater.inflate(R.layout.dribbble_shot_item, parent, false));
+            case TYPE_PRODUCT_HUNT_POST:
+                return new ProductHuntStoryHolder(
+                        layoutInflater.inflate(R.layout.product_hunt_item, parent, false));
         }
-        return view;
+        return null;
     }
 
-    private View newDesignerNewsStoryView(final int position, final ViewGroup container) {
-        View v = layoutInflater.inflate(R.layout.designer_news_story_item, container, false);
-        v.setTag(R.id.story_title_background, v.findViewById(R.id.story_title_background));
-        v.setTag(R.id.story_title, v.findViewById(R.id.story_title));
-        v.setTag(R.id.story_comments, v.findViewById(R.id.story_comments));
-        if (pocketIsInstalled) {
-            v.setTag(R.id.pocket, v.findViewById(R.id.pocket));
-        } else {
-            v.findViewById(R.id.pocket).setVisibility(View.GONE);
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        PlaidItem item = getItem(position);
+        if (item instanceof Story) {
+            bindDesignerNewsStory((Story) getItem(position), (DesignerNewsStoryHolder) holder);
+        } else if (item instanceof Shot) {
+            bindDribbbleShotView((Shot) item, (DribbbleShotHolder) holder);
+        } else if (item instanceof Post) {
+            bindProductHuntPostView((Post) item, (ProductHuntStoryHolder) holder);
         }
-        return v;
     }
 
-    private void bindDesignerNewsStoryView(final Story story, final int position, final View view) {
-        final TextView title = (TextView) view.getTag(R.id.story_title);
-        title.setText(story.title);
-        ((View) view.getTag(R.id.story_title_background)).setOnClickListener(
+    private void bindDesignerNewsStory(final Story story, final DesignerNewsStoryHolder holder) {
+        holder.title.setText(story.title);
+        holder.itemView.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CustomTabActivityManager.getInstance().launchUrl((Activity) getContext(),
+                        CustomTabActivityManager.getInstance().launchUrl(
+                                host,
                                 null,
                                 story.url,
-                                DesignerNewsStory.createChromeTabUi(getContext()));
+                                DesignerNewsStory.createChromeTabUi(holder.itemView.getContext()));
                     }
                 }
-                                                                            );
-        final TextView comments = (TextView) view.getTag(R.id.story_comments);
-        comments.setText(String.valueOf(story.comment_count));
-        comments.setOnClickListener(new View.OnClickListener() {
+                                          );
+        holder.comments.setText(String.valueOf(story.comment_count));
+        holder.comments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View commentsView) {
-                Intent intent = new Intent();
-                intent.setClass(getContext(), DesignerNewsStory.class);
+                final Intent intent = new Intent();
+                intent.setClass(host, DesignerNewsStory.class);
                 intent.putExtra(DesignerNewsStory.EXTRA_STORY, story);
-                ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation((Activity) getContext(),
-                                Pair.create((View) view.getTag(R.id.story_title_background),
-                                        getContext().getString(R.string
-                                                .transition_story_title_background)),
-                                Pair.create(view, getContext().getString(R.string
-                                        .transition_story_background)));
-                getContext().startActivity(intent, options.toBundle());
+                final ActivityOptions options =
+                        ActivityOptions.makeSceneTransitionAnimation(host,
+                                Pair.create(holder.itemView,
+                                        host.getString(R.string.transition_story_title_background)),
+                                Pair.create(holder.itemView,
+                                        host.getString(R.string.transition_story_background)));
+                host.startActivity(intent, options.toBundle());
             }
         });
         if (pocketIsInstalled) {
-            final ImageButton pocketButton = (ImageButton) view.getTag(R.id.pocket);
-            pocketButton.setImageAlpha(178); // grumble... no xml setter, grumble...
-            pocketButton.setOnClickListener(new View.OnClickListener() {
+            holder.pocket.setImageAlpha(178); // grumble... no xml setter, grumble...
+            holder.pocket.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(final View v) {
+                public void onClick(final View pocketButton) {
                     // actually add to pocket
-                    PocketUtils.addToPocket(getContext(), story.url);
+                    PocketUtils.addToPocket(host, story.url);
 
                     // setup for anim
-                    view.setHasTransientState(true);
+                    holder.itemView.setHasTransientState(true);
                     ((ViewGroup) pocketButton.getParent().getParent()).setClipChildren(false);
                     final int initialLeft = pocketButton.getLeft();
                     final int initialTop = pocketButton.getTop();
-                    final int translatedLeft = (view.getWidth() - pocketButton.getWidth()) / 2;
-                    final int translatedTop = initialTop - ((view.getHeight() - pocketButton
-                            .getHeight()) / 2);
+                    final int translatedLeft =
+                        (holder.itemView.getWidth() - pocketButton.getWidth()) / 2;
+                    final int translatedTop =
+                        initialTop - ((holder.itemView.getHeight() - pocketButton.getHeight()) / 2);
                     final ArcMotion arc = new ArcMotion();
 
                     // animate the title & pocket icon up, scale the pocket icon up
                     PropertyValuesHolder pvhTitleUp = PropertyValuesHolder.ofFloat(View
-                            .TRANSLATION_Y, -(view.getHeight() / 5));
+                            .TRANSLATION_Y, -(holder.itemView.getHeight() / 5));
                     PropertyValuesHolder pvhTitleFade = PropertyValuesHolder.ofFloat(View.ALPHA,
                             0.54f);
-                    Animator titleMoveFadeOut = ObjectAnimator.ofPropertyValuesHolder(title,
+                    Animator titleMoveFadeOut = ObjectAnimator.ofPropertyValuesHolder(holder.title,
                             pvhTitleUp, pvhTitleFade);
 
                     Animator pocketMoveUp = ObjectAnimator.ofFloat(pocketButton, View
@@ -202,7 +193,7 @@ public class FeedAdapter extends ArrayAdapter<PlaidItem> {
                     AnimatorSet up = new AnimatorSet();
                     up.playTogether(titleMoveFadeOut, pocketMoveUp, pocketScaleUp, pocketFadeUp);
                     up.setDuration(300);
-                    up.setInterpolator(AnimationUtils.loadInterpolator(getContext(), android.R
+                    up.setInterpolator(AnimationUtils.loadInterpolator(host, android.R
                             .interpolator.fast_out_slow_in));
 
                     // animate everything back into place
@@ -210,7 +201,7 @@ public class FeedAdapter extends ArrayAdapter<PlaidItem> {
                             .TRANSLATION_Y, 0f);
                     PropertyValuesHolder pvhTitleFadeUp = PropertyValuesHolder.ofFloat(View
                             .ALPHA, 1f);
-                    Animator titleMoveFadeIn = ObjectAnimator.ofPropertyValuesHolder(title,
+                    Animator titleMoveFadeIn = ObjectAnimator.ofPropertyValuesHolder(holder.title,
                             pvhTitleMoveUp, pvhTitleFadeUp);
                     Animator pocketMoveDown = ObjectAnimator.ofFloat(pocketButton, View
                                     .TRANSLATION_X, View.TRANSLATION_Y,
@@ -228,7 +219,7 @@ public class FeedAdapter extends ArrayAdapter<PlaidItem> {
                     down.playTogether(titleMoveFadeIn, pocketMoveDown, pvhPocketScaleDown,
                             pocketFadeDown);
                     down.setDuration(300);
-                    down.setInterpolator(AnimationUtils.loadInterpolator(getContext(), android.R
+                    down.setInterpolator(AnimationUtils.loadInterpolator(host, android.R
                             .interpolator.fast_out_slow_in));
                     down.setStartDelay(500);
 
@@ -242,7 +233,7 @@ public class FeedAdapter extends ArrayAdapter<PlaidItem> {
                         public void onAnimationEnd(Animator animation) {
                             ((ViewGroup) pocketButton.getParent().getParent()).setClipChildren
                                     (true);
-                            view.setHasTransientState(false);
+                            holder.itemView.setHasTransientState(false);
                         }
                     });
                     upDown.start();
@@ -251,15 +242,10 @@ public class FeedAdapter extends ArrayAdapter<PlaidItem> {
         }
     }
 
-    private View newDribbbleShotView(final int position, final ViewGroup container) {
-        return layoutInflater.inflate(R.layout.dribbble_shot_item, container, false);
-    }
-
-    private void bindDribbbleShotView(final Shot shot, final int position, final View view) {
-        final BadgedFourThreeImageView iv = (BadgedFourThreeImageView) view;
+    private void bindDribbbleShotView(final Shot shot, final DribbbleShotHolder holder) {
+        final BadgedFourThreeImageView iv = (BadgedFourThreeImageView) holder.itemView;
         iv.setBackgroundResource(R.color.background_dark);
-
-        Glide.with(getContext())
+        Glide.with(host)
                 .load(shot.images.best())
                 .listener(new RequestListener<String, GlideDrawable>() {
 
@@ -269,7 +255,7 @@ public class FeedAdapter extends ArrayAdapter<PlaidItem> {
                                                            isFromMemoryCache, boolean
                                                            isFirstResource) {
                         if (!shot.hasFadedIn) {
-                            view.setHasTransientState(true);
+                            iv.setHasTransientState(true);
                             final ObservableColorMatrix cm = new ObservableColorMatrix();
                             ObjectAnimator saturation = ObjectAnimator.ofFloat(cm,
                                     ObservableColorMatrix.SATURATION, 0f, 1f);
@@ -289,12 +275,12 @@ public class FeedAdapter extends ArrayAdapter<PlaidItem> {
                                 }
                             });
                             saturation.setDuration(2000);
-                            saturation.setInterpolator(AnimationUtils.loadInterpolator(getContext
-                                    (), android.R.interpolator.fast_out_slow_in));
+                            saturation.setInterpolator(AnimationUtils.loadInterpolator(host,
+                                    android.R.interpolator.fast_out_slow_in));
                             saturation.addListener(new AnimatorListenerAdapter() {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
-                                    view.setHasTransientState(false);
+                                    iv.setHasTransientState(false);
                                 }
                             });
                             iv.setAlpha(0.2f);
@@ -307,8 +293,8 @@ public class FeedAdapter extends ArrayAdapter<PlaidItem> {
                                             iv.setBackground(null);
                                         }
                                     })
-                                    .setInterpolator(AnimationUtils.loadInterpolator(getContext()
-                                            , android.R.interpolator.fast_out_slow_in));
+                                    .setInterpolator(AnimationUtils.loadInterpolator(host,
+                                            android.R.interpolator.fast_out_slow_in));
                             saturation.start();
                             shot.hasFadedIn = true;
                         }
@@ -329,99 +315,42 @@ public class FeedAdapter extends ArrayAdapter<PlaidItem> {
             public void onClick(View view) {
                 iv.setTransitionName(iv.getResources().getString(R.string.transition_shot));
                 iv.setBackgroundColor(
-                        ContextCompat.getColor(getContext(), R.color.background_light));
+                        ContextCompat.getColor(host, R.color.background_light));
                 Intent intent = new Intent();
-                intent.setClass(getContext(), DribbbleShot.class);
+                intent.setClass(host, DribbbleShot.class);
                 intent.putExtra(DribbbleShot.EXTRA_SHOT, shot);
                 ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation((Activity) getContext(),
-                                Pair.create(view, getContext().getString(R.string.transition_shot)),
-                                Pair.create(view, getContext().getString(R.string
+                        ActivityOptions.makeSceneTransitionAnimation(host,
+                                Pair.create(view, host.getString(R.string.transition_shot)),
+                                Pair.create(view, host.getString(R.string
                                         .transition_shot_background)));
-                getContext().startActivity(intent, options.toBundle());
+                host.startActivity(intent, options.toBundle());
             }
         });
     }
 
-    private View newHackerNewsPostView(final int position, final ViewGroup container) {
-        View v = layoutInflater.inflate(R.layout.hacker_news_post_item, container, false);
-        v.setTag(R.id.post_title, v.findViewById(R.id.post_title));
-        v.setTag(R.id.post_comments, v.findViewById(R.id.post_comments));
-        return v;
-    }
-
-    private void bindHackerNewsPostView(final Post post, final int position, final View view) {
-        ((TextView) view.getTag(R.id.post_title)).setText(post.title);
-        view.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        getContext().startActivity(new Intent(Intent.ACTION_VIEW,
-                                                Uri.parse(post.url)));
-                                    }
-                                }
-                               );
-        final TextView comments = (TextView) view.getTag(R.id.post_comments);
-        comments.setText(String.valueOf(post.commentCount));
-        comments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse
-                        (HackerNewsService.STORY_URL + post.id)));
-            }
-        });
-    }
-
-    private View newProductHuntPostView(final int position, final ViewGroup container) {
-        View v = layoutInflater.inflate(R.layout.product_hunt_item, container, false);
-        v.setTag(R.id.hunt_title, v.findViewById(R.id.hunt_title));
-        // v.setTag(R.id.hunt_screenshot, v.findViewById(R.id.hunt_screenshot));
-        v.setTag(R.id.tagline, v.findViewById(R.id.tagline));
-        v.setTag(R.id.story_comments, v.findViewById(R.id.story_comments));
-        return v;
-    }
-
-    private void bindProductHuntPostView(final com.example.android.plaid.data.api.producthunt
-            .model.Post item, int position, final View view) {
-        ((TextView) view.getTag(R.id.hunt_title)).setText(item.name);
-        /*view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                view.getViewTreeObserver().removeOnPreDrawListener(this);
-                Glide.with(getContext()).load(item.getScreenshotUrl(view.getWidth())).into(
-                (ImageView) view.getTag(R.id.hunt_screenshot));
-                return true;
-            }
-        });*/
-        ((TextView) view.getTag(R.id.tagline)).setText(item.tagline);
-        TextView comments = (TextView) view.getTag(R.id.story_comments);
-        comments.setText(String.valueOf(item.comments_count));
-        comments.setOnClickListener(new View.OnClickListener() {
+    private void bindProductHuntPostView(final Post item, ProductHuntStoryHolder holder) {
+        holder.title.setText(item.name);
+        holder.tagline.setText(item.tagline);
+        holder.comments.setText(String.valueOf(item.comments_count));
+        holder.comments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomTabActivityManager.getInstance().launchUrl((Activity) getContext(), null,
+                CustomTabActivityManager.getInstance().launchUrl(host, null,
                         item.discussion_url,
-                        new CustomTabUiBuilder().setToolbarColorRes(getContext(), R.color
-                                .product_hunt));
-                //getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item
-                // .discussion_url)));
+                        new CustomTabUiBuilder().setToolbarColor(
+                                ContextCompat.getColor(host, R.color.product_hunt)));
             }
         });
-        view.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomTabActivityManager.getInstance().launchUrl((Activity) getContext(), null,
+                CustomTabActivityManager.getInstance().launchUrl(host, null,
                         item.redirect_url,
-                        new CustomTabUiBuilder().setToolbarColorRes(getContext(), R.color
-                                .product_hunt));
-                //getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item
-                // .redirect_url)));
+                        new CustomTabUiBuilder().setToolbarColor(
+                                ContextCompat.getColor(host, R.color.product_hunt)));
             }
         });
-    }
-
-    @Override
-    public int getViewTypeCount() {
-        return 4;
     }
 
     @Override
@@ -432,18 +361,29 @@ public class FeedAdapter extends ArrayAdapter<PlaidItem> {
         } else if (item instanceof Shot) {
             return TYPE_DRIBBBLE_SHOT;
         } else if (item instanceof Post) {
-            return TYPE_HACKER_NEWS_POST;
-        } else if (item instanceof com.example.android.plaid.data.api.producthunt.model.Post) {
-            return TYPE_PRODUCT_HINT_POST;
+            return TYPE_PRODUCT_HUNT_POST;
         }
         return -1;
+    }
+
+    private PlaidItem getItem(int position) {
+        return items.get(position);
+    }
+
+    private void add(PlaidItem item) {
+        items.add(item);
+    }
+
+    public void clear() {
+        items.clear();
+        notifyDataSetChanged();
     }
 
     public void addAndResort(Collection<? extends PlaidItem> items) {
         // de-dupe results as the same item can be returned by multiple feeds
         boolean add = true;
         for (PlaidItem newItem : items) {
-            int count = getCount();
+            int count = getItemCount();
             for (int i = 0; i < count; i++) {
                 PlaidItem existingItem = getItem(i);
                 if (existingItem.equals(newItem)) {
@@ -461,13 +401,14 @@ public class FeedAdapter extends ArrayAdapter<PlaidItem> {
     }
 
     protected void sort() {
-        int count = getCount();
+        int count = getItemCount();
         int maxDesignNewsVotes = 0;
         int maxDesignNewsComments = 0;
         long maxDribbleLikes = 0;
         int maxProductHuntVotes = 0;
         int maxProductHuntComments = 0;
 
+        // TODO comment this logic better
         for (int i = 0; i < count; i++) {
             PlaidItem item = getItem(i);
             if (item instanceof Story) {
@@ -476,11 +417,10 @@ public class FeedAdapter extends ArrayAdapter<PlaidItem> {
                 maxDesignNewsVotes = Math.max(((Story) item).vote_count, maxDesignNewsVotes);
             } else if (item instanceof Shot) {
                 maxDribbleLikes = Math.max(((Shot) item).likes_count, maxDribbleLikes);
-            } else if (item instanceof com.example.android.plaid.data.api.producthunt.model.Post) {
-                maxProductHuntComments = Math.max(((com.example.android.plaid.data.api
-                        .producthunt.model.Post) item).comments_count, maxProductHuntComments);
-                maxProductHuntVotes = Math.max(((com.example.android.plaid.data.api.producthunt
-                        .model.Post) item).votes_count, maxProductHuntVotes);
+            } else if (item instanceof Post) {
+                maxProductHuntComments = Math.max(((Post) item).comments_count,
+                        maxProductHuntComments);
+                maxProductHuntVotes = Math.max(((Post) item).votes_count, maxProductHuntVotes);
             }
         }
 
@@ -491,27 +431,57 @@ public class FeedAdapter extends ArrayAdapter<PlaidItem> {
                         ((float) ((Story) item).vote_count / maxDesignNewsVotes)) / 2;
             } else if (item instanceof Shot) {
                 ((Shot) item).setWeightRelativeToMax(maxDribbleLikes);
-            } else if (item instanceof com.example.android.plaid.data.api.producthunt.model.Post) {
-                item.weight = ((((float) ((com.example.android.plaid.data.api.producthunt.model
-                        .Post) item).comments_count) / maxProductHuntComments) + ((float) ((com
-                        .example.android.plaid.data.api.producthunt.model.Post) item).votes_count
-                        / maxProductHuntVotes)) / 2;
+            } else if (item instanceof Post) {
+                item.weight = ((((float) ((Post) item).comments_count) / maxProductHuntComments)
+                        + ((float) ((Post) item).votes_count / maxProductHuntVotes)) / 2;
             }
         }
 
-        // hacker news item's weighting already set (based on their ranking)
-
-        sort(comparator);
-        notifyDataSetChanged();
-    }
-
-    @Override
-    public boolean hasStableIds() {
-        return true;
+        Collections.sort(items, comparator);
+        notifyDataSetChanged(); // TODO call the more specific RV variants
     }
 
     @Override
     public long getItemId(int position) {
         return getItem(position).id;
     }
+
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
+
+    /* protected */ class DribbbleShotHolder extends RecyclerView.ViewHolder {
+
+        public DribbbleShotHolder(View itemView) {
+            super(itemView);
+        }
+
+    }
+
+    /* protected */ class DesignerNewsStoryHolder extends RecyclerView.ViewHolder {
+
+        @Bind(R.id.story_title) TextView title;
+        @Bind(R.id.story_comments) TextView comments;
+        @Bind(R.id.pocket) ImageButton pocket;
+
+        public DesignerNewsStoryHolder(View itemView, boolean pocketIsInstalled) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            pocket.setVisibility(pocketIsInstalled ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    /* protected */ class ProductHuntStoryHolder extends RecyclerView.ViewHolder {
+
+        @Bind(R.id.hunt_title) TextView title;
+        @Bind(R.id.tagline) TextView tagline;
+        @Bind(R.id.story_comments) TextView comments;
+
+        public ProductHuntStoryHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
 }

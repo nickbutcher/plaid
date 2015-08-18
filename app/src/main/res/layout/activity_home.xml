@@ -35,14 +35,13 @@
             android:layout_height="0dp"
             android:background="@color/status_bar_back" />
 
-        <com.example.android.plaid.ui.widget.ImmersiveGridView
+        <com.example.android.plaid.ui.widget.ImmersiveRecyclerView
             android:id="@+id/stories_grid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:numColumns="@integer/num_columns"
+            android:scrollbars="vertical"
             android:scrollbarStyle="outsideOverlay"
             android:clipToPadding="false"
-            android:layoutAnimation="@anim/layout_grid_enter"
             android:elevation="1dp" />
 
         <Toolbar

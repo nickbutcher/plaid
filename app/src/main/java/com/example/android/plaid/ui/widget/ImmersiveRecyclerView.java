@@ -17,35 +17,30 @@
 package com.example.android.plaid.ui.widget;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.widget.GridView;
 
 /**
- * An extension to GridView intended to render behind system chrome (status bar and nav bar).  This
- * adds the concepts of content and chrome (bottom) padding which lets us update them independently.
- * Separating these concepts allows us to alter the content padding (e.g. to make room for a FAB)
- * without having to re-query the chrome padding.
+ * An extension to RecyclerView intended to render behind system chrome (status bar and nav bar).
+ * This adds the concepts of content and chrome (bottom) padding which lets us update them
+ * independently. Separating these concepts allows us to alter the content padding (e.g. to make
+ * room for a FAB) without having to re-query the chrome padding.
  */
-public class ImmersiveGridView extends GridView {
+public class ImmersiveRecyclerView extends RecyclerView {
 
     private int chromePaddingBottom;
     private int contentPaddingBottom;
 
-    public ImmersiveGridView(Context context) {
+    public ImmersiveRecyclerView(Context context) {
         super(context);
     }
 
-    public ImmersiveGridView(Context context, AttributeSet attrs) {
+    public ImmersiveRecyclerView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ImmersiveGridView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ImmersiveRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-
-    public ImmersiveGridView(Context context, AttributeSet attrs, int defStyleAttr, int
-            defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     public int getContentPaddingBottom() {

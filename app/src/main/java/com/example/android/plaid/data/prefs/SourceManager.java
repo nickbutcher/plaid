@@ -45,7 +45,6 @@ public class SourceManager {
     public static final String SOURCE_DRIBBBLE_MD_SEARCH = DRIBBBLE_QUERY_PREFIX + "Material " +
             "Design";
     public static final String SOURCE_PRODUCT_HUNT = "SOURCE_PRODUCT_HUNT";
-    public static final String SOURCE_HACKER_NEWS = "SOURCE_HACKER_NEWS";
     private static final String SOURCES_PREF = "SOURCES_PREF";
     private static final String KEY_SOURCES = "KEY_SOURCES";
     private static Source[] DEFAULT_SOURCES = {
@@ -59,8 +58,7 @@ public class SourceManager {
             new Source.DribbbleSource(SOURCE_DRIBBBLE_DEBUTS, 203, "Dribbble Debuts", false),
             new Source.DribbbleSource(SOURCE_DRIBBBLE_ANIMATED, 204, "Dribbble Animated", false),
             new Source.DribbbleSearchSource(SOURCE_DRIBBBLE_MD_SEARCH, "Material Design", true),
-            new Source.HackerNewsSource(SOURCE_HACKER_NEWS, 400, "Hacker News", false),
-            new Source(SOURCE_PRODUCT_HUNT, 500, "Product Hunt", R.drawable.ic_product_hunt, false)
+            new Source(SOURCE_PRODUCT_HUNT, 400, "Product Hunt", R.drawable.ic_product_hunt, false)
     };
 
     public static List<Source> getSources(Context context) {

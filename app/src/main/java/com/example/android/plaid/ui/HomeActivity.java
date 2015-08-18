@@ -36,6 +36,7 @@ import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -51,7 +52,6 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.WindowInsets;
 import android.view.animation.AnimationUtils;
-import android.widget.AbsListView;
 import android.widget.ActionMenuView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,6 +59,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -72,9 +73,6 @@ import com.example.android.plaid.data.api.designernews.model.StoriesResponse;
 import com.example.android.plaid.data.api.dribbble.DribbbleSearch;
 import com.example.android.plaid.data.api.dribbble.DribbbleService;
 import com.example.android.plaid.data.api.dribbble.model.Shot;
-import com.example.android.plaid.data.api.hackernews.HackerNewsService;
-import com.example.android.plaid.data.api.hackernews.model.Post;
-import com.example.android.plaid.data.api.hackernews.model.Posts;
 import com.example.android.plaid.data.api.producthunt.ProductHuntService;
 import com.example.android.plaid.data.api.producthunt.model.PostsResponse;
 import com.example.android.plaid.data.pocket.PocketUtils;
@@ -90,7 +88,7 @@ import com.example.android.plaid.ui.util.ImeUtils;
 import com.example.android.plaid.ui.util.ViewUtils;
 import com.example.android.plaid.ui.widget.DismissibleViewCallback;
 import com.example.android.plaid.ui.widget.ElasticDragDismissFrameLayout;
-import com.example.android.plaid.ui.widget.ImmersiveGridView;
+import com.example.android.plaid.ui.widget.ImmersiveRecyclerView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -98,6 +96,7 @@ import java.util.Collection;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindInt;
 import butterknife.ButterKnife;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -113,7 +112,8 @@ public class HomeActivity extends Activity {
     private static final int ANIMATION_DURATION_SHORT = 300; // ms
     private static final int ANIMATION_DURATION_MED = 450; // ms
     private static final int ANIMATION_DURATION_SLOOOOW = 1500; // ms
-    @Bind(R.id.stories_grid) ImmersiveGridView grid;
+    @Bind(R.id.stories_grid) ImmersiveRecyclerView grid;
+    @Bind(android.R.id.empty) ProgressBar loading;
     //@Bind(R.id.new_story_post) View newPost;
     @Bind(R.id.fab) ImageButton fab;
     @Bind(R.id.scrim) View scrim;
@@ -127,6 +127,7 @@ public class HomeActivity extends Activity {
     @Bind(R.id.new_story_container) View newPostContainer;
     @Bind(R.id.new_story_title) EditText newStoryTitle;
     @Bind(R.id.new_story_url) EditText newStoryUrl;
+    @BindInt(R.integer.num_columns) int columns;
     MenuItem searchMenuItem;
     private FeedAdapter adapter;
     private FilterAdapter filtersAdapter;
@@ -170,21 +171,15 @@ public class HomeActivity extends Activity {
         }
     };
 
-    private AbsListView.OnScrollListener gridScroll = new AbsListView.OnScrollListener() {
+    private int gridScrollY = 0;
+    private RecyclerView.OnScrollListener gridScroll = new RecyclerView.OnScrollListener() {
         @Override
-        public void onScrollStateChanged(AbsListView view, int scrollState) {
-        }
-
-        @Override
-        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int
-                totalItemCount) {
-            if (grid.getChildAt(0) != null) {
-                int scrolled = toolbar.getBottom() - grid.getChildAt(0).getTop();
-                if (scrolled > 0 && toolbar.getTranslationZ() != -1f) {
-                    toolbar.setTranslationZ(-1f);
-                } else if (scrolled == 0 && toolbar.getTranslationZ() != 0) {
-                    toolbar.setTranslationZ(0f);
-                }
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            gridScrollY += dy;
+            if (gridScrollY > 0 && toolbar.getTranslationZ() != -1f) {
+                toolbar.setTranslationZ(-1f);
+            } else if (gridScrollY == 0 && toolbar.getTranslationZ() != 0) {
+                toolbar.setTranslationZ(0f);
             }
         }
     };
@@ -334,10 +329,16 @@ public class HomeActivity extends Activity {
         }
 
         fab.setOnClickListener(fabClick);
-        grid.setEmptyView(findViewById(android.R.id.empty));
+        grid.setLayoutManager(new GridLayoutManager(this, columns));
         adapter = new FeedAdapter(this, PocketUtils.isPocketInstalled(this));
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                loading.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+            }
+        });
         grid.setAdapter(adapter);
-        grid.setOnScrollListener(gridScroll);
+        grid.addOnScrollListener(gridScroll);
         drawer.setDrawerListener(
                 new SystemBarDrawerTinter(
                         ContextCompat.getColor(this, R.color.immersive_bars),
@@ -638,8 +639,6 @@ public class HomeActivity extends Activity {
                 loadDribbbleDebuts();
             } else if (SourceManager.SOURCE_DRIBBBLE_ANIMATED.equals(source.key)) {
                 loadDribbbleAnimated();
-            } else if (SourceManager.SOURCE_HACKER_NEWS.equals(source.key)) {
-                loadHackerNews();
             } else if (SourceManager.SOURCE_PRODUCT_HUNT.equals(source.key)) {
                 loadProductHunt();
             } else if (source instanceof Source.DribbbleSearchSource) {
@@ -763,36 +762,6 @@ public class HomeActivity extends Activity {
         }.execute();
     }
 
-    private void loadHackerNews() {
-        new AsyncTask<Void, Void, Posts>() {
-            @Override
-            protected Posts doInBackground(Void... params) {
-                RestAdapter restAdapter = new RestAdapter.Builder()
-                        .setEndpoint(HackerNewsService.ENDPOINT)
-                        .build();
-                HackerNewsService service = restAdapter.create(HackerNewsService.class);
-                Posts topNews = null;
-                try {
-                    topNews = service.getTopNews();
-                } catch (RetrofitError error) {
-                    // TODO
-                }
-                return topNews;
-            }
-
-            @Override
-            protected void onPostExecute(Posts posts) {
-                if (posts != null) {
-                    List<Post> topTen = posts.items.subList(0, 10);
-                    for (int i = 0; i < 10; i++) {
-                        topTen.get(i).weight = (float) (0.6 - (i * 0.05));
-                    }
-                    addItems(topTen);
-                }
-            }
-        }.execute();
-    }
-
     private void loadProductHunt() {
         productHuntApi.getPosts(new Callback<PostsResponse>() {
             @Override
@@ -814,8 +783,8 @@ public class HomeActivity extends Activity {
 
         // ensure that the fab is not obscuring any items when scrolled to the bottom
         // i.e. if there's an item in the bottom right cell then add more padding
-        int desiredPadding = (adapter.getCount() % getResources().getInteger(R.integer
-                .num_columns) == 0) ?
+        int desiredPadding = (adapter.getItemCount() %
+                getResources().getInteger(R.integer.num_columns) == 0) ?
                 getResources().getDimensionPixelSize(R.dimen.padding_room_for_fab) : 0;
         if (grid.getContentPaddingBottom() != desiredPadding) {
             grid.setContentPaddingBottom(desiredPadding);

@@ -81,16 +81,6 @@ public class Source {
         }
     }
 
-    public static class HackerNewsSource extends Source {
-
-        public HackerNewsSource(String key,
-                                int sortOrder,
-                                String name,
-                                boolean active) {
-            super(key, sortOrder, name, R.drawable.ic_hacker_news, active);
-        }
-    }
-
     public static class SourceComparator implements Comparator<Source> {
 
         @Override
