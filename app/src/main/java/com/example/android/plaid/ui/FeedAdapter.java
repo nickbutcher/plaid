@@ -53,6 +53,7 @@ import com.example.android.plaid.data.api.designernews.model.Story;
 import com.example.android.plaid.data.api.dribbble.model.Shot;
 import com.example.android.plaid.data.api.producthunt.model.Post;
 import com.example.android.plaid.data.pocket.PocketUtils;
+import com.example.android.plaid.ui.util.AnimUtils;
 import com.example.android.plaid.ui.util.ObservableColorMatrix;
 import com.example.android.plaid.ui.util.glide.DribbbleTarget;
 import com.example.android.plaid.ui.widget.BadgedFourThreeImageView;
@@ -260,7 +261,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private void bindDribbbleShotView(final Shot shot, final DribbbleShotHolder holder) {
         final BadgedFourThreeImageView iv = (BadgedFourThreeImageView) holder.itemView;
-        iv.setBackgroundResource(R.color.background_dark);
         Glide.with(host)
                 .load(shot.images.best())
                 .listener(new RequestListener<String, GlideDrawable>() {
@@ -297,18 +297,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                     iv.setHasTransientState(false);
                                 }
                             });
-                            iv.setAlpha(0.2f);
-                            iv.animate()
-                                    .alpha(1f)
-                                    .setDuration(500)
-                                    .setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            iv.setBackground(null);
-                                        }
-                                    })
-                                    .setInterpolator(AnimationUtils.loadInterpolator(host,
-                                            android.R.interpolator.fast_out_slow_in));
                             saturation.start();
                             shot.hasFadedIn = true;
                         }
@@ -321,6 +309,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         return false;
                     }
                 })
+                // needed to prevent seeing through view as it fades in
+                .placeholder(R.color.background_dark)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(new DribbbleTarget(iv, false));
 
