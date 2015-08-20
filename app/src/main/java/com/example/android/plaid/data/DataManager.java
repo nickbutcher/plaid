@@ -304,14 +304,8 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
     }
 
     private void loadProductHunt(final int page) {
-
-        if (page > 1) {
-            // TODO need to implement pagination for ProductHunt
-            loadingCount.decrementAndGet();
-            return;
-        }
-
-        productHuntApi.getPosts(new Callback<PostsResponse>() {
+        // this API's paging is 0 based but this class (& sorting) is 1 based so adjust locally
+        productHuntApi.getPosts(page - 1, new Callback<PostsResponse>() {
             @Override
             public void success(PostsResponse postsResponse, Response response) {
                 if (postsResponse != null && sourceIsEnabled(SourceManager.SOURCE_PRODUCT_HUNT)) {

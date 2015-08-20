@@ -20,11 +20,13 @@ import com.example.android.plaid.data.api.producthunt.model.PostsResponse;
 
 import retrofit.Callback;
 import retrofit.http.GET;
+import retrofit.http.Query;
 
 public interface ProductHuntService {
 
     String ENDPOINT = "https://api.producthunt.com/v1/";
 
     @GET("/posts")
-    void getPosts(Callback<PostsResponse> callback);
+    void getPosts(@Query("days_ago") Integer page,
+                  Callback<PostsResponse> callback);
 }
