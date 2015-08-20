@@ -160,12 +160,9 @@ public class Shot extends PlaidItem implements Parcelable {
         return parsedDescription;
     }
 
-    public void setWeightRelativeToMax(long maxLikes) {
-        weight = (float) likes_count / maxLikes * 0.8f;
-        if (weightBoost > 0f) {
-            weight += weightBoost;
-            weight = Math.min(weight, 1f);
-        }
+    public void weigh(long maxLikes) {
+        weight = 1f - (float) likes_count / maxLikes * 0.8f;
+        weight = Math.min(weight + weightBoost, 1f);
     }
 
     @Override

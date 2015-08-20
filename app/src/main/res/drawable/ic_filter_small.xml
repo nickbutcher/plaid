@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
   Copyright 2015 Google Inc.
 
@@ -15,13 +16,16 @@
   limitations under the License.
   -->
 
-<ProgressBar
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/loading"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/spacing_huge"
-    android:layout_gravity="center"
-    android:indeterminate="true"
-    android:indeterminateTint="@color/grey_300"
-    android:indeterminateTintMode="src_in" />
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="18sp"
+        android:height="18sp"
+        android:viewportWidth="48"
+        android:viewportHeight="48">
+
+    <!-- sized in sp as this is designed to be shown in an image span within text, so it is
+         sized to match-->
+
+    <path
+        android:pathData="@string/path_filter"
+        android:fillColor="@color/text_primary_light"/>
+</vector>

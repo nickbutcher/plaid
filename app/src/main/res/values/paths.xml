@@ -18,4 +18,5 @@
 <resources>
     <string name="path_comment">M44,8c0-2.2-1.8-4-4-4H8C5.8,4,4,5.8,4,8v24c0,2.2,1.8,4,4,4h28l8,8L44,8z M36,28H12v-4h24V28z M36,22H12v-4h24V22z M36,16H12v-4h24V16z</string>
     <string name="path_add">M38,26H26v12h-4V26H10v-4h12V10h4v12h12V26z</string>
+    <string name="path_filter">M20,36h8v-4h-8V36z M6,12v4h36v-4H6z M12,26h24v-4H12V26z</string>
 </resources>

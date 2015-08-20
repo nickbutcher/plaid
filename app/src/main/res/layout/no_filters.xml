@@ -15,13 +15,11 @@
   limitations under the License.
   -->
 
-<ProgressBar
+<com.example.android.plaid.ui.widget.BaselineGridTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/loading"
+    android:id="@+id/no_filters"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/spacing_huge"
-    android:layout_gravity="center"
-    android:indeterminate="true"
-    android:indeterminateTint="@color/grey_300"
-    android:indeterminateTintMode="src_in" />
+    android:padding="@dimen/spacing_huge"
+    android:textAlignment="center"
+    style="@style/Widget.Plaid.EmptyText" />

@@ -28,7 +28,7 @@ import com.example.android.plaid.R;
 import com.example.android.plaid.ui.util.FontUtil;
 
 /**
- * Created by nickbutcher on 12/17/14.
+ * Extension to TextView that adds support for custom fonts.
  */
 public class FontTextView extends TextView {
 
@@ -62,14 +62,6 @@ public class FontTextView extends TextView {
                     android.R.style.TextAppearance);
             TypedArray atp = getContext().obtainStyledAttributes(textAppearanceId,
                     R.styleable.FontTextAppearance);
-            if (atp.hasValue(R.styleable.FontTextAppearance_android_textColor)) {
-                setTextColor(atp.getColor(
-                        R.styleable.FontTextAppearance_android_textColor, Color.WHITE));
-            }
-            if (atp.hasValue(R.styleable.FontTextAppearance_android_textSize)) {
-                setTextSize(TypedValue.COMPLEX_UNIT_PX, atp.getDimensionPixelSize(
-                        R.styleable.FontTextAppearance_android_textSize, 0));
-            }
             if (atp.hasValue(R.styleable.FontTextAppearance_font)) {
                 setFont(atp.getString(R.styleable.FontTextAppearance_font));
             }

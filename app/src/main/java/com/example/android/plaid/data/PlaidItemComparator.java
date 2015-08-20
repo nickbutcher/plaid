@@ -19,12 +19,12 @@ package com.example.android.plaid.data;
 import java.util.Comparator;
 
 /**
- * Created by nickbutcher on 7/21/14.
+ * A comparator that compares {@link PlaidItem}s based on their {@code weight} attribute.
  */
 public class PlaidItemComparator implements Comparator<PlaidItem> {
 
     @Override
     public int compare(PlaidItem lhs, PlaidItem rhs) {
-        return (rhs.weight - lhs.weight) > 0 ? 1 : -1;
+        return Float.compare(lhs.weight, rhs.weight);
     }
 }

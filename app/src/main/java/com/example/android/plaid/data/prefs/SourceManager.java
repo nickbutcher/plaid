@@ -18,6 +18,7 @@ package com.example.android.plaid.data.prefs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 
 import com.example.android.plaid.R;
 import com.example.android.plaid.data.Source;
@@ -30,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by nickbutcher on 1/17/15.
+ * Manage saving and retrieving data sources from disk.
  */
 public class SourceManager {
 
@@ -42,31 +43,18 @@ public class SourceManager {
     public static final String SOURCE_DRIBBBLE_RECENT = "SOURCE_DRIBBBLE_RECENT";
     public static final String SOURCE_DRIBBBLE_DEBUTS = "SOURCE_DRIBBBLE_DEBUTS";
     public static final String SOURCE_DRIBBBLE_ANIMATED = "SOURCE_DRIBBBLE_ANIMATED";
-    public static final String SOURCE_DRIBBBLE_MD_SEARCH = DRIBBBLE_QUERY_PREFIX + "Material " +
-            "Design";
+    public static final String SOURCE_DRIBBBLE_MD_SEARCH =
+            DRIBBBLE_QUERY_PREFIX + "Material Design";
     public static final String SOURCE_PRODUCT_HUNT = "SOURCE_PRODUCT_HUNT";
     private static final String SOURCES_PREF = "SOURCES_PREF";
     private static final String KEY_SOURCES = "KEY_SOURCES";
-    private static Source[] DEFAULT_SOURCES = {
-            new Source.DesignerNewsSource(SOURCE_DESIGNER_NEWS_POPULAR, 100, "Popular Designer " +
-                    "News", true),
-            new Source.DesignerNewsSource(SOURCE_DESIGNER_NEWS_RECENT, 101, "Recent Designer " +
-                    "News", false),
-            new Source.DribbbleSource(SOURCE_DRIBBBLE_FOLLOWING, 200, "Dribbble following", false),
-            new Source.DribbbleSource(SOURCE_DRIBBBLE_POPULAR, 201, "Popular Dribbbles", true),
-            new Source.DribbbleSource(SOURCE_DRIBBBLE_RECENT, 202, "Recent Dribbbles", false),
-            new Source.DribbbleSource(SOURCE_DRIBBBLE_DEBUTS, 203, "Dribbble Debuts", false),
-            new Source.DribbbleSource(SOURCE_DRIBBBLE_ANIMATED, 204, "Dribbble Animated", false),
-            new Source.DribbbleSearchSource(SOURCE_DRIBBBLE_MD_SEARCH, "Material Design", true),
-            new Source(SOURCE_PRODUCT_HUNT, 400, "Product Hunt", R.drawable.ic_product_hunt, false)
-    };
 
     public static List<Source> getSources(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(SOURCES_PREF, Context.MODE_PRIVATE);
         Set<String> sourceKeys = prefs.getStringSet(KEY_SOURCES, null);
         if (sourceKeys == null) {
-            setupDefaultSources(prefs.edit());
-            return Arrays.asList(DEFAULT_SOURCES);
+            setupDefaultSources(context, prefs.edit());
+            return Arrays.asList(getDefaultSources(context));
         }
 
         List<Source> sources = new ArrayList<>(sourceKeys.size());
@@ -78,7 +66,7 @@ public class SourceManager {
                         prefs.getBoolean(sourceKey, false)));
             } else {
                 // TODO improve this O(n2) search
-                sources.add(getSource(sourceKey, prefs.getBoolean(sourceKey, false)));
+                sources.add(getSource(context, sourceKey, prefs.getBoolean(sourceKey, false)));
             }
         }
         Collections.sort(sources, new Source.SourceComparator());
@@ -86,15 +74,16 @@ public class SourceManager {
     }
 
     public static void updateSource(Source source, Context context) {
-        SharedPreferences.Editor editor = context.getSharedPreferences(SOURCES_PREF, Context
-                .MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor =
+                context.getSharedPreferences(SOURCES_PREF, Context.MODE_PRIVATE).edit();
         editor.putBoolean(source.key, source.active);
         editor.apply();
     }
 
-    private static void setupDefaultSources(SharedPreferences.Editor editor) {
-        Set<String> keys = new HashSet<>(DEFAULT_SOURCES.length);
-        for (Source source : DEFAULT_SOURCES) {
+    private static void setupDefaultSources(Context context, SharedPreferences.Editor editor) {
+        Source[] defaultSources = getDefaultSources(context);
+        Set<String> keys = new HashSet<>(defaultSources.length);
+        for (Source source : defaultSources) {
             keys.add(source.key);
             editor.putBoolean(source.key, source.active);
         }
@@ -102,14 +91,38 @@ public class SourceManager {
         editor.commit();
     }
 
-    private static Source getSource(String key, boolean active) {
-        for (Source source : DEFAULT_SOURCES) {
+    private static @Nullable Source getSource(Context context, String key, boolean active) {
+        for (Source source : getDefaultSources(context)) {
             if (source.key.equals(key)) {
                 source.active = active;
                 return source;
             }
         }
         return null;
+    }
+
+    private static Source[] getDefaultSources(Context context) {
+        return new Source[]{
+                new Source.DesignerNewsSource(SOURCE_DESIGNER_NEWS_POPULAR, 100,
+                        context.getString(R.string.source_designer_news_popular), true),
+                new Source.DesignerNewsSource(SOURCE_DESIGNER_NEWS_RECENT, 101,
+                        context.getString(R.string.source_designer_news_recent), false),
+                new Source.DribbbleSource(SOURCE_DRIBBBLE_FOLLOWING, 200,
+                        context.getString(R.string.source_dribbble_following), false),
+                new Source.DribbbleSource(SOURCE_DRIBBBLE_POPULAR, 201,
+                        context.getString(R.string.source_dribbble_popular), true),
+                new Source.DribbbleSource(SOURCE_DRIBBBLE_RECENT, 202,
+                        context.getString(R.string.source_dribbble_recent), false),
+                new Source.DribbbleSource(SOURCE_DRIBBBLE_DEBUTS, 203,
+                        context.getString(R.string.source_dribbble_debuts), false),
+                new Source.DribbbleSource(SOURCE_DRIBBBLE_ANIMATED, 204,
+                        context.getString(R.string.source_dribbble_animated), false),
+                new Source.DribbbleSearchSource(SOURCE_DRIBBBLE_MD_SEARCH,
+                        context.getString(R.string.source_dribbble_search_material_design), true),
+                new Source(SOURCE_PRODUCT_HUNT, 400,
+                        context.getString(R.string.source_product_hunt),
+                        R.drawable.ic_product_hunt, false)
+        };
     }
 
 }

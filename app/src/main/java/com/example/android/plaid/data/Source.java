@@ -28,9 +28,7 @@ import java.util.Comparator;
 public class Source {
 
     public final String key;
-    public final
-    @DrawableRes
-    int sortOrder;
+    public final @DrawableRes int sortOrder;
     public final String name;
     public final int res;
     public boolean active;

@@ -27,10 +27,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Path;
+import android.graphics.Typeface;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
@@ -40,8 +40,13 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.ImageSpan;
+import android.text.style.StyleSpan;
 import android.transition.ArcMotion;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -65,22 +70,15 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.android.plaid.R;
+import com.example.android.plaid.data.DataManager;
 import com.example.android.plaid.data.PlaidItem;
 import com.example.android.plaid.data.Source;
-import com.example.android.plaid.data.api.AuthInterceptor;
-import com.example.android.plaid.data.api.designernews.DesignerNewsService;
-import com.example.android.plaid.data.api.designernews.model.StoriesResponse;
-import com.example.android.plaid.data.api.dribbble.DribbbleSearch;
-import com.example.android.plaid.data.api.dribbble.DribbbleService;
-import com.example.android.plaid.data.api.dribbble.model.Shot;
-import com.example.android.plaid.data.api.producthunt.ProductHuntService;
-import com.example.android.plaid.data.api.producthunt.model.PostsResponse;
 import com.example.android.plaid.data.pocket.PocketUtils;
 import com.example.android.plaid.data.prefs.DesignerNewsPrefs;
 import com.example.android.plaid.data.prefs.DribbblePrefs;
-import com.example.android.plaid.data.prefs.ProductHuntPrefs;
 import com.example.android.plaid.data.prefs.SourceManager;
 import com.example.android.plaid.ui.recyclerview.FilterTouchHelperCallback;
+import com.example.android.plaid.ui.recyclerview.InfiniteScrollListener;
 import com.example.android.plaid.ui.util.AnimUtils;
 import com.example.android.plaid.ui.util.ColorUtils;
 import com.example.android.plaid.ui.util.ImageUtils;
@@ -88,21 +86,12 @@ import com.example.android.plaid.ui.util.ImeUtils;
 import com.example.android.plaid.ui.util.ViewUtils;
 import com.example.android.plaid.ui.widget.DismissibleViewCallback;
 import com.example.android.plaid.ui.widget.ElasticDragDismissFrameLayout;
-import com.example.android.plaid.ui.widget.ImmersiveRecyclerView;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import java.util.Collection;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.BindInt;
 import butterknife.ButterKnife;
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import retrofit.converter.GsonConverter;
 
 
 public class HomeActivity extends Activity {
@@ -112,8 +101,8 @@ public class HomeActivity extends Activity {
     private static final int ANIMATION_DURATION_SHORT = 300; // ms
     private static final int ANIMATION_DURATION_MED = 450; // ms
     private static final int ANIMATION_DURATION_SLOOOOW = 1500; // ms
-    @Bind(R.id.stories_grid) ImmersiveRecyclerView grid;
-    @Bind(android.R.id.empty) ProgressBar loading;
+    @Bind(R.id.stories_grid) RecyclerView grid;
+    private GridLayoutManager layoutManager;
     //@Bind(R.id.new_story_post) View newPost;
     @Bind(R.id.fab) ImageButton fab;
     @Bind(R.id.scrim) View scrim;
@@ -127,15 +116,154 @@ public class HomeActivity extends Activity {
     @Bind(R.id.new_story_container) View newPostContainer;
     @Bind(R.id.new_story_title) EditText newStoryTitle;
     @Bind(R.id.new_story_url) EditText newStoryUrl;
+    @Bind(android.R.id.empty) ProgressBar loading;
+    private TextView noFiltersEmptyText;
     @BindInt(R.integer.num_columns) int columns;
     MenuItem searchMenuItem;
+
+    // data
+    private DataManager dataManager;
     private FeedAdapter adapter;
     private FilterAdapter filtersAdapter;
     private DribbblePrefs dribbblePrefs;
-    private DribbbleService dribbbleApi;
     private DesignerNewsPrefs designerNewsPrefs;
-    private DesignerNewsService designerNewsApi;
-    private ProductHuntService productHuntApi;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
+        ButterKnife.bind(this);
+
+        drawer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+
+        //toolbar.inflateMenu(R.menu.main);
+        setActionBar(toolbar);
+        if (savedInstanceState == null) {
+            animateToolbar();
+        }
+
+        fab.setOnClickListener(fabClick);
+
+        filtersAdapter = new FilterAdapter(SourceManager.getSources(this));
+        dataManager = new DataManager(this, filtersAdapter) {
+            @Override
+            public void onDataLoaded(List<? extends PlaidItem> data) {
+                adapter.addAndResort(data);
+                checkEmptyState();
+            }
+        };
+        adapter = new FeedAdapter(this, dataManager, PocketUtils.isPocketInstalled(this));
+        grid.setAdapter(adapter);
+        layoutManager = new GridLayoutManager(this, columns);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return position == adapter.getDataItemCount() ? columns : 1;
+            }
+        });
+        grid.setLayoutManager(layoutManager);
+        grid.addOnScrollListener(gridScroll);
+        grid.addOnScrollListener(new InfiniteScrollListener(layoutManager, dataManager) {
+            @Override
+            public void onLoadMore() {
+                dataManager.loadAllDataSources();
+            }
+        });
+        grid.setHasFixedSize(true);
+        drawer.setDrawerListener(
+                new SystemBarDrawerTinter(
+                        ContextCompat.getColor(this, R.color.immersive_bars),
+                        ContextCompat.getColor(this, R.color.background_super_dark)));
+        filtersList.setLayoutManager(new LinearLayoutManager(this));
+        filtersToolbar.inflateMenu(R.menu.filters);
+        filtersToolbar.setOnMenuItemClickListener(mFiltersMenuClick);
+
+        newPost.setVisibility(View.INVISIBLE);
+        submitNewPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hideNewPost();
+            }
+        });
+
+//        draggableFrame.setDragDismissView(findViewById(R.id.new_story_container));
+//        draggableFrame.setCallbacks(newPostDismissed);
+        newPost.setCallback(dismissNewPost);
+
+        // drawer layout treats fitsSystemWindows specially so we have to handle insets ourselves
+        // this is super gross and breaks when you show a keyboard.  TODO FIXME
+        drawer.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+                // inset the toolbar down by the status bar height
+                ViewGroup.MarginLayoutParams lpToolbar = (ViewGroup.MarginLayoutParams) toolbar
+                        .getLayoutParams();
+                lpToolbar.topMargin += insets.getSystemWindowInsetTop();
+                lpToolbar.rightMargin += insets.getSystemWindowInsetRight();
+                toolbar.setLayoutParams(lpToolbar);
+
+                // inset the grid top by statusbar+toolbar & the bottom by the navbar (don't clip)
+                grid.setPadding(grid.getPaddingLeft(),
+                        insets.getSystemWindowInsetTop() + ViewUtils.getActionBarSize
+                                (HomeActivity.this),
+                        grid.getPaddingRight() + insets.getSystemWindowInsetRight(), // landscape
+                        grid.getPaddingBottom());
+
+                // inset the fab for the navbar
+                ViewGroup.MarginLayoutParams lpFab = (ViewGroup.MarginLayoutParams) fab
+                        .getLayoutParams();
+                lpFab.bottomMargin += insets.getSystemWindowInsetBottom(); // portrait
+                lpFab.rightMargin += insets.getSystemWindowInsetRight(); // landscape
+                fab.setLayoutParams(lpFab);
+
+                // we place a background behind the status bar to combine with it's semi-transparent
+                // color to get the desired appearance.  Set it's height to the status bar height
+                View statusBarBackground = findViewById(R.id.status_bar_background);
+                FrameLayout.LayoutParams lpStatus = (FrameLayout.LayoutParams)
+                        statusBarBackground.getLayoutParams();
+                lpStatus.height = insets.getSystemWindowInsetTop();
+                statusBarBackground.setLayoutParams(lpStatus);
+
+                // inset the filters pane for the status bar / navbar
+                LinearLayout filtersPane = (LinearLayout) findViewById(R.id.filters_pane);
+                ViewGroup.MarginLayoutParams lpFilters = (ViewGroup.MarginLayoutParams)
+                        filtersPane.getLayoutParams();
+                lpFilters.topMargin += insets.getSystemWindowInsetTop();
+                lpFilters.bottomMargin += insets.getSystemWindowInsetBottom();
+                filtersPane.setLayoutParams(lpFilters);
+                // we also need to set the padding right for landscape
+                if (filtersPane.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR) {
+                    filtersPane.setPadding(filtersPane.getPaddingLeft(),
+                            filtersPane.getPaddingTop(),
+                            filtersPane.getPaddingRight() + insets.getSystemWindowInsetRight(),
+                            filtersPane.getPaddingBottom());
+                }
+
+                // we place a background behind the nav bar when the new post pane is showing. Set
+                // it's height to the nav bar height
+                View newStoryContainer = findViewById(R.id.new_story_container);
+                ViewGroup.MarginLayoutParams lpNewStory = (ViewGroup.MarginLayoutParams)
+                        newStoryContainer.getLayoutParams();
+                lpNewStory.bottomMargin += insets.getSystemWindowInsetBottom();
+                newStoryContainer.setLayoutParams(lpNewStory);
+
+                return insets.consumeSystemWindowInsets();
+            }
+        });
+        setupTaskDescription();
+
+        filtersList.setAdapter(filtersAdapter);
+        filtersAdapter.addFilterChangedListener(filtersChangedListener);
+        filtersAdapter.addFilterChangedListener(dataManager);
+        dataManager.loadAllDataSources();
+        ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(filtersList);
+        checkConnectivity();
+        checkEmptyState();
+    }
 
     private Toolbar.OnMenuItemClickListener mFiltersMenuClick = new Toolbar
             .OnMenuItemClickListener() {
@@ -153,21 +281,15 @@ public class HomeActivity extends Activity {
         }
     };
 
-    private FilterAdapter.FiltersChangedListener filtersChangedListener = new FilterAdapter
-            .FiltersChangedListener() {
+    // listener for notifying adapter when data sources are deactivated
+    private FilterAdapter.FiltersChangedListener filtersChangedListener =
+            new FilterAdapter.FiltersChangedListener() {
         @Override
         public void onFiltersChanged(Source changedFilter) {
-
-            if (changedFilter != null && changedFilter.active) {
-                loadSource(changedFilter);
-            } else {
-                // have deactivated a source but currently no way to remove just those items so
-                // for now just clear and re-query everything. TODO be smarter about this
-                adapter.clear();
-                for (Source filter : filtersAdapter.getFilters()) {
-                    loadSource(filter);
-                }
+            if (!changedFilter.active) {
+                adapter.removeDataSource(changedFilter.key);
             }
+            checkEmptyState();
         }
     };
 
@@ -216,7 +338,6 @@ public class HomeActivity extends Activity {
             Animator background = ObjectAnimator.ofArgb(newPostContainer,
                     "backgroundColor",
                     ContextCompat.getColor(HomeActivity.this, R.color.accent),
-                    //getResources().ContextCompat.getColor(this, R.color.designer_news))
                     ContextCompat.getColor(HomeActivity.this, R.color.background_light))
                     .setDuration(ANIMATION_DURATION_MED);
 
@@ -312,129 +433,55 @@ public class HomeActivity extends Activity {
         }
     };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        ButterKnife.bind(this);
+    private void checkEmptyState() {
+        if (adapter.getDataItemCount() == 0) {
+            // if grid is empty check whether we're loading or if no filters are selected
+            if (filtersAdapter.getEnabledSourcesCount() > 0) {
+                loading.setVisibility(View.VISIBLE);
+                setNoFiltersEmptyTextVisibility(View.GONE);
+            } else {
+                loading.setVisibility(View.GONE);
+                setNoFiltersEmptyTextVisibility(View.VISIBLE);
+            }
+        } else {
+            loading.setVisibility(View.GONE);
+            setNoFiltersEmptyTextVisibility(View.GONE);
+        }
+    }
 
-        drawer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-
-        //toolbar.inflateMenu(R.menu.main);
-        setActionBar(toolbar);
-        if (savedInstanceState == null) {
-            animateToolbar();
+    private void setNoFiltersEmptyTextVisibility(int visibility) {
+        if (visibility == View.VISIBLE) {
+            if (noFiltersEmptyText == null) {
+                // create the no filters empty text
+                ViewStub stub = (ViewStub) findViewById(R.id.stub_no_filters);
+                noFiltersEmptyText = (TextView) stub.inflate();
+                String emptyText = getString(R.string.no_filters_selected);
+                int filterPlaceholderStart = emptyText.indexOf('\u08B4');
+                int altMethodStart = filterPlaceholderStart + 3;
+                SpannableStringBuilder ssb = new SpannableStringBuilder(emptyText);
+                // show an image of the filter icon
+                ssb.setSpan(new ImageSpan(this, R.drawable.ic_filter_small,
+                                ImageSpan.ALIGN_BASELINE),
+                        filterPlaceholderStart,
+                        filterPlaceholderStart + 1,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                // make the alt method (swipe from right) less prominent and italic
+                ssb.setSpan(new ForegroundColorSpan(
+                                ContextCompat.getColor(this, R.color.text_secondary_light)),
+                        altMethodStart,
+                        emptyText.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                ssb.setSpan(new StyleSpan(Typeface.ITALIC),
+                        altMethodStart,
+                        emptyText.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                noFiltersEmptyText.setText(ssb);
+            }
+            noFiltersEmptyText.setVisibility(visibility);
+        } else if (noFiltersEmptyText != null) {
+            noFiltersEmptyText.setVisibility(visibility);
         }
 
-        fab.setOnClickListener(fabClick);
-        grid.setLayoutManager(new GridLayoutManager(this, columns));
-        adapter = new FeedAdapter(this, PocketUtils.isPocketInstalled(this));
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                loading.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
-            }
-        });
-        grid.setAdapter(adapter);
-        grid.addOnScrollListener(gridScroll);
-        drawer.setDrawerListener(
-                new SystemBarDrawerTinter(
-                        ContextCompat.getColor(this, R.color.immersive_bars),
-                        ContextCompat.getColor(this, R.color.background_super_dark)));
-        filtersList.setLayoutManager(new LinearLayoutManager(this));
-        filtersToolbar.inflateMenu(R.menu.filters);
-        filtersToolbar.setOnMenuItemClickListener(mFiltersMenuClick);
-
-        newPost.setVisibility(View.INVISIBLE);
-        submitNewPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hideNewPost();
-            }
-        });
-
-//        draggableFrame.setDragDismissView(findViewById(R.id.new_story_container));
-//        draggableFrame.setCallbacks(newPostDismissed);
-        newPost.setCallback(dismissNewPost);
-
-        // drawer layout treats fitsSystemWindows specially so we have to handle insets ourselves
-        // this is super gross and breaks when you show a keyboard.  TODO FIXME
-        drawer.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
-            @Override
-            public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
-                // inset the toolbar down by the status bar height
-                ViewGroup.MarginLayoutParams lpToolbar = (ViewGroup.MarginLayoutParams) toolbar
-                        .getLayoutParams();
-                lpToolbar.topMargin += insets.getSystemWindowInsetTop();
-                lpToolbar.rightMargin += insets.getSystemWindowInsetRight();
-                toolbar.setLayoutParams(lpToolbar);
-
-                // inset the grid top by statusbar+toolbar & the bottom by the navbar (don't clip)
-                grid.setPadding(grid.getPaddingLeft(),
-                        insets.getSystemWindowInsetTop() + ViewUtils.getActionBarSize
-                                (HomeActivity.this),
-                        grid.getPaddingRight() + insets.getSystemWindowInsetRight(), // landscape
-                        grid.getPaddingBottom());
-                grid.setChromePaddingBottom(insets.getSystemWindowInsetBottom());
-
-                // inset the fab for the navbar
-                ViewGroup.MarginLayoutParams lpFab = (ViewGroup.MarginLayoutParams) fab
-                        .getLayoutParams();
-                lpFab.bottomMargin += insets.getSystemWindowInsetBottom(); // portrait
-                lpFab.rightMargin += insets.getSystemWindowInsetRight(); // landscape
-                fab.setLayoutParams(lpFab);
-
-                // we place a background behind the status bar to combine with it's semi-transparent
-                // color to get the desired appearance.  Set it's height to the status bar height
-                View statusBarBackground = findViewById(R.id.status_bar_background);
-                FrameLayout.LayoutParams lpStatus = (FrameLayout.LayoutParams)
-                        statusBarBackground.getLayoutParams();
-                lpStatus.height = insets.getSystemWindowInsetTop();
-                statusBarBackground.setLayoutParams(lpStatus);
-
-                // inset the filters pane for the status bar / navbar
-                LinearLayout filtersPane = (LinearLayout) findViewById(R.id.filters_pane);
-                ViewGroup.MarginLayoutParams lpFilters = (ViewGroup.MarginLayoutParams)
-                        filtersPane.getLayoutParams();
-                lpFilters.topMargin += insets.getSystemWindowInsetTop();
-                lpFilters.bottomMargin += insets.getSystemWindowInsetBottom();
-                filtersPane.setLayoutParams(lpFilters);
-                // we also need to set the padding right for landscape
-                if (filtersPane.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR) {
-                    filtersPane.setPadding(filtersPane.getPaddingLeft(),
-                            filtersPane.getPaddingTop(),
-                            filtersPane.getPaddingRight() + insets.getSystemWindowInsetRight(),
-                            filtersPane.getPaddingBottom());
-                }
-
-                // we place a background behind the nav bar when the new post pane is showing. Set
-                // it's height to the nav bar height
-                View newStoryContainer = findViewById(R.id.new_story_container);
-                ViewGroup.MarginLayoutParams lpNewStory = (ViewGroup.MarginLayoutParams)
-                        newStoryContainer.getLayoutParams();
-                lpNewStory.bottomMargin += insets.getSystemWindowInsetBottom();
-                newStoryContainer.setLayoutParams(lpNewStory);
-
-                return insets.consumeSystemWindowInsets();
-            }
-        });
-        setupTaskDescription();
-
-        // setup the API access objects
-        createDribbbleApi();
-        createDesignerNewsApi();
-        createProductHuntApi();
-
-        // check which data sources are enabled and load them
-        filtersAdapter = new FilterAdapter(SourceManager.getSources(this), filtersChangedListener);
-        filtersList.setAdapter(filtersAdapter);
-        ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(filtersList);
-        filtersChangedListener.onFiltersChanged(null); // kick off an initial load
-        checkConnectivity();
     }
 
     private void setupTaskDescription() {
@@ -447,46 +494,13 @@ public class HomeActivity extends Activity {
         overviewIcon.recycle();
     }
 
-    private void createDesignerNewsApi() {
-        designerNewsPrefs = new DesignerNewsPrefs(getApplicationContext());
-        RestAdapter designerNewsRestAdapter = new RestAdapter.Builder()
-                .setEndpoint(DesignerNewsService.ENDPOINT)
-                .build();
-        designerNewsApi = designerNewsRestAdapter.create(DesignerNewsService.class);
-    }
-
-    private void createProductHuntApi() {
-        //Gson gson = new GsonBuilder()
-        //        .setDateFormat(ProductHuntService.DATE_FORMAT)
-        //       .create();
-        RestAdapter productHuntRestAdapter = new RestAdapter.Builder()
-                .setEndpoint(ProductHuntService.ENDPOINT)
-                        //.setConverter(new GsonConverter(gson))
-                .setRequestInterceptor(new AuthInterceptor(ProductHuntPrefs.DEVELOPER_TOKEN))
-                .build();
-        productHuntApi = productHuntRestAdapter.create(ProductHuntService.class);
-    }
-
-    private void createDribbbleApi() {
-        dribbblePrefs = new DribbblePrefs(getApplicationContext());
-        Gson gson = new GsonBuilder()
-                .setDateFormat(DribbbleService.DATE_FORMAT)
-                .create();
-        RestAdapter dribbbleRestAdapter = new RestAdapter.Builder()
-                .setEndpoint(DribbbleService.ENDPOINT)
-                .setConverter(new GsonConverter(gson))
-                .setRequestInterceptor(new AuthInterceptor(dribbblePrefs.getAccessToken()))
-                .build();
-        dribbbleApi = dribbbleRestAdapter.create((DribbbleService.class));
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
         // re-initialise the dribble and dn API objects (as user may have logged in in child
         // activity)
-        createDribbbleApi();
-        createDesignerNewsApi();
+        designerNewsPrefs = new DesignerNewsPrefs(getApplicationContext());
+        dribbblePrefs = new DribbblePrefs(getApplicationContext());
     }
 
     private void animateToolbar() {
@@ -563,8 +577,6 @@ public class HomeActivity extends Activity {
             case R.id.menu_search:
                 searchMenuItem = item;
                 View v = LayoutInflater.from(this).inflate(R.layout.search_action_view, null);
-                //v.setBackground(new MorphDrawable(ContextCompat.getColor(this, R.color.background_dark),
-                // getResources().getDimension(R.dimen.dialog_corners)));
                 item.setActionView(v);
                 ActivityOptions options =
                         ActivityOptions.makeSceneTransitionAnimation(this,
@@ -579,7 +591,7 @@ public class HomeActivity extends Activity {
                     dribbblePrefs.login(HomeActivity.this);
                 } else {
                     dribbblePrefs.logout();
-                    createDribbbleApi(); // recreate to clear the access token
+                    dataManager.onDribbbleLogout(this); // needed to clear the access token
                     filtersAdapter.disableAuthorisedDribbleSources(this);
                     // TODO something better than a toast!!
                     Toast.makeText(getApplicationContext(), R.string.dribbble_logged_out, Toast
@@ -591,7 +603,7 @@ public class HomeActivity extends Activity {
                     startActivity(new Intent(this, DesignerNewsLogin.class));
                 } else {
                     designerNewsPrefs.logout();
-                    createDesignerNewsApi(); // recreate to clear the access token
+                    dataManager.onDesignerNewsLogout(this); // needed to clear the access token
                     // TODO something better than a toast!!
                     Toast.makeText(getApplicationContext(), R.string.designer_news_logged_out,
                             Toast.LENGTH_SHORT).show();
@@ -620,174 +632,6 @@ public class HomeActivity extends Activity {
             hideNewPost();
         } else {
             super.onBackPressed();
-        }
-    }
-
-    private void loadSource(Source source) {
-        if (source.active) {
-            if (SourceManager.SOURCE_DESIGNER_NEWS_POPULAR.equals(source.key)) {
-                loadDesignerNewsTopStories();
-            } else if (SourceManager.SOURCE_DESIGNER_NEWS_RECENT.equals(source.key)) {
-                loadDesignerNewsRecent();
-            } else if (SourceManager.SOURCE_DRIBBBLE_FOLLOWING.equals(source.key)) {
-                loadDribbbleFollowing();
-            } else if (SourceManager.SOURCE_DRIBBBLE_POPULAR.equals(source.key)) {
-                loadDribbblePopular();
-            } else if (SourceManager.SOURCE_DRIBBBLE_RECENT.equals(source.key)) {
-                loadDribbbleRecent();
-            } else if (SourceManager.SOURCE_DRIBBBLE_DEBUTS.equals(source.key)) {
-                loadDribbbleDebuts();
-            } else if (SourceManager.SOURCE_DRIBBBLE_ANIMATED.equals(source.key)) {
-                loadDribbbleAnimated();
-            } else if (SourceManager.SOURCE_PRODUCT_HUNT.equals(source.key)) {
-                loadProductHunt();
-            } else if (source instanceof Source.DribbbleSearchSource) {
-                loadDribbbleSearch(((Source.DribbbleSearchSource) source).query);
-            }
-        }
-    }
-
-    private void loadDesignerNewsTopStories() {
-        designerNewsApi.getTopStories(new Callback<StoriesResponse>() {
-            @Override
-            public void success(StoriesResponse storiesResponse, Response response) {
-                if (storiesResponse != null) {
-                    addItems(storiesResponse.stories);
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.e("Loading DN Top Stories", error.getMessage(), error);
-            }
-        });
-    }
-
-    private void loadDesignerNewsRecent() {
-        designerNewsApi.getRecentStories(new Callback<StoriesResponse>() {
-            @Override
-            public void success(StoriesResponse storiesResponse, Response response) {
-                if (storiesResponse != null) {
-                    addItems(storiesResponse.stories);
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-    }
-
-    private void loadDribbblePopular() {
-        dribbbleApi.getPopular(25, new Callback<List<Shot>>() {
-            @Override
-            public void success(List<Shot> shots, Response response) {
-                addItems(shots);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-            }
-        });
-    }
-
-    private void loadDribbbleDebuts() {
-        dribbbleApi.getDebuts(0, 25, new Callback<List<Shot>>() {
-            @Override
-            public void success(List<Shot> shots, Response response) {
-                addItems(shots);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-            }
-        });
-    }
-
-    private void loadDribbbleAnimated() {
-        dribbbleApi.getAnimated(0, 25, new Callback<List<Shot>>() {
-            @Override
-            public void success(List<Shot> shots, Response response) {
-                addItems(shots);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-            }
-        });
-    }
-
-    private void loadDribbbleRecent() {
-        dribbbleApi.getRecent(0, 25, new Callback<List<Shot>>() {
-            @Override
-            public void success(List<Shot> shots, Response response) {
-                addItems(shots);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-            }
-        });
-    }
-
-    private void loadDribbbleFollowing() {
-        if (dribbblePrefs.isLoggedIn()) {
-            dribbbleApi.getFollowing(25, new Callback<List<Shot>>() {
-                @Override
-                public void success(List<Shot> shots, Response response) {
-                    addItems(shots);
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                }
-            });
-        }
-    }
-
-    private void loadDribbbleSearch(final String query) {
-        new AsyncTask<Void, Void, List<Shot>>() {
-            @Override
-            protected List<Shot> doInBackground(Void... params) {
-                return DribbbleSearch.search(query);
-            }
-
-            @Override
-            protected void onPostExecute(List<Shot> shots) {
-                if (shots != null && shots.size() > 0) {
-                    addItems(shots);
-                }
-            }
-        }.execute();
-    }
-
-    private void loadProductHunt() {
-        productHuntApi.getPosts(new Callback<PostsResponse>() {
-            @Override
-            public void success(PostsResponse postsResponse, Response response) {
-                if (postsResponse != null) {
-                    addItems(postsResponse.posts);
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Log.e("Ohnoes", error.getMessage(), error);
-            }
-        });
-    }
-
-    private void addItems(Collection<? extends PlaidItem> items) {
-        adapter.addAndResort(items);
-
-        // ensure that the fab is not obscuring any items when scrolled to the bottom
-        // i.e. if there's an item in the bottom right cell then add more padding
-        int desiredPadding = (adapter.getItemCount() %
-                getResources().getInteger(R.integer.num_columns) == 0) ?
-                getResources().getDimensionPixelSize(R.dimen.padding_room_for_fab) : 0;
-        if (grid.getContentPaddingBottom() != desiredPadding) {
-            grid.setContentPaddingBottom(desiredPadding);
         }
     }
 
@@ -919,11 +763,11 @@ public class HomeActivity extends Activity {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         boolean connected = activeNetworkInfo != null && activeNetworkInfo.isConnected();
         if (!connected) {
-            findViewById(android.R.id.empty).setVisibility(View.GONE);
+            loading.setVisibility(View.GONE);
             ViewStub stub = (ViewStub) findViewById(R.id.stub_no_connection);
             ImageView iv = (ImageView) stub.inflate();
-            final AnimatedVectorDrawable avd = (AnimatedVectorDrawable) getDrawable(R.drawable
-                    .avd_no_connection);
+            final AnimatedVectorDrawable avd =
+                    (AnimatedVectorDrawable) getDrawable(R.drawable.avd_no_connection);
             iv.setImageDrawable(avd);
             avd.start();
         }

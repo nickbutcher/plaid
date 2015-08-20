@@ -37,6 +37,7 @@ import com.example.android.plaid.data.prefs.DribbblePrefs;
 import com.example.android.plaid.data.prefs.SourceManager;
 import com.example.android.plaid.ui.recyclerview.ItemTouchHelperAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,11 +51,10 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
     private static final float FILTER_ICON_ENABLED_ALPHA = 0.6f;
     private static final float FILTER_ICON_DISABLED_ALPHA = 0.2f;
     private final List<Source> filters;
-    private @Nullable FiltersChangedListener listener;
+    private @Nullable List<FiltersChangedListener> listeners;
 
-    public FilterAdapter(List<Source> filters, @Nullable FiltersChangedListener listener) {
+    public FilterAdapter(List<Source> filters) {
         this.filters = filters;
-        this.listener = listener;
     }
 
     public List<Source> getFilters() {
@@ -105,9 +105,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
                     filter.active = !filter.active;
                     notifyItemChanged(vh.getPosition());
                     SourceManager.updateSource(filter, vh.itemView.getContext());
-                    if (listener != null) {
-                        listener.onFiltersChanged(filter);
-                    }
+                    dispatchFiltersChanged(filter);
                 } else {
                     // TODO enable the filter after a successful login
                     //ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
@@ -130,9 +128,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
                 if (filter.active) {
                     filter.active = false;
                     SourceManager.updateSource(filter, context);
-                    if (listener != null) {
-                        listener.onFiltersChanged(filter);
-                    }
+                    dispatchFiltersChanged(filter);
                     notifyDataSetChanged();
                 }
                 break;
@@ -150,7 +146,36 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
         // todo
     }
 
-    interface FiltersChangedListener {
+    public int getEnabledSourcesCount() {
+        int count = 0;
+        for (Source source : filters) {
+            if (source.active) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public void addFilterChangedListener(FiltersChangedListener listener) {
+        if (listeners == null) {
+            listeners = new ArrayList<>();
+        }
+        listeners.add(listener);
+    }
+
+    public void removeFilterChangedListener(FiltersChangedListener listener) {
+        listeners.remove(listener);
+    }
+
+    private void dispatchFiltersChanged(Source filter) {
+        if (listeners != null) {
+            for (FiltersChangedListener listener : listeners) {
+                listener.onFiltersChanged(filter);
+            }
+        }
+    }
+
+    public interface FiltersChangedListener {
         void onFiltersChanged(Source changedFilter);
     }
 

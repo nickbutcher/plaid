@@ -35,6 +35,18 @@
     <string name="designer_news_logged_out">Logged out of designer news</string>
     <string name="add">Add</string>
     <string name="edit">Edit</string>
+    <string name="no_filters_selected">No filters selected, press the filter button above (&#2228;)\nor swipe from the&#160;right</string>
+
+    <!-- data sources / filters -->
+    <string name="source_designer_news_popular">Popular Designer News</string>
+    <string name="source_designer_news_recent">Recent Designer News</string>
+    <string name="source_dribbble_following">Dribbble following</string>
+    <string name="source_dribbble_popular">Popular Dribbbles</string>
+    <string name="source_dribbble_recent">Recent Dribbbles</string>
+    <string name="source_dribbble_debuts">Dribbble Debuts</string>
+    <string name="source_dribbble_animated">Dribbble Animated</string>
+    <string name="source_dribbble_search_material_design">Material Design</string>
+    <string name="source_product_hunt">Product Hunt</string>
 
     <!-- new designer news story -->
     <string name="new_story_title">Post a story</string>

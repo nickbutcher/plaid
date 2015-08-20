@@ -38,10 +38,12 @@ public interface DesignerNewsService {
     String CLIENT_ID_QUERY = "?client_id=" + DesignerNewsPrefs.CLIENT_ID;
 
     @GET("/api/v1/stories" + CLIENT_ID_QUERY)
-    void getTopStories(Callback<StoriesResponse> callback);
+    void getTopStories(@Query("page") Integer page,
+                       Callback<StoriesResponse> callback);
 
     @GET("/api/v1/stories/recent" + CLIENT_ID_QUERY)
-    void getRecentStories(Callback<StoriesResponse> callback);
+    void getRecentStories(@Query("page") Integer page,
+                          Callback<StoriesResponse> callback);
 
     @GET("/api/v1/stories/search" + CLIENT_ID_QUERY)
     void search(@Query("query") String query, Callback<StoriesResponse> callback);

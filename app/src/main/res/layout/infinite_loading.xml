@@ -20,8 +20,9 @@
     android:id="@+id/loading"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/spacing_huge"
+    android:layout_marginTop="@dimen/spacing_large"
+    android:layout_marginBottom="@dimen/spacing_huge"
     android:layout_gravity="center"
     android:indeterminate="true"
-    android:indeterminateTint="@color/grey_300"
+    android:indeterminateTint="@color/mid_grey"
     android:indeterminateTintMode="src_in" />

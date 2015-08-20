@@ -101,4 +101,8 @@ public class DesignerNewsPrefs {
         editor.putString(KEY_USER_AVATAR, null);
         editor.apply();
     }
+
+    public interface DesignerNewsLogoutListener {
+        void onDesignerNewsLogout(Context context);
+    }
 }

@@ -27,6 +27,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.ColorMatrixColorFilter;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.transition.ArcMotion;
@@ -36,6 +37,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -44,6 +46,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.android.plaid.R;
+import com.example.android.plaid.data.DataLoadingSubject;
 import com.example.android.plaid.data.PlaidItem;
 import com.example.android.plaid.data.PlaidItemComparator;
 import com.example.android.plaid.data.api.designernews.model.Story;
@@ -73,6 +76,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_DESIGNER_NEWS_STORY = 0;
     private static final int TYPE_DRIBBBLE_SHOT = 1;
     private static final int TYPE_PRODUCT_HUNT_POST = 2;
+    private static final int TYPE_LOADING_MORE = -1;
     public static final float DUPE_WEIGHT_BOOST = 0.4f;
 
     // we need to hold on to an activity ref for the shared element transitions :/
@@ -80,13 +84,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final LayoutInflater layoutInflater;
     private final PlaidItemComparator comparator;
     private final boolean pocketIsInstalled;
+    private @Nullable DataLoadingSubject dataLoading;
 
     private List<PlaidItem> items;
 
-    public FeedAdapter(Activity hostActivity, boolean pocketInstalled) {
-        host = hostActivity;
-        pocketIsInstalled = pocketInstalled;
-        layoutInflater = (LayoutInflater) hostActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public FeedAdapter(Activity hostActivity,
+                       DataLoadingSubject dataLoading,
+                       boolean pocketInstalled) {
+        this.host = hostActivity;
+        this.dataLoading = dataLoading;
+        this.pocketIsInstalled = pocketInstalled;
+        layoutInflater = LayoutInflater.from(host);
         comparator = new PlaidItemComparator();
         items = new ArrayList<>();
         setHasStableIds(true);
@@ -105,19 +113,27 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case TYPE_PRODUCT_HUNT_POST:
                 return new ProductHuntStoryHolder(
                         layoutInflater.inflate(R.layout.product_hunt_item, parent, false));
+            case TYPE_LOADING_MORE:
+                return new LoadingMoreHolder(
+                        layoutInflater.inflate(R.layout.infinite_loading, parent, false));
         }
         return null;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        PlaidItem item = getItem(position);
-        if (item instanceof Story) {
-            bindDesignerNewsStory((Story) getItem(position), (DesignerNewsStoryHolder) holder);
-        } else if (item instanceof Shot) {
-            bindDribbbleShotView((Shot) item, (DribbbleShotHolder) holder);
-        } else if (item instanceof Post) {
-            bindProductHuntPostView((Post) item, (ProductHuntStoryHolder) holder);
+        if (position < getDataItemCount()
+                && getDataItemCount() > 0) {
+            PlaidItem item = getItem(position);
+            if (item instanceof Story) {
+                bindDesignerNewsStory((Story) getItem(position), (DesignerNewsStoryHolder) holder);
+            } else if (item instanceof Shot) {
+                bindDribbbleShotView((Shot) item, (DribbbleShotHolder) holder);
+            } else if (item instanceof Post) {
+                bindProductHuntPostView((Post) item, (ProductHuntStoryHolder) holder);
+            }
+        } else {
+            bindLoadingViewHolder((LoadingMoreHolder) holder, position);
         }
     }
 
@@ -165,7 +181,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     final int initialLeft = pocketButton.getLeft();
                     final int initialTop = pocketButton.getTop();
                     final int translatedLeft =
-                        (holder.itemView.getWidth() - pocketButton.getWidth()) / 2;
+                            (holder.itemView.getWidth() - pocketButton.getWidth()) / 2;
                     final int translatedTop =
                         initialTop - ((holder.itemView.getHeight() - pocketButton.getHeight()) / 2);
                     final ArcMotion arc = new ArcMotion();
@@ -264,10 +280,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 @Override
                                 public void onAnimationUpdate(ValueAnimator valueAnimator) {
                                     // just animating the color matrix does not invalidate the
-                                    // drawable so
-                                    // need this update listener.  Also have to create a new CMCF
-                                    // as the
-                                    // matrix is immutable :(
+                                    // drawable so need this update listener.  Also have to create a
+                                    // new CMCF as the matrix is immutable :(
                                     if (iv.getDrawable() != null) {
                                         iv.getDrawable().setColorFilter(new
                                                 ColorMatrixColorFilter(cm));
@@ -353,17 +367,27 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         });
     }
 
+    private void bindLoadingViewHolder(LoadingMoreHolder holder, int position) {
+        // only show the infinite load progress spinner if there are already items in the
+        // grid i.e. it's not the first item & data is being loaded
+        holder.progress.setVisibility(position > 0 && dataLoading.isDataLoading() ?
+                View.VISIBLE : View.INVISIBLE);
+    }
+
     @Override
     public int getItemViewType(int position) {
-        PlaidItem item = getItem(position);
-        if (item instanceof Story) {
-            return TYPE_DESIGNER_NEWS_STORY;
-        } else if (item instanceof Shot) {
-            return TYPE_DRIBBBLE_SHOT;
-        } else if (item instanceof Post) {
-            return TYPE_PRODUCT_HUNT_POST;
+        if (position < getDataItemCount()
+                && getDataItemCount() > 0) {
+            PlaidItem item = getItem(position);
+            if (item instanceof Story) {
+                return TYPE_DESIGNER_NEWS_STORY;
+            } else if (item instanceof Shot) {
+                return TYPE_DRIBBBLE_SHOT;
+            } else if (item instanceof Post) {
+                return TYPE_PRODUCT_HUNT_POST;
+            }
         }
-        return -1;
+        return TYPE_LOADING_MORE;
     }
 
     private PlaidItem getItem(int position) {
@@ -379,14 +403,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void addAndResort(Collection<? extends PlaidItem> items) {
+    public void addAndResort(Collection<? extends PlaidItem> newItems) {
         // de-dupe results as the same item can be returned by multiple feeds
         boolean add = true;
-        for (PlaidItem newItem : items) {
-            int count = getItemCount();
+        for (PlaidItem newItem : newItems) {
+            int count = getDataItemCount();
             for (int i = 0; i < count; i++) {
                 PlaidItem existingItem = getItem(i);
                 if (existingItem.equals(newItem)) {
+                    // if we find a dupe mark the weight boost field on the first-in, but don't add
+                    // the dupe. We use the fact that an item comes from multiple sources to indicate it
+                    // is more important and sort it higher
                     existingItem.weightBoost = DUPE_WEIGHT_BOOST;
                     add = false;
                     break;
@@ -401,14 +428,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     protected void sort() {
-        int count = getItemCount();
+        // calculate the 'weight' for each data type and then sort by that. Each data type has a
+        // different metric for weighing it e.g. Dribbble uses likes etc. Weights are 'scoped' to
+        // the page they belong to and lower weights are sorted higher in the grid.
+        int count = getDataItemCount();
         int maxDesignNewsVotes = 0;
         int maxDesignNewsComments = 0;
         long maxDribbleLikes = 0;
         int maxProductHuntVotes = 0;
         int maxProductHuntComments = 0;
 
-        // TODO comment this logic better
+        // work out some maximum values to weigh individual items against
         for (int i = 0; i < count; i++) {
             PlaidItem item = getItem(i);
             if (item instanceof Story) {
@@ -424,30 +454,52 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         }
 
+        // now go through and set the weight of each item
         for (int i = 0; i < count; i++) {
             PlaidItem item = getItem(i);
             if (item instanceof Story) {
-                item.weight = ((((float) ((Story) item).comment_count) / maxDesignNewsComments) +
-                        ((float) ((Story) item).vote_count / maxDesignNewsVotes)) / 2;
+                ((Story) item).weigh(maxDesignNewsComments, maxDesignNewsVotes);
             } else if (item instanceof Shot) {
-                ((Shot) item).setWeightRelativeToMax(maxDribbleLikes);
+                ((Shot) item).weigh(maxDribbleLikes);
             } else if (item instanceof Post) {
-                item.weight = ((((float) ((Post) item).comments_count) / maxProductHuntComments)
-                        + ((float) ((Post) item).votes_count / maxProductHuntVotes)) / 2;
+                ((Post) item).weigh(maxProductHuntComments, maxProductHuntVotes);
             }
+            // scope it to the page it came from
+            item.weight += item.page;
         }
 
+        // sort by weight
         Collections.sort(items, comparator);
         notifyDataSetChanged(); // TODO call the more specific RV variants
     }
 
+    public void removeDataSource(String dataSource) {
+        int i = items.size() - 1;
+        while (i >= 0) {
+            PlaidItem item = items.get(i);
+            if (dataSource.equals(item.dataSource)) {
+                items.remove(i);
+            }
+            i--;
+        }
+        notifyDataSetChanged();
+    }
+
     @Override
     public long getItemId(int position) {
+        if (getItemViewType(position) == TYPE_LOADING_MORE) {
+            return -1L;
+        }
         return getItem(position).id;
     }
 
     @Override
     public int getItemCount() {
+        // include loading footer
+        return getDataItemCount() + 1;
+    }
+
+    public int getDataItemCount() {
         return items.size();
     }
 
@@ -482,6 +534,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    /* protected */ class LoadingMoreHolder extends RecyclerView.ViewHolder {
+
+        ProgressBar progress;
+
+        public LoadingMoreHolder(View itemView) {
+            super(itemView);
+            progress = (ProgressBar) itemView;
+        }
+
     }
 
 }

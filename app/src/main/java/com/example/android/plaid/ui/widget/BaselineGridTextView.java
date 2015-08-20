@@ -31,37 +31,30 @@ public class BaselineGridTextView extends FontTextView {
     private int topPaddingHint = 0;
 
     public BaselineGridTextView(Context context) {
-        super(context);
-        init(context, null, 0, 0);
+        this(context, null);
     }
 
     public BaselineGridTextView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs, 0, 0);
+        this(context, attrs, android.R.attr.textViewStyle);
     }
 
     public BaselineGridTextView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
     }
 
-    public BaselineGridTextView(Context context, AttributeSet attrs, int defStyleAttr, int
-            defStyleRes) {
+    public BaselineGridTextView(Context context, AttributeSet attrs,
+                                int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init(context, attrs, defStyleAttr, defStyleRes);
-    }
 
-    private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        // Attribute initialization.
-        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BaselineGridTextView,
-                defStyleAttr, defStyleRes);
+        final TypedArray a = context.obtainStyledAttributes(
+                attrs, R.styleable.BaselineGridTextView, defStyleAttr, defStyleRes);
 
-        lineHeightMultiplierHint = a.getFloat(R.styleable
-                .BaselineGridTextView_lineHeightMultiplierHint, 1f);
-        lineHeightHint = a.getDimensionPixelSize(R.styleable.BaselineGridTextView_lineHeightHint,
-                0);
-        topPaddingHint = a.getDimensionPixelSize(R.styleable.BaselineGridTextView_topPaddingHint,
-                0);
+        lineHeightMultiplierHint =
+                a.getFloat(R.styleable.BaselineGridTextView_lineHeightMultiplierHint, 1f);
+        lineHeightHint =
+                a.getDimensionPixelSize(R.styleable.BaselineGridTextView_lineHeightHint, 0);
+        topPaddingHint =
+                a.getDimensionPixelSize(R.styleable.BaselineGridTextView_topPaddingHint, 0);
 
         a.recycle();
 
@@ -92,8 +85,8 @@ public class BaselineGridTextView extends FontTextView {
                 ? lineHeightHint
                 : lineHeightMultiplierHint * fontHeight;
 
-        int baselineAlignedLineHeight = (int) (fourDip * (float) Math.ceil(desiredLineHeight /
-                fourDip));
+        int baselineAlignedLineHeight =
+                (int) (fourDip * (float) Math.ceil(desiredLineHeight / fourDip));
         setLineSpacing(baselineAlignedLineHeight - fontHeight, 1f);
     }
 

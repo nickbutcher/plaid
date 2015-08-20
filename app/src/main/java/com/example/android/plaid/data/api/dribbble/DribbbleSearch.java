@@ -77,16 +77,13 @@ public class DribbbleSearch {
             .DOTALL);
 
     @WorkerThread
-    public static List<Shot> search(String query) {
-        return search(query, SORT_RECENT);
-    }
+    public static List<Shot> search(String query, @SortOrder String sort, int page) {
 
-    @WorkerThread
-    public static List<Shot> search(String query, @SortOrder String sort) {
-
-        String page = downloadPage(HOST + SEARCH_ENDPOINT + URLEncoder.encode(query) + "&" + sort);
-        if (page == null) return null;
-        Matcher matcher = PATTERN_RESULT.matcher(page);
+        // e.g https://dribbble.com/search?q=material+design&page=7&per_page=12
+        String html = downloadPage(HOST + SEARCH_ENDPOINT + URLEncoder.encode(query) + "&" + sort
+                + "&page=" + page + "&per_page=12");
+        if (html == null) return null;
+        Matcher matcher = PATTERN_RESULT.matcher(html);
         List<Shot> shots = new ArrayList<Shot>();
 
         while (matcher.find()) {
@@ -254,10 +251,11 @@ public class DribbbleSearch {
         }
     }
 
-    // Shot Type
     @Retention(RetentionPolicy.SOURCE)
-    @StringDef({SORT_POPULAR, SORT_RECENT})
-    public @interface SortOrder {
-    }
+    @StringDef({
+            SORT_POPULAR,
+            SORT_RECENT
+    })
+    public @interface SortOrder {}
 
 }

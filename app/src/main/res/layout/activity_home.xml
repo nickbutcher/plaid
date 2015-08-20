@@ -35,7 +35,7 @@
             android:layout_height="0dp"
             android:background="@color/status_bar_back" />
 
-        <com.example.android.plaid.ui.widget.ImmersiveRecyclerView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/stories_grid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -59,6 +59,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             style="?android:indeterminateProgressStyle" />
+
+        <ViewStub
+            android:id="@+id/stub_no_filters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout="@layout/no_filters" />
 
         <ViewStub
             android:id="@+id/stub_no_connection"

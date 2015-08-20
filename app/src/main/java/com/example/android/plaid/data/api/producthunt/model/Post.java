@@ -124,6 +124,12 @@ public class Post extends PlaidItem implements Parcelable {
         return url;
     }
 
+    public void weigh(float maxProductHuntComments, float maxProductHuntVotes) {
+        weight = 1f - ((((float) comments_count) / maxProductHuntComments) +
+                ((float) votes_count / maxProductHuntVotes)) / 2f;
+        weight = Math.min(weight + weightBoost, 1f);
+    }
+
     @Override
     public int describeContents() {
         return 0;

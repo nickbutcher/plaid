@@ -123,4 +123,8 @@ public class DribbblePrefs {
     public void login(Context context) {
         context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(LOGIN_URL)));
     }
+
+    public interface DribbbleLogoutListener {
+        void onDribbbleLogout(Context context);
+    }
 }
