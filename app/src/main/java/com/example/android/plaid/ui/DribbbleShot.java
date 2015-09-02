@@ -104,7 +104,7 @@ public class DribbbleShot extends Activity {
 
     protected final static String EXTRA_SHOT = "shot";
     private static final int RC_LOGIN = 0;
-    private static final float SCRIM_ADJUSTMENT = 0.05f;
+    private static final float SCRIM_ADJUSTMENT = 0.075f;
 
     @Bind(R.id.draggable_frame) ElasticDragDismissFrameLayout draggableFrame;
     @Bind(R.id.back) ImageButton back;
@@ -155,7 +155,7 @@ public class DribbbleShot extends Activity {
                     .generate(new Palette.PaletteAsyncListener() {
                         @Override
                         public void onGenerated(Palette palette) {
-                            boolean isDark = true;
+                            boolean isDark;
                             @ColorUtils.Lightness int lightness = ColorUtils.isDark(palette);
                             if (lightness == ColorUtils.LIGHTNESS_UNKNOWN) {
                                 isDark = ColorUtils.isDark(bitmap, bitmap.getWidth() / 2, 0);
@@ -164,7 +164,10 @@ public class DribbbleShot extends Activity {
                             }
                             int statusBarColor = getWindow().getStatusBarColor();
                             Palette.Swatch topColor = ColorUtils.getMostPopulousSwatch(palette);
-                            if (topColor != null) {
+
+                            if (topColor != null &&
+                                    // only set a light status bar on M+
+                                    (isDark || Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
                                 statusBarColor = ColorUtils.scrimify(topColor.getRgb(),
                                         isDark, SCRIM_ADJUSTMENT);
                                 if (!isDark) {
