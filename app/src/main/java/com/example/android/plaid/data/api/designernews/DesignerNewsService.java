@@ -16,9 +16,9 @@
 
 package com.example.android.plaid.data.api.designernews;
 
+import com.example.android.plaid.BuildConfig;
 import com.example.android.plaid.data.api.designernews.model.AccessToken;
 import com.example.android.plaid.data.api.designernews.model.StoriesResponse;
-import com.example.android.plaid.data.prefs.DesignerNewsPrefs;
 
 import retrofit.Callback;
 import retrofit.http.Body;
@@ -29,13 +29,13 @@ import retrofit.http.POST;
 import retrofit.http.Query;
 
 /**
- * Created by nickbutcher on 3/29/15.
+ * Modeling the Designer News API
  */
 public interface DesignerNewsService {
 
     String ENDPOINT = "https://www.designernews.co/";
 
-    String CLIENT_ID_QUERY = "?client_id=" + DesignerNewsPrefs.CLIENT_ID;
+    String CLIENT_ID_QUERY = "?client_id=" + BuildConfig.DESIGNER_NEWS_CLIENT_ID;
 
     @GET("/api/v1/stories" + CLIENT_ID_QUERY)
     void getTopStories(@Query("page") Integer page,
@@ -50,8 +50,8 @@ public interface DesignerNewsService {
 
     @Headers({
             "grant_type: password",
-            "client_id: " + DesignerNewsPrefs.CLIENT_ID,
-            "client_secret: " + DesignerNewsPrefs.CLIENT_SECRET
+            "client_id: " + BuildConfig.DESIGNER_NEWS_CLIENT_ID,
+            "client_secret: " + BuildConfig.DESIGNER_NEWS_CLIENT_SECRET
     })
     @POST("/oauth/token")
     void login(@Header("username") String username,

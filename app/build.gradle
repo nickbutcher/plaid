@@ -33,6 +33,13 @@ android {
         versionCode gitCommitCount
         versionName gitTag
         buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
+        buildConfigField "String", "DRIBBBLE_CLIENT_ID", "\"${dribbble_client_id}\""
+        buildConfigField "String", "DRIBBBLE_CLIENT_SECRET", "\"${dribbble_client_secret}\""
+        buildConfigField "String",
+                "DRIBBBLE_CLIENT_ACCESS_TOKEN", "\"${dribbble_client_access_token}\""
+        buildConfigField "String", "DESIGNER_NEWS_CLIENT_ID", "\"${designer_news_client_id}\""
+        buildConfigField "String",
+                "DESIGNER_NEWS_CLIENT_SECRET", "\"${designer_news_client_secret}\""
     }
     buildTypes {
         release {

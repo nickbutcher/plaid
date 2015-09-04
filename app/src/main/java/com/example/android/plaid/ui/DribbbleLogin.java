@@ -39,6 +39,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.android.plaid.BuildConfig;
 import com.example.android.plaid.R;
 import com.example.android.plaid.data.api.AuthInterceptor;
 import com.example.android.plaid.data.api.dribbble.DribbbleAuthService;
@@ -165,8 +166,8 @@ public class DribbbleLogin extends Activity {
 
         DribbbleAuthService dribbbleAuthApi = restAdapter.create((DribbbleAuthService.class));
 
-        dribbbleAuthApi.getAccessToken(DribbblePrefs.PLAID_CLIENT_ID,
-                DribbblePrefs.PLAID_CLIENT_SECRET,
+        dribbbleAuthApi.getAccessToken(BuildConfig.DRIBBBLE_CLIENT_ID,
+                BuildConfig.DRIBBBLE_CLIENT_SECRET,
                 code, "", new Callback<AccessToken>() {
                     @Override
                     public void success(AccessToken accessToken, Response response) {

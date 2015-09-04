@@ -20,19 +20,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import com.example.android.plaid.BuildConfig;
 import com.example.android.plaid.data.api.dribbble.model.User;
 
 /**
- * Created by nickbutcher on 2/7/15.
+ * Storing Designer News user state
  */
 public class DesignerNewsPrefs {
 
-    // STOPSHIP stop 'borrowing' this client_id – https://github
-    // .com/MengTo/DesignerNewsApp/blob/master/DesignerNewsApp/DesignerNewsService.swift
-    public static final String CLIENT_ID =
-            "750ab22aac78be1c6d4bbe584f0e3477064f646720f327c5464bc127100a1a6d";
-    public static final String CLIENT_SECRET =
-            "53e3822c49287190768e009a8f8e55d09041c5bf26d0ef982693f215c72d87da";
     private static final String DESIGNER_NEWS_PREF = "DESIGNER_NEWS_PREF";
     private static final String KEY_ACCESS_TOKEN = "KEY_ACCESS_TOKEN";
     private static final String KEY_USER_NAME = "KEY_USER_NAME";
@@ -60,7 +55,7 @@ public class DesignerNewsPrefs {
     }
 
     public String getAccessToken() {
-        return !TextUtils.isEmpty(accessToken) ? accessToken : CLIENT_ID;
+        return !TextUtils.isEmpty(accessToken) ? accessToken : BuildConfig.DESIGNER_NEWS_CLIENT_ID;
     }
 
     public void setAccessToken(String accessToken) {

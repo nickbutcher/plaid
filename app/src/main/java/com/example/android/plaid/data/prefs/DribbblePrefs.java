@@ -22,29 +22,24 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.example.android.plaid.BuildConfig;
 import com.example.android.plaid.data.api.dribbble.model.User;
 
 /**
- * Created by nickbutcher on 2/7/15.
+ * Storing dribbble user state.
  */
 public class DribbblePrefs {
 
-    public static final String PLAID_CLIENT_ID =
-            "e07b449e642134b6fd461df4ede20da7a0887b50748162cad43bb7d47df2ca2f";
-    public static final String PLAID_CLIENT_SECRET =
-            "00d2594bfc22d1c4e9f6965867d9be47da0e1d681cdab94ef7e62c838d07de47";
     public static final String LOGIN_CALLBACK = "auth-callback";
-    public static final String LOGIN_URL = "https://dribbble.com/oauth/authorize?client_id=" +
-            PLAID_CLIENT_ID
-            + "&redirect_uri=plaid%3A%2F%2F" + LOGIN_CALLBACK +
-            "&scope=public+write+comment+upload";
+    public static final String LOGIN_URL = "https://dribbble.com/oauth/authorize?client_id="
+            + BuildConfig.DRIBBBLE_CLIENT_ID
+            + "&redirect_uri=plaid%3A%2F%2F" + LOGIN_CALLBACK
+            + "&scope=public+write+comment+upload";
     private static final String DRIBBBLE_PREF = "DRIBBBLE_PREF";
     private static final String KEY_ACCESS_TOKEN = "KEY_ACCESS_TOKEN";
     private static final String KEY_USER_ID = "KEY_USER_ID";
     private static final String KEY_USER_NAME = "KEY_USER_NAME";
     private static final String KEY_USER_AVATAR = "KEY_USER_AVATAR";
-    private static final String PLAID_CLIENT_ACCESS_TOKEN =
-            "edc78103a66d939a3a4bf069bfdf37257b9710d4dbfdd8ad3578677cff6b2383";
     private final SharedPreferences prefs;
 
     private String accessToken;
@@ -70,7 +65,8 @@ public class DribbblePrefs {
     }
 
     public String getAccessToken() {
-        return !TextUtils.isEmpty(accessToken) ? accessToken : PLAID_CLIENT_ACCESS_TOKEN;
+        return !TextUtils.isEmpty(accessToken) ? accessToken
+                : BuildConfig.DRIBBBLE_CLIENT_ACCESS_TOKEN;
     }
 
     public void setAccessToken(String accessToken) {
