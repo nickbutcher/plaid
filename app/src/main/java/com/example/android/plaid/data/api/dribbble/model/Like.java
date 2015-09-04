@@ -27,13 +27,13 @@ public class Like {
 
     public final long id;
     public final Date created_at;
-    public final
-    @Nullable
-    User user; // some calls do not populate the user field
+    public final @Nullable User user; // some calls do not populate the user field
+    public final @Nullable Shot shot; // some calls do not populate the shot field
 
-    public Like(long id, Date created_at, User user) {
+    public Like(long id, Date created_at, User user, Shot shot) {
         this.id = id;
         this.created_at = created_at;
         this.user = user;
+        this.shot = shot;
     }
 }

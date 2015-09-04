@@ -25,6 +25,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.transition.TransitionManager;
 import android.view.Gravity;
@@ -208,7 +209,8 @@ public class DribbbleLogin extends Activity {
                         .transform(new CircleTransform(getApplicationContext()))
                         .into((ImageView) v.findViewById(R.id.avatar));
                 v.findViewById(R.id.scrim).setBackground(ScrimUtil.makeCubicGradientScrimDrawable
-                        (getColor(R.color.scrim), 5, Gravity.BOTTOM));
+                        (ContextCompat.getColor(DribbbleLogin.this, R.color.scrim),
+                                5, Gravity.BOTTOM));
                 confirmLogin.setView(v);
                 confirmLogin.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
                 confirmLogin.setDuration(Toast.LENGTH_LONG);

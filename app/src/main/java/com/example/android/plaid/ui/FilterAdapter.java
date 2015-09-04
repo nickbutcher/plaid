@@ -81,10 +81,14 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
         vh.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // special case for dribble following which requires auth
-                if (!filter.key.equals(SourceManager.SOURCE_DRIBBBLE_FOLLOWING) || new
-                        DribbblePrefs(vh.itemView.getContext()).isLoggedIn()) {
-
+                if (isAuthorisedSource(filter) &&
+                        ! new DribbblePrefs(vh.itemView.getContext()).isLoggedIn()) {
+                    // TODO enable the filter after a successful login
+                    //ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                    // (Activity) getContext(), view, "login");
+                    vh.itemView.getContext().startActivity(new Intent(vh.itemView.getContext(),
+                            DribbbleLogin.class)); //, options.toBundle());
+                } else {
                     vh.itemView.setHasTransientState(true);
                     AnimatorSet fade = new AnimatorSet();
                     fade.playTogether(
@@ -106,12 +110,6 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
                     notifyItemChanged(vh.getPosition());
                     SourceManager.updateSource(filter, vh.itemView.getContext());
                     dispatchFiltersChanged(filter);
-                } else {
-                    // TODO enable the filter after a successful login
-                    //ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
-                    // (Activity) getContext(), view, "login");
-                    vh.itemView.getContext().startActivity(new Intent(vh.itemView.getContext(),
-                            DribbbleLogin.class)); //, options.toBundle());
                 }
             }
         });
@@ -123,17 +121,23 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
     }
 
     public void disableAuthorisedDribbleSources(Context context) {
+        boolean changed = false;
         for (Source filter : filters) {
-            if (filter.key.equals(SourceManager.SOURCE_DRIBBBLE_FOLLOWING)) {
-                if (filter.active) {
-                    filter.active = false;
-                    SourceManager.updateSource(filter, context);
-                    dispatchFiltersChanged(filter);
-                    notifyDataSetChanged();
-                }
-                break;
+            if (filter.active && isAuthorisedSource(filter)) {
+                filter.active = false;
+                SourceManager.updateSource(filter, context);
+                dispatchFiltersChanged(filter);
+                changed = true;
             }
         }
+        if (changed) {
+            notifyDataSetChanged();
+        }
+    }
+
+    private boolean isAuthorisedSource(Source source) {
+        return source.key.equals(SourceManager.SOURCE_DRIBBBLE_FOLLOWING)
+                || source.key.equals(SourceManager.SOURCE_DRIBBBLE_LIKES);
     }
 
     @Override

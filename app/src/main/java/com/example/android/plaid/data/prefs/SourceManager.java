@@ -39,6 +39,7 @@ public class SourceManager {
     public static final String SOURCE_DESIGNER_NEWS_POPULAR = "SOURCE_DESIGNER_NEWS_POPULAR";
     public static final String SOURCE_DESIGNER_NEWS_RECENT = "SOURCE_DESIGNER_NEWS_RECENT";
     public static final String SOURCE_DRIBBBLE_FOLLOWING = "SOURCE_DRIBBBLE_FOLLOWING";
+    public static final String SOURCE_DRIBBBLE_LIKES = "SOURCE_DRIBBBLE_LIKES";
     public static final String SOURCE_DRIBBBLE_POPULAR = "SOURCE_DRIBBBLE_POPULAR";
     public static final String SOURCE_DRIBBBLE_RECENT = "SOURCE_DRIBBBLE_RECENT";
     public static final String SOURCE_DRIBBBLE_DEBUTS = "SOURCE_DRIBBBLE_DEBUTS";
@@ -109,13 +110,15 @@ public class SourceManager {
                         context.getString(R.string.source_designer_news_recent), false),
                 new Source.DribbbleSource(SOURCE_DRIBBBLE_FOLLOWING, 200,
                         context.getString(R.string.source_dribbble_following), false),
-                new Source.DribbbleSource(SOURCE_DRIBBBLE_POPULAR, 201,
+                new Source.DribbbleSource(SOURCE_DRIBBBLE_LIKES, 201,
+                        context.getString(R.string.source_dribbble_likes), false),
+                new Source.DribbbleSource(SOURCE_DRIBBBLE_POPULAR, 202,
                         context.getString(R.string.source_dribbble_popular), true),
-                new Source.DribbbleSource(SOURCE_DRIBBBLE_RECENT, 202,
+                new Source.DribbbleSource(SOURCE_DRIBBBLE_RECENT, 203,
                         context.getString(R.string.source_dribbble_recent), false),
-                new Source.DribbbleSource(SOURCE_DRIBBBLE_DEBUTS, 203,
+                new Source.DribbbleSource(SOURCE_DRIBBBLE_DEBUTS, 204,
                         context.getString(R.string.source_dribbble_debuts), false),
-                new Source.DribbbleSource(SOURCE_DRIBBBLE_ANIMATED, 204,
+                new Source.DribbbleSource(SOURCE_DRIBBBLE_ANIMATED, 205,
                         context.getString(R.string.source_dribbble_animated), false),
                 new Source.DribbbleSearchSource(SOURCE_DRIBBBLE_MD_SEARCH,
                         context.getString(R.string.source_dribbble_search_material_design), true),

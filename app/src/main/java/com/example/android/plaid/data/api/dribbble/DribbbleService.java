@@ -86,6 +86,12 @@ public interface DribbbleService {
                       @Query("per_page") Integer pageSize,
                       Callback<List<Shot>> callback);
 
+    /* List the authenticated user’s shot likes */
+    @GET("/user/likes")
+    void getLikes(@Query("page") Integer page,
+                  @Query("per_page") Integer pageSize,
+                  Callback<List<Like>> callback);
+
 
     /* Shot likes */
 
