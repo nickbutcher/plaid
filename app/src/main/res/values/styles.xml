@@ -70,6 +70,7 @@
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
 
         <item name="android:colorPrimary">@color/dribbble</item>
         <item name="android:colorAccent">@color/dribbble</item>

@@ -174,8 +174,7 @@ public class DribbbleShot extends Activity {
                                     back.setColorFilter(ContextCompat.getColor(
                                             DribbbleShot.this, R.color.dark_icon));
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                        imageView.setSystemUiVisibility(
-                                                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                                        ViewUtils.setLightStatusBar(imageView);
                                     }
                                 }
                             }

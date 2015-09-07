@@ -20,9 +20,12 @@ import android.app.Activity;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.RippleDrawable;
+import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.FloatRange;
+import android.support.annotation.NonNull;
 import android.util.TypedValue;
+import android.view.View;
 
 /**
  * Created by nickbutcher on 3/11/15.
@@ -49,4 +52,19 @@ public class ViewUtils {
                 (0xffffffff));
     }
 
+    public static void setLightStatusBar(@NonNull View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int flags = view.getSystemUiVisibility();
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            view.setSystemUiVisibility(flags);
+        }
+    }
+
+    public static void clearLightStatusBar(@NonNull View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int flags = view.getSystemUiVisibility();
+            flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            view.setSystemUiVisibility(flags);
+        }
+    }
 }
