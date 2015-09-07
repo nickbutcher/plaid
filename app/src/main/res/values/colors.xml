@@ -18,21 +18,10 @@
 <resources>
 
     <!-- app palette -->
-    <!--<color name="primary">#1d97e8</color>-->
-    <!--<color name="accent">#eefe41</color>-->
-    <!--<color name="primary_light">#47b1f4</color>-->
-    <!--<color name="primary_dark">#047bc0</color>-->
-    <!--<color name="primary_super_dark">#062133</color>-->
-    <!--<color name="accent_light">#8feefe41</color>-->
-    <!--<color name="accent_dark">#8fb0c200</color>-->
-
-    <color name="primary">#BA68C8</color>
-    <color name="accent">#64FFDA</color>
-    <color name="primary_light">#CE93D8</color>
-    <color name="primary_dark">#AB47BC</color>
-    <color name="primary_super_dark">#231426</color> <!-- same hue & sat, 15% brightness -->
-    <color name="accent_light">#8fA7FFEB</color>
-    <color name="accent_dark">#8fA7FFEB</color>
+    <color name="primary">#69F0AE</color>
+    <color name="accent">#69F0AE</color>
+    <color name="primary_super_dark">#11261c</color> <!-- same hue & sat, 15% brightness -->
+    <color name="accent_dark">#8f69F0AE</color>
 
     <!-- common colours -->
     <color name="text_primary_dark">#de000000</color>
@@ -92,9 +81,7 @@
     <color name="hacker_news_light">#ffcc80</color>
 
     <!-- product hunt-->
-    <!-- spec color -->
-    <!--<color name="product_hunt">#FB8C00</color> &lt;!&ndash; orange 600 &ndash;&gt;-->
-    <color name="product_hunt">#fdb238</color>
+    <color name="product_hunt">#EF6C00</color>
     <!-- brand color -->
     <!--<color name="product_hunt">#d9512b</color>-->
 
