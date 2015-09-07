@@ -86,7 +86,8 @@
             android:launchMode="singleTop"
             android:theme="@style/Plaid.DribbbleLogin" >
             <intent-filter>
-                <data android:scheme="plaid" />
+                <data android:scheme="plaid"
+                      android:host="dribbble-auth-callback" />
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />

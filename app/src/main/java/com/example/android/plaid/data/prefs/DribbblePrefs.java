@@ -30,7 +30,7 @@ import com.example.android.plaid.data.api.dribbble.model.User;
  */
 public class DribbblePrefs {
 
-    public static final String LOGIN_CALLBACK = "auth-callback";
+    public static final String LOGIN_CALLBACK = "dribbble-auth-callback";
     public static final String LOGIN_URL = "https://dribbble.com/oauth/authorize?client_id="
             + BuildConfig.DRIBBBLE_CLIENT_ID
             + "&redirect_uri=plaid%3A%2F%2F" + LOGIN_CALLBACK
