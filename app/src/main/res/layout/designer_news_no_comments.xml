@@ -16,24 +16,17 @@
   limitations under the License.
   -->
 
-<LinearLayout
+<TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@android:id/empty"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <include layout="@layout/designer_news_story_description" />
-
-    <TextView
-        android:id="@android:id/empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:textAppearance="@style/TextAppearance.EmptyState"
-        android:text="@string/no_comments"
-        android:drawableTop="@drawable/ic_no_comments"
-        android:clickable="false"
-        tools:showIn="@layout/activity_designer_news_story" />
-
-</LinearLayout>
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_huge"
+    android:layout_marginBottom="@dimen/spacing_huge"
+    android:clickable="false"
+    android:drawableTop="@drawable/ic_no_comments"
+    android:gravity="center"
+    android:text="@string/no_comments"
+    android:textAppearance="@style/TextAppearance.EmptyState"
+    tools:showIn="@layout/activity_designer_news_story"/>

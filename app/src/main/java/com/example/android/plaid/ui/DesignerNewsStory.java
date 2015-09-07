@@ -26,8 +26,11 @@ import android.content.Intent;
 import android.graphics.Path;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.customtabs.CustomTabsSession;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.transition.ArcMotion;
@@ -36,13 +39,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
@@ -69,9 +67,11 @@ import org.chromium.customtabsclient.CustomTabActivityManager;
 import org.chromium.customtabsclient.CustomTabUiBuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindDimen;
 import butterknife.BindInt;
 import butterknife.ButterKnife;
 import in.uncod.android.bypass.Bypass;
@@ -80,55 +80,20 @@ public class DesignerNewsStory extends Activity {
 
     protected static final String EXTRA_STORY = "story";
 
-    @Bind(R.id.comments_list) ListView commentsList;
+    @Bind(R.id.comments_list) RecyclerView commentsList;
     @Bind(R.id.fab) ImageButton fab;
     @Bind(R.id.fab_expand) View fabExpand;
     @BindInt(R.integer.fab_expand_duration) int fabExpandDuration;
+    @BindDimen(R.dimen.comment_thread_width) int threadWidth;
+    @BindDimen(R.dimen.comment_thread_gap) int threadGap;
 
     private Story story;
     private CollapsingTitleLayout collapsingToolbar;
     private PinnedOffsetView toolbarBackground;
     private Bypass markdown;
-    private CustomTabActivityManager chromeCustomTab;
-    private CustomTabsSession chromeCustomTabSession;
-    private boolean chromeCustomTabSupported;
-
-    private View.OnClickListener fabClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            doFabExpand();
-            if (chromeCustomTabSupported) {
-                CustomTabUiBuilder tabBuilder = createChromeTabUi(DesignerNewsStory.this);
-                tabBuilder.setStartAnimations(getApplicationContext(),
-                        R.anim.chrome_custom_tab_enter,
-                        R.anim.fade_out_rapidly);
-                chromeCustomTab.launchUrl(DesignerNewsStory.this, chromeCustomTabSession, story
-                        .url, tabBuilder);
-            } else {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(story.url)));
-            }
-        }
-    };
-
-    private Transition.TransitionListener returnHomeListener = new AnimUtils
-            .TransitionListenerAdapter() {
-        @Override
-        public void onTransitionStart(Transition transition) {
-            super.onTransitionStart(transition);
-            // hide the fab as for some reason it jumps position??  TODO work out why
-            fab.setVisibility(View.INVISIBLE);
-        }
-    };
-
-    public static CustomTabUiBuilder createChromeTabUi(Context context) {
-        Intent upvoteStory = new Intent(context, UpvoteStoryService.class);
-        upvoteStory.setAction(UpvoteStoryService.ACTION_UPVOTE);
-        PendingIntent pendingIntent = PendingIntent.getService(context, 0, upvoteStory, 0);
-        return new CustomTabUiBuilder()
-                .setToolbarColor(ContextCompat.getColor(context, R.color.designer_news))
-                .setActionButton(ImageUtils.vectorToBitmap(context, R.drawable.ic_thumb_up),
-                        pendingIntent);
-    }
+    private CustomTabActivityManager customTab;
+    private CustomTabsSession customTabSession;
+    private boolean customTabSupported;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +123,7 @@ public class DesignerNewsStory extends Activity {
                 .setBlockQuoteIndentSize(TypedValue.COMPLEX_UNIT_DIP, 2f)
                 .setBlockQuoteTextColor(ContextCompat.getColor(this, R.color.designer_news_quote)));
 
+        commentsList.setLayoutManager(new LinearLayoutManager(this));
         View storyDescription = getLayoutInflater().inflate(R.layout
                 .designer_news_story_description, commentsList, false);
         bindDescription(storyDescription);
@@ -168,24 +134,7 @@ public class DesignerNewsStory extends Activity {
             collapsingToolbar = (CollapsingTitleLayout) findViewById(R.id.backdrop_toolbar);
             collapsingToolbar.setTitle(story.title);
             toolbarBackground = (PinnedOffsetView) findViewById(R.id.story_title_background);
-            commentsList.setOnScrollListener(new AbsListView.OnScrollListener() {
-                @Override public void onScrollStateChanged(AbsListView view, int scrollState) { }
-
-                @Override
-                public void onScroll(AbsListView view, int firstVisibleItem, int
-                        visibleItemCount, int totalItemCount) {
-                    if (commentsList.getMaxScrollAmount() > 0
-                            && commentsList.getChildAt(0) != null
-                            && firstVisibleItem == 0) {
-                        int scrolled = commentsList.getPaddingTop() - commentsList.getChildAt(0)
-                                .getTop();
-                        collapsingToolbar.setScrollPixelOffset(scrolled);
-                        toolbarBackground.setOffset(-scrolled);
-                    } else if (visibleItemCount > 0) {
-                        collapsingToolbar.setScrollOffset(1f);
-                    }
-                }
-            });
+            commentsList.addOnScrollListener(headerScrollListener);
         } else { // landscape > scroll toolbar with content
             toolbar = (Toolbar) storyDescription.findViewById(R.id.story_toolbar);
             FontTextView title = (FontTextView) toolbar.findViewById(R.id.story_title);
@@ -199,32 +148,28 @@ public class DesignerNewsStory extends Activity {
             }
         });
 
-        commentsList.addHeaderView(storyDescription);
-
         if (story.comment_count > 0) {
             // flatten the comments from a nested structure {@see Comment#comments} to an
             // array for our adapter (saving the depth).
             List<ThreadedComment> wrapped = new ArrayList<>(story.comment_count);
             addComments(story.comments, 0, wrapped);
-            commentsList.setAdapter(new DesignerNewsCommentsAdapter(this, R.layout
-                    .designer_news_comment, wrapped));
+            commentsList.setAdapter(new DesignerNewsCommentsAdapter(storyDescription, wrapped));
 
         } else {
-            // controlling manually rather than using ListView#setEmptyView as we always want
-            // to display the header view
-            commentsList.setAdapter(getNoCommentsAdapter());
+            commentsList.setAdapter(
+                    new DesignerNewsCommentsAdapter(storyDescription, Collections.EMPTY_LIST));
         }
 
         // setup chrome custom tab stuff if it's supported
-        chromeCustomTab = CustomTabActivityManager.getInstance();
-        chromeCustomTabSupported = chromeCustomTab.bindService(this, new CustomTabActivityManager
+        customTab = CustomTabActivityManager.getInstance();
+        customTabSupported = customTab.bindService(this, new CustomTabActivityManager
                 .ServiceConnectionCallback() {
             @Override
             public void onServiceConnected() {
-                if (chromeCustomTab.warmup()) {
-                    chromeCustomTabSession = chromeCustomTab.newSession(null);
-                    if (chromeCustomTabSession != null) {
-                        chromeCustomTabSession.mayLaunchUrl(Uri.parse(story.url), null, null);
+                if (customTab.warmup()) {
+                    customTabSession = customTab.newSession(null);
+                    if (customTabSession != null) {
+                        customTabSession.mayLaunchUrl(Uri.parse(story.url), null, null);
                     }
                 } else {
                     // TODO remove this debug effect
@@ -236,8 +181,56 @@ public class DesignerNewsStory extends Activity {
 
     @Override
     protected void onDestroy() {
-        chromeCustomTab.unbindService(this);
+        customTab.unbindService(this);
         super.onDestroy();
+    }
+
+    private int gridScrollY = 0;
+    private RecyclerView.OnScrollListener headerScrollListener
+            = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            gridScrollY += dy;
+            collapsingToolbar.setScrollPixelOffset(gridScrollY);
+            toolbarBackground.setOffset(-gridScrollY);
+        }
+    };
+
+    private View.OnClickListener fabClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            doFabExpand();
+            if (customTabSupported) {
+                CustomTabUiBuilder tabBuilder = createChromeTabUi(DesignerNewsStory.this);
+                tabBuilder.setStartAnimations(getApplicationContext(),
+                        R.anim.chrome_custom_tab_enter,
+                        R.anim.fade_out_rapidly);
+                customTab.launchUrl(DesignerNewsStory.this, customTabSession, story
+                        .url, tabBuilder);
+            } else {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(story.url)));
+            }
+        }
+    };
+
+    private Transition.TransitionListener returnHomeListener = new AnimUtils
+            .TransitionListenerAdapter() {
+        @Override
+        public void onTransitionStart(Transition transition) {
+            super.onTransitionStart(transition);
+            // hide the fab as for some reason it jumps position??  TODO work out why
+            fab.setVisibility(View.INVISIBLE);
+        }
+    };
+
+    public static CustomTabUiBuilder createChromeTabUi(Context context) {
+        Intent upvoteStory = new Intent(context, UpvoteStoryService.class);
+        upvoteStory.setAction(UpvoteStoryService.ACTION_UPVOTE);
+        PendingIntent pendingIntent = PendingIntent.getService(context, 0, upvoteStory, 0);
+        return new CustomTabUiBuilder()
+                .setToolbarColor(ContextCompat.getColor(context, R.color.designer_news))
+                .setActionButton(ImageUtils.vectorToBitmap(context, R.drawable.ic_thumb_up),
+                        pendingIntent);
     }
 
     private void doFabExpand() {
@@ -329,38 +322,12 @@ public class DesignerNewsStory extends Activity {
         }
     }
 
-
-    private ListAdapter getNoCommentsAdapter() {
-        return new BaseAdapter() {
-            @Override
-            public int getCount() {
-                return 1;
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return null;
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return 0;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                return DesignerNewsStory.this.getLayoutInflater().inflate(R.layout
-                        .designer_news_no_comments, parent, false);
-            }
-        };
-    }
-
     private boolean isOP(Long userId) {
         return userId.equals(story.user_id);
     }
 
     // convenience class used to convert nested comment structure returned from the API to a flat
-    // structure with a depth attribute, suitible for showing in a list.
+    // structure with a depth attribute, suitable for showing in a list.
     protected class ThreadedComment {
         final int depth;
         final Comment comment;
@@ -372,59 +339,113 @@ public class DesignerNewsStory extends Activity {
         }
     }
 
-    protected class DesignerNewsCommentsAdapter extends ArrayAdapter<ThreadedComment> {
+    /* package */ class DesignerNewsCommentsAdapter
+            extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        private int threadWidth;
-        private int threadGap;
+        private static final int TYPE_HEADER = 0;
+        private static final int TYPE_NO_COMMENTS = 1;
+        private static final int TYPE_COMMENT = 2;
 
-        DesignerNewsCommentsAdapter(Context context, int resource, List<ThreadedComment> comments) {
-            super(context, resource, comments);
-            threadWidth = context.getResources().getDimensionPixelSize(R.dimen
-                    .comment_thread_width);
-            threadGap = context.getResources().getDimensionPixelSize(R.dimen.comment_thread_gap);
+        private View header;
+        private List<ThreadedComment> comments;
+
+        DesignerNewsCommentsAdapter(@NonNull View header, @NonNull List<ThreadedComment> comments) {
+            this.header = header;
+            this.comments = comments;
+        }
+
+        private boolean hasComments() {
+            return !comments.isEmpty();
         }
 
         @Override
-        public View getView(int position, View view, ViewGroup container) {
-            ThreadedComment comment = getItem(position);
-            if (view == null) {
-                view = getLayoutInflater().inflate(R.layout.designer_news_comment, container,
-                        false);
-                TextView tvBody = (TextView) view.findViewById(R.id.comment_text);
-                view.setTag(R.id.comment_text, tvBody);
-                view.setTag(R.id.depth, view.findViewById(R.id.depth));
-                ((ImageView) view.getTag(R.id.depth)).setImageDrawable(new
-                        ThreadedCommentDrawable(threadWidth, threadGap));
-                // view.setTag(R.id.user_image, view.findViewById(R.id.user_image));
-                view.setTag(R.id.comment_author, view.findViewById(R.id.comment_author));
-                view.setTag(R.id.comment_time_ago, view.findViewById(R.id.comment_time_ago));
+        public int getItemViewType(int position) {
+            if (position == 0) {
+                return TYPE_HEADER;
+            } else {
+                return hasComments() ? TYPE_COMMENT : TYPE_NO_COMMENTS;
             }
-            final TextView commentText = (TextView) view.getTag(R.id.comment_text);
-            HtmlUtils.setTextWithNiceLinks(commentText, markdown.markdownToSpannable(comment
-                    .comment.body, commentText, new Bypass.LoadImageCallback() {
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            switch (viewType) {
+                case TYPE_HEADER:
+                    return new HeaderHolder(header);
+                case TYPE_COMMENT:
+                    return new CommentHolder(
+                        getLayoutInflater().inflate(R.layout.designer_news_comment, parent, false));
+                case TYPE_NO_COMMENTS:
+                    return new NoCommentsHolder(
+                        getLayoutInflater().inflate(
+                                R.layout.designer_news_no_comments, parent, false));
+            }
+            return null;
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            if (getItemViewType(position) == TYPE_COMMENT) {
+                bindComment((CommentHolder) holder, comments.get(position - 1)); // minus header
+            } // nothing to bind for header / no comment views
+        }
+
+        private void bindComment(final CommentHolder holder, final ThreadedComment comment) {
+            HtmlUtils.setTextWithNiceLinks(holder.comment, markdown.markdownToSpannable(comment
+                    .comment.body, holder.comment, new Bypass.LoadImageCallback() {
                 @Override
                 public void loadImage(String src, ImageLoadingSpan loadingSpan) {
                     Glide.with(DesignerNewsStory.this)
                             .load(src)
                             .asBitmap()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(new ImageSpanTarget(commentText, loadingSpan));
+                            .into(new ImageSpanTarget(holder.comment, loadingSpan));
                 }
             }));
-            ((AuthorTextView) view.getTag(R.id.comment_author)).setText(comment.comment
-                    .user_display_name);
-            ((AuthorTextView) view.getTag(R.id.comment_author)).setOriginalPoster(isOP(comment
+            holder.author.setText(comment.comment.user_display_name);
+            holder.author.setOriginalPoster(isOP(comment
                     .comment.user_id));
-            ((TextView) view.getTag(R.id.comment_time_ago)).setText(
+            holder.timeAgo.setText(
                     DateUtils.getRelativeTimeSpanString(comment.comment.created_at.getTime(),
                             System.currentTimeMillis(),
                             DateUtils.SECOND_IN_MILLIS));
-            ImageView depth = (ImageView) view.getTag(R.id.depth);
             ThreadedCommentDrawable depthDrawable = new ThreadedCommentDrawable(threadWidth,
                     threadGap);
             depthDrawable.setDepth(comment.depth);
-            depth.setImageDrawable(depthDrawable);
-            return view;
+            holder.threadDepth.setImageDrawable(depthDrawable);
+        }
+
+        @Override
+        public int getItemCount() {
+            return hasComments() ? comments.size() + 1 // add one for header
+                    : 2; // header + no comments view
+        }
+    }
+
+    /* package */ static class CommentHolder extends RecyclerView.ViewHolder {
+
+        @Bind(R.id.depth) ImageView threadDepth;
+        @Bind(R.id.comment_author) AuthorTextView author;
+        @Bind(R.id.comment_time_ago) TextView timeAgo;
+        @Bind(R.id.comment_text) TextView comment;
+
+        public CommentHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    /* package */ static class HeaderHolder extends RecyclerView.ViewHolder {
+
+        public HeaderHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    /* package */ static class NoCommentsHolder extends RecyclerView.ViewHolder {
+
+        public NoCommentsHolder(View itemView) {
+            super(itemView);
         }
     }
 }

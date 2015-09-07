@@ -45,14 +45,6 @@
             android:paddingEnd="@dimen/padding_normal"
             android:orientation="horizontal">
 
-            <!--<com.example.android.plaid.ui.widget.CircularImageView-->
-                <!--android:id="@+id/user_image"-->
-                <!--android:layout_width="20dp"-->
-                <!--android:layout_height="20dp"-->
-                <!--android:layout_marginStart="8dp"-->
-                <!--android:layout_marginEnd="8dp"-->
-                <!--android:foreground="@drawable/mid_grey_ripple" />-->
-
             <com.example.android.plaid.ui.widget.AuthorTextView
                 android:id="@+id/comment_author"
                 android:layout_height="wrap_content"

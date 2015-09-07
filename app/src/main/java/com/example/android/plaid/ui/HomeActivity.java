@@ -82,7 +82,6 @@ import com.example.android.plaid.ui.recyclerview.FilterTouchHelperCallback;
 import com.example.android.plaid.ui.recyclerview.InfiniteScrollListener;
 import com.example.android.plaid.ui.util.AnimUtils;
 import com.example.android.plaid.ui.util.ColorUtils;
-import com.example.android.plaid.ui.util.ImageUtils;
 import com.example.android.plaid.ui.util.ImeUtils;
 import com.example.android.plaid.ui.util.ViewUtils;
 import com.example.android.plaid.ui.widget.DismissibleViewCallback;

@@ -20,28 +20,26 @@ import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
 
 /**
- * Created by nickbutcher on 7/22/14.
+ * A drawable showing the depth of a threaded conversation
  */
 public class ThreadedCommentDrawable extends Drawable {
 
-    //    private static final int[] threadColours = { 0x200288d1,     // 75% Light Blue 700
-//                                                 0x20039be5,     // 75% Light Blue 600
-//                                                 0x2003a9f4,     // 75% Light Blue 500
-//                                                 0x2029b6f6,     // 75% Light Blue 400
-//                                                 0x204fc3f7 };   // 75% Light Blue 300
-    private static final int[] threadColours = {0xffECEEF1,
-            0xffECEEF1,
-            0xffECEEF1,
-            0xffECEEF1,
-            0xffECEEF1};
+    private static final @ColorInt int THREAD_COLOR = 0xffeceef1;
+
     private final int threadWidth;
     private final int gap;
     private final int halfThreadWidth;
     private final Paint paint;
     private int threads;
 
+    /**
+     *
+     * @param threadWidth in pixels
+     * @param gap in pixels
+     */
     public ThreadedCommentDrawable(int threadWidth, int gap) {
         this.threadWidth = threadWidth;
         this.gap = gap;
@@ -49,16 +47,17 @@ public class ThreadedCommentDrawable extends Drawable {
         paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(threadWidth);
+        paint.setColor(THREAD_COLOR);
     }
 
     public void setDepth(int depth) {
         this.threads = depth + 1;
+        invalidateSelf();
     }
 
     @Override
     public void draw(Canvas canvas) {
         for (int thread = 0; thread < threads; thread++) {
-            paint.setColor(threadColours[thread % threadColours.length]);
             int left = halfThreadWidth + (thread * (threadWidth + gap));
             canvas.drawLine(left, 0, left, getBounds().bottom, paint);
         }

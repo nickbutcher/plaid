@@ -19,29 +19,28 @@
 <com.example.android.plaid.ui.widget.ElasticDragDismissFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:plaid="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/comments_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_light"
     android:transitionName="@string/transition_story_background"
-    plaid:dragDismissDistance="@dimen/drag_dismiss_distance"
-    plaid:dragElasticity="0.2"
-    plaid:dragDismissScale="0.95"
+    app:dragDismissDistance="@dimen/drag_dismiss_distance"
+    app:dragElasticity="0.2"
+    app:dragDismissScale="0.95"
     tools:context="com.example.android.plaid.ui.DesignerNewsStory">
 
     <!-- description added as header to listview.
          see layout/designer_news_story_description -->
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/comments_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:nestedScrollingEnabled="true"
         android:paddingTop="@dimen/extended_height_toolbar"
         android:paddingBottom="@dimen/padding_room_for_fab"
         android:clipToPadding="false"
-        android:divider="@null" />
+        android:scrollbars="vertical" />
 
     <com.example.android.plaid.ui.widget.CollapsingTitleLayout
         android:id="@+id/backdrop_toolbar"
@@ -49,8 +48,8 @@
         android:layout_height="@dimen/extended_height_toolbar"
         android:minHeight="?android:actionBarSize"
         android:textAppearance="@style/TextAppearance.ToolbarTitle"
-        plaid:expandedTextSize="@dimen/display_3_text_size"
-        plaid:expandedMargin="@dimen/padding_normal"
+        app:expandedTextSize="@dimen/display_3_text_size"
+        app:expandedMargin="@dimen/padding_normal"
         android:elevation="@dimen/z_app_bar"
         android:theme="@style/PlaidDarkOverlay">
 

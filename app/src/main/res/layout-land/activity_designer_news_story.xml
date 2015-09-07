@@ -26,16 +26,16 @@
     plaid:dragElasticity="0.2"
     plaid:dragDismissScale="0.95">
 
-    <!-- toolbar & description added as header to listview.
+    <!-- toolbar & description added as header in the adapter
          see layout/designer_news_story_description -->
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/comments_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/padding_normal"
         android:clipToPadding="false"
-        android:divider="@null" />
+        android:scrollbars="vertical" />
 
     <include layout="@layout/designer_news_story_fab"/>
 
