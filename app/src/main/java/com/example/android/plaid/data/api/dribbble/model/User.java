@@ -68,6 +68,19 @@ public class User implements Parcelable {
     public final Date created_at;
     public final Date updated_at;
 
+    /**
+     *
+     * Constructs a minimum viable user object
+     */
+    public User(long id,
+                String name,
+                String username,
+                String avatar_url) {
+        // ewww
+        this(id, name, username, null, avatar_url, null, null, null, 0, 0, 0, 0, 0, 0, 0, null,
+                null, null, null, null, null, null, null, null, null, null);
+    }
+
     public User(long id,
                 String name,
                 String username,

@@ -39,13 +39,15 @@ public class DribbblePrefs {
     private static final String KEY_ACCESS_TOKEN = "KEY_ACCESS_TOKEN";
     private static final String KEY_USER_ID = "KEY_USER_ID";
     private static final String KEY_USER_NAME = "KEY_USER_NAME";
+    private static final String KEY_USER_USERNAME = "KEY_USER_USERNAME";
     private static final String KEY_USER_AVATAR = "KEY_USER_AVATAR";
     private final SharedPreferences prefs;
 
     private String accessToken;
     private boolean isLoggedIn = false;
     private long userId;
-    private String username;
+    private String userName;
+    private String userUsername;
     private String userAvatar;
 
     public DribbblePrefs(Context context) {
@@ -55,7 +57,8 @@ public class DribbblePrefs {
         isLoggedIn = !TextUtils.isEmpty(accessToken);
         if (isLoggedIn) {
             userId = prefs.getLong(KEY_USER_ID, 0l);
-            username = prefs.getString(KEY_USER_NAME, null);
+            userName = prefs.getString(KEY_USER_NAME, null);
+            userUsername = prefs.getString(KEY_USER_USERNAME, null);
             userAvatar = prefs.getString(KEY_USER_AVATAR, null);
         }
     }
@@ -79,12 +82,14 @@ public class DribbblePrefs {
 
     public void setLoggedInUser(User user) {
         if (user != null) {
-            username = user.username;
+            userName = user.name;
+            userUsername = user.username;
             userId = user.id;
             userAvatar = user.avatar_url;
             SharedPreferences.Editor editor = prefs.edit();
             editor.putLong(KEY_USER_ID, userId);
-            editor.putString(KEY_USER_NAME, username);
+            editor.putString(KEY_USER_NAME, userName);
+            editor.putString(KEY_USER_USERNAME, userUsername);
             editor.putString(KEY_USER_AVATAR, userAvatar);
             editor.apply();
         }
@@ -95,18 +100,27 @@ public class DribbblePrefs {
     }
 
     public String getUserName() {
-        return username;
+        return userName;
+    }
+
+    public String getUserUsername() {
+        return userUsername;
     }
 
     public String getUserAvatar() {
         return userAvatar;
     }
 
+    public User getUser() {
+        return new User(userId, userName, userUsername, userAvatar);
+    }
+
     public void logout() {
         isLoggedIn = false;
         accessToken = null;
         userId = 0l;
-        username = null;
+        userName = null;
+        userUsername = null;
         userAvatar = null;
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(KEY_ACCESS_TOKEN, null);

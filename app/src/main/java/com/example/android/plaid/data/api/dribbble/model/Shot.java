@@ -66,7 +66,7 @@ public class Shot extends PlaidItem implements Parcelable {
     public final String projects_url;
     public final String rebounds_url;
     public final List<String> tags;
-    public final User user;
+    public User user;
     public final Team team;
     // todo move this into a decorator
     public boolean hasFadedIn = false;

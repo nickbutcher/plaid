@@ -137,7 +137,8 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
 
     private boolean isAuthorisedSource(Source source) {
         return source.key.equals(SourceManager.SOURCE_DRIBBBLE_FOLLOWING)
-                || source.key.equals(SourceManager.SOURCE_DRIBBBLE_LIKES);
+                || source.key.equals(SourceManager.SOURCE_DRIBBBLE_USER_LIKES)
+                || source.key.equals(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
     }
 
     @Override

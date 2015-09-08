@@ -10,6 +10,7 @@ import com.example.android.plaid.data.api.dribbble.DribbbleSearch;
 import com.example.android.plaid.data.api.dribbble.DribbbleService;
 import com.example.android.plaid.data.api.dribbble.model.Like;
 import com.example.android.plaid.data.api.dribbble.model.Shot;
+import com.example.android.plaid.data.api.dribbble.model.User;
 import com.example.android.plaid.data.api.producthunt.ProductHuntService;
 import com.example.android.plaid.data.api.producthunt.model.PostsResponse;
 import com.example.android.plaid.data.prefs.DesignerNewsPrefs;
@@ -116,14 +117,17 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
                 case SourceManager.SOURCE_DESIGNER_NEWS_RECENT:
                     loadDesignerNewsRecent(page);
                     break;
+                case SourceManager.SOURCE_DRIBBBLE_POPULAR:
+                    loadDribbblePopular(page);
+                    break;
                 case SourceManager.SOURCE_DRIBBBLE_FOLLOWING:
                     loadDribbbleFollowing(page);
                     break;
-                case SourceManager.SOURCE_DRIBBBLE_LIKES:
-                    loadDribbbleLikes(page);
+                case SourceManager.SOURCE_DRIBBBLE_USER_LIKES:
+                    loadDribbbleUserLikes(page);
                     break;
-                case SourceManager.SOURCE_DRIBBBLE_POPULAR:
-                    loadDribbblePopular(page);
+                case SourceManager.SOURCE_DRIBBBLE_USER_SHOTS:
+                    loadDribbbleUserShots(page);
                     break;
                 case SourceManager.SOURCE_DRIBBBLE_RECENT:
                     loadDribbbleRecent(page);
@@ -288,13 +292,13 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
         }
     }
 
-    private void loadDribbbleLikes(final int page) {
+    private void loadDribbbleUserLikes(final int page) {
         if (dribbblePrefs.isLoggedIn()) {
-            dribbbleApi.getLikes(page, DribbbleService.PER_PAGE_DEFAULT,
+            dribbbleApi.getUserLikes(page, DribbbleService.PER_PAGE_DEFAULT,
                     new Callback<List<Like>>() {
                         @Override
                         public void success(List<Like> likes, Response response) {
-                            if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_LIKES)) {
+                            if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_USER_LIKES)) {
                                 // API returns Likes but we just want the Shots
                                 List<Shot> likedShots = new ArrayList<>(likes.size());
                                 for (Like like : likes) {
@@ -303,7 +307,7 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
                                 // these will be sorted like any other shot (popularity per page)
                                 // TODO figure out a more appropriate sorting strategy for likes
                                 setPage(likedShots, page);
-                                setDataSource(likedShots, SourceManager.SOURCE_DRIBBBLE_LIKES);
+                                setDataSource(likedShots, SourceManager.SOURCE_DRIBBBLE_USER_LIKES);
                                 onDataLoaded(likedShots);
                             }
                             loadingCount.decrementAndGet();
@@ -318,6 +322,37 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
             loadingCount.decrementAndGet();
         }
     }
+
+    private void loadDribbbleUserShots(final int page) {
+        if (dribbblePrefs.isLoggedIn()) {
+            dribbbleApi.getUserShots(page, DribbbleService.PER_PAGE_DEFAULT,
+                    new Callback<List<Shot>>() {
+                        @Override
+                        public void success(List<Shot> shots, Response response) {
+                            if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS)) {
+                                // this api call doesn't populate the shot user field but we need it
+                                User user = dribbblePrefs.getUser();
+                                for (Shot shot : shots) {
+                                    shot.user = user;
+                                }
+
+                                setPage(shots, page);
+                                setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
+                                onDataLoaded(shots);
+                            }
+                            loadingCount.decrementAndGet();
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            loadingCount.decrementAndGet();
+                        }
+                    });
+        } else {
+            loadingCount.decrementAndGet();
+        }
+    }
+
 
     private void loadDribbbleSearch(final Source.DribbbleSearchSource source, final int page) {
         new AsyncTask<Void, Void, List<Shot>>() {

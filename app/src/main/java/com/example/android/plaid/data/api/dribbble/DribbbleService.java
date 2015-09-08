@@ -88,16 +88,21 @@ public interface DribbbleService {
 
     /* List the authenticated user’s shot likes */
     @GET("/user/likes")
-    void getLikes(@Query("page") Integer page,
-                  @Query("per_page") Integer pageSize,
-                  Callback<List<Like>> callback);
+    void getUserLikes(@Query("page") Integer page,
+                      @Query("per_page") Integer pageSize,
+                      Callback<List<Like>> callback);
 
+    /* List the authenticated user’s shots */
+    @GET("/user/shots")
+    void getUserShots(@Query("page") Integer page,
+                      @Query("per_page") Integer pageSize,
+                      Callback<List<Shot>> callback);
 
     /* Shot likes */
 
     @GET("/shots/{id}/likes")
-    void getLikes(@Path("id") long shotId,
-                  Callback<List<Like>> callback);
+    void getUserLikes(@Path("id") long shotId,
+                      Callback<List<Like>> callback);
 
     @GET("/shots/{id}/like")
     void liked(@Path("id") long shotId,

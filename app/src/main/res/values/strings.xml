@@ -40,9 +40,10 @@
     <!-- data sources / filters -->
     <string name="source_designer_news_popular">Popular Designer News</string>
     <string name="source_designer_news_recent">Recent Designer News</string>
-    <string name="source_dribbble_following">Dribbble following</string>
-    <string name="source_dribbble_likes">Dribbble likes</string>
     <string name="source_dribbble_popular">Popular Dribbbles</string>
+    <string name="source_dribbble_following">Dribbble following</string>
+    <string name="source_dribbble_user_likes">My Dribbble likes</string>
+    <string name="source_dribbble_user_shots">My Dribbble shots</string>
     <string name="source_dribbble_recent">Recent Dribbbles</string>
     <string name="source_dribbble_debuts">Dribbble Debuts</string>
     <string name="source_dribbble_animated">Dribbble Animated</string>

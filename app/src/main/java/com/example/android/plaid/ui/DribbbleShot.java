@@ -667,7 +667,7 @@ public class DribbbleShot extends Activity {
     }
 
     private boolean isOP(long playerId) {
-        return shot.user.id == playerId;
+        return shot.user != null && shot.user.id == playerId;
     }
 
     private ListAdapter getNoCommentsAdapter() {
