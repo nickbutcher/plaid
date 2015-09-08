@@ -36,7 +36,7 @@ import android.widget.FrameLayout;
 import android.widget.Toolbar;
 
 import com.example.android.plaid.R;
-import com.example.android.plaid.ui.util.FontUtil;
+import com.example.android.plaid.util.FontUtil;
 
 /**
  * Adapted from https://gist.github.com/chrisbanes/91ac8a20acfbdc410a68

@@ -29,7 +29,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.example.android.plaid.R;
-import com.example.android.plaid.ui.util.FontUtil;
+import com.example.android.plaid.util.FontUtil;
 
 /**
  * Created by nickbutcher on 12/16/14.

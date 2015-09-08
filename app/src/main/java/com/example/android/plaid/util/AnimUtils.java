@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.plaid.ui.util;
+package com.example.android.plaid.util;
 
 import android.animation.Animator;
 import android.animation.TimeInterpolator;

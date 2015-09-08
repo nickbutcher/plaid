@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package com.example.android.plaid.ui.util;
+package com.example.android.plaid.util;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 /**
- * Borrowed from github.com/romannurik/muzei
+ * Created by nickbutcher on 6/12/15.
  */
-public class MathUtil {
+public class ImeUtils {
 
-    private MathUtil() {
+    public static void hideIme(@NonNull EditText editText) {
+        InputMethodManager imm = (InputMethodManager) editText.getContext().getSystemService
+                (Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
 
-    public static float constrain(float min, float max, float v) {
-        return Math.max(min, Math.min(max, v));
-    }
 }

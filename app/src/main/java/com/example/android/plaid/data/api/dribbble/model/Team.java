@@ -19,7 +19,7 @@ package com.example.android.plaid.data.api.dribbble.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.android.plaid.ui.util.ParcelUtils;
+import com.example.android.plaid.util.ParcelUtils;
 
 import java.util.Map;
 

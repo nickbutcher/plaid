@@ -23,8 +23,7 @@ import android.widget.Toast;
 
 public class UpvoteStoryService extends IntentService {
 
-    public static final String ACTION_UPVOTE =
-            "com.example.android.plaid.data.api.designernews.action.UPVOTE";
+    public static final String ACTION_UPVOTE = "ACTION_UPVOTE";
 
     public UpvoteStoryService() {
         super("UpvoteStoryService");

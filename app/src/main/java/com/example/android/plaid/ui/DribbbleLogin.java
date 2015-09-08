@@ -47,8 +47,8 @@ import com.example.android.plaid.data.api.dribbble.DribbbleService;
 import com.example.android.plaid.data.api.dribbble.model.AccessToken;
 import com.example.android.plaid.data.api.dribbble.model.User;
 import com.example.android.plaid.data.prefs.DribbblePrefs;
-import com.example.android.plaid.ui.util.ScrimUtil;
-import com.example.android.plaid.ui.util.glide.CircleTransform;
+import com.example.android.plaid.util.ScrimUtil;
+import com.example.android.plaid.util.glide.CircleTransform;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

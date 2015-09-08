@@ -20,7 +20,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.example.android.plaid.data.PlaidItem;
-import com.example.android.plaid.ui.util.ParcelUtils;
+import com.example.android.plaid.util.ParcelUtils;
 
 import java.util.ArrayList;
 import java.util.List;

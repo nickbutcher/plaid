@@ -33,6 +33,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.text.TextUtils;
@@ -71,12 +72,6 @@ import com.example.android.plaid.data.api.dribbble.model.Comment;
 import com.example.android.plaid.data.api.dribbble.model.Like;
 import com.example.android.plaid.data.api.dribbble.model.Shot;
 import com.example.android.plaid.data.prefs.DribbblePrefs;
-import com.example.android.plaid.ui.util.AnimUtils;
-import com.example.android.plaid.ui.util.ColorUtils;
-import com.example.android.plaid.ui.util.HtmlUtils;
-import com.example.android.plaid.ui.util.ViewUtils;
-import com.example.android.plaid.ui.util.glide.CircleTransform;
-import com.example.android.plaid.ui.util.glide.GlideUtils;
 import com.example.android.plaid.ui.widget.AuthorTextView;
 import com.example.android.plaid.ui.widget.CheckableImageButton;
 import com.example.android.plaid.ui.widget.DismissibleViewCallback;
@@ -85,11 +80,15 @@ import com.example.android.plaid.ui.widget.FABToggle;
 import com.example.android.plaid.ui.widget.FabOverlapTextView;
 import com.example.android.plaid.ui.widget.ForegroundImageView;
 import com.example.android.plaid.ui.widget.ParallaxScrimageView;
+import com.example.android.plaid.util.AnimUtils;
+import com.example.android.plaid.util.ColorUtils;
+import com.example.android.plaid.util.HtmlUtils;
+import com.example.android.plaid.util.ViewUtils;
+import com.example.android.plaid.util.customtabs.CustomTabActivityHelper;
+import com.example.android.plaid.util.glide.CircleTransform;
+import com.example.android.plaid.util.glide.GlideUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import org.chromium.customtabsclient.CustomTabActivityManager;
-import org.chromium.customtabsclient.CustomTabUiBuilder;
 
 import java.util.List;
 
@@ -132,10 +131,13 @@ public class DribbbleShot extends Activity {
     private View.OnClickListener shotClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            CustomTabActivityManager.getInstance().launchUrl(DribbbleShot.this, null,
-                    shot.url,
-                    new CustomTabUiBuilder().setToolbarColorRes(DribbbleShot.this, R.color
-                            .dribbble));
+            CustomTabActivityHelper.openCustomTab(
+                    DribbbleShot.this,
+                    new CustomTabsIntent.Builder()
+                            .setToolbarColor(
+                                    ContextCompat.getColor(DribbbleShot.this, R.color.dribbble))
+                            .build(),
+                    Uri.parse(shot.url));
         }
     };
 

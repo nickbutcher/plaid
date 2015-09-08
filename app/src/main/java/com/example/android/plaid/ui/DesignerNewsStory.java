@@ -27,6 +27,8 @@ import android.graphics.Path;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.customtabs.CustomTabsSession;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -52,19 +54,17 @@ import com.example.android.plaid.data.api.designernews.model.Comment;
 import com.example.android.plaid.data.api.designernews.model.Story;
 import com.example.android.plaid.ui.drawable.ThreadedCommentDrawable;
 import com.example.android.plaid.ui.span.ImageLoadingSpan;
-import com.example.android.plaid.ui.util.AnimUtils;
-import com.example.android.plaid.ui.util.HtmlUtils;
-import com.example.android.plaid.ui.util.ImageUtils;
-import com.example.android.plaid.ui.util.glide.ImageSpanTarget;
 import com.example.android.plaid.ui.widget.AuthorTextView;
 import com.example.android.plaid.ui.widget.CollapsingTitleLayout;
 import com.example.android.plaid.ui.widget.DismissibleViewCallback;
 import com.example.android.plaid.ui.widget.ElasticDragDismissFrameLayout;
 import com.example.android.plaid.ui.widget.FontTextView;
 import com.example.android.plaid.ui.widget.PinnedOffsetView;
-
-import org.chromium.customtabsclient.CustomTabActivityManager;
-import org.chromium.customtabsclient.CustomTabUiBuilder;
+import com.example.android.plaid.util.AnimUtils;
+import com.example.android.plaid.util.HtmlUtils;
+import com.example.android.plaid.util.ImageUtils;
+import com.example.android.plaid.util.customtabs.CustomTabActivityHelper;
+import com.example.android.plaid.util.glide.ImageSpanTarget;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -91,9 +91,7 @@ public class DesignerNewsStory extends Activity {
     private CollapsingTitleLayout collapsingToolbar;
     private PinnedOffsetView toolbarBackground;
     private Bypass markdown;
-    private CustomTabActivityManager customTab;
-    private CustomTabsSession customTabSession;
-    private boolean customTabSupported;
+    private CustomTabActivityHelper customTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,31 +157,61 @@ public class DesignerNewsStory extends Activity {
             commentsList.setAdapter(
                     new DesignerNewsCommentsAdapter(storyDescription, Collections.EMPTY_LIST));
         }
+        customTab = new CustomTabActivityHelper();
+        customTab.setConnectionCallback(customTabConnect);
+    }
 
-        // setup chrome custom tab stuff if it's supported
-        customTab = CustomTabActivityManager.getInstance();
-        customTabSupported = customTab.bindService(this, new CustomTabActivityManager
-                .ServiceConnectionCallback() {
-            @Override
-            public void onServiceConnected() {
-                if (customTab.warmup()) {
-                    customTabSession = customTab.newSession(null);
-                    if (customTabSession != null) {
-                        customTabSession.mayLaunchUrl(Uri.parse(story.url), null, null);
-                    }
-                } else {
-                    // TODO remove this debug effect
-                    fab.animate().rotation(180f).setDuration(600L).setStartDelay(500L);
-                }
-            }
-        });
+    @Override
+    protected void onStart() {
+        super.onStart();
+        customTab.bindCustomTabsService(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // clean up after any fab expansion
+        // todo, circular reval (hide) this?
+        fab.setAlpha(1f);
+        fabExpand.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    protected void onStop() {
+        customTab.unbindCustomTabsService(this);
+        super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        customTab.unbindService(this);
+        customTab.setConnectionCallback(null);
         super.onDestroy();
     }
+
+    public static CustomTabsIntent.Builder getCustomTabIntent(@NonNull Context context,
+                                                              @NonNull Story story,
+                                                              @Nullable CustomTabsSession session) {
+        Intent upvoteStory = new Intent(context, UpvoteStoryService.class);
+        upvoteStory.setAction(UpvoteStoryService.ACTION_UPVOTE);
+        PendingIntent pendingIntent = PendingIntent.getService(context, 0, upvoteStory, 0);
+        return new CustomTabsIntent.Builder(session)
+                .setToolbarColor(ContextCompat.getColor(context, R.color.designer_news))
+                .setActionButton(ImageUtils.vectorToBitmap(context, R.drawable.ic_thumb_up),
+                        story.comment, pendingIntent, true)
+                .setShowTitle(true)
+                .enableUrlBarHiding();
+    }
+
+    private final CustomTabActivityHelper.ConnectionCallback customTabConnect
+            = new CustomTabActivityHelper.ConnectionCallback() {
+
+        @Override
+        public void onCustomTabsConnected() {
+            customTab.mayLaunchUrl(Uri.parse(story.url), null, null);
+        }
+
+        @Override public void onCustomTabsDisconnected() { }
+    };
 
     private int gridScrollY = 0;
     private RecyclerView.OnScrollListener headerScrollListener
@@ -200,16 +228,15 @@ public class DesignerNewsStory extends Activity {
         @Override
         public void onClick(View v) {
             doFabExpand();
-            if (customTabSupported) {
-                CustomTabUiBuilder tabBuilder = createChromeTabUi(DesignerNewsStory.this);
-                tabBuilder.setStartAnimations(getApplicationContext(),
-                        R.anim.chrome_custom_tab_enter,
-                        R.anim.fade_out_rapidly);
-                customTab.launchUrl(DesignerNewsStory.this, customTabSession, story
-                        .url, tabBuilder);
-            } else {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(story.url)));
-            }
+            CustomTabActivityHelper.openCustomTab(
+                    DesignerNewsStory.this,
+                    getCustomTabIntent(DesignerNewsStory.this, story,
+                            customTab.getSession())
+                            .setStartAnimations(getApplicationContext(),
+                                    R.anim.chrome_custom_tab_enter,
+                                    R.anim.fade_out_rapidly)
+                            .build(),
+                    Uri.parse(story.url));
         }
     };
 
@@ -222,16 +249,6 @@ public class DesignerNewsStory extends Activity {
             fab.setVisibility(View.INVISIBLE);
         }
     };
-
-    public static CustomTabUiBuilder createChromeTabUi(Context context) {
-        Intent upvoteStory = new Intent(context, UpvoteStoryService.class);
-        upvoteStory.setAction(UpvoteStoryService.ACTION_UPVOTE);
-        PendingIntent pendingIntent = PendingIntent.getService(context, 0, upvoteStory, 0);
-        return new CustomTabUiBuilder()
-                .setToolbarColor(ContextCompat.getColor(context, R.color.designer_news))
-                .setActionButton(ImageUtils.vectorToBitmap(context, R.drawable.ic_thumb_up),
-                        pendingIntent);
-    }
 
     private void doFabExpand() {
         // translate the chrome placeholder ui so that it is centered on the FAB
@@ -276,15 +293,6 @@ public class DesignerNewsStory extends Activity {
         show.setInterpolator(AnimUtils.getMaterialInterpolator(DesignerNewsStory.this));
         show.playTogether(reveal, background, position, fadeOutFab);
         show.start();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // clean up after any fab expansion
-        // todo, circular reval (hide) this?
-        fab.setAlpha(1f);
-        fabExpand.setVisibility(View.INVISIBLE);
     }
 
     private void bindDescription(View storyDescription) {

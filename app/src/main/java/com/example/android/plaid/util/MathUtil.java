@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ * Copyright 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package android.support.customtabs;
-
-import android.net.Uri;
-import android.os.Bundle;
+package com.example.android.plaid.util;
 
 /**
- * Interface to a CustomTabsCallback.
- * @hide
+ * Borrowed from github.com/romannurik/muzei
  */
-oneway interface ICustomTabsCallback {
-    void onUserNavigationStarted(in Uri url, in Bundle extras) = 1;
-    void onUserNavigationFinished(in Uri url, in Bundle extras) = 2;
+public class MathUtil {
+
+    private MathUtil() {
+    }
+
+    public static float constrain(float min, float max, float v) {
+        return Math.max(min, Math.min(max, v));
+    }
 }

@@ -114,7 +114,7 @@
 
         <!-- Glide configurations for image loading -->
         <meta-data
-            android:name="com.example.android.plaid.ui.util.glide.GlideConfiguration"
+            android:name="com.example.android.plaid.util.glide.GlideConfiguration"
             android:value="GlideModule" />
         <meta-data
             android:name="com.bumptech.glide.integration.okhttp.OkHttpGlideModule"

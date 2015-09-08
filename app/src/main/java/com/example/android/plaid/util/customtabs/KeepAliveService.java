@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package com.example.android.plaid.ui.util;
+package com.example.android.plaid.util.customtabs;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
+import android.app.Service;
+import android.content.Intent;
+import android.os.Binder;
+import android.os.IBinder;
 
 /**
- * Created by nickbutcher on 6/12/15.
+ * Empty service used by the custom tab to bind to, raising the application's importance.
+ *
+ * Adapted from github.com/GoogleChrome/custom-tabs-client
  */
-public class ImeUtils {
+public class KeepAliveService extends Service {
+    private static final Binder sBinder = new Binder();
 
-    public static void hideIme(@NonNull EditText editText) {
-        InputMethodManager imm = (InputMethodManager) editText.getContext().getSystemService
-                (Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+    @Override
+    public IBinder onBind(Intent intent) {
+        return sBinder;
     }
-
 }

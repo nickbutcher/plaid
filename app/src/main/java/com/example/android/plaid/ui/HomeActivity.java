@@ -80,10 +80,10 @@ import com.example.android.plaid.data.prefs.DribbblePrefs;
 import com.example.android.plaid.data.prefs.SourceManager;
 import com.example.android.plaid.ui.recyclerview.FilterTouchHelperCallback;
 import com.example.android.plaid.ui.recyclerview.InfiniteScrollListener;
-import com.example.android.plaid.ui.util.AnimUtils;
-import com.example.android.plaid.ui.util.ColorUtils;
-import com.example.android.plaid.ui.util.ImeUtils;
-import com.example.android.plaid.ui.util.ViewUtils;
+import com.example.android.plaid.util.AnimUtils;
+import com.example.android.plaid.util.ColorUtils;
+import com.example.android.plaid.util.ImeUtils;
+import com.example.android.plaid.util.ViewUtils;
 import com.example.android.plaid.ui.widget.DismissibleViewCallback;
 import com.example.android.plaid.ui.widget.ElasticDragDismissFrameLayout;
 

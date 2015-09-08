@@ -24,10 +24,11 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.ColorMatrixColorFilter;
+import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.transition.ArcMotion;
@@ -53,13 +54,10 @@ import com.example.android.plaid.data.api.designernews.model.Story;
 import com.example.android.plaid.data.api.dribbble.model.Shot;
 import com.example.android.plaid.data.api.producthunt.model.Post;
 import com.example.android.plaid.data.pocket.PocketUtils;
-import com.example.android.plaid.ui.util.AnimUtils;
-import com.example.android.plaid.ui.util.ObservableColorMatrix;
-import com.example.android.plaid.ui.util.glide.DribbbleTarget;
 import com.example.android.plaid.ui.widget.BadgedFourThreeImageView;
-
-import org.chromium.customtabsclient.CustomTabActivityManager;
-import org.chromium.customtabsclient.CustomTabUiBuilder;
+import com.example.android.plaid.util.ObservableColorMatrix;
+import com.example.android.plaid.util.customtabs.CustomTabActivityHelper;
+import com.example.android.plaid.util.glide.DribbbleTarget;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -144,11 +142,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CustomTabActivityManager.getInstance().launchUrl(
-                                host,
-                                null,
-                                story.url,
-                                DesignerNewsStory.createChromeTabUi(holder.itemView.getContext()));
+                        CustomTabActivityHelper.openCustomTab(host,
+                                DesignerNewsStory.getCustomTabIntent(host, story, null).build(),
+                                Uri.parse(story.url));
                     }
                 }
                                           );
@@ -340,19 +336,23 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         holder.comments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomTabActivityManager.getInstance().launchUrl(host, null,
-                        item.discussion_url,
-                        new CustomTabUiBuilder().setToolbarColor(
-                                ContextCompat.getColor(host, R.color.product_hunt)));
+                CustomTabActivityHelper.openCustomTab(
+                        host,
+                        new CustomTabsIntent.Builder()
+                                .setToolbarColor(ContextCompat.getColor(host, R.color.product_hunt))
+                                .build(),
+                        Uri.parse(item.discussion_url));
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomTabActivityManager.getInstance().launchUrl(host, null,
-                        item.redirect_url,
-                        new CustomTabUiBuilder().setToolbarColor(
-                                ContextCompat.getColor(host, R.color.product_hunt)));
+                CustomTabActivityHelper.openCustomTab(
+                        host,
+                        new CustomTabsIntent.Builder()
+                                .setToolbarColor(ContextCompat.getColor(host, R.color.product_hunt))
+                                .build(),
+                        Uri.parse(item.redirect_url));
             }
         });
     }

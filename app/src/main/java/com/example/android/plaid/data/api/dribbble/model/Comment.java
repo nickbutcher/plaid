@@ -20,7 +20,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.widget.TextView;
 
-import com.example.android.plaid.ui.util.HtmlUtils;
+import com.example.android.plaid.util.HtmlUtils;
 
 import java.util.Date;
 

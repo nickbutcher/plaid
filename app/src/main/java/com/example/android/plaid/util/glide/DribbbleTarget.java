@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.plaid.ui.util.glide;
+package com.example.android.plaid.util.glide;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -27,8 +27,8 @@ import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.example.android.plaid.R;
-import com.example.android.plaid.ui.util.ColorUtils;
-import com.example.android.plaid.ui.util.ViewUtils;
+import com.example.android.plaid.util.ColorUtils;
+import com.example.android.plaid.util.ViewUtils;
 import com.example.android.plaid.ui.widget.BadgedFourThreeImageView;
 
 /**

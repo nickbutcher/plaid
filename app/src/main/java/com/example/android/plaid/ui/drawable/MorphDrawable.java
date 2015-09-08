@@ -24,7 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.util.Property;
 
-import com.example.android.plaid.ui.util.AnimUtils;
+import com.example.android.plaid.util.AnimUtils;
 
 /**
  * Created by nickbutcher on 2/13/15.

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.plaid.ui.util;
+package com.example.android.plaid.util;
 
 import android.content.res.ColorStateList;
 import android.text.Html;
@@ -34,7 +34,7 @@ public class HtmlUtils {
      * Work around some 'features' of TextView and URLSpans. i.e. vanilla URLSpans do not react to
      * touch so we replace them with our own {@link com.example.android.plaid.ui.span
      * .TouchableUrlSpan}
-     * & {@link com.example.android.plaid.ui.util.LinkTouchMovementMethod} to fix this.
+     * & {@link com.example.android.plaid.util.LinkTouchMovementMethod} to fix this.
      * <p/>
      * Setting a custom MovementMethod on a TextView also alters touch handling (see
      * TextView#fixFocusableAndClickableSettings) so we need to correct this.

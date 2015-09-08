@@ -29,7 +29,7 @@ import android.view.ViewGroup;
 
 import com.example.android.plaid.R;
 import com.example.android.plaid.ui.drawable.MorphDrawable;
-import com.example.android.plaid.ui.util.AnimUtils;
+import com.example.android.plaid.util.AnimUtils;
 
 /**
  * Created by nickbutcher on 2/13/15.

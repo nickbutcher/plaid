@@ -15,7 +15,7 @@ import android.view.Gravity;
 import android.view.View;
 
 import com.example.android.plaid.R;
-import com.example.android.plaid.ui.util.FontUtil;
+import com.example.android.plaid.util.FontUtil;
 
 /**
  * A view for displaying text that is will be overlapped by a Floating Action Button (FAB).

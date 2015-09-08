@@ -26,7 +26,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.android.plaid.ui.util.AnimUtils;
+import com.example.android.plaid.util.AnimUtils;
 
 /**
  * Created by nickbutcher on 12/5/14.

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.plaid.ui.util;
+package com.example.android.plaid.util;
 
 import android.graphics.ColorMatrix;
 import android.util.Property;

@@ -23,7 +23,7 @@ import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.example.android.plaid.data.PlaidItem;
-import com.example.android.plaid.ui.util.HtmlUtils;
+import com.example.android.plaid.util.HtmlUtils;
 
 import java.util.ArrayList;
 import java.util.Date;

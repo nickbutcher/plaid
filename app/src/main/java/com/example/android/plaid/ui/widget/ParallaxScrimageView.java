@@ -27,8 +27,8 @@ import android.util.AttributeSet;
 import android.util.Property;
 
 import com.example.android.plaid.R;
-import com.example.android.plaid.ui.util.AnimUtils;
-import com.example.android.plaid.ui.util.ColorUtils;
+import com.example.android.plaid.util.AnimUtils;
+import com.example.android.plaid.util.ColorUtils;
 
 /**
  * Created by nickbutcher on 11/25/14.

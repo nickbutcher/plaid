@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.plaid.ui.util.glide;
+package com.example.android.plaid.util.glide;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;

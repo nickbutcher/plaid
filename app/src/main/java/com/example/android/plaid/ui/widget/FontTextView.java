@@ -18,14 +18,12 @@ package com.example.android.plaid.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.widget.TextView;
 
 import com.example.android.plaid.R;
-import com.example.android.plaid.ui.util.FontUtil;
+import com.example.android.plaid.util.FontUtil;
 
 /**
  * Extension to TextView that adds support for custom fonts.
