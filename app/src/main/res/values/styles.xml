@@ -341,5 +341,11 @@
         <!--<item name="suggestionRowLayout">@layout/search_dropdown_item_icons_2line</item>-->
     </style>
 
+    <style name="Widget.Plaid.DribbleShotAction" parent="@android:style/Widget.Material.Button">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textAppearance">@style/TextAppearance.CommentAuthor</item>
+        <item name="android:drawablePadding">@dimen/spacing_micro</item>
+        <item name="android:background">?android:selectableItemBackgroundBorderless</item>
+    </style>
 
 </resources>

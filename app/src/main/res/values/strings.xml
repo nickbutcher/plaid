@@ -76,6 +76,17 @@
 
 
     <!-- dribbble shot screen -->
+    <plurals name="likes">
+        <item quantity="zero">no likes</item>
+        <item quantity="one">%d like</item>
+        <item quantity="other">%d likes</item>
+    </plurals>
+    <plurals name="views">
+        <item quantity="zero">no views</item>
+        <item quantity="one">%d view</item>
+        <item quantity="other">%d views</item>
+    </plurals>
+    <string name="share">share</string>
 
     <!-- dribbble login -->
 
@@ -83,13 +94,16 @@
     <string name="title_activity_about">About Plaid</string>
 
     <!-- transition shared elements -->
-    <string name="transition_shot">shot</string>
-    <string name="transition_shot_title">shot_title</string>
-    <string name="transition_shot_background">shot_background</string>
-    <string name="transition_story_title">story_title</string>
-    <string name="transition_story_title_background">story_title_background</string>
-    <string name="transition_story_background">transition_story_background</string>
-    <string name="transition_dribbble_login">dribbble_login</string>
+    <string name="transition_shot" translatable="false">shot</string>
+    <string name="transition_shot_title" translatable="false">shot_title</string>
+    <string name="transition_shot_background" translatable="false">shot_background</string>
+    <string name="transition_story_title" translatable="false">story_title</string>
+    <string name="transition_story_title_background" translatable="false">story_title_background</string>
+    <string name="transition_story_background" translatable="false">transition_story_background</string>
+    <string name="transition_dribbble_login" translatable="false">dribbble_login</string>
+
+    <!-- content authorities -->
+    <string name="share_authority"  translatable="false">io.plaidapp.shareprovider</string>
 
     <!-- placeholder -->
     <string name="hipster_ipsum">Slow-carb scenester Odd Future seitan, migas mlkshk High Life cardigan Wes Anderson. Scenester mumblecore normcore lumbersexual Odd Future. Authentic mustache distillery, kale chips hoodie health goth gluten-free Odd Future letterpress kitsch hella put a bird on it narwhal Wes Anderson irony. Fashion axe Thundercats farm-to-table chia Wes Anderson, try-hard hella scenester selvage. Four dollar toast drinking vinegar plaid sustainable, polaroid stumptown organic cray 90\'s taxidermy migas blog McSweeney\'s Williamsburg meditation. Typewriter kitsch Brooklyn, raw denim occupy Shoreditch twee whatever Pitchfork plaid mlkshk cray flannel. Chillwave PBRB whatever Echo Park. Swag pickled put a bird on it deep v, selvage kitsch cliche shabby chic Brooklyn whatever. Brunch mumblecore +1 chia, single-origin coffee you probably haven\'t heard of them hella distillery sustainable. Biodiesel small batch gluten-free blog put a bird on it Tumblr. Readymade keffiyeh tilde, PBR health goth skateboard leggings fashion axe. High Life tofu squid meditation, kogi street art cronut pour-over selvage. Hella readymade stumptown, tote bag Bushwick mustache Tumblr migas butcher iPhone. Vinyl tofu Intelligentsia XOXO, pork belly Helvetica ugh photo booth 8-bit four loko.</string>

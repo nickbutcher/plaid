@@ -25,6 +25,7 @@ import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -51,9 +52,11 @@ import android.view.animation.Interpolator;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -112,6 +115,10 @@ public class DribbbleShot extends Activity {
     private View shotSpacer;
     private View title;
     private TextView description;
+    private LinearLayout shotActions;
+    private Button likeCount;
+    private Button viewCount;
+    private Button share;
     private TextView playerName;
     private ImageView playerAvatar;
     private TextView shotTimeAgo;
@@ -128,18 +135,153 @@ public class DribbbleShot extends Activity {
     private boolean performingLike;
     private CircleTransform circleTransform;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_dribbble_shot);
+        shot = getIntent().getParcelableExtra(EXTRA_SHOT);
+        setupDribbble();
+        setExitSharedElementCallback(fabLoginSharedElementCallback);
+        getWindow().getSharedElementReturnTransition().addListener(shotReturnHomeListener);
+        Resources res = getResources();
+
+        ButterKnife.bind(this);
+        View shotDescription = getLayoutInflater().inflate(R.layout.dribbble_shot_description,
+                commentsList, false);
+        shotSpacer = shotDescription.findViewById(R.id.shot_spacer);
+        title = shotDescription.findViewById(R.id.shot_title);
+        description = (TextView) shotDescription.findViewById(R.id.shot_description);
+        shotActions = (LinearLayout) shotDescription.findViewById(R.id.shot_actions);
+        likeCount = (Button) shotDescription.findViewById(R.id.shot_like_count);
+        viewCount = (Button) shotDescription.findViewById(R.id.shot_view_count);
+        share = (Button) shotDescription.findViewById(R.id.shot_share_action);
+        playerName = (TextView) shotDescription.findViewById(R.id.player_name);
+        playerAvatar = (ImageView) shotDescription.findViewById(R.id.player_avatar);
+        shotTimeAgo = (TextView) shotDescription.findViewById(R.id.shot_time_ago);
+        commentsList = (ListView) findViewById(R.id.dribbble_comments);
+        commentsList.addHeaderView(shotDescription);
+        View enterCommentView = getLayoutInflater().inflate(R.layout.dribbble_enter_comment,
+                commentsList, false);
+        userAvatar = (ForegroundImageView) enterCommentView.findViewById(R.id.avatar);
+        enterComment = (EditText) enterCommentView.findViewById(R.id.comment);
+        postComment = (ImageButton) enterCommentView.findViewById(R.id.post_comment);
+        enterComment.setOnFocusChangeListener(enterCommentFocus);
+        commentsList.addFooterView(enterCommentView);
+        commentsList.setOnScrollListener(scrollListener);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                expandImageAndFinish();
+            }
+        });
+        fab.setOnClickListener(fabClick);
+        draggableFrame.setCallback(new DismissibleViewCallback() {
+            @Override
+            public void onViewDismissed() {
+                expandImageAndFinish();
+            }
+        });
+        circleTransform = new CircleTransform(this);
+
+        // load the main image
+        Glide.with(this)
+                .load(shot.images.best())
+                .listener(shotLoadListener)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .priority(Priority.IMMEDIATE)
+                .into(imageView);
+        imageView.setOnClickListener(shotClick);
+        shotSpacer.setOnClickListener(shotClick);
+
+        postponeEnterTransition();
+        imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver
+                .OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+                calculateFabPosition();
+                enterAnimation();
+                startPostponedEnterTransition();
+                return true;
+            }
+        });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ((FabOverlapTextView) title).setText(shot.title);
+        } else {
+            ((TextView) title).setText(shot.title);
+        }
+        if (!TextUtils.isEmpty(shot.description)) {
+            HtmlUtils.setTextWithNiceLinks(description, shot.getParsedDescription(description));
+        } else {
+            description.setVisibility(View.GONE);
+        }
+        likeCount.setText(
+                res.getQuantityString(R.plurals.likes, (int) shot.likes_count, shot.likes_count));
+        // TODO onClick show likes
+        viewCount.setText(
+                res.getQuantityString(R.plurals.views, (int) shot.views_count, shot.views_count));
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ShareDribbbleImageTask(DribbbleShot.this, shot).execute();
+            }
+        });
+        if (shot.user != null) {
+            playerName.setText("–" + shot.user.name);
+            Glide.with(this)
+                    .load(shot.user.avatar_url)
+                    .transform(circleTransform)
+                    .placeholder(R.drawable.avatar_placeholder)
+                    .into(playerAvatar);
+            playerAvatar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DribbbleShot.this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(shot
+                            .user.html_url)));
+                }
+            });
+            if (shot.created_at != null) {
+                shotTimeAgo.setText(DateUtils.getRelativeTimeSpanString(shot.created_at.getTime(),
+                        System.currentTimeMillis(),
+                        DateUtils.SECOND_IN_MILLIS));
+            }
+        } else {
+            playerName.setVisibility(View.GONE);
+            playerAvatar.setVisibility(View.GONE);
+            shotTimeAgo.setVisibility(View.GONE);
+        }
+
+        if (shot.comments_count > 0) {
+            loadComments();
+        } else {
+            commentsList.setAdapter(getNoCommentsAdapter());
+        }
+
+        if (dribbblePrefs.isLoggedIn() && !TextUtils.isEmpty(dribbblePrefs.getUserAvatar())) {
+            Glide.with(this)
+                    .load(dribbblePrefs.getUserAvatar())
+                    .transform(circleTransform)
+                    .placeholder(R.drawable.ic_player)
+                    .into(userAvatar);
+        }
+    }
+
     private View.OnClickListener shotClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            CustomTabActivityHelper.openCustomTab(
-                    DribbbleShot.this,
-                    new CustomTabsIntent.Builder()
-                            .setToolbarColor(
-                                    ContextCompat.getColor(DribbbleShot.this, R.color.dribbble))
-                            .build(),
-                    Uri.parse(shot.url));
+            openLink(shot.url);
         }
     };
+
+    private void openLink(String url) {
+        CustomTabActivityHelper.openCustomTab(
+                DribbbleShot.this,
+                new CustomTabsIntent.Builder()
+                    .setToolbarColor(ContextCompat.getColor(DribbbleShot.this, R.color.dribbble))
+                    .build(),
+                Uri.parse(url));
+    }
 
     private RequestListener shotLoadListener = new RequestListener<String, GlideDrawable>() {
         @Override
@@ -233,9 +375,8 @@ public class DribbbleShot extends Activity {
                         }
                     });
 
-
-            imageView.setBackground(null); // TODO should keep the background if the image
-            // contains transparency?!
+            // TODO should keep the background if the image contains transparency?!
+            imageView.setBackground(null);
             return false;
         }
 
@@ -331,125 +472,8 @@ public class DribbbleShot extends Activity {
                     .setDuration(50)
                     .setInterpolator(AnimationUtils.loadInterpolator(DribbbleShot.this, android.R
                             .interpolator.linear_out_slow_in));
-            //commentsList.setVisibility(View.INVISIBLE);
         }
     };
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dribbble_shot);
-        shot = getIntent().getParcelableExtra(EXTRA_SHOT);
-        setupDribbble();
-        setExitSharedElementCallback(fabLoginSharedElementCallback);
-        getWindow().getSharedElementReturnTransition().addListener(shotReturnHomeListener);
-
-        ButterKnife.bind(this);
-        View shotDescription = getLayoutInflater().inflate(R.layout.dribbble_shot_description,
-                commentsList, false);
-        shotSpacer = shotDescription.findViewById(R.id.shot_spacer);
-        title = shotDescription.findViewById(R.id.shot_title);
-        description = (TextView) shotDescription.findViewById(R.id.shot_description);
-        playerName = (TextView) shotDescription.findViewById(R.id.player_name);
-        playerAvatar = (ImageView) shotDescription.findViewById(R.id.player_avatar);
-        shotTimeAgo = (TextView) shotDescription.findViewById(R.id.shot_time_ago);
-        commentsList = (ListView) findViewById(R.id.dribbble_comments);
-        commentsList.addHeaderView(shotDescription);
-        View enterCommentView = getLayoutInflater().inflate(R.layout.dribbble_enter_comment,
-                commentsList, false);
-        userAvatar = (ForegroundImageView) enterCommentView.findViewById(R.id.avatar);
-        enterComment = (EditText) enterCommentView.findViewById(R.id.comment);
-        postComment = (ImageButton) enterCommentView.findViewById(R.id.post_comment);
-        enterComment.setOnFocusChangeListener(enterCommentFocus);
-        commentsList.addFooterView(enterCommentView);
-        commentsList.setOnScrollListener(scrollListener);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                expandImageAndFinish();
-            }
-        });
-        fab.setOnClickListener(fabClick);
-        draggableFrame.setCallback(new DismissibleViewCallback() {
-            @Override
-            public void onViewDismissed() {
-                expandImageAndFinish();
-            }
-        });
-        circleTransform = new CircleTransform(this);
-
-        // load the main image
-        Glide.with(this)
-                .load(shot.images.best())
-                .listener(shotLoadListener)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .priority(Priority.IMMEDIATE)
-                .into(imageView);
-        imageView.setOnClickListener(shotClick);
-        shotSpacer.setOnClickListener(shotClick);
-
-        postponeEnterTransition();
-        imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver
-                .OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                imageView.getViewTreeObserver().removeOnPreDrawListener(this);
-                calculateFabPosition();
-                enterAnimation();
-                startPostponedEnterTransition();
-                return true;
-            }
-        });
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ((FabOverlapTextView) title).setText(shot.title);
-        } else {
-            ((TextView) title).setText(shot.title);
-        }
-        if (!TextUtils.isEmpty(shot.description)) {
-            HtmlUtils.setTextWithNiceLinks(description, shot.getParsedDescription(description));
-        } else {
-            description.setVisibility(View.GONE);
-        }
-        if (shot.user != null) {
-            playerName.setText("–" + shot.user.name);
-            Glide.with(this)
-                    .load(shot.user.avatar_url)
-                    .transform(circleTransform)
-                    .placeholder(R.drawable.avatar_placeholder)
-                    .into(playerAvatar);
-            playerAvatar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DribbbleShot.this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(shot
-                            .user.html_url)));
-                }
-            });
-            if (shot.created_at != null) {
-                shotTimeAgo.setText(DateUtils.getRelativeTimeSpanString(shot.created_at.getTime(),
-                        System.currentTimeMillis(),
-                        DateUtils.SECOND_IN_MILLIS));
-            }
-        } else {
-            playerName.setVisibility(View.GONE);
-            playerAvatar.setVisibility(View.GONE);
-            shotTimeAgo.setVisibility(View.GONE);
-        }
-
-        if (shot.comments_count > 0) {
-            loadComments();
-        } else {
-            commentsList.setAdapter(getNoCommentsAdapter());
-        }
-
-        if (dribbblePrefs.isLoggedIn() && !TextUtils.isEmpty(dribbblePrefs.getUserAvatar())) {
-            Glide.with(this)
-                    .load(dribbblePrefs.getUserAvatar())
-                    .transform(circleTransform)
-                    .placeholder(R.drawable.ic_player)
-                    .into(userAvatar);
-        }
-    }
 
     private void loadComments() {
         commentsList.setAdapter(getLoadingCommentsAdapter());
@@ -555,6 +579,8 @@ public class DribbbleShot extends Activity {
                 .setDuration(600)
                 .setInterpolator(interp)
                 .start();
+        offset *= 1.5f;
+        viewEnterAnimation(shotActions, offset, interp);
         offset *= 1.5f;
         viewEnterAnimation(playerName, offset, interp);
         viewEnterAnimation(playerAvatar, offset, interp);
@@ -904,4 +930,5 @@ public class DribbbleShot extends Activity {
             return getItem(position).id;
         }
     }
+
 }

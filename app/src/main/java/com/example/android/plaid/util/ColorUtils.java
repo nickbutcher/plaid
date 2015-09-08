@@ -84,9 +84,11 @@ public class ColorUtils {
 
     public static @Nullable Palette.Swatch getMostPopulousSwatch(Palette palette) {
         Palette.Swatch mostPopulous = null;
-        for (Palette.Swatch swatch : palette.getSwatches()) {
-            if (mostPopulous == null || swatch.getPopulation() > mostPopulous.getPopulation()) {
-                mostPopulous = swatch;
+        if (palette != null) {
+            for (Palette.Swatch swatch : palette.getSwatches()) {
+                if (mostPopulous == null || swatch.getPopulation() > mostPopulous.getPopulation()) {
+                    mostPopulous = swatch;
+                }
             }
         }
         return mostPopulous;

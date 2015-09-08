@@ -24,7 +24,7 @@
 
     <path
         android:fillColor="@color/fab_heart_empty"
-        android:pathData="@string/heart_empty_path" />
+        android:pathData="@string/heart_empty_path_56dp" />
 
     <path
         android:name="activity_circle"
@@ -66,7 +66,7 @@
 
         <path
             android:fillColor="@color/fab_heart_full"
-            android:pathData="@string/heart_full_path" />
+            android:pathData="@string/heart_full_path_56dp" />
 
     </group>
 

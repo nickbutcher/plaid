@@ -22,11 +22,11 @@
     <item
         android:id="@+id/liked"
         android:state_checked="true"
-        android:drawable="@drawable/ic_heart" />
+        android:drawable="@drawable/ic_heart_full_56dp" />
 
     <item
         android:id="@+id/not_liked"
-        android:drawable="@drawable/ic_heart_empty"/>
+        android:drawable="@drawable/ic_heart_empty_56dp"/>
 
     <transition
         android:fromId="@id/not_liked"

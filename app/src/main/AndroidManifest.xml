@@ -17,7 +17,8 @@
 
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.android.plaid" >
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.android.plaid">
 
     <uses-sdk
         android:minSdkVersion="21"
@@ -113,6 +114,16 @@
         <service
             android:name=".data.api.designernews.UpvoteStoryService"
             android:exported="false" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="@string/share_authority"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/glide_disk_cache_path" />
+        </provider>
 
         <!-- Glide configurations for image loading -->
         <meta-data
