@@ -114,9 +114,11 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:colorPrimary">@color/designer_news</item>
+        <item name="android:colorAccent">@color/designer_news</item>
         <item name="android:statusBarColor">@color/designer_news_super_dark</item>
         <item name="android:navigationBarColor">@color/designer_news_super_dark</item>
-        <item name="android:colorButtonNormal">@color/designer_news</item>
+        <item name="android:colorButtonNormal">@color/designer_news_button</item>
+        <item name="android:colorControlActivated">@color/designer_news</item>
         <item name="android:colorControlHighlight">@color/ripple_light</item>
     </style>
 
@@ -271,6 +273,17 @@
         <item name="lineHeightHint">20sp</item>
     </style>
 
+    <style name="Widget.Plaid.DialogTitle">
+        <item name="android:textAppearance">@style/TextAppearance.DialogTitle</item>
+        <item name="lineHeightHint">28sp</item>
+    </style>
+
+    <style name="TextAppearance.DialogTitle" parent="@android:style/TextAppearance.Material.Title">
+        <item name="android:textColor">@color/text_primary_dark</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
     <style name="TextAppearance.DialogContent" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:textColor">@color/text_secondary_dark</item>
         <item name="android:fontFamily">sans-serif-medium</item>
@@ -297,6 +310,10 @@
          yet (minSdk=21). We use this style to work around this and to provide the accent color. -->
     <style name="TextAppearance.FloatLabelHint" parent="@android:style/TextAppearance.Material.Caption">
         <item name="android:textColor">?android:colorAccent</item>
+    </style>
+
+    <style name="Widget.Plaid.HintCheckBox" parent="@android:style/Widget.Material.CompoundButton.CheckBox">
+        <item name="android:textColor">@color/text_secondary_dark</item>
     </style>
 
     <style name="PlaidDarkOverlay" parent="@android:style/ThemeOverlay.Material.Dark.ActionBar">

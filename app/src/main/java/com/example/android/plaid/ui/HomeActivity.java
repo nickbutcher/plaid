@@ -16,6 +16,7 @@
 
 package com.example.android.plaid.ui;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -499,8 +500,9 @@ public class HomeActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        // re-initialise the dribble and dn API objects (as user may have logged in in child
-        // activity)
+        // re-initialise the dribble and DN API objects (as user may have logged in in a child
+        // activity & we need to capture the updated auth token)
+        // TODO make these singletons?
         designerNewsPrefs = new DesignerNewsPrefs(getApplicationContext());
         dribbblePrefs = new DribbblePrefs(getApplicationContext());
     }

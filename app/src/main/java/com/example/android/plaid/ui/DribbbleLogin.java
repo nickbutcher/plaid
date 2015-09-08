@@ -28,6 +28,7 @@ import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -174,11 +175,16 @@ public class DribbbleLogin extends Activity {
                         dribbblePrefs.setAccessToken(accessToken.access_token);
                         showLoggedInUser();
                         setResult(Activity.RESULT_OK);
-                        finish();
+                        finishAfterTransition();
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
+                        Log.e(getClass().getCanonicalName(), error.getMessage(), error);
+                        // TODO snackbar?
+                        Toast.makeText(getApplicationContext(), "Log in failed: " + error
+                                .getResponse()
+                                .getStatus(), Toast.LENGTH_LONG).show();
                         showLogin();
                     }
                 });
@@ -202,11 +208,12 @@ public class DribbbleLogin extends Activity {
                 dribbblePrefs.setLoggedInUser(user);
                 Toast confirmLogin = new Toast(getApplicationContext());
                 View v = LayoutInflater.from(DribbbleLogin.this).inflate(R.layout
-                        .toast_dribbble_logged_in, null, false);
+                        .toast_logged_in_confirmation, null, false);
                 ((TextView) v.findViewById(R.id.name)).setText(user.name);
                 // need to use app context here as the activity will be destroyed shortly
                 Glide.with(getApplicationContext())
                         .load(user.avatar_url)
+                        .placeholder(R.drawable.ic_player)
                         .transform(new CircleTransform(getApplicationContext()))
                         .into((ImageView) v.findViewById(R.id.avatar));
                 v.findViewById(R.id.scrim).setBackground(ScrimUtil.makeCubicGradientScrimDrawable

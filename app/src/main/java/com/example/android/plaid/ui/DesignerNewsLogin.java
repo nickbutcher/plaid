@@ -16,31 +16,56 @@
 
 package com.example.android.plaid.ui;
 
-import android.animation.ObjectAnimator;
+import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.SharedElementCallback;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.transition.TransitionManager;
 import android.util.Log;
+import android.util.Patterns;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.example.android.plaid.BuildConfig;
 import com.example.android.plaid.R;
-import com.example.android.plaid.data.api.AuthInterceptor;
+import com.example.android.plaid.data.api.ClientAuthInterceptor;
 import com.example.android.plaid.data.api.designernews.DesignerNewsService;
 import com.example.android.plaid.data.api.designernews.model.AccessToken;
+import com.example.android.plaid.data.api.designernews.model.User;
+import com.example.android.plaid.data.api.designernews.model.UserResponse;
 import com.example.android.plaid.data.prefs.DesignerNewsPrefs;
+import com.example.android.plaid.util.ScrimUtil;
+import com.example.android.plaid.util.glide.CircleTransform;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -48,146 +73,91 @@ import retrofit.client.Response;
 
 public class DesignerNewsLogin extends Activity {
 
+    private static final int PERMISSIONS_REQUEST_GET_ACCOUNTS = 0;
+
     boolean isDismissing = false;
-    private ViewGroup container;
-
-    SharedElementCallback sharedElementEnterCallback = new SharedElementCallback() {
-        @Override
-        public View onCreateSnapshotView(Context context, Parcelable snapshot) {
-            // grab the saved fab snapshot and pass it to the below via a View
-            View view = new View(context);
-            view.setBackground(new BitmapDrawable(context.getResources(), (Bitmap) snapshot));
-            return view;
-        }
-
-        @Override
-        public void onSharedElementStart(List<String> sharedElementNames,
-                                         List<View> sharedElements,
-                                         List<View> sharedElementSnapshots) {
-            // grab the fab snapshot and fade it out/in (depending on if we are entering or exiting)
-            for (int i = 0; i < sharedElements.size(); i++) {
-                if (sharedElements.get(i) == container) {
-                    View snapshot = sharedElementSnapshots.get(i);
-                    BitmapDrawable fabSnapshot = (BitmapDrawable) snapshot.getBackground();
-                    fabSnapshot.setBounds(0, 0, snapshot.getWidth(), snapshot.getHeight());
-                    container.getOverlay().clear();
-                    container.getOverlay().add(fabSnapshot);
-                    if (!isDismissing) {
-                        // fab -> login: fade out the fab snapshot
-                        ObjectAnimator.ofInt(fabSnapshot, "alpha", 0).setDuration(100).start();
-                    } else {
-                        // login -> fab: fade in the fab snapshot toward the end of the transition
-                        fabSnapshot.setAlpha(0);
-                        ObjectAnimator fadeIn = ObjectAnimator.ofInt(fabSnapshot, "alpha", 255)
-                                .setDuration(150);
-                        fadeIn.setStartDelay(150);
-                        fadeIn.start();
-                    }
-                    forceSharedElementLayout();
-                    break;
-                }
-            }
-        }
-    };
-    private TextView message;
-    private Button login;
-    private ProgressBar loading;
+    @Bind(R.id.container) ViewGroup container;
+    @Bind(R.id.dialog_title) TextView title;
+    @Bind(R.id.username) AutoCompleteTextView username;
+    @Bind(R.id.permission_primer) CheckBox permissionPrimer;
+    @Bind(R.id.password) EditText password;
+    @Bind(R.id.login) Button login;
+    @Bind(R.id.loading) ProgressBar loading;
     private DesignerNewsPrefs designerNewsPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_login);
-        setEnterSharedElementCallback(sharedElementEnterCallback);
-
-        container = (ViewGroup) findViewById(R.id.container);
-        message = (TextView) findViewById(R.id.login_message);
-        login = (Button) findViewById(R.id.login);
-        loading = (ProgressBar) findViewById(R.id.loading);
+        ButterKnife.bind(this);
         loading.setVisibility(View.GONE);
-
+        setupAccountAutocomplete();
+        username.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    username.showDropDown();
+                }
+            }
+        });
+        username.addTextChangedListener(loginFieldWatcher);
+        // the primer checkbox messes with focus order so force it
+        username.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                    password.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+        password.addTextChangedListener(loginFieldWatcher);
+        password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE && isLoginValid()) {
+                    login.performClick();
+                    return true;
+                }
+                return false;
+            }
+        });
         designerNewsPrefs = new DesignerNewsPrefs(getApplicationContext());
+    }
+
+    @Override
+    public void onBackPressed() {
+        dismiss(null);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_GET_ACCOUNTS) {
+            TransitionManager.beginDelayedTransition(container);
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                setupAccountAutocomplete();
+                username.requestFocus();
+                username.showDropDown();
+            } else {
+                // if permission was denied check if we should ask again in the future (i.e. they
+                // did not check 'never ask again')
+                if (shouldShowRequestPermissionRationale(Manifest.permission.GET_ACCOUNTS)) {
+                    setupPermissionPrimer();
+                } else {
+                    // denied & shouldn't ask again. deal with it (•_•) ( •_•)>⌐■-■ (⌐■_■)
+                    TransitionManager.beginDelayedTransition(container);
+                    permissionPrimer.setVisibility(View.GONE);
+                }
+            }
+        }
     }
 
     public void doLogin(View view) {
         showLoading();
         getAccessToken();
-    }
-
-    private void showLoading() {
-        TransitionManager.beginDelayedTransition(container);
-        message.setVisibility(View.GONE);
-        login.setVisibility(View.GONE);
-        loading.setVisibility(View.VISIBLE);
-    }
-
-    private void showLogin() {
-        TransitionManager.beginDelayedTransition(container);
-        message.setVisibility(View.VISIBLE);
-        login.setVisibility(View.VISIBLE);
-        loading.setVisibility(View.GONE);
-    }
-
-    private void getAccessToken() {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(DesignerNewsService.ENDPOINT)
-                .build();
-
-        DesignerNewsService designerNewsService = restAdapter.create((DesignerNewsService.class));
-
-        designerNewsService.login("nickbutcher@gmail.com", "yourpasswordhere", "", new
-                Callback<AccessToken>() {
-                    @Override
-                    public void success(AccessToken accessToken, Response response) {
-                        designerNewsPrefs.setAccessToken(accessToken.access_token);
-                        // TODO show a proper success
-                        Toast.makeText(getApplicationContext(), "Logged in to designer news", Toast
-                                .LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        Log.e(getClass().getCanonicalName(), error.getMessage(), error);
-                        Toast.makeText(getApplicationContext(), "Log in failed: " + error
-                                .getResponse()
-                                .getStatus(), Toast.LENGTH_LONG).show();
-                        DesignerNewsLogin.this.finishAfterTransition();
-                    }
-                });
-    }
-
-    private void showLoggedInUser() {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(DesignerNewsService.ENDPOINT)
-                .setRequestInterceptor(new AuthInterceptor(designerNewsPrefs.getAccessToken()))
-                .build();
-
-        DesignerNewsService designerNewsService = restAdapter.create((DesignerNewsService.class));
-//        designerNewsService.getAuthenticatedUser(new Callback<User>() {
-//            @Override
-//            public void success(User user, Response response) {
-//                designerNewsPrefs.setLoggedInUser(user);
-//                Toast confirmLogin = new Toast(getApplicationContext());
-//                View v = LayoutInflater.from(DesignerNewsLogin.this).inflate(R.layout
-// .toast_dribbble_logged_in, null, false);
-//                ((TextView) v.findViewById(R.id.name)).setText(user.name);
-//                // need to use app context here as the activity will be destroyed shortly
-//                Glide.with(getApplicationContext())
-//                        .load(user.avatar_url)
-//                        .transform(new CircleTransform(getApplicationContext()))
-//                        .into((ImageView) v.findViewById(R.id.avatar));
-//                v.findViewById(R.id.scrim).setBackground(ScrimUtil
-// .makeCubicGradientScrimDrawable(getColor(R.color.scrim), 5, Gravity.BOTTOM));
-//                confirmLogin.setView(v);
-//                confirmLogin.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
-//                confirmLogin.setDuration(Toast.LENGTH_LONG);
-//                confirmLogin.show();
-//            }
-//
-//            @Override
-//            public void failure(RetrofitError error) {
-//            }
-//        });
     }
 
     public void dismiss(View view) {
@@ -196,18 +166,154 @@ public class DesignerNewsLogin extends Activity {
         finishAfterTransition();
     }
 
-    @Override
-    public void onBackPressed() {
-        dismiss(null);
+    private TextWatcher loginFieldWatcher = new TextWatcher() {
+        @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+        @Override public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            login.setEnabled(isLoginValid());
+        }
+    };
+
+    private boolean isLoginValid() {
+        return username.length() > 0 && password.length() > 0;
     }
 
-    private void forceSharedElementLayout() {
-        int widthSpec = View.MeasureSpec.makeMeasureSpec(container.getWidth(),
-                View.MeasureSpec.EXACTLY);
-        int heightSpec = View.MeasureSpec.makeMeasureSpec(container.getHeight(),
-                View.MeasureSpec.EXACTLY);
-        container.measure(widthSpec, heightSpec);
-        container.layout(container.getLeft(), container.getTop(), container.getRight(), container
-                .getBottom());
+    private void showLoading() {
+        TransitionManager.beginDelayedTransition(container);
+        title.setVisibility(View.GONE);
+        username.setVisibility(View.GONE);
+        password.setVisibility(View.GONE);
+        login.setVisibility(View.GONE);
+        loading.setVisibility(View.VISIBLE);
+    }
+
+    private void showLogin() {
+        TransitionManager.beginDelayedTransition(container);
+        title.setVisibility(View.VISIBLE);
+        username.setVisibility(View.VISIBLE);
+        password.setVisibility(View.VISIBLE);
+        login.setVisibility(View.VISIBLE);
+        loading.setVisibility(View.GONE);
+    }
+
+    private void getAccessToken() {
+        DesignerNewsService designerNewsService = new RestAdapter.Builder()
+                .setEndpoint(DesignerNewsService.ENDPOINT)
+                .setRequestInterceptor(new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
+                        BuildConfig.DESIGNER_NEWS_CLIENT_ID))
+                .build()
+                .create(DesignerNewsService.class);
+        designerNewsService.login(
+                buildLoginParams(username.getText().toString(), password.getText().toString()),
+                new Callback<AccessToken>() {
+                    @Override
+                    public void success(AccessToken accessToken, Response response) {
+                        designerNewsPrefs.setAccessToken(accessToken.access_token);
+                        showLoggedInUser();
+                        setResult(Activity.RESULT_OK);
+                        finishAfterTransition();
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Log.e(getClass().getCanonicalName(), error.getMessage(), error);
+                        // TODO snackbar?
+                        Toast.makeText(getApplicationContext(), "Log in failed: " + error
+                                .getResponse()
+                                .getStatus(), Toast.LENGTH_LONG).show();
+                        showLogin();
+                        password.requestFocus();
+                    }
+                });
+    }
+
+    private Map buildLoginParams(@NonNull String username, @NonNull String password) {
+        Map loginParams = new HashMap(5);
+        loginParams.put("client_id", BuildConfig.DESIGNER_NEWS_CLIENT_ID);
+        loginParams.put("client_secret", BuildConfig.DESIGNER_NEWS_CLIENT_SECRET);
+        loginParams.put("grant_type", "password");
+        loginParams.put("username", username);
+        loginParams.put("password", password);
+        return loginParams;
+    }
+
+    private void showLoggedInUser() {
+        DesignerNewsService designerNewsService = new RestAdapter.Builder()
+                .setEndpoint(DesignerNewsService.ENDPOINT)
+                .setRequestInterceptor(new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
+                        BuildConfig.DESIGNER_NEWS_CLIENT_ID))
+                .build()
+                .create(DesignerNewsService.class);
+        designerNewsService.getAuthedUser(new Callback<UserResponse>() {
+            @Override
+            public void success(UserResponse userResponse, Response response) {
+                final User user = userResponse.user;
+                designerNewsPrefs.setLoggedInUser(user);
+                Toast confirmLogin = new Toast(getApplicationContext());
+                View v = LayoutInflater.from(DesignerNewsLogin.this).inflate(R.layout
+                        .toast_logged_in_confirmation, null, false);
+                ((TextView) v.findViewById(R.id.name)).setText(user.display_name);
+                // need to use app context here as the activity will be destroyed shortly
+                Glide.with(getApplicationContext())
+                        .load(user.portrait_url)
+                        .placeholder(R.drawable.avatar_placeholder)
+                        .transform(new CircleTransform(getApplicationContext()))
+                        .into((ImageView) v.findViewById(R.id.avatar));
+                v.findViewById(R.id.scrim).setBackground(ScrimUtil
+                        .makeCubicGradientScrimDrawable(
+                                ContextCompat.getColor(DesignerNewsLogin.this, R.color.scrim),
+                                5, Gravity.BOTTOM));
+                confirmLogin.setView(v);
+                confirmLogin.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                confirmLogin.setDuration(Toast.LENGTH_LONG);
+                confirmLogin.show();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(getClass().getCanonicalName(), error.getMessage(), error);
+            }
+        });
+    }
+
+    private void setupAccountAutocomplete() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS) ==
+                PackageManager.PERMISSION_GRANTED) {
+            permissionPrimer.setVisibility(View.GONE);
+            final Account[] accounts = AccountManager.get(this).getAccounts();
+            final Set<String> emailSet = new HashSet<>();
+            for (Account account : accounts) {
+                if (Patterns.EMAIL_ADDRESS.matcher(account.name).matches()) {
+                    emailSet.add(account.name);
+                }
+            }
+            username.setAdapter(new ArrayAdapter<>(this,
+                    R.layout.account_dropdown_item, new ArrayList<>(emailSet)));
+        } else {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.GET_ACCOUNTS)) {
+                setupPermissionPrimer();
+            } else {
+                permissionPrimer.setVisibility(View.GONE);
+                requestPermissions(new String[]{ Manifest.permission.GET_ACCOUNTS },
+                        PERMISSIONS_REQUEST_GET_ACCOUNTS);
+            }
+        }
+    }
+
+    private void setupPermissionPrimer() {
+        permissionPrimer.setChecked(false);
+        permissionPrimer.setVisibility(View.VISIBLE);
+        permissionPrimer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    requestPermissions(new String[]{ Manifest.permission.GET_ACCOUNTS },
+                            PERMISSIONS_REQUEST_GET_ACCOUNTS);
+                }
+            }
+        });
     }
 }

@@ -17,6 +17,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:onClick="dismiss"
@@ -24,41 +25,75 @@
 
     <LinearLayout
         android:id="@+id/container"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_xlarge"
-        android:padding="@dimen/spacing_large"
-        android:paddingTop="@dimen/spacing_xlarge"
+        android:layout_margin="@dimen/spacing_large"
+        android:paddingStart="@dimen/padding_dialog"
+        android:paddingTop="@dimen/padding_dialog"
+        android:paddingEnd="@dimen/padding_dialog"
+        android:paddingBottom="@dimen/padding_normal"
         android:orientation="vertical"
         android:layout_gravity="center"
         android:elevation="@dimen/z_fab"
         android:background="@drawable/dialog_background"
-        android:transitionName="@string/transition_dribbble_login">
+        android:clickable="true">
 
         <com.example.android.plaid.ui.widget.BaselineGridTextView
-            android:id="@+id/login_message"
+            android:id="@+id/dialog_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:layout_marginBottom="@dimen/spacing_normal"
-            android:text="@string/need_login"
-            style="@style/Widget.Plaid.DialogText" />
+            android:layout_marginBottom="@dimen/dialog_title_spacing"
+            android:text="@string/designer_news_login"
+            style="@style/Widget.Plaid.DialogTitle" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
+
+            <AutoCompleteTextView
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/username"
+                android:inputType="textEmailAddress"
+                android:textColorHighlight="@color/designer_news_link_highlight"
+                android:selectAllOnFocus="true" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <CheckBox
+            android:id="@+id/permission_primer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/get_accounts_permission_primer_message"
+            style="@style/Widget.Plaid.HintCheckBox" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:selectAllOnFocus="true" />
+
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:padding="@dimen/padding_normal"
-            android:layout_marginBottom="@dimen/spacing_micro"
-            android:text="@string/designer_news_login"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/padding_normal"
+            android:enabled="false"
+            android:text="@string/dn_login_action"
             android:textAppearance="@style/TextAppearance.DarkButton"
-            android:onClick="doLogin"/>
-
-        <!--android:drawableEnd="@drawable/dribbble_logo"-->
-        <!--android:drawablePadding="@dimen/spacing_micro"-->
-
+            android:onClick="doLogin" />
 
         <include layout="@layout/loading" />
 

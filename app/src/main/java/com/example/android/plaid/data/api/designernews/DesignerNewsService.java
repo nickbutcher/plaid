@@ -16,48 +16,56 @@
 
 package com.example.android.plaid.data.api.designernews;
 
-import com.example.android.plaid.BuildConfig;
 import com.example.android.plaid.data.api.designernews.model.AccessToken;
 import com.example.android.plaid.data.api.designernews.model.StoriesResponse;
+import com.example.android.plaid.data.api.designernews.model.StoryResponse;
+import com.example.android.plaid.data.api.designernews.model.UserResponse;
+
+import java.util.Map;
 
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.FieldMap;
+import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
-import retrofit.http.Header;
-import retrofit.http.Headers;
 import retrofit.http.POST;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
- * Modeling the Designer News API
+ * Models the Designer News API.
+ *
+ * v1 docs: https://github.com/layervault/dn_api
+ * v2 docs: https://github.com/DesignerNews/dn_api_v2
  */
 public interface DesignerNewsService {
 
     String ENDPOINT = "https://www.designernews.co/";
 
-    String CLIENT_ID_QUERY = "?client_id=" + BuildConfig.DESIGNER_NEWS_CLIENT_ID;
-
-    @GET("/api/v1/stories" + CLIENT_ID_QUERY)
+    @GET("/api/v1/stories")
     void getTopStories(@Query("page") Integer page,
                        Callback<StoriesResponse> callback);
 
-    @GET("/api/v1/stories/recent" + CLIENT_ID_QUERY)
+    @GET("/api/v1/stories/recent")
     void getRecentStories(@Query("page") Integer page,
                           Callback<StoriesResponse> callback);
 
-    @GET("/api/v1/stories/search" + CLIENT_ID_QUERY)
+    @GET("/api/v1/stories/search")
     void search(@Query("query") String query, Callback<StoriesResponse> callback);
 
-    @Headers({
-            "grant_type: password",
-            "client_id: " + BuildConfig.DESIGNER_NEWS_CLIENT_ID,
-            "client_secret: " + BuildConfig.DESIGNER_NEWS_CLIENT_SECRET
-    })
+    @FormUrlEncoded
     @POST("/oauth/token")
-    void login(@Header("username") String username,
-               @Header("password") String password,
-               @Body String ignored,  // can remove when retrofit releases this fix:
-               // https://github.com/square/retrofit/commit/19ac1e2c4551448184ad66c4a0ec172e2741c2ee
+    void login(@FieldMap() Map loginParams,
                Callback<AccessToken> callback);
+
+    @GET("/api/v1/me")
+    void getAuthedUser(Callback<UserResponse> callback);
+
+    @POST("/api/v1/stories/{id}/upvote")
+    void upvoteStory(@Path("id") long storyId,
+                     @Body String ignored,  // can remove when retrofit releases this fix:
+                     // https://github
+                     // .com/square/retrofit/commit/19ac1e2c4551448184ad66c4a0ec172e2741c2ee
+                     Callback<StoryResponse> callback);
 
 }

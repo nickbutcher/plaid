@@ -3,7 +3,9 @@ package com.example.android.plaid.data;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.example.android.plaid.BuildConfig;
 import com.example.android.plaid.data.api.AuthInterceptor;
+import com.example.android.plaid.data.api.ClientAuthInterceptor;
 import com.example.android.plaid.data.api.designernews.DesignerNewsService;
 import com.example.android.plaid.data.api.designernews.model.StoriesResponse;
 import com.example.android.plaid.data.api.dribbble.DribbbleSearch;
@@ -410,6 +412,8 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
         designerNewsPrefs = new DesignerNewsPrefs(context);
         designerNewsApi = new RestAdapter.Builder()
                 .setEndpoint(DesignerNewsService.ENDPOINT)
+                .setRequestInterceptor(new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
+                        BuildConfig.DESIGNER_NEWS_CLIENT_ID))
                 .build()
                 .create(DesignerNewsService.class);
     }

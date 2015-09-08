@@ -18,10 +18,10 @@ package com.example.android.plaid.data.prefs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.example.android.plaid.BuildConfig;
-import com.example.android.plaid.data.api.dribbble.model.User;
+import com.example.android.plaid.data.api.designernews.model.User;
 
 /**
  * Storing Designer News user state
@@ -30,12 +30,14 @@ public class DesignerNewsPrefs {
 
     private static final String DESIGNER_NEWS_PREF = "DESIGNER_NEWS_PREF";
     private static final String KEY_ACCESS_TOKEN = "KEY_ACCESS_TOKEN";
+    private static final String KEY_USER_ID = "KEY_USER_ID";
     private static final String KEY_USER_NAME = "KEY_USER_NAME";
     private static final String KEY_USER_AVATAR = "KEY_USER_AVATAR";
     private final SharedPreferences prefs;
 
     private String accessToken;
     private boolean isLoggedIn = false;
+    private long userId;
     private String username;
     private String userAvatar;
 
@@ -45,6 +47,7 @@ public class DesignerNewsPrefs {
         accessToken = prefs.getString(KEY_ACCESS_TOKEN, null);
         isLoggedIn = !TextUtils.isEmpty(accessToken);
         if (isLoggedIn) {
+            userId = prefs.getLong(KEY_USER_ID, 0l);
             username = prefs.getString(KEY_USER_NAME, null);
             userAvatar = prefs.getString(KEY_USER_AVATAR, null);
         }
@@ -54,8 +57,8 @@ public class DesignerNewsPrefs {
         return isLoggedIn;
     }
 
-    public String getAccessToken() {
-        return !TextUtils.isEmpty(accessToken) ? accessToken : BuildConfig.DESIGNER_NEWS_CLIENT_ID;
+    public @Nullable String getAccessToken() {
+        return accessToken;
     }
 
     public void setAccessToken(String accessToken) {
@@ -68,13 +71,19 @@ public class DesignerNewsPrefs {
 
     public void setLoggedInUser(User user) {
         if (user != null) {
-            username = user.username;
-            userAvatar = user.avatar_url;
+            userId = user.id;
+            username = user.display_name;
+            userAvatar = user.portrait_url;
             SharedPreferences.Editor editor = prefs.edit();
+            editor.putLong(KEY_USER_ID, userId);
             editor.putString(KEY_USER_NAME, username);
             editor.putString(KEY_USER_AVATAR, userAvatar);
             editor.apply();
         }
+    }
+
+    public long getUserId() {
+        return userId;
     }
 
     public String getUserName() {
@@ -92,6 +101,7 @@ public class DesignerNewsPrefs {
         userAvatar = null;
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(KEY_ACCESS_TOKEN, null);
+        editor.putLong(KEY_USER_ID, 0l);
         editor.putString(KEY_USER_NAME, null);
         editor.putString(KEY_USER_AVATAR, null);
         editor.apply();

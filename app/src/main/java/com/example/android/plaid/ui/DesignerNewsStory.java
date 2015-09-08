@@ -193,6 +193,7 @@ public class DesignerNewsStory extends Activity {
                                                               @Nullable CustomTabsSession session) {
         Intent upvoteStory = new Intent(context, UpvoteStoryService.class);
         upvoteStory.setAction(UpvoteStoryService.ACTION_UPVOTE);
+        upvoteStory.putExtra(UpvoteStoryService.EXTRA_STORY_ID, story.id);
         PendingIntent pendingIntent = PendingIntent.getService(context, 0, upvoteStory, 0);
         return new CustomTabsIntent.Builder(session)
                 .setToolbarColor(ContextCompat.getColor(context, R.color.designer_news))

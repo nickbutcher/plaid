@@ -39,7 +39,8 @@ public class ScrimUtil {
      * <a href="https://plus.google.com/+RomanNurik/posts/2QvHVFWrHZf">this post</a> for more
      * details.
      */
-    public static Drawable makeCubicGradientScrimDrawable(@ColorInt int baseColor, int numStops,
+    public static Drawable makeCubicGradientScrimDrawable(@ColorInt int baseColor,
+                                                          int numStops,
                                                           int gravity) {
         numStops = Math.max(numStops, 2);
 

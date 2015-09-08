@@ -19,19 +19,30 @@ package com.example.android.plaid.data.api.designernews;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
+
+import com.example.android.plaid.BuildConfig;
+import com.example.android.plaid.data.api.ClientAuthInterceptor;
+import com.example.android.plaid.data.api.designernews.model.StoryResponse;
+import com.example.android.plaid.data.prefs.DesignerNewsPrefs;
+
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class UpvoteStoryService extends IntentService {
 
     public static final String ACTION_UPVOTE = "ACTION_UPVOTE";
+    public static final String EXTRA_STORY_ID = "EXTRA_STORY_ID";
 
     public UpvoteStoryService() {
         super("UpvoteStoryService");
     }
 
-    public static void startActionUpvote(Context context) {
+    public static void startActionUpvote(Context context, long storyId) {
         Intent intent = new Intent(context, UpvoteStoryService.class);
         intent.setAction(ACTION_UPVOTE);
+        intent.putExtra(EXTRA_STORY_ID, storyId);
         context.startService(intent);
     }
 
@@ -40,13 +51,37 @@ public class UpvoteStoryService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_UPVOTE.equals(action)) {
-                handleActionUpvote();
+                handleActionUpvote(intent.getLongExtra(EXTRA_STORY_ID, 0l));
             }
         }
     }
 
-    private void handleActionUpvote() {
-        // TODO actually upvote it
-        Toast.makeText(getApplicationContext(), "Story upvoted", Toast.LENGTH_SHORT).show();
+    private void handleActionUpvote(long storyId) {
+        if (storyId == 0l) return;
+        DesignerNewsPrefs designerNewsPrefs = new DesignerNewsPrefs(getApplicationContext());
+        if (!designerNewsPrefs.isLoggedIn()) {
+            // TODO prompt for login
+            return;
+        }
+        DesignerNewsService designerNewsService = new RestAdapter.Builder()
+                .setEndpoint(DesignerNewsService.ENDPOINT)
+                .setRequestInterceptor(
+                        new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
+                                BuildConfig.DESIGNER_NEWS_CLIENT_ID))
+                .build()
+                .create(DesignerNewsService.class);
+        designerNewsService.upvoteStory(storyId, "", new Callback<StoryResponse>() {
+            @Override
+            public void success(StoryResponse storyResponse, Response response) {
+                int newVotesCount = storyResponse.story.vote_count;
+                // TODO report success
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                // TODO report failure
+            }
+        });
     }
 }

@@ -33,6 +33,10 @@
     <dimen name="fab_plus_single_padding">72dp</dimen> <!-- fab_size + padding_normal -->
     <dimen name="half_fab_plus_single_padding">44dp</dimen> <!-- (fab_size / 2) + padding_normal -->
 
+    <!-- dialogs -->
+    <dimen name="padding_dialog">24dp</dimen>
+    <dimen name="dialog_title_spacing">20dp</dimen>
+
     <!-- drawer -->
     <dimen name="drawer_width">@dimen/match_parent</dimen>
 
@@ -56,7 +60,6 @@
     <dimen name="avatar_margin">12dp</dimen> <!-- padding_normal - avatar_padding -->
     <dimen name="comment_actions_height">40dp</dimen>
     <dimen name="comment_like_margin_adjustment">-8dp</dimen>
-
 
     <!-- Z-axis elevations -->
     <dimen name="z_app_bar">4dp</dimen>

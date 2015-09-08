@@ -15,12 +15,15 @@
   limitations under the License.
   -->
 
-<selector
+<TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:constantSize="true"
-    android:enterFadeDuration="@android:integer/config_shortAnimTime"
-    android:exitFadeDuration="@android:integer/config_shortAnimTime">
-
-    <item android:state_activated="true" android:drawable="@android:color/white" />
-
-</selector>
+    android:id="@android:id/text1"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:paddingEnd="@dimen/padding_normal"
+    android:paddingStart="@dimen/padding_normal"
+    android:background="@drawable/mid_grey_bounded_ripple"
+    android:maxLines="1"
+    android:ellipsize="marquee"
+    android:textAppearance="?android:attr/textAppearanceLargePopupMenu"
+    style="?android:attr/dropDownItemStyle" />

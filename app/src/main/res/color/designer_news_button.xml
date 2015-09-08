@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
   Copyright 2015 Google Inc.
 
@@ -15,12 +16,9 @@
   limitations under the License.
   -->
 
-<selector
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:constantSize="true"
-    android:enterFadeDuration="@android:integer/config_shortAnimTime"
-    android:exitFadeDuration="@android:integer/config_shortAnimTime">
-
-    <item android:state_activated="true" android:drawable="@android:color/white" />
-
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false"
+          android:alpha="0.26"
+          android:color="@color/designer_news"/>
+    <item android:color="@color/designer_news"/>
 </selector>

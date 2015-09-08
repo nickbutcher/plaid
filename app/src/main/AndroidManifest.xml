@@ -23,6 +23,7 @@
         android:minSdkVersion="21"
         android:targetSdkVersion="23" />
 
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -97,7 +98,8 @@
         <activity
             android:name=".ui.DesignerNewsLogin"
             android:exported="false"
-            android:theme="@style/Plaid.DesignerNewsLogin" />
+            android:theme="@style/Plaid.DesignerNewsLogin"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.AboutActivity"

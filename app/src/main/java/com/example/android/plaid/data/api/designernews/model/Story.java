@@ -26,7 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by nickbutcher on 3/29/15.
+ * Models a Designer News story
  */
 public class Story extends PlaidItem implements Parcelable {
 

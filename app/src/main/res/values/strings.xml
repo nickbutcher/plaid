@@ -22,17 +22,18 @@
     <string name="no_comments">no comments</string>
     <string name="login_to">Log in to</string>
     <string name="need_login">Woah there chief. First you\'ll need&#160;to</string> <!-- &#160; == nbsp -->
+    <string name="dribbble_logged_in_as">Logged in as</string>
 
     <!-- main screen -->
     <string name="search">Search</string>
     <string name="filter">Filter</string>
     <string name="about">About</string>
-    <string name="dribbble_login">Log in to dribbble</string>
-    <string name="dribbble_log_out">Log out of dribbble</string>
-    <string name="dribbble_logged_out">Logged out of dribbble</string>
-    <string name="designer_news_login">Log in to designer news</string>
-    <string name="designer_news_log_out">Log out of designer news</string>
-    <string name="designer_news_logged_out">Logged out of designer news</string>
+    <string name="dribbble_login">Log in to Dribbble</string>
+    <string name="dribbble_log_out">Log out of Dribbble</string>
+    <string name="dribbble_logged_out">Logged out of Dribbble</string>
+    <string name="designer_news_login">Log in to Designer News</string>
+    <string name="designer_news_log_out">Log out of Designer News</string>
+    <string name="designer_news_logged_out">Logged out of Designer News</string>
     <string name="add">Add</string>
     <string name="edit">Edit</string>
     <string name="no_filters_selected">No filters selected, press the filter button above (&#2228;)\nor swipe from the&#160;right</string>
@@ -66,6 +67,10 @@
     <string name="action_settings">Settings</string>
 
     <!-- designer news login -->
+    <string name="username">Username</string>
+    <string name="get_accounts_permission_primer_message">Autocomplete email addresses</string>
+    <string name="password">Password</string>
+    <string name="dn_login_action">Log in</string>
 
     <!-- designer news story -->
 
@@ -73,7 +78,6 @@
     <!-- dribbble shot screen -->
 
     <!-- dribbble login -->
-    <string name="dribbble_logged_in_as">Logged in as</string>
 
     <!-- about screen -->
     <string name="title_activity_about">About Plaid</string>

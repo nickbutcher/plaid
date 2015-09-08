@@ -14,27 +14,16 @@
  * limitations under the License.
  */
 
-package com.example.android.plaid.data.api;
-
-import retrofit.RequestInterceptor;
+package com.example.android.plaid.data.api.designernews.model;
 
 /**
- * A {@see RequestInterceptor} that adds an auth token to requests
+ * Models a response from the Designer News API that returns a single story
  */
-public class AuthInterceptor implements RequestInterceptor {
+public class StoryResponse {
 
-    private String accessToken;
+    public final Story story;
 
-    public AuthInterceptor(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    @Override
-    public void intercept(RequestFacade request) {
-        request.addHeader("Authorization", "Bearer " + accessToken);
-    }
-
-    private void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public StoryResponse(Story story) {
+        this.story = story;
     }
 }

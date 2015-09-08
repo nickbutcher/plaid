@@ -16,25 +16,38 @@
 
 package com.example.android.plaid.data.api;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+
 import retrofit.RequestInterceptor;
 
 /**
- * A {@see RequestInterceptor} that adds an auth token to requests
+ * A {@see RequestInterceptor} that adds an auth token to requests if one is provided, otherwise
+ * adds a client id.
  */
-public class AuthInterceptor implements RequestInterceptor {
+public class ClientAuthInterceptor implements RequestInterceptor {
 
     private String accessToken;
+    private String clientId;
+    private boolean hasAccessToken = false;
 
-    public AuthInterceptor(String accessToken) {
-        this.accessToken = accessToken;
+    public ClientAuthInterceptor(@Nullable String accessToken, @NonNull String clientId) {
+        setAccessToken(accessToken);
+        this.clientId = clientId;
     }
 
     @Override
     public void intercept(RequestFacade request) {
-        request.addHeader("Authorization", "Bearer " + accessToken);
+        if (hasAccessToken) {
+            request.addHeader("Authorization", "Bearer " + accessToken);
+        } else {
+            request.addQueryParam("client_id", clientId);
+        }
     }
 
     private void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+        hasAccessToken = !TextUtils.isEmpty(accessToken);
     }
 }
