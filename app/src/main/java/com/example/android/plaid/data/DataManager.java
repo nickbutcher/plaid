@@ -17,7 +17,6 @@ import com.example.android.plaid.data.api.producthunt.ProductHuntService;
 import com.example.android.plaid.data.api.producthunt.model.PostsResponse;
 import com.example.android.plaid.data.prefs.DesignerNewsPrefs;
 import com.example.android.plaid.data.prefs.DribbblePrefs;
-import com.example.android.plaid.data.prefs.ProductHuntPrefs;
 import com.example.android.plaid.data.prefs.SourceManager;
 import com.example.android.plaid.ui.FilterAdapter;
 import com.google.gson.GsonBuilder;
@@ -81,6 +80,7 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
         return loadingCount.get() > 0;
     }
 
+    @Override
     public void onFiltersChanged(Source changedFilter){
         if (changedFilter.active) {
             loadSource(changedFilter);
@@ -433,7 +433,8 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
     private void createProductHuntApi() {
         productHuntApi = new RestAdapter.Builder()
                 .setEndpoint(ProductHuntService.ENDPOINT)
-                .setRequestInterceptor(new AuthInterceptor(ProductHuntPrefs.DEVELOPER_TOKEN))
+                .setRequestInterceptor(
+                        new AuthInterceptor(BuildConfig.PROCUCT_HUNT_DEVELOPER_TOKEN))
                 .build()
                 .create(ProductHuntService.class);
     }

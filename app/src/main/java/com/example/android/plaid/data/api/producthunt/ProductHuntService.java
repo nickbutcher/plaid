@@ -22,6 +22,9 @@ import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Query;
 
+/**
+ * Models the Product Hunt API. See https://api.producthunt.com/v1/docs
+ */
 public interface ProductHuntService {
 
     String ENDPOINT = "https://api.producthunt.com/v1/";
