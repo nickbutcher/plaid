@@ -28,7 +28,7 @@ import android.util.TypedValue;
 import android.view.View;
 
 /**
- * Created by nickbutcher on 3/11/15.
+ * Utility methods for working with Views.
  */
 public class ViewUtils {
 

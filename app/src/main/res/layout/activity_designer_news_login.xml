@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_large"
-        android:paddingStart="@dimen/padding_dialog"
+        android:paddingStart="@dimen/padding_normal"
         android:paddingTop="@dimen/padding_dialog"
         android:paddingEnd="@dimen/padding_dialog"
         android:paddingBottom="@dimen/padding_normal"
@@ -42,13 +42,16 @@
             android:id="@+id/dialog_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_normal"
             android:layout_marginBottom="@dimen/dialog_title_spacing"
             android:text="@string/designer_news_login"
             style="@style/Widget.Plaid.DialogTitle" />
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/username_float_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_normal"
             app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
             <AutoCompleteTextView
@@ -66,12 +69,15 @@
             android:id="@+id/permission_primer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_normal"
             android:text="@string/get_accounts_permission_primer_message"
             style="@style/Widget.Plaid.HintCheckBox" />
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/password_float_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_normal"
             app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
             <EditText
@@ -84,16 +90,33 @@
 
         </android.support.design.widget.TextInputLayout>
 
-        <Button
-            android:id="@+id/login"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:id="@+id/actions_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginTop="@dimen/padding_normal"
-            android:enabled="false"
-            android:text="@string/dn_login_action"
-            android:textAppearance="@style/TextAppearance.DarkButton"
-            android:onClick="doLogin" />
+            android:layout_marginTop="@dimen/padding_normal">
+
+            <Button
+                android:id="@+id/signup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/sign_up"
+                android:textColor="?android:colorAccent"
+                android:onClick="signup"
+                style="?android:borderlessButtonStyle" />
+
+            <Button
+                android:id="@+id/login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:enabled="false"
+                android:text="@string/dn_login_action"
+                android:textAppearance="@style/TextAppearance.DarkButton"
+                android:onClick="doLogin" />
+
+        </FrameLayout>
 
         <include layout="@layout/loading" />
 

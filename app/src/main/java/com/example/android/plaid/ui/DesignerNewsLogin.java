@@ -20,9 +20,12 @@ import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -41,6 +44,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -78,9 +82,13 @@ public class DesignerNewsLogin extends Activity {
     boolean isDismissing = false;
     @Bind(R.id.container) ViewGroup container;
     @Bind(R.id.dialog_title) TextView title;
+    @Bind(R.id.username_float_label) TextInputLayout usernameLabel;
     @Bind(R.id.username) AutoCompleteTextView username;
     @Bind(R.id.permission_primer) CheckBox permissionPrimer;
+    @Bind(R.id.password_float_label) TextInputLayout passwordLabel;
     @Bind(R.id.password) EditText password;
+    @Bind(R.id.actions_container) FrameLayout actionsContainer;
+    @Bind(R.id.signup) Button signup;
     @Bind(R.id.login) Button login;
     @Bind(R.id.loading) ProgressBar loading;
     private DesignerNewsPrefs designerNewsPrefs;
@@ -160,6 +168,11 @@ public class DesignerNewsLogin extends Activity {
         getAccessToken();
     }
 
+    public void signup(View view) {
+        startActivity(new Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://www.designernews.co/users/new")));
+    }
+
     public void dismiss(View view) {
         isDismissing = true;
         setResult(Activity.RESULT_CANCELED);
@@ -184,18 +197,18 @@ public class DesignerNewsLogin extends Activity {
     private void showLoading() {
         TransitionManager.beginDelayedTransition(container);
         title.setVisibility(View.GONE);
-        username.setVisibility(View.GONE);
-        password.setVisibility(View.GONE);
-        login.setVisibility(View.GONE);
+        usernameLabel.setVisibility(View.GONE);
+        passwordLabel.setVisibility(View.GONE);
+        actionsContainer.setVisibility(View.GONE);
         loading.setVisibility(View.VISIBLE);
     }
 
     private void showLogin() {
         TransitionManager.beginDelayedTransition(container);
         title.setVisibility(View.VISIBLE);
-        username.setVisibility(View.VISIBLE);
-        password.setVisibility(View.VISIBLE);
-        login.setVisibility(View.VISIBLE);
+        usernameLabel.setVisibility(View.VISIBLE);
+        passwordLabel.setVisibility(View.VISIBLE);
+        actionsContainer.setVisibility(View.VISIBLE);
         loading.setVisibility(View.GONE);
     }
 
@@ -221,9 +234,8 @@ public class DesignerNewsLogin extends Activity {
                     public void failure(RetrofitError error) {
                         Log.e(getClass().getCanonicalName(), error.getMessage(), error);
                         // TODO snackbar?
-                        Toast.makeText(getApplicationContext(), "Log in failed: " + error
-                                .getResponse()
-                                .getStatus(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Log in failed",
+                                Toast.LENGTH_LONG).show();
                         showLogin();
                         password.requestFocus();
                     }

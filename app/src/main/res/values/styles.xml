@@ -119,7 +119,6 @@
         <item name="android:navigationBarColor">@color/designer_news_super_dark</item>
         <item name="android:colorButtonNormal">@color/designer_news_button</item>
         <item name="android:colorControlActivated">@color/designer_news</item>
-        <item name="android:colorControlHighlight">@color/ripple_light</item>
     </style>
 
     <style name="Widget.Plaid" parent="android:Widget" />
