@@ -103,7 +103,7 @@ public class DesignerNewsLogin extends Activity {
         username.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
+                if (hasFocus && username.isAttachedToWindow()) {
                     username.showDropDown();
                 }
             }
