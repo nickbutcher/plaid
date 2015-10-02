@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -25,13 +24,13 @@
     android:orientation="horizontal"
     android:baselineAligned="false"
     android:minHeight="?android:listPreferredItemHeightSmall"
-    android:theme="@android:style/Theme.Material"
+    android:theme="@style/PlaidDarkOverlay"
     android:foreground="?android:selectableItemBackground">
-    
+
     <ImageView
         android:id="@+id/filter_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
         android:padding="@dimen/spacing_micro"
         android:src="@drawable/filter_placeholder" />
 
@@ -42,9 +41,7 @@
         android:layout_marginStart="@dimen/padding_normal"
         android:layout_gravity="center_vertical"
         android:ellipsize="end"
-        android:fontFamily="sans-serif-medium"
-        android:textColor="#deffffff"
-        android:textSize="16sp"
-        tools:text="Popular Designer News" />
+        android:textAppearance="@style/TextAppearance.Filter"
+        tools:text="Popular Designer News"/>
 
 </com.example.android.plaid.ui.widget.ForegroundLinearLayout>

@@ -17,11 +17,8 @@
 package com.example.android.plaid.ui.recyclerview;
 
 /**
- * Created by nickbutcher on 7/2/15.
+ * Interface for events related to swipe dismissing filters
  */
 public interface ItemTouchHelperAdapter {
-
-    void onItemMove(int fromPosition, int toPosition);
-
     void onItemDismiss(int position);
 }

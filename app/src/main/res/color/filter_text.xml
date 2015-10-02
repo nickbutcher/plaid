@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -16,13 +15,13 @@
   limitations under the License.
   -->
 
-<ripple
+<selector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/ripple_dark">
-    <item>
-        <shape
-            android:shape="oval">
-            <solid android:color="?android:colorAccent" />
-        </shape>
-    </item>
-</ripple>
+    android:constantSize="true"
+    android:enterFadeDuration="@android:integer/config_shortAnimTime"
+    android:exitFadeDuration="@android:integer/config_shortAnimTime">
+
+    <item android:state_enabled="true" android:color="@color/text_primary_light" />
+    <item android:state_enabled="false" android:color="@color/text_disabled_light" />
+
+</selector>

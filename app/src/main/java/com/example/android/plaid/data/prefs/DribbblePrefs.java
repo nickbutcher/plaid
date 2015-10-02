@@ -112,7 +112,12 @@ public class DribbblePrefs {
     }
 
     public User getUser() {
-        return new User(userId, userName, userUsername, userAvatar);
+        return new User.Builder()
+                .setId(userId)
+                .setName(userName)
+                .setUsername(userUsername)
+                .setAvatarUrl(userAvatar)
+                .build();
     }
 
     public void logout() {

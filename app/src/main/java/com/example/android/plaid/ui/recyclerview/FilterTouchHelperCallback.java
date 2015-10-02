@@ -19,15 +19,17 @@ package com.example.android.plaid.ui.recyclerview;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
+import com.example.android.plaid.ui.FilterAdapter;
+
 /**
- * Created by nickbutcher on 7/2/15.
+ * Callback for item swipe-dismissing
  */
 public class FilterTouchHelperCallback extends ItemTouchHelper.SimpleCallback {
 
     private final ItemTouchHelperAdapter adapter;
 
     public FilterTouchHelperCallback(ItemTouchHelperAdapter adapter) {
-        super(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.START);
+        super(0, ItemTouchHelper.START);
         this.adapter = adapter;
     }
 
@@ -35,12 +37,19 @@ public class FilterTouchHelperCallback extends ItemTouchHelper.SimpleCallback {
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder source, RecyclerView
             .ViewHolder target) {
-        adapter.onItemMove(source.getAdapterPosition(), target.getAdapterPosition());
-        return true;
+        // nothing to do here
+        return false;
     }
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         adapter.onItemDismiss(viewHolder.getAdapterPosition());
+    }
+
+    @Override
+    public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+        // can only swipe-dismiss certain sources
+        return makeMovementFlags(0, ((FilterAdapter.FilterViewHolder) viewHolder).isSwipeable ?
+                ItemTouchHelper.START : 0);
     }
 }

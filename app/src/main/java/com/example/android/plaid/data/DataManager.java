@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.android.plaid.data;
 
 import android.content.Context;
@@ -90,23 +106,8 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
         }
     }
 
-    private void setupPageIndexes() {
-        List<Source> dateSources = filterAdapter.getFilters();
-        pageIndexes = new HashMap<>(dateSources.size());
-        for (Source source : dateSources) {
-            pageIndexes.put(source.key, 0);
-        }
-    }
-
-    private int getNextPageIndex(String dataSource) {
-        int nextPage = pageIndexes.get(dataSource) + 1;
-        pageIndexes.put(dataSource, nextPage);
-        return nextPage;
-    }
-
-    private boolean sourceIsEnabled(String key) {
-        return pageIndexes.get(key) != 0;
-    }
+    @Override
+    public void onFilterRemoved(Source removed) { } // no-op
 
     private void loadSource(Source source) {
         if (source.active) {
@@ -146,10 +147,33 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
                 default:
                     if (source instanceof Source.DribbbleSearchSource) {
                         loadDribbbleSearch((Source.DribbbleSearchSource) source, page);
+                    } else if (source instanceof Source.DesignerNewsSearchSource) {
+                        loadDesignerNewsSearch((Source.DesignerNewsSearchSource) source, page);
                     }
                     break;
             }
         }
+    }
+
+    private void setupPageIndexes() {
+        List<Source> dateSources = filterAdapter.getFilters();
+        pageIndexes = new HashMap<>(dateSources.size());
+        for (Source source : dateSources) {
+            pageIndexes.put(source.key, 0);
+        }
+    }
+
+    private int getNextPageIndex(String dataSource) {
+        int nextPage = 1; // default to one – i.e. for newly added sources
+        if (pageIndexes.containsKey(dataSource)) {
+            nextPage = pageIndexes.get(dataSource) + 1;
+        }
+        pageIndexes.put(dataSource, nextPage);
+        return nextPage;
+    }
+
+    private boolean sourceIsEnabled(String key) {
+        return pageIndexes.get(key) != 0;
     }
 
     private void loadDesignerNewsTopStories(final int page) {
@@ -182,6 +206,26 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
                     setPage(storiesResponse.stories, page);
                     setDataSource(storiesResponse.stories,
                             SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
+                    onDataLoaded(storiesResponse.stories);
+                }
+                loadingCount.decrementAndGet();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                loadingCount.decrementAndGet();
+            }
+        });
+    }
+
+    private void loadDesignerNewsSearch(final Source.DesignerNewsSearchSource source,
+                                        final int page) {
+        designerNewsApi.search(source.query, page, new Callback<StoriesResponse>() {
+            @Override
+            public void success(StoriesResponse storiesResponse, Response response) {
+                if (storiesResponse != null) {
+                    setPage(storiesResponse.stories, page);
+                    setDataSource(storiesResponse.stories, source.key);
                     onDataLoaded(storiesResponse.stories);
                 }
                 loadingCount.decrementAndGet();
@@ -360,7 +404,7 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
         new AsyncTask<Void, Void, List<Shot>>() {
             @Override
             protected List<Shot> doInBackground(Void... params) {
-                return DribbbleSearch.search(source.query, DribbbleSearch.SORT_POPULAR, page);
+                return DribbbleSearch.search(source.query, DribbbleSearch.SORT_RECENT, page);
             }
 
             @Override

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -16,18 +15,15 @@
   limitations under the License.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item
-        android:id="@+id/menu_filter_add"
-        android:title="@string/add"
-        android:icon="@drawable/ic_add_light"
-        android:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/menu_filter_edit"
-        android:title="@string/edit"
-        android:icon="@drawable/ic_edit"
-        android:showAsAction="ifRoom" />
-
-</menu>
+<com.example.android.plaid.ui.widget.BaselineGridTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/no_search_results"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/spacing_huge"
+    app:topPaddingHint="@dimen/spacing_huge"
+    android:textAlignment="center"
+    android:drawableTop="@drawable/ic_search_24dp"
+    android:drawablePadding="@dimen/spacing_micro"
+    style="@style/Widget.Plaid.EmptyText" />

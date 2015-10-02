@@ -16,13 +16,7 @@
   limitations under the License.
   -->
 
-<ripple
+<autoTransition
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/ripple_dark">
-    <item>
-        <shape
-            android:shape="oval">
-            <solid android:color="?android:colorAccent" />
-        </shape>
-    </item>
-</ripple>
+    android:interpolator="@android:interpolator/fast_out_slow_in"
+    android:duration="400" />

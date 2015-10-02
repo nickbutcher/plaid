@@ -93,6 +93,7 @@ import com.example.android.plaid.util.glide.GlideUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 import butterknife.Bind;
@@ -216,11 +217,16 @@ public class DribbbleShot extends Activity {
         } else {
             description.setVisibility(View.GONE);
         }
+        NumberFormat nf = NumberFormat.getInstance();
         likeCount.setText(
-                res.getQuantityString(R.plurals.likes, (int) shot.likes_count, shot.likes_count));
+                res.getQuantityString(R.plurals.likes,
+                        (int) shot.likes_count,
+                        nf.format(shot.likes_count)));
         // TODO onClick show likes
         viewCount.setText(
-                res.getQuantityString(R.plurals.views, (int) shot.views_count, shot.views_count));
+                res.getQuantityString(R.plurals.views,
+                        (int) shot.views_count,
+                        nf.format(shot.views_count)));
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

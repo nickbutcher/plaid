@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="@dimen/searchback_image_width"
+        android:height="@dimen/searchback_image_height"
+        android:viewportWidth="@integer/searchback_viewport_width"
+        android:viewportHeight="@integer/searchback_viewport_height">
+
+    <path
+        android:name="stem"
+        android:pathData="@string/searchback_path_stem"
+        android:strokeWidth="@integer/searchback_stroke_width"
+        android:strokeColor="@color/searchback_stroke_color"
+        android:trimPathStart="@fraction/searchback_stem_search_trim_start"
+        android:trimPathEnd="@fraction/searchback_stem_search_trim_end" />
+
+    <path
+        android:name="search_circle"
+        android:pathData="@string/searchback_path_circle"
+        android:strokeWidth="@integer/searchback_stroke_width"
+        android:strokeColor="@color/searchback_stroke_color"
+        android:trimPathEnd="@fraction/searchback_circle_search_trim_end" />
+
+    <path
+        android:name="arrow_head_top"
+        android:pathData="@string/searchback_path_arrow_head_top"
+        android:strokeWidth="@integer/searchback_stroke_width"
+        android:strokeColor="@color/searchback_stroke_color"
+        android:trimPathEnd="@fraction/searchback_arrow_head_search_trim_end" />
+
+    <path
+        android:name="arrow_head_bottom"
+        android:pathData="@string/searchback_path_arrow_head_bottom"
+        android:strokeWidth="@integer/searchback_stroke_width"
+        android:strokeColor="@color/searchback_stroke_color"
+        android:trimPathEnd="@fraction/searchback_arrow_head_search_trim_end" />
+
+</vector>

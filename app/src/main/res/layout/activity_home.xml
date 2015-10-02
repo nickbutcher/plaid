@@ -58,7 +58,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            style="?android:indeterminateProgressStyle" />
+            android:indeterminate="true"
+            android:indeterminateTint="?android:colorAccent"
+            android:indeterminateTintMode="src_in" />
 
         <ViewStub
             android:id="@+id/stub_no_filters"
@@ -104,33 +106,19 @@
     </FrameLayout>
 
     <!-- filter drawer -->
-    <LinearLayout
-        android:id="@+id/filters_pane"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/filters"
         android:layout_width="@dimen/drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:orientation="vertical"
+        android:paddingTop="@dimen/spacing_normal"
+        android:paddingBottom="@dimen/spacing_normal"
         android:elevation="@dimen/z_drawer"
         android:background="@color/background_dark"
-        android:fitsSystemWindows="true">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/filters"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:paddingTop="@dimen/spacing_normal"
-            android:paddingBottom="@dimen/spacing_normal"
-            android:clipToPadding="false"
-            tools:listitem="@layout/filter_item" />
-
-        <Toolbar
-            android:id="@+id/filters_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?android:actionBarSize"
-            android:background="@color/immersive_bars"
-            android:theme="@style/PlaidDarkOverlay" />
-
-    </LinearLayout>
+        android:clipToPadding="false"
+        android:fitsSystemWindows="true"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="outsideOverlay"
+        tools:listitem="@layout/filter_item" />
 
 </android.support.v4.widget.DrawerLayout>

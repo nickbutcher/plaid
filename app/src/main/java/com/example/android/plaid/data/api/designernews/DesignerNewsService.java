@@ -51,7 +51,9 @@ public interface DesignerNewsService {
                           Callback<StoriesResponse> callback);
 
     @GET("/api/v1/stories/search")
-    void search(@Query("query") String query, Callback<StoriesResponse> callback);
+    void search(@Query("query") String query,
+                @Query("page") Integer page,
+                Callback<StoriesResponse> callback);
 
     @FormUrlEncoded
     @POST("/oauth/token")

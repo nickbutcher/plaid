@@ -15,19 +15,7 @@
   limitations under the License.
   -->
 
-<FrameLayout
+<inset
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:background="@color/background_dark"
-    android:transitionName="search_background">
-
-    <ImageView
-        android:layout_width="48dp"
-        android:layout_height="24dp"
-        android:src="@drawable/ic_search"
-        android:background="?android:selectableItemBackgroundBorderless"
-        android:transitionName="search_icon" />
-
-</FrameLayout>
+    android:insetLeft="12dp"
+    android:drawable="@drawable/ic_arrow_back" />

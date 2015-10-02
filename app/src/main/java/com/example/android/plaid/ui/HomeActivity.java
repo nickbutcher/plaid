@@ -16,14 +16,12 @@
 
 package com.example.android.plaid.ui;
 
-import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -31,6 +29,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Path;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -49,10 +48,9 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.style.StyleSpan;
 import android.transition.ArcMotion;
-import android.util.Pair;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
@@ -88,6 +86,8 @@ import com.example.android.plaid.util.ViewUtils;
 import com.example.android.plaid.ui.widget.DismissibleViewCallback;
 import com.example.android.plaid.ui.widget.ElasticDragDismissFrameLayout;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
@@ -110,8 +110,8 @@ public class HomeActivity extends Activity {
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.new_story_post) Button submitNewPost;
     @Bind(R.id.drawer) DrawerLayout drawer;
+    private SystemBarDrawerTinter drawerTinter;
     @Bind(R.id.filters) RecyclerView filtersList;
-    @Bind(R.id.filters_toolbar) Toolbar filtersToolbar;
     //@Bind(R.id.draggable_frame) DragDownDismissFrameLayout draggableFrame;
     @Bind(R.id.draggable_frame) ElasticDragDismissFrameLayout newPost;
     @Bind(R.id.new_story_container) View newPostContainer;
@@ -120,7 +120,6 @@ public class HomeActivity extends Activity {
     @Bind(android.R.id.empty) ProgressBar loading;
     private TextView noFiltersEmptyText;
     @BindInt(R.integer.num_columns) int columns;
-    MenuItem searchMenuItem;
 
     // data
     private DataManager dataManager;
@@ -173,13 +172,11 @@ public class HomeActivity extends Activity {
             }
         });
         grid.setHasFixedSize(true);
-        drawer.setDrawerListener(
-                new SystemBarDrawerTinter(
+        drawerTinter = new SystemBarDrawerTinter(
                         ContextCompat.getColor(this, R.color.immersive_bars),
-                        ContextCompat.getColor(this, R.color.background_super_dark)));
+                        ContextCompat.getColor(this, R.color.background_super_dark));
+        drawer.setDrawerListener(drawerTinter);
         filtersList.setLayoutManager(new LinearLayoutManager(this));
-        filtersToolbar.inflateMenu(R.menu.filters);
-        filtersToolbar.setOnMenuItemClickListener(mFiltersMenuClick);
 
         newPost.setVisibility(View.INVISIBLE);
         submitNewPost.setOnClickListener(new View.OnClickListener() {
@@ -227,19 +224,18 @@ public class HomeActivity extends Activity {
                 lpStatus.height = insets.getSystemWindowInsetTop();
                 statusBarBackground.setLayoutParams(lpStatus);
 
-                // inset the filters pane for the status bar / navbar
-                LinearLayout filtersPane = (LinearLayout) findViewById(R.id.filters_pane);
+                // inset the filters list for the status bar / navbar
                 ViewGroup.MarginLayoutParams lpFilters = (ViewGroup.MarginLayoutParams)
-                        filtersPane.getLayoutParams();
+                        filtersList.getLayoutParams();
                 lpFilters.topMargin += insets.getSystemWindowInsetTop();
                 lpFilters.bottomMargin += insets.getSystemWindowInsetBottom();
-                filtersPane.setLayoutParams(lpFilters);
+                filtersList.setLayoutParams(lpFilters);
                 // we also need to set the padding right for landscape
-                if (filtersPane.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR) {
-                    filtersPane.setPadding(filtersPane.getPaddingLeft(),
-                            filtersPane.getPaddingTop(),
-                            filtersPane.getPaddingRight() + insets.getSystemWindowInsetRight(),
-                            filtersPane.getPaddingBottom());
+                if (filtersList.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR) {
+                    filtersList.setPadding(filtersList.getPaddingLeft(),
+                            filtersList.getPaddingTop(),
+                            filtersList.getPaddingRight() + insets.getSystemWindowInsetRight(),
+                            filtersList.getPaddingBottom());
                 }
 
                 // we place a background behind the nav bar when the new post pane is showing. Set
@@ -249,6 +245,9 @@ public class HomeActivity extends Activity {
                         newStoryContainer.getLayoutParams();
                 lpNewStory.bottomMargin += insets.getSystemWindowInsetBottom();
                 newStoryContainer.setLayoutParams(lpNewStory);
+
+                // clear this listener so insets aren't re-applied
+                drawer.setOnApplyWindowInsetsListener(null);
 
                 return insets.consumeSystemWindowInsets();
             }
@@ -266,22 +265,6 @@ public class HomeActivity extends Activity {
         checkEmptyState();
     }
 
-    private Toolbar.OnMenuItemClickListener mFiltersMenuClick = new Toolbar
-            .OnMenuItemClickListener() {
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.menu_filter_add:
-                    // TODO
-                    return true;
-                case R.id.menu_filter_edit:
-                    // TODO
-                    return true;
-            }
-            return false;
-        }
-    };
-
     // listener for notifying adapter when data sources are deactivated
     private FilterAdapter.FiltersChangedListener filtersChangedListener =
             new FilterAdapter.FiltersChangedListener() {
@@ -290,6 +273,13 @@ public class HomeActivity extends Activity {
             if (!changedFilter.active) {
                 adapter.removeDataSource(changedFilter.key);
             }
+            checkEmptyState();
+        }
+
+        @Override
+        public void onFilterRemoved(Source removed) {
+            adapter.removeDataSource(removed.key);
+            SourceManager.removeSource(removed, HomeActivity.this);
             checkEmptyState();
         }
     };
@@ -337,7 +327,7 @@ public class HomeActivity extends Activity {
 
             // animate from the FAB colour to our dialog colour
             Animator background = ObjectAnimator.ofArgb(newPostContainer,
-                    "backgroundColor",
+                    ViewUtils.BACKGROUND_COLOR,
                     ContextCompat.getColor(HomeActivity.this, R.color.accent),
                     ContextCompat.getColor(HomeActivity.this, R.color.background_light))
                     .setDuration(ANIMATION_DURATION_MED);
@@ -350,7 +340,7 @@ public class HomeActivity extends Activity {
             // animate in a scrim as background protection (as we're kinda faking a dialog)
             scrim.setVisibility(View.VISIBLE);
             Animator scrimColour = ObjectAnimator.ofArgb(scrim,
-                    "backgroundColor",
+                    ViewUtils.BACKGROUND_COLOR,
                     ContextCompat.getColor(HomeActivity.this, R.color.scrim))
                     .setDuration(ANIMATION_DURATION_SLOOOOW);
             Animator scrimBounds = ViewAnimationUtils.createCircularReveal(
@@ -444,6 +434,9 @@ public class HomeActivity extends Activity {
                 loading.setVisibility(View.GONE);
                 setNoFiltersEmptyTextVisibility(View.VISIBLE);
             }
+            // ensure grid scroll tracking/toolbar z-order is reset
+            gridScrollY = 0;
+            toolbar.setTranslationZ(0f);
         } else {
             loading.setVisibility(View.GONE);
             setNoFiltersEmptyTextVisibility(View.GONE);
@@ -477,6 +470,12 @@ public class HomeActivity extends Activity {
                         emptyText.length(),
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 noFiltersEmptyText.setText(ssb);
+                noFiltersEmptyText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        drawer.openDrawer(GravityCompat.END);
+                    }
+                });
             }
             noFiltersEmptyText.setVisibility(visibility);
         } else if (noFiltersEmptyText != null) {
@@ -579,16 +578,13 @@ public class HomeActivity extends Activity {
                 drawer.openDrawer(GravityCompat.END);
                 return true;
             case R.id.menu_search:
-                searchMenuItem = item;
-                View v = LayoutInflater.from(this).inflate(R.layout.search_action_view, null);
-                item.setActionView(v);
-                ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation(this,
-                                Pair.create(v, v.getTransitionName()),
-                                Pair.create(((ViewGroup) v).getChildAt(0), "search_icon"));
-                startActivityForResult(new Intent(this, SearchActivity.class), RC_SEARCH, options
-                        .toBundle());
-                //startActivity(new Intent(this, SearchActivity.class));
+                // get the icon's location on screen to pass through to the search screen
+                View searchMenuView = toolbar.findViewById(R.id.menu_search);
+                int[] loc = new int[2];
+                searchMenuView.getLocationOnScreen(loc);
+                startActivityForResult(SearchActivity.createStartIntent(this, loc[0], loc[0] +
+                        (searchMenuView.getWidth() / 2)), RC_SEARCH);
+                searchMenuView.setAlpha(0f);
                 return true;
             case R.id.menu_dribbble_login:
                 if (!dribbblePrefs.isLoggedIn()) {
@@ -622,12 +618,112 @@ public class HomeActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // todo handle search
-        if (searchMenuItem != null) {
-            searchMenuItem.setActionView(null);
-            searchMenuItem = null;
+        switch (requestCode) {
+            case RC_SEARCH:
+                // reset the search icon which we hid
+                View searchMenuView = toolbar.findViewById(R.id.menu_search);
+                if (searchMenuView != null) {
+                    searchMenuView.setAlpha(1f);
+                }
+                if (resultCode == SearchActivity.RESULT_CODE_SAVE) {
+                    String query = data.getStringExtra(SearchActivity.EXTRA_QUERY);
+                    Source dribbbleSearch = null;
+                    Source designerNewsSearch = null;
+                    boolean newSource = false;
+                    if (data.getBooleanExtra(SearchActivity.EXTRA_SAVE_DRIBBBLE, false)) {
+                        dribbbleSearch = new Source.DribbbleSearchSource(query, true);
+                        if (filtersAdapter.addFilter(dribbbleSearch)) { // doesn't already exist
+                            SourceManager.addSource(dribbbleSearch, this);
+                            newSource = true;
+                        }
+                    }
+                    if (data.getBooleanExtra(SearchActivity.EXTRA_SAVE_DESIGNER_NEWS, false)) {
+                        designerNewsSearch = new Source.DesignerNewsSearchSource(query, true);
+                        if (filtersAdapter.addFilter(designerNewsSearch)) { // doesn't already exist
+                            SourceManager.addSource(designerNewsSearch, this);
+                            newSource = true;
+                        }
+                    }
+                    if (newSource && (dribbbleSearch != null || designerNewsSearch != null)) {
+                        highlightNewSources(dribbbleSearch, designerNewsSearch);
+                    }
+                }
         }
+    }
+
+    /**
+     * Highlight the new item by:
+     *      1. opening the drawer
+     *      2. scrolling it into view
+     *      3. flashing it's background
+     *      4. closing the drawer
+     */
+    private void highlightNewSources(final Source... sources) {
+        final Runnable closeDrawerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                drawer.closeDrawer(GravityCompat.END);
+            }
+        };
+        // can only have one drawer listener (which we're already using to tint status bars) so
+        // need to delegate & reset it when finished
+        drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+
+            // if the user interacts with the filters while it's open then don't auto-close
+            private final View.OnTouchListener filtersTouch = new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    drawer.removeCallbacks(closeDrawerRunnable);
+                    return false;
+                }
+            };
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                // delegate to the tinter
+                drawerTinter.onDrawerSlide(drawerView, slideOffset);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                // scroll to the new item(s) and highlight them
+                List<Integer> filterPositions = new ArrayList<>(sources.length);
+                for (Source source : sources) {
+                    if (source != null) {
+                        filterPositions.add(filtersAdapter.getFilterPosition(source));
+                    }
+                }
+                int scrollTo = Collections.max(filterPositions);
+                filtersList.smoothScrollToPosition(scrollTo);
+                for (int position : filterPositions) {
+                    FilterAdapter.FilterViewHolder holder = (FilterAdapter.FilterViewHolder)
+                            filtersList.findViewHolderForAdapterPosition(position);
+                    if (holder != null) {
+                        // this is failing for the first saved search, then working for subsequent calls
+                        // TODO work out why!
+                        holder.highlightFilter();
+                    }
+                }
+                filtersList.setOnTouchListener(filtersTouch);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                // reset
+                drawer.setDrawerListener(drawerTinter);
+                filtersList.setOnTouchListener(null);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                // if the user interacts with the drawer manually then don't auto-close
+                if (newState == DrawerLayout.STATE_DRAGGING) {
+                    drawer.removeCallbacks(closeDrawerRunnable);
+                }
+            }
+        });
+        drawer.openDrawer(GravityCompat.END);
+        drawer.postDelayed(closeDrawerRunnable, 2000);
     }
 
     @Override
@@ -674,7 +770,7 @@ public class HomeActivity extends Activity {
 
         // animate from our dialog colour back to the FAB colour
         Animator background = ObjectAnimator.ofArgb(newPostContainer,
-                "backgroundColor",
+                ViewUtils.BACKGROUND_COLOR,
                 ContextCompat.getColor(this, R.color.background_light),
                 ContextCompat.getColor(this, R.color.accent))
                 .setDuration(ANIMATION_DURATION_MED);

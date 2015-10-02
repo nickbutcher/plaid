@@ -73,7 +73,8 @@
         <activity
             android:name=".ui.SearchActivity"
             android:label="@string/search"
-            android:theme="@style/Plaid.Search">
+            android:theme="@style/Plaid.Search"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>

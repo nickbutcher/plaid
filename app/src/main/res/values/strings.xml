@@ -51,6 +51,12 @@
     <string name="source_dribbble_search_material_design">Material Design</string>
     <string name="source_product_hunt">Product Hunt</string>
 
+    <!-- Search -->
+    <string name="search_hint">Search Dribbble &amp; Designer News</string>
+    <string name="no_search_results">No results for\n“%1$s”</string>
+    <string name="confirm_save_dribbble_search">Save Dribbble</string>
+    <string name="confirm_save_designer_news_search">Save Designer News</string>
+
     <!-- new designer news story -->
     <string name="new_story_title">Post a story</string>
     <string name="new_story_instructions">Submit a link or provide a comment to start a discussion.</string>
@@ -77,15 +83,16 @@
 
 
     <!-- dribbble shot screen -->
+    <!-- using strings for the number of views/likes as we run them through NumberFormat -->
     <plurals name="likes">
         <item quantity="zero">no likes</item>
-        <item quantity="one">%d like</item>
-        <item quantity="other">%d likes</item>
+        <item quantity="one">%s like</item>
+        <item quantity="other">%s likes</item>
     </plurals>
     <plurals name="views">
         <item quantity="zero">no views</item>
-        <item quantity="one">%d view</item>
-        <item quantity="other">%d views</item>
+        <item quantity="one">%s view</item>
+        <item quantity="other">%s views</item>
     </plurals>
     <string name="share">share</string>
 

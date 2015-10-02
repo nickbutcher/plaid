@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<resources>
+
+    <!-- inspired by https://dribbble.com/shots/2116114-Search-To-Back-Arrow -->
+
+    <!-- common -->
+    <dimen name="searchback_image_width">48dp</dimen>
+    <dimen name="searchback_image_height">24dp</dimen>
+    <integer name="searchback_viewport_width">48</integer>
+    <integer name="searchback_viewport_height">24</integer>
+    <integer name="searchback_stroke_width">2</integer>
+    <color name="searchback_stroke_color">#fff</color>
+
+    <!-- circle -->
+    <string name="searchback_path_circle">M25.39,13.39 A 5.5 5.5 0 1 1 17.61 5.61 A 5.5 5.5 0 1 1 25.39 13.39</string>
+    <item name="searchback_circle_search_trim_end" type="fraction" format="float">1</item>
+    <item name="searchback_circle_back_trim_end" type="fraction" format="float">0</item>
+    <integer name="searchback_show_hide_circle_duration">250</integer>
+    <integer name="searchback_show_circle_delay">300</integer>
+
+    <!-- stem -->
+    <string name="searchback_path_stem">M24.7000008,12.6999998 C24.7000008,12.6999998 31.8173374,19.9066081 31.8173371,19.9066082 C32.7867437,20.7006357 34.4599991,23 37.5,23 C40.5400009,23 43,20.54 43,17.5 C43,14.46 40.5400009,12 37.5,12 C34.4599991,12 33.2173088,12 31.8173371,12 C31.8173374,12 18.8477173,12 18.8477173,12</string>
+    <item name="searchback_stem_search_trim_start" type="fraction" format="float">0</item>
+    <item name="searchback_stem_search_trim_end" type="fraction" format="float">0.185</item>
+    <item name="searchback_stem_back_trim_start" type="fraction" format="float">0.75</item>
+    <item name="searchback_stem_back_trim_end" type="fraction" format="float">1</item>
+    <!-- use different timings to trim the ends to produce the 'stretching out' effect -->
+    <integer name="searchback_stem_trim_longer_duration">600</integer>
+    <integer name="searchback_stem_trim_shorter_duration">450</integer>
+
+    <!-- arrow head -->
+    <string name="searchback_path_arrow_head_top">M16.7017297,12.6957157 L24.7043962,4.69304955</string>
+    <string name="searchback_path_arrow_head_bottom">M16.7107986,11.2764828 L24.7221527,19.2878361</string>
+    <item name="searchback_arrow_head_search_trim_end" type="fraction" format="float">0</item>
+    <item name="searchback_arrow_head_back_trim_end" type="fraction" format="float">1</item>
+    <integer name="searchback_show_arrow_head_delay">350</integer>
+    <integer name="searchback_show_hide_arrow_head_duration">250</integer>
+
+</resources>

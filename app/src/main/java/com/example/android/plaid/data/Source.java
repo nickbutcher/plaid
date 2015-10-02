@@ -45,6 +45,10 @@ public class Source {
         this.active = active;
     }
 
+    public boolean isSwipeDismissable() {
+        return false;
+    }
+
     public static class DribbbleSource extends Source {
 
         public DribbbleSource(String key,
@@ -57,15 +61,20 @@ public class Source {
 
     public static class DribbbleSearchSource extends DribbbleSource {
 
-        private static final int SEARCH_SORT_ORDER = 300;
+        public static final String DRIBBBLE_QUERY_PREFIX = "DRIBBBLE_QUERY_";
+        private static final int SEARCH_SORT_ORDER = 400;
 
         public final String query;
 
-        public DribbbleSearchSource(String key,
-                                    String query,
+        public DribbbleSearchSource(String query,
                                     boolean active) {
-            super(key, SEARCH_SORT_ORDER, "“" + query + "”", active);
+            super(DRIBBBLE_QUERY_PREFIX + query, SEARCH_SORT_ORDER, "“" + query + "”", active);
             this.query = query;
+        }
+
+        @Override
+        public boolean isSwipeDismissable() {
+            return true;
         }
     }
 
@@ -76,6 +85,25 @@ public class Source {
                                   String name,
                                   boolean active) {
             super(key, sortOrder, name, R.drawable.ic_designer_news, active);
+        }
+    }
+
+    public static class DesignerNewsSearchSource extends DesignerNewsSource {
+
+        public static final String DESIGNER_NEWS_QUERY_PREFIX = "DESIGNER_NEWS_QUERY_";
+        private static final int SEARCH_SORT_ORDER = 200;
+
+        public final String query;
+
+        public DesignerNewsSearchSource(String query,
+                                        boolean active) {
+            super(DESIGNER_NEWS_QUERY_PREFIX + query, SEARCH_SORT_ORDER, "“" + query + "”", active);
+            this.query = query;
+        }
+
+        @Override
+        public boolean isSwipeDismissable() {
+            return true;
         }
     }
 

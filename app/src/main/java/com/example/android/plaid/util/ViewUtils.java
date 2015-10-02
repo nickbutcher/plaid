@@ -18,12 +18,15 @@ package com.example.android.plaid.util;
 
 import android.app.Activity;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
+import android.util.Property;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -67,4 +70,22 @@ public class ViewUtils {
             view.setSystemUiVisibility(flags);
         }
     }
+
+    public static final Property<View, Integer> BACKGROUND_COLOR = new AnimUtils
+            .IntProperty<View>("backgroundColor") {
+
+        @Override
+        public void setValue(View view, int value) {
+            view.setBackgroundColor(value);
+        }
+
+        @Override
+        public Integer get(View view) {
+            Drawable d = view.getBackground();
+            if (d instanceof ColorDrawable) {
+                return ((ColorDrawable) d).getColor();
+            }
+            return Color.TRANSPARENT;
+        }
+    };
 }
