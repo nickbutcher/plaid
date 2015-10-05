@@ -106,7 +106,8 @@ import retrofit.converter.GsonConverter;
 public class DribbbleShot extends Activity {
 
     protected final static String EXTRA_SHOT = "shot";
-    private static final int RC_LOGIN = 0;
+    private static final int RC_LOGIN_LIKE = 0;
+    private static final int RC_LOGIN_COMMENT = 1;
     private static final float SCRIM_ADJUSTMENT = 0.075f;
 
     @Bind(R.id.draggable_frame) ElasticDragDismissFrameLayout draggableFrame;
@@ -431,11 +432,12 @@ public class DribbbleShot extends Activity {
                 fab.toggle();
                 doLike();
             } else {
-                ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this, fab,
-                                getString(R.string.transition_dribbble_login));
-                startActivityForResult(new Intent(DribbbleShot.this, DribbbleLogin.class),
-                        RC_LOGIN, options.toBundle());
+                Intent login = new Intent(DribbbleShot.this, DribbbleLogin.class);
+                login.putExtra(DribbbleLogin.EXTRA_SHARED_ELEMENT_START_COLOR,
+                        ContextCompat.getColor(DribbbleShot.this, R.color.dribbble));
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation
+                        (DribbbleShot.this, fab, getString(R.string.transition_dribbble_login));
+                startActivityForResult(login, RC_LOGIN_LIKE, options.toBundle());
             }
         }
     };
@@ -642,7 +644,7 @@ public class DribbbleShot extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case RC_LOGIN:
+            case RC_LOGIN_LIKE:
                 if (resultCode == RESULT_OK) {
                     setupDribbble(); // recreate to capture the new access token
                     // TODO when we add more authenticated actions will need to keep track of what
@@ -681,21 +683,32 @@ public class DribbbleShot extends Activity {
     }
 
     public void postComment(View view) {
-        enterComment.setEnabled(false);
-        dribbbleApi.postComment(shot.id, enterComment.getText().toString().trim(), new retrofit
-                .Callback<Comment>() {
-            @Override
-            public void success(Comment comment, Response response) {
-                loadComments();
-                enterComment.getText().clear();
-                enterComment.setEnabled(true);
-            }
+        if (dribbblePrefs.isLoggedIn()) {
+            if (TextUtils.isEmpty(enterComment.getText())) return;
+            enterComment.setEnabled(false);
+            dribbbleApi.postComment(shot.id, enterComment.getText().toString().trim(), new retrofit
+                    .Callback<Comment>() {
+                @Override
+                public void success(Comment comment, Response response) {
+                    loadComments();
+                    enterComment.getText().clear();
+                    enterComment.setEnabled(true);
+                }
 
-            @Override
-            public void failure(RetrofitError error) {
-                enterComment.setEnabled(true);
-            }
-        });
+                @Override
+                public void failure(RetrofitError error) {
+                    enterComment.setEnabled(true);
+                }
+            });
+        } else {
+            Intent login = new Intent(DribbbleShot.this, DribbbleLogin.class);
+            login.putExtra(DribbbleLogin.EXTRA_SHARED_ELEMENT_START_COLOR, ContextCompat.getColor
+                    (this, R.color.background_light));
+            ActivityOptions options =
+                    ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this, postComment,
+                            getString(R.string.transition_dribbble_login));
+            startActivityForResult(login, RC_LOGIN_COMMENT, options.toBundle());
+        }
     }
 
     private boolean isOP(long playerId) {
@@ -889,7 +902,7 @@ public class DribbbleShot extends Activity {
                         } else {
                             likeHeart.setChecked(false);
                             startActivityForResult(new Intent(DribbbleShot.this, DribbbleLogin
-                                    .class), RC_LOGIN);
+                                    .class), RC_LOGIN_LIKE);
                         }
                     }
                 });

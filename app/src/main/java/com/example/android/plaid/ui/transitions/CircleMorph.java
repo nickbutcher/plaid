@@ -20,6 +20,8 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Color;
+import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.transition.ChangeBounds;
 import android.transition.TransitionValues;
@@ -32,7 +34,7 @@ import com.example.android.plaid.ui.drawable.MorphDrawable;
 import com.example.android.plaid.util.AnimUtils;
 
 /**
- * Created by nickbutcher on 2/13/15.
+ * A transition that morphs a circle into a rectangle, changing it's background color.
  */
 public class CircleMorph extends ChangeBounds {
 
@@ -42,6 +44,7 @@ public class CircleMorph extends ChangeBounds {
             PROPERTY_COLOR,
             PROPERTY_CORNER_RADIUS
     };
+    private @ColorInt int startColor = Color.TRANSPARENT;
 
     public CircleMorph() {
         super();
@@ -49,6 +52,10 @@ public class CircleMorph extends ChangeBounds {
 
     public CircleMorph(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    public void setStartColor(@ColorInt int startColor) {
+        this.startColor = startColor;
     }
 
     @Override
@@ -63,8 +70,7 @@ public class CircleMorph extends ChangeBounds {
         if (view.getWidth() <= 0 || view.getHeight() <= 0) {
             return;
         }
-        transitionValues.values.put(PROPERTY_COLOR,
-                ContextCompat.getColor(view.getContext(), R.color.dribbble));
+        transitionValues.values.put(PROPERTY_COLOR, startColor);
         transitionValues.values.put(PROPERTY_CORNER_RADIUS, view.getHeight() / 2);
     }
 

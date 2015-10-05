@@ -20,6 +20,9 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Color;
+import android.support.annotation.ColorInt;
+import android.support.v4.content.ContextCompat;
 import android.transition.ChangeBounds;
 import android.transition.TransitionValues;
 import android.util.AttributeSet;
@@ -31,7 +34,7 @@ import com.example.android.plaid.ui.drawable.MorphDrawable;
 import com.example.android.plaid.util.AnimUtils;
 
 /**
- * Created by nickbutcher on 2/13/15.
+ * A transition that morphs a rectangle into a circle, changing it's background color.
  */
 public class RectMorph extends ChangeBounds {
 
@@ -41,6 +44,7 @@ public class RectMorph extends ChangeBounds {
             PROPERTY_COLOR,
             PROPERTY_CORNER_RADIUS
     };
+    private @ColorInt int endColor = Color.TRANSPARENT;
 
     public RectMorph() {
         super();
@@ -48,6 +52,10 @@ public class RectMorph extends ChangeBounds {
 
     public RectMorph(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    public void setEndColor(@ColorInt int endColor) {
+        this.endColor = endColor;
     }
 
     @Override
@@ -62,8 +70,8 @@ public class RectMorph extends ChangeBounds {
         if (view.getWidth() <= 0 || view.getHeight() <= 0) {
             return;
         }
-        transitionValues.values.put(PROPERTY_COLOR, view.getResources().getColor(R.color
-                .background_light));
+        transitionValues.values.put(PROPERTY_COLOR,
+                ContextCompat.getColor(view.getContext(), R.color.background_light));
         transitionValues.values.put(PROPERTY_CORNER_RADIUS, view.getResources()
                 .getDimensionPixelSize(R.dimen.dialog_corners));
     }
@@ -75,7 +83,7 @@ public class RectMorph extends ChangeBounds {
         if (view.getWidth() <= 0 || view.getHeight() <= 0) {
             return;
         }
-        transitionValues.values.put(PROPERTY_COLOR, view.getResources().getColor(R.color.dribbble));
+        transitionValues.values.put(PROPERTY_COLOR, endColor);
         transitionValues.values.put(PROPERTY_CORNER_RADIUS, view.getHeight() / 2);
     }
 

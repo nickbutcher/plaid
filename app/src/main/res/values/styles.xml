@@ -71,6 +71,7 @@
         <item name="android:colorAccent">@color/dribbble</item>
         <item name="android:statusBarColor">@color/dribbble_super_dark</item>
         <item name="android:navigationBarColor">@color/dribbble_super_dark</item>
+        <item name="android:colorControlActivated">?android:colorAccent</item>
 
         <item name="android:windowSharedElementEnterTransition">@transition/dribbble_shot_shared_enter</item>
         <item name="android:windowSharedElementReturnTransition">@transition/dribbble_shot_shared_return</item>
