@@ -79,6 +79,7 @@ public class SearchActivity extends Activity {
     public static final int RESULT_CODE_SAVE = 7;
 
     @Bind(R.id.searchback) ImageButton searchBack;
+    @Bind(R.id.searchback_container) ViewGroup searchBackContainer;
     @Bind(R.id.search_view) SearchView searchView;
     @Bind(R.id.search_background) View searchBackground;
     @Bind(android.R.id.empty) ProgressBar progress;
@@ -173,8 +174,8 @@ public class SearchActivity extends Activity {
         searchIconCenterX = getIntent().getIntExtra(EXTRA_MENU_CENTER_X, 0);
 
         // translate icon to match the launching screen then animate back into position
-        searchBack.setTranslationX(searchBackDistanceX);
-        searchBack.animate()
+        searchBackContainer.setTranslationX(searchBackDistanceX);
+        searchBackContainer.animate()
                 .translationX(0f)
                 .setDuration(650L)
                 .setInterpolator(AnimationUtils.loadInterpolator(this,
@@ -275,7 +276,7 @@ public class SearchActivity extends Activity {
     @OnClick({ R.id.scrim, R.id.searchback })
     protected void dismiss() {
         // translate the icon to match position in the launching activity
-        searchBack.animate()
+        searchBackContainer.animate()
                 .translationX(searchBackDistanceX)
                 .setDuration(600L)
                 .setInterpolator(AnimationUtils.loadInterpolator(this,
@@ -291,6 +292,8 @@ public class SearchActivity extends Activity {
         AnimatedVectorDrawable backToSearch = (AnimatedVectorDrawable) ContextCompat
                 .getDrawable(this, R.drawable.avd_back_to_search);
         searchBack.setImageDrawable(backToSearch);
+        // clear the background else the touch ripple moves with the translation which looks bad
+        searchBack.setBackground(null);
         backToSearch.start();
         // fade out the other search chrome
         searchView.animate()
@@ -421,29 +424,31 @@ public class SearchActivity extends Activity {
 
     @OnClick(R.id.results_scrim)
     protected void hideSaveConfimation() {
-        // contract the bubble & hide the scrim
-        AnimatorSet hideConfirmation = new AnimatorSet();
-        hideConfirmation.playTogether(
-                ViewAnimationUtils.createCircularReveal(confirmSaveContainer,
-                        confirmSaveContainer.getWidth() / 2,
-                        confirmSaveContainer.getHeight() / 2,
-                        confirmSaveContainer.getWidth() / 2,
-                        fab.getWidth() / 2),
-                ObjectAnimator.ofArgb(resultsScrim,
-                        ViewUtils.BACKGROUND_COLOR,
-                        Color.TRANSPARENT));
-        hideConfirmation.setDuration(150L);
-        hideConfirmation.setInterpolator(AnimationUtils.loadInterpolator(SearchActivity.this,
-                android.R.interpolator.fast_out_slow_in));
-        hideConfirmation.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                confirmSaveContainer.setVisibility(View.GONE);
-                resultsScrim.setVisibility(View.GONE);
-                fab.setVisibility(View.VISIBLE);
-            }
-        });
-        hideConfirmation.start();
+        if (confirmSaveContainer.getVisibility() == View.VISIBLE) {
+            // contract the bubble & hide the scrim
+            AnimatorSet hideConfirmation = new AnimatorSet();
+            hideConfirmation.playTogether(
+                    ViewAnimationUtils.createCircularReveal(confirmSaveContainer,
+                            confirmSaveContainer.getWidth() / 2,
+                            confirmSaveContainer.getHeight() / 2,
+                            confirmSaveContainer.getWidth() / 2,
+                            fab.getWidth() / 2),
+                    ObjectAnimator.ofArgb(resultsScrim,
+                            ViewUtils.BACKGROUND_COLOR,
+                            Color.TRANSPARENT));
+            hideConfirmation.setDuration(150L);
+            hideConfirmation.setInterpolator(AnimationUtils.loadInterpolator(SearchActivity.this,
+                    android.R.interpolator.fast_out_slow_in));
+            hideConfirmation.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    confirmSaveContainer.setVisibility(View.GONE);
+                    resultsScrim.setVisibility(View.GONE);
+                    fab.setVisibility(results.getVisibility());
+                }
+            });
+            hideConfirmation.start();
+        }
     }
 
     private void setupSearchView() {
@@ -469,6 +474,14 @@ public class SearchActivity extends Activity {
                 return true;
             }
         });
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus && confirmSaveContainer.getVisibility() == View.VISIBLE) {
+                    hideSaveConfimation();
+                }
+            }
+        });
     }
 
     private void clearResults() {
@@ -478,6 +491,8 @@ public class SearchActivity extends Activity {
         results.setVisibility(View.GONE);
         progress.setVisibility(View.GONE);
         fab.setVisibility(View.GONE);
+        confirmSaveContainer.setVisibility(View.GONE);
+        resultsScrim.setVisibility(View.GONE);
         setNoResultsVisibility(View.GONE);
     }
 

@@ -22,6 +22,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -44,6 +45,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.style.StyleSpan;
@@ -583,7 +585,8 @@ public class HomeActivity extends Activity {
                 int[] loc = new int[2];
                 searchMenuView.getLocationOnScreen(loc);
                 startActivityForResult(SearchActivity.createStartIntent(this, loc[0], loc[0] +
-                        (searchMenuView.getWidth() / 2)), RC_SEARCH);
+                        (searchMenuView.getWidth() / 2)), RC_SEARCH, ActivityOptions
+                        .makeSceneTransitionAnimation(this).toBundle());
                 searchMenuView.setAlpha(0f);
                 return true;
             case R.id.menu_dribbble_login:
@@ -627,6 +630,7 @@ public class HomeActivity extends Activity {
                 }
                 if (resultCode == SearchActivity.RESULT_CODE_SAVE) {
                     String query = data.getStringExtra(SearchActivity.EXTRA_QUERY);
+                    if (TextUtils.isEmpty(query)) return;
                     Source dribbbleSearch = null;
                     Source designerNewsSearch = null;
                     boolean newSource = false;
@@ -728,7 +732,10 @@ public class HomeActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        if (isNewPostShowing()) {
+        if (drawer.isDrawerOpen(GravityCompat.END)) {
+            drawer.closeDrawer(GravityCompat.END);
+        }
+        else if (isNewPostShowing()) {
             hideNewPost();
         } else {
             super.onBackPressed();

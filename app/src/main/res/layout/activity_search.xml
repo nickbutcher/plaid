@@ -17,7 +17,6 @@
 
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -51,15 +50,23 @@
             android:alpha="0"
             android:iconifiedByDefault="false" />
 
-        <ImageButton
-            android:id="@+id/searchback"
-            android:layout_width="wrap_content"
+        <!-- wrapping layout needed for the touch ripple -->
+        <FrameLayout
+            android:id="@+id/searchback_container"
+            android:layout_width="96dp"
             android:layout_height="match_parent"
-            android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="4dp"
-            android:outlineProvider="bounds"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_search_24dp" />
+            android:paddingStart="4dp"
+            android:background="@android:color/transparent">
+
+            <ImageButton
+                android:id="@+id/searchback"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="start|center_vertical"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_search_24dp" />
+
+        </FrameLayout>
 
     </FrameLayout>
 
@@ -126,15 +133,14 @@
             android:layout_marginBottom="@dimen/padding_normal"
             android:translationX="196dp"
             android:translationY="196dp"
-            android:orientation="vertical"
             android:elevation="@dimen/z_fab"
             android:background="@drawable/fab"
             android:visibility="gone"
             android:theme="@style/ExpandedFabTheme">
 
             <LinearLayout
-                android:layout_width="248dp"
-                android:layout_height="248dp"
+                android:layout_width="252dp"
+                android:layout_height="252dp"
                 android:layout_gravity="start|top"
                 android:gravity="bottom|end"
                 android:orientation="vertical">
@@ -165,10 +171,10 @@
                     android:id="@+id/save_confirmed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_normal"
                     android:drawableEnd="@drawable/ic_save_24dp"
                     android:drawablePadding="@dimen/padding_normal"
-                    android:text="SAVE"
+                    android:padding="@dimen/padding_normal"
+                    android:text="@string/confirm_save_search"
                     style="?android:borderlessButtonStyle" />
 
             </LinearLayout>

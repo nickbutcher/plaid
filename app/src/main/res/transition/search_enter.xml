@@ -15,14 +15,13 @@
   limitations under the License.
   -->
 
-<transitionSet
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<fade
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="@android:integer/config_mediumAnimTime"
+    android:interpolator="@android:interpolator/fast_out_slow_in">
 
-    <explode>
-        <targets>
-            <target android:excludeId="@android:id/navigationBarBackground" />
-            <target android:excludeId="@android:id/statusBarBackground" />
-        </targets>
-    </explode>
+    <targets>
+        <target android:targetId="@android:id/navigationBarBackground"/>
+    </targets>
 
-</transitionSet>
+</fade>

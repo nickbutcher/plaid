@@ -22,8 +22,8 @@
     android:id="@+id/drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.HomeActivity"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    tools:context=".ui.HomeActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
