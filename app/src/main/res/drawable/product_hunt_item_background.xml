@@ -15,22 +15,8 @@
   limitations under the License.
   -->
 
-<layer-list
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!-- orange background -->
-    <item>
-        <color android:color="@color/product_hunt"/>
-    </item>
-
-    <!-- bottom divider -->
-    <item android:height="@dimen/divider_height" android:gravity="bottom">
-        <color android:color="@color/divider"/>
-    </item>
-
-    <!-- right divider -->
-    <item android:width="@dimen/divider_height" android:gravity="end">
-        <color android:color="@color/divider"/>
-    </item>
-
-</layer-list>
+<nine-patch
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:src="@drawable/grid_item_background"
+    android:tint="@color/product_hunt"
+    android:tintMode="multiply" />

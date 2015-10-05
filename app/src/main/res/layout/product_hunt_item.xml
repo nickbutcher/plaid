@@ -36,12 +36,6 @@
         android:layout_marginBottom="@dimen/spacing_micro"
         style="@style/Widget.Plaid.DesignerNewsTile" />
 
-    <!--<ImageView
-        android:id="@+id/hunt_screenshot"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>-->
-
     <TextView
         android:id="@+id/tagline"
         android:layout_width="match_parent"
@@ -56,7 +50,7 @@
         android:id="@+id/story_comments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_gravity="end"
         android:layout_margin="@dimen/spacing_micro"
         android:background="@drawable/light_ripple"
         android:drawablePadding="@dimen/spacing_normal"
