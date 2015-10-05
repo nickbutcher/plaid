@@ -18,7 +18,7 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:state_pressed="true" android:color="@color/background_light" />
+    <item android:state_pressed="true" android:color="@color/text_primary_light" />
     <item android:color="@color/designer_news" />
 
 </selector>
