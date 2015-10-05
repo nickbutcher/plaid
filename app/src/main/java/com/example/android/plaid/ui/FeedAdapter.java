@@ -56,6 +56,7 @@ import com.example.android.plaid.data.api.producthunt.model.Post;
 import com.example.android.plaid.data.pocket.PocketUtils;
 import com.example.android.plaid.ui.widget.BadgedFourThreeImageView;
 import com.example.android.plaid.util.ObservableColorMatrix;
+import com.example.android.plaid.util.ViewUtils;
 import com.example.android.plaid.util.customtabs.CustomTabActivityHelper;
 import com.example.android.plaid.util.glide.DribbbleTarget;
 
@@ -168,7 +169,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             holder.pocket.setImageAlpha(178); // grumble... no xml setter, grumble...
             holder.pocket.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(final View pocketButton) {
+                public void onClick(final View view) {
+                    final ImageButton pocketButton = (ImageButton) view;
                     // actually add to pocket
                     PocketUtils.addToPocket(host, story.url);
 
@@ -201,7 +203,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Animator pocketScaleUp = ObjectAnimator.ofPropertyValuesHolder(pocketButton,
                             pvhPocketScaleUpX, pvhPocketScaleUpY);
                     ObjectAnimator pocketFadeUp = ObjectAnimator.ofInt(pocketButton,
-                            "imageAlpha", 255);
+                            ViewUtils.IMAGE_ALPHA, 255);
 
                     AnimatorSet up = new AnimatorSet();
                     up.playTogether(titleMoveFadeOut, pocketMoveUp, pocketScaleUp, pocketFadeUp);
@@ -226,7 +228,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Animator pvhPocketScaleDown = ObjectAnimator.ofPropertyValuesHolder
                             (pocketButton, pvhPocketScaleDownX, pvhPocketScaleDownY);
                     ObjectAnimator pocketFadeDown = ObjectAnimator.ofInt(pocketButton,
-                            "imageAlpha", 138);
+                            ViewUtils.IMAGE_ALPHA, 138);
 
                     AnimatorSet down = new AnimatorSet();
                     down.playTogether(titleMoveFadeIn, pocketMoveDown, pvhPocketScaleDown,

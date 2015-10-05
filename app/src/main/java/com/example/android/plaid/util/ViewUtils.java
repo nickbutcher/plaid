@@ -29,6 +29,7 @@ import android.support.annotation.NonNull;
 import android.util.Property;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.ImageView;
 
 /**
  * Utility methods for working with Views.
@@ -86,6 +87,20 @@ public class ViewUtils {
                 return ((ColorDrawable) d).getColor();
             }
             return Color.TRANSPARENT;
+        }
+    };
+
+    public static final Property<ImageView, Integer> IMAGE_ALPHA = new AnimUtils
+            .IntProperty<ImageView>("imageAlpha") {
+
+        @Override
+        public void setValue(ImageView imageView, int value) {
+            imageView.setImageAlpha(value);
+        }
+
+        @Override
+        public Integer get(ImageView imageView) {
+            return imageView.getImageAlpha();
         }
     };
 }

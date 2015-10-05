@@ -133,7 +133,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
                             DribbbleLogin.class)); //, options.toBundle());
                 } else {
                     vh.itemView.setHasTransientState(true);
-                    ObjectAnimator fade = ObjectAnimator.ofFloat(vh.filterIcon, "imageAlpha",
+                    ObjectAnimator fade = ObjectAnimator.ofInt(vh.filterIcon, ViewUtils.IMAGE_ALPHA,
                             filter.active ? FILTER_ICON_DISABLED_ALPHA : FILTER_ICON_ENABLED_ALPHA);
                     fade.setDuration(300);
                     fade.setInterpolator(AnimationUtils.loadInterpolator(vh.itemView.getContext()
