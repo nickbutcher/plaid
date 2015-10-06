@@ -20,9 +20,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
+import android.app.assist.AssistContent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -274,6 +276,45 @@ public class DribbbleShot extends Activity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!performingLike) {
+            checkLiked();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case RC_LOGIN_LIKE:
+                if (resultCode == RESULT_OK) {
+                    setupDribbble(); // recreate to capture the new access token
+                    // TODO when we add more authenticated actions will need to keep track of what
+                    // the user was trying to do when forced to login
+                    fab.setChecked(true);
+                    doLike();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        expandImageAndFinish();
+    }
+
+    @Override
+    public boolean onNavigateUp() {
+        expandImageAndFinish();
+        return true;
+    }
+
+    @Override @TargetApi(Build.VERSION_CODES.M)
+    public void onProvideAssistContent(AssistContent outContent) {
+        outContent.setWebUri(Uri.parse(shot.url));
+    }
+
     private View.OnClickListener shotClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -507,19 +548,6 @@ public class DribbbleShot extends Activity {
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (!performingLike) {
-            checkLiked();
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        expandImageAndFinish();
-    }
-
     private void expandImageAndFinish() {
         if (imageView.getOffset() != 0f) {
             Animator expandImage = ObjectAnimator.ofFloat(imageView, ParallaxScrimageView.OFFSET,
@@ -639,27 +667,6 @@ public class DribbbleShot extends Activity {
                 }
             });
         }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case RC_LOGIN_LIKE:
-                if (resultCode == RESULT_OK) {
-                    setupDribbble(); // recreate to capture the new access token
-                    // TODO when we add more authenticated actions will need to keep track of what
-                    // the user was trying to do when forced to login
-                    fab.setChecked(true);
-                    doLike();
-                }
-                break;
-        }
-    }
-
-    @Override
-    public boolean onNavigateUp() {
-        expandImageAndFinish();
-        return true;
     }
 
     private void checkLiked() {

@@ -19,12 +19,15 @@ package com.example.android.plaid.ui;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.app.assist.AssistContent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Path;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -186,6 +189,11 @@ public class DesignerNewsStory extends Activity {
     protected void onDestroy() {
         customTab.setConnectionCallback(null);
         super.onDestroy();
+    }
+
+    @Override @TargetApi(Build.VERSION_CODES.M)
+    public void onProvideAssistContent(AssistContent outContent) {
+        outContent.setWebUri(Uri.parse(story.url));
     }
 
     public static CustomTabsIntent.Builder getCustomTabIntent(@NonNull Context context,

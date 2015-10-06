@@ -243,11 +243,11 @@ public class SearchActivity extends Activity {
                 return false;
             }
         });
+        onNewIntent(getIntent());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
         if (intent.hasExtra(SearchManager.QUERY)) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             if (!TextUtils.isEmpty(query)) {
