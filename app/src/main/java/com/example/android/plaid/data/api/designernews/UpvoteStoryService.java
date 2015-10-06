@@ -58,7 +58,7 @@ public class UpvoteStoryService extends IntentService {
 
     private void handleActionUpvote(long storyId) {
         if (storyId == 0l) return;
-        DesignerNewsPrefs designerNewsPrefs = new DesignerNewsPrefs(getApplicationContext());
+        DesignerNewsPrefs designerNewsPrefs = DesignerNewsPrefs.get(this);
         if (!designerNewsPrefs.isLoggedIn()) {
             // TODO prompt for login
             return;

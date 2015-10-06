@@ -28,13 +28,15 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.transition.Transition;
+import android.transition.ArcMotion;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -50,8 +52,8 @@ import com.example.android.plaid.data.api.dribbble.DribbbleService;
 import com.example.android.plaid.data.api.dribbble.model.AccessToken;
 import com.example.android.plaid.data.api.dribbble.model.User;
 import com.example.android.plaid.data.prefs.DribbblePrefs;
-import com.example.android.plaid.ui.transitions.CircleMorph;
-import com.example.android.plaid.ui.transitions.RectMorph;
+import com.example.android.plaid.ui.transitions.MorphDialogToFab;
+import com.example.android.plaid.ui.transitions.MorphFabToDialog;
 import com.example.android.plaid.util.ScrimUtil;
 import com.example.android.plaid.util.glide.CircleTransform;
 import com.google.gson.Gson;
@@ -80,25 +82,14 @@ public class DribbbleLogin extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_login);
-        Transition sharedEnter = getWindow().getSharedElementEnterTransition();
-        Transition sharedReturn = getWindow().getSharedElementReturnTransition();
-        if (sharedEnter instanceof CircleMorph
-                && sharedReturn instanceof RectMorph
-                && getIntent().hasExtra(EXTRA_SHARED_ELEMENT_START_COLOR)) {
-            int color = getIntent().getIntExtra(EXTRA_SHARED_ELEMENT_START_COLOR,
-                    Color.TRANSPARENT);
-            ((CircleMorph) sharedEnter).setStartColor(color);
-            ((RectMorph) sharedReturn).setEndColor(color);
-        }
-        setEnterSharedElementCallback(sharedElementEnterCallback);
+        setupSharedElementTransitions();
 
         container = (ViewGroup) findViewById(R.id.container);
         message = (TextView) findViewById(R.id.login_message);
         login = (Button) findViewById(R.id.login);
         loading = (ProgressBar) findViewById(R.id.loading);
         loading.setVisibility(View.GONE);
-
-        dribbblePrefs = new DribbblePrefs(getApplicationContext());
+        dribbblePrefs = DribbblePrefs.get(this);
 
         checkAuthCallback(getIntent());
     }
@@ -220,6 +211,31 @@ public class DribbbleLogin extends Activity {
         });
     }
 
+    /**
+     * Configure the shared element transitions. We need to do this in code rather than
+     * declaratively as we need to supply the color to transition from/to which is dynamically
+     * supplied depending upon where this screen is launched from.
+     */
+    private void setupSharedElementTransitions() {
+        if (!getIntent().hasExtra(EXTRA_SHARED_ELEMENT_START_COLOR)) return;
+
+        ArcMotion arcMotion = new ArcMotion();
+        arcMotion.setMinimumHorizontalAngle(50f);
+        arcMotion.setMinimumVerticalAngle(50f);
+        int color = getIntent().getIntExtra(EXTRA_SHARED_ELEMENT_START_COLOR, Color.TRANSPARENT);
+        Interpolator easeInOut =
+                AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in);
+        MorphFabToDialog sharedEnter = new MorphFabToDialog(color);
+        sharedEnter.setPathMotion(arcMotion);
+        sharedEnter.setInterpolator(easeInOut);
+        getWindow().setSharedElementEnterTransition(sharedEnter);
+        MorphDialogToFab sharedReturn = new MorphDialogToFab(color);
+        sharedReturn.setPathMotion(arcMotion);
+        sharedReturn.setInterpolator(easeInOut);
+        getWindow().setSharedElementReturnTransition(sharedReturn);
+        setEnterSharedElementCallback(sharedElementEnterCallback);
+    }
+
     private void forceSharedElementLayout() {
         int widthSpec = View.MeasureSpec.makeMeasureSpec(container.getWidth(),
                 View.MeasureSpec.EXACTLY);
@@ -235,7 +251,10 @@ public class DribbbleLogin extends Activity {
         public View onCreateSnapshotView(Context context, Parcelable snapshot) {
             // grab the saved fab snapshot and pass it to the below via a View
             View view = new View(context);
-            view.setBackground(new BitmapDrawable(context.getResources(), (Bitmap) snapshot));
+            final Bitmap snapshotBitmap = getSnapshot(snapshot);
+            if (snapshotBitmap != null) {
+                view.setBackground(new BitmapDrawable(context.getResources(), snapshotBitmap));
+            }
             return view;
         }
 
@@ -266,6 +285,17 @@ public class DribbbleLogin extends Activity {
                     break;
                 }
             }
+        }
+
+        private Bitmap getSnapshot(Parcelable parcel) {
+            if (parcel instanceof Bitmap) {
+                return (Bitmap) parcel;
+            } else if (parcel instanceof Bundle) {
+                Bundle bundle = (Bundle) parcel;
+                // see SharedElementCallback#onCaptureSharedElementSnapshot
+                return (Bitmap) bundle.getParcelable("sharedElement:snapshot:bitmap");
+            }
+            return null;
         }
     };
 }

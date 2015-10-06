@@ -20,7 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -47,16 +47,26 @@ import java.util.List;
  * Adapter for showing the list of data sources used as filters for the home grid.
  */
 public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterViewHolder>
-        implements ItemTouchHelperAdapter {
+        implements ItemTouchHelperAdapter, DribbblePrefs.DribbbleLoginStatusListener {
+
+    public interface FilterAuthoriser {
+        void requestDribbbleAuthorisation(View sharedElement, Source forSource);
+    }
 
     private static final int FILTER_ICON_ENABLED_ALPHA = 179; // 70%
     private static final int FILTER_ICON_DISABLED_ALPHA = 51; // 20%
 
     private final List<Source> filters;
+    private final FilterAuthoriser authoriser;
+    private final Context context;
     private @Nullable List<FiltersChangedListener> listeners;
 
-    public FilterAdapter(List<Source> filters) {
+    public FilterAdapter(@NonNull Context context,
+                         @NonNull List<Source> filters,
+                         @NonNull FilterAuthoriser authoriser) {
+        this.context = context.getApplicationContext();
         this.filters = filters;
+        this.authoriser = authoriser;
         setHasStableIds(true);
     }
 
@@ -73,14 +83,17 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
      */
     public boolean addFilter(Source toAdd) {
         // first check if it already exists
-        for (Source existing : filters) {
+        final int count = filters.size();
+        for (int i = 0; i < count; i++) {
+            Source existing = filters.get(i);
             if (existing.getClass() == toAdd.getClass()
                     && existing.key.equalsIgnoreCase(toAdd.key)) {
                 // already exists, just ensure it's active
                 if (!existing.active) {
                     existing.active = true;
                     dispatchFiltersChanged(existing);
-                    notifyItemChanged(filters.indexOf(existing));
+                    notifyItemChanged(i);
+                    SourceManager.updateSource(existing, context);
                 }
                 return false;
             }
@@ -90,6 +103,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
         Collections.sort(filters, new Source.SourceComparator());
         dispatchFiltersChanged(toAdd);
         notifyDataSetChanged();
+        SourceManager.addSource(toAdd, context);
         return true;
     }
 
@@ -98,10 +112,27 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
         filters.remove(position);
         notifyItemRemoved(position);
         dispatchFilterRemoved(removing);
+        SourceManager.removeSource(removing, context);
     }
 
     public int getFilterPosition(Source filter) {
         return filters.indexOf(filter);
+    }
+
+    public void enableFilterByKey(@NonNull String key, @NonNull Context context) {
+        final int count = filters.size();
+        for (int i = 0; i < count; i++) {
+            Source filter = filters.get(i);
+            if (filter.key.equals(key)) {
+                if (!filter.active) {
+                    filter.active = true;
+                    notifyItemChanged(i);
+                    dispatchFiltersChanged(filter);
+                    SourceManager.updateSource(filter, context);
+                    return;
+                }
+            }
+        }
     }
 
     @Override
@@ -116,21 +147,17 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
         vh.isSwipeable = filter.isSwipeDismissable();
         vh.filterName.setText(filter.name);
         vh.filterName.setEnabled(filter.active);
-        if (filter.res > 0) {
-            vh.filterIcon.setImageDrawable(vh.itemView.getContext().getDrawable(filter.res));
+        if (filter.iconRes > 0) {
+            vh.filterIcon.setImageDrawable(vh.itemView.getContext().getDrawable(filter.iconRes));
         }
         vh.filterIcon.setImageAlpha(filter.active ? FILTER_ICON_ENABLED_ALPHA :
                 FILTER_ICON_DISABLED_ALPHA);
         vh.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isAuthorisedSource(filter) &&
-                        ! new DribbblePrefs(vh.itemView.getContext()).isLoggedIn()) {
-                    // TODO enable the filter after a successful login
-                    //ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
-                    // (Activity) getContext(), view, "login");
-                    vh.itemView.getContext().startActivity(new Intent(vh.itemView.getContext(),
-                            DribbbleLogin.class)); //, options.toBundle());
+                if (isAuthorisedDribbbleSource(filter) &&
+                        !DribbblePrefs.get(vh.itemView.getContext()).isLoggedIn()) {
+                    authoriser.requestDribbbleAuthorisation(vh.filterIcon, filter);
                 } else {
                     vh.itemView.setHasTransientState(true);
                     ObjectAnimator fade = ObjectAnimator.ofInt(vh.filterIcon, ViewUtils.IMAGE_ALPHA,
@@ -165,22 +192,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
         return filters.get(position).key.hashCode();
     }
 
-    public void disableAuthorisedDribbleSources(Context context) {
-        boolean changed = false;
-        for (Source filter : filters) {
-            if (filter.active && isAuthorisedSource(filter)) {
-                filter.active = false;
-                SourceManager.updateSource(filter, context);
-                dispatchFiltersChanged(filter);
-                changed = true;
-            }
-        }
-        if (changed) {
-            notifyDataSetChanged();
-        }
-    }
-
-    private boolean isAuthorisedSource(Source source) {
+    private boolean isAuthorisedDribbbleSource(Source source) {
         return source.key.equals(SourceManager.SOURCE_DRIBBBLE_FOLLOWING)
                 || source.key.equals(SourceManager.SOURCE_DRIBBBLE_USER_LIKES)
                 || source.key.equals(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
@@ -271,6 +283,27 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
                 }
             });
             background.start();
+        }
+    }
+
+    @Override
+    public void onDribbbleLogin() {
+        // no-op
+    }
+
+    @Override
+    public void onDribbbleLogout() {
+        boolean changed = false;
+        for (Source filter : filters) {
+            if (filter.active && isAuthorisedDribbbleSource(filter)) {
+                filter.active = false;
+                SourceManager.updateSource(filter, context);
+                dispatchFiltersChanged(filter);
+                changed = true;
+            }
+        }
+        if (changed) {
+            notifyDataSetChanged();
         }
     }
 

@@ -66,6 +66,7 @@ import com.example.android.plaid.ui.widget.PinnedOffsetView;
 import com.example.android.plaid.util.AnimUtils;
 import com.example.android.plaid.util.HtmlUtils;
 import com.example.android.plaid.util.ImageUtils;
+import com.example.android.plaid.util.ViewUtils;
 import com.example.android.plaid.util.customtabs.CustomTabActivityHelper;
 import com.example.android.plaid.util.glide.ImageSpanTarget;
 
@@ -288,7 +289,7 @@ public class DesignerNewsStory extends Activity {
 
         // animate from the FAB colour to the placeholder background color
         Animator background = ObjectAnimator.ofArgb(fabExpand,
-                "backgroundColor",
+                ViewUtils.BACKGROUND_COLOR,
                 ContextCompat.getColor(this, R.color.designer_news),
                 ContextCompat.getColor(this, R.color.background_light))
                 .setDuration(fabExpandDuration);

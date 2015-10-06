@@ -568,10 +568,8 @@ public class DribbbleShot extends Activity {
     }
 
     private void setupDribbble() {
-        // (re)create the prefs object to capture logged in status
-        dribbblePrefs = new DribbblePrefs(getApplicationContext());
-
         // setup the api object which captures the current access token
+        dribbblePrefs = DribbblePrefs.get(this);
         Gson gson = new GsonBuilder()
                 .setDateFormat(DribbbleService.DATE_FORMAT)
                 .create();

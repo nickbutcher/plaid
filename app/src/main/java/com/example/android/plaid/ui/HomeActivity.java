@@ -30,7 +30,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Path;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimatedVectorDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -65,7 +64,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,13 +79,14 @@ import com.example.android.plaid.data.prefs.DribbblePrefs;
 import com.example.android.plaid.data.prefs.SourceManager;
 import com.example.android.plaid.ui.recyclerview.FilterTouchHelperCallback;
 import com.example.android.plaid.ui.recyclerview.InfiniteScrollListener;
+import com.example.android.plaid.ui.widget.DismissibleViewCallback;
+import com.example.android.plaid.ui.widget.ElasticDragDismissFrameLayout;
 import com.example.android.plaid.util.AnimUtils;
 import com.example.android.plaid.util.ColorUtils;
 import com.example.android.plaid.util.ImeUtils;
 import com.example.android.plaid.util.ViewUtils;
-import com.example.android.plaid.ui.widget.DismissibleViewCallback;
-import com.example.android.plaid.ui.widget.ElasticDragDismissFrameLayout;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -100,6 +99,10 @@ import butterknife.ButterKnife;
 public class HomeActivity extends Activity {
 
     private static final int RC_SEARCH = 0;
+    private static final int RC_AUTH_DRIBBBLE_FOLLOWING = 1;
+    private static final int RC_AUTH_DRIBBBLE_USER_LIKES = 2;
+    private static final int RC_AUTH_DRIBBBLE_USER_SHOTS = 3;
+
     private static final int ANIMATION_DURATION_NEAR_INSTANT = 100; //ms
     private static final int ANIMATION_DURATION_SHORT = 300; // ms
     private static final int ANIMATION_DURATION_MED = 450; // ms
@@ -127,8 +130,8 @@ public class HomeActivity extends Activity {
     private DataManager dataManager;
     private FeedAdapter adapter;
     private FilterAdapter filtersAdapter;
-    private DribbblePrefs dribbblePrefs;
     private DesignerNewsPrefs designerNewsPrefs;
+    private DribbblePrefs dribbblePrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,7 +151,22 @@ public class HomeActivity extends Activity {
 
         fab.setOnClickListener(fabClick);
 
-        filtersAdapter = new FilterAdapter(SourceManager.getSources(this));
+        dribbblePrefs = DribbblePrefs.get(this);
+        designerNewsPrefs = DesignerNewsPrefs.get(this);
+        filtersAdapter = new FilterAdapter(this, SourceManager.getSources(this),
+                new FilterAdapter.FilterAuthoriser() {
+            @Override
+            public void requestDribbbleAuthorisation(View sharedElemeent, Source forSource) {
+                Intent login = new Intent(HomeActivity.this, DribbbleLogin.class);
+                login.putExtra(DribbbleLogin.EXTRA_SHARED_ELEMENT_START_COLOR,
+                        ContextCompat.getColor(HomeActivity.this, R.color.background_dark));
+                ActivityOptions options =
+                        ActivityOptions.makeSceneTransitionAnimation(HomeActivity.this,
+                                sharedElemeent, getString(R.string.transition_dribbble_login));
+                startActivityForResult(login,
+                        getAuthSourceRequestCode(forSource), options.toBundle());
+            }
+        });
         dataManager = new DataManager(this, filtersAdapter) {
             @Override
             public void onDataLoaded(List<? extends PlaidItem> data) {
@@ -281,7 +299,6 @@ public class HomeActivity extends Activity {
         @Override
         public void onFilterRemoved(Source removed) {
             adapter.removeDataSource(removed.key);
-            SourceManager.removeSource(removed, HomeActivity.this);
             checkEmptyState();
         }
     };
@@ -504,8 +521,15 @@ public class HomeActivity extends Activity {
         // re-initialise the dribble and DN API objects (as user may have logged in in a child
         // activity & we need to capture the updated auth token)
         // TODO make these singletons?
-        designerNewsPrefs = new DesignerNewsPrefs(getApplicationContext());
-        dribbblePrefs = new DribbblePrefs(getApplicationContext());
+        dribbblePrefs.addLoginStatusListener(dataManager);
+        dribbblePrefs.addLoginStatusListener(filtersAdapter);
+    }
+
+    @Override
+    protected void onPause() {
+        dribbblePrefs.removeLoginStatusListener(dataManager);
+        dribbblePrefs.removeLoginStatusListener(filtersAdapter);
+        super.onPause();
     }
 
     private void animateToolbar() {
@@ -594,8 +618,6 @@ public class HomeActivity extends Activity {
                     dribbblePrefs.login(HomeActivity.this);
                 } else {
                     dribbblePrefs.logout();
-                    dataManager.onDribbbleLogout(this); // needed to clear the access token
-                    filtersAdapter.disableAuthorisedDribbleSources(this);
                     // TODO something better than a toast!!
                     Toast.makeText(getApplicationContext(), R.string.dribbble_logged_out, Toast
                             .LENGTH_SHORT).show();
@@ -606,7 +628,6 @@ public class HomeActivity extends Activity {
                     startActivity(new Intent(this, DesignerNewsLogin.class));
                 } else {
                     designerNewsPrefs.logout();
-                    dataManager.onDesignerNewsLogout(this); // needed to clear the access token
                     // TODO something better than a toast!!
                     Toast.makeText(getApplicationContext(), R.string.designer_news_logged_out,
                             Toast.LENGTH_SHORT).show();
@@ -636,22 +657,34 @@ public class HomeActivity extends Activity {
                     boolean newSource = false;
                     if (data.getBooleanExtra(SearchActivity.EXTRA_SAVE_DRIBBBLE, false)) {
                         dribbbleSearch = new Source.DribbbleSearchSource(query, true);
-                        if (filtersAdapter.addFilter(dribbbleSearch)) { // doesn't already exist
-                            SourceManager.addSource(dribbbleSearch, this);
-                            newSource = true;
-                        }
+                        newSource |= filtersAdapter.addFilter(dribbbleSearch);
                     }
                     if (data.getBooleanExtra(SearchActivity.EXTRA_SAVE_DESIGNER_NEWS, false)) {
                         designerNewsSearch = new Source.DesignerNewsSearchSource(query, true);
-                        if (filtersAdapter.addFilter(designerNewsSearch)) { // doesn't already exist
-                            SourceManager.addSource(designerNewsSearch, this);
-                            newSource = true;
-                        }
+                        newSource |= filtersAdapter.addFilter(designerNewsSearch);
                     }
                     if (newSource && (dribbbleSearch != null || designerNewsSearch != null)) {
                         highlightNewSources(dribbbleSearch, designerNewsSearch);
                     }
                 }
+                break;
+            case RC_AUTH_DRIBBBLE_FOLLOWING:
+                if (resultCode == RESULT_OK) {
+                    filtersAdapter.enableFilterByKey(SourceManager.SOURCE_DRIBBBLE_FOLLOWING, this);
+                }
+                break;
+            case RC_AUTH_DRIBBBLE_USER_LIKES:
+                if (resultCode == RESULT_OK) {
+                    filtersAdapter.enableFilterByKey(
+                            SourceManager.SOURCE_DRIBBBLE_USER_LIKES, this);
+                }
+                break;
+            case RC_AUTH_DRIBBBLE_USER_SHOTS:
+                if (resultCode == RESULT_OK) {
+                    filtersAdapter.enableFilterByKey(
+                            SourceManager.SOURCE_DRIBBBLE_USER_SHOTS, this);
+                }
+                break;
         }
     }
 
@@ -878,6 +911,18 @@ public class HomeActivity extends Activity {
             iv.setImageDrawable(avd);
             avd.start();
         }
+    }
+
+    private int getAuthSourceRequestCode(Source filter) {
+        switch (filter.key) {
+            case SourceManager.SOURCE_DRIBBBLE_FOLLOWING:
+                return RC_AUTH_DRIBBBLE_FOLLOWING;
+            case SourceManager.SOURCE_DRIBBBLE_USER_LIKES:
+                return RC_AUTH_DRIBBBLE_USER_LIKES;
+            case SourceManager.SOURCE_DRIBBBLE_USER_SHOTS:
+                return RC_AUTH_DRIBBBLE_USER_SHOTS;
+        }
+        throw new InvalidParameterException();
     }
 
     private class SystemBarDrawerTinter extends DrawerLayout.SimpleDrawerListener {

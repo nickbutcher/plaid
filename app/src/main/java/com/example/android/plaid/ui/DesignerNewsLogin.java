@@ -131,7 +131,7 @@ public class DesignerNewsLogin extends Activity {
                 return false;
             }
         });
-        designerNewsPrefs = new DesignerNewsPrefs(getApplicationContext());
+        designerNewsPrefs = DesignerNewsPrefs.get(this);
     }
 
     @Override

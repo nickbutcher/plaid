@@ -36,7 +36,7 @@ import com.example.android.plaid.util.AnimUtils;
 /**
  * A transition that morphs a circle into a rectangle, changing it's background color.
  */
-public class CircleMorph extends ChangeBounds {
+public class MorphFabToDialog extends ChangeBounds {
 
     private static final String PROPERTY_COLOR = "plaid:circleMorph:color";
     private static final String PROPERTY_CORNER_RADIUS = "plaid:circleMorph:cornerRadius";
@@ -46,11 +46,12 @@ public class CircleMorph extends ChangeBounds {
     };
     private @ColorInt int startColor = Color.TRANSPARENT;
 
-    public CircleMorph() {
+    public MorphFabToDialog(@ColorInt int startColor) {
         super();
+        setStartColor(startColor);
     }
 
-    public CircleMorph(Context context, AttributeSet attrs) {
+    public MorphFabToDialog(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -109,12 +110,6 @@ public class CircleMorph extends ChangeBounds {
         MorphDrawable background = new MorphDrawable(startColor, startCornerRadius);
         endValues.view.setBackground(background);
 
-        Animator down = ObjectAnimator.ofFloat(endValues.view, View.TRANSLATION_Y, 100f);
-        down.setDuration(100);
-        Animator up = ObjectAnimator.ofFloat(endValues.view, View.TRANSLATION_Y, 0f);
-        up.setStartDelay(100);
-        up.setDuration(200);
-
         Animator color = ObjectAnimator.ofArgb(background, background.COLOR, endColor);
         Animator corners = ObjectAnimator.ofFloat(background, background.CORNER_RADIUS,
                 endCornerRadius);
@@ -127,24 +122,18 @@ public class CircleMorph extends ChangeBounds {
                 View v = vg.getChildAt(i);
                 v.setTranslationY(v.getHeight() / 2);
                 v.setAlpha(0f);
-                //v.setScaleX(0.8f);
-                //v.setScaleY(0.5f);
                 v.animate()
                         .alpha(1f)
                         .translationY(0f)
-                                //.scaleX(1f)
-                                //.scaleY(1f)
                         .setDuration(duration)
                         .setStartDelay(150)
                         .setInterpolator(AnimUtils.getMaterialInterpolator(vg.getContext()));
-                //.setInterpolator(android.view.animation.AnimationUtils.loadInterpolator(vg
-                // .getContext(), android.R.interpolator.decelerate_quad));
                 duration += 50;
             }
         }
 
         AnimatorSet transition = new AnimatorSet();
-        transition.playTogether(changeBounds, corners, color, down, up);
+        transition.playTogether(changeBounds, corners, color);
         transition.setDuration(300);
         transition.setInterpolator(AnimUtils.getMaterialInterpolator(sceneRoot.getContext()));
         return transition;

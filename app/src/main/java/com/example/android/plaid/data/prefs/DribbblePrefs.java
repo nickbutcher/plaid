@@ -25,6 +25,9 @@ import android.text.TextUtils;
 import com.example.android.plaid.BuildConfig;
 import com.example.android.plaid.data.api.dribbble.model.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Storing dribbble user state.
  */
@@ -41,6 +44,8 @@ public class DribbblePrefs {
     private static final String KEY_USER_NAME = "KEY_USER_NAME";
     private static final String KEY_USER_USERNAME = "KEY_USER_USERNAME";
     private static final String KEY_USER_AVATAR = "KEY_USER_AVATAR";
+
+    private static volatile DribbblePrefs singleton;
     private final SharedPreferences prefs;
 
     private String accessToken;
@@ -49,8 +54,18 @@ public class DribbblePrefs {
     private String userName;
     private String userUsername;
     private String userAvatar;
+    private List<DribbbleLoginStatusListener> loginStatusListeners;
 
-    public DribbblePrefs(Context context) {
+    public static DribbblePrefs get(Context context) {
+        if (singleton == null) {
+            synchronized (DribbblePrefs.class) {
+                singleton = new DribbblePrefs(context);
+            }
+        }
+        return singleton;
+    }
+
+    private DribbblePrefs(Context context) {
         prefs = context.getApplicationContext().getSharedPreferences(DRIBBBLE_PREF, Context
                 .MODE_PRIVATE);
         accessToken = prefs.getString(KEY_ACCESS_TOKEN, null);
@@ -77,6 +92,7 @@ public class DribbblePrefs {
             this.accessToken = accessToken;
             isLoggedIn = true;
             prefs.edit().putString(KEY_ACCESS_TOKEN, accessToken).apply();
+            dispatchLoginEvent();
         }
     }
 
@@ -133,13 +149,45 @@ public class DribbblePrefs {
         editor.putString(KEY_USER_NAME, null);
         editor.putString(KEY_USER_AVATAR, null);
         editor.apply();
+        dispatchLogoutEvent();
     }
 
     public void login(Context context) {
         context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(LOGIN_URL)));
     }
 
-    public interface DribbbleLogoutListener {
-        void onDribbbleLogout(Context context);
+    public void addLoginStatusListener(DribbbleLoginStatusListener listener) {
+        if (loginStatusListeners == null) {
+            loginStatusListeners = new ArrayList<>();
+        }
+        loginStatusListeners.add(listener);
     }
+
+    public void removeLoginStatusListener(DribbbleLoginStatusListener listener) {
+        if (loginStatusListeners != null) {
+            loginStatusListeners.remove(listener);
+        }
+    }
+
+    private void dispatchLoginEvent() {
+        if (loginStatusListeners != null && loginStatusListeners.size() > 0) {
+            for (DribbbleLoginStatusListener listener : loginStatusListeners) {
+                listener.onDribbbleLogin();
+            }
+        }
+    }
+
+    private void dispatchLogoutEvent() {
+        if (loginStatusListeners != null && loginStatusListeners.size() > 0) {
+            for (DribbbleLoginStatusListener listener : loginStatusListeners) {
+                listener.onDribbbleLogout();
+            }
+        }
+    }
+
+    public interface DribbbleLoginStatusListener {
+        void onDribbbleLogin();
+        void onDribbbleLogout();
+    }
+
 }

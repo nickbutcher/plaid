@@ -98,8 +98,6 @@
     </style>
 
     <style name="Plaid.DribbbleLogin">
-        <item name="android:windowSharedElementEnterTransition">@transition/dribbble_login_shared_enter</item>
-        <item name="android:windowSharedElementReturnTransition">@transition/dribbble_login_shared_return</item>
         <item name="android:windowBackground">@color/scrim</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@null</item>

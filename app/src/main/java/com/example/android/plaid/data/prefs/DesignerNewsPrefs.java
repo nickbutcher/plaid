@@ -23,6 +23,9 @@ import android.text.TextUtils;
 
 import com.example.android.plaid.data.api.designernews.model.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Storing Designer News user state
  */
@@ -33,6 +36,8 @@ public class DesignerNewsPrefs {
     private static final String KEY_USER_ID = "KEY_USER_ID";
     private static final String KEY_USER_NAME = "KEY_USER_NAME";
     private static final String KEY_USER_AVATAR = "KEY_USER_AVATAR";
+
+    private static volatile DesignerNewsPrefs singleton;
     private final SharedPreferences prefs;
 
     private String accessToken;
@@ -40,8 +45,18 @@ public class DesignerNewsPrefs {
     private long userId;
     private String username;
     private String userAvatar;
+    private List<DesignerNewsLoginStatusListener> loginStatusListeners;
 
-    public DesignerNewsPrefs(Context context) {
+    public static DesignerNewsPrefs get(Context context) {
+        if (singleton == null) {
+            synchronized (DesignerNewsPrefs.class) {
+                singleton = new DesignerNewsPrefs(context);
+            }
+        }
+        return singleton;
+    }
+
+    private DesignerNewsPrefs(Context context) {
         prefs = context.getApplicationContext().getSharedPreferences(DESIGNER_NEWS_PREF, Context
                 .MODE_PRIVATE);
         accessToken = prefs.getString(KEY_ACCESS_TOKEN, null);
@@ -66,6 +81,7 @@ public class DesignerNewsPrefs {
             this.accessToken = accessToken;
             isLoggedIn = true;
             prefs.edit().putString(KEY_ACCESS_TOKEN, accessToken).apply();
+            dispatchLoginEvent();
         }
     }
 
@@ -105,9 +121,41 @@ public class DesignerNewsPrefs {
         editor.putString(KEY_USER_NAME, null);
         editor.putString(KEY_USER_AVATAR, null);
         editor.apply();
+        dispatchLogoutEvent();
     }
 
-    public interface DesignerNewsLogoutListener {
-        void onDesignerNewsLogout(Context context);
+    public void addLoginStatusListener(DesignerNewsLoginStatusListener listener) {
+        if (loginStatusListeners == null) {
+            loginStatusListeners = new ArrayList<>();
+        }
+        loginStatusListeners.add(listener);
     }
+
+    public void removeLoginStatusListener(DesignerNewsLoginStatusListener listener) {
+        if (loginStatusListeners != null) {
+            loginStatusListeners.remove(listener);
+        }
+    }
+
+    private void dispatchLoginEvent() {
+        if (loginStatusListeners != null && loginStatusListeners.size() > 0) {
+            for (DesignerNewsLoginStatusListener listener : loginStatusListeners) {
+                listener.onDesignerNewsLogin();
+            }
+        }
+    }
+
+    private void dispatchLogoutEvent() {
+        if (loginStatusListeners != null && loginStatusListeners.size() > 0) {
+            for (DesignerNewsLoginStatusListener listener : loginStatusListeners) {
+                listener.onDesignerNewsLogout();
+            }
+        }
+    }
+
+    public interface DesignerNewsLoginStatusListener {
+        void onDesignerNewsLogin();
+        void onDesignerNewsLogout();
+    }
+
 }

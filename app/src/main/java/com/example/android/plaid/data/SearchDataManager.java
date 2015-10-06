@@ -43,12 +43,7 @@ import retrofit.converter.GsonConverter;
  * Responsible for loading search results from dribbble and designer news. Instantiating classes are
  * responsible for providing the {code onDataLoaded} method to do something with the data.
  */
-public abstract class SearchDataManager implements DataLoadingSubject {
-
-    private DribbblePrefs dribbblePrefs;
-    private DribbbleService dribbbleApi;
-    private DesignerNewsPrefs designerNewsPrefs;
-    private DesignerNewsService designerNewsApi;
+public abstract class SearchDataManager extends BaseDataManager implements DataLoadingSubject {
 
     // state
     private String query = "";
@@ -57,12 +52,8 @@ public abstract class SearchDataManager implements DataLoadingSubject {
     private int page = 1;
 
     public SearchDataManager(Context context) {
-        // setup the API access objects
-        createDesignerNewsApi(context);
-        createDribbbleApi(context);
+        super(context);
     }
-
-    public abstract void onDataLoaded(List<? extends PlaidItem> data);
 
     @Override
     public boolean isDataLoading() {
@@ -98,7 +89,7 @@ public abstract class SearchDataManager implements DataLoadingSubject {
 
     private void searchDesignerNews(final String query, final int resultsPage) {
         loadingDesignerNews = true;
-        designerNewsApi.search(query, resultsPage, new Callback<StoriesResponse>() {
+        getDesignerNewsApi().search(query, resultsPage, new Callback<StoriesResponse>() {
             @Override
             public void success(StoriesResponse storiesResponse, Response response) {
                 if (storiesResponse != null) {
@@ -137,37 +128,4 @@ public abstract class SearchDataManager implements DataLoadingSubject {
         }.execute();
     }
 
-    private static void setPage(List<? extends PlaidItem> items, int page) {
-        for (PlaidItem item : items) {
-            item.page = page;
-        }
-    }
-
-    private static void setDataSource(List<? extends PlaidItem> items, String dataSource) {
-        for (PlaidItem item : items) {
-            item.dataSource = dataSource;
-        }
-    }
-
-    private void createDesignerNewsApi(Context context) {
-        designerNewsPrefs = new DesignerNewsPrefs(context);
-        designerNewsApi = new RestAdapter.Builder()
-                .setEndpoint(DesignerNewsService.ENDPOINT)
-                .setRequestInterceptor(new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
-                        BuildConfig.DESIGNER_NEWS_CLIENT_ID))
-                .build()
-                .create(DesignerNewsService.class);
-    }
-
-    private void createDribbbleApi(Context context) {
-        dribbblePrefs = new DribbblePrefs(context);
-        dribbbleApi = new RestAdapter.Builder()
-                .setEndpoint(DribbbleService.ENDPOINT)
-                .setConverter(new GsonConverter(new GsonBuilder()
-                        .setDateFormat(DribbbleService.DATE_FORMAT)
-                        .create()))
-                .setRequestInterceptor(new AuthInterceptor(dribbblePrefs.getAccessToken()))
-                .build()
-                .create((DribbbleService.class));
-    }
 }

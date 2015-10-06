@@ -53,19 +53,11 @@ import retrofit.converter.GsonConverter;
  * Responsible for loading data from the various sources. Instantiating classes are responsible for
  * providing the {code onDataLoaded} method to do something with the data.
  */
-public abstract class DataManager implements FilterAdapter.FiltersChangedListener,
-        DataLoadingSubject,
-        DribbblePrefs.DribbbleLogoutListener,
-        DesignerNewsPrefs.DesignerNewsLogoutListener {
+public abstract class DataManager extends BaseDataManager
+        implements FilterAdapter.FiltersChangedListener, DataLoadingSubject {
 
     private final FilterAdapter filterAdapter;
-    private DribbblePrefs dribbblePrefs;
-    private DribbbleService dribbbleApi;
-    private DesignerNewsPrefs designerNewsPrefs;
-    private DesignerNewsService designerNewsApi;
-    private ProductHuntService productHuntApi;
     private AtomicInteger loadingCount;
-
     private Map<String, Integer> pageIndexes;
 
     /**
@@ -73,14 +65,10 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
      */
     public DataManager(Context context,
                        FilterAdapter filterAdapter) {
+        super(context);
         this.filterAdapter = filterAdapter;
         loadingCount = new AtomicInteger(0);
         setupPageIndexes();
-
-        // setup the API access objects
-        createDesignerNewsApi(context);
-        createDribbbleApi(context);
-        createProductHuntApi();
     }
 
     public void loadAllDataSources() {
@@ -88,8 +76,6 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
             loadSource(filter);
         }
     }
-
-    public abstract void onDataLoaded(List<? extends PlaidItem> data);
 
     @Override
     public boolean isDataLoading() {
@@ -177,7 +163,7 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
     }
 
     private void loadDesignerNewsTopStories(final int page) {
-        designerNewsApi.getTopStories(page, new Callback<StoriesResponse>() {
+        getDesignerNewsApi().getTopStories(page, new Callback<StoriesResponse>() {
             @Override
             public void success(StoriesResponse storiesResponse, Response response) {
                 if (storiesResponse != null
@@ -198,7 +184,7 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
     }
 
     private void loadDesignerNewsRecent(final int page) {
-        designerNewsApi.getRecentStories(page, new Callback<StoriesResponse>() {
+        getDesignerNewsApi().getRecentStories(page, new Callback<StoriesResponse>() {
             @Override
             public void success(StoriesResponse storiesResponse, Response response) {
                 if (storiesResponse != null
@@ -220,7 +206,7 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
 
     private void loadDesignerNewsSearch(final Source.DesignerNewsSearchSource source,
                                         final int page) {
-        designerNewsApi.search(source.query, page, new Callback<StoriesResponse>() {
+        getDesignerNewsApi().search(source.query, page, new Callback<StoriesResponse>() {
             @Override
             public void success(StoriesResponse storiesResponse, Response response) {
                 if (storiesResponse != null) {
@@ -239,7 +225,8 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
     }
 
     private void loadDribbblePopular(final int page) {
-        dribbbleApi.getPopular(page, DribbbleService.PER_PAGE_DEFAULT, new Callback<List<Shot>>() {
+        getDribbbleApi().getPopular(page, DribbbleService.PER_PAGE_DEFAULT, new
+                Callback<List<Shot>>() {
             @Override
             public void success(List<Shot> shots, Response response) {
                 if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_POPULAR)) {
@@ -258,7 +245,8 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
     }
 
     private void loadDribbbleDebuts(final int page) {
-        dribbbleApi.getDebuts(page, DribbbleService.PER_PAGE_DEFAULT, new Callback<List<Shot>>() {
+        getDribbbleApi().getDebuts(page, DribbbleService.PER_PAGE_DEFAULT, new
+                Callback<List<Shot>>() {
             @Override
             public void success(List<Shot> shots, Response response) {
                 if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_DEBUTS)) {
@@ -277,7 +265,8 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
     }
 
     private void loadDribbbleAnimated(final int page) {
-        dribbbleApi.getAnimated(page, DribbbleService.PER_PAGE_DEFAULT, new Callback<List<Shot>>() {
+        getDribbbleApi().getAnimated(page, DribbbleService.PER_PAGE_DEFAULT, new
+                Callback<List<Shot>>() {
             @Override
             public void success(List<Shot> shots, Response response) {
                 if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_ANIMATED)) {
@@ -296,7 +285,8 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
     }
 
     private void loadDribbbleRecent(final int page) {
-        dribbbleApi.getRecent(page, DribbbleService.PER_PAGE_DEFAULT, new Callback<List<Shot>>() {
+        getDribbbleApi().getRecent(page, DribbbleService.PER_PAGE_DEFAULT, new
+                Callback<List<Shot>>() {
             @Override
             public void success(List<Shot> shots, Response response) {
                 if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_RECENT)) {
@@ -315,8 +305,8 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
     }
 
     private void loadDribbbleFollowing(final int page) {
-        if (dribbblePrefs.isLoggedIn()) {
-            dribbbleApi.getFollowing(page, DribbbleService.PER_PAGE_DEFAULT,
+        if (getDribbblePrefs().isLoggedIn()) {
+            getDribbbleApi().getFollowing(page, DribbbleService.PER_PAGE_DEFAULT,
                     new Callback<List<Shot>>() {
                         @Override
                         public void success(List<Shot> shots, Response response) {
@@ -339,8 +329,8 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
     }
 
     private void loadDribbbleUserLikes(final int page) {
-        if (dribbblePrefs.isLoggedIn()) {
-            dribbbleApi.getUserLikes(page, DribbbleService.PER_PAGE_DEFAULT,
+        if (getDribbblePrefs().isLoggedIn()) {
+            getDribbbleApi().getUserLikes(page, DribbbleService.PER_PAGE_DEFAULT,
                     new Callback<List<Like>>() {
                         @Override
                         public void success(List<Like> likes, Response response) {
@@ -370,14 +360,14 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
     }
 
     private void loadDribbbleUserShots(final int page) {
-        if (dribbblePrefs.isLoggedIn()) {
-            dribbbleApi.getUserShots(page, DribbbleService.PER_PAGE_DEFAULT,
+        if (getDribbblePrefs().isLoggedIn()) {
+            getDribbbleApi().getUserShots(page, DribbbleService.PER_PAGE_DEFAULT,
                     new Callback<List<Shot>>() {
                         @Override
                         public void success(List<Shot> shots, Response response) {
                             if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS)) {
                                 // this api call doesn't populate the shot user field but we need it
-                                User user = dribbblePrefs.getUser();
+                                User user = getDribbblePrefs().getUser();
                                 for (Shot shot : shots) {
                                     shot.user = user;
                                 }
@@ -421,7 +411,7 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
 
     private void loadProductHunt(final int page) {
         // this API's paging is 0 based but this class (& sorting) is 1 based so adjust locally
-        productHuntApi.getPosts(page - 1, new Callback<PostsResponse>() {
+        getProductHuntApi().getPosts(page - 1, new Callback<PostsResponse>() {
             @Override
             public void success(PostsResponse postsResponse, Response response) {
                 if (postsResponse != null && sourceIsEnabled(SourceManager.SOURCE_PRODUCT_HUNT)) {
@@ -438,56 +428,5 @@ public abstract class DataManager implements FilterAdapter.FiltersChangedListene
                 loadingCount.decrementAndGet();
             }
         });
-    }
-
-    private static void setPage(List<? extends PlaidItem> items, int page) {
-        for (PlaidItem item : items) {
-            item.page = page;
-        }
-    }
-
-    private static void setDataSource(List<? extends PlaidItem> items, String dataSource) {
-        for (PlaidItem item : items) {
-            item.dataSource = dataSource;
-        }
-    }
-
-    private void createDesignerNewsApi(Context context) {
-        designerNewsPrefs = new DesignerNewsPrefs(context);
-        designerNewsApi = new RestAdapter.Builder()
-                .setEndpoint(DesignerNewsService.ENDPOINT)
-                .setRequestInterceptor(new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
-                        BuildConfig.DESIGNER_NEWS_CLIENT_ID))
-                .build()
-                .create(DesignerNewsService.class);
-    }
-
-    private void createDribbbleApi(Context context) {
-        dribbblePrefs = new DribbblePrefs(context);
-        dribbbleApi = new RestAdapter.Builder()
-                .setEndpoint(DribbbleService.ENDPOINT)
-                .setConverter(new GsonConverter(new GsonBuilder()
-                        .setDateFormat(DribbbleService.DATE_FORMAT)
-                        .create()))
-                .setRequestInterceptor(new AuthInterceptor(dribbblePrefs.getAccessToken()))
-                .build()
-                .create((DribbbleService.class));
-    }
-
-    private void createProductHuntApi() {
-        productHuntApi = new RestAdapter.Builder()
-                .setEndpoint(ProductHuntService.ENDPOINT)
-                .setRequestInterceptor(
-                        new AuthInterceptor(BuildConfig.PROCUCT_HUNT_DEVELOPER_TOKEN))
-                .build()
-                .create(ProductHuntService.class);
-    }
-
-    public void onDribbbleLogout(Context context) {
-        createDribbbleApi(context); // clear the auth token
-    }
-
-    public void onDesignerNewsLogout(Context context) {
-        createDesignerNewsApi(context); // clear the auth token
     }
 }

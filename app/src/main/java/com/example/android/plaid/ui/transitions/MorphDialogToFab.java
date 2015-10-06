@@ -36,7 +36,7 @@ import com.example.android.plaid.util.AnimUtils;
 /**
  * A transition that morphs a rectangle into a circle, changing it's background color.
  */
-public class RectMorph extends ChangeBounds {
+public class MorphDialogToFab extends ChangeBounds {
 
     private static final String PROPERTY_COLOR = "plaid:rectMorph:color";
     private static final String PROPERTY_CORNER_RADIUS = "plaid:rectMorph:cornerRadius";
@@ -46,11 +46,12 @@ public class RectMorph extends ChangeBounds {
     };
     private @ColorInt int endColor = Color.TRANSPARENT;
 
-    public RectMorph() {
+    public MorphDialogToFab(@ColorInt int endColor) {
         super();
+        setEndColor(endColor);
     }
 
-    public RectMorph(Context context, AttributeSet attrs) {
+    public MorphDialogToFab(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -109,18 +110,12 @@ public class RectMorph extends ChangeBounds {
         MorphDrawable background = new MorphDrawable(startColor, startCornerRadius);
         endValues.view.setBackground(background);
 
-        Animator up = ObjectAnimator.ofFloat(endValues.view, View.TRANSLATION_Y, 100f);
-        up.setDuration(100);
-        Animator down = ObjectAnimator.ofFloat(endValues.view, View.TRANSLATION_Y, 0f);
-        down.setDuration(200);
-        down.setStartDelay(100);
-
         Animator color = ObjectAnimator.ofArgb(background, background.COLOR, endColor);
         Animator corners = ObjectAnimator.ofFloat(background, background.CORNER_RADIUS,
                 endCornerRadius);
 
         AnimatorSet transition = new AnimatorSet();
-        transition.playTogether(changeBounds, corners, color, down, up);
+        transition.playTogether(changeBounds, corners, color);
         transition.setDuration(300);
         transition.setInterpolator(AnimUtils.getMaterialInterpolator(sceneRoot.getContext()));
         return transition;
