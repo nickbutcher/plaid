@@ -297,7 +297,8 @@ public class SearchActivity extends Activity {
         // fade out the other search chrome
         searchView.animate()
                 .alpha(0f)
-                .setDuration(160L)
+                .setStartDelay(0L)
+                .setDuration(120L)
                 .setInterpolator(AnimationUtils.loadInterpolator(this,
                         android.R.interpolator.fast_out_linear_in))
                 .setListener(null)
