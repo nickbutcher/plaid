@@ -16,7 +16,7 @@
   limitations under the License.
   -->
 
-<com.example.android.plaid.ui.widget.BadgedFourThreeImageView
+<io.plaidapp.ui.widget.BadgedFourThreeImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:plaid="http://schemas.android.com/apk/res-auto"
     android:id="@+id/shot"

@@ -16,7 +16,7 @@
   limitations under the License.
   -->
 
-<com.example.android.plaid.ui.widget.FourThreeLinearLayout
+<io.plaidapp.ui.widget.FourThreeLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -59,4 +59,4 @@
         android:padding="@dimen/spacing_normal"
         style="@style/Widget.Plaid.TileSecondary" />
 
-</com.example.android.plaid.ui.widget.FourThreeLinearLayout>
+</io.plaidapp.ui.widget.FourThreeLinearLayout>

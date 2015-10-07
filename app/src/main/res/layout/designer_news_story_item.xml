@@ -16,7 +16,7 @@
   limitations under the License.
   -->
 
-<com.example.android.plaid.ui.widget.FourThreeLinearLayout
+<io.plaidapp.ui.widget.FourThreeLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/story_title_background"
@@ -28,7 +28,7 @@
     android:stateListAnimator="@animator/raise"
     android:theme="@style/PlaidDarkOverlay">
 
-    <com.example.android.plaid.ui.widget.BaselineGridTextView
+    <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/story_title"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -72,4 +72,4 @@
 
     </FrameLayout>
 
-</com.example.android.plaid.ui.widget.FourThreeLinearLayout>
+</io.plaidapp.ui.widget.FourThreeLinearLayout>

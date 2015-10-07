@@ -27,7 +27,7 @@ android {
     buildToolsVersion '22.0.1'
 
     defaultConfig {
-        applicationId "com.android.example.plaid"
+        applicationId "io.plaidapp"
         minSdkVersion 21
         targetSdkVersion 23
         versionCode gitCommitCount

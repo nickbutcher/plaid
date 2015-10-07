@@ -28,7 +28,7 @@
         </targets>
     </changeBounds>
 
-    <transition class="com.example.android.plaid.ui.transitions.StoryTitleSharedEnter">
+    <transition class="io.plaidapp.ui.transitions.StoryTitleSharedEnter">
         <targets>
             <target android:targetId="@id/story_title_background" />
         </targets>

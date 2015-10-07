@@ -16,7 +16,7 @@
   limitations under the License.
   -->
 
-<com.example.android.plaid.ui.widget.ElasticDragDismissFrameLayout
+<io.plaidapp.ui.widget.ElasticDragDismissFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -28,7 +28,7 @@
     app:dragDismissDistance="@dimen/drag_dismiss_distance"
     app:dragElasticity="0.2"
     app:dragDismissScale="0.95"
-    tools:context="com.example.android.plaid.ui.DesignerNewsStory">
+    tools:context="io.plaidapp.ui.DesignerNewsStory">
 
     <!-- description added as header to listview.
          see layout/designer_news_story_description -->
@@ -42,7 +42,7 @@
         android:clipToPadding="false"
         android:scrollbars="vertical" />
 
-    <com.example.android.plaid.ui.widget.CollapsingTitleLayout
+    <io.plaidapp.ui.widget.CollapsingTitleLayout
         android:id="@+id/backdrop_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/extended_height_toolbar"
@@ -53,7 +53,7 @@
         android:elevation="@dimen/z_app_bar"
         android:theme="@style/PlaidDarkOverlay">
 
-        <com.example.android.plaid.ui.widget.PinnedOffsetView
+        <io.plaidapp.ui.widget.PinnedOffsetView
             android:id="@+id/story_title_background"
             android:layout_width="match_parent"
             android:layout_height="@dimen/extended_height_toolbar"
@@ -73,8 +73,8 @@
             android:theme="@style/PlaidDarkOverlay" />
             <!-- use fab elevation as the image raises on touch and don't want it to jump this -->
 
-    </com.example.android.plaid.ui.widget.CollapsingTitleLayout>
+    </io.plaidapp.ui.widget.CollapsingTitleLayout>
 
     <include layout="@layout/designer_news_story_fab"/>
 
-</com.example.android.plaid.ui.widget.ElasticDragDismissFrameLayout>
+</io.plaidapp.ui.widget.ElasticDragDismissFrameLayout>

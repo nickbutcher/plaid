@@ -15,7 +15,7 @@
   limitations under the License.
   -->
 
-<com.example.android.plaid.ui.widget.ForegroundLinearLayout
+<io.plaidapp.ui.widget.ForegroundLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -44,4 +44,4 @@
         android:textAppearance="@style/TextAppearance.Filter"
         tools:text="Popular Designer News"/>
 
-</com.example.android.plaid.ui.widget.ForegroundLinearLayout>
+</io.plaidapp.ui.widget.ForegroundLinearLayout>

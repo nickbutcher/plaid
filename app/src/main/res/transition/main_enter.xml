@@ -26,7 +26,7 @@
     <!--</fade>-->
 
     <transition
-        class="com.example.android.plaid.ui.transitions.Pop"
+        class="io.plaidapp.ui.transitions.Pop"
         android:duration="@android:integer/config_shortAnimTime"
         android:startDelay="@android:integer/config_shortAnimTime"
         android:interpolator="@android:interpolator/fast_out_slow_in">

@@ -21,7 +21,7 @@
     android:transitionOrdering="together">
 
     <transition
-        class="com.example.android.plaid.ui.transitions.Pop"
+        class="io.plaidapp.ui.transitions.Pop"
         android:startDelay="300"
         android:duration="300"
         android:interpolator="@android:interpolator/fast_out_slow_in">

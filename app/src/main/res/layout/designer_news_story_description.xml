@@ -33,7 +33,7 @@
         android:textColor="@color/hint_disabled_dark"
         style="@style/Widget.Plaid.DesignerNewsDescription" />
 
-    <com.example.android.plaid.ui.widget.BaselineGridTextView
+    <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/story_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

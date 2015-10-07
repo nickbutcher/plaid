@@ -16,7 +16,7 @@
   limitations under the License.
   -->
 
-<com.example.android.plaid.ui.widget.SquareLinearLayout
+<io.plaidapp.ui.widget.SquareLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -53,4 +53,4 @@
         android:alpha="0.87"
         tools:text="1337" />
 
-</com.example.android.plaid.ui.widget.SquareLinearLayout>
+</io.plaidapp.ui.widget.SquareLinearLayout>

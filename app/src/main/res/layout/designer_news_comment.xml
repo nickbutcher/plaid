@@ -45,7 +45,7 @@
             android:paddingEnd="@dimen/padding_normal"
             android:orientation="horizontal">
 
-            <com.example.android.plaid.ui.widget.AuthorTextView
+            <io.plaidapp.ui.widget.AuthorTextView
                 android:id="@+id/comment_author"
                 android:layout_height="wrap_content"
                 android:layout_width="0dp"
@@ -64,7 +64,7 @@
 
         </LinearLayout>
 
-        <com.example.android.plaid.ui.widget.BaselineGridTextView
+        <io.plaidapp.ui.widget.BaselineGridTextView
             android:id="@+id/comment_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

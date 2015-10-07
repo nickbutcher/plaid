@@ -21,14 +21,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:colorAccent"
-    tools:context="com.example.android.plaid.ui.AboutActivity">
+    tools:context="io.plaidapp.ui.AboutActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.example.android.plaid.ui.widget.CutoutTextView
+        <io.plaidapp.ui.widget.CutoutTextView
             android:layout_width="match_parent"
             android:layout_height="400dp"
             android:foreground="?android:colorPrimary"
@@ -36,7 +36,7 @@
             android:text="@string/app_name"
             plaid:font="roboto-mono-regular"/>
 
-        <com.example.android.plaid.ui.widget.BaselineGridTextView
+        <io.plaidapp.ui.widget.BaselineGridTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/background_light"

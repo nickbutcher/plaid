@@ -27,7 +27,7 @@
     </changeBounds>
 
     <transition
-        class="com.example.android.plaid.ui.transitions.ShotSharedEnter">
+        class="io.plaidapp.ui.transitions.ShotSharedEnter">
         <targets>
             <target android:targetId="@id/shot" />
         </targets>

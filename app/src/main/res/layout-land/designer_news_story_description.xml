@@ -32,7 +32,7 @@
         android:contentInsetStart="@dimen/keyline_1"
         android:contentInsetEnd="@dimen/padding_normal">
 
-        <com.example.android.plaid.ui.widget.FontTextView
+        <io.plaidapp.ui.widget.FontTextView
             android:id="@+id/story_title"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

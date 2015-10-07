@@ -19,9 +19,9 @@ import android.util.Patterns;
 import android.util.TypedValue;
 import android.widget.TextView;
 
-import com.example.android.plaid.ui.span.DesignerNewsQuoteSpan;
-import com.example.android.plaid.ui.span.ImageLoadingSpan;
-import com.example.android.plaid.ui.span.TouchableUrlSpan;
+import io.plaidapp.ui.span.DesignerNewsQuoteSpan;
+import io.plaidapp.ui.span.ImageLoadingSpan;
+import io.plaidapp.ui.span.TouchableUrlSpan;
 
 import in.uncod.android.bypass.Element.Type;
 import in.uncod.android.bypass.style.HorizontalLineSpan;

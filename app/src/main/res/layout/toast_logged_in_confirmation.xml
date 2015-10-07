@@ -21,7 +21,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="150dp"
-    tools:context="com.example.android.plaid.ui.DribbbleLogin">
+    tools:context="io.plaidapp.ui.DribbbleLogin">
 
     <GridLayout
         android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
         android:padding="@dimen/padding_normal"
         android:rowCount="2">
 
-        <com.example.android.plaid.ui.widget.ForegroundImageView
+        <io.plaidapp.ui.widget.ForegroundImageView
             android:id="@+id/avatar"
             android:layout_width="56dp"
             android:layout_height="56dp"

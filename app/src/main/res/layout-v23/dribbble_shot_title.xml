@@ -17,7 +17,7 @@
   -->
 <!-- layout_[width|height] not needed as this is only included in a GridLayout -->
 <!--suppress AndroidDomInspection -->
-<com.example.android.plaid.ui.widget.FabOverlapTextView
+<io.plaidapp.ui.widget.FabOverlapTextView
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"

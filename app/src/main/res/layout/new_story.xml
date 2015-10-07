@@ -14,7 +14,7 @@
   limitations under the License.
   -->
 
-<com.example.android.plaid.ui.widget.ElasticDragDismissFrameLayout
+<io.plaidapp.ui.widget.ElasticDragDismissFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/draggable_frame"
@@ -59,7 +59,7 @@
                     android:text="@string/new_story_instructions"
                     android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
-                <!--<com.example.android.plaid.ui.widget.FloatLabel-->
+                <!--<io.plaidapp.ui.widget.FloatLabel-->
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -75,9 +75,9 @@
                         android:inputType="textCapWords"/>
 
                 </android.support.design.widget.TextInputLayout>
-                <!--</com.example.android.plaid.ui.widget.FloatLabel>-->
+                <!--</io.plaidapp.ui.widget.FloatLabel>-->
 
-                <!--<com.example.android.plaid.ui.widget.FloatLabel-->
+                <!--<io.plaidapp.ui.widget.FloatLabel-->
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
                         android:inputType="textUri"/>
 
                 </android.support.design.widget.TextInputLayout>
-                <!--</com.example.android.plaid.ui.widget.FloatLabel>-->
+                <!--</io.plaidapp.ui.widget.FloatLabel>-->
 
                 <TextView
                     android:layout_width="match_parent"
@@ -102,7 +102,7 @@
                     android:text="@string/new_story_link_or_comment"
                     android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
 
-                <!--<com.example.android.plaid.ui.widget.FloatLabel-->
+                <!--<io.plaidapp.ui.widget.FloatLabel-->
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -120,7 +120,7 @@
                         android:maxHeight="180dp"/>
 
                 </android.support.design.widget.TextInputLayout>
-                <!--</com.example.android.plaid.ui.widget.FloatLabel>-->
+                <!--</io.plaidapp.ui.widget.FloatLabel>-->
 
                 <Button
                     android:id="@+id/new_story_post"
@@ -140,4 +140,4 @@
 
     </LinearLayout>
 
-</com.example.android.plaid.ui.widget.ElasticDragDismissFrameLayout>
+</io.plaidapp.ui.widget.ElasticDragDismissFrameLayout>

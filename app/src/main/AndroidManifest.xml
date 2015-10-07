@@ -18,7 +18,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.android.plaid">
+    package="io.plaidapp">
 
     <uses-sdk
         android:minSdkVersion="21"
@@ -131,7 +131,7 @@
 
         <!-- Glide configurations for image loading -->
         <meta-data
-            android:name="com.example.android.plaid.util.glide.GlideConfiguration"
+            android:name="io.plaidapp.util.glide.GlideConfiguration"
             android:value="GlideModule" />
         <meta-data
             android:name="com.bumptech.glide.integration.okhttp.OkHttpGlideModule"

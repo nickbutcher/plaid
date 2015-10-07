@@ -21,7 +21,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:onClick="dismiss"
-    tools:context="com.example.android.plaid.ui.DribbbleLogin">
+    tools:context="io.plaidapp.ui.DribbbleLogin">
 
     <LinearLayout
         android:id="@+id/container"
@@ -38,7 +38,7 @@
         android:background="@drawable/dialog_background"
         android:clickable="true">
 
-        <com.example.android.plaid.ui.widget.BaselineGridTextView
+        <io.plaidapp.ui.widget.BaselineGridTextView
             android:id="@+id/dialog_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
