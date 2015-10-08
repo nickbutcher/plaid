@@ -17,7 +17,7 @@
 package io.plaidapp.ui.widget;
 
 /**
- * Created by nickbutcher on 6/12/15.
+ * A callback for dismissable views
  */
 public interface DismissibleViewCallback {
 

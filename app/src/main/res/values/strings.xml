@@ -59,9 +59,9 @@
     <string name="confirm_save_search">Save</string>
 
     <!-- new designer news story -->
-    <string name="new_story_title">Post a story</string>
+    <string name="new_story_title">Post a story to Designer News</string>
     <string name="new_story_instructions">Submit a link or provide a comment to start a discussion.</string>
-    <string name="new_story_link_or_comment">Include a url <u>or</u> a comment</string>
+    <string name="new_story_link_or_comment">Include a url <b>or</b> a comment</string>
     <string name="new_story_post_title">Post title</string>
     <string name="new_story_url">Url</string>
     <!--<string name="new_story_url_hint">http://ducksarethebest.com</string>-->
@@ -111,6 +111,8 @@
     <string name="transition_story_title_background" translatable="false">story_title_background</string>
     <string name="transition_story_background" translatable="false">transition_story_background</string>
     <string name="transition_dribbble_login" translatable="false">dribbble_login</string>
+    <string name="transition_designer_news_login" translatable="false">transition_designer_news_login</string>
+    <string name="transition_new_designer_news_post" translatable="false">new_designer_news_post</string>
 
     <!-- content authorities -->
     <string name="share_authority"  translatable="false">io.plaidapp.shareprovider</string>

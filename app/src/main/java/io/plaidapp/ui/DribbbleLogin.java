@@ -57,6 +57,7 @@ import io.plaidapp.data.api.dribbble.DribbbleService;
 import io.plaidapp.data.api.dribbble.model.AccessToken;
 import io.plaidapp.data.api.dribbble.model.User;
 import io.plaidapp.data.prefs.DribbblePrefs;
+import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.transitions.MorphDialogToFab;
 import io.plaidapp.ui.transitions.MorphFabToDialog;
 import io.plaidapp.util.ScrimUtil;
@@ -69,8 +70,6 @@ import retrofit.converter.GsonConverter;
 
 public class DribbbleLogin extends Activity {
 
-    public static final String EXTRA_SHARED_ELEMENT_START_COLOR =
-            "EXTRA_SHARED_ELEMENT_START_COLOR";
     boolean isDismissing = false;
     private ViewGroup container;
     private TextView message;
@@ -82,7 +81,8 @@ public class DribbbleLogin extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_login);
-        setupSharedElementTransitions();
+        FabDialogMorphSetup.setupSharedEelementTransitions(this, container,
+                getResources().getDimensionPixelSize(R.dimen.dialog_corners));
 
         container = (ViewGroup) findViewById(R.id.container);
         message = (TextView) findViewById(R.id.login_message);
@@ -209,31 +209,6 @@ public class DribbbleLogin extends Activity {
             public void failure(RetrofitError error) {
             }
         });
-    }
-
-    /**
-     * Configure the shared element transitions. We need to do this in code rather than
-     * declaratively as we need to supply the color to transition from/to which is dynamically
-     * supplied depending upon where this screen is launched from.
-     */
-    private void setupSharedElementTransitions() {
-        if (!getIntent().hasExtra(EXTRA_SHARED_ELEMENT_START_COLOR)) return;
-
-        ArcMotion arcMotion = new ArcMotion();
-        arcMotion.setMinimumHorizontalAngle(50f);
-        arcMotion.setMinimumVerticalAngle(50f);
-        int color = getIntent().getIntExtra(EXTRA_SHARED_ELEMENT_START_COLOR, Color.TRANSPARENT);
-        Interpolator easeInOut =
-                AnimationUtils.loadInterpolator(this, android.R.interpolator.fast_out_slow_in);
-        MorphFabToDialog sharedEnter = new MorphFabToDialog(color);
-        sharedEnter.setPathMotion(arcMotion);
-        sharedEnter.setInterpolator(easeInOut);
-        getWindow().setSharedElementEnterTransition(sharedEnter);
-        MorphDialogToFab sharedReturn = new MorphDialogToFab(color);
-        sharedReturn.setPathMotion(arcMotion);
-        sharedReturn.setInterpolator(easeInOut);
-        getWindow().setSharedElementReturnTransition(sharedReturn);
-        setEnterSharedElementCallback(sharedElementEnterCallback);
     }
 
     private void forceSharedElementLayout() {

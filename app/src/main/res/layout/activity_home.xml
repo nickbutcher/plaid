@@ -76,21 +76,6 @@
             android:layout_gravity="center"
             android:layout="@layout/no_connection" />
 
-        <View
-            android:id="@+id/scrim"
-            android:visibility="invisible"
-            android:background="@color/scrim"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:onClick="hideNewPost"
-            android:elevation="1dp"/>
-
-        <include
-            layout="@layout/new_story"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom" />
-
         <ImageButton
             android:id="@+id/fab"
             android:layout_width="@dimen/fab_size"

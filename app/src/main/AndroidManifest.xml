@@ -17,14 +17,13 @@
 
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="io.plaidapp">
 
     <uses-sdk
         android:minSdkVersion="21"
         android:targetSdkVersion="23" />
 
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -33,8 +32,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Plaid" >
-
+        android:theme="@style/Plaid">
         <activity
             android:name=".ui.HomeActivity"
             android:label="@string/app_name"
@@ -55,7 +53,7 @@
         <activity
             android:name=".ui.DribbbleShot"
             android:parentActivityName=".ui.HomeActivity"
-            android:theme="@style/Plaid.DribbbleShot" >
+            android:theme="@style/Plaid.DribbbleShot">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.HomeActivity" />
@@ -64,7 +62,7 @@
         <activity
             android:name=".ui.DesignerNewsStory"
             android:parentActivityName=".ui.HomeActivity"
-            android:theme="@style/Plaid.DesignerNewsStory" >
+            android:theme="@style/Plaid.DesignerNewsStory">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.HomeActivity" />
@@ -72,8 +70,8 @@
 
         <activity
             android:name=".ui.SearchActivity"
-            android:theme="@style/Plaid.Search"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:theme="@style/Plaid.Search">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -90,10 +88,11 @@
             android:name=".ui.DribbbleLogin"
             android:exported="true"
             android:launchMode="singleTop"
-            android:theme="@style/Plaid.DribbbleLogin" >
+            android:theme="@style/Plaid.DribbbleLogin">
             <intent-filter>
-                <data android:scheme="plaid"
-                      android:host="dribbble-auth-callback" />
+                <data
+                    android:host="dribbble-auth-callback"
+                    android:scheme="plaid" />
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -109,11 +108,16 @@
         <activity
             android:name=".ui.AboutActivity"
             android:label="@string/title_activity_about"
-            android:parentActivityName=".ui.HomeActivity" >
+            android:parentActivityName=".ui.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.HomeActivity" />
         </activity>
+
+        <activity
+            android:name=".ui.PostNewDesignerNewsStory"
+            android:exported="true"
+            android:theme="@style/Plaid.PostDesignerNewsStory" />
 
         <service
             android:name=".data.api.designernews.UpvoteStoryService"

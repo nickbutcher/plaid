@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -17,18 +16,22 @@
   -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- enabled to disabled, fade out -->
     <item
-        android:state_enabled="true"
-        android:state_pressed="true">
+        android:state_enabled="false">
         <objectAnimator
-            android:duration="@android:integer/config_shortAnimTime"
-            android:propertyName="translationZ"
-            android:valueTo="@dimen/touch_raise" />
+            android:propertyName="alpha"
+            android:valueTo="0.38"
+            android:duration="@android:integer/config_shortAnimTime" />
     </item>
+
+    <!-- disabled to enabled, fade back in -->
     <item>
         <objectAnimator
-            android:duration="@android:integer/config_shortAnimTime"
-            android:propertyName="translationZ"
-            android:valueTo="0dp" />
+            android:propertyName="alpha"
+            android:valueTo="1"
+            android:duration="@android:integer/config_shortAnimTime" />
     </item>
+
 </selector>

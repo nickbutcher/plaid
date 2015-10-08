@@ -56,7 +56,7 @@
             android:textAppearance="@style/TextAppearance.DarkButton"
             android:drawableEnd="@drawable/dribbble_logo"
             android:drawablePadding="@dimen/spacing_micro"
-            android:onClick="doLogin"/>
+            android:onClick="doLogin" />
 
         <include layout="@layout/loading" />
 

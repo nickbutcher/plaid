@@ -28,10 +28,10 @@ import android.transition.TransitionValues;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 
 import io.plaidapp.R;
 import io.plaidapp.ui.drawable.MorphDrawable;
-import io.plaidapp.util.AnimUtils;
 
 /**
  * A transition that morphs a circle into a rectangle, changing it's background color.
@@ -45,10 +45,12 @@ public class MorphFabToDialog extends ChangeBounds {
             PROPERTY_CORNER_RADIUS
     };
     private @ColorInt int startColor = Color.TRANSPARENT;
+    private int endCornerRadius;
 
-    public MorphFabToDialog(@ColorInt int startColor) {
+    public MorphFabToDialog(@ColorInt int startColor, int endCornerRadius) {
         super();
         setStartColor(startColor);
+        setEndCornerRadius(endCornerRadius);
     }
 
     public MorphFabToDialog(Context context, AttributeSet attrs) {
@@ -57,6 +59,10 @@ public class MorphFabToDialog extends ChangeBounds {
 
     public void setStartColor(@ColorInt int startColor) {
         this.startColor = startColor;
+    }
+
+    public void setEndCornerRadius(int endCornerRadius) {
+        this.endCornerRadius = endCornerRadius;
     }
 
     @Override
@@ -84,14 +90,13 @@ public class MorphFabToDialog extends ChangeBounds {
         }
         transitionValues.values.put(PROPERTY_COLOR,
                 ContextCompat.getColor(view.getContext(), R.color.background_light));
-        transitionValues.values.put(PROPERTY_CORNER_RADIUS, view.getResources()
-                .getDimensionPixelSize(R.dimen.dialog_corners));
+        transitionValues.values.put(PROPERTY_CORNER_RADIUS, endCornerRadius);
     }
 
     @Override
     public Animator createAnimator(final ViewGroup sceneRoot,
                                    TransitionValues startValues,
-                                   TransitionValues endValues) {
+                                   final TransitionValues endValues) {
         Animator changeBounds = super.createAnimator(sceneRoot, startValues, endValues);
         if (startValues == null || endValues == null || changeBounds == null) {
             return null;
@@ -114,28 +119,30 @@ public class MorphFabToDialog extends ChangeBounds {
         Animator corners = ObjectAnimator.ofFloat(background, background.CORNER_RADIUS,
                 endCornerRadius);
 
-        // ease in the dialog's child views
+        // ease in the dialog's child views (slide up & fade in)
         if (endValues.view instanceof ViewGroup) {
             ViewGroup vg = (ViewGroup) endValues.view;
-            int duration = 150;
+            float offset = vg.getHeight() / 3;
             for (int i = 0; i < vg.getChildCount(); i++) {
                 View v = vg.getChildAt(i);
-                v.setTranslationY(v.getHeight() / 2);
+                v.setTranslationY(offset);
                 v.setAlpha(0f);
                 v.animate()
                         .alpha(1f)
                         .translationY(0f)
-                        .setDuration(duration)
+                        .setDuration(150)
                         .setStartDelay(150)
-                        .setInterpolator(AnimUtils.getMaterialInterpolator(vg.getContext()));
-                duration += 50;
+                        .setInterpolator(AnimationUtils.loadInterpolator(vg.getContext(),
+                                android.R.interpolator.fast_out_slow_in));
+                offset *= 1.8f;
             }
         }
 
         AnimatorSet transition = new AnimatorSet();
         transition.playTogether(changeBounds, corners, color);
         transition.setDuration(300);
-        transition.setInterpolator(AnimUtils.getMaterialInterpolator(sceneRoot.getContext()));
+        transition.setInterpolator(AnimationUtils.loadInterpolator(sceneRoot.getContext(),
+                android.R.interpolator.fast_out_slow_in));
         return transition;
     }
 

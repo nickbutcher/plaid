@@ -85,6 +85,7 @@ import io.plaidapp.data.api.dribbble.model.Comment;
 import io.plaidapp.data.api.dribbble.model.Like;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.prefs.DribbblePrefs;
+import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.widget.AuthorTextView;
 import io.plaidapp.ui.widget.CheckableImageButton;
 import io.plaidapp.ui.widget.DismissibleViewCallback;
@@ -474,7 +475,7 @@ public class DribbbleShot extends Activity {
                 doLike();
             } else {
                 Intent login = new Intent(DribbbleShot.this, DribbbleLogin.class);
-                login.putExtra(DribbbleLogin.EXTRA_SHARED_ELEMENT_START_COLOR,
+                login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR,
                         ContextCompat.getColor(DribbbleShot.this, R.color.dribbble));
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation
                         (DribbbleShot.this, fab, getString(R.string.transition_dribbble_login));
@@ -707,7 +708,7 @@ public class DribbbleShot extends Activity {
             });
         } else {
             Intent login = new Intent(DribbbleShot.this, DribbbleLogin.class);
-            login.putExtra(DribbbleLogin.EXTRA_SHARED_ELEMENT_START_COLOR, ContextCompat.getColor
+            login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR, ContextCompat.getColor
                     (this, R.color.background_light));
             ActivityOptions options =
                     ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this, postComment,

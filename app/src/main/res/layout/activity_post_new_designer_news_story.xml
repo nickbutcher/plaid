@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright 2015 Google Inc.
 
@@ -14,57 +15,69 @@
   limitations under the License.
   -->
 
-<io.plaidapp.ui.widget.ElasticDragDismissFrameLayout
+<io.plaidapp.ui.widget.BottomSheet
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/draggable_frame"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="bottom"
-    android:elevation="@dimen/z_card"
-    app:dragDismissFraction="0.2"
-    app:dragDismissScale="0.95"
-    app:clampDragAtDismissDistance="false">
+    android:layout_height="match_parent"
+    app:scrollingChild="@+id/scroll_container"
+    tools:context="io.plaidapp.ui.PostNewDesignerNewsStory">
 
     <LinearLayout
-        android:id="@+id/new_story_container"
-        android:layout_width="match_parent"
+        android:id="@+id/bottom_sheet_content"
+        android:layout_width="@dimen/bottom_sheet_width"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_gravity="bottom|center_horizontal"
+        android:background="@color/background_light"
+        android:elevation="@dimen/z_fab"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        android:transitionName="@string/transition_new_designer_news_post">
 
-        <Toolbar
-            android:id="@+id/new_story_toolbar"
+        <io.plaidapp.ui.widget.BaselineGridTextView
+            android:id="@+id/title"
             android:layout_width="match_parent"
-            android:layout_height="?android:actionBarSize"
-            android:title="@string/new_story_title"
-            style="@style/Widget.Plaid.Toolbar.Accent" />
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/padding_normal"
+            android:paddingTop="@dimen/spacing_micro"
+            android:paddingEnd="@dimen/padding_normal"
+            android:paddingBottom="@dimen/spacing_micro"
+            android:gravity="start|center_vertical"
+            android:minHeight="?android:actionBarSize"
+            android:text="@string/new_story_title"
+            android:background="@color/background_light"
+            style="@style/Widget.Plaid.DialogTitle" />
 
-        <ScrollView
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scroll_container"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:nestedScrollingEnabled="true"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/spacing_normal"
             android:clipToPadding="false"
-            android:paddingTop="@dimen/padding_normal">
+            android:nestedScrollingEnabled="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
+                <io.plaidapp.ui.widget.BaselineGridTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_normal"
+                    android:paddingStart="@dimen/padding_normal"
+                    android:paddingEnd="@dimen/padding_normal"
                     android:text="@string/new_story_instructions"
-                    android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+                    style="@style/Widget.Plaid.Subhead" />
 
-                <!--<io.plaidapp.ui.widget.FloatLabel-->
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/new_story_title_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/padding_normal"
                     android:layout_marginStart="@dimen/padding_normal"
+                    android:layout_marginTop="@dimen/spacing_normal"
+                    android:layout_marginEnd="@dimen/padding_normal"
                     app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
                     <EditText
@@ -72,17 +85,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/new_story_post_title"
-                        android:inputType="textCapWords"/>
+                        android:inputType="textCapWords" />
 
                 </android.support.design.widget.TextInputLayout>
-                <!--</io.plaidapp.ui.widget.FloatLabel>-->
 
-                <!--<io.plaidapp.ui.widget.FloatLabel-->
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/new_story_url_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/padding_normal"
                     android:layout_marginStart="@dimen/padding_normal"
+                    android:layout_marginEnd="@dimen/padding_normal"
+                    android:stateListAnimator="@animator/disable_text_entry"
                     app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
                     <EditText
@@ -90,24 +103,28 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/new_story_url_hint"
-                        android:inputType="textUri"/>
+                        android:inputType="textUri"
+                        android:imeOptions="actionSend" />
 
                 </android.support.design.widget.TextInputLayout>
-                <!--</io.plaidapp.ui.widget.FloatLabel>-->
 
-                <TextView
+                <io.plaidapp.ui.widget.BaselineGridTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_normal"
+                    android:layout_marginTop="@dimen/spacing_normal"
+                    android:paddingStart="@dimen/padding_normal"
+                    android:paddingEnd="@dimen/padding_normal"
                     android:text="@string/new_story_link_or_comment"
-                    android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+                    style="@style/Widget.Plaid.Subhead" />
 
-                <!--<io.plaidapp.ui.widget.FloatLabel-->
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/new_story_comment_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/padding_normal"
                     android:layout_marginStart="@dimen/padding_normal"
+                    android:layout_marginTop="@dimen/spacing_normal"
+                    android:layout_marginEnd="@dimen/padding_normal"
+                    android:stateListAnimator="@animator/disable_text_entry"
                     app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
                     <EditText
@@ -117,27 +134,27 @@
                         android:gravity="top"
                         android:hint="@string/new_story_comment_hint"
                         android:inputType="textMultiLine|textCapSentences"
-                        android:maxHeight="180dp"/>
+                        android:imeOptions="actionSend" />
 
                 </android.support.design.widget.TextInputLayout>
-                <!--</io.plaidapp.ui.widget.FloatLabel>-->
 
                 <Button
                     android:id="@+id/new_story_post"
                     android:layout_width="match_parent"
                     android:layout_height="?android:actionBarSize"
-                    android:layout_gravity="bottom"
+                    android:layout_marginTop="@dimen/padding_normal"
+                    android:enabled="false"
                     android:background="@drawable/post_story"
                     android:padding="@dimen/spacing_micro"
                     android:stateListAnimator="@animator/raise"
                     android:text="@string/new_story_post"
                     android:textAppearance="@style/TextAppearance.Button"
-                    android:theme="@style/PlaidDarkOverlay"/>
+                    android:theme="@style/PlaidDarkOverlay" />
 
             </LinearLayout>
 
-        </ScrollView>
+        </android.support.v4.widget.NestedScrollView>
 
     </LinearLayout>
 
-</io.plaidapp.ui.widget.ElasticDragDismissFrameLayout>
+</io.plaidapp.ui.widget.BottomSheet>

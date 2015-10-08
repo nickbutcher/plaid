@@ -68,6 +68,7 @@ import io.plaidapp.data.api.designernews.model.AccessToken;
 import io.plaidapp.data.api.designernews.model.User;
 import io.plaidapp.data.api.designernews.model.UserResponse;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
+import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.util.ScrimUtil;
 import io.plaidapp.util.glide.CircleTransform;
 import retrofit.Callback;
@@ -98,6 +99,9 @@ public class DesignerNewsLogin extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_login);
         ButterKnife.bind(this);
+        FabDialogMorphSetup.setupSharedEelementTransitions(this, container,
+                getResources().getDimensionPixelSize(R.dimen.dialog_corners));
+
         loading.setVisibility(View.GONE);
         setupAccountAutocomplete();
         username.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -227,7 +231,7 @@ public class DesignerNewsLogin extends Activity {
                         designerNewsPrefs.setAccessToken(accessToken.access_token);
                         showLoggedInUser();
                         setResult(Activity.RESULT_OK);
-                        finishAfterTransition();
+                        finish();
                     }
 
                     @Override

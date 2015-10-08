@@ -61,6 +61,9 @@
     <dimen name="comment_actions_height">40dp</dimen>
     <dimen name="comment_like_margin_adjustment">-8dp</dimen>
 
+    <!-- bottom sheet -->
+    <dimen name="bottom_sheet_width">@dimen/match_parent</dimen>
+
     <!-- Z-axis elevations -->
     <dimen name="z_app_bar">4dp</dimen>
     <dimen name="z_card">2dp</dimen>

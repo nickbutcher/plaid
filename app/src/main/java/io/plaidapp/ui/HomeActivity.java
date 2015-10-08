@@ -16,10 +16,6 @@
 
 package io.plaidapp.ui;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
@@ -27,7 +23,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Path;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.ConnectivityManager;
@@ -48,19 +43,16 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.style.StyleSpan;
-import android.transition.ArcMotion;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.WindowInsets;
 import android.view.animation.AnimationUtils;
 import android.widget.ActionMenuView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -77,22 +69,31 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.BindInt;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import io.plaidapp.BuildConfig;
 import io.plaidapp.R;
 import io.plaidapp.data.DataManager;
 import io.plaidapp.data.PlaidItem;
 import io.plaidapp.data.Source;
+import io.plaidapp.data.api.ClientAuthInterceptor;
+import io.plaidapp.data.api.designernews.DesignerNewsService;
+import io.plaidapp.data.api.designernews.model.NewStoryRequest;
+import io.plaidapp.data.api.designernews.model.StoriesResponse;
+import io.plaidapp.data.api.designernews.model.Story;
 import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.data.prefs.DribbblePrefs;
 import io.plaidapp.data.prefs.SourceManager;
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
-import io.plaidapp.ui.widget.DismissibleViewCallback;
-import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
+import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ColorUtils;
-import io.plaidapp.util.ImeUtils;
 import io.plaidapp.util.ViewUtils;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 
 public class HomeActivity extends Activity {
@@ -101,28 +102,18 @@ public class HomeActivity extends Activity {
     private static final int RC_AUTH_DRIBBBLE_FOLLOWING = 1;
     private static final int RC_AUTH_DRIBBBLE_USER_LIKES = 2;
     private static final int RC_AUTH_DRIBBBLE_USER_SHOTS = 3;
+    private static final int RC_NEW_DESIGNER_NEWS_STORY = 4;
+    private static final int RC_NEW_DESIGNER_NEWS_LOGIN = 5;
 
-    private static final int ANIMATION_DURATION_NEAR_INSTANT = 100; //ms
-    private static final int ANIMATION_DURATION_SHORT = 300; // ms
-    private static final int ANIMATION_DURATION_MED = 450; // ms
-    private static final int ANIMATION_DURATION_SLOOOOW = 1500; // ms
-    @Bind(R.id.stories_grid) RecyclerView grid;
-    private GridLayoutManager layoutManager;
-    //@Bind(R.id.new_story_post) View newPost;
-    @Bind(R.id.fab) ImageButton fab;
-    @Bind(R.id.scrim) View scrim;
-    @Bind(R.id.toolbar) Toolbar toolbar;
-    @Bind(R.id.new_story_post) Button submitNewPost;
     @Bind(R.id.drawer) DrawerLayout drawer;
-    private SystemBarDrawerTinter drawerTinter;
+    @Bind(R.id.toolbar) Toolbar toolbar;
+    @Bind(R.id.stories_grid) RecyclerView grid;
+    @Bind(R.id.fab) ImageButton fab;
     @Bind(R.id.filters) RecyclerView filtersList;
-    //@Bind(R.id.draggable_frame) DragDownDismissFrameLayout draggableFrame;
-    @Bind(R.id.draggable_frame) ElasticDragDismissFrameLayout newPost;
-    @Bind(R.id.new_story_container) View newPostContainer;
-    @Bind(R.id.new_story_title) EditText newStoryTitle;
-    @Bind(R.id.new_story_url) EditText newStoryUrl;
     @Bind(android.R.id.empty) ProgressBar loading;
     private TextView noFiltersEmptyText;
+    private GridLayoutManager layoutManager;
+    private SystemBarDrawerTinter drawerTinter;
     @BindInt(R.integer.num_columns) int columns;
 
     // data
@@ -148,8 +139,6 @@ public class HomeActivity extends Activity {
             animateToolbar();
         }
 
-        fab.setOnClickListener(fabClick);
-
         dribbblePrefs = DribbblePrefs.get(this);
         designerNewsPrefs = DesignerNewsPrefs.get(this);
         filtersAdapter = new FilterAdapter(this, SourceManager.getSources(this),
@@ -157,7 +146,7 @@ public class HomeActivity extends Activity {
             @Override
             public void requestDribbbleAuthorisation(View sharedElemeent, Source forSource) {
                 Intent login = new Intent(HomeActivity.this, DribbbleLogin.class);
-                login.putExtra(DribbbleLogin.EXTRA_SHARED_ELEMENT_START_COLOR,
+                login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR,
                         ContextCompat.getColor(HomeActivity.this, R.color.background_dark));
                 ActivityOptions options =
                         ActivityOptions.makeSceneTransitionAnimation(HomeActivity.this,
@@ -196,18 +185,6 @@ public class HomeActivity extends Activity {
                         ContextCompat.getColor(this, R.color.background_super_dark));
         drawer.setDrawerListener(drawerTinter);
         filtersList.setLayoutManager(new LinearLayoutManager(this));
-
-        newPost.setVisibility(View.INVISIBLE);
-        submitNewPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hideNewPost();
-            }
-        });
-
-//        draggableFrame.setDragDismissView(findViewById(R.id.new_story_container));
-//        draggableFrame.setCallbacks(newPostDismissed);
-        newPost.setCallback(dismissNewPost);
 
         // drawer layout treats fitsSystemWindows specially so we have to handle insets ourselves
         // this is super gross and breaks when you show a keyboard.  TODO FIXME
@@ -256,14 +233,6 @@ public class HomeActivity extends Activity {
                             filtersList.getPaddingRight() + insets.getSystemWindowInsetRight(),
                             filtersList.getPaddingBottom());
                 }
-
-                // we place a background behind the nav bar when the new post pane is showing. Set
-                // it's height to the nav bar height
-                View newStoryContainer = findViewById(R.id.new_story_container);
-                ViewGroup.MarginLayoutParams lpNewStory = (ViewGroup.MarginLayoutParams)
-                        newStoryContainer.getLayoutParams();
-                lpNewStory.bottomMargin += insets.getSystemWindowInsetBottom();
-                newStoryContainer.setLayoutParams(lpNewStory);
 
                 // clear this listener so insets aren't re-applied
                 drawer.setOnApplyWindowInsetsListener(null);
@@ -315,132 +284,24 @@ public class HomeActivity extends Activity {
         }
     };
 
-    private View.OnClickListener fabClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-
-            // translate the new post view so that it is centered on the FAB
-            int fabCenterX = (fab.getLeft() + fab.getRight()) / 2;
-            int fabCenterY = ((fab.getTop() + fab.getBottom()) / 2) - newPost.getTop();
-            int translateX = fabCenterX - (newPost.getWidth() / 2);
-            int translateY = fabCenterY - (newPost.getHeight() / 2);
-            newPost.setTranslationX(translateX);
-            newPost.setTranslationY(translateY);
-
-            // then reveal the new post view, starting from the center & same dimens as fab
-            newPost.setVisibility(View.VISIBLE);
-            Animator reveal = ViewAnimationUtils.createCircularReveal(
-                    newPost,
-                    newPost.getWidth() / 2,
-                    newPost.getHeight() / 2,
-                    fab.getWidth() / 2,
-                    (int) Math.hypot(newPost.getWidth() / 2, newPost.getHeight() / 2))
-                    .setDuration(ANIMATION_DURATION_SHORT);
-
-            // translate the new post view back into position along an arc
-            Path motionPath = new ArcMotion().getPath(translateX, translateY, 0, 0);
-            Animator position = ObjectAnimator.ofFloat(newPost, View.TRANSLATION_X, View
-                    .TRANSLATION_Y, motionPath)
-                    .setDuration(ANIMATION_DURATION_SHORT);
-
-            // animate from the FAB colour to our dialog colour
-            Animator background = ObjectAnimator.ofArgb(newPostContainer,
-                    ViewUtils.BACKGROUND_COLOR,
-                    ContextCompat.getColor(HomeActivity.this, R.color.accent),
-                    ContextCompat.getColor(HomeActivity.this, R.color.background_light))
-                    .setDuration(ANIMATION_DURATION_MED);
-
-            // rise up in Z
-            Animator raise = ObjectAnimator.ofFloat(newPost, View.TRANSLATION_Z, getResources()
-                    .getDimensionPixelSize(R.dimen.spacing_micro))
-                    .setDuration(ANIMATION_DURATION_SHORT);
-
-            // animate in a scrim as background protection (as we're kinda faking a dialog)
-            scrim.setVisibility(View.VISIBLE);
-            Animator scrimColour = ObjectAnimator.ofArgb(scrim,
-                    ViewUtils.BACKGROUND_COLOR,
-                    ContextCompat.getColor(HomeActivity.this, R.color.scrim))
-                    .setDuration(ANIMATION_DURATION_SLOOOOW);
-            Animator scrimBounds = ViewAnimationUtils.createCircularReveal(
-                    scrim,
-                    fabCenterX,
-                    fabCenterY + newPost.getTop(),
-                    fab.getWidth() / 2,
-                    (int) Math.hypot(fabCenterX, fabCenterY + newPost.getTop()))
-                    .setDuration(ANIMATION_DURATION_MED);
-
-            // fade out the fab (faster than the others)
-            Animator fadeOutFab = ObjectAnimator.ofFloat(fab, View.ALPHA, 0f)
-                    .setDuration(ANIMATION_DURATION_NEAR_INSTANT);
-            fadeOutFab.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    fab.setVisibility(View.INVISIBLE);
-                }
-            });
-
-            // play 'em all together with the material interpolator
-            AnimatorSet show = new AnimatorSet();
-            show.setInterpolator(AnimUtils.getMaterialInterpolator(HomeActivity.this));
-            show.playTogether(reveal, background, raise, scrimColour, scrimBounds, position,
-                    fadeOutFab);
-            show.start();
+    @OnClick(R.id.fab)
+    protected void fabClick() {
+        if (designerNewsPrefs.isLoggedIn()) {
+            Intent intent = new Intent(this, PostNewDesignerNewsStory.class);
+            intent.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR,
+                    ContextCompat.getColor(this, R.color.accent));
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, fab,
+                    getString(R.string.transition_new_designer_news_post));
+            startActivityForResult(intent, RC_NEW_DESIGNER_NEWS_STORY, options.toBundle());
+        } else {
+            Intent intent = new Intent(this, DesignerNewsLogin.class);
+            intent.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR,
+                    ContextCompat.getColor(this, R.color.accent));
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, fab,
+                    getString(R.string.transition_designer_news_login));
+            startActivityForResult(intent, RC_NEW_DESIGNER_NEWS_LOGIN, options.toBundle());
         }
-    };
-
-    private DismissibleViewCallback dismissNewPost = new DismissibleViewCallback() {
-        @Override
-        public void onViewDismissed() {
-            // called when drag dismissed the new post dialog past the threshold distance
-            float distanceToGo = 0f;
-            if (newPost.getTranslationY() >= 0f) {
-                distanceToGo = newPost.getHeight();
-            } else {
-                distanceToGo = -((ViewGroup) newPost.getParent()).getHeight();
-            }
-            newPost.animate()
-                    .translationY(distanceToGo)
-                    .alpha(0f)
-                    .setDuration(ANIMATION_DURATION_SHORT)
-                    .setInterpolator(AnimationUtils.loadInterpolator(HomeActivity.this, android.R
-                            .interpolator.accelerate_quad))
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            // 1. do some clean up - reset values
-                            newPost.setVisibility(View.INVISIBLE);
-                            newPost.setAlpha(1f);
-                            newPost.setTranslationX(0f);
-                            newPost.setTranslationY(0f);
-                            newPost.setScaleX(1f);
-                            newPost.setScaleY(1f);
-
-                            // 2. remove the dialog scrim
-                            Animator scrim = removeScrim();
-                            scrim.setInterpolator(AnimUtils.getMaterialInterpolator(HomeActivity
-                                    .this));
-                            scrim.start();
-
-                            // 3. and then re-show the FAB
-                            fab.setVisibility(View.VISIBLE);
-                            fab.setAlpha(0f);
-                            fab.setScaleX(0f);
-                            fab.setScaleY(0f);
-                            fab.setTranslationY(fab.getHeight() / 2);
-                            fab.animate()
-                                    .alpha(1f)
-                                    .scaleX(1f)
-                                    .scaleY(1f)
-                                    .translationY(0f)
-                                    .setDuration(ANIMATION_DURATION_SHORT)
-                                    .setInterpolator(AnimUtils.getMaterialInterpolator
-                                            (HomeActivity.this));
-                        }
-                    })
-                    .start();
-            ImeUtils.hideIme(newStoryTitle);
-        }
-    };
+    }
 
     private void checkEmptyState() {
         if (adapter.getDataItemCount() == 0) {
@@ -517,9 +378,6 @@ public class HomeActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        // re-initialise the dribble and DN API objects (as user may have logged in in a child
-        // activity & we need to capture the updated auth token)
-        // TODO make these singletons?
         dribbblePrefs.addLoginStatusListener(dataManager);
         dribbblePrefs.addLoginStatusListener(filtersAdapter);
     }
@@ -667,6 +525,55 @@ public class HomeActivity extends Activity {
                     }
                 }
                 break;
+            case RC_NEW_DESIGNER_NEWS_STORY:
+                if (resultCode == PostNewDesignerNewsStory.RESULT_DRAG_DISMISSED) {
+                    // need to reshow the FAB as there's no shared element transition
+                    showFab();
+                } else if (resultCode == PostNewDesignerNewsStory.RESULT_POST) {
+                    String title = data.getStringExtra(PostNewDesignerNewsStory.EXTRA_STORY_TITLE);
+                    String url = data.getStringExtra(PostNewDesignerNewsStory.EXTRA_STORY_URL);
+                    String comment = data.getStringExtra(
+                            PostNewDesignerNewsStory.EXTRA_STORY_COMMENT);
+                    if (!TextUtils.isEmpty(title)) {
+                        NewStoryRequest storyToPost = null;
+                        if (!TextUtils.isEmpty(url)) {
+                            storyToPost = NewStoryRequest.createWithUrl(title, url);
+                        } else if (!TextUtils.isEmpty(comment)) {
+                            storyToPost = NewStoryRequest.createWithComment(title, comment);
+                        }
+                        if (storyToPost != null) {
+                            // TODO: move this to a service in follow up CL?
+                            DesignerNewsService designerNewsApi = new RestAdapter.Builder()
+                                    .setEndpoint(DesignerNewsService.ENDPOINT)
+                                    .setRequestInterceptor(new ClientAuthInterceptor
+                                            (designerNewsPrefs.getAccessToken(),
+                                                    BuildConfig.DESIGNER_NEWS_CLIENT_ID))
+                                    .build()
+                                    .create(DesignerNewsService.class);
+                            designerNewsApi.postStory(storyToPost, new Callback<StoriesResponse>() {
+                                @Override
+                                public void success(StoriesResponse story, Response response) {
+                                    if (story != null
+                                            && story.stories != null
+                                            && story.stories.size() > 0) {
+                                        long id = story.stories.get(0).id;
+                                    }
+                                }
+
+                                @Override
+                                public void failure(RetrofitError error) {
+                                    Log.e("HomeActivity", "Failed posting story", error);
+                                }
+                            });
+                        }
+                    }
+                }
+                break;
+            case RC_NEW_DESIGNER_NEWS_LOGIN:
+                if (resultCode == RESULT_OK) {
+                    showFab();
+                }
+                break;
             case RC_AUTH_DRIBBBLE_FOLLOWING:
                 if (resultCode == RESULT_OK) {
                     filtersAdapter.enableFilterByKey(SourceManager.SOURCE_DRIBBBLE_FOLLOWING, this);
@@ -685,6 +592,22 @@ public class HomeActivity extends Activity {
                 }
                 break;
         }
+    }
+
+    private void showFab() {
+        fab.setAlpha(0f);
+        fab.setScaleX(0f);
+        fab.setScaleY(0f);
+        fab.setTranslationY(fab.getHeight() / 2);
+        fab.animate()
+                .alpha(1f)
+                .scaleX(1f)
+                .scaleY(1f)
+                .translationY(0f)
+                .setDuration(300L)
+                .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator
+                        .linear_out_slow_in))
+                .start();
     }
 
     /**
@@ -766,134 +689,9 @@ public class HomeActivity extends Activity {
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.END)) {
             drawer.closeDrawer(GravityCompat.END);
-        }
-        else if (isNewPostShowing()) {
-            hideNewPost();
         } else {
             super.onBackPressed();
         }
-    }
-
-    boolean isNewPostShowing() {
-        return newPost.getVisibility() == View.VISIBLE;
-    }
-
-    void hideNewPost() {
-
-        // calculate where the new post needs to end up (centered over the FAB)
-        int fabCenterX = (fab.getLeft() + fab.getRight()) / 2;
-        int fabCenterY = ((fab.getTop() + fab.getBottom()) / 2);
-        int translateX = fabCenterX - (newPost.getWidth() / 2);
-        int translateY = fabCenterY - (newPost.getTop() + (newPost.getHeight() / 2));
-
-        // then circular clip the new post view down to the FAB dimens
-        Animator clip = ViewAnimationUtils.createCircularReveal(
-                newPost,
-                newPost.getWidth() / 2,
-                newPost.getHeight() / 2,
-                (int) Math.hypot(newPost.getWidth() / 2, newPost.getHeight() / 2),
-                fab.getWidth() / 2)
-                .setDuration(ANIMATION_DURATION_SHORT);
-        clip.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                newPost.setVisibility(View.INVISIBLE);
-            }
-        });
-
-        // translate the new post view back toward the FAB along an arc
-        Path motionPath = new ArcMotion().getPath(0, 0, translateX, translateY);
-        Animator position = ObjectAnimator.ofFloat(newPost, View.TRANSLATION_X, View
-                .TRANSLATION_Y, motionPath)
-                .setDuration(ANIMATION_DURATION_SHORT);
-
-        // animate from our dialog colour back to the FAB colour
-        Animator background = ObjectAnimator.ofArgb(newPostContainer,
-                ViewUtils.BACKGROUND_COLOR,
-                ContextCompat.getColor(this, R.color.background_light),
-                ContextCompat.getColor(this, R.color.accent))
-                .setDuration(ANIMATION_DURATION_MED);
-
-        // lower up in Z
-        Animator lower = ObjectAnimator.ofFloat(newPost, View.TRANSLATION_Z, 0)
-                .setDuration(ANIMATION_DURATION_SHORT);
-
-        // animate out the scrim & re-raise the toolbar
-        Animator scrim = removeScrim();
-
-        // fade the FAB back in – quickly & a little delayed so that it's at the end of the
-        // clip/reveal
-        fab.setVisibility(View.VISIBLE);
-        Animator fadeInFab = ObjectAnimator.ofFloat(fab, View.ALPHA, 1f)
-                .setDuration(ANIMATION_DURATION_NEAR_INSTANT);
-        fadeInFab.setStartDelay(ANIMATION_DURATION_SHORT - ANIMATION_DURATION_NEAR_INSTANT);
-
-        // play 'em all together with the material interpolator
-        AnimatorSet hide = new AnimatorSet();
-        hide.setInterpolator(AnimUtils.getMaterialInterpolator(HomeActivity.this));
-        hide.playTogether(clip, position, background, lower, scrim, fadeInFab);
-        hide.start();
-    }
-
-//    private DragDownDismissFrameLayout.Callbacks newPostDismissed = new
-// DragDownDismissFrameLayout.Callbacks() {
-//
-//        @Override public boolean shouldCapture() {
-//            return true;
-//        }
-//
-//        @Override
-//        public void onViewDismissed(int viewTop, int viewBottom) {
-//            // called when we have drag dismissed the new post dialog
-//
-//            // TODO: dismiss the IME if it is shown
-//
-//            // 1. need to do some clean up
-//            newPost.setVisibility(View.INVISIBLE);
-//            newPost.setAlpha(ALPHA_OPAQUE);
-//            newPost.setTop(viewTop);
-//            newPost.setBottom(viewBottom);
-//            newPost.setTranslationX(0f);
-//            newPost.setTranslationY(0f);
-//
-//            // 2. remove the dialog scrim
-//            Animator scrim = removeScrim();
-//            scrim.setInterpolator(AnimUtils.getMaterialInterpolator(HomeActivity.this));
-//            scrim.start();
-//
-//            // 3. and then re-show the FAB
-//            fab.setVisibility(View.VISIBLE);
-//            fab.setAlpha(ALPHA_TRANSPARENT);
-//            fab.setScaleX(0f);
-//            fab.setScaleY(0f);
-//            fab.setTranslationY(fab.getHeight() / 2);
-//            fab.animate()
-//                    .alpha(ALPHA_OPAQUE)
-//                    .scaleX(1f)
-//                    .scaleY(1f)
-//                    .translationY(0f)
-//                    .setDuration(ANIMATION_DURATION_SHORT)
-//                    .setInterpolator(AnimUtils.getMaterialInterpolator(HomeActivity.this));
-//        }
-//
-//        @Override public void onDrag(int top) { }
-//    };
-
-    private Animator removeScrim() {
-        Animator scrim = ObjectAnimator.ofFloat(this.scrim, View.ALPHA, 0f)
-                .setDuration(ANIMATION_DURATION_MED);
-        scrim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                HomeActivity.this.scrim.setVisibility(View.INVISIBLE);
-                HomeActivity.this.scrim.setAlpha(1.0f);
-            }
-        });
-        return scrim;
-    }
-
-    public void hideNewPost(View view) {
-        hideNewPost();
     }
 
     private void checkConnectivity() {

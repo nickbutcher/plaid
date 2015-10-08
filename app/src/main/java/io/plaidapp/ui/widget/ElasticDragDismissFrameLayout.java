@@ -41,11 +41,27 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
     private float totalDrag;
     private boolean draggingDown = false;
     private boolean draggingUp = false;
+    private boolean canDragUp = true;
+    private boolean canDragDown = true;
 
     private DismissibleViewCallback callback;
 
+    public ElasticDragDismissFrameLayout(Context context) {
+        this(context, null, 0, 0);
+    }
+
     public ElasticDragDismissFrameLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0, 0);
+    }
+
+    public ElasticDragDismissFrameLayout(Context context, AttributeSet attrs,
+                                         int defStyleAttr) {
+        this(context, attrs, defStyleAttr, 0);
+    }
+
+    public ElasticDragDismissFrameLayout(Context context, AttributeSet attrs,
+                                         int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
 
         final TypedArray a = getContext().obtainStyledAttributes(
                 attrs, R.styleable.ElasticDragDismissFrameLayout, 0, 0);
@@ -70,6 +86,14 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
             dragDismissScale = a.getFloat(R.styleable
                     .ElasticDragDismissFrameLayout_dragDismissScale, dragDismissScale);
             shouldScale = dragDismissScale != 1f;
+        }
+        if (a.hasValue(R.styleable.ElasticDragDismissFrameLayout_canDragUp)) {
+            canDragUp = a.getBoolean(R.styleable
+                    .ElasticDragDismissFrameLayout_canDragUp, canDragUp);
+        }
+        if (a.hasValue(R.styleable.ElasticDragDismissFrameLayout_canDragDown)) {
+            canDragDown = a.getBoolean(R.styleable
+                    .ElasticDragDismissFrameLayout_canDragDown, canDragDown);
         }
         a.recycle();
     }
@@ -143,6 +167,12 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
                 if (shouldScale) setPivotY(0);
             }
             totalDrag += scroll;
+            if (!canDragDown) {
+                totalDrag = Math.max(totalDrag, 0);
+            }
+            if (!canDragUp) {
+                totalDrag = Math.min(totalDrag, 0);
+            }
 
             // how far have we dragged relative to the distance to perform a dismiss (0–1 where 1
             // = dismiss distance)
@@ -166,6 +196,7 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
 //            } else if (draggingUp) {
 //                dragTo = Math.min(dragTo, 0f);
 //            }
+
             setTranslationY(dragTo);
 
             if (shouldScale) {

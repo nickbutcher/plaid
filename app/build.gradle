@@ -65,7 +65,7 @@ ext {
     archivesBaseName = "plaid-${android.defaultConfig.versionName}"
     // using + here as we're picking up prebuilts for Goog libs
     // STOPSHIP use released libs!
-    supportLibVersion = '23.0.+'
+    supportLibVersion = '23.1.+'
 }
 
 dependencies {

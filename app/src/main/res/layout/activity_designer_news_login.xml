@@ -36,7 +36,8 @@
         android:layout_gravity="center"
         android:elevation="@dimen/z_fab"
         android:background="@drawable/dialog_background"
-        android:clickable="true">
+        android:clickable="true"
+        android:transitionName="@string/transition_designer_news_login">
 
         <io.plaidapp.ui.widget.BaselineGridTextView
             android:id="@+id/dialog_title"

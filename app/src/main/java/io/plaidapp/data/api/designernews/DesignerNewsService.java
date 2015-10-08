@@ -19,7 +19,9 @@ package io.plaidapp.data.api.designernews;
 import java.util.Map;
 
 import io.plaidapp.data.api.designernews.model.AccessToken;
+import io.plaidapp.data.api.designernews.model.NewStoryRequest;
 import io.plaidapp.data.api.designernews.model.StoriesResponse;
+import io.plaidapp.data.api.designernews.model.Story;
 import io.plaidapp.data.api.designernews.model.StoryResponse;
 import io.plaidapp.data.api.designernews.model.UserResponse;
 import retrofit.Callback;
@@ -27,6 +29,7 @@ import retrofit.http.Body;
 import retrofit.http.FieldMap;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
+import retrofit.http.Headers;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -68,5 +71,10 @@ public interface DesignerNewsService {
                      // https://github
                      // .com/square/retrofit/commit/19ac1e2c4551448184ad66c4a0ec172e2741c2ee
                      Callback<StoryResponse> callback);
+
+    @Headers("Content-Type: application/vnd.api+json")
+    @POST("/api/v2/stories")
+    void postStory(@Body NewStoryRequest story,
+                   Callback<StoriesResponse> callback);
 
 }

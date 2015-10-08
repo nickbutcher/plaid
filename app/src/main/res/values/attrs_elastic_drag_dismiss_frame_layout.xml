@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -23,5 +22,7 @@
         <attr name="dragDismissFraction" format="float" />
         <attr name="dragElasticity" format="float" />
         <attr name="dragDismissScale" format="float" />
+        <attr name="canDragUp" format="boolean" />
+        <attr name="canDragDown" format="boolean" />
     </declare-styleable>
 </resources>

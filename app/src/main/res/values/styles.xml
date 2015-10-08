@@ -82,8 +82,6 @@
     </style>
 
     <style name="Plaid.Search">
-        <!--<item name="android:windowSharedElementEnterTransition">@transition/dribbble_login_shared_enter</item>-->
-        <!--<item name="android:windowSharedElementReturnTransition">@transition/dribbble_login_shared_return</item>-->
         <item name="android:windowBackground">@color/search_background_scrim</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@style/SearchWindowAnimations</item>
@@ -109,8 +107,6 @@
     </style>
 
     <style name="Plaid.DesignerNewsLogin">
-        <!--<item name="android:windowSharedElementEnterTransition">@transition/dribbble_login_shared_enter</item>-->
-        <!--<item name="android:windowSharedElementReturnTransition">@transition/dribbble_login_shared_return</item>-->
         <item name="android:windowBackground">@color/scrim</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@null</item>
@@ -120,6 +116,19 @@
         <item name="android:navigationBarColor">@color/designer_news_super_dark</item>
         <item name="android:colorButtonNormal">@color/designer_news_button</item>
         <item name="android:colorControlActivated">@color/designer_news</item>
+    </style>
+
+    <style name="Plaid.PostDesignerNewsStory">
+        <item name="android:windowBackground">@color/scrim</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:colorPrimary">@color/designer_news</item>
+        <item name="android:colorAccent">@color/designer_news</item>
+        <item name="android:statusBarColor">@color/background_super_dark</item>
+        <item name="android:navigationBarColor">@color/background_super_dark</item>
+        <item name="android:colorButtonNormal">@color/designer_news_button</item>
+        <item name="android:colorControlActivated">@color/designer_news</item>
+        <item name="android:colorControlNormal">@color/hint_disabled_dark</item>
     </style>
 
     <style name="Widget.Plaid" parent="android:Widget" />
@@ -319,6 +328,16 @@
 
     <style name="Widget.Plaid.HintCheckBox" parent="@android:style/Widget.Material.CompoundButton.CheckBox">
         <item name="android:textColor">@color/text_secondary_dark</item>
+    </style>
+
+    <style name="Widget.Plaid.Subhead">
+        <item name="android:textAppearance">@style/TextAppearance.Subhead</item>
+        <item name="lineHeightHint">24sp</item>
+    </style>
+
+    <style name="TextAppearance.Subhead" parent="@android:style/TextAppearance.Material.Subhead">
+        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:letterSpacing">0.01</item>
     </style>
 
     <style name="PlaidDarkOverlay" parent="@android:style/ThemeOverlay.Material.Dark.ActionBar">
