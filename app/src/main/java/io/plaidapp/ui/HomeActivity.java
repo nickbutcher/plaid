@@ -280,8 +280,8 @@ public class HomeActivity extends Activity {
         ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(filtersList);
-        checkConnectivity();
         checkEmptyState();
+        checkConnectivity();
     }
 
     // listener for notifying adapter when data sources are deactivated
