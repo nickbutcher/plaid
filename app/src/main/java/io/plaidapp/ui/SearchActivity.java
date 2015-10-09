@@ -126,18 +126,17 @@ public class SearchActivity extends Activity {
                         progress.setVisibility(View.GONE);
                         results.setVisibility(View.VISIBLE);
                         fab.setVisibility(View.VISIBLE);
-                        fab.setAlpha(0f);
-                        fab.setScaleX(0.8f);
-                        fab.setScaleY(0.8f);
+                        fab.setAlpha(0.6f);
+                        fab.setScaleX(0f);
+                        fab.setScaleY(0f);
                         fab.animate()
                                 .alpha(1f)
                                 .scaleX(1f)
                                 .scaleY(1f)
                                 .setStartDelay(800L)
-                                .setDuration(400L)
+                                .setDuration(300L)
                                 .setInterpolator(AnimationUtils.loadInterpolator(SearchActivity
-                                        .this, android.R.interpolator.linear_out_slow_in))
-                                .start();
+                                        .this, android.R.interpolator.linear_out_slow_in));
                     }
                     adapter.addAndResort(data);
                 } else {
@@ -389,24 +388,22 @@ public class SearchActivity extends Activity {
                 fadeInScrim.start();
 
                 // ease in the checkboxes
-                saveDribbble.setAlpha(0.4f);
-                saveDribbble.setTranslationY(saveDribbble.getHeight() * 0.7f);
+                saveDribbble.setAlpha(0.6f);
+                saveDribbble.setTranslationY(saveDribbble.getHeight() * 0.4f);
                 saveDribbble.animate()
                         .alpha(1f)
                         .translationY(0f)
-                        .setDuration(350L)
+                        .setDuration(200L)
                         .setInterpolator(AnimationUtils.loadInterpolator(SearchActivity.this,
-                                android.R.interpolator.fast_out_slow_in))
-                        .start();
-                saveDesignerNews.setAlpha(0.4f);
-                saveDesignerNews.setTranslationY(saveDesignerNews.getHeight());
+                                android.R.interpolator.linear_out_slow_in));
+                saveDesignerNews.setAlpha(0.6f);
+                saveDesignerNews.setTranslationY(saveDesignerNews.getHeight() * 0.5f);
                 saveDesignerNews.animate()
                         .alpha(1f)
                         .translationY(0f)
-                        .setDuration(350L)
+                        .setDuration(200L)
                         .setInterpolator(AnimationUtils.loadInterpolator(SearchActivity.this,
-                                android.R.interpolator.fast_out_slow_in))
-                        .start();
+                                android.R.interpolator.linear_out_slow_in));
                 return false;
             }
         });
