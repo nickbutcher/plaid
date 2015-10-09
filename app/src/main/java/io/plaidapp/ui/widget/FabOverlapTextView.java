@@ -62,7 +62,7 @@ public class FabOverlapTextView extends View {
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         // Attribute initialization.
-        paint = new TextPaint(Paint.SUBPIXEL_TEXT_FLAG);
+        paint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FabOverlapTextView);
 
         fabId = a.getResourceId(R.styleable.FabOverlapTextView_fabId, 0);
