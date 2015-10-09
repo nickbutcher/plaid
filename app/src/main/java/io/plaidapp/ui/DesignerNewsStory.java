@@ -207,7 +207,9 @@ public class DesignerNewsStory extends Activity {
         return new CustomTabsIntent.Builder(session)
                 .setToolbarColor(ContextCompat.getColor(context, R.color.designer_news))
                 .setActionButton(ImageUtils.vectorToBitmap(context, R.drawable.ic_thumb_up),
-                        story.comment, pendingIntent, true)
+                        context.getString(R.string.upvote_story),
+                        pendingIntent,
+                        false)
                 .setShowTitle(true)
                 .enableUrlBarHiding();
     }
