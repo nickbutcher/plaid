@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
@@ -39,6 +38,7 @@ import butterknife.OnTextChanged;
 import io.plaidapp.R;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.widget.BottomSheet;
+import io.plaidapp.ui.widget.ObservableScrollView;
 import io.plaidapp.util.ImeUtils;
 
 public class PostNewDesignerNewsStory extends Activity {
@@ -55,7 +55,7 @@ public class PostNewDesignerNewsStory extends Activity {
     @Bind(R.id.bottom_sheet) BottomSheet bottomSheet;
     @Bind(R.id.bottom_sheet_content) ViewGroup bottomSheetContent;
     @Bind(R.id.title) TextView sheetTitle;
-    @Bind(R.id.scroll_container) NestedScrollView scrollContainer;
+    @Bind(R.id.scroll_container) ObservableScrollView scrollContainer;
     @Bind(R.id.new_story_title) EditText title;
     @Bind(R.id.new_story_url_label) TextInputLayout urlLabel;
     @Bind(R.id.new_story_url) EditText url;
@@ -85,10 +85,9 @@ public class PostNewDesignerNewsStory extends Activity {
             public void onDrag(int top) { /* no-op */ }
         });
 
-        scrollContainer.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+        scrollContainer.setListener(new ObservableScrollView.OnScrollListener() {
             @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int
-                    oldScrollX, int oldScrollY) {
+            public void onScrolled(int scrollY) {
                 if (scrollY != 0
                         && sheetTitle.getTranslationZ() != appBarElevation) {
                     sheetTitle.animate()

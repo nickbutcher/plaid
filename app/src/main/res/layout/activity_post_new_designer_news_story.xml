@@ -50,7 +50,7 @@
             android:background="@color/background_light"
             style="@style/Widget.Plaid.DialogTitle" />
 
-        <android.support.v4.widget.NestedScrollView
+        <io.plaidapp.ui.widget.ObservableScrollView
             android:id="@+id/scroll_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -153,7 +153,7 @@
 
             </LinearLayout>
 
-        </android.support.v4.widget.NestedScrollView>
+        </io.plaidapp.ui.widget.ObservableScrollView>
 
     </LinearLayout>
 
