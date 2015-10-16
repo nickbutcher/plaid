@@ -69,11 +69,11 @@ import io.plaidapp.ui.drawable.ThreadedCommentDrawable;
 import io.plaidapp.ui.span.ImageLoadingSpan;
 import io.plaidapp.ui.widget.AuthorTextView;
 import io.plaidapp.ui.widget.CollapsingTitleLayout;
-import io.plaidapp.ui.widget.DismissibleViewCallback;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.FontTextView;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import io.plaidapp.util.AnimUtils;
+import io.plaidapp.util.ColorUtils;
 import io.plaidapp.util.HtmlUtils;
 import io.plaidapp.util.ImageUtils;
 import io.plaidapp.util.ViewUtils;
@@ -109,9 +109,18 @@ public class DesignerNewsStory extends Activity {
 
         ElasticDragDismissFrameLayout draggableFrame = ButterKnife.findById(this, R.id
                 .comments_container);
-        draggableFrame.setCallback(new DismissibleViewCallback() {
+        draggableFrame.addListener(new ElasticDragDismissFrameLayout.ElasticDragDismissListener() {
             @Override
-            public void onViewDismissed() {
+            public void onDrag(float dragFraction, float elasticDrag, float rawDrag) {
+                // if dragging downward, fade the status bar in proportion
+                if (elasticDrag >= 0) {
+                    getWindow().setStatusBarColor(ColorUtils.modifyAlpha(getWindow()
+                            .getStatusBarColor(), 1f - Math.min(dragFraction, 1f)));
+                }
+            }
+
+            @Override
+            public void onDragDismissed() {
                 finishAfterTransition();
             }
         });

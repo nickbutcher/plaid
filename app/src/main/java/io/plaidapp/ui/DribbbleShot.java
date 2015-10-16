@@ -88,7 +88,6 @@ import io.plaidapp.data.prefs.DribbblePrefs;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.widget.AuthorTextView;
 import io.plaidapp.ui.widget.CheckableImageButton;
-import io.plaidapp.ui.widget.DismissibleViewCallback;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.FABToggle;
 import io.plaidapp.ui.widget.FabOverlapTextView;
@@ -180,9 +179,18 @@ public class DribbbleShot extends Activity {
             }
         });
         fab.setOnClickListener(fabClick);
-        draggableFrame.setCallback(new DismissibleViewCallback() {
+        draggableFrame.addListener(new ElasticDragDismissFrameLayout.ElasticDragDismissListener() {
             @Override
-            public void onViewDismissed() {
+            public void onDrag(float dragFraction, float elasticDrag, float rawDrag) {
+                // if dragging downward, fade the status bar in proportion
+                if (elasticDrag >= 0) {
+                    getWindow().setStatusBarColor(ColorUtils.modifyAlpha(getWindow()
+                            .getStatusBarColor(), 1f - Math.min(dragFraction, 1f)));
+                }
+            }
+
+            @Override
+            public void onDragDismissed() {
                 expandImageAndFinish();
             }
         });

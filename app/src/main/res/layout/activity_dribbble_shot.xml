@@ -23,7 +23,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     plaid:dragDismissDistance="@dimen/drag_dismiss_distance"
-    plaid:dragElasticity="0.2"
     plaid:dragDismissScale="0.95"
     tools:context="io.plaidapp.ui.DribbbleShot">
 

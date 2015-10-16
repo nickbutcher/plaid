@@ -26,7 +26,6 @@
     android:background="@color/background_light"
     android:transitionName="@string/transition_story_background"
     app:dragDismissDistance="@dimen/drag_dismiss_distance"
-    app:dragElasticity="0.2"
     app:dragDismissScale="0.95"
     tools:context="io.plaidapp.ui.DesignerNewsStory">
 

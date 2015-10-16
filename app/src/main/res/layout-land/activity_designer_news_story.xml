@@ -23,7 +23,6 @@
     android:background="@color/background_light"
     android:transitionName="@string/transition_story_background"
     plaid:dragDismissDistance="@dimen/drag_dismiss_distance"
-    plaid:dragElasticity="0.2"
     plaid:dragDismissScale="0.95">
 
     <!-- toolbar & description added as header in the adapter

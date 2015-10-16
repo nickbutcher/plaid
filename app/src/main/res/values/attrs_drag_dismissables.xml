@@ -21,12 +21,9 @@
 
     <declare-styleable name="ElasticDragDismissFrameLayout">
         <attr name="dragDismissDistance" />
-        <attr name="clampDragAtDismissDistance" format="boolean" />
         <attr name="dragDismissFraction" format="float" />
-        <attr name="dragElasticity" format="float" />
         <attr name="dragDismissScale" format="float" />
-        <attr name="canDragUp" format="boolean" />
-        <attr name="canDragDown" format="boolean" />
+        <attr name="dragElasticity" format="float" />
     </declare-styleable>
 
     <declare-styleable name="BottomSheet">

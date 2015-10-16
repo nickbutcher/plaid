@@ -23,28 +23,31 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.plaidapp.R;
 
 /**
- * Created by nickbutcher on 12/11/14.
+ * A {@link FrameLayout} which responds to nested scrolls to create drag-dismissable layouts.
+ * Applies an elasticity factor to reduce movement as you approach the given dismiss distance.
+ * Optionally also scales down content during drag.
  */
 public class ElasticDragDismissFrameLayout extends FrameLayout {
 
     // configurable attribs
-    private float dragDismissDistance = 0f;
+    private float dragDismissDistance = Float.MAX_VALUE;
     private float dragDismissFraction = -1f;
-    private boolean clampDragAtDismissDistance = true;
-    private float dragElacticity = 1f;
     private float dragDismissScale = 1f;
     private boolean shouldScale = false;
+    private float dragElacticity = 0.8f;
 
+    //state
     private float totalDrag;
     private boolean draggingDown = false;
     private boolean draggingUp = false;
-    private boolean canDragUp = true;
-    private boolean canDragDown = true;
 
-    private DismissibleViewCallback callback;
+    private List<ElasticDragDismissListener> listeners;
 
     public ElasticDragDismissFrameLayout(Context context) {
         this(context, null, 0, 0);
@@ -73,29 +76,34 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
             dragDismissFraction = a.getFloat(R.styleable
                     .ElasticDragDismissFrameLayout_dragDismissFraction, dragDismissFraction);
         }
-        if (a.hasValue(R.styleable.ElasticDragDismissFrameLayout_clampDragAtDismissDistance)) {
-            clampDragAtDismissDistance = a.getBoolean(R.styleable
-                            .ElasticDragDismissFrameLayout_clampDragAtDismissDistance,
-                    clampDragAtDismissDistance);
-        }
-        if (a.hasValue(R.styleable.ElasticDragDismissFrameLayout_dragElasticity)) {
-            dragElacticity = a.getFloat(R.styleable.ElasticDragDismissFrameLayout_dragElasticity,
-                    dragElacticity);
-        }
         if (a.hasValue(R.styleable.ElasticDragDismissFrameLayout_dragDismissScale)) {
             dragDismissScale = a.getFloat(R.styleable
                     .ElasticDragDismissFrameLayout_dragDismissScale, dragDismissScale);
             shouldScale = dragDismissScale != 1f;
         }
-        if (a.hasValue(R.styleable.ElasticDragDismissFrameLayout_canDragUp)) {
-            canDragUp = a.getBoolean(R.styleable
-                    .ElasticDragDismissFrameLayout_canDragUp, canDragUp);
-        }
-        if (a.hasValue(R.styleable.ElasticDragDismissFrameLayout_canDragDown)) {
-            canDragDown = a.getBoolean(R.styleable
-                    .ElasticDragDismissFrameLayout_canDragDown, canDragDown);
+        if (a.hasValue(R.styleable.ElasticDragDismissFrameLayout_dragElasticity)) {
+            dragElacticity = a.getFloat(R.styleable.ElasticDragDismissFrameLayout_dragElasticity,
+                    dragElacticity);
         }
         a.recycle();
+    }
+
+    public interface ElasticDragDismissListener {
+
+        /**
+         * Called for each drag event
+         * @param dragFraction The fraction of the drag relative to the dismiss distance (>= 1 means
+         *                     the dismiss distance has been reached)
+         * @param elasticDrag  The elastically scaled drag distance
+         * @param rawDrag      The raw distance the user has dragged
+         */
+        void onDrag(float dragFraction, float elasticDrag, float rawDrag);
+
+        /**
+         * Called when dragging is released and has exceeded the threshold distance
+         */
+        void onDragDismissed();
+
     }
 
     @Override
@@ -104,8 +112,17 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
     }
 
     @Override
-    public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int
-            dyUnconsumed) {
+    public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
+        // if we're in a drag gesture and the user reverses up the we should take those events
+        if (draggingDown && dy > 0 || draggingUp && dy < 0) {
+            dragScale(dy);
+            consumed[1] = dy;
+        }
+    }
+
+    @Override
+    public void onNestedScroll(View target, int dxConsumed, int dyConsumed,
+                               int dxUnconsumed, int dyUnconsumed) {
         dragScale(dyUnconsumed);
     }
 
@@ -123,17 +140,9 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
                             .interpolator.fast_out_slow_in))
                     .setListener(null)
                     .start();
-        }
-        totalDrag = 0;
-        draggingDown = draggingUp = false;
-    }
-
-    @Override
-    public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
-        // if we're in a drag gesture and the user reverses up the we should take those events
-        if (draggingDown && dy > 0 || draggingUp && dy < 0) {
-            dragScale(dy);
-            consumed[1] = dy;
+            totalDrag = 0;
+            draggingDown = draggingUp = false;
+            dispatchDragCallback(0f, 0f, 0f);
         }
     }
 
@@ -145,82 +154,78 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
         }
     }
 
-    public DismissibleViewCallback getCallback() {
-        return callback;
+    public void addListener(ElasticDragDismissListener listener) {
+        if (listeners == null) {
+            listeners = new ArrayList<>();
+        }
+        listeners.add(listener);
     }
 
-    public void setCallback(DismissibleViewCallback callback) {
-        this.callback = callback;
+    public void removeListener(ElasticDragDismissListener listener) {
+        if (listeners != null && listeners.size() > 0) {
+            listeners.remove(listener);
+        }
     }
 
     private void dragScale(int scroll) {
-        if (scroll != 0) {
+        if (scroll == 0) return;
 
-            // track the direction & set the pivot point for scaling
-            // don't double track i.e. if start dragging down and then reverse, keep tracking as
-            // dragging down until they reach the 'natural' position
-            if (scroll < 0 && !draggingUp) {
-                draggingDown = true;
-                if (shouldScale) setPivotY(getHeight());
-            } else if (scroll > 0 && !draggingDown) {
-                draggingUp = true;
-                if (shouldScale) setPivotY(0);
-            }
-            totalDrag += scroll;
-            if (!canDragDown) {
-                totalDrag = Math.max(totalDrag, 0);
-            }
-            if (!canDragUp) {
-                totalDrag = Math.min(totalDrag, 0);
-            }
+        totalDrag += scroll;
+        // track the direction & set the pivot point for scaling
+        // don't double track i.e. if start dragging down and then reverse, keep tracking as
+        // dragging down until they reach the 'natural' position
+        if (scroll < 0 && !draggingUp) {
+            draggingDown = true;
+            if (shouldScale) setPivotY(getHeight());
+        } else if (scroll > 0 && !draggingDown) {
+            draggingUp = true;
+            if (shouldScale) setPivotY(0f);
+        }
+        // how far have we dragged relative to the distance to perform a dismiss
+        // (0–1 where 1 = dismiss distance). Decreasing logarithmically as we approach the limit
+        float dragFraction = (float) Math.log10(1 + (Math.abs(totalDrag) / dragDismissDistance));
 
-            // how far have we dragged relative to the distance to perform a dismiss (0–1 where 1
-            // = dismiss distance)
-            float dragFraction = 1 - ((dragDismissDistance - Math.min(Math.abs(totalDrag),
-                    dragDismissDistance)) / dragDismissDistance);
-            float dragTo = totalDrag;
-            if (clampDragAtDismissDistance) {
-                dragTo = (dragFraction * dragDismissDistance);
-                if (draggingUp) { // as we use the absolute magnitude when calculating the drag
-                    // fraction, need to re-apply the drag direction
-                    dragTo *= -1;
-                }
-            } else {
-                dragTo *= -1; // convert from scroll direction to translate direction
-            }
-            dragTo *= dragElacticity;
+        // calculate the desired translation given the drag fraction
+        float dragTo = dragFraction * dragDismissDistance * dragElacticity;
+        if (draggingUp) {
+            // as we use the absolute magnitude when calculating the drag fraction, need to
+            // re-apply the drag direction
+            dragTo *= -1;
+        }
+        setTranslationY(dragTo);
 
-            // clamp the values so that we don't scroll too far
-//            if (draggingDown) {
-//                dragTo = Math.max(dragTo, 0f);
-//            } else if (draggingUp) {
-//                dragTo = Math.min(dragTo, 0f);
-//            }
+        if (shouldScale) {
+            final float scale = 1 - ((1 - dragDismissScale) * dragFraction);
+            setScaleX(scale);
+            setScaleY(scale);
+        }
 
-            setTranslationY(dragTo);
+        // if we've reversed direction and gone past the settle point then clear the flags to
+        // allow the list to get the scroll events & reset any transforms
+        if ((draggingDown && totalDrag >= 0)
+                || (draggingUp && totalDrag <= 0)) {
+            totalDrag = dragTo = dragFraction = 0;
+            draggingDown = draggingUp = false;
+            setTranslationY(0f);
+            setScaleX(1f);
+            setScaleY(1f);
+        }
+        dispatchDragCallback(dragFraction, dragTo, totalDrag);
+    }
 
-            if (shouldScale) {
-                float scale = 1 - ((1 - dragDismissScale) * dragFraction);
-                setScaleX(scale);
-                setScaleY(scale);
-            }
-
-            // if we've reversed direction and gone past the settle point then clear the flags to
-            // allow the list to get the scroll events & reset any transforms
-            if ((draggingDown && totalDrag >= 0)
-                    || (draggingUp && totalDrag <= 0)) {
-                totalDrag = 0;
-                draggingDown = draggingUp = false;
-                setTranslationY(0f);
-                setScaleX(1f);
-                setScaleY(1f);
+    private void dispatchDragCallback(float dragFraction, float elasticDrag, float rawDrag) {
+        if (listeners != null && listeners.size() > 0) {
+            for (ElasticDragDismissListener listener : listeners) {
+                listener.onDrag(dragFraction, elasticDrag, rawDrag);
             }
         }
     }
 
     private void dispatchDismissCallback() {
-        if (callback != null) {
-            callback.onViewDismissed();
+        if (listeners != null && listeners.size() > 0) {
+            for (ElasticDragDismissListener listener : listeners) {
+                listener.onDragDismissed();
+            }
         }
     }
 
