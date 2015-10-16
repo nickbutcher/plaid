@@ -16,7 +16,9 @@
 
 package io.plaidapp.ui.widget;
 
-import android.animation.ValueAnimator;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v4.view.MotionEventCompat;
@@ -40,22 +42,32 @@ import io.plaidapp.util.ViewOffsetHelper;
  * A {@link FrameLayout} which can be dragged downward to be dismissed (either directly or via a
  * specified nested scrolling child).  It expects to contain a single child view and exposes a
  * listener interface to react to it's dismissal.
+ *
+ * View dragging has the benefit of reporting it's velocity allowing us to respond to flings etc
+ * but does not allow children to scroll.  Nested scrolling allows child views to scroll (duh)
+ * but does not report velocity. We combine both to get the best experience we can with the APIs.
  */
 public class BottomSheet extends FrameLayout {
 
-    private final int FLING_VELOCITY;
-    private ViewDragHelper viewDragHelper;
-
-    // state
-    private boolean isDismissing;
-    private View dragView;
-    private ViewOffsetHelper dragViewOffsetHelper;
+    // configurable attributes
+    private int dragDismissDistance = Integer.MAX_VALUE;
     private boolean hasScrollingChild = false;
     private int scrollingChildId = -1;
+
+    // child views & helpers
+    private View dragView;
     private View scrollingChild;
+    private ViewDragHelper viewDragHelper;
+    private ViewOffsetHelper dragViewOffsetHelper;
+
+    // state
+    private final int FLING_VELOCITY;
+    private List<Listener> listeners;
+    private boolean isDismissing;
+    private int dragViewLeft;
     private int dragViewTop;
     private int dragViewBottom;
-    protected List<Listener> listeners;
+    private boolean lastNestedScrollWasDownward;
 
     public BottomSheet(Context context) {
         this(context, null, 0);
@@ -76,6 +88,11 @@ public class BottomSheet extends FrameLayout {
             scrollingChildId = a.getResourceId(R.styleable.BottomSheet_scrollingChild,
                     scrollingChildId);
         }
+        if (a.hasValue(R.styleable.BottomSheet_dragDismissDistance)) {
+            dragDismissDistance = a.getDimensionPixelSize(
+                    R.styleable.BottomSheet_dragDismissDistance, dragDismissDistance);
+        }
+        a.recycle();
     }
 
     public void addListener(Listener listener) {
@@ -91,7 +108,7 @@ public class BottomSheet extends FrameLayout {
     }
 
     public void doDismiss() {
-        viewDragHelper.settleCapturedViewAt(0, dragViewBottom);
+        viewDragHelper.settleCapturedViewAt(dragViewLeft, dragViewBottom);
     }
 
     @Override
@@ -117,6 +134,7 @@ public class BottomSheet extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (dragView != null && dragView.isLaidOut()) {
+            dragViewLeft = dragView.getLeft();
             dragViewTop = dragView.getTop();
             dragViewBottom = dragView.getBottom();
             dragViewOffsetHelper.onViewLayout();
@@ -158,25 +176,53 @@ public class BottomSheet extends FrameLayout {
     @Override
     public void onNestedScroll(View target, int dxConsumed, int dyConsumed,
                                int dxUnconsumed, int dyUnconsumed) {
-        if (dyUnconsumed < 0) {
+        // if scrolling downward, use any unconsumed (i.e. not used by the scrolling child)
+        // to drag the sheet downward
+        lastNestedScrollWasDownward = dyUnconsumed < 0;
+        if (lastNestedScrollWasDownward) {
             dragView.offsetTopAndBottom(-dyUnconsumed);
         }
     }
 
     @Override
-    public void onStopNestedScroll(View child) {
-        if (dragView.getTop() == dragViewTop) return;
+    public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
+        // if scrolling upward & the sheet has been dragged downward
+        // then drag back into place before allowing scrolls
+        if (dy > 0) {
+            final int dragDisplacement = dragView.getTop() - dragViewTop;
+            if (dragDisplacement > 0) {
+                final int consume = Math.min(dragDisplacement, dy);
+                dragView.offsetTopAndBottom(-consume);
+                consumed[1] = consume;
+                lastNestedScrollWasDownward = false;
+            }
+        }
+    }
 
-        ValueAnimator settleAnim = ValueAnimator.ofInt(dragView.getTop(), dragViewTop);
+    @Override
+    public void onStopNestedScroll(View child) {
+        final int dragDisplacement = dragView.getTop() - dragViewTop;
+        if (dragDisplacement == 0) return;
+
+        // check if we should perform a dismiss or settle back into place
+        final boolean dismiss =
+                lastNestedScrollWasDownward && dragDisplacement >= dragDismissDistance;
+        // animate either back into place or to bottom
+        ObjectAnimator settleAnim = ObjectAnimator.ofInt(dragViewOffsetHelper,
+                ViewOffsetHelper.OFFSET_Y,
+                dragView.getTop(),
+                dismiss ? dragViewBottom : dragViewTop);
         settleAnim.setDuration(200L);
         settleAnim.setInterpolator(AnimationUtils.loadInterpolator(getContext(),
                 android.R.interpolator.fast_out_slow_in));
-        settleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                dragViewOffsetHelper.setTopAndBottomOffset((int) animation.getAnimatedValue());
-            }
-        });
+        if (dismiss) {
+            settleAnim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    dispatchDismissCallback();
+                }
+            });
+        }
         settleAnim.start();
     }
 
@@ -197,16 +243,17 @@ public class BottomSheet extends FrameLayout {
     }
 
     private boolean isDraggableViewUnder(int x, int y) {
-        return getVisibility() == VISIBLE
-                && viewDragHelper.isViewUnder(this, x, y);
+        return getVisibility() == VISIBLE && viewDragHelper.isViewUnder(this, x, y);
     }
 
     private ViewDragHelper.Callback dragHelperCallbacks = new ViewDragHelper.Callback() {
 
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
-            boolean childCanScroll = scrollingChild != null &&
-                    (scrollingChild.canScrollVertically(1)
+            // if we have a scrolling child and it can scroll then don't drag, it'll be handled
+            // by nested scrolling
+            boolean childCanScroll = scrollingChild != null
+                    && (scrollingChild.canScrollVertically(1)
                             || scrollingChild.canScrollVertically(-1));
             return !childCanScroll;
         }
@@ -214,6 +261,11 @@ public class BottomSheet extends FrameLayout {
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
             return Math.min(Math.max(top, dragViewTop), dragViewBottom);
+        }
+
+        @Override
+        public int clampViewPositionHorizontal(View child, int left, int dx) {
+            return dragViewLeft;
         }
 
         @Override
@@ -233,15 +285,14 @@ public class BottomSheet extends FrameLayout {
                 doDismiss();
             } else {
                 // settle back into position
-                viewDragHelper.settleCapturedViewAt(0, dragViewTop);
+                viewDragHelper.settleCapturedViewAt(dragViewLeft, dragViewTop);
             }
             ViewCompat.postInvalidateOnAnimation(BottomSheet.this);
         }
 
         @Override
         public void onViewDragStateChanged(int state) {
-            if (isDismissing
-                    && state == ViewDragHelper.STATE_IDLE) {
+            if (isDismissing && state == ViewDragHelper.STATE_IDLE) {
                 isDismissing = false;
                 dispatchDismissCallback();
             }

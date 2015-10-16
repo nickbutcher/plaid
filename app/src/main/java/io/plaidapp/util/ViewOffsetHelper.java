@@ -18,6 +18,7 @@ package io.plaidapp.util;
 
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
+import android.util.Property;
 import android.view.View;
 import android.view.ViewParent;
 
@@ -110,4 +111,18 @@ public class ViewOffsetHelper {
     public int getLeftAndRightOffset() {
         return mOffsetLeft;
     }
+
+    public static final Property<ViewOffsetHelper, Integer> OFFSET_Y = new AnimUtils
+            .IntProperty<ViewOffsetHelper>("topAndBottomOffset") {
+
+        @Override
+        public void setValue(ViewOffsetHelper viewOffsetHelper, int offset) {
+            viewOffsetHelper.setTopAndBottomOffset(offset);
+        }
+
+        @Override
+        public Integer get(ViewOffsetHelper viewOffsetHelper) {
+            return viewOffsetHelper.getTopAndBottomOffset();
+        }
+    };
 }

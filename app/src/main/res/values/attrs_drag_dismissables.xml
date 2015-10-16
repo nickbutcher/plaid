@@ -16,8 +16,11 @@
   -->
 
 <resources>
+
+    <attr name="dragDismissDistance" format="dimension" />
+
     <declare-styleable name="ElasticDragDismissFrameLayout">
-        <attr name="dragDismissDistance" format="dimension" />
+        <attr name="dragDismissDistance" />
         <attr name="clampDragAtDismissDistance" format="boolean" />
         <attr name="dragDismissFraction" format="float" />
         <attr name="dragElasticity" format="float" />
@@ -25,4 +28,10 @@
         <attr name="canDragUp" format="boolean" />
         <attr name="canDragDown" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="BottomSheet">
+        <attr name="scrollingChild" format="reference" />
+        <attr name="dragDismissDistance" />
+    </declare-styleable>
+
 </resources>
