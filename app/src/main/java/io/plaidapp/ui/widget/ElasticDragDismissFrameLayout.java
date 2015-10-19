@@ -171,13 +171,14 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
         if (scroll == 0) return;
 
         totalDrag += scroll;
+
         // track the direction & set the pivot point for scaling
         // don't double track i.e. if start dragging down and then reverse, keep tracking as
         // dragging down until they reach the 'natural' position
-        if (scroll < 0 && !draggingUp) {
+        if (scroll < 0 && !draggingUp && !draggingDown) {
             draggingDown = true;
             if (shouldScale) setPivotY(getHeight());
-        } else if (scroll > 0 && !draggingDown) {
+        } else if (scroll > 0 && !draggingDown && !draggingUp) {
             draggingUp = true;
             if (shouldScale) setPivotY(0f);
         }
