@@ -134,7 +134,6 @@ public class DesignerNewsStory extends Activity {
                 .setBlockQuoteIndentSize(TypedValue.COMPLEX_UNIT_DIP, 2f)
                 .setBlockQuoteTextColor(ContextCompat.getColor(this, R.color.designer_news_quote)));
 
-        commentsList.setLayoutManager(new LinearLayoutManager(this));
         View storyDescription = getLayoutInflater().inflate(R.layout
                 .designer_news_story_description, commentsList, false);
         bindDescription(storyDescription);

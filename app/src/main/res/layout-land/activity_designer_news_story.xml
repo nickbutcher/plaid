@@ -16,14 +16,14 @@
 
 <io.plaidapp.ui.widget.ElasticDragDismissFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:plaid="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/comments_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_light"
     android:transitionName="@string/transition_story_background"
-    plaid:dragDismissDistance="@dimen/drag_dismiss_distance"
-    plaid:dragDismissScale="0.95">
+    app:dragDismissDistance="@dimen/drag_dismiss_distance"
+    app:dragDismissScale="0.95">
 
     <!-- toolbar & description added as header in the adapter
          see layout/designer_news_story_description -->
@@ -34,7 +34,8 @@
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/padding_normal"
         android:clipToPadding="false"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
 
     <include layout="@layout/designer_news_story_fab"/>
 

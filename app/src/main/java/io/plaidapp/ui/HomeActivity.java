@@ -184,7 +184,6 @@ public class HomeActivity extends Activity {
                         ContextCompat.getColor(this, R.color.immersive_bars),
                         ContextCompat.getColor(this, R.color.background_super_dark));
         drawer.setDrawerListener(drawerTinter);
-        filtersList.setLayoutManager(new LinearLayoutManager(this));
 
         // drawer layout treats fitsSystemWindows specially so we have to handle insets ourselves
         // this is super gross and breaks when you show a keyboard.  TODO FIXME
