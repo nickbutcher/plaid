@@ -35,7 +35,7 @@ import android.view.Gravity;
 import io.plaidapp.R;
 
 /**
- * Created by nickbutcher on 3/26/15.
+ * A view group that draws a badge drawable on top of it's contents.
  */
 public class BadgedFourThreeImageView extends FourThreeImageView {
 
@@ -54,19 +54,6 @@ public class BadgedFourThreeImageView extends FourThreeImageView {
         badgePadding = a.getDimensionPixelSize(R.styleable.BadgedImageView_badgePadding, 0);
         a.recycle();
 
-    }
-
-    private void layoutBadge() {
-        Rect badgeBounds = badge.getBounds();
-        Gravity.apply(badgeGravity,
-                badge.getIntrinsicWidth(),
-                badge.getIntrinsicHeight(),
-                new Rect(0, 0, getWidth(), getHeight()),
-                badgePadding,
-                badgePadding,
-                badgeBounds);
-        badge.setBounds(badgeBounds);
-        badgeBoundsSet = true;
     }
 
     public void showBadge(boolean show) {
@@ -88,13 +75,28 @@ public class BadgedFourThreeImageView extends FourThreeImageView {
         }
     }
 
+    private void layoutBadge() {
+        Rect badgeBounds = badge.getBounds();
+        Gravity.apply(badgeGravity,
+                badge.getIntrinsicWidth(),
+                badge.getIntrinsicHeight(),
+                new Rect(0, 0, getWidth(), getHeight()),
+                badgePadding,
+                badgePadding,
+                badgeBounds);
+        badge.setBounds(badgeBounds);
+        badgeBoundsSet = true;
+    }
+
+    /**
+     * A drawable for indicating that an image is animated
+     */
     private static class GifBadge extends Drawable {
 
         private static final String GIF = "GIF";
         private static final int TEXT_SIZE = 12;    // dp
         private static final int PADDING = 4;       // dp
         private static final int CORNER_RADIUS = 2; // dp
-        //private static final int BACKGROUND_COLOR = 0x8adddddd;
         private static final int BACKGROUND_COLOR = 0xffffffff;
         private static final String TYPEFACE = "sans-serif-black";
         private static final int TYPEFACE_STYLE = Typeface.NORMAL;

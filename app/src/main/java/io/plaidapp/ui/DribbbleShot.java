@@ -363,20 +363,23 @@ public class DribbbleShot extends Activity {
                             } else {
                                 isDark = lightness == ColorUtils.IS_DARK;
                             }
+
+                            if (!isDark) { // make back icon dark on light images
+                                back.setColorFilter(ContextCompat.getColor(
+                                        DribbbleShot.this, R.color.dark_icon));
+                            }
+
+                            // color the status bar. Set a complementary dark color on L,
+                            // light or dark color on M (with matching status bar icons)
                             int statusBarColor = getWindow().getStatusBarColor();
                             Palette.Swatch topColor = ColorUtils.getMostPopulousSwatch(palette);
-
                             if (topColor != null &&
-                                    // only set a light status bar on M+
                                     (isDark || Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
                                 statusBarColor = ColorUtils.scrimify(topColor.getRgb(),
                                         isDark, SCRIM_ADJUSTMENT);
-                                if (!isDark) {
-                                    back.setColorFilter(ContextCompat.getColor(
-                                            DribbbleShot.this, R.color.dark_icon));
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                        ViewUtils.setLightStatusBar(imageView);
-                                    }
+                                // set a light status bar on M+
+                                if (!isDark && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    ViewUtils.setLightStatusBar(imageView);
                                 }
                             }
 
@@ -416,18 +419,6 @@ public class DribbbleShot extends Activity {
                                 // for the scrim
                                 imageView.setForeground(ViewUtils.createRipple(vibrant.getRgb(),
                                         0.3f));
-
-                                /*AnimatorSet colorTitle = new AnimatorSet();
-                                colorTitle.playTogether(ObjectAnimator.ofArgb(title,
-                                "backgroundColor", vibrant
-                                .getRgb()),
-                                        ObjectAnimator.ofArgb(title, "textColor", vibrant
-                                        .getTitleTextColor()));
-                                colorTitle.setDuration(1000);
-                                colorTitle.setInterpolator(AnimationUtils.loadInterpolator
-                                (DribbbleShot.this, android
-                                .R.interpolator.fast_out_slow_in));
-                                colorTitle.start();*/
                             }
                         }
                     });
