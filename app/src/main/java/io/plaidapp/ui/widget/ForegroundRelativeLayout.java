@@ -27,7 +27,7 @@ import android.widget.RelativeLayout;
 import io.plaidapp.R;
 
 /**
- * Created by nickbutcher on 2/24/15.
+ * An extension to {@link RelativeLayout} which has a foreground drawable.
  */
 public class ForegroundRelativeLayout extends RelativeLayout {
 

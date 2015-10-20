@@ -24,13 +24,13 @@ import android.text.Layout;
 import android.text.style.LeadingMarginSpan;
 
 /**
- * Created by nickbutcher on 9/2/14.
+ * A quote span with a nicer presentation to match the display of a Designer News story.
  */
 public class DesignerNewsQuoteSpan implements LeadingMarginSpan {
 
     private static final int LINE_WIDTH = 2;            // dp
-    private static final int GAP_WIDTH = 16;           // dp
-    private static final int LINE_COLOR = 0xffECEEF1;   // match website
+    private static final int GAP_WIDTH = 16;            // dp
+    private static final int LINE_COLOR = 0xffECEEF1;
 
     private final int lineColor;
     private final int lineWidth;
@@ -38,18 +38,18 @@ public class DesignerNewsQuoteSpan implements LeadingMarginSpan {
 
     public DesignerNewsQuoteSpan(Context context) {
         super();
-
         final int scaledDensity = (int) context.getResources().getDisplayMetrics().scaledDensity;
         lineWidth = scaledDensity * LINE_WIDTH;
         gapWidth = scaledDensity * GAP_WIDTH;
         lineColor = LINE_COLOR;
     }
 
-    public DesignerNewsQuoteSpan(int quoteLineWidth, int guoteLineIndent, @ColorInt int
-            quoteLineColor) {
+    public DesignerNewsQuoteSpan(int quoteLineWidth,
+                                 int quoteLineIndent,
+                                 @ColorInt int quoteLineColor) {
         super();
         lineWidth = quoteLineWidth;
-        gapWidth = guoteLineIndent;
+        gapWidth = quoteLineIndent;
         lineColor = quoteLineColor;
     }
 

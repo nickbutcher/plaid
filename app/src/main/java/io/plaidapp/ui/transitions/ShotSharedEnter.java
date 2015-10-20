@@ -24,8 +24,6 @@ import android.util.AttributeSet;
 import android.view.View;
 
 /**
- * Created by nickbutcher on 2/13/15.
- * <p/>
  * Shared element transitions do not seem to like transitioning from a single view to two separate
  * views so we need to alter the ChangeBounds transition to compensate
  */

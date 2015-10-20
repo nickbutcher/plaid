@@ -32,7 +32,7 @@ import io.plaidapp.R;
 import io.plaidapp.util.FontUtil;
 
 /**
- * Created by nickbutcher on 12/16/14.
+ * A view which punches out some text from an opaque color block, allowing you to see through it.
  */
 public class CutoutTextView extends View {
 

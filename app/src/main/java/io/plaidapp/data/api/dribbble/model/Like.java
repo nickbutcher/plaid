@@ -21,7 +21,7 @@ import android.support.annotation.Nullable;
 import java.util.Date;
 
 /**
- * Created by nickbutcher on 2/10/15.
+ * Models a like of a Dribbble shot.
  */
 public class Like {
 

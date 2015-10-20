@@ -27,7 +27,7 @@ import android.widget.ImageView;
 import io.plaidapp.R;
 
 /**
- * Created by nickbutcher on 2/24/15.
+ * An extension to {@link ImageView} which has a foreground drawable.
  */
 public class ForegroundImageView extends ImageView {
 

@@ -21,8 +21,7 @@ package io.plaidapp.util;
  */
 public class MathUtil {
 
-    private MathUtil() {
-    }
+    private MathUtil() { }
 
     public static float constrain(float min, float max, float v) {
         return Math.max(min, Math.min(max, v));

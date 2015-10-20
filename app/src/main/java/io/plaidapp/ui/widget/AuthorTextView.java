@@ -23,7 +23,8 @@ import android.widget.TextView;
 import io.plaidapp.R;
 
 /**
- * Created by nickbutcher on 9/4/14.
+ * An extension to TextView which supports a custom state of {@link #STATE_ORIGINAL_POSTER} for
+ * denoting that a comment author was the original poster.
  */
 public class AuthorTextView extends TextView {
 

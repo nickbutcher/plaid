@@ -29,6 +29,8 @@ import java.util.Map;
  */
 public class FontUtil {
 
+    private FontUtil() { }
+
     private static final Map<String, Typeface> sTypefaceCache = new HashMap<String, Typeface>();
 
     public static Typeface get(Context context, String font) {

@@ -23,7 +23,7 @@ import android.widget.Checkable;
 import android.widget.ImageButton;
 
 /**
- * Created by nickbutcher on 11/25/14.
+ * An extension to {@link ImageButton} which implements the {@link Checkable} interface.
  */
 public class CheckableImageButton extends ImageButton implements Checkable {
 

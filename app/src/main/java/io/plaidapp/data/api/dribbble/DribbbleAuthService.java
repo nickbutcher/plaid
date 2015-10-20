@@ -23,7 +23,7 @@ import retrofit.http.POST;
 import retrofit.http.Query;
 
 /**
- * Created by nickbutcher on 2/10/15.
+ * Dribbble Auth API (a different endpoint)
  */
 public interface DribbbleAuthService {
 

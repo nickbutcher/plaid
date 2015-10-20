@@ -27,7 +27,7 @@ import io.plaidapp.data.PlaidItem;
 import io.plaidapp.util.ParcelUtils;
 
 /**
- * Created by nickbutcher on 3/29/15.
+ * Models a post on Product Hunt.
  */
 public class Post extends PlaidItem implements Parcelable {
 

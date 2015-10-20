@@ -31,7 +31,9 @@ import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ColorUtils;
 
 /**
- * Created by nickbutcher on 11/25/14.
+ * An image view which supports parallax scrolling and applying a scrim onto it's content. Get it.
+ *
+ * It also has a custom pinned state, for use via state lists.
  */
 public class ParallaxScrimageView extends FourThreeImageView {
 

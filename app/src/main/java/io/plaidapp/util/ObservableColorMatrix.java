@@ -20,8 +20,8 @@ import android.graphics.ColorMatrix;
 import android.util.Property;
 
 /**
- * Created by nickbutcher on 8/18/14.
- * <p/>
+ * An extension to {@link ColorMatrix} which caches the saturation value for animation purposes.
+ *
  * TODO: Look into this: https://github
  * .com/square/picasso/commit/a181e0fbead6889347b39ac49363dbedde308120
  * https://blog.neteril.org/blog/2014/11/23/android-material-image-loading/

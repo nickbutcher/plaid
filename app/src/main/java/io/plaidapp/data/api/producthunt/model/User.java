@@ -24,7 +24,7 @@ import java.util.Map;
 import io.plaidapp.util.ParcelUtils;
 
 /**
- * Created by nickbutcher on 3/29/15.
+ * Models a user on Product Hunt.
  */
 public class User implements Parcelable {
 

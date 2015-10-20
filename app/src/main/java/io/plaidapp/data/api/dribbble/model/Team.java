@@ -24,7 +24,7 @@ import java.util.Map;
 import io.plaidapp.util.ParcelUtils;
 
 /**
- * Created by nickbutcher on 2/7/15.
+ * Models a Dribbble team.
  */
 public class Team implements Parcelable {
 

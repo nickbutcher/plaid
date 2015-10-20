@@ -27,9 +27,11 @@ import android.view.animation.Interpolator;
 import java.util.ArrayList;
 
 /**
- * Created by nickbutcher on 7/30/14.
+ * Utility methods for working with animations.
  */
 public class AnimUtils {
+
+    private AnimUtils() { }
 
     private static Interpolator gusterpolator;
 

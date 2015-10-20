@@ -23,9 +23,11 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 
 /**
- * Created by nickbutcher on 12/16/14.
+ * Utility methods for working with images.
  */
 public class ImageUtils {
+
+    private ImageUtils() { }
 
     public static Bitmap vectorToBitmap(Context context, Drawable vector) {
         final Bitmap bitmap = Bitmap.createBitmap(vector.getIntrinsicWidth(),

@@ -27,7 +27,8 @@ import android.util.Property;
 import io.plaidapp.util.AnimUtils;
 
 /**
- * Created by nickbutcher on 2/13/15.
+ * A drawable that can morph size, shape (via it's corner radius) and color.  Specifically this is
+ * useful for animating between a FAB and a dialog.
  */
 public class MorphDrawable extends Drawable {
 

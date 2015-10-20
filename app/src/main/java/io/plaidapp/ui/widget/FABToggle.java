@@ -23,7 +23,7 @@ import android.widget.Checkable;
 import android.widget.ImageButton;
 
 /**
- * Created by nickbutcher on 11/25/14.
+ * A {@link Checkable} {@link ImageButton} which has a minimum offset i.e. translation Y.
  */
 public class FABToggle extends ImageButton implements Checkable {
 

@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by nickbutcher on 3/29/15.
+ * Models a comment on a designer news story.
  */
 public class Comment implements Parcelable {
 

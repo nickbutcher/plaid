@@ -24,7 +24,8 @@ import android.view.View;
 import io.plaidapp.R;
 
 /**
- * Created by nickbutcher on 12/10/14.
+ * A view which supports a minimum vertical offset (i.e. translation Y) and has a custom pinned
+ * state.
  */
 public class PinnedOffsetView extends View {
 

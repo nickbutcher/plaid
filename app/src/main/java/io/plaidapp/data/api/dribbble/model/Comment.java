@@ -25,7 +25,7 @@ import java.util.Date;
 import io.plaidapp.util.HtmlUtils;
 
 /**
- * Created by nickbutcher on 2/7/15.
+ * Models a commend on a Dribbble shot.
  */
 public class Comment {
 

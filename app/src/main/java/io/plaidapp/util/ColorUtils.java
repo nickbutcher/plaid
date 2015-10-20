@@ -30,9 +30,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Created by nickbutcher on 9/17/14.
+ * Utility methods for working with colors.
  */
 public class ColorUtils {
+
+    private ColorUtils() { }
 
     public static final int IS_LIGHT = 0;
     public static final int IS_DARK = 1;

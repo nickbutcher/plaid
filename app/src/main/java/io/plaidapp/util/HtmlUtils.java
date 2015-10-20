@@ -26,9 +26,11 @@ import android.widget.TextView;
 import io.plaidapp.ui.span.TouchableUrlSpan;
 
 /**
- * Created by nickbutcher on 2/7/15.
+ * Utility methods for working with HTML.
  */
 public class HtmlUtils {
+
+    private HtmlUtils() { }
 
     /**
      * Work around some 'features' of TextView and URLSpans. i.e. vanilla URLSpans do not react to

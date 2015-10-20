@@ -22,9 +22,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by nickbutcher on 2/7/15.
+ * Utility methods for working with Parcels.
  */
 public class ParcelUtils {
+
+    private ParcelUtils() { }
 
     public static void writeStringMap(Map<String, String> map, Parcel parcel) {
         if (map != null && map.size() > 0) {

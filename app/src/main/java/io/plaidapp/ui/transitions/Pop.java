@@ -29,7 +29,7 @@ import android.view.ViewGroup;
 import io.plaidapp.util.AnimUtils;
 
 /**
- * Created by nickbutcher on 12/5/14.
+ * A transition that animates the alpha & scale X & Y of a view simultaneously.
  */
 public class Pop extends Transition {
 

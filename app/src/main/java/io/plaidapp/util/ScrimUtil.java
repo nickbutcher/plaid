@@ -31,8 +31,7 @@ import android.view.Gravity;
  */
 public class ScrimUtil {
 
-    private ScrimUtil() {
-    }
+    private ScrimUtil() { }
 
     /**
      * Creates an approximated cubic gradient using a multi-stop linear gradient. See

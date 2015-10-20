@@ -19,7 +19,7 @@ package io.plaidapp.data.api.producthunt.model;
 import java.util.List;
 
 /**
- * Created by nickbutcher on 3/29/15.
+ * Models a response from the Product Hunt API.
  */
 public class PostsResponse {
 

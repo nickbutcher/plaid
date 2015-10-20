@@ -36,6 +36,8 @@ import android.widget.ImageView;
  */
 public class ViewUtils {
 
+    private ViewUtils() { }
+
     public static int getActionBarSize(Activity activity) {
         TypedValue value = new TypedValue();
         activity.getTheme().resolveAttribute(android.R.attr.actionBarSize, value, true);
