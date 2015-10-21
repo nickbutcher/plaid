@@ -91,16 +91,21 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
     public interface ElasticDragDismissListener {
 
         /**
-         * Called for each drag event
-         * @param dragFraction The fraction of the drag relative to the dismiss distance (>= 1 means
-         *                     the dismiss distance has been reached)
-         * @param elasticDrag  The elastically scaled drag distance
-         * @param rawDrag      The raw distance the user has dragged
+         * Called for each drag event.
+         *
+         * @param elasticOffset       Indicating the drag offset with elasticity applied i.e. may
+         *                            exceed 1.
+         * @param elasticOffsetPixels The elastically scaled drag distance in pixels.
+         * @param rawOffset           Value from [0, 1] indicating the raw drag offset i.e.
+         *                            without elasticity applied. A value of 1 indicates that the
+         *                            dismiss distance has been reached.
+         * @param rawOffsetPixels     The raw distance the user has dragged
          */
-        void onDrag(float dragFraction, float elasticDrag, float rawDrag);
+        void onDrag(float elasticOffset, float elasticOffsetPixels,
+                    float rawOffset, float rawOffsetPixels);
 
         /**
-         * Called when dragging is released and has exceeded the threshold distance
+         * Called when dragging is released and has exceeded the threshold dismiss distance.
          */
         void onDragDismissed();
 
@@ -188,6 +193,7 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
 
         // calculate the desired translation given the drag fraction
         float dragTo = dragFraction * dragDismissDistance * dragElacticity;
+
         if (draggingUp) {
             // as we use the absolute magnitude when calculating the drag fraction, need to
             // re-apply the drag direction
@@ -217,7 +223,8 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
     private void dispatchDragCallback(float dragFraction, float elasticDrag, float rawDrag) {
         if (listeners != null && listeners.size() > 0) {
             for (ElasticDragDismissListener listener : listeners) {
-                listener.onDrag(dragFraction, elasticDrag, rawDrag);
+                listener.onDrag(dragFraction, elasticDrag,
+                        Math.min(1f, Math.abs(totalDrag) / dragDismissDistance), rawDrag);
             }
         }
     }

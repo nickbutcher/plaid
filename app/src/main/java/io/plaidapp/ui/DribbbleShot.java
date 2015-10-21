@@ -181,11 +181,12 @@ public class DribbbleShot extends Activity {
         fab.setOnClickListener(fabClick);
         draggableFrame.addListener(new ElasticDragDismissFrameLayout.ElasticDragDismissListener() {
             @Override
-            public void onDrag(float dragFraction, float elasticDrag, float rawDrag) {
+            public void onDrag(float elasticOffset, float elasticOffsetPixels,
+                               float rawOffset, float rawOffsetPixels) {
                 // if dragging downward, fade the status bar in proportion
-                if (elasticDrag >= 0) {
+                if (elasticOffsetPixels >= 0) {
                     getWindow().setStatusBarColor(ColorUtils.modifyAlpha(getWindow()
-                            .getStatusBarColor(), 1f - Math.min(dragFraction, 1f)));
+                            .getStatusBarColor(), 1f - Math.min(elasticOffset, 1f)));
                 }
             }
 
