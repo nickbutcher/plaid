@@ -24,12 +24,12 @@ import android.text.method.MovementMethod;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
-import io.plaidapp.ui.span.TouchableUrlSpan;
+import in.uncod.android.bypass.style.TouchableUrlSpan;
 
 /**
  * A movement method that only highlights any touched
- * {@link io.plaidapp.ui.span.TouchableUrlSpan}s
- * <p/>
+ * {@link TouchableUrlSpan}s
+ *
  * Adapted from  http://stackoverflow.com/a/20905824
  */
 public class LinkTouchMovementMethod extends LinkMovementMethod {

@@ -1,0 +1,11 @@
+URL: https://github.com/Uncodin/bypass/tree/b0e33f9b9dce33a128ab6e9ab895ffbea518c878
+Version: 1.1
+License: Apache License v2.0
+License File: LICENSE.txt
+
+Description:
+Fork of https://github.com/Uncodin/bypass
+
+Local Modifications:
+Added TouchableUrlSpan, FancyQuoteSpan & ImageLoadingSpan + LoadImageCallback
+mechanism.

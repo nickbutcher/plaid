@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -18,12 +17,12 @@
 
 <selector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:plaid="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- make the 'raise' anims v quick to avoid any items passing 'in front of' the raising item
          while it runs, which causes a flash as they pass from in-front to behind. -->
 
-    <item android:state_pressed="true" plaid:state_pinned="true">
+    <item android:state_pressed="true" app:state_pinned="true">
         <objectAnimator
             android:duration="@integer/rapid_animation"
             android:propertyName="translationZ"
@@ -31,7 +30,7 @@
             android:valueType="floatType" />
     </item>
 
-    <item android:state_pressed="false" plaid:state_pinned="true">
+    <item android:state_pressed="false" app:state_pinned="true">
         <objectAnimator
             android:duration="@integer/rapid_animation"
             android:propertyName="translationZ"
@@ -39,7 +38,7 @@
             android:valueType="floatType" />
     </item>
 
-    <item android:state_pressed="true" plaid:state_pinned="false">
+    <item android:state_pressed="true" app:state_pinned="false">
         <objectAnimator
             android:duration="@integer/rapid_animation"
             android:propertyName="translationZ"
@@ -47,7 +46,7 @@
             android:valueType="floatType" />
     </item>
 
-    <item android:state_pressed="false" plaid:state_pinned="false">
+    <item android:state_pressed="false" app:state_pinned="false">
         <objectAnimator
             android:duration="@android:integer/config_shortAnimTime"
             android:propertyName="translationZ"

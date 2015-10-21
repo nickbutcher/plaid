@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -18,9 +17,9 @@
 
 <selector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:plaid="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item plaid:state_original_poster="true" android:color="@color/dribbble" />
+    <item app:state_original_poster="true" android:color="@color/dribbble" />
     <item android:color="@color/text_secondary_dark" />
 
 </selector>

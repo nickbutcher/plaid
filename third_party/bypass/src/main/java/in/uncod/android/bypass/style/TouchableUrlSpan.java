@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.span;
+package in.uncod.android.bypass.style;
 
 import android.content.res.ColorStateList;
 import android.text.TextPaint;
@@ -22,7 +22,7 @@ import android.text.style.URLSpan;
 
 /**
  * An extension to URLSpan which changes it's background & foreground color when clicked.
- * <p/>
+ *
  * Derived from http://stackoverflow.com/a/20905824
  */
 public class TouchableUrlSpan extends URLSpan {

@@ -23,7 +23,7 @@ import android.text.Spanned;
 import android.text.style.URLSpan;
 import android.widget.TextView;
 
-import io.plaidapp.ui.span.TouchableUrlSpan;
+import in.uncod.android.bypass.style.TouchableUrlSpan;
 
 /**
  * Utility methods for working with HTML.
@@ -53,7 +53,7 @@ public class HtmlUtils {
     }
 
     /**
-     * Parse the given input using {@link io.plaidapp.ui.span.TouchableUrlSpan}s
+     * Parse the given input using {@link TouchableUrlSpan}s
      * rather than vanilla {@link android.text.style.URLSpan}s so that they respond to touch.
      *
      * @param input

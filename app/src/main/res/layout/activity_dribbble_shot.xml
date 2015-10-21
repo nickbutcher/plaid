@@ -18,12 +18,12 @@
 <io.plaidapp.ui.widget.ElasticDragDismissFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:plaid="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/draggable_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    plaid:dragDismissDistance="@dimen/drag_dismiss_distance"
-    plaid:dragDismissScale="0.95"
+    app:dragDismissDistance="@dimen/drag_dismiss_distance"
+    app:dragDismissScale="0.95"
     tools:context="io.plaidapp.ui.DribbbleShot">
 
     <FrameLayout
@@ -43,10 +43,10 @@
             android:stateListAnimator="@animator/app_bar_pin"
             android:transitionName="@string/transition_shot"
             android:background="@color/light_grey"
-            plaid:scrimColor="@color/scrim"
-            plaid:scrimAlpha="0"
-            plaid:maxScrimAlpha="0.4"
-            plaid:parallaxFactor="-0.5"/>
+            app:scrimColor="@color/scrim"
+            app:scrimAlpha="0"
+            app:maxScrimAlpha="0.4"
+            app:parallaxFactor="-0.5"/>
 
         <!-- We're 'faking' a toolbar here as we just want a back button.
              This approach lets the borderless ripple extend beyond the back button's bounds,

@@ -19,12 +19,12 @@ import android.util.Patterns;
 import android.util.TypedValue;
 import android.widget.TextView;
 
-import io.plaidapp.ui.span.DesignerNewsQuoteSpan;
-import io.plaidapp.ui.span.ImageLoadingSpan;
-import io.plaidapp.ui.span.TouchableUrlSpan;
+import in.uncod.android.bypass.style.FancyQuoteSpan;
+import in.uncod.android.bypass.style.ImageLoadingSpan;
 
 import in.uncod.android.bypass.Element.Type;
 import in.uncod.android.bypass.style.HorizontalLineSpan;
+import in.uncod.android.bypass.style.TouchableUrlSpan;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -81,7 +81,8 @@ public class Bypass {
 
     // These have trailing newlines that we want to avoid spanning
     private static void setBlockSpan(SpannableStringBuilder builder, Object what) {
-        builder.setSpan(what, 0, builder.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int length = Math.max(0, builder.length() - 1);
+        builder.setSpan(what, 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     private static void setSpanWithPrependedNewline(SpannableStringBuilder builder, Object what) {
@@ -259,7 +260,7 @@ public class Bypass {
             case LINK:
             case AUTOLINK:
                 String link = element.getAttribute("link");
-                if (Patterns.EMAIL_ADDRESS.matcher(link).matches()) {
+                if (!TextUtils.isEmpty(link) && Patterns.EMAIL_ADDRESS.matcher(link).matches()) {
                     link = "mailto:" + link;
                 }
                 setSpan(builder, new TouchableUrlSpan(link, textView.getLinkTextColors(),
@@ -270,7 +271,7 @@ public class Bypass {
                 // the QuoteSpan will always be in the same spot.
                 setBlockSpan(builder, new LeadingMarginSpan.Standard(mBlockQuoteIndent));
                 //setBlockSpan(builder, new QuoteSpan(mOptions.mBlockQuoteLineColor));
-                setBlockSpan(builder, new DesignerNewsQuoteSpan(mBlockQuoteLineWidth, mBlockQuoteLineIndent, mOptions.mBlockQuoteLineColor));
+                setBlockSpan(builder, new FancyQuoteSpan(mBlockQuoteLineWidth, mBlockQuoteLineIndent, mOptions.mBlockQuoteLineColor));
                 setBlockSpan(builder, new ForegroundColorSpan(mOptions.mBlockQuoteTextColor));
                 setBlockSpan(builder, new LeadingMarginSpan.Standard(mBlockQuoteIndent));
                 setBlockSpan(builder, new StyleSpan(Typeface.ITALIC));
@@ -298,6 +299,11 @@ public class Bypass {
     }
 
     public interface LoadImageCallback {
+        /**
+         * A callback to load an image found in a markdown document.
+         * @param src The source (url) of the image.
+         * @param loadingSpan A placeholder span making where the image should be inserted.
+         */
         void loadImage(String src, ImageLoadingSpan loadingSpan);
     }
 

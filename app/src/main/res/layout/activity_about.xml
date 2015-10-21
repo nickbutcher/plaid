@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright 2015 Google Inc.
 
@@ -16,7 +17,7 @@
 
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:plaid="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -34,7 +35,7 @@
             android:foreground="?android:colorPrimary"
             android:layerType="software"
             android:text="@string/app_name"
-            plaid:font="roboto-mono-regular"/>
+            app:font="roboto-mono-regular"/>
 
         <io.plaidapp.ui.widget.BaselineGridTextView
             android:layout_width="match_parent"
@@ -42,7 +43,7 @@
             android:background="@color/background_light"
             android:padding="@dimen/padding_normal"
             android:text="@string/hipster_ipsum"
-            plaid:topPaddingHint="24dp"
+            app:topPaddingHint="24dp"
             style="@style/Widget.Plaid.About" />
 
     </LinearLayout>

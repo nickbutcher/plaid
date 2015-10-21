@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.span;
+package in.uncod.android.bypass.style;
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.ColorInt;
@@ -24,29 +23,17 @@ import android.text.Layout;
 import android.text.style.LeadingMarginSpan;
 
 /**
- * A quote span with a nicer presentation to match the display of a Designer News story.
+ * A quote span with a nicer presentation
  */
-public class DesignerNewsQuoteSpan implements LeadingMarginSpan {
-
-    private static final int LINE_WIDTH = 2;            // dp
-    private static final int GAP_WIDTH = 16;            // dp
-    private static final int LINE_COLOR = 0xffECEEF1;
+public class FancyQuoteSpan implements LeadingMarginSpan {
 
     private final int lineColor;
     private final int lineWidth;
     private final int gapWidth;
 
-    public DesignerNewsQuoteSpan(Context context) {
-        super();
-        final int scaledDensity = (int) context.getResources().getDisplayMetrics().scaledDensity;
-        lineWidth = scaledDensity * LINE_WIDTH;
-        gapWidth = scaledDensity * GAP_WIDTH;
-        lineColor = LINE_COLOR;
-    }
-
-    public DesignerNewsQuoteSpan(int quoteLineWidth,
-                                 int quoteLineIndent,
-                                 @ColorInt int quoteLineColor) {
+    public FancyQuoteSpan(int quoteLineWidth,
+                          int quoteLineIndent,
+                          @ColorInt int quoteLineColor) {
         super();
         lineWidth = quoteLineWidth;
         gapWidth = quoteLineIndent;

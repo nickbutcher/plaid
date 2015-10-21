@@ -45,7 +45,6 @@ android {
     }
     buildTypes {
         release {
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -55,21 +54,15 @@ android {
 }
 
 repositories {
-    maven {
-        url '../prebuilts'
-    }
     jcenter()
 }
 
 ext {
     archivesBaseName = "plaid-${android.defaultConfig.versionName}"
-    // using + here as we're picking up prebuilts for Goog libs
-    // STOPSHIP use released libs!
-    supportLibVersion = '23.1.+'
+    supportLibVersion = '23.1.0'
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile "com.android.support:support-v4:${supportLibVersion}"
     compile "com.android.support:palette-v7:${supportLibVersion}"
     compile "com.android.support:recyclerview-v7:${supportLibVersion}"
@@ -82,4 +75,5 @@ dependencies {
     compile 'com.github.bumptech.glide:okhttp-integration:1.3.0'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'org.jsoup:jsoup:1.8.3'
+    compile project(':bypass')
 }

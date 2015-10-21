@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -18,7 +17,7 @@
 
 <io.plaidapp.ui.widget.BadgedFourThreeImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:plaid="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/shot"
     android:layout_width="match_parent"
     android:layout_height="0dp"
@@ -26,5 +25,5 @@
     android:background="@color/background_dark"
     android:foreground="@drawable/mid_grey_ripple"
     android:theme="@style/PlaidDarkOverlay"
-    plaid:badgeGravity="end|bottom"
-    plaid:badgePadding="@dimen/padding_normal" />
+    app:badgeGravity="end|bottom"
+    app:badgePadding="@dimen/padding_normal" />
