@@ -147,7 +147,7 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
                     .start();
             totalDrag = 0;
             draggingDown = draggingUp = false;
-            dispatchDragCallback(0f, 0f, 0f);
+            dispatchDragCallback(0f, 0f, 0f, 0f);
         }
     }
 
@@ -217,14 +217,16 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
             setScaleX(1f);
             setScaleY(1f);
         }
-        dispatchDragCallback(dragFraction, dragTo, totalDrag);
+        dispatchDragCallback(dragFraction, dragTo,
+                Math.min(1f, Math.abs(totalDrag) / dragDismissDistance), totalDrag);
     }
 
-    private void dispatchDragCallback(float dragFraction, float elasticDrag, float rawDrag) {
+    private void dispatchDragCallback(float elasticOffset, float elasticOffsetPixels,
+                                      float rawOffset, float rawOffsetPixels) {
         if (listeners != null && listeners.size() > 0) {
             for (ElasticDragDismissListener listener : listeners) {
-                listener.onDrag(dragFraction, elasticDrag,
-                        Math.min(1f, Math.abs(totalDrag) / dragDismissDistance), rawDrag);
+                listener.onDrag(elasticOffset, elasticOffsetPixels,
+                        rawOffset, rawOffsetPixels);
             }
         }
     }
