@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.plaidapp.R;
+import io.plaidapp.util.ColorUtils;
 
 /**
  * A {@link FrameLayout} which responds to nested scrolls to create drag-dismissable layouts.
@@ -237,6 +239,42 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
                 listener.onDragDismissed();
             }
         }
+    }
+
+    /**
+     * An {@link ElasticDragDismissListener} which fades system chrome (i.e. status bar and
+     * navigation bar) when elastic drags are performed. Consuming classes must provide the
+     * implementation for {@link ElasticDragDismissListener#onDragDismissed()}.
+     */
+    public static abstract class SystemChromeFader implements ElasticDragDismissListener {
+
+        private Window window;
+
+        public SystemChromeFader(Window window) {
+            this.window = window;
+        }
+
+        @Override
+        public void onDrag(float elasticOffset, float elasticOffsetPixels,
+                           float rawOffset, float rawOffsetPixels) {
+            if (elasticOffsetPixels < 0) {
+                // dragging upward, fade the navigation bar in proportion
+                // TODO don't fade nav bar on landscape phones?
+                window.setNavigationBarColor(ColorUtils.modifyAlpha(window.getNavigationBarColor(),
+                        1f - Math.min(elasticOffset, 1f)));
+            } else if (elasticOffsetPixels == 0) {
+                // reset
+                window.setStatusBarColor(ColorUtils.modifyAlpha(window.getStatusBarColor(), 1f));
+                window.setNavigationBarColor(
+                        ColorUtils.modifyAlpha(window.getNavigationBarColor(), 1f));
+            } else {
+                // dragging downward, fade the status bar in proportion
+                window.setStatusBarColor(ColorUtils.modifyAlpha(window
+                        .getStatusBarColor(), 1f - Math.min(elasticOffset, 1f)));
+            }
+        }
+
+        public abstract void onDragDismissed();
     }
 
 }

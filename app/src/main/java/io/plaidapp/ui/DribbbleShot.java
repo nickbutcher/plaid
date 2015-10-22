@@ -138,6 +138,7 @@ public class DribbbleShot extends Activity {
     private DribbbleService dribbbleApi;
     private boolean performingLike;
     private CircleTransform circleTransform;
+    private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,22 +180,12 @@ public class DribbbleShot extends Activity {
             }
         });
         fab.setOnClickListener(fabClick);
-        draggableFrame.addListener(new ElasticDragDismissFrameLayout.ElasticDragDismissListener() {
-            @Override
-            public void onDrag(float elasticOffset, float elasticOffsetPixels,
-                               float rawOffset, float rawOffsetPixels) {
-                // if dragging downward, fade the status bar in proportion
-                if (elasticOffsetPixels >= 0) {
-                    getWindow().setStatusBarColor(ColorUtils.modifyAlpha(getWindow()
-                            .getStatusBarColor(), 1f - Math.min(elasticOffset, 1f)));
-                }
-            }
-
+        chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(getWindow()) {
             @Override
             public void onDragDismissed() {
                 expandImageAndFinish();
             }
-        });
+        };
         circleTransform = new CircleTransform(this);
 
         // load the main image
@@ -292,6 +283,13 @@ public class DribbbleShot extends Activity {
         if (!performingLike) {
             checkLiked();
         }
+        draggableFrame.addListener(chromeFader);
+    }
+
+    @Override
+    protected void onPause() {
+        draggableFrame.removeListener(chromeFader);
+        super.onPause();
     }
 
     @Override
