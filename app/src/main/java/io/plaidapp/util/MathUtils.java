@@ -19,9 +19,9 @@ package io.plaidapp.util;
 /**
  * Borrowed from github.com/romannurik/muzei
  */
-public class MathUtil {
+public class MathUtils {
 
-    private MathUtil() { }
+    private MathUtils() { }
 
     public static float constrain(float min, float max, float v) {
         return Math.max(min, Math.min(max, v));

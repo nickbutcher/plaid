@@ -25,6 +25,7 @@
     android:layout_height="match_parent"
     android:background="@color/background_light"
     android:transitionName="@string/transition_story_background"
+    android:transitionGroup="false"
     app:dragDismissDistance="@dimen/drag_dismiss_distance"
     app:dragDismissScale="0.95"
     tools:context="io.plaidapp.ui.DesignerNewsStory">
@@ -45,18 +46,17 @@
     <io.plaidapp.ui.widget.CollapsingTitleLayout
         android:id="@+id/backdrop_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/extended_height_toolbar"
-        android:minHeight="?android:actionBarSize"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/extended_height_toolbar"
         android:textAppearance="@style/TextAppearance.ToolbarTitle"
-        app:expandedTextSize="@dimen/display_3_text_size"
-        app:expandedMargin="@dimen/padding_normal"
         android:elevation="@dimen/z_app_bar"
-        android:theme="@style/PlaidDarkOverlay">
+        android:theme="@style/PlaidDarkOverlay"
+        style="@style/Widget.Plaid.CollapsingTitle">
 
         <io.plaidapp.ui.widget.PinnedOffsetView
             android:id="@+id/story_title_background"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/extended_height_toolbar"
+            android:layout_height="match_parent"
             android:minHeight="?android:actionBarSize"
             android:background="@drawable/designer_news_app_bar_background"
             android:stateListAnimator="@animator/app_bar_pin"
@@ -75,6 +75,6 @@
 
     </io.plaidapp.ui.widget.CollapsingTitleLayout>
 
-    <include layout="@layout/designer_news_story_fab"/>
+    <include layout="@layout/designer_news_story_fab" />
 
 </io.plaidapp.ui.widget.ElasticDragDismissFrameLayout>

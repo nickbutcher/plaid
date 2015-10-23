@@ -18,13 +18,16 @@
 <resources>
 
     <declare-styleable name="CollapsingTitleLayout">
-        <attr name="expandedMargin" format="reference|dimension" />
-        <attr name="expandedMarginStart" format="reference|dimension" />
-        <attr name="expandedMarginBottom" format="reference|dimension" />
-        <attr name="expandedMarginEnd" format="reference|dimension" />
-        <attr name="expandedTextSize" format="reference|dimension" />
+        <attr name="titleInset" format="reference|dimension" />
+        <attr name="titleInsetStart" format="reference|dimension" />
+        <attr name="titleInsetTop" format="reference|dimension" />
+        <attr name="titleInsetEnd" format="reference|dimension" />
+        <attr name="titleInsetBottom" format="reference|dimension" />
+        <attr name="maxExpandedTextSize" format="reference|dimension" />
         <attr name="collapsedTextSize" format="reference|dimension" />
+        <attr name="lineHeightHint" />
         <attr name="android:textAppearance" />
+        <attr name="android:maxLines" />
     </declare-styleable>
 
     <declare-styleable name="CollapsingTextAppearance">

@@ -52,7 +52,7 @@ public class ScrimUtil {
 
         for (int i = 0; i < numStops; i++) {
             float x = i * 1f / (numStops - 1);
-            float opacity = MathUtil.constrain(0, 1, (float) Math.pow(x, 3));
+            float opacity = MathUtils.constrain(0, 1, (float) Math.pow(x, 3));
             stopColors[i] = ColorUtils.modifyAlpha(baseColor, (int) (alpha * opacity));
         }
 

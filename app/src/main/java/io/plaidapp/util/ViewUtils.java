@@ -16,7 +16,7 @@
 
 package io.plaidapp.util;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -26,6 +26,8 @@ import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
+import android.text.TextPaint;
+import android.util.DisplayMetrics;
 import android.util.Property;
 import android.util.TypedValue;
 import android.view.View;
@@ -38,21 +40,26 @@ public class ViewUtils {
 
     private ViewUtils() { }
 
-    public static int getActionBarSize(Activity activity) {
-        TypedValue value = new TypedValue();
-        activity.getTheme().resolveAttribute(android.R.attr.actionBarSize, value, true);
-        return TypedValue.complexToDimensionPixelSize(value.data, activity.getResources()
-                .getDisplayMetrics());
+    private static int actionBarSize = -1;
+
+    public static int getActionBarSize(Context context) {
+        if (actionBarSize < 0) {
+            TypedValue value = new TypedValue();
+            context.getTheme().resolveAttribute(android.R.attr.actionBarSize, value, true);
+            actionBarSize = TypedValue.complexToDimensionPixelSize(value.data, context
+                    .getResources().getDisplayMetrics());
+        }
+        return actionBarSize;
     }
 
-    public static RippleDrawable createRipple(@ColorInt int color, @FloatRange(from = 0f, to =
-            1f) float alpha) {
+    public static RippleDrawable createRipple(@ColorInt int color,
+                                              @FloatRange(from = 0f, to = 1f) float alpha) {
         color = ColorUtils.modifyAlpha(color, alpha);
         return new RippleDrawable(ColorStateList.valueOf(color), null, null);
     }
 
-    public static RippleDrawable createMaskedRipple(@ColorInt int color, @FloatRange(from = 0f,
-            to = 1f) float alpha) {
+    public static RippleDrawable createMaskedRipple(@ColorInt int color,
+                                                    @FloatRange(from = 0f, to = 1f) float alpha) {
         color = ColorUtils.modifyAlpha(color, alpha);
         return new RippleDrawable(ColorStateList.valueOf(color), null, new ColorDrawable
                 (0xffffffff));
@@ -74,8 +81,36 @@ public class ViewUtils {
         }
     }
 
-    public static final Property<View, Integer> BACKGROUND_COLOR = new AnimUtils
-            .IntProperty<View>("backgroundColor") {
+    /**
+     * Recursive binary search to find the best size for the text.
+     *
+     * Adapted from https://github.com/grantland/android-autofittextview
+     */
+    public static float getSingleLineTextSize(String text,
+                                              TextPaint paint,
+                                              float targetWidth,
+                                              float low,
+                                              float high,
+                                              float precision,
+                                              DisplayMetrics metrics) {
+        final float mid = (low + high) / 2.0f;
+
+        paint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, mid, metrics));
+        final float maxLineWidth = paint.measureText(text);
+
+        if ((high - low) < precision) {
+            return low;
+        } else if (maxLineWidth > targetWidth) {
+            return getSingleLineTextSize(text, paint, targetWidth, low, mid, precision, metrics);
+        } else if (maxLineWidth < targetWidth) {
+            return getSingleLineTextSize(text, paint, targetWidth, mid, high, precision, metrics);
+        } else {
+            return mid;
+        }
+    }
+
+    public static final Property<View, Integer> BACKGROUND_COLOR
+            = new AnimUtils.IntProperty<View>("backgroundColor") {
 
         @Override
         public void setValue(View view, int value) {
@@ -92,8 +127,8 @@ public class ViewUtils {
         }
     };
 
-    public static final Property<ImageView, Integer> IMAGE_ALPHA = new AnimUtils
-            .IntProperty<ImageView>("imageAlpha") {
+    public static final Property<ImageView, Integer> IMAGE_ALPHA
+            = new AnimUtils.IntProperty<ImageView>("imageAlpha") {
 
         @Override
         public void setValue(ImageView imageView, int value) {

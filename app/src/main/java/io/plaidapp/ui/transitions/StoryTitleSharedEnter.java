@@ -23,8 +23,6 @@ import android.transition.TransitionValues;
 import android.util.AttributeSet;
 import android.view.View;
 
-import io.plaidapp.R;
-
 /**
  * Shared element transitions do not seem to like transitioning from a single view to two separate
  * views so we need to alter the ChangeBounds transition to compensate
@@ -41,12 +39,9 @@ public class StoryTitleSharedEnter extends ChangeBounds {
     @Override
     public void captureEndValues(TransitionValues transitionValues) {
         super.captureEndValues(transitionValues);
-        int width = ((View) transitionValues.values.get(PROPNAME_PARENT)).getWidth();
         Rect bounds = (Rect) transitionValues.values.get(PROPNAME_BOUNDS);
-        bounds.right = width;
-        bounds.bottom = transitionValues.view.getResources().getDimensionPixelSize(R.dimen
-                .extended_height_toolbar);
+        bounds.right = ((View) transitionValues.values.get(PROPNAME_PARENT)).getWidth();
+        bounds.bottom = ((View) transitionValues.values.get(PROPNAME_PARENT)).getHeight();
         transitionValues.values.put(PROPNAME_BOUNDS, bounds);
     }
-
 }
