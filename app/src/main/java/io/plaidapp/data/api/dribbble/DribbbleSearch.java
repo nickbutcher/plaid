@@ -120,7 +120,7 @@ public class DribbbleSearch {
         }
         return new User.Builder()
                 .setId(id)
-                .setName(userBlock.attr("title"))
+                .setName(userBlock.text())
                 .setUsername(userBlock.attr("href").substring(1))
                 .setHtmlUrl(HOST + userBlock.attr("href"))
                 .setAvatarUrl(avatarUrl)
