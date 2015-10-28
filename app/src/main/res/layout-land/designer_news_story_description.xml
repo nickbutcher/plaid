@@ -30,7 +30,8 @@
         android:background="@drawable/designer_news_app_bar_background"
         android:navigationIcon="@drawable/ic_arrow_back"
         android:contentInsetStart="@dimen/keyline_1"
-        android:contentInsetEnd="@dimen/padding_normal">
+        android:contentInsetEnd="@dimen/padding_normal"
+        android:transitionName="@string/transition_story_title_background">
 
         <io.plaidapp.ui.widget.FontTextView
             android:id="@+id/story_title"

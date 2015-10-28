@@ -49,8 +49,6 @@
         <item name="android:navigationBarColor">@color/designer_news_super_dark</item>
         <item name="android:windowSharedElementEnterTransition">@transition/designer_news_story_shared_enter</item>
         <item name="android:windowSharedElementReturnTransition">@transition/designer_news_story_shared_return</item>
-
-        <!-- a translucent window background makes the shared element transition look better -->
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@color/scrim</item>
     </style>
@@ -166,7 +164,6 @@
 
     <style name="TextAppearance.ToolbarTitle" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
         <item name="android:textColor">@color/text_primary_light</item>
-        <!--<item name="font">montserrat-regular</item>-->
         <item name="font">roboto-mono-regular</item>
     </style>
 
@@ -177,7 +174,6 @@
     </style>
 
     <style name="TextAppearance.DribbbleShotTitle" parent="@android:style/TextAppearance.Material.Headline">
-        <!--<item name="font">montserrat-bold</item>-->
         <item name="font">roboto-mono-regular</item>
         <item name="android:textColor">@color/text_primary_dark</item>
     </style>
@@ -213,8 +209,18 @@
 
     <style name="Widget.Plaid.DribbbleShotDescription">
         <item name="android:textAppearance">@style/TextAppearance.DribbbleShotDescription</item>
-        <!--<item name="android:lineSpacingMultiplier">@dimen/subhead_line_spacing</item>-->
         <item name="lineHeightHint">24sp</item>
+    </style>
+
+    <style name="Widget.Plaid.CollapsingTitle">
+        <item name="android:textAppearance">@style/TextAppearance.ToolbarTitle</item>
+        <item name="lineHeightHint">28sp</item>
+        <item name="maxExpandedTextSize">@dimen/display_4_text_size</item>
+        <item name="titleInsetStart">@dimen/keyline_1</item>
+        <item name="titleInsetTop">@dimen/padding_normal</item>
+        <item name="titleInsetEnd">@dimen/padding_normal</item>
+        <item name="titleInsetBottom">@dimen/padding_normal</item>
+        <item name="android:maxLines">5</item>
     </style>
 
     <style name="TextAppearance.DesignerNewsDescription" parent="@android:style/TextAppearance.Material.Subhead">
@@ -224,13 +230,11 @@
 
     <style name="Widget.Plaid.DesignerNewsDescription">
         <item name="android:textAppearance">@style/TextAppearance.DesignerNewsDescription</item>
-        <!--<item name="android:lineSpacingMultiplier">@dimen/subhead_line_spacing</item>-->
         <item name="lineHeightHint">20sp</item>
     </style>
 
     <!-- todo revert to material styles? -->
     <style name="TextAppearance.Comment" parent="@android:style/TextAppearance.Material.Body1">
-        <!--<item name="android:textColor">@color/secondary_dark</item>-->
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/text_secondary_dark</item>
         <!--<item name="android:letterSpacing">0.01</item>-->
@@ -238,7 +242,6 @@
 
     <style name="Widget.Plaid.Comment">
         <item name="android:textAppearance">@style/TextAppearance.Comment</item>
-        <!--<item name="android:lineSpacingMultiplier">@dimen/body_1_spacing</item>-->
         <item name="lineHeightHint">24sp</item>
     </style>
 

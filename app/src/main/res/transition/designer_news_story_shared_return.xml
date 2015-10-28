@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -27,10 +26,11 @@
         </targets>
     </changeBounds>
 
-    <autoTransition>
+    <changeBounds>
         <targets>
             <target android:targetId="@id/story_title_background" />
         </targets>
-    </autoTransition>
+        <arcMotion />
+    </changeBounds>
 
 </transitionSet>

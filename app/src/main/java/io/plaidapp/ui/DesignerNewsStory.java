@@ -22,6 +22,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.app.SharedElementCallback;
 import android.app.assist.AssistContent;
 import android.content.Context;
 import android.content.Intent;
@@ -130,12 +131,13 @@ public class DesignerNewsStory extends Activity {
 
         // setup toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.story_toolbar);
-        if (toolbar != null) { // portrait > collapsing toolbar
+        if (toolbar != null) { // portrait: collapsing toolbar
             collapsingToolbar = (CollapsingTitleLayout) findViewById(R.id.backdrop_toolbar);
             collapsingToolbar.setTitle(story.title);
             toolbarBackground = (PinnedOffsetView) findViewById(R.id.story_title_background);
             commentsList.addOnScrollListener(headerScrollListener);
-        } else { // landscape > scroll toolbar with content
+            collapsingToolbar.addOnLayoutChangeListener(titlebarLayout);
+        } else { // landscape: scroll toolbar with content
             toolbar = (Toolbar) storyDescription.findViewById(R.id.story_toolbar);
             FontTextView title = (FontTextView) toolbar.findViewById(R.id.story_title);
             title.setText(story.title);
@@ -161,6 +163,7 @@ public class DesignerNewsStory extends Activity {
         }
         customTab = new CustomTabActivityHelper();
         customTab.setConnectionCallback(customTabConnect);
+        setEnterSharedElementCallback(sharedEnterCallback);
     }
 
     @Override
@@ -173,7 +176,6 @@ public class DesignerNewsStory extends Activity {
     protected void onResume() {
         super.onResume();
         // clean up after any fab expansion
-        // todo, circular reval (hide) this?
         fab.setAlpha(1f);
         fabExpand.setVisibility(View.INVISIBLE);
         draggableFrame.addListener(chromeFader);
@@ -241,6 +243,23 @@ public class DesignerNewsStory extends Activity {
         }
     };
 
+    // title can expand up to a max number of lines.  If it does then adjust the list padding
+    // & reset scroll trackers
+    private View.OnLayoutChangeListener titlebarLayout = new View.OnLayoutChangeListener() {
+        @Override
+        public void onLayoutChange(View v, int left, int top, int right, int bottom, int
+                oldLeft, int oldTop, int oldRight, int oldBottom) {
+            commentsList.setPaddingRelative(commentsList.getPaddingStart(),
+                    collapsingToolbar.getHeight(),
+                    commentsList.getPaddingEnd(),
+                    commentsList.getPaddingBottom());
+            commentsList.scrollToPosition(0);
+            gridScrollY = 0;
+            collapsingToolbar.setScrollPixelOffset(0);
+            toolbarBackground.setOffset(0);
+        }
+    };
+
     private View.OnClickListener fabClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -254,6 +273,31 @@ public class DesignerNewsStory extends Activity {
                                     R.anim.fade_out_rapidly)
                             .build(),
                     Uri.parse(story.url));
+        }
+    };
+
+    private SharedElementCallback sharedEnterCallback = new SharedElementCallback() {
+        @Override
+        public void onSharedElementEnd(List<String> sharedElementNames,
+                                       List<View> sharedElements,
+                                       List<View> sharedElementSnapshots) {
+            // force a remeasure to account for shared element shenanigans
+            if (collapsingToolbar != null) {
+                collapsingToolbar.measure(
+                        View.MeasureSpec.makeMeasureSpec(draggableFrame.getWidth(),
+                                View.MeasureSpec.AT_MOST),
+                        View.MeasureSpec.makeMeasureSpec(draggableFrame.getWidth(),
+                                View.MeasureSpec.AT_MOST));
+                collapsingToolbar.requestLayout();
+            }
+            if (toolbarBackground != null) {
+                toolbarBackground.measure(
+                        View.MeasureSpec.makeMeasureSpec(draggableFrame.getWidth(),
+                                View.MeasureSpec.AT_MOST),
+                        View.MeasureSpec.makeMeasureSpec(draggableFrame.getWidth(),
+                                View.MeasureSpec.AT_MOST));
+                toolbarBackground.requestLayout();
+            }
         }
     };
 

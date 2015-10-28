@@ -26,7 +26,7 @@
     <dimen name="spacing_huge">64dp</dimen>
     <dimen name="fab_size">56dp</dimen>
     <dimen name="keyline_1">72dp</dimen>
-    <dimen name="display_3_text_size">56sp</dimen>
+    <dimen name="display_4_text_size">112sp</dimen>
     <dimen name="divider_height">1px</dimen>
     <dimen name="dialog_corners">2dp</dimen>
     <dimen name="padding_room_for_fab">88dp</dimen> <!-- padding_normal + fab_size + padding_normal -->
