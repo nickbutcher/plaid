@@ -39,10 +39,13 @@
     <color name="scrim">#99323232</color>
     <color name="mid_grey">#40808080</color>
     <color name="light_grey">#fff5f5f5</color>
-    <color name="grey_300">#ffE0E0E0</color>
+    <color name="grey_200">#ffeeeeee</color>
+    <color name="grey_300">#ffe0e0e0</color>
     <color name="content_placeholder">#ffe0e0e0</color>
     <color name="dark_icon">#99000000</color> <!-- 60% black-->
     <color name="divider">#1f000000</color> <!-- 12% black -->
+    <color name="page_indicator_dark">#80333333</color>
+    <color name="page_indicator_dark_selected">#ff333333</color>
 
     <!-- text (most text uses material theme colours) -->
     <color name="hint_disabled_dark">#43000000</color> <!-- 26% black -->

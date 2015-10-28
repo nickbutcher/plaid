@@ -54,7 +54,7 @@
         <activity
             android:name=".ui.DribbbleShot"
             android:parentActivityName=".ui.HomeActivity"
-            android:theme="@style/Plaid.DribbbleShot">
+            android:theme="@style/Plaid.Translucent.DribbbleShot">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.HomeActivity" />
@@ -63,7 +63,7 @@
         <activity
             android:name=".ui.DesignerNewsStory"
             android:parentActivityName=".ui.HomeActivity"
-            android:theme="@style/Plaid.DesignerNewsStory">
+            android:theme="@style/Plaid.Translucent.DesignerNewsStory">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.HomeActivity" />
@@ -72,7 +72,7 @@
         <activity
             android:name=".ui.SearchActivity"
             android:launchMode="singleTop"
-            android:theme="@style/Plaid.Search">
+            android:theme="@style/Plaid.Translucent.Search">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -89,7 +89,7 @@
             android:name=".ui.DribbbleLogin"
             android:exported="true"
             android:launchMode="singleTop"
-            android:theme="@style/Plaid.DribbbleLogin">
+            android:theme="@style/Plaid.Translucent.DribbbleLogin">
             <intent-filter>
                 <data
                     android:host="dribbble-auth-callback"
@@ -103,12 +103,12 @@
         <activity
             android:name=".ui.DesignerNewsLogin"
             android:exported="false"
-            android:theme="@style/Plaid.DesignerNewsLogin"
+            android:theme="@style/Plaid.Translucent.DesignerNewsLogin"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.AboutActivity"
-            android:label="@string/title_activity_about"
+            android:theme="@style/Plaid.Translucent.About"
             android:parentActivityName=".ui.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -118,7 +118,7 @@
         <activity
             android:name=".ui.PostNewDesignerNewsStory"
             android:exported="true"
-            android:theme="@style/Plaid.PostDesignerNewsStory" />
+            android:theme="@style/Plaid.Translucent.PostDesignerNewsStory" />
 
         <service
             android:name=".data.api.designernews.UpvoteStoryService"

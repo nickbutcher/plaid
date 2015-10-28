@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -30,24 +31,27 @@ import android.view.View;
 
 import io.plaidapp.R;
 import io.plaidapp.util.FontUtil;
+import io.plaidapp.util.ViewUtils;
 
 /**
  * A view which punches out some text from an opaque color block, allowing you to see through it.
  */
 public class CutoutTextView extends View {
 
+    public static final float PHI = 1.6182f;
     private final TextPaint textPaint;
     private Bitmap cutout;
-    private int foregroundColor = 0xfffafafa;
+    private int foregroundColor = Color.MAGENTA;
     private String text;
     private float textSize;
     private float textY;
     private float textX;
+    private float maxTextSize;
 
     public CutoutTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
+        textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 
         final TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable
                 .CutoutTextView, 0, 0);
@@ -55,13 +59,14 @@ public class CutoutTextView extends View {
             textPaint.setTypeface(FontUtil.get(context, a.getString(R.styleable
                     .CutoutTextView_font)));
         }
-        if (a.hasValue(R.styleable.CutoutTextView_android_foreground)) {
-            foregroundColor = a.getColor(R.styleable.CutoutTextView_android_foreground,
+        if (a.hasValue(R.styleable.CutoutTextView_foregroundColor)) {
+            foregroundColor = a.getColor(R.styleable.CutoutTextView_foregroundColor,
                     foregroundColor);
         }
         if (a.hasValue(R.styleable.CutoutTextView_android_text)) {
             text = a.getString(R.styleable.CutoutTextView_android_text);
         }
+        maxTextSize = context.getResources().getDimensionPixelSize(R.dimen.display_4_text_size);
         a.recycle();
     }
 
@@ -73,8 +78,9 @@ public class CutoutTextView extends View {
     }
 
     private void calculateTextPosition() {
-        float targetWidth = getWidth() / 1.6182f;
-        textSize = getTextSize(targetWidth);
+        float targetWidth = getWidth() / PHI;
+        textSize = ViewUtils.getSingleLineTextSize(text, textPaint, targetWidth, 0f, maxTextSize,
+                0.5f, getResources().getDisplayMetrics());
         textPaint.setTextSize(textSize);
 
         // measuring text is fun :] see: https://chris.banes.me/2014/03/27/measuring-text/
@@ -82,14 +88,7 @@ public class CutoutTextView extends View {
         Rect textBounds = new Rect();
         textPaint.getTextBounds(text, 0, text.length(), textBounds);
         float textHeight = textBounds.height();
-        textY = (getHeight() + textHeight) / 2; // note that when drawing text the 'Y' co-ord is
-        // the bottom!?!
-    }
-
-    private float getTextSize(float targetWidth) {
-
-        // todo calculate best text size for the given width
-        return 392f;
+        textY = (getHeight() + textHeight) / 2;
     }
 
     private void createBitmap() {
@@ -97,9 +96,9 @@ public class CutoutTextView extends View {
             cutout.recycle();
         }
         cutout = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        cutout.eraseColor(foregroundColor);
         cutout.setHasAlpha(true);
         Canvas cutoutCanvas = new Canvas(cutout);
+        cutoutCanvas.drawColor(foregroundColor);
 
         // this is the magic – Clear mode punches out the bitmap
         textPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));

@@ -64,6 +64,11 @@
     <!-- bottom sheet -->
     <dimen name="bottom_sheet_width">@dimen/match_parent</dimen>
 
+    <!-- about screen -->
+    <dimen name="about_header_height">224dp</dimen>
+    <dimen name="about_drag_dismiss_distance">112dp</dimen> <!-- 2 * ?android:actionBarSize -->
+    <dimen name="about_icon_padding">24dp</dimen>
+
     <!-- Z-axis elevations -->
     <dimen name="z_app_bar">4dp</dimen>
     <dimen name="z_card">2dp</dimen>

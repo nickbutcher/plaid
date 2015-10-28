@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -23,7 +22,7 @@
         <item name="android:colorBackground">@color/background_light</item>
         <item name="android:colorAccent">@color/accent</item>
         <item name="android:navigationBarColor">@color/primary_super_dark</item>
-        <item name="android:statusBarColor">?android:colorPrimaryDark</item>
+        <item name="android:statusBarColor">@color/background_super_dark</item>
         <item name="android:textColorHint">@color/hint_disabled_dark</item>
         <item name="android:windowBackground">@color/background_light</item>
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
@@ -42,60 +41,47 @@
         <item name="android:windowEnterTransition">@transition/main_enter</item>
     </style>
 
-    <style name="Plaid.DesignerNewsStory">
+    <style name="Plaid.Translucent">
+        <!-- using a semi-transparent window background for the drag-back gesture -->
+        <item name="android:windowBackground">@color/scrim</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <style name="Plaid.Translucent.DesignerNewsStory">
         <item name="android:colorPrimary">@color/designer_news</item>
         <item name="android:colorAccent">@color/designer_news</item>
         <item name="android:statusBarColor">@color/designer_news_dark</item>
         <item name="android:navigationBarColor">@color/designer_news_super_dark</item>
         <item name="android:windowSharedElementEnterTransition">@transition/designer_news_story_shared_enter</item>
         <item name="android:windowSharedElementReturnTransition">@transition/designer_news_story_shared_return</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@color/scrim</item>
     </style>
 
-    <style name="Plaid.DribbbleShot">
-
-        <!-- using a semi-transparent window background for the drag-back gesture -->
-        <item name="android:windowBackground">@color/scrim</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowAnimationStyle">@null</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-
+    <style name="Plaid.Translucent.DribbbleShot">
         <item name="android:colorPrimary">@color/dribbble</item>
         <item name="android:colorAccent">@color/dribbble</item>
         <item name="android:statusBarColor">@color/dribbble_super_dark</item>
         <item name="android:navigationBarColor">@color/dribbble_super_dark</item>
         <item name="android:colorControlActivated">?android:colorAccent</item>
-
         <item name="android:windowSharedElementEnterTransition">@transition/dribbble_shot_shared_enter</item>
         <item name="android:windowSharedElementReturnTransition">@transition/dribbble_shot_shared_return</item>
-
         <item name="android:windowEnterTransition">@transition/dribbble_shot_enter</item>
         <item name="android:windowReturnTransition">@transition/dribbble_shot_return</item>
         <item name="android:windowAllowReturnTransitionOverlap">false</item>
     </style>
 
-    <style name="Plaid.Search">
-        <item name="android:windowBackground">@color/search_background_scrim</item>
-        <item name="android:windowIsTranslucent">true</item>
+    <style name="Plaid.Translucent.Search">
         <item name="android:windowAnimationStyle">@style/SearchWindowAnimations</item>
         <item name="android:statusBarColor">@color/background_super_dark</item>
         <item name="android:navigationBarColor">@color/background_super_dark</item>
         <item name="android:windowEnterTransition">@transition/search_enter</item>
     </style>
 
-    <style name="SearchWindowAnimations">
-        <item name="android:windowEnterAnimation">@null</item>
-        <item name="android:windowExitAnimation">@anim/fade_out_rapidly</item>
-    </style>
-
-    <style name="Plaid.DribbbleLogin">
-        <item name="android:windowBackground">@color/scrim</item>
-        <item name="android:windowIsTranslucent">true</item>
+    <style name="Plaid.Translucent.DribbbleLogin">
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:colorPrimary">@color/dribbble</item>
         <item name="android:statusBarColor">@color/dribbble_super_dark</item>
@@ -104,9 +90,7 @@
         <item name="android:colorControlHighlight">@color/ripple_light</item>
     </style>
 
-    <style name="Plaid.DesignerNewsLogin">
-        <item name="android:windowBackground">@color/scrim</item>
-        <item name="android:windowIsTranslucent">true</item>
+    <style name="Plaid.Translucent.DesignerNewsLogin">
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:colorPrimary">@color/designer_news</item>
         <item name="android:colorAccent">@color/designer_news</item>
@@ -116,9 +100,7 @@
         <item name="android:colorControlActivated">@color/designer_news</item>
     </style>
 
-    <style name="Plaid.PostDesignerNewsStory">
-        <item name="android:windowBackground">@color/scrim</item>
-        <item name="android:windowIsTranslucent">true</item>
+    <style name="Plaid.Translucent.PostDesignerNewsStory">
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:colorPrimary">@color/designer_news</item>
         <item name="android:colorAccent">@color/designer_news</item>
@@ -127,6 +109,16 @@
         <item name="android:colorButtonNormal">@color/designer_news_button</item>
         <item name="android:colorControlActivated">@color/designer_news</item>
         <item name="android:colorControlNormal">@color/hint_disabled_dark</item>
+    </style>
+
+    <style name="Plaid.Translucent.About">
+        <item name="android:windowEnterTransition">@transition/about_enter</item>
+        <item name="android:windowReturnTransition">@transition/about_return</item>
+    </style>
+
+    <style name="SearchWindowAnimations">
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@anim/fade_out_rapidly</item>
     </style>
 
     <style name="Widget.Plaid" parent="android:Widget" />

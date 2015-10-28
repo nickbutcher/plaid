@@ -15,9 +15,15 @@
   limitations under the License.
   -->
 
-<shape
+<io.plaidapp.ui.widget.BaselineGridTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-        <solid android:color="@color/content_placeholder" />
-        <size android:height="@dimen/avatar_size" android:width="@dimen/avatar_size" />
-</shape>
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/libraries_intro"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_xlarge"
+    android:layout_marginBottom="@dimen/spacing_normal"
+    android:padding="@dimen/padding_normal"
+    android:text="@string/about_libs_intro"
+    style="@style/Widget.Plaid.About"
+    tools:showIn="@layout/about_libs" />
