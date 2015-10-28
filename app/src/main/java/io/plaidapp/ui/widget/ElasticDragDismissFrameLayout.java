@@ -261,7 +261,7 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
                 // dragging upward, fade the navigation bar in proportion
                 // TODO don't fade nav bar on landscape phones?
                 window.setNavigationBarColor(ColorUtils.modifyAlpha(window.getNavigationBarColor(),
-                        1f - Math.min(elasticOffset, 1f)));
+                        1f - rawOffset));
             } else if (elasticOffsetPixels == 0) {
                 // reset
                 window.setStatusBarColor(ColorUtils.modifyAlpha(window.getStatusBarColor(), 1f));
@@ -270,7 +270,7 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
             } else {
                 // dragging downward, fade the status bar in proportion
                 window.setStatusBarColor(ColorUtils.modifyAlpha(window
-                        .getStatusBarColor(), 1f - Math.min(elasticOffset, 1f)));
+                        .getStatusBarColor(), 1f - rawOffset));
             }
         }
 
