@@ -15,9 +15,9 @@
   limitations under the License.
   -->
 
-<shape
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-        <solid android:color="@color/content_placeholder" />
-        <size android:height="@dimen/avatar_size" android:width="@dimen/avatar_size" />
-</shape>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="true" android:color="@color/text_primary_light" />
+    <item android:color="@color/primary" />
+
+</selector>

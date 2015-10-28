@@ -15,9 +15,24 @@
   limitations under the License.
   -->
 
-<shape
+<transitionSet
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-        <solid android:color="@color/content_placeholder" />
-        <size android:height="@dimen/avatar_size" android:width="@dimen/avatar_size" />
-</shape>
+    android:transitionOrdering="together"
+    android:duration="400"
+    android:interpolator="@android:interpolator/linear_out_slow_in">
+
+    <slide android:slideEdge="top">
+        <targets>
+            <target android:excludeId="@android:id/navigationBarBackground" />
+            <target android:excludeId="@android:id/statusBarBackground" />
+        </targets>
+    </slide>
+
+    <fade android:duration="@android:integer/config_mediumAnimTime">
+        <targets>
+            <target android:targetId="@android:id/navigationBarBackground" />
+            <target android:targetId="@android:id/statusBarBackground" />
+        </targets>
+    </fade>
+
+</transitionSet>

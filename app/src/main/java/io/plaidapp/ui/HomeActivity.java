@@ -478,7 +478,8 @@ public class HomeActivity extends Activity {
                 }
                 return true;
             case R.id.menu_about:
-                startActivity(new Intent(HomeActivity.this, AboutActivity.class));
+                startActivity(new Intent(HomeActivity.this, AboutActivity.class),
+                        ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 return true;
         }
         return super.onOptionsItemSelected(item);

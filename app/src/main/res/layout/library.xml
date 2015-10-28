@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<io.plaidapp.ui.widget.ForegroundRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lib_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/padding_normal"
+    android:minHeight="?android:listPreferredItemHeight"
+    android:paddingTop="@dimen/padding_normal"
+    android:paddingEnd="@dimen/padding_normal"
+    android:paddingBottom="@dimen/spacing_normal"
+    android:foreground="?android:selectableItemBackground"
+    android:stateListAnimator="@animator/raise"
+    android:background="@color/background_light"
+    android:elevation="@dimen/z_card">
+
+    <ImageView
+        android:id="@+id/library_image"
+        android:layout_width="@dimen/avatar_bounds"
+        android:layout_height="@dimen/avatar_bounds"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginEnd="@dimen/avatar_margin"
+        android:layout_marginStart="@dimen/avatar_margin"
+        android:padding="@dimen/avatar_padding"
+        android:src="@drawable/avatar_placeholder" />
+
+    <io.plaidapp.ui.widget.BaselineGridTextView
+        android:id="@+id/library_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/library_image"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        style="@style/Widget.Plaid.Subhead" />
+
+    <Button
+        android:id="@+id/library_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/library_name"
+        android:text="@string/about_lib_link"
+        android:textColor="@color/text_secondary_dark"
+        style="?android:borderlessButtonStyle" />
+
+</io.plaidapp.ui.widget.ForegroundRelativeLayout>

@@ -15,9 +15,17 @@
   limitations under the License.
   -->
 
-<shape
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/libs_list"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-        <solid android:color="@color/content_placeholder" />
-        <size android:height="@dimen/avatar_size" android:width="@dimen/avatar_size" />
-</shape>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_normal"
+    android:clipToPadding="false"
+    android:background="@color/grey_200"
+    android:transitionGroup="false"
+    android:scrollbars="vertical"
+    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+    tools:showIn="@layout/activity_about"/>

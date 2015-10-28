@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright 2015 Google Inc.
 
@@ -16,7 +17,7 @@
 
 <resources>
     <declare-styleable name="CutoutTextView">
-        <attr name="android:foreground" />
+        <attr name="foregroundColor" format="color" />
         <attr name="android:text" />
         <attr name="font" />
     </declare-styleable>
