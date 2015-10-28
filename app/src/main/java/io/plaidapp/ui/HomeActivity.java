@@ -113,7 +113,6 @@ public class HomeActivity extends Activity {
     @Bind(android.R.id.empty) ProgressBar loading;
     private TextView noFiltersEmptyText;
     private GridLayoutManager layoutManager;
-    private SystemBarDrawerTinter drawerTinter;
     @BindInt(R.integer.num_columns) int columns;
 
     // data
@@ -180,13 +179,8 @@ public class HomeActivity extends Activity {
             }
         });
         grid.setHasFixedSize(true);
-        drawerTinter = new SystemBarDrawerTinter(
-                        ContextCompat.getColor(this, R.color.immersive_bars),
-                        ContextCompat.getColor(this, R.color.background_super_dark));
-        drawer.setDrawerListener(drawerTinter);
 
         // drawer layout treats fitsSystemWindows specially so we have to handle insets ourselves
-        // this is super gross and breaks when you show a keyboard.  TODO FIXME
         drawer.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
             @Override
             public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
@@ -220,18 +214,12 @@ public class HomeActivity extends Activity {
                 statusBarBackground.setLayoutParams(lpStatus);
 
                 // inset the filters list for the status bar / navbar
-                ViewGroup.MarginLayoutParams lpFilters = (ViewGroup.MarginLayoutParams)
-                        filtersList.getLayoutParams();
-                lpFilters.topMargin += insets.getSystemWindowInsetTop();
-                lpFilters.bottomMargin += insets.getSystemWindowInsetBottom();
-                filtersList.setLayoutParams(lpFilters);
-                // we also need to set the padding right for landscape
-                if (filtersList.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR) {
-                    filtersList.setPadding(filtersList.getPaddingLeft(),
-                            filtersList.getPaddingTop(),
-                            filtersList.getPaddingRight() + insets.getSystemWindowInsetRight(),
-                            filtersList.getPaddingBottom());
-                }
+                // need to set the padding end for landscape case
+                final boolean ltr = filtersList.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR;
+                filtersList.setPaddingRelative(filtersList.getPaddingStart(),
+                       filtersList.getPaddingTop() + insets.getSystemWindowInsetTop(),
+                       filtersList.getPaddingEnd() + (ltr ? insets.getSystemWindowInsetRight() : 0),
+                       filtersList.getPaddingBottom() + insets.getSystemWindowInsetBottom());
 
                 // clear this listener so insets aren't re-applied
                 drawer.setOnApplyWindowInsetsListener(null);
@@ -623,8 +611,6 @@ public class HomeActivity extends Activity {
                 drawer.closeDrawer(GravityCompat.END);
             }
         };
-        // can only have one drawer listener (which we're already using to tint status bars) so
-        // need to delegate & reset it when finished
         drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
 
             // if the user interacts with the filters while it's open then don't auto-close
@@ -635,12 +621,6 @@ public class HomeActivity extends Activity {
                     return false;
                 }
             };
-
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                // delegate to the tinter
-                drawerTinter.onDrawerSlide(drawerView, slideOffset);
-            }
 
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -668,7 +648,6 @@ public class HomeActivity extends Activity {
             @Override
             public void onDrawerClosed(View drawerView) {
                 // reset
-                drawer.setDrawerListener(drawerTinter);
                 filtersList.setOnTouchListener(null);
             }
 
@@ -719,23 +698,5 @@ public class HomeActivity extends Activity {
                 return RC_AUTH_DRIBBBLE_USER_SHOTS;
         }
         throw new InvalidParameterException();
-    }
-
-    private class SystemBarDrawerTinter extends DrawerLayout.SimpleDrawerListener {
-
-        private final int startColor;
-        private final int endColor;
-
-        public SystemBarDrawerTinter(@ColorInt int startColor, @ColorInt int endColor) {
-            this.startColor = startColor;
-            this.endColor = endColor;
-        }
-
-        @Override
-        public void onDrawerSlide(View drawerView, float slideOffset) {
-            int color = ColorUtils.blendColors(startColor, endColor, slideOffset);
-            getWindow().setStatusBarColor(color);
-            getWindow().setNavigationBarColor(color);
-        }
     }
 }
