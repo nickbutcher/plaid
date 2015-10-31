@@ -1,4 +1,4 @@
-# Plaid
+# Plaid[![Build Status](https://travis-ci.org/nickbutcher/plaid.svg)](https://travis-ci.org/nickbutcher/plaid)
 
 <img src="screenshots/plaid_demo.gif" width="400" align="right" hspace="20">
 
