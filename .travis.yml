@@ -1,0 +1,20 @@
+language: android
+
+sudo: false
+
+android:
+  components:
+    - platform-tool
+    - tool
+    - build-tools-23.0.1
+    - android-23
+    - addon-google_apis-google-21
+    - extra-google-m2repository
+    - extra-android-m2repository
+    - sys-img-armeabi-v7a-addon-google_apis-google-21
+
+before_script:
+ - chmod +x gradlew
+  
+script:
+  - ./gradlew clean build
