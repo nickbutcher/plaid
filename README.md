@@ -11,8 +11,6 @@ the use of
 [material principles](https://www.google.com/design/spec/material-design/introduction.html#introduction-principles)
 to create tactile, bold, understandable UIs.
 
-**[Install on Google Play](https://play.google.com/store/apps/details?id=io.plaidapp)**
-
 
 ### Screenshots
 
