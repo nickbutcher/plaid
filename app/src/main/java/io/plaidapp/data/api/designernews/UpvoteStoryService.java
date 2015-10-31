@@ -20,14 +20,16 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 
+import com.squareup.okhttp.OkHttpClient;
+
 import io.plaidapp.BuildConfig;
 import io.plaidapp.data.api.ClientAuthInterceptor;
 import io.plaidapp.data.api.designernews.model.StoryResponse;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit.GsonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class UpvoteStoryService extends IntentService {
 
@@ -62,23 +64,27 @@ public class UpvoteStoryService extends IntentService {
             // TODO prompt for login
             return;
         }
-        DesignerNewsService designerNewsService = new RestAdapter.Builder()
-                .setEndpoint(DesignerNewsService.ENDPOINT)
-                .setRequestInterceptor(
-                        new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
-                                BuildConfig.DESIGNER_NEWS_CLIENT_ID))
-                .build()
-                .create(DesignerNewsService.class);
-        designerNewsService.upvoteStory(storyId, "", new Callback<StoryResponse>() {
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.interceptors().add(new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
+                BuildConfig.DESIGNER_NEWS_CLIENT_ID));
+        DesignerNewsService designerNewsService = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(DesignerNewsService.ENDPOINT)
+                .client(okHttpClient)
+                .build().create(DesignerNewsService.class);
+        designerNewsService.upvoteStory(storyId).enqueue(new Callback<StoryResponse>() {
             @Override
-            public void success(StoryResponse storyResponse, Response response) {
-                int newVotesCount = storyResponse.story.vote_count;
-                // TODO report success
-
+            public void onResponse(Response<StoryResponse> response, Retrofit retrofit) {
+                if (response.isSuccess()) {
+                    int newVotesCount = response.body().story.vote_count;
+                    // TODO report success
+                } else {
+                    // TODO report failure
+                }
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Throwable t) {
                 // TODO report failure
             }
         });

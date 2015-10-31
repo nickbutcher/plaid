@@ -28,12 +28,10 @@ import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Spannable;
@@ -61,6 +59,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.squareup.okhttp.OkHttpClient;
+
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,7 +79,6 @@ import io.plaidapp.data.api.ClientAuthInterceptor;
 import io.plaidapp.data.api.designernews.DesignerNewsService;
 import io.plaidapp.data.api.designernews.model.NewStoryRequest;
 import io.plaidapp.data.api.designernews.model.StoriesResponse;
-import io.plaidapp.data.api.designernews.model.Story;
 import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.data.prefs.DribbblePrefs;
@@ -88,13 +87,11 @@ import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.util.AnimUtils;
-import io.plaidapp.util.ColorUtils;
 import io.plaidapp.util.ViewUtils;
 import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
+import retrofit.GsonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class HomeActivity extends Activity {
 
@@ -530,26 +527,29 @@ public class HomeActivity extends Activity {
                         }
                         if (storyToPost != null) {
                             // TODO: move this to a service in follow up CL?
-                            DesignerNewsService designerNewsApi = new RestAdapter.Builder()
-                                    .setEndpoint(DesignerNewsService.ENDPOINT)
-                                    .setRequestInterceptor(new ClientAuthInterceptor
-                                            (designerNewsPrefs.getAccessToken(),
-                                                    BuildConfig.DESIGNER_NEWS_CLIENT_ID))
-                                    .build()
-                                    .create(DesignerNewsService.class);
-                            designerNewsApi.postStory(storyToPost, new Callback<StoriesResponse>() {
+                            OkHttpClient okHttpClient = new OkHttpClient();
+                            okHttpClient.interceptors().add(new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
+                                    BuildConfig.DESIGNER_NEWS_CLIENT_ID));
+                            DesignerNewsService designerNewsApi = new Retrofit.Builder()
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .baseUrl(DesignerNewsService.ENDPOINT)
+                                    .client(okHttpClient)
+                                    .build().create(DesignerNewsService.class);
+                            designerNewsApi.postStory(storyToPost).enqueue(new Callback<StoriesResponse>() {
                                 @Override
-                                public void success(StoriesResponse story, Response response) {
-                                    if (story != null
-                                            && story.stories != null
-                                            && story.stories.size() > 0) {
-                                        long id = story.stories.get(0).id;
+                                public void onResponse(Response<StoriesResponse> response, Retrofit retrofit) {
+                                    if (response.isSuccess()) {
+                                        if (response.body() != null
+                                                && response.body().stories != null
+                                                && response.body().stories.size() > 0) {
+                                            long id = response.body().stories.get(0).id;
+                                        }
                                     }
                                 }
 
                                 @Override
-                                public void failure(RetrofitError error) {
-                                    Log.e("HomeActivity", "Failed posting story", error);
+                                public void onFailure(Throwable t) {
+                                    Log.e("HomeActivity", "Failed posting story", t);
                                 }
                             });
                         }

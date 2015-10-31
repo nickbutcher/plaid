@@ -26,8 +26,7 @@ import io.plaidapp.data.api.dribbble.model.Comment;
 import io.plaidapp.data.api.dribbble.model.Like;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.dribbble.model.User;
-import retrofit.Callback;
-import retrofit.http.Body;
+import retrofit.Call;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -47,139 +46,103 @@ public interface DribbbleService {
 
     /* Shots */
 
-    @GET("/shots")
-    void getPopular(@Query("page") Integer page,
-                    @Query("per_page") Integer pageSize,
-                    Callback<List<Shot>> callback);
+    @GET("shots")
+    Call<List<Shot>> getPopular(@Query("page") Integer page,
+                                @Query("per_page") Integer pageSize);
 
-    @GET("/shots?sort=recent")
-    void getRecent(@Query("page") Integer page,
-                   @Query("per_page") Integer pageSize,
-                   Callback<List<Shot>> callback);
+    @GET("shots?sort=recent")
+    Call<List<Shot>> getRecent(@Query("page") Integer page,
+                               @Query("per_page") Integer pageSize);
 
-    @GET("/shots?list=debuts")
-    void getDebuts(@Query("page") Integer page,
-                   @Query("per_page") Integer pageSize,
-                   Callback<List<Shot>> callback);
+    @GET("shots?list=debuts")
+    Call<List<Shot>> getDebuts(@Query("page") Integer page,
+                               @Query("per_page") Integer pageSize);
 
-    @GET("/shots?list=animated")
-    void getAnimated(@Query("page") Integer page,
-                     @Query("per_page") Integer pageSize,
-                     Callback<List<Shot>> callback);
+    @GET("shots?list=animated")
+    Call<List<Shot>> getAnimated(@Query("page") Integer page,
+                                 @Query("per_page") Integer pageSize);
 
-    @GET("/shots")
-    void getShots(@Query("list") @ShotType String shotType,
-                  @Query("timeframe") @ShotTimeframe String timeframe,
-                  @Query("sort") @ShotSort String shotSort,
-                  Callback<List<Shot>> callback);
+    @GET("shots")
+    Call<List<Shot>> getShots(@Query("list") @ShotType String shotType,
+                              @Query("timeframe") @ShotTimeframe String timeframe,
+                              @Query("sort") @ShotSort String shotSort);
 
-    @GET("/shots/{id}")
-    Shot getShot(@Path("id") long shotId);
+    @GET("shots/{id}")
+    Call<Shot> getShot(@Path("id") long shotId);
 
-    @GET("/shots/{id}")
-    void getShot(@Path("id") long shotId,
-                 Callback<Shot> callback);
-
-    @GET("/user/following/shots")
-    void getFollowing(@Query("page") Integer page,
-                      @Query("per_page") Integer pageSize,
-                      Callback<List<Shot>> callback);
+    @GET("user/following/shots")
+    Call<List<Shot>> getFollowing(@Query("page") Integer page,
+                                  @Query("per_page") Integer pageSize);
 
     /* List the authenticated user’s shot likes */
-    @GET("/user/likes")
-    void getUserLikes(@Query("page") Integer page,
-                      @Query("per_page") Integer pageSize,
-                      Callback<List<Like>> callback);
+    @GET("user/likes")
+    Call<List<Like>> getUserLikes(@Query("page") Integer page,
+                                  @Query("per_page") Integer pageSize);
 
     /* List the authenticated user’s shots */
-    @GET("/user/shots")
-    void getUserShots(@Query("page") Integer page,
-                      @Query("per_page") Integer pageSize,
-                      Callback<List<Shot>> callback);
+    @GET("user/shots")
+    Call<List<Shot>> getUserShots(@Query("page") Integer page,
+                                  @Query("per_page") Integer pageSize);
 
     /* Shot likes */
 
-    @GET("/shots/{id}/likes")
-    void getUserLikes(@Path("id") long shotId,
-                      Callback<List<Like>> callback);
+    @GET("shots/{id}/likes")
+    Call<List<Like>> getUserLikes(@Path("id") long shotId);
 
-    @GET("/shots/{id}/like")
-    void liked(@Path("id") long shotId,
-               Callback<Like> callback);
+    @GET("shots/{id}/like")
+    Call<Like> liked(@Path("id") long shotId);
 
-    @POST("/shots/{id}/like")
-    void like(@Path("id") long shotId,
-              @Body String ignored,  // can remove when retrofit releases this fix:
-              // https://github.com/square/retrofit/commit/19ac1e2c4551448184ad66c4a0ec172e2741c2ee
-              Callback<Like> callback);
+    @POST("shots/{id}/like")
+    Call<Like> like(@Path("id") long shotId);
 
-    @DELETE("/shots/{id}/like")
-    void unlike(@Path("id") long shotId,
-                Callback<Void> callback);
+
+    @DELETE("shots/{id}/like")
+    Call<Void> unlike(@Path("id") long shotId);
 
 
     /* Comments */
 
-    @GET("/shots/{id}/comments")
-    void getComments(@Path("id") long shotId,
-                     @Query("page") Integer page,
-                     @Query("per_page") Integer pageSize,
-                     Callback<List<Comment>> callback);
+    @GET("shots/{id}/comments")
+    Call<List<Comment>> getComments(@Path("id") long shotId,
+                                    @Query("page") Integer page,
+                                    @Query("per_page") Integer pageSize);
 
-    @GET("/shots/{shot}/comments/{id}/likes")
-    void getCommentLikes(@Path("shot") long shotId,
-                         @Path("id") long commentId,
-                         Callback<List<Like>> callback);
+    @GET("shots/{shot}/comments/{id}/likes")
+    Call<List<Like>> getCommentLikes(@Path("shot") long shotId,
+                                     @Path("id") long commentId);
 
-    @POST("/shots/{shot}/comments")
-    void postComment(@Path("shot") long shotId,
-                     @Query("body") String body,
-                     Callback<Comment> callback);
+    @POST("shots/{shot}/comments")
+    Call<Comment> postComment(@Path("shot") long shotId,
+                              @Query("body") String body);
 
 
-    @DELETE("/shots/{shot}/comments/{id}")
-    void deleteComment(@Path("shot") long shotId,
-                       @Path("id") long commentId,
-                       Callback<Void> callback);
+    @DELETE("shots/{shot}/comments/{id}")
+    Call<Void> deleteComment(@Path("shot") long shotId,
+                             @Path("id") long commentId);
 
-    @GET("/shots/{shot}/comments/{id}/like")
-    void likedComment(@Path("shot") long shotId,
-                      @Path("id") long commentId,
-                      Callback<Like> callback);
+    @GET("shots/{shot}/comments/{id}/like")
+    Call<Like> likedComment(@Path("shot") long shotId,
+                            @Path("id") long commentId);
 
-    @POST("/shots/{shot}/comments/{id}/like")
-    void likeComment(@Path("shot") long shotId,
-                     @Path("id") long commentId,
-                     @Body String ignored,  // can remove when retrofit releases this fix:
-                     // https://github
-                     // .com/square/retrofit/commit/19ac1e2c4551448184ad66c4a0ec172e2741c2ee
-                     Callback<Like> callback);
+    @POST("shots/{shot}/comments/{id}/like")
+    Call<Like> likeComment(@Path("shot") long shotId,
+                           @Path("id") long commentId);
 
-    @DELETE("/shots/{shot}/comments/{id}/like")
-    void unlikeComment(@Path("shot") long shotId,
-                       @Path("id") long commentId,
-                       Callback<Void> callback);
+    @DELETE("shots/{shot}/comments/{id}/like")
+    Call<Void> unlikeComment(@Path("shot") long shotId,
+                             @Path("id") long commentId);
 
 
     /* Users */
 
-    @GET("/users/{user}")
-    User getUser(@Path("user") long userId);
+    @GET("users/{user}")
+    Call<User> getUser(@Path("user") long userId);
 
-    @GET("/users/{user}")
-    void getUser(@Path("user") long userId, Callback<User> callback);
+    @GET("users/{user}")
+    Call<User> getUser(@Path("user") String username);
 
-    @GET("/users/{user}")
-    User getUser(@Path("user") String username);
-
-    @GET("/users/{user}")
-    void getUser(@Path("user") String username, Callback<User> callback);
-
-    @GET("/user")
-    User getAuthenticatedUser();
-
-    @GET("/user")
-    void getAuthenticatedUser(Callback<User> callback);
+    @GET("user")
+    Call<User> getAuthenticatedUser();
 
 
     /* Magic Constants */

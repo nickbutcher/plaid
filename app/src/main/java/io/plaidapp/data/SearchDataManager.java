@@ -25,8 +25,8 @@ import io.plaidapp.data.api.designernews.model.StoriesResponse;
 import io.plaidapp.data.api.dribbble.DribbbleSearch;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 /**
  * Responsible for loading search results from dribbble and designer news. Instantiating classes are
@@ -78,20 +78,22 @@ public abstract class SearchDataManager extends BaseDataManager implements DataL
 
     private void searchDesignerNews(final String query, final int resultsPage) {
         loadingDesignerNews = true;
-        getDesignerNewsApi().search(query, resultsPage, new Callback<StoriesResponse>() {
+        getDesignerNewsApi().search(query, resultsPage).enqueue(new Callback<StoriesResponse>() {
             @Override
-            public void success(StoriesResponse storiesResponse, Response response) {
-                if (storiesResponse != null) {
-                    setPage(storiesResponse.stories, resultsPage);
-                    setDataSource(storiesResponse.stories,
-                            Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX + query);
-                    onDataLoaded(storiesResponse.stories);
+            public void onResponse(Response<StoriesResponse> storiesResponse, Retrofit retrofit) {
+                if (storiesResponse.isSuccess()) {
+                    if (storiesResponse.body() != null) {
+                        setPage(storiesResponse.body().stories, resultsPage);
+                        setDataSource(storiesResponse.body().stories,
+                                Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX + query);
+                        onDataLoaded(storiesResponse.body().stories);
+                    }
                 }
                 loadingDesignerNews = false;
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Throwable t) {
                 loadingDesignerNews = false;
             }
         });

@@ -16,25 +16,30 @@
 
 package io.plaidapp.data.api;
 
-import retrofit.RequestInterceptor;
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import java.io.IOException;
 
 /**
  * A {@see RequestInterceptor} that adds an auth token to requests
  */
-public class AuthInterceptor implements RequestInterceptor {
+public class AuthInterceptor implements Interceptor {
 
     private String accessToken;
 
     public AuthInterceptor(String accessToken) {
         this.accessToken = accessToken;
     }
-
-    @Override
-    public void intercept(RequestFacade request) {
-        request.addHeader("Authorization", "Bearer " + accessToken);
-    }
-
+    
     private void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    @Override
+    public Response intercept(Chain chain) throws IOException {
+        Request newRequest = chain.request().newBuilder().addHeader("Authorization", "Bearer " + accessToken).build();
+        return chain.proceed(newRequest);
     }
 }

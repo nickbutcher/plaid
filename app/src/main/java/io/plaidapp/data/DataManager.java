@@ -35,8 +35,8 @@ import io.plaidapp.data.api.producthunt.model.PostsResponse;
 import io.plaidapp.data.prefs.SourceManager;
 import io.plaidapp.ui.FilterAdapter;
 import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 /**
  * Responsible for loading data from the various sources. Instantiating classes are responsible for
@@ -82,7 +82,7 @@ public abstract class DataManager extends BaseDataManager
     }
 
     @Override
-    public void onFilterRemoved(Source removed) { } // no-op
+    public void onFilterRemoved(Source removed) {} // no-op
 
     private void loadSource(Source source) {
         if (source.active) {
@@ -152,42 +152,46 @@ public abstract class DataManager extends BaseDataManager
     }
 
     private void loadDesignerNewsTopStories(final int page) {
-        getDesignerNewsApi().getTopStories(page, new Callback<StoriesResponse>() {
+        getDesignerNewsApi().getTopStories(page).enqueue(new Callback<StoriesResponse>() {
             @Override
-            public void success(StoriesResponse storiesResponse, Response response) {
-                if (storiesResponse != null
-                        && sourceIsEnabled(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)) {
-                    setPage(storiesResponse.stories, page);
-                    setDataSource(storiesResponse.stories,
-                            SourceManager.SOURCE_DESIGNER_NEWS_POPULAR);
-                    onDataLoaded(storiesResponse.stories);
+            public void onResponse(Response<StoriesResponse> storiesResponse, Retrofit retrofit) {
+                if (storiesResponse.isSuccess()) {
+                    if (storiesResponse.body() != null
+                            && sourceIsEnabled(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)) {
+                        setPage(storiesResponse.body().stories, page);
+                        setDataSource(storiesResponse.body().stories,
+                                SourceManager.SOURCE_DESIGNER_NEWS_POPULAR);
+                        onDataLoaded(storiesResponse.body().stories);
+                    }
                 }
                 loadingCount.decrementAndGet();
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Throwable t) {
                 loadingCount.decrementAndGet();
             }
         });
     }
 
     private void loadDesignerNewsRecent(final int page) {
-        getDesignerNewsApi().getRecentStories(page, new Callback<StoriesResponse>() {
+        getDesignerNewsApi().getRecentStories(page).enqueue(new Callback<StoriesResponse>() {
             @Override
-            public void success(StoriesResponse storiesResponse, Response response) {
-                if (storiesResponse != null
-                        && sourceIsEnabled(SourceManager.SOURCE_DESIGNER_NEWS_RECENT)) {
-                    setPage(storiesResponse.stories, page);
-                    setDataSource(storiesResponse.stories,
-                            SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
-                    onDataLoaded(storiesResponse.stories);
+            public void onResponse(Response<StoriesResponse> storiesResponse, Retrofit retrofit) {
+                if (storiesResponse.isSuccess()) {
+                    if (storiesResponse.body() != null
+                            && sourceIsEnabled(SourceManager.SOURCE_DESIGNER_NEWS_RECENT)) {
+                        setPage(storiesResponse.body().stories, page);
+                        setDataSource(storiesResponse.body().stories,
+                                SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
+                        onDataLoaded(storiesResponse.body().stories);
+                    }
                 }
                 loadingCount.decrementAndGet();
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Throwable t) {
                 loadingCount.decrementAndGet();
             }
         });
@@ -195,99 +199,105 @@ public abstract class DataManager extends BaseDataManager
 
     private void loadDesignerNewsSearch(final Source.DesignerNewsSearchSource source,
                                         final int page) {
-        getDesignerNewsApi().search(source.query, page, new Callback<StoriesResponse>() {
+        getDesignerNewsApi().search(source.query, page).enqueue(new Callback<StoriesResponse>() {
             @Override
-            public void success(StoriesResponse storiesResponse, Response response) {
-                if (storiesResponse != null) {
-                    setPage(storiesResponse.stories, page);
-                    setDataSource(storiesResponse.stories, source.key);
-                    onDataLoaded(storiesResponse.stories);
+            public void onResponse(Response<StoriesResponse> storiesResponse, Retrofit retrofit) {
+                if (storiesResponse.isSuccess()) {
+                    if (storiesResponse.body() != null) {
+                        setPage(storiesResponse.body().stories, page);
+                        setDataSource(storiesResponse.body().stories, source.key);
+                        onDataLoaded(storiesResponse.body().stories);
+                    }
                 }
                 loadingCount.decrementAndGet();
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Throwable t) {
                 loadingCount.decrementAndGet();
             }
         });
     }
 
     private void loadDribbblePopular(final int page) {
-        getDribbbleApi().getPopular(page, DribbbleService.PER_PAGE_DEFAULT, new
-                Callback<List<Shot>>() {
+        getDribbbleApi().getPopular(page, DribbbleService.PER_PAGE_DEFAULT).enqueue(new Callback<List<Shot>>() {
             @Override
-            public void success(List<Shot> shots, Response response) {
-                if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_POPULAR)) {
-                    setPage(shots, page);
-                    setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_POPULAR);
-                    onDataLoaded(shots);
+            public void onResponse(Response<List<Shot>> shots, Retrofit retrofit) {
+                if (shots.isSuccess()) {
+                    if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_POPULAR)) {
+                        setPage(shots.body(), page);
+                        setDataSource(shots.body(), SourceManager.SOURCE_DRIBBBLE_POPULAR);
+                        onDataLoaded(shots.body());
+                    }
                 }
                 loadingCount.decrementAndGet();
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Throwable t) {
                 loadingCount.decrementAndGet();
             }
         });
     }
 
     private void loadDribbbleDebuts(final int page) {
-        getDribbbleApi().getDebuts(page, DribbbleService.PER_PAGE_DEFAULT, new
-                Callback<List<Shot>>() {
+        getDribbbleApi().getDebuts(page, DribbbleService.PER_PAGE_DEFAULT).enqueue(new Callback<List<Shot>>() {
             @Override
-            public void success(List<Shot> shots, Response response) {
-                if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_DEBUTS)) {
-                    setPage(shots, page);
-                    setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_DEBUTS);
-                    onDataLoaded(shots);
+            public void onResponse(Response<List<Shot>> shots, Retrofit retrofit) {
+                if (shots.isSuccess()) {
+                    if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_DEBUTS)) {
+                        setPage(shots.body(), page);
+                        setDataSource(shots.body(), SourceManager.SOURCE_DRIBBBLE_DEBUTS);
+                        onDataLoaded(shots.body());
+                    }
                 }
                 loadingCount.decrementAndGet();
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Throwable t) {
                 loadingCount.decrementAndGet();
             }
         });
     }
 
     private void loadDribbbleAnimated(final int page) {
-        getDribbbleApi().getAnimated(page, DribbbleService.PER_PAGE_DEFAULT, new
-                Callback<List<Shot>>() {
+        getDribbbleApi().getAnimated(page, DribbbleService.PER_PAGE_DEFAULT).enqueue(new Callback<List<Shot>>() {
             @Override
-            public void success(List<Shot> shots, Response response) {
-                if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_ANIMATED)) {
-                    setPage(shots, page);
-                    setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_ANIMATED);
-                    onDataLoaded(shots);
+            public void onResponse(Response<List<Shot>> shots, Retrofit retrofit) {
+                if (shots.isSuccess()) {
+                    if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_ANIMATED)) {
+                        setPage(shots.body(), page);
+                        setDataSource(shots.body(), SourceManager.SOURCE_DRIBBBLE_ANIMATED);
+                        onDataLoaded(shots.body());
+                    }
                 }
                 loadingCount.decrementAndGet();
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Throwable t) {
                 loadingCount.decrementAndGet();
             }
         });
     }
 
     private void loadDribbbleRecent(final int page) {
-        getDribbbleApi().getRecent(page, DribbbleService.PER_PAGE_DEFAULT, new
-                Callback<List<Shot>>() {
+        getDribbbleApi().getRecent(page, DribbbleService.PER_PAGE_DEFAULT).enqueue(new Callback<List<Shot>>() {
             @Override
-            public void success(List<Shot> shots, Response response) {
-                if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_RECENT)) {
-                    setPage(shots, page);
-                    setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_RECENT);
-                    onDataLoaded(shots);
+            public void onResponse(Response<List<Shot>> shots, Retrofit retrofit) {
+                if (shots.isSuccess()) {
+                    if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_RECENT)) {
+                        setPage(shots.body(), page);
+                        setDataSource(shots.body(), SourceManager.SOURCE_DRIBBBLE_RECENT);
+                        onDataLoaded(shots.body());
+                    }
                 }
                 loadingCount.decrementAndGet();
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Throwable t) {
                 loadingCount.decrementAndGet();
             }
         });
@@ -295,23 +305,24 @@ public abstract class DataManager extends BaseDataManager
 
     private void loadDribbbleFollowing(final int page) {
         if (getDribbblePrefs().isLoggedIn()) {
-            getDribbbleApi().getFollowing(page, DribbbleService.PER_PAGE_DEFAULT,
-                    new Callback<List<Shot>>() {
-                        @Override
-                        public void success(List<Shot> shots, Response response) {
-                            if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_FOLLOWING)) {
-                                setPage(shots, page);
-                                setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_FOLLOWING);
-                                onDataLoaded(shots);
-                            }
-                            loadingCount.decrementAndGet();
+            getDribbbleApi().getFollowing(page, DribbbleService.PER_PAGE_DEFAULT).enqueue(new Callback<List<Shot>>() {
+                @Override
+                public void onResponse(Response<List<Shot>> shots, Retrofit retrofit) {
+                    if (shots.isSuccess()) {
+                        if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_FOLLOWING)) {
+                            setPage(shots.body(), page);
+                            setDataSource(shots.body(), SourceManager.SOURCE_DRIBBBLE_FOLLOWING);
+                            onDataLoaded(shots.body());
                         }
+                    }
+                    loadingCount.decrementAndGet();
+                }
 
-                        @Override
-                        public void failure(RetrofitError error) {
-                            loadingCount.decrementAndGet();
-                        }
-                    });
+                @Override
+                public void onFailure(Throwable t) {
+                    loadingCount.decrementAndGet();
+                }
+            });
         } else {
             loadingCount.decrementAndGet();
         }
@@ -319,30 +330,32 @@ public abstract class DataManager extends BaseDataManager
 
     private void loadDribbbleUserLikes(final int page) {
         if (getDribbblePrefs().isLoggedIn()) {
-            getDribbbleApi().getUserLikes(page, DribbbleService.PER_PAGE_DEFAULT,
-                    new Callback<List<Like>>() {
-                        @Override
-                        public void success(List<Like> likes, Response response) {
-                            if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_USER_LIKES)) {
-                                // API returns Likes but we just want the Shots
-                                List<Shot> likedShots = new ArrayList<>(likes.size());
-                                for (Like like : likes) {
-                                    likedShots.add(like.shot);
-                                }
-                                // these will be sorted like any other shot (popularity per page)
-                                // TODO figure out a more appropriate sorting strategy for likes
-                                setPage(likedShots, page);
-                                setDataSource(likedShots, SourceManager.SOURCE_DRIBBBLE_USER_LIKES);
-                                onDataLoaded(likedShots);
+            getDribbbleApi().getUserLikes(page, DribbbleService.PER_PAGE_DEFAULT).enqueue(new Callback<List<Like>>() {
+                @Override
+                public void onResponse(Response<List<Like>> likes, Retrofit retrofit) {
+                    if (likes.isSuccess()) {
+                        if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_USER_LIKES)) {
+                            // API returns Likes but we just want the Shots
+                            List<Shot> likedShots = new ArrayList<>(likes.body().size());
+                            for (Like like : likes.body()) {
+                                likedShots.add(like.shot);
                             }
-                            loadingCount.decrementAndGet();
+                            // these will be sorted like any other shot (popularity per page)
+                            // TODO figure out a more appropriate sorting strategy for likes
+                            setPage(likedShots, page);
+                            setDataSource(likedShots, SourceManager.SOURCE_DRIBBBLE_USER_LIKES);
+                            onDataLoaded(likedShots);
                         }
 
-                        @Override
-                        public void failure(RetrofitError error) {
-                            loadingCount.decrementAndGet();
-                        }
-                    });
+                    }
+                    loadingCount.decrementAndGet();
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    loadingCount.decrementAndGet();
+                }
+            });
         } else {
             loadingCount.decrementAndGet();
         }
@@ -350,29 +363,30 @@ public abstract class DataManager extends BaseDataManager
 
     private void loadDribbbleUserShots(final int page) {
         if (getDribbblePrefs().isLoggedIn()) {
-            getDribbbleApi().getUserShots(page, DribbbleService.PER_PAGE_DEFAULT,
-                    new Callback<List<Shot>>() {
-                        @Override
-                        public void success(List<Shot> shots, Response response) {
-                            if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS)) {
-                                // this api call doesn't populate the shot user field but we need it
-                                User user = getDribbblePrefs().getUser();
-                                for (Shot shot : shots) {
-                                    shot.user = user;
-                                }
-
-                                setPage(shots, page);
-                                setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
-                                onDataLoaded(shots);
+            getDribbbleApi().getUserShots(page, DribbbleService.PER_PAGE_DEFAULT).enqueue(new Callback<List<Shot>>() {
+                @Override
+                public void onResponse(Response<List<Shot>> shots, Retrofit retrofit) {
+                    if (shots.isSuccess()) {
+                        if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS)) {
+                            // this api call doesn't populate the shot user field but we need it
+                            User user = getDribbblePrefs().getUser();
+                            for (Shot shot : shots.body()) {
+                                shot.user = user;
                             }
-                            loadingCount.decrementAndGet();
-                        }
 
-                        @Override
-                        public void failure(RetrofitError error) {
-                            loadingCount.decrementAndGet();
+                            setPage(shots.body(), page);
+                            setDataSource(shots.body(), SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
+                            onDataLoaded(shots.body());
                         }
-                    });
+                    }
+                    loadingCount.decrementAndGet();
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    loadingCount.decrementAndGet();
+                }
+            });
         } else {
             loadingCount.decrementAndGet();
         }
@@ -400,20 +414,22 @@ public abstract class DataManager extends BaseDataManager
 
     private void loadProductHunt(final int page) {
         // this API's paging is 0 based but this class (& sorting) is 1 based so adjust locally
-        getProductHuntApi().getPosts(page - 1, new Callback<PostsResponse>() {
+        getProductHuntApi().getPosts(page - 1).enqueue(new Callback<PostsResponse>() {
             @Override
-            public void success(PostsResponse postsResponse, Response response) {
-                if (postsResponse != null && sourceIsEnabled(SourceManager.SOURCE_PRODUCT_HUNT)) {
-                    setPage(postsResponse.posts, page);
-                    setDataSource(postsResponse.posts,
-                            SourceManager.SOURCE_PRODUCT_HUNT);
-                    onDataLoaded(postsResponse.posts);
+            public void onResponse(Response<PostsResponse> postsResponse, Retrofit retrofit) {
+                if (postsResponse.isSuccess()) {
+                    if (postsResponse.body() != null && sourceIsEnabled(SourceManager.SOURCE_PRODUCT_HUNT)) {
+                        setPage(postsResponse.body().posts, page);
+                        setDataSource(postsResponse.body().posts,
+                                SourceManager.SOURCE_PRODUCT_HUNT);
+                        onDataLoaded(postsResponse.body().posts);
+                    }
                 }
                 loadingCount.decrementAndGet();
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Throwable t) {
                 loadingCount.decrementAndGet();
             }
         });
