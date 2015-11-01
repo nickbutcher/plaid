@@ -1,3 +1,5 @@
+[![Android Gems](http://www.android-gems.com/badge/nickbutcher/plaid.svg?branch=master)](http://www.android-gems.com/lib/nickbutcher/plaid)
+
 # Plaid
 
 <img src="screenshots/plaid_demo.gif" width="400" align="right" hspace="20">
