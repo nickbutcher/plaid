@@ -30,6 +30,10 @@ android {
         abortOnError false
     }
 
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+
     defaultConfig {
         applicationId "io.plaidapp"
         minSdkVersion 21
