@@ -36,7 +36,8 @@
         <activity
             android:name=".ui.HomeActivity"
             android:label="@string/app_name"
-            android:theme="@style/Plaid.Home" />
+            android:theme="@style/Plaid.Home"
+            android:exported="true" />
 
         <!-- use an alias in case we want to change the launch activity later without breaking
              homescreen shortcuts.  Note must be defined after the targetActivity -->
