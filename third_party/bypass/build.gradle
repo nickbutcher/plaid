@@ -4,6 +4,14 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
 
+    lintOptions {
+        abortOnError false
+    }
+
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 16
