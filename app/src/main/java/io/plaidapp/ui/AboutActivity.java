@@ -210,7 +210,6 @@ public class AboutActivity extends Activity {
 
         public LibraryAdapter(Context context) {
             circleCrop = new CircleTransform(context);
-            setHasStableIds(true);
         }
 
         @Override
@@ -241,11 +240,6 @@ public class AboutActivity extends Activity {
         @Override
         public int getItemCount() {
             return libs.length + 1; // + 1 for the static intro view
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
         }
 
         private void bindLibrary(final LibraryHolder holder, final Library lib) {

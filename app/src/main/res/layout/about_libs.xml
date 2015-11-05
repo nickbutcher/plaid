@@ -15,17 +15,30 @@
   limitations under the License.
   -->
 
-<android.support.v7.widget.RecyclerView
-    android:id="@+id/libs_list"
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/spacing_normal"
-    android:clipToPadding="false"
-    android:background="@color/grey_200"
-    android:transitionGroup="false"
-    android:scrollbars="vertical"
-    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-    tools:showIn="@layout/activity_about"/>
+    tools:showIn="@layout/activity_about">
+
+    <!-- we use a parallel view for the background rather than just setting a background on the
+         recycler view for a nicer return transition. i.e. we want the background to fade and the
+         list to slide out separately -->
+    <View
+        android:id="@+id/libs_list_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey_200" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/libs_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_normal"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+</FrameLayout>

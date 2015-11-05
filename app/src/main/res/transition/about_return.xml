@@ -21,7 +21,7 @@
     android:interpolator="@android:interpolator/fast_out_linear_in">
 
     <slide
-        android:slideEdge="bottom"
+        android:slideEdge="top"
         android:duration="400">
         <targets>
             <target android:excludeId="@android:id/navigationBarBackground" />

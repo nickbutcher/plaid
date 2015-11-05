@@ -113,6 +113,7 @@
 
     <style name="Plaid.Translucent.About">
         <item name="android:windowEnterTransition">@transition/about_enter</item>
+        <item name="android:windowReturnTransition">@transition/about_return</item>
     </style>
 
     <style name="SearchWindowAnimations">
