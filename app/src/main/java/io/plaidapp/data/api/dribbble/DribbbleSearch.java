@@ -99,8 +99,10 @@ public class DribbbleSearch {
                 .setDescription(description)
                 .setImages(new Images(null, imgUrl, null))
                 .setCreatedAt(createdAt)
-                .setLikesCount(Long.parseLong(element.select("li.fav").first().child(0).text().replaceAll(",", "")))
-                .setCommentsCount(Long.parseLong(element.select("li.cmnt").first().child(0).text().replaceAll(",", "")))
+                .setLikesCount(Long.parseLong(element.select("li.fav").first().child(0).text()
+                        .replaceAll(",", "")))
+                .setCommentsCount(Long.parseLong(element.select("li.cmnt").first().child(0).text
+                        ().replaceAll(",", "")))
                 .setViewsCount(Long.parseLong(element.select("li.views").first().child(0)
                         .text().replaceAll(",", "")))
                 .setUser(parsePlayer(element.select("h2").first()))
@@ -115,14 +117,16 @@ public class DribbbleSearch {
         }
         Matcher matchId = PATTERN_PLAYER_ID.matcher(avatarUrl);
         Long id = -1l;
-        if (matchId.find()) {
+        if (matchId.find() && matchId.groupCount() == 1) {
             id = Long.parseLong(matchId.group(1));
         }
+        String slashUsername = userBlock.attr("href");
+        String username = TextUtils.isEmpty(slashUsername) ? null : slashUsername.substring(1);
         return new User.Builder()
                 .setId(id)
                 .setName(userBlock.text())
-                .setUsername(userBlock.attr("href").substring(1))
-                .setHtmlUrl(HOST + userBlock.attr("href"))
+                .setUsername(username)
+                .setHtmlUrl(HOST + slashUsername)
                 .setAvatarUrl(avatarUrl)
                 .setPro(element.select("span.badge-pro").size() > 0)
                 .build();
