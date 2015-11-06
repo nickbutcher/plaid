@@ -310,6 +310,14 @@ public class SearchActivity extends Activity {
                         android.R.interpolator.fast_out_linear_in))
                 .setListener(null)
                 .start();
+        if (searchToolbar.getZ() != 0f) {
+            searchToolbar.animate()
+                    .z(0f)
+                    .setDuration(600L)
+                    .setInterpolator(AnimationUtils.loadInterpolator(this,
+                            android.R.interpolator.fast_out_linear_in))
+                    .start();
+        }
 
         // if we're showing search results, circular hide them
         if (resultsContainer.getHeight() > 0) {
