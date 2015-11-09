@@ -28,18 +28,6 @@ import java.util.List;
  */
 public class Comment implements Parcelable {
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Comment> CREATOR = new Parcelable.Creator<Comment>() {
-        @Override
-        public Comment createFromParcel(Parcel in) {
-            return new Comment(in);
-        }
-
-        @Override
-        public Comment[] newArray(int size) {
-            return new Comment[size];
-        }
-    };
     public final long id;
     public final String body;
     public final String body_html;
@@ -120,4 +108,18 @@ public class Comment implements Parcelable {
             dest.writeList(comments);
         }
     }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Comment> CREATOR = new Parcelable.Creator<Comment>() {
+        @Override
+        public Comment createFromParcel(Parcel in) {
+            return new Comment(in);
+        }
+
+        @Override
+        public Comment[] newArray(int size) {
+            return new Comment[size];
+        }
+    };
+
 }

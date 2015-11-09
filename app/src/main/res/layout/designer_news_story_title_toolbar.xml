@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -16,19 +15,8 @@
   limitations under the License.
   -->
 
-<TextView
+<!-- unused view, only needed in landscape -->
+<Space
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@android:id/empty"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingStart="@dimen/padding_normal"
-    android:paddingTop="@dimen/spacing_large"
-    android:paddingEnd="@dimen/padding_normal"
-    android:paddingBottom="@dimen/spacing_large"
-    android:clickable="false"
-    android:drawableTop="@drawable/ic_no_comments"
-    android:gravity="center"
-    android:text="@string/no_comments"
-    android:textAppearance="@style/TextAppearance.EmptyState"
-    tools:showIn="@layout/activity_designer_news_story"/>
+    android:layout_width="0dp"
+    android:layout_height="0dp" />

@@ -19,11 +19,29 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:viewportHeight="24"
+    android:viewportWidth="24">
+
+    <clip-path
+        android:pathData="@string/path_upvote_clip" />
 
     <path
-        android:pathData="@string/heart_full_path_24dp"
-        android:fillColor="@color/text_secondary_dark" />
+        android:name="empty"
+        android:pathData="@string/path_upvote"
+        android:strokeColor="@color/text_secondary_dark"
+        android:strokeWidth="2"
+        android:strokeLineJoin="round" />
+
+    <group
+        android:name="filled">
+
+        <path
+            android:pathData="@string/path_upvote"
+            android:strokeColor="@color/designer_news"
+            android:strokeWidth="2"
+            android:strokeLineJoin="round"
+            android:fillColor="@color/designer_news"/>
+
+    </group>
 
 </vector>

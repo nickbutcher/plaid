@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -16,19 +15,31 @@
   limitations under the License.
   -->
 
-<TextView
+<animated-selector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@android:id/empty"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingStart="@dimen/padding_normal"
-    android:paddingTop="@dimen/spacing_large"
-    android:paddingEnd="@dimen/padding_normal"
-    android:paddingBottom="@dimen/spacing_large"
-    android:clickable="false"
-    android:drawableTop="@drawable/ic_no_comments"
-    android:gravity="center"
-    android:text="@string/no_comments"
-    android:textAppearance="@style/TextAppearance.EmptyState"
-    tools:showIn="@layout/activity_designer_news_story"/>
+    android:constantSize="true">
+
+    <item
+        android:id="@+id/upvoted"
+        android:state_activated="true"
+        android:drawable="@drawable/ic_upvote_filled_24dp_blue" />
+
+    <item
+        android:id="@+id/not_upvoted"
+        android:drawable="@drawable/ic_upvote_empty_24dp_grey" />
+
+    <transition
+        android:fromId="@id/not_upvoted"
+        android:toId="@id/upvoted">
+
+        <animated-vector android:drawable="@drawable/ic_upvote_anim">
+
+            <target
+                android:name="filled"
+                android:animation="@animator/upvote" />
+
+        </animated-vector>
+
+    </transition>
+
+</animated-selector>

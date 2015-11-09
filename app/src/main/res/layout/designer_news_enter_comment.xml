@@ -21,20 +21,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?android:listPreferredItemHeight"
+    android:paddingStart="@dimen/padding_normal"
     android:paddingTop="@dimen/spacing_large"
     android:paddingEnd="@dimen/padding_normal"
     android:orientation="horizontal"
     android:baselineAligned="false">
-
-    <io.plaidapp.ui.widget.ForegroundImageView
-        android:id="@+id/avatar"
-        android:layout_width="@dimen/avatar_bounds"
-        android:layout_height="@dimen/avatar_bounds"
-        android:layout_marginEnd="@dimen/avatar_margin"
-        android:layout_marginStart="@dimen/avatar_margin"
-        android:padding="@dimen/avatar_padding"
-        android:layout_gravity="top"
-        android:src="@drawable/ic_player" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="0dp"
@@ -44,11 +35,12 @@
 
         <EditText
             android:id="@+id/comment"
-            android:hint="@string/hint_reply"
+            android:hint="@string/comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="textCapSentences"
+            android:gravity="top"
+            android:inputType="textMultiLine|textCapSentences"
             android:textSize="16sp"
             android:textColor="@color/text_primary_dark" />
 
@@ -61,7 +53,6 @@
         android:layout_gravity="top"
         android:padding="@dimen/spacing_normal"
         android:src="@drawable/ic_add_comment_state"
-        android:background="?android:selectableItemBackgroundBorderless"
-        android:onClick="postComment" />
+        android:background="?android:selectableItemBackgroundBorderless" />
 
 </LinearLayout>

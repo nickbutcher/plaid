@@ -133,7 +133,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="top"
-                        android:hint="@string/new_story_comment_hint"
+                        android:hint="@string/comment"
                         android:inputType="textMultiLine|textCapSentences"
                         android:imeOptions="actionSend" />
 

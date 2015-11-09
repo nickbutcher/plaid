@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -16,19 +15,23 @@
   limitations under the License.
   -->
 
-<TextView
+<Toolbar
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@android:id/empty"
+    android:id="@+id/story_toolbar"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingStart="@dimen/padding_normal"
-    android:paddingTop="@dimen/spacing_large"
-    android:paddingEnd="@dimen/padding_normal"
-    android:paddingBottom="@dimen/spacing_large"
-    android:clickable="false"
-    android:drawableTop="@drawable/ic_no_comments"
-    android:gravity="center"
-    android:text="@string/no_comments"
-    android:textAppearance="@style/TextAppearance.EmptyState"
-    tools:showIn="@layout/activity_designer_news_story"/>
+    android:layout_height="?android:actionBarSize"
+    android:background="@drawable/designer_news_app_bar_background"
+    android:navigationIcon="@drawable/ic_arrow_back"
+    android:contentInsetStart="@dimen/keyline_1"
+    android:contentInsetEnd="@dimen/padding_normal"
+    android:transitionName="@string/transition_story_title_background">
+
+    <io.plaidapp.ui.widget.FontTextView
+        android:id="@+id/story_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:ellipsize="end"
+        android:textAppearance="@style/TextAppearance.ToolbarTitle" />
+
+</Toolbar>
