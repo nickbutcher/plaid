@@ -44,6 +44,7 @@
     <color name="grey_300">#ffe0e0e0</color>
     <color name="content_placeholder">#ffe0e0e0</color>
     <color name="dark_icon">#99000000</color> <!-- 60% black-->
+    <color name="light_icon">#ffffffff</color>
     <color name="divider">#1f000000</color> <!-- 12% black -->
     <color name="page_indicator_dark">#80333333</color>
     <color name="page_indicator_dark_selected">#ff333333</color>

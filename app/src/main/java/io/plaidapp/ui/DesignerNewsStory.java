@@ -17,7 +17,6 @@
 package io.plaidapp.ui;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
@@ -289,11 +288,11 @@ public class DesignerNewsStory extends Activity {
             = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            checkScrollDependentUi();
+            updateScrollDependentUi();
         }
     };
 
-    private void checkScrollDependentUi() {
+    private void updateScrollDependentUi() {
         final int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
         // feed scroll events to the header
@@ -303,11 +302,11 @@ public class DesignerNewsStory extends Activity {
             toolbarBackground.setOffset(headerScroll);
         }
 
-        checkFabVisibility(firstVisibleItemPosition);
+        updateFabVisibility(firstVisibleItemPosition);
     }
 
     private boolean fabIsVisible = true;
-    private void checkFabVisibility(final int firstVisibleItemPosition) {
+    private void updateFabVisibility(final int firstVisibleItemPosition) {
         // the FAB position can interfere with the enter comment field. Hide the FAB if:
         // - The comment field is scrolled onto screen
         // - The comment field is focused (i.e. stories with no/few comments might not push the
@@ -321,6 +320,7 @@ public class DesignerNewsStory extends Activity {
                 (firstVisibleItemPosition == 0 && !enterCommentFocused) || !footerVisible;
 
         if (!fabShouldBeVisible && fabIsVisible) {
+            fabIsVisible = false;
             fab.animate()
                     .scaleX(0f)
                     .scaleY(0f)
@@ -329,15 +329,9 @@ public class DesignerNewsStory extends Activity {
                     .withLayer()
                     .setInterpolator(AnimationUtils.loadInterpolator(this,
                             android.R.interpolator.fast_out_linear_in))
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            fab.setVisibility(View.GONE);
-                        }
-                    })
                     .start();
         } else if (fabShouldBeVisible && !fabIsVisible) {
-            fab.setVisibility(View.VISIBLE);
+            fabIsVisible = true;
             fab.animate()
                     .scaleX(1f)
                     .scaleY(1f)
@@ -346,11 +340,9 @@ public class DesignerNewsStory extends Activity {
                     .withLayer()
                     .setInterpolator(AnimationUtils.loadInterpolator(this,
                             android.R.interpolator.linear_out_slow_in))
-                    .setListener(null)
                     .start();
             ImeUtils.hideIme(enterComment);
         }
-        fabIsVisible = fabShouldBeVisible;
     }
 
     // title can expand up to a max number of lines.  If it does then adjust the list padding
@@ -368,7 +360,7 @@ public class DesignerNewsStory extends Activity {
                 collapsingToolbar.setScrollPixelOffset(0);
                 toolbarBackground.setOffset(0);
             }
-            checkScrollDependentUi();
+            updateScrollDependentUi();
         }
     };
 
@@ -634,7 +626,7 @@ public class DesignerNewsStory extends Activity {
             // kick off an anim (via animated state list) on the post button. see
             // @drawable/ic_add_comment_state
             postComment.setActivated(hasFocus);
-            checkFabVisibility(layoutManager.findFirstVisibleItemPosition());
+            updateFabVisibility(layoutManager.findFirstVisibleItemPosition());
         }
     };
 

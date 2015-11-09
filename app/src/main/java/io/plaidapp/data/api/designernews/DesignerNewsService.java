@@ -26,7 +26,6 @@ import io.plaidapp.data.api.designernews.model.StoryResponse;
 import io.plaidapp.data.api.designernews.model.UserResponse;
 import retrofit.Callback;
 import retrofit.http.Body;
-import retrofit.http.DELETE;
 import retrofit.http.Field;
 import retrofit.http.FieldMap;
 import retrofit.http.FormUrlEncoded;

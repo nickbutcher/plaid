@@ -24,9 +24,9 @@
 
     <path
         android:pathData="@string/path_upvote"
-        android:strokeColor="#fff"
+        android:strokeColor="@color/light_icon"
         android:strokeWidth="2"
         android:strokeLineJoin="round"
-        android:fillColor="#fff" />
+        android:fillColor="@color/light_icon" />
 
 </vector>
