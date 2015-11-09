@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -16,12 +15,15 @@
   limitations under the License.
   -->
 
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-        android:width="56dp"
-        android:height="56dp"
-        android:viewportWidth="48"
-        android:viewportHeight="48">
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="36dp"
+    android:height="36dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
     <path
         android:pathData="M40.3797458,8.85523799 C41.1769296,9.52771558 41.6811165,10.5373723 41.6811165,11.6666667 L41.6994499,44.6666667 L34.3661165,37.3333333 L11.9016504,37.3333333 L7.63388348,41.6011003 L4.86611652,38.8333333 L40.3661165,3.33333333 L43.1338835,6.10110029 L40.3797458,8.85523799 Z M19.2349838,30 L34.3661165,30 L34.3661165,26.3333333 L22.9016504,26.3333333 L19.2349838,30 Z M24.7349838,24.5 L34.3661165,24.5 L34.3661165,20.8333333 L28.4016504,20.8333333 L24.7349838,24.5 Z M30.2349838,19 L34.3661165,19 L34.3661165,15.3333333 L33.9016504,15.3333333 L30.2349838,19 Z M30.2994498,8 L8.69944986,8 C6.67361652,8 5.03278319,9.64083333 5.03278319,11.6666667 L5.03278319,33.2666666 L13.7994498,24.5 L12.3661165,24.5 L12.3661165,20.8333333 L17.4661164,20.8333333 L19.2994498,19 L12.3661165,19 L12.3661165,15.3333333 L22.9661164,15.3333333 L30.2994498,8 L30.2994498,8 Z"
-        android:fillColor="@color/grey_300"/>
+        android:fillColor="@color/grey_300" />
+
 </vector>

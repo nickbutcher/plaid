@@ -23,6 +23,7 @@
     <string name="login_to">Log in to</string>
     <string name="need_login">Woah there chief. First you\'ll need&#160;to</string> <!-- &#160; == nbsp -->
     <string name="dribbble_logged_in_as">Logged in as</string>
+    <string name="comment">Comment</string>
 
     <!-- main screen -->
     <string name="search">Search</string>
@@ -64,11 +65,7 @@
     <string name="new_story_link_or_comment">Include a url <b>or</b> a comment</string>
     <string name="new_story_post_title">Post title</string>
     <string name="new_story_url">Url</string>
-    <!--<string name="new_story_url_hint">http://ducksarethebest.com</string>-->
     <string name="new_story_url_hint">Link</string>
-    <string name="new_story_comment">Comment</string>
-    <!--<string name="new_story_comment_hint">Enter your comment.  Be nice, or else.</string>-->
-    <string name="new_story_comment_hint">Comment</string>
     <string name="new_story_post">Post</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -82,6 +79,12 @@
 
     <!-- designer news story -->
     <string name="upvote_story">Upvote story</string>
+    <!-- using strings for the number of views/likes as we run them through NumberFormat -->
+    <plurals name="upvotes">
+        <item quantity="zero">no upvotes</item>
+        <item quantity="one">%s upvote</item>
+        <item quantity="other">%s upvotes</item>
+    </plurals>
 
 
     <!-- dribbble shot screen -->
@@ -97,6 +100,7 @@
         <item quantity="other">%s views</item>
     </plurals>
     <string name="share">share</string>
+    <string name="hint_reply">Reply</string>
 
     <!-- dribbble login -->
 

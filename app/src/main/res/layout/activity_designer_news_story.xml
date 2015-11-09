@@ -38,10 +38,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="@dimen/extended_height_toolbar"
-        android:paddingBottom="@dimen/padding_room_for_fab"
+        android:paddingBottom="@dimen/padding_normal"
         android:clipToPadding="false"
-        android:scrollbars="vertical"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+        android:scrollbars="vertical" />
 
     <io.plaidapp.ui.widget.CollapsingTitleLayout
         android:id="@+id/backdrop_toolbar"

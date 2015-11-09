@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -23,26 +22,89 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/story_poster"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_normal"
-        android:layout_marginBottom="@dimen/spacing_micro"
-        android:clickable="false"
-        android:textColor="@color/hint_disabled_dark"
-        style="@style/Widget.Plaid.DesignerNewsDescription" />
+    <!-- in landscape orientation, include a toolbar instead of the collapsing title layout -->
+    <include layout="@layout/designer_news_story_title_toolbar" />
 
     <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/story_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/padding_normal"
+        android:layout_marginTop="@dimen/padding_normal"
         android:paddingEnd="@dimen/padding_normal"
-        android:paddingBottom="@dimen/padding_normal"
         android:textColorLink="@color/designer_news_links"
         android:textColorHighlight="@color/designer_news_link_highlight"
         tools:text="Blah blah blah blah blah blah blah blah blah blah blah"
         style="@style/Widget.Plaid.DesignerNewsDescription" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/padding_normal"
+        android:paddingTop="@dimen/spacing_large"
+        android:paddingEnd="@dimen/padding_normal"
+        android:paddingBottom="@dimen/padding_normal"
+        android:orientation="horizontal">
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/story_vote_action"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:drawableTop="@drawable/ic_upvote"
+            tools:text="33 likes"
+            style="@style/Widget.Plaid.DribbleShotAction" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/story_share_action"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:drawableTop="@drawable/ic_action_share_24dp"
+            android:text="@string/share"
+            style="@style/Widget.Plaid.DribbleShotAction" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/padding_normal"
+        android:paddingBottom="@dimen/padding_normal"
+        android:orientation="horizontal">
+
+        <io.plaidapp.ui.widget.BaselineGridTextView
+            android:id="@+id/story_poster_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="@dimen/padding_normal"
+            android:gravity="end"
+            android:textAppearance="@style/TextAppearance.CommentTimestamp"
+            tools:text="Nick B, Designer+Developer @ Google" />
+
+        <ImageView
+            android:id="@+id/story_poster_avatar"
+            android:layout_width="@dimen/avatar_bounds"
+            android:layout_height="@dimen/avatar_bounds"
+            android:layout_marginStart="@dimen/avatar_margin"
+            android:src="@drawable/avatar_placeholder" />
+
+    </LinearLayout>
 
 </LinearLayout>

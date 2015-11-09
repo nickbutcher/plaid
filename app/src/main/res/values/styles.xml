@@ -55,6 +55,7 @@
     <style name="Plaid.Translucent.DesignerNewsStory">
         <item name="android:colorPrimary">@color/designer_news</item>
         <item name="android:colorAccent">@color/designer_news</item>
+        <item name="android:colorControlActivated">?android:colorAccent</item>
         <item name="android:statusBarColor">@color/designer_news_dark</item>
         <item name="android:navigationBarColor">@color/designer_news_super_dark</item>
         <item name="android:windowSharedElementEnterTransition">@transition/designer_news_story_shared_enter</item>
@@ -190,7 +191,7 @@
     </style>
 
     <style name="TextAppearance.DribbbleShotDescription" parent="@android:style/TextAppearance.Material.Subhead">
-        <item name="android:textColor">#61000000</item>
+        <item name="android:textColor">@color/text_tertiary_dark</item>
         <item name="android:letterSpacing">0.01</item>
     </style>
 
@@ -216,7 +217,7 @@
     </style>
 
     <style name="TextAppearance.DesignerNewsDescription" parent="@android:style/TextAppearance.Material.Subhead">
-        <item name="android:textColor">@color/text_primary_dark</item>
+        <item name="android:textColor">@color/text_secondary_dark</item>
         <item name="android:letterSpacing">0.01</item>
     </style>
 
@@ -264,7 +265,7 @@
         <item name="android:letterSpacing">0.02</item>
     </style>
 
-    <style name="TextAppearance.EmptyState" parent="@android:style/TextAppearance.Material.Headline">
+    <style name="TextAppearance.EmptyState" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:textColor">@color/grey_300</item>
     </style>
 

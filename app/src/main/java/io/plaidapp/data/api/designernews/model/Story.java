@@ -30,18 +30,6 @@ import io.plaidapp.data.PlaidItem;
  */
 public class Story extends PlaidItem implements Parcelable {
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Story> CREATOR = new Parcelable.Creator<Story>() {
-        @Override
-        public Story createFromParcel(Parcel in) {
-            return new Story(in);
-        }
-
-        @Override
-        public Story[] newArray(int size) {
-            return new Story[size];
-        }
-    };
     public final String comment;
     public final String comment_html;
     public final int comment_count;
@@ -141,4 +129,18 @@ public class Story extends PlaidItem implements Parcelable {
             dest.writeList(comments);
         }
     }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Story> CREATOR = new Parcelable.Creator<Story>() {
+        @Override
+        public Story createFromParcel(Parcel in) {
+            return new Story(in);
+        }
+
+        @Override
+        public Story[] newArray(int size) {
+            return new Story[size];
+        }
+    };
+
 }

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright 2015 Google Inc.
 
@@ -26,7 +27,7 @@
     app:dragDismissScale="0.95">
 
     <!-- toolbar & description added as header in the adapter
-         see layout/designer_news_story_description -->
+         see layout-land/designer_news_story_description -->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/comments_list"
@@ -34,8 +35,7 @@
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/padding_normal"
         android:clipToPadding="false"
-        android:scrollbars="vertical"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+        android:scrollbars="vertical" />
 
     <include layout="@layout/designer_news_story_fab"/>
 
