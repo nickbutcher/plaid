@@ -73,7 +73,7 @@ public class FontTextView extends TextView {
     }
 
     public void setFont(String font) {
-        setPaintFlags(getPaintFlags() | Paint.SUBPIXEL_TEXT_FLAG);
+        setPaintFlags(getPaintFlags() | Paint.ANTI_ALIAS_FLAG);
         setTypeface(FontUtil.get(getContext(), font));
     }
 }
