@@ -17,6 +17,7 @@
 package io.plaidapp.ui;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
@@ -326,9 +327,10 @@ public class DesignerNewsStory extends Activity {
                     .scaleY(0f)
                     .alpha(0.6f)
                     .setDuration(200L)
-                    .withLayer()
                     .setInterpolator(AnimationUtils.loadInterpolator(this,
                             android.R.interpolator.fast_out_linear_in))
+                    .withLayer()
+                    .setListener(postHideFab)
                     .start();
         } else if (fabShouldBeVisible && !fabIsVisible) {
             fabIsVisible = true;
@@ -337,13 +339,28 @@ public class DesignerNewsStory extends Activity {
                     .scaleY(1f)
                     .alpha(1f)
                     .setDuration(200L)
-                    .withLayer()
                     .setInterpolator(AnimationUtils.loadInterpolator(this,
                             android.R.interpolator.linear_out_slow_in))
+                    .withLayer()
+                    .setListener(preShowFab)
                     .start();
             ImeUtils.hideIme(enterComment);
         }
     }
+
+    private AnimatorListenerAdapter preShowFab = new AnimatorListenerAdapter() {
+        @Override
+        public void onAnimationStart(Animator animation) {
+            fab.setVisibility(View.VISIBLE);
+        }
+    };
+
+    private AnimatorListenerAdapter postHideFab = new AnimatorListenerAdapter() {
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            fab.setVisibility(View.GONE);
+        }
+    };
 
     // title can expand up to a max number of lines.  If it does then adjust the list padding
     // & reset scroll trackers
