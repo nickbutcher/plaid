@@ -172,6 +172,7 @@ public class DesignerNewsStory extends Activity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.story_toolbar);
         if (collapsingToolbar != null) { // portrait: collapsing toolbar
             collapsingToolbar.setTitle(story.title);
+            collapsingToolbar.addOnLayoutChangeListener(titlebarLayout);
         } else { // landscape: scroll toolbar with content
             toolbar = (Toolbar) header.findViewById(R.id.story_toolbar);
             FontTextView title = (FontTextView) toolbar.findViewById(R.id.story_title);
@@ -294,25 +295,23 @@ public class DesignerNewsStory extends Activity {
     };
 
     private void updateScrollDependentUi() {
-        final int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-
         // feed scroll events to the header
-        if (collapsingToolbar != null && firstVisibleItemPosition == 0) {
+        if (collapsingToolbar != null) {
             final int headerScroll = header.getTop() - commentsList.getPaddingTop();
             collapsingToolbar.setScrollPixelOffset(-headerScroll);
             toolbarBackground.setOffset(headerScroll);
         }
-
-        updateFabVisibility(firstVisibleItemPosition);
+        updateFabVisibility();
     }
 
     private boolean fabIsVisible = true;
-    private void updateFabVisibility(final int firstVisibleItemPosition) {
+    private void updateFabVisibility() {
         // the FAB position can interfere with the enter comment field. Hide the FAB if:
         // - The comment field is scrolled onto screen
         // - The comment field is focused (i.e. stories with no/few comments might not push the
         //   enter comment field off-screen so need to make sure the button is accessible
         final boolean enterCommentFocused = enterComment.isFocused();
+        final int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
         final int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
         final int footerPosition = commentsAdapter.getItemCount() - 1;
         final boolean footerVisible = lastVisibleItemPosition == footerPosition;
@@ -404,7 +403,6 @@ public class DesignerNewsStory extends Activity {
                                        List<View> sharedElementSnapshots) {
             // force a remeasure to account for shared element shenanigans
             if (collapsingToolbar != null) {
-                collapsingToolbar.addOnLayoutChangeListener(titlebarLayout);
                 collapsingToolbar.measure(
                         View.MeasureSpec.makeMeasureSpec(draggableFrame.getWidth(),
                                 View.MeasureSpec.AT_MOST),
@@ -643,7 +641,7 @@ public class DesignerNewsStory extends Activity {
             // kick off an anim (via animated state list) on the post button. see
             // @drawable/ic_add_comment_state
             postComment.setActivated(hasFocus);
-            updateFabVisibility(layoutManager.findFirstVisibleItemPosition());
+            updateFabVisibility();
         }
     };
 
