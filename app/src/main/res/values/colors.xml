@@ -19,9 +19,9 @@
 
     <!-- app palette -->
     <color name="primary">#69F0AE</color>
-    <color name="accent">#69F0AE</color>
+    <color name="accent">@color/primary</color> <!-- mono-color -->
+    <color name="primary_dark">#5acc95</color>
     <color name="primary_super_dark">#11261c</color> <!-- same hue & sat, 15% brightness -->
-    <color name="accent_dark">#8f69F0AE</color>
 
     <!-- common colours -->
     <color name="text_primary_dark">#de000000</color> <!-- 87% -->
