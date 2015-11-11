@@ -409,16 +409,15 @@ public class DribbbleShot extends Activity {
                     .generate(new Palette.PaletteAsyncListener() {
                         @Override
                         public void onGenerated(Palette palette) {
-                            Palette.Swatch vibrant = palette.getVibrantSwatch();
-                            if (vibrant != null) {
-                                // color the ripple on the image spacer (default is grey)
-                                shotSpacer.setBackground(ViewUtils.createMaskedRipple(vibrant
-                                        .getRgb(), 0.25f));
-                                // slightly more opaque ripple on the pinned image to compensate
-                                // for the scrim
-                                imageView.setForeground(ViewUtils.createRipple(vibrant.getRgb(),
-                                        0.3f));
-                            }
+                            // color the ripple on the image spacer (default is grey)
+                            shotSpacer.setBackground(ViewUtils.createRipple(palette, 0.25f, 0.5f,
+                                    ContextCompat.getColor(DribbbleShot.this, R.color.mid_grey),
+                                    true));
+                            // slightly more opaque ripple on the pinned image to compensate
+                            // for the scrim
+                            imageView.setForeground(ViewUtils.createRipple(palette, 0.3f, 0.6f,
+                                    ContextCompat.getColor(DribbbleShot.this, R.color.mid_grey),
+                                    true));
                         }
                     });
 

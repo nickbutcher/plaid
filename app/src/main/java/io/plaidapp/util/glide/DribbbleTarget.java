@@ -17,7 +17,6 @@
 package io.plaidapp.util.glide;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 
@@ -33,10 +32,11 @@ import io.plaidapp.util.ColorUtils;
 import io.plaidapp.util.ViewUtils;
 
 /**
- *
+ * A Glide {@see ViewTarget} for {@link BadgedFourThreeImageView}s. It applies a badge for animated
+ * images, can prevent GIFs from auto-playing & applies a palette generated ripple.
  */
-public class DribbbleTarget extends GlideDrawableImageViewTarget implements Palette
-        .PaletteAsyncListener {
+public class DribbbleTarget extends GlideDrawableImageViewTarget implements
+        Palette.PaletteAsyncListener {
 
     private boolean playGifs;
 
@@ -94,24 +94,9 @@ public class DribbbleTarget extends GlideDrawableImageViewTarget implements Pale
 
     @Override
     public void onGenerated(Palette palette) {
-        Drawable ripple = null;
-        // try the named swatches in preference order
-        if (palette.getVibrantSwatch() != null) {
-            ripple = ViewUtils.createRipple(palette.getVibrantSwatch().getRgb(), 0.25f);
-        } else if (palette.getLightVibrantSwatch() != null) {
-            ripple = ViewUtils.createRipple(palette.getLightVibrantSwatch().getRgb(), 0.5f);
-        } else if (palette.getDarkVibrantSwatch() != null) {
-            ripple = ViewUtils.createRipple(palette.getDarkVibrantSwatch().getRgb(), 0.25f);
-        } else if (palette.getMutedSwatch() != null) {
-            ripple = ViewUtils.createRipple(palette.getMutedSwatch().getRgb(), 0.25f);
-        } else if (palette.getLightMutedSwatch() != null) {
-            ripple = ViewUtils.createRipple(palette.getLightMutedSwatch().getRgb(), 0.5f);
-        } else if (palette.getDarkMutedSwatch() != null) {
-            ripple = ViewUtils.createRipple(palette.getDarkMutedSwatch().getRgb(), 0.25f);
-        } else {
-            // no swatches found, fall back to grey :(
-            ripple = getView().getContext().getDrawable(R.drawable.mid_grey_ripple);
-        }
-        ((BadgedFourThreeImageView) getView()).setForeground(ripple);
+        ((BadgedFourThreeImageView) getView()).setForeground(
+                ViewUtils.createRipple(palette, 0.25f, 0.5f,
+                        ContextCompat.getColor(getView().getContext(), R.color.mid_grey), true));
     }
+
 }

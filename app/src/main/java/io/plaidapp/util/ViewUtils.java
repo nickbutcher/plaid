@@ -26,6 +26,7 @@ import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
+import android.support.v7.graphics.Palette;
 import android.text.TextPaint;
 import android.util.DisplayMetrics;
 import android.util.Property;
@@ -53,16 +54,38 @@ public class ViewUtils {
     }
 
     public static RippleDrawable createRipple(@ColorInt int color,
-                                              @FloatRange(from = 0f, to = 1f) float alpha) {
+                                              @FloatRange(from = 0f, to = 1f) float alpha,
+                                              boolean bounded) {
         color = ColorUtils.modifyAlpha(color, alpha);
-        return new RippleDrawable(ColorStateList.valueOf(color), null, null);
+        return new RippleDrawable(ColorStateList.valueOf(color), null,
+                bounded ? new ColorDrawable(Color.WHITE) : null);
     }
 
-    public static RippleDrawable createMaskedRipple(@ColorInt int color,
-                                                    @FloatRange(from = 0f, to = 1f) float alpha) {
-        color = ColorUtils.modifyAlpha(color, alpha);
-        return new RippleDrawable(ColorStateList.valueOf(color), null, new ColorDrawable
-                (0xffffffff));
+    public static RippleDrawable createRipple(@NonNull Palette palette,
+                                              @FloatRange(from = 0f, to = 1f) float darkAlpha,
+                                              @FloatRange(from = 0f, to = 1f) float lightAlpha,
+                                              @ColorInt int fallbackColor,
+                                              boolean bounded) {
+        int rippleColor = fallbackColor;
+        // try the named swatches in preference order
+        if (palette.getVibrantSwatch() != null) {
+            rippleColor = ColorUtils.modifyAlpha(palette.getVibrantSwatch().getRgb(), darkAlpha);
+        } else if (palette.getLightVibrantSwatch() != null) {
+            rippleColor = ColorUtils.modifyAlpha(palette.getLightVibrantSwatch().getRgb(),
+                    lightAlpha);
+        } else if (palette.getDarkVibrantSwatch() != null) {
+            rippleColor = ColorUtils.modifyAlpha(palette.getDarkVibrantSwatch().getRgb(),
+                    darkAlpha);
+        } else if (palette.getMutedSwatch() != null) {
+            rippleColor = ColorUtils.modifyAlpha(palette.getMutedSwatch().getRgb(), darkAlpha);
+        } else if (palette.getLightMutedSwatch() != null) {
+            rippleColor = ColorUtils.modifyAlpha(palette.getLightMutedSwatch().getRgb(),
+                    lightAlpha);
+        } else if (palette.getDarkMutedSwatch() != null) {
+            rippleColor = ColorUtils.modifyAlpha(palette.getDarkMutedSwatch().getRgb(), darkAlpha);
+        }
+        return new RippleDrawable(ColorStateList.valueOf(rippleColor), null,
+                bounded ? new ColorDrawable(Color.WHITE) : null);
     }
 
     public static void setLightStatusBar(@NonNull View view) {
