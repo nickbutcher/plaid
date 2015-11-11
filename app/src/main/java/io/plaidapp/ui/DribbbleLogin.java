@@ -97,7 +97,16 @@ public class DribbbleLogin extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        setIntent(intent);
         checkAuthCallback(intent);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && getIntent().getData() == null && loading.getVisibility() == View.VISIBLE) {
+            showLogin();
+        }
     }
 
     public void doLogin(View view) {
