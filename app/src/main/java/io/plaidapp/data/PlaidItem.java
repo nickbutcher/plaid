@@ -28,6 +28,7 @@ public abstract class PlaidItem {
     public int page;
     public float weight;
     public float weightBoost;
+    public int colspan;
 
     public PlaidItem(long id,
                      String title,

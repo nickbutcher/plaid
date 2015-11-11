@@ -85,14 +85,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final PlaidItemComparator comparator;
     private final boolean pocketIsInstalled;
     private @Nullable DataLoadingSubject dataLoading;
+    private final int columns;
 
     private List<PlaidItem> items;
 
     public FeedAdapter(Activity hostActivity,
                        DataLoadingSubject dataLoading,
+                       int columns,
                        boolean pocketInstalled) {
         this.host = hostActivity;
         this.dataLoading = dataLoading;
+        this.columns = columns;
         this.pocketIsInstalled = pocketInstalled;
         layoutInflater = LayoutInflater.from(host);
         comparator = new PlaidItemComparator();
@@ -386,6 +389,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return items.get(position);
     }
 
+    public int getItemColumnSpan(int position) {
+        switch (getItemViewType(position)) {
+            case TYPE_LOADING_MORE:
+                return columns;
+            default:
+                return getItem(position).colspan;
+        }
+    }
+
     private void add(PlaidItem item) {
         items.add(item);
     }
@@ -417,6 +429,38 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         }
         sort();
+        expandPopularItems();
+    }
+
+    private void expandPopularItems() {
+        // for now just expand the first dribbble image per page which should be
+        // the most popular according to #sort.
+        // TODO make this smarter & handle other item types
+        List<Integer> expandedPositions = new ArrayList<>();
+        int page = -1;
+        final int count = items.size();
+        for (int i = 0; i < count; i++) {
+            PlaidItem item = getItem(i);
+            if (item instanceof Shot && item.page > page) {
+                item.colspan = columns;
+                page = item.page;
+                expandedPositions.add(i);
+            } else {
+                item.colspan = 1;
+            }
+        }
+
+        // make sure that any expanded items are at the start of a row
+        // so that we don't leave any gaps in the grid
+        for (int expandedPos = 0; expandedPos < expandedPositions.size(); expandedPos++) {
+            int pos = expandedPositions.get(expandedPos);
+            int extraSpannedSpaces = expandedPos * (columns - 1);
+            int rowPosition = (pos + extraSpannedSpaces) % columns;
+            if (rowPosition != 0) {
+                int swapWith = pos + (columns - rowPosition);
+                Collections.swap(items, pos, swapWith);
+            }
+        }
     }
 
     protected void sort() {

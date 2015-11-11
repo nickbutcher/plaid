@@ -161,13 +161,13 @@ public class HomeActivity extends Activity {
                 checkEmptyState();
             }
         };
-        adapter = new FeedAdapter(this, dataManager, PocketUtils.isPocketInstalled(this));
+        adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this));
         grid.setAdapter(adapter);
         layoutManager = new GridLayoutManager(this, columns);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return position == adapter.getDataItemCount() ? columns : 1;
+                return adapter.getItemColumnSpan(position);
             }
         });
         grid.setLayoutManager(layoutManager);
