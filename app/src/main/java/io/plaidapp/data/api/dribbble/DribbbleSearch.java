@@ -20,6 +20,7 @@ import android.support.annotation.StringDef;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
+import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -31,7 +32,6 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,19 +49,33 @@ import io.plaidapp.data.api.dribbble.model.User;
  */
 public class DribbbleSearch {
 
-    public static final String SORT_POPULAR = "s=";
-    public static final String SORT_RECENT = "s=latest";
-    private static final String SEARCH_ENDPOINT = "/search?q=";
     private static final String HOST = "https://dribbble.com";
-    private static final Pattern PATTERN_PLAYER_ID = Pattern.compile("users/(\\d+?)/", Pattern
-            .DOTALL);
+    public static final String SORT_POPULAR = "";
+    public static final String SORT_RECENT = "latest";
+    private static final Pattern PATTERN_PLAYER_ID =
+            Pattern.compile("users/(\\d+?)/", Pattern.DOTALL);
 
     @WorkerThread
     public static List<Shot> search(String query, @SortOrder String sort, int page) {
-
+        String html = null;
         // e.g https://dribbble.com/search?q=material+design&page=7&per_page=12
-        String html = downloadPage(HOST + SEARCH_ENDPOINT + URLEncoder.encode(query) + "&" + sort
-                + "&page=" + page + "&per_page=12");
+        HttpUrl url = new HttpUrl.Builder()
+                .scheme("https")
+                .host("dribbble.com")
+                .addPathSegment("search")
+                .addQueryParameter("q", query)
+                .addQueryParameter("page", String.valueOf(page))
+                .addQueryParameter("per_page", "12")
+                .build();
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(url).build();
+        try {
+            Response response = client.newCall(request).execute();
+            html = response.body().string();
+        } catch (IOException ioe) {
+            return null;
+        }
+
         if (html == null) return null;
         Elements shotElements = Jsoup.parse(html, HOST).select("li[id^=screenshot]");
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy");
@@ -88,8 +102,7 @@ public class DribbbleSearch {
         }
         Date createdAt = null;
         try {
-            createdAt
-                    = dateFormat.parse(descriptionBlock.select("em.timestamp").first().text());
+            createdAt = dateFormat.parse(descriptionBlock.select("em.timestamp").first().text());
         } catch (ParseException e) { }
 
         return new Shot.Builder()
@@ -130,17 +143,6 @@ public class DribbbleSearch {
                 .setAvatarUrl(avatarUrl)
                 .setPro(element.select("span.badge-pro").size() > 0)
                 .build();
-    }
-
-    private static String downloadPage(String url) {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url(url).build();
-        try {
-            Response response = client.newCall(request).execute();
-            return response.body().string();
-        } catch (IOException ioe) {
-            return null;
-        }
     }
 
     @Retention(RetentionPolicy.SOURCE)
