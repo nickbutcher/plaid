@@ -20,9 +20,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ShareCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -104,12 +106,37 @@ public class PostNewDesignerNewsStory extends Activity {
                             .setStartDelay(0L)
                             .setDuration(80L)
                             .setInterpolator(AnimationUtils.loadInterpolator
-                                    (PostNewDesignerNewsStory.this, android.R.interpolator
-                                            .fast_out_slow_in))
+                                    (PostNewDesignerNewsStory.this,
+                                            android.R.interpolator.fast_out_slow_in))
                             .start();
                 }
             }
         });
+
+        // check for share intent
+        if (getIntent() != null && Intent.ACTION_SEND.equals(getIntent().getAction())) {
+            url.setText(ShareCompat.IntentReader.from(this).getText());
+
+            // when receiving a share there is no shared element transition so animate up the
+            // bottom sheet to establish the spatial model i.e. that it can be dismissed downward
+            overridePendingTransition(R.anim.post_story_enter, R.anim.fade_out_rapidly);
+            bottomSheetContent.getViewTreeObserver().addOnPreDrawListener(
+                    new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    bottomSheetContent.getViewTreeObserver().removeOnPreDrawListener(this);
+                    bottomSheetContent.setTranslationY(bottomSheetContent.getHeight());
+                    bottomSheetContent.animate()
+                            .translationY(0f)
+                            .setStartDelay(120L)
+                            .setDuration(240L)
+                            .setInterpolator(AnimationUtils.loadInterpolator(
+                                    PostNewDesignerNewsStory.this,
+                                    android.R.interpolator.linear_out_slow_in));
+                    return false;
+                }
+            });
+        }
     }
 
     @Override
