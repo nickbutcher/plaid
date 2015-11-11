@@ -64,6 +64,7 @@ public class DribbbleSearch {
                 .host("dribbble.com")
                 .addPathSegment("search")
                 .addQueryParameter("q", query)
+                .addQueryParameter("s", sort)
                 .addQueryParameter("page", String.valueOf(page))
                 .addQueryParameter("per_page", "12")
                 .build();
