@@ -115,7 +115,9 @@ public class PostNewDesignerNewsStory extends Activity {
 
         // check for share intent
         if (getIntent() != null && Intent.ACTION_SEND.equals(getIntent().getAction())) {
-            url.setText(ShareCompat.IntentReader.from(this).getText());
+            ShareCompat.IntentReader intentReader = ShareCompat.IntentReader.from(this);
+            url.setText(intentReader.getText());
+            title.setText(intentReader.getSubject());
 
             // when receiving a share there is no shared element transition so animate up the
             // bottom sheet to establish the spatial model i.e. that it can be dismissed downward
