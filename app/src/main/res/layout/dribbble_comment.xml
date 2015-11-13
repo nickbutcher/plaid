@@ -24,12 +24,13 @@
     android:paddingTop="@dimen/padding_normal"
     android:paddingEnd="@dimen/padding_normal"
     android:paddingBottom="@dimen/padding_normal"
+    android:clipToPadding="false"
     android:foreground="?android:selectableItemBackground"
     android:background="@drawable/comment_background"
     android:stateListAnimator="@animator/comment_selection"
     android:descendantFocusability="blocksDescendants">
 
-    <io.plaidapp.ui.widget.ForegroundImageView
+    <io.plaidapp.ui.widget.CircularImageView
         android:id="@+id/player_avatar"
         android:layout_width="@dimen/avatar_bounds"
         android:layout_height="@dimen/avatar_bounds"

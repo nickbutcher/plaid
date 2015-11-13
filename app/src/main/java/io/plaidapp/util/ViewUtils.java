@@ -19,6 +19,7 @@ package io.plaidapp.util;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Outline;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
@@ -32,6 +33,7 @@ import android.util.DisplayMetrics;
 import android.util.Property;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 
 /**
@@ -163,4 +165,15 @@ public class ViewUtils {
             return imageView.getImageAlpha();
         }
     };
+
+    public static final ViewOutlineProvider CIRCULAR_OUTLINE = new ViewOutlineProvider() {
+        @Override
+        public void getOutline(View view, Outline outline) {
+            outline.setOval(view.getPaddingLeft(),
+                    view.getPaddingTop(),
+                    view.getWidth() - view.getPaddingRight(),
+                    view.getHeight() - view.getPaddingBottom());
+        }
+    };
+
 }
