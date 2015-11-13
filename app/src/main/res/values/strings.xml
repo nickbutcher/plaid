@@ -101,6 +101,7 @@
     </plurals>
     <string name="share">share</string>
     <string name="hint_reply">Reply</string>
+    <string name="prospects_cant_post">Sorry but prospects cannot comment :(</string>
 
     <!-- dribbble login -->
 
