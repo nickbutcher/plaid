@@ -19,6 +19,7 @@ package io.plaidapp.data;
 import android.content.Context;
 
 import com.google.gson.GsonBuilder;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.util.List;
 
@@ -30,8 +31,8 @@ import io.plaidapp.data.api.dribbble.DribbbleService;
 import io.plaidapp.data.api.producthunt.ProductHuntService;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.data.prefs.DribbblePrefs;
-import retrofit.RestAdapter;
-import retrofit.converter.GsonConverter;
+import retrofit.GsonConverterFactory;
+import retrofit.Retrofit;
 
 /**
  * Base class for loading data.
@@ -70,12 +71,14 @@ public abstract class BaseDataManager implements
     }
 
     private void createDesignerNewsApi() {
-        designerNewsApi = new RestAdapter.Builder()
-                .setEndpoint(DesignerNewsService.ENDPOINT)
-                .setRequestInterceptor(new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
-                        BuildConfig.DESIGNER_NEWS_CLIENT_ID))
-                .build()
-                .create(DesignerNewsService.class);
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.interceptors().add(new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
+                BuildConfig.DESIGNER_NEWS_CLIENT_ID));
+        designerNewsApi = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(DesignerNewsService.ENDPOINT)
+                .client(okHttpClient)
+                .build().create(DesignerNewsService.class);
     }
 
     public DesignerNewsService getDesignerNewsApi() {
@@ -87,14 +90,14 @@ public abstract class BaseDataManager implements
     }
 
     private void createDribbbleApi() {
-        dribbbleApi = new RestAdapter.Builder()
-                .setEndpoint(DribbbleService.ENDPOINT)
-                .setConverter(new GsonConverter(new GsonBuilder()
-                        .setDateFormat(DribbbleService.DATE_FORMAT)
-                        .create()))
-                .setRequestInterceptor(new AuthInterceptor(dribbblePrefs.getAccessToken()))
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.interceptors().add(new AuthInterceptor(dribbblePrefs.getAccessToken()));
+        dribbbleApi = new Retrofit.Builder()
+                .baseUrl(DribbbleService.ENDPOINT)
+                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat(DribbbleService.DATE_FORMAT).create()))
+                .client(okHttpClient)
                 .build()
-                .create((DribbbleService.class));
+                .create(DribbbleService.class);
     }
 
     public DribbbleService getDribbbleApi() {
@@ -106,12 +109,15 @@ public abstract class BaseDataManager implements
     }
 
     private void createProductHuntApi() {
-        productHuntApi = new RestAdapter.Builder()
-                .setEndpoint(ProductHuntService.ENDPOINT)
-                .setRequestInterceptor(
-                        new AuthInterceptor(BuildConfig.PROCUCT_HUNT_DEVELOPER_TOKEN))
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.interceptors().add(new AuthInterceptor(BuildConfig.PROCUCT_HUNT_DEVELOPER_TOKEN));
+        productHuntApi = new Retrofit.Builder()
+                .baseUrl(ProductHuntService.ENDPOINT)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
                 .build()
                 .create(ProductHuntService.class);
+
     }
 
     public ProductHuntService getProductHuntApi() {

@@ -51,6 +51,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,9 +73,9 @@ import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.util.ScrimUtil;
 import io.plaidapp.util.glide.CircleTransform;
 import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit.GsonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class DesignerNewsLogin extends Activity {
 
@@ -184,9 +185,11 @@ public class DesignerNewsLogin extends Activity {
     }
 
     private TextWatcher loginFieldWatcher = new TextWatcher() {
-        @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-        @Override public void onTextChanged(CharSequence s, int start, int before, int count) { }
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -217,33 +220,42 @@ public class DesignerNewsLogin extends Activity {
     }
 
     private void getAccessToken() {
-        DesignerNewsService designerNewsService = new RestAdapter.Builder()
-                .setEndpoint(DesignerNewsService.ENDPOINT)
-                .setRequestInterceptor(new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
-                        BuildConfig.DESIGNER_NEWS_CLIENT_ID))
-                .build()
-                .create(DesignerNewsService.class);
-        designerNewsService.login(
-                buildLoginParams(username.getText().toString(), password.getText().toString()),
-                new Callback<AccessToken>() {
-                    @Override
-                    public void success(AccessToken accessToken, Response response) {
-                        designerNewsPrefs.setAccessToken(accessToken.access_token);
-                        showLoggedInUser();
-                        setResult(Activity.RESULT_OK);
-                        finish();
-                    }
 
-                    @Override
-                    public void failure(RetrofitError error) {
-                        Log.e(getClass().getCanonicalName(), error.getMessage(), error);
-                        // TODO snackbar?
-                        Toast.makeText(getApplicationContext(), "Log in failed",
-                                Toast.LENGTH_LONG).show();
-                        showLogin();
-                        password.requestFocus();
-                    }
-                });
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.interceptors().add(new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
+                BuildConfig.DESIGNER_NEWS_CLIENT_ID));
+        DesignerNewsService designerNewsService = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(DesignerNewsService.ENDPOINT)
+                .client(okHttpClient)
+                .build().create(DesignerNewsService.class);
+        designerNewsService.login(buildLoginParams(username.getText().toString(), password.getText().toString())).enqueue(new Callback<AccessToken>() {
+            @Override
+            public void onResponse(Response<AccessToken> response, Retrofit retrofit) {
+                if (response.isSuccess()) {
+                    designerNewsPrefs.setAccessToken(response.body().access_token);
+                    showLoggedInUser();
+                    setResult(Activity.RESULT_OK);
+                    finish();
+                } else {
+
+                    // TODO snackbar?
+                    Toast.makeText(getApplicationContext(), "Log in failed",
+                            Toast.LENGTH_LONG).show();
+                    showLogin();
+                    password.requestFocus();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.e(getClass().getCanonicalName(), t.getMessage(), t);
+                Toast.makeText(getApplicationContext(), "Log in failed",
+                        Toast.LENGTH_LONG).show();
+                showLogin();
+                password.requestFocus();
+            }
+        });
     }
 
     private Map buildLoginParams(@NonNull String username, @NonNull String password) {
@@ -257,40 +269,44 @@ public class DesignerNewsLogin extends Activity {
     }
 
     private void showLoggedInUser() {
-        DesignerNewsService designerNewsService = new RestAdapter.Builder()
-                .setEndpoint(DesignerNewsService.ENDPOINT)
-                .setRequestInterceptor(new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
-                        BuildConfig.DESIGNER_NEWS_CLIENT_ID))
-                .build()
-                .create(DesignerNewsService.class);
-        designerNewsService.getAuthedUser(new Callback<UserResponse>() {
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.interceptors().add(new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
+                BuildConfig.DESIGNER_NEWS_CLIENT_ID));
+        DesignerNewsService designerNewsService = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(DesignerNewsService.ENDPOINT)
+                .client(okHttpClient)
+                .build().create(DesignerNewsService.class);
+        designerNewsService.getAuthedUser().enqueue(new Callback<UserResponse>() {
             @Override
-            public void success(UserResponse userResponse, Response response) {
-                final User user = userResponse.user;
-                designerNewsPrefs.setLoggedInUser(user);
-                Toast confirmLogin = new Toast(getApplicationContext());
-                View v = LayoutInflater.from(DesignerNewsLogin.this).inflate(R.layout
-                        .toast_logged_in_confirmation, null, false);
-                ((TextView) v.findViewById(R.id.name)).setText(user.display_name);
-                // need to use app context here as the activity will be destroyed shortly
-                Glide.with(getApplicationContext())
-                        .load(user.portrait_url)
-                        .placeholder(R.drawable.avatar_placeholder)
-                        .transform(new CircleTransform(getApplicationContext()))
-                        .into((ImageView) v.findViewById(R.id.avatar));
-                v.findViewById(R.id.scrim).setBackground(ScrimUtil
-                        .makeCubicGradientScrimDrawable(
-                                ContextCompat.getColor(DesignerNewsLogin.this, R.color.scrim),
-                                5, Gravity.BOTTOM));
-                confirmLogin.setView(v);
-                confirmLogin.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
-                confirmLogin.setDuration(Toast.LENGTH_LONG);
-                confirmLogin.show();
+            public void onResponse(Response<UserResponse> response, Retrofit retrofit) {
+                if (response.isSuccess()) {
+                    final User user = response.body().user;
+                    designerNewsPrefs.setLoggedInUser(user);
+                    Toast confirmLogin = new Toast(getApplicationContext());
+                    View v = LayoutInflater.from(DesignerNewsLogin.this).inflate(R.layout
+                            .toast_logged_in_confirmation, null, false);
+                    ((TextView) v.findViewById(R.id.name)).setText(user.display_name);
+                    // need to use app context here as the activity will be destroyed shortly
+                    Glide.with(getApplicationContext())
+                            .load(user.portrait_url)
+                            .placeholder(R.drawable.avatar_placeholder)
+                            .transform(new CircleTransform(getApplicationContext()))
+                            .into((ImageView) v.findViewById(R.id.avatar));
+                    v.findViewById(R.id.scrim).setBackground(ScrimUtil
+                            .makeCubicGradientScrimDrawable(
+                                    ContextCompat.getColor(DesignerNewsLogin.this, R.color.scrim),
+                                    5, Gravity.BOTTOM));
+                    confirmLogin.setView(v);
+                    confirmLogin.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                    confirmLogin.setDuration(Toast.LENGTH_LONG);
+                    confirmLogin.show();
+                }
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                Log.e(getClass().getCanonicalName(), error.getMessage(), error);
+            public void onFailure(Throwable t) {
+                Log.e(getClass().getCanonicalName(), t.getMessage(), t);
             }
         });
     }

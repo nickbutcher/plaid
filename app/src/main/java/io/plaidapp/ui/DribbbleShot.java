@@ -70,8 +70,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -100,10 +100,10 @@ import io.plaidapp.util.ViewUtils;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.util.glide.CircleTransform;
 import io.plaidapp.util.glide.GlideUtils;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import retrofit.converter.GsonConverter;
+import retrofit.Callback;
+import retrofit.GsonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class DribbbleShot extends Activity {
 
@@ -356,8 +356,8 @@ public class DribbbleShot extends Activity {
         CustomTabActivityHelper.openCustomTab(
                 DribbbleShot.this,
                 new CustomTabsIntent.Builder()
-                    .setToolbarColor(ContextCompat.getColor(DribbbleShot.this, R.color.dribbble))
-                    .build(),
+                     .setToolbarColor(ContextCompat.getColor(DribbbleShot.this, R.color.dribbble))
+                     .build(),
                 Uri.parse(url));
     }
 
@@ -548,22 +548,25 @@ public class DribbbleShot extends Activity {
         commentsList.setAdapter(getLoadingCommentsAdapter());
 
         // then load comments
-        dribbbleApi.getComments(shot.id, null, DribbbleService.PER_PAGE_MAX, new retrofit
-                .Callback<List<Comment>>() {
+        dribbbleApi.getComments(shot.id, null, DribbbleService.PER_PAGE_MAX).enqueue(new Callback<List<Comment>>() {
             @Override
-            public void success(List<Comment> comments, Response response) {
-                if (comments != null && !comments.isEmpty()) {
-                    commentsAdapter = new DribbbleCommentsAdapter(DribbbleShot.this, R.layout
-                            .dribbble_comment, comments);
-                    commentsList.setAdapter(commentsAdapter);
-                    commentsList.setDivider(getDrawable(R.drawable.list_divider));
-                    commentsList.setDividerHeight(getResources().getDimensionPixelSize(R.dimen
-                            .divider_height));
+            public void onResponse(Response<List<Comment>> response, Retrofit retrofit) {
+                if (response.isSuccess()) {
+                    if (response.body() != null && !response.body().isEmpty()) {
+                        commentsAdapter = new DribbbleCommentsAdapter(DribbbleShot.this, R.layout
+                                .dribbble_comment, response.body());
+                        commentsList.setAdapter(commentsAdapter);
+                        commentsList.setDivider(getDrawable(R.drawable.list_divider));
+                        commentsList.setDividerHeight(getResources().getDimensionPixelSize(R.dimen
+                                .divider_height));
+                    }
+
                 }
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Throwable t) {
+
             }
         });
     }
@@ -590,15 +593,14 @@ public class DribbbleShot extends Activity {
     private void setupDribbble() {
         // setup the api object which captures the current access token
         dribbblePrefs = DribbblePrefs.get(this);
-        Gson gson = new GsonBuilder()
-                .setDateFormat(DribbbleService.DATE_FORMAT)
-                .create();
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(DribbbleService.ENDPOINT)
-                .setConverter(new GsonConverter(gson))
-                .setRequestInterceptor(new AuthInterceptor(dribbblePrefs.getAccessToken()))
-                .build();
-        dribbbleApi = restAdapter.create(DribbbleService.class);
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.interceptors().add(new AuthInterceptor(dribbblePrefs.getAccessToken()));
+        dribbbleApi = new Retrofit.Builder()
+                .baseUrl(DribbbleService.ENDPOINT)
+                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat(DribbbleService.DATE_FORMAT).create()))
+                .client(okHttpClient)
+                .build()
+                .create(DribbbleService.class);
     }
 
     private void calculateFabPosition() {
@@ -661,26 +663,26 @@ public class DribbbleShot extends Activity {
     private void doLike() {
         performingLike = true;
         if (fab.isChecked()) {
-            dribbbleApi.like(shot.id, "", new retrofit.Callback<Like>() {
+            dribbbleApi.like(shot.id).enqueue(new Callback<Like>() {
                 @Override
-                public void success(Like like, Response response) {
+                public void onResponse(Response<Like> response, Retrofit retrofit) {
                     performingLike = false;
                 }
 
                 @Override
-                public void failure(RetrofitError error) {
+                public void onFailure(Throwable t) {
                     performingLike = false;
                 }
             });
         } else {
-            dribbbleApi.unlike(shot.id, new retrofit.Callback<Void>() {
+            dribbbleApi.unlike(shot.id).enqueue(new Callback<Void>() {
                 @Override
-                public void success(Void aVoid, Response response) {
+                public void onResponse(Response<Void> response, Retrofit retrofit) {
                     performingLike = false;
                 }
 
                 @Override
-                public void failure(RetrofitError error) {
+                public void onFailure(Throwable t) {
                     performingLike = false;
                 }
             });
@@ -689,17 +691,20 @@ public class DribbbleShot extends Activity {
 
     private void checkLiked() {
         if (dribbblePrefs.isLoggedIn()) {
-            dribbbleApi.liked(shot.id, new retrofit.Callback<Like>() {
+            dribbbleApi.liked(shot.id).enqueue(new Callback<Like>() {
                 @Override
-                public void success(Like like, Response response) {
-                    // note that like.user will be null here
-                    fab.setChecked(like != null);
-                    fab.jumpDrawablesToCurrentState();
+                public void onResponse(Response<Like> response, Retrofit retrofit) {
+                    if (response.isSuccess()) {
+                        fab.setChecked(response.body() != null);
+                        fab.jumpDrawablesToCurrentState();
+                    } else {
+                        fab.setChecked(false);
+                        fab.jumpDrawablesToCurrentState();
+                    }
                 }
 
                 @Override
-                public void failure(RetrofitError error) {
-                    // 404 is expected if shot is not liked
+                public void onFailure(Throwable t) {
                     fab.setChecked(false);
                     fab.jumpDrawablesToCurrentState();
                 }
@@ -711,17 +716,20 @@ public class DribbbleShot extends Activity {
         if (dribbblePrefs.isLoggedIn()) {
             if (TextUtils.isEmpty(enterComment.getText())) return;
             enterComment.setEnabled(false);
-            dribbbleApi.postComment(shot.id, enterComment.getText().toString().trim(), new retrofit
-                    .Callback<Comment>() {
+            dribbbleApi.postComment(shot.id, enterComment.getText().toString().trim()).enqueue(new Callback<Comment>() {
                 @Override
-                public void success(Comment comment, Response response) {
-                    loadComments();
-                    enterComment.getText().clear();
-                    enterComment.setEnabled(true);
+                public void onResponse(Response<Comment> response, Retrofit retrofit) {
+                    if (response.isSuccess()) {
+                        loadComments();
+                        enterComment.getText().clear();
+                        enterComment.setEnabled(true);
+                    } else {
+                        enterComment.setEnabled(true);
+                    }
                 }
 
                 @Override
-                public void failure(RetrofitError error) {
+                public void onFailure(Throwable t) {
                     enterComment.setEnabled(true);
                 }
             });
@@ -844,17 +852,22 @@ public class DribbbleShot extends Activity {
                         likeHeart.setVisibility(View.VISIBLE);
                         likesCount.setVisibility(View.VISIBLE);
                         if (comment.liked == null) {
-                            dribbbleApi.likedComment(shot.id, comment.id, new retrofit
-                                    .Callback<Like>() {
+                            dribbbleApi.likedComment(shot.id, comment.id).enqueue(new Callback<Like>() {
                                 @Override
-                                public void success(Like like, Response response) {
-                                    comment.liked = true;
-                                    likeHeart.setChecked(true);
-                                    likeHeart.jumpDrawablesToCurrentState();
+                                public void onResponse(Response<Like> response, Retrofit retrofit) {
+                                    if (response.isSuccess()) {
+                                        comment.liked = true;
+                                        likeHeart.setChecked(true);
+                                        likeHeart.jumpDrawablesToCurrentState();
+                                    } else {
+                                        comment.liked = false;
+                                        likeHeart.setChecked(false);
+                                        likeHeart.jumpDrawablesToCurrentState();
+                                    }
                                 }
 
                                 @Override
-                                public void failure(RetrofitError error) {
+                                public void onFailure(Throwable t) {
                                     comment.liked = false;
                                     likeHeart.setChecked(false);
                                     likeHeart.jumpDrawablesToCurrentState();
@@ -899,14 +912,15 @@ public class DribbbleShot extends Activity {
                                 comment.likes_count++;
                                 likesCount.setText(String.valueOf(comment.likes_count));
                                 notifyDataSetChanged();
-                                dribbbleApi.likeComment(shot.id, comment.id, "", new retrofit
-                                        .Callback<Like>() {
+                                dribbbleApi.likedComment(shot.id, comment.id).enqueue(new Callback<Like>() {
                                     @Override
-                                    public void success(Like like, Response response) {
+                                    public void onResponse(Response<Like> response, Retrofit retrofit) {
+
                                     }
 
                                     @Override
-                                    public void failure(RetrofitError error) {
+                                    public void onFailure(Throwable t) {
+
                                     }
                                 });
                             } else {
@@ -914,14 +928,15 @@ public class DribbbleShot extends Activity {
                                 comment.likes_count--;
                                 likesCount.setText(String.valueOf(comment.likes_count));
                                 notifyDataSetChanged();
-                                dribbbleApi.unlikeComment(shot.id, comment.id, new retrofit
-                                        .Callback<Void>() {
+                                dribbbleApi.unlikeComment(shot.id, comment.id).enqueue(new Callback<Void>() {
                                     @Override
-                                    public void success(Void voyd, Response response) {
+                                    public void onResponse(Response<Void> response, Retrofit retrofit) {
+
                                     }
 
                                     @Override
-                                    public void failure(RetrofitError error) {
+                                    public void onFailure(Throwable t) {
+
                                     }
                                 });
                             }
@@ -939,26 +954,27 @@ public class DribbbleShot extends Activity {
             likesCount.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dribbbleApi.getCommentLikes(shot.id, comment.id, new retrofit
-                            .Callback<List<Like>>() {
+                    dribbbleApi.getCommentLikes(shot.id, comment.id).enqueue(new Callback<List<Like>>() {
                         @Override
-                        public void success(List<Like> likes, Response response) {
-                            // TODO something better than this.
-                            StringBuilder sb = new StringBuilder("Liked by:\n\n");
-                            for (Like like : likes) {
-                                if (like.user != null) {
-                                    sb.append("@");
-                                    sb.append(like.user.username);
-                                    sb.append("\n");
+                        public void onResponse(Response<List<Like>> response, Retrofit retrofit) {
+                            if (response.isSuccess()) {
+                                // TODO something better than this.
+                                StringBuilder sb = new StringBuilder("Liked by:\n\n");
+                                for (Like like : response.body()) {
+                                    if (like.user != null) {
+                                        sb.append("@");
+                                        sb.append(like.user.username);
+                                        sb.append("\n");
+                                    }
                                 }
+                                Toast.makeText(getApplicationContext(), sb.toString(), Toast
+                                        .LENGTH_SHORT).show();
                             }
-                            Toast.makeText(getApplicationContext(), sb.toString(), Toast
-                                    .LENGTH_SHORT).show();
                         }
 
                         @Override
-                        public void failure(RetrofitError error) {
-                            Log.e("GET COMMENT LIKES", error.getMessage(), error);
+                        public void onFailure(Throwable t) {
+                            Log.e("GET COMMENT LIKES", t.getMessage(), t);
                         }
                     });
                 }

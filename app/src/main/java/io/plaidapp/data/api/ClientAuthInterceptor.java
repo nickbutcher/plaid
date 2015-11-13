@@ -20,13 +20,18 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import retrofit.RequestInterceptor;
+import com.squareup.okhttp.HttpUrl;
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import java.io.IOException;
 
 /**
  * A {@see RequestInterceptor} that adds an auth token to requests if one is provided, otherwise
  * adds a client id.
  */
-public class ClientAuthInterceptor implements RequestInterceptor {
+public class ClientAuthInterceptor implements Interceptor {
 
     private String accessToken;
     private String clientId;
@@ -37,17 +42,22 @@ public class ClientAuthInterceptor implements RequestInterceptor {
         this.clientId = clientId;
     }
 
-    @Override
-    public void intercept(RequestFacade request) {
-        if (hasAccessToken) {
-            request.addHeader("Authorization", "Bearer " + accessToken);
-        } else {
-            request.addQueryParam("client_id", clientId);
-        }
-    }
-
     private void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
         hasAccessToken = !TextUtils.isEmpty(accessToken);
+    }
+
+    @Override
+    public Response intercept(Chain chain) throws IOException {
+        Request request = chain.request();
+        Request newRequest = null;
+        if (hasAccessToken) {
+            newRequest = request.newBuilder().addHeader("Authorization", "Bearer " + accessToken).build();
+        } else {
+            HttpUrl newHttpUrl = request.httpUrl().newBuilder().addQueryParameter("client_id", clientId).build();
+            newRequest = request.newBuilder().url(newHttpUrl).build();
+        }
+
+        return chain.proceed(newRequest);
     }
 }
