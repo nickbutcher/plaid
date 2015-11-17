@@ -392,7 +392,8 @@ public class HomeActivity extends Activity {
                     .scaleX(1f)
                     .setStartDelay(300)
                     .setDuration(900)
-                    .setInterpolator(AnimUtils.getMaterialInterpolator(this));
+                    .setInterpolator(AnimationUtils.loadInterpolator(this,
+                            android.R.interpolator.fast_out_slow_in));
         }
         View amv = toolbar.getChildAt(1);
         if (amv != null & amv instanceof ActionMenuView) {

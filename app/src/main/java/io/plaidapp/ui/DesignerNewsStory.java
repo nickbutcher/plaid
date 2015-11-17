@@ -471,7 +471,8 @@ public class DesignerNewsStory extends Activity {
 
         // play 'em all together with the material interpolator
         AnimatorSet show = new AnimatorSet();
-        show.setInterpolator(AnimUtils.getMaterialInterpolator(DesignerNewsStory.this));
+        show.setInterpolator(AnimationUtils.loadInterpolator(DesignerNewsStory.this,
+                android.R.interpolator.fast_out_slow_in));
         show.playTogether(reveal, background, position, fadeOutFab);
         show.start();
     }

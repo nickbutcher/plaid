@@ -33,20 +33,6 @@ public class AnimUtils {
 
     private AnimUtils() { }
 
-    private static Interpolator gusterpolator;
-
-    public static Interpolator getMaterialInterpolator(Context ctx) {
-        if (gusterpolator == null) {
-            synchronized (AnimUtils.class) {
-                if (gusterpolator == null) {
-                    gusterpolator = android.view.animation.AnimationUtils.loadInterpolator(ctx,
-                            android.R.interpolator.fast_out_slow_in);
-                }
-            }
-        }
-        return gusterpolator;
-    }
-
     /**
      * Linear interpolate between a and b with parameter t.
      */
