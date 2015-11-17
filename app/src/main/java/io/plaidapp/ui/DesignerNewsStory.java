@@ -511,6 +511,7 @@ public class DesignerNewsStory extends Activity {
                 startActivity(ShareCompat.IntentBuilder.from(DesignerNewsStory.this)
                         .setText(story.url)
                         .setType("text/plain")
+                        .setSubject(story.title)
                         .getIntent());
             }
         });

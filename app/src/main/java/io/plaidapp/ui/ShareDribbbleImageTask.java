@@ -73,6 +73,7 @@ class ShareDribbbleImageTask extends AsyncTask<Void, Void, File> {
         ShareCompat.IntentBuilder.from(activity)
                 .setText(getShareText())
                 .setType(getImageMimeType(fileName))
+                .setSubject(shot.title)
                 .setStream(uri)
                 .startChooser();
     }
