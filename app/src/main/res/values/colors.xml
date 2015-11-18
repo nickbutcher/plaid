@@ -79,6 +79,11 @@
     <color name="fab_heart_full">#ffffffff</color>
     <color name="gif_badge_light_image">#40000000</color>
     <color name="gif_badge_dark_image">#b3ffffff</color>
+    <array name="loading_placeholders">
+        <item>#ff191919</item>
+        <item>#ff212121</item>
+        <item>#ff232323</item>
+    </array>
 
     <!-- hacker news -->
     <color name="hacker_news">#ffe48529</color>

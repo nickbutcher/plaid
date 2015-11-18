@@ -25,7 +25,10 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
@@ -86,6 +89,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final boolean pocketIsInstalled;
     private @Nullable DataLoadingSubject dataLoading;
     private final int columns;
+    private final ColorDrawable[] shotLoadingPlaceholders;
 
     private List<PlaidItem> items;
 
@@ -101,6 +105,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         comparator = new PlaidItemComparator();
         items = new ArrayList<>();
         setHasStableIds(true);
+        TypedArray placeholderColors = hostActivity.getResources()
+                .obtainTypedArray(R.array.loading_placeholders);
+        shotLoadingPlaceholders = new ColorDrawable[placeholderColors.length()];
+        for (int i = 0; i < placeholderColors.length(); i++) {
+            shotLoadingPlaceholders[i] = new ColorDrawable(
+                    placeholderColors.getColor(i, Color.DKGRAY));
+        }
     }
 
     @Override
@@ -131,7 +142,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (item instanceof Story) {
                 bindDesignerNewsStory((Story) getItem(position), (DesignerNewsStoryHolder) holder);
             } else if (item instanceof Shot) {
-                bindDribbbleShotView((Shot) item, (DribbbleShotHolder) holder);
+                bindDribbbleShotView((Shot) item, (DribbbleShotHolder) holder, position);
             } else if (item instanceof Post) {
                 bindProductHuntPostView((Post) item, (ProductHuntStoryHolder) holder);
             }
@@ -260,7 +271,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    private void bindDribbbleShotView(final Shot shot, final DribbbleShotHolder holder) {
+    private void bindDribbbleShotView(final Shot shot,
+                                      final DribbbleShotHolder holder,
+                                      final int position) {
         final BadgedFourThreeImageView iv = (BadgedFourThreeImageView) holder.itemView;
         Glide.with(host)
                 .load(shot.images.best())
@@ -310,8 +323,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         return false;
                     }
                 })
-                // needed to prevent seeing through view as it fades in
-                .placeholder(R.color.background_dark)
+                .placeholder(shotLoadingPlaceholders[position % shotLoadingPlaceholders.length])
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(new DribbbleTarget(iv, false));
 
