@@ -19,6 +19,7 @@ package io.plaidapp.ui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -145,7 +146,7 @@ public class DribbbleShot extends Activity {
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_shot);
         shot = getIntent().getParcelableExtra(EXTRA_SHOT);
@@ -203,7 +204,7 @@ public class DribbbleShot extends Activity {
             public boolean onPreDraw() {
                 imageView.getViewTreeObserver().removeOnPreDrawListener(this);
                 calculateFabPosition();
-                enterAnimation();
+                enterAnimation(savedInstanceState != null);
                 startPostponedEnterTransition();
                 return true;
             }
@@ -618,7 +619,7 @@ public class DribbbleShot extends Activity {
      * are within the ListView so do it manually.  Also handle the FAB tanslation here so that it
      * plays nicely with #calculateFabPosition
      */
-    private void enterAnimation() {
+    private void enterAnimation(boolean isOrientationChange) {
         Interpolator interp = AnimationUtils.loadInterpolator(this, android.R.interpolator
                 .fast_out_slow_in);
         int offset = title.getHeight();
@@ -647,6 +648,20 @@ public class DribbbleShot extends Activity {
                 .setDuration(600)
                 .setInterpolator(interp)
                 .start();
+
+        if (isOrientationChange) {
+            // we rely on the window enter content transition to show the fab. This isn't run on
+            // orientation changes so manually show it.
+            Animator showFab = ObjectAnimator.ofPropertyValuesHolder(fab,
+                    PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f),
+                    PropertyValuesHolder.ofFloat(View.SCALE_X, 0f, 1f),
+                    PropertyValuesHolder.ofFloat(View.SCALE_Y, 0f, 1f));
+            showFab.setStartDelay(300L);
+            showFab.setDuration(300L);
+            showFab.setInterpolator(AnimationUtils.loadInterpolator(this,
+                    android.R.interpolator.linear_out_slow_in));
+            showFab.start();
+        }
     }
 
     private void viewEnterAnimation(View view, float offset, Interpolator interp) {
