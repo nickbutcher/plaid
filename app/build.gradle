@@ -16,7 +16,7 @@
 
 apply plugin: 'com.android.application'
 
-// query git for the the SHA, Tag and commit count. Use these to automate versioning.
+// query git for the SHA, Tag and commit count. Use these to automate versioning.
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
 def gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
 def gitCommitCount = 100 +
