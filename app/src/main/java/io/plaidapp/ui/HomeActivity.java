@@ -646,6 +646,7 @@ public class HomeActivity extends Activity {
             public void onDrawerClosed(View drawerView) {
                 // reset
                 filtersList.setOnTouchListener(null);
+                drawer.setDrawerListener(null);
             }
 
             @Override
