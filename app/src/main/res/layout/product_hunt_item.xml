@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -18,32 +17,34 @@
 
 <io.plaidapp.ui.widget.FourThreeLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/product_hunt_item_background"
-    android:foreground="@drawable/light_ripple"
+    android:foreground="@drawable/dark_ripple"
     android:orientation="vertical"
-    android:stateListAnimator="@animator/raise"
-    android:theme="@style/PlaidDarkOverlay">
+    android:stateListAnimator="@animator/raise">
 
-    <TextView
+    <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/hunt_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_normal"
-        android:layout_marginTop="@dimen/padding_normal"
-        android:layout_marginEnd="@dimen/padding_normal"
-        android:layout_marginBottom="@dimen/spacing_micro"
+        android:paddingStart="@dimen/padding_normal"
+        app:topPaddingHint="@dimen/padding_normal"
+        android:paddingEnd="@dimen/padding_normal"
+        android:paddingBottom="@dimen/spacing_micro"
+        android:ellipsize="end"
         style="@style/Widget.Plaid.DesignerNewsTile" />
 
-    <TextView
+    <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/tagline"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginStart="@dimen/padding_normal"
-        android:layout_marginEnd="@dimen/padding_normal"
-        android:layout_marginBottom="@dimen/spacing_micro"
+        android:paddingStart="@dimen/padding_normal"
+        android:paddingEnd="@dimen/padding_normal"
+        android:paddingBottom="@dimen/spacing_micro"
+        android:ellipsize="end"
         style="@style/Widget.Plaid.TileSecondary" />
 
     <TextView
@@ -52,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_margin="@dimen/spacing_micro"
-        android:background="@drawable/light_ripple"
+        android:background="@drawable/dark_ripple"
         android:drawablePadding="@dimen/spacing_normal"
         android:drawableStart="@drawable/ic_comment_light"
         android:gravity="center_vertical"

@@ -54,22 +54,15 @@
     <color name="text_on_accent">#8f000000</color>
 
     <!-- designer news -->
-    <!-- spec colors -->
     <color name="designer_news">#03a9f4</color> <!--light blue 500 -->-->
     <color name="designer_news_dark">#039be5</color> <!-- light blue 600 -->
     <color name="designer_news_link_highlight">#b303a9f4</color>
-
-    <!-- brand colors -->
-    <!--<color name="designer_news">#2d72d9</color>-->
-    <!--<color name="designer_news_dark">#245bae</color>-->
-    <!--<color name="designer_news_link_highlight">#b32d72d9</color>-->
 
     <color name="designer_news_super_dark">#000133</color>
     <color name="designer_news_quote_line">#ffeceef1</color>
     <color name="designer_news_quote">#73000000</color>
 
     <!-- dribbble -->
-    <!--<color name="dribbble">#ffea4c89</color>-->
     <color name="dribbble">#fff06292</color> <!-- pink 300 -->
     <color name="dribbble_dark">#ec407a</color> <!-- pink 400 -->
     <color name="dribbble_super_dark">#ff33292d</color>
@@ -85,17 +78,8 @@
         <item>#ff232323</item>
     </array>
 
-    <!-- hacker news -->
-    <color name="hacker_news">#ffe48529</color>
-    <!--<color name="hacker_news">#ff6600</color> site -->
-    <!--<color name="hacker_news">#ff9800</color>  orange 500 -->
-    <color name="hacker_news_dark">#e65100</color>
-    <color name="hacker_news_light">#ffcc80</color>
-
     <!-- product hunt-->
-    <color name="product_hunt">#EF6C00</color>
-    <!-- brand color -->
-    <!--<color name="product_hunt">#d9512b</color>-->
+    <color name="product_hunt">#ffff9800</color>
 
     <!-- search -->
     <color name="search_background_scrim">#33000000</color>

@@ -183,7 +183,7 @@
 
     <style name="TextAppearance.TileSecondary" parent="@android:style/TextAppearance.Material.Body2">
         <item name="android:letterSpacing">0.01</item>
-        <item name="android:textColor">@color/text_secondary_light</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
     </style>
 
     <style name="Widget.Plaid.TileSecondary">
