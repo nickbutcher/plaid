@@ -25,6 +25,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.bumptech.glide.request.target.SizeReadyCallback;
 
 import io.plaidapp.R;
 import io.plaidapp.ui.widget.BadgedFourThreeImageView;
@@ -38,11 +39,20 @@ import io.plaidapp.util.ViewUtils;
 public class DribbbleTarget extends GlideDrawableImageViewTarget implements
         Palette.PaletteAsyncListener {
 
-    private boolean playGifs;
+    private final boolean playGifs;
 
-    public DribbbleTarget(BadgedFourThreeImageView view, boolean playGifs) {
+    // we override the image size as we want to cache images at device width for a smooth
+    // transition from the home grid to the detail screen
+    private final int imageWidth;
+    private final int imageHeight;
+
+    public DribbbleTarget(BadgedFourThreeImageView view,
+                          boolean playGifs,
+                          int imageWidth) {
         super(view);
         this.playGifs = playGifs;
+        this.imageWidth = imageWidth;
+        this.imageHeight = imageWidth * 3 / 4;
     }
 
     @Override
@@ -97,6 +107,11 @@ public class DribbbleTarget extends GlideDrawableImageViewTarget implements
         ((BadgedFourThreeImageView) getView()).setForeground(
                 ViewUtils.createRipple(palette, 0.25f, 0.5f,
                         ContextCompat.getColor(getView().getContext(), R.color.mid_grey), true));
+    }
+
+    @Override
+    public void getSize(SizeReadyCallback cb) {
+        cb.onSizeReady(imageWidth, imageHeight);
     }
 
 }

@@ -80,6 +80,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_DRIBBBLE_SHOT = 1;
     private static final int TYPE_PRODUCT_HUNT_POST = 2;
     private static final int TYPE_LOADING_MORE = -1;
+    private static final int MAX_IMAGE_CACHE_WIDTH = 1440;
     public static final float DUPE_WEIGHT_BOOST = 0.4f;
 
     // we need to hold on to an activity ref for the shared element transitions :/
@@ -90,6 +91,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private @Nullable DataLoadingSubject dataLoading;
     private final int columns;
     private final ColorDrawable[] shotLoadingPlaceholders;
+    private int shotWidth = 0;
 
     private List<PlaidItem> items;
 
@@ -122,6 +124,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         layoutInflater.inflate(R.layout.designer_news_story_item, parent, false),
                         pocketIsInstalled);
             case TYPE_DRIBBBLE_SHOT:
+                ensureShotImageWidth(parent);
                 return new DribbbleShotHolder(
                         layoutInflater.inflate(R.layout.dribbble_shot_item, parent, false));
             case TYPE_PRODUCT_HUNT_POST:
@@ -324,8 +327,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }
                 })
                 .placeholder(shotLoadingPlaceholders[position % shotLoadingPlaceholders.length])
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(new DribbbleTarget(iv, false));
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .fitCenter()
+                .into(new DribbbleTarget(iv, false, shotWidth));
 
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -545,6 +549,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public int getItemCount() {
         // include loading footer
         return getDataItemCount() + 1;
+    }
+
+    /**
+     * We override the image size as we want to cache images at device width for a smooth
+     * transition from the home grid to the detail screen
+     */
+    private void ensureShotImageWidth(View view) {
+        if (shotWidth == 0) {
+            // constrain to a max width to reduce OutOfMemory errors!
+            shotWidth = Math.min(view.getRootView().getWidth(), MAX_IMAGE_CACHE_WIDTH);
+        }
     }
 
     public int getDataItemCount() {
