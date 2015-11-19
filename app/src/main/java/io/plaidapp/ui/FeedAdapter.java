@@ -35,6 +35,8 @@ import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.transition.ArcMotion;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +68,7 @@ import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.producthunt.model.Post;
 import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.ui.widget.BadgedFourThreeImageView;
+import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ObservableColorMatrix;
 import io.plaidapp.util.ViewUtils;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
@@ -173,6 +176,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 final Intent intent = new Intent();
                 intent.setClass(host, DesignerNewsStory.class);
                 intent.putExtra(DesignerNewsStory.EXTRA_STORY, story);
+                setGridItemContentTransitions(holder.itemView);
                 final ActivityOptions options =
                         ActivityOptions.makeSceneTransitionAnimation(host,
                                 Pair.create(holder.itemView,
@@ -340,6 +344,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 Intent intent = new Intent();
                 intent.setClass(host, DribbbleShot.class);
                 intent.putExtra(DribbbleShot.EXTRA_SHOT, shot);
+                setGridItemContentTransitions(holder.itemView);
                 ActivityOptions options =
                         ActivityOptions.makeSceneTransitionAnimation(host,
                                 Pair.create(view, host.getString(R.string.transition_shot)),
@@ -562,6 +567,29 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             // constrain to a max width to reduce OutOfMemory errors!
             shotWidth = Math.min(view.getRootView().getWidth(), MAX_IMAGE_CACHE_WIDTH);
         }
+    }
+
+    /**
+     * The shared element transition to dribbble shots & dn stories can intersect with the FAB.
+     * This can cause a strange layers-passing-through-each-other effect, especially on return.
+     * In this situation, hide the FAB on exit and re-show it on return.
+     */
+    private void setGridItemContentTransitions(View gridItem) {
+        if (!ViewUtils.viewsIntersect(gridItem, host.findViewById(R.id.fab))) return;
+
+        final TransitionInflater ti = TransitionInflater.from(host);
+        host.getWindow().setExitTransition(
+                ti.inflateTransition(R.transition.home_content_item_exit));
+        final Transition reenter = ti.inflateTransition(R.transition.home_content_item_reenter);
+        // we only want this content transition in certain cases so clear it out after it's done.
+        reenter.addListener(new AnimUtils.TransitionListenerAdapter() {
+            @Override
+            public void onTransitionEnd(Transition transition) {
+                host.getWindow().setExitTransition(null);
+                host.getWindow().setReenterTransition(null);
+            }
+        });
+        host.getWindow().setReenterTransition(reenter);
     }
 
     public int getDataItemCount() {

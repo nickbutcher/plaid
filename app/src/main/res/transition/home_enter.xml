@@ -18,13 +18,6 @@
 <transitionSet
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--<fade>-->
-        <!--<targets>-->
-            <!--<target android:excludeId="@android:id/navigationBarBackground" />-->
-            <!--<target android:excludeId="@android:id/statusBarBackground" />-->
-        <!--</targets>-->
-    <!--</fade>-->
-
     <transition
         class="io.plaidapp.ui.transitions.Pop"
         android:duration="@android:integer/config_shortAnimTime"
