@@ -867,8 +867,8 @@ public class DribbbleShot extends Activity {
                         likeHeart.setVisibility(View.VISIBLE);
                         likesCount.setVisibility(View.VISIBLE);
                         if (comment.liked == null) {
-                            dribbbleApi.likedComment(shot.id, comment.id, new retrofit
-                                    .Callback<Like>() {
+                            dribbbleApi.likedComment(shot.id, comment.id,
+                                    new retrofit.Callback<Like>() {
                                 @Override
                                 public void success(Like like, Response response) {
                                     comment.liked = true;
@@ -884,7 +884,7 @@ public class DribbbleShot extends Activity {
                                 }
                             });
                         }
-                        if (enterComment.hasFocus()) {
+                        if (enterComment != null && enterComment.hasFocus()) {
                             enterComment.clearFocus();
                             ImeUtils.hideIme(enterComment);
                         }
