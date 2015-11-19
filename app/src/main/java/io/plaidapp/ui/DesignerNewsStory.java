@@ -721,29 +721,30 @@ public class DesignerNewsStory extends Activity {
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             if (getItemViewType(position) == TYPE_COMMENT) {
-                bindComment((CommentHolder) holder, comments.get(position - 1)); // minus header
+                bindComment((CommentHolder) holder, comments.get(position - 1).comment);
             } // nothing to bind for header / no comment / footer views
         }
 
-        private void bindComment(final CommentHolder holder, final ThreadedComment comment) {
-            HtmlUtils.setTextWithNiceLinks(holder.comment, markdown.markdownToSpannable(comment
-                    .comment.body, holder.comment, new Bypass.LoadImageCallback() {
-                @Override
-                public void loadImage(String src, ImageLoadingSpan loadingSpan) {
-                    Glide.with(DesignerNewsStory.this)
-                            .load(src)
-                            .asBitmap()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(new ImageSpanTarget(holder.comment, loadingSpan));
-                }
-            }));
-            holder.author.setText(comment.comment.user_display_name);
-            holder.author.setOriginalPoster(isOP(comment
-                    .comment.user_id));
-            holder.timeAgo.setText(
-                    DateUtils.getRelativeTimeSpanString(comment.comment.created_at.getTime(),
-                            System.currentTimeMillis(),
-                            DateUtils.SECOND_IN_MILLIS));
+        private void bindComment(final CommentHolder holder, final Comment comment) {
+            HtmlUtils.setTextWithNiceLinks(holder.comment, markdown.markdownToSpannable(
+                    comment.body, holder.comment, new Bypass.LoadImageCallback() {
+                        @Override
+                        public void loadImage(String src, ImageLoadingSpan loadingSpan) {
+                            Glide.with(DesignerNewsStory.this)
+                                    .load(src)
+                                    .asBitmap()
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .into(new ImageSpanTarget(holder.comment, loadingSpan));
+                        }
+                    }));
+            holder.author.setText(comment.user_display_name);
+            holder.author.setOriginalPoster(isOP(comment.user_id));
+            if (comment.created_at != null) {
+                holder.timeAgo.setText(
+                        DateUtils.getRelativeTimeSpanString(comment.created_at.getTime(),
+                                System.currentTimeMillis(),
+                                DateUtils.SECOND_IN_MILLIS));
+            }
             ThreadedCommentDrawable depthDrawable = new ThreadedCommentDrawable(threadWidth,
                     threadGap);
             depthDrawable.setDepth(comment.depth);
