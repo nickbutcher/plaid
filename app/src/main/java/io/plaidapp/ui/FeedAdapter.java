@@ -474,7 +474,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             int rowPosition = (pos + extraSpannedSpaces) % columns;
             if (rowPosition != 0) {
                 int swapWith = pos + (columns - rowPosition);
-                Collections.swap(items, pos, swapWith);
+                if (swapWith < items.size()) {
+                    Collections.swap(items, pos, swapWith);
+                }
             }
         }
     }
