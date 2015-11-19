@@ -17,9 +17,13 @@
 
 <io.plaidapp.ui.widget.BaselineGridTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/no_filters"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/spacing_huge"
+    android:padding="@dimen/padding_normal"
+    app:topPaddingHint="@dimen/padding_normal"
     android:textAlignment="center"
+    android:elevation="1dp"
+    android:background="?android:selectableItemBackground"
     style="@style/Widget.Plaid.EmptyText" />
