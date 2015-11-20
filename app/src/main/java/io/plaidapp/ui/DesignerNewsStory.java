@@ -171,8 +171,8 @@ public class DesignerNewsStory extends Activity {
         // setup toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.story_toolbar);
         if (collapsingToolbar != null) { // portrait: collapsing toolbar
-            collapsingToolbar.setTitle(story.title);
             collapsingToolbar.addOnLayoutChangeListener(titlebarLayout);
+            collapsingToolbar.setTitle(story.title);
         } else { // landscape: scroll toolbar with content
             toolbar = (Toolbar) header.findViewById(R.id.story_toolbar);
             FontTextView title = (FontTextView) toolbar.findViewById(R.id.story_title);
@@ -205,7 +205,6 @@ public class DesignerNewsStory extends Activity {
         }
         customTab = new CustomTabActivityHelper();
         customTab.setConnectionCallback(customTabConnect);
-        setEnterSharedElementCallback(sharedEnterCallback);
     }
 
     @Override
@@ -361,8 +360,7 @@ public class DesignerNewsStory extends Activity {
         }
     };
 
-    // title can expand up to a max number of lines.  If it does then adjust the list padding
-    // & reset scroll trackers
+    // title can expand up to a max number of lines. If it does then adjust UI to reflect
     private View.OnLayoutChangeListener titlebarLayout = new View.OnLayoutChangeListener() {
         @Override
         public void onLayoutChange(View v, int left, int top, int right, int bottom, int
@@ -373,10 +371,8 @@ public class DesignerNewsStory extends Activity {
                         commentsList.getPaddingEnd(),
                         commentsList.getPaddingBottom());
                 commentsList.scrollToPosition(0);
-                collapsingToolbar.setScrollPixelOffset(0);
-                toolbarBackground.setOffset(0);
             }
-            updateScrollDependentUi();
+            collapsingToolbar.removeOnLayoutChangeListener(this);
         }
     };
 
@@ -393,31 +389,6 @@ public class DesignerNewsStory extends Activity {
                                     R.anim.fade_out_rapidly)
                             .build(),
                     Uri.parse(story.url));
-        }
-    };
-
-    private SharedElementCallback sharedEnterCallback = new SharedElementCallback() {
-        @Override
-        public void onSharedElementEnd(List<String> sharedElementNames,
-                                       List<View> sharedElements,
-                                       List<View> sharedElementSnapshots) {
-            // force a remeasure to account for shared element shenanigans
-            if (collapsingToolbar != null) {
-                collapsingToolbar.measure(
-                        View.MeasureSpec.makeMeasureSpec(draggableFrame.getWidth(),
-                                View.MeasureSpec.AT_MOST),
-                        View.MeasureSpec.makeMeasureSpec(draggableFrame.getWidth(),
-                                View.MeasureSpec.AT_MOST));
-                collapsingToolbar.requestLayout();
-            }
-            if (toolbarBackground != null) {
-                toolbarBackground.measure(
-                        View.MeasureSpec.makeMeasureSpec(draggableFrame.getWidth(),
-                                View.MeasureSpec.AT_MOST),
-                        View.MeasureSpec.makeMeasureSpec(draggableFrame.getWidth(),
-                                View.MeasureSpec.AT_MOST));
-                toolbarBackground.requestLayout();
-            }
         }
     };
 
