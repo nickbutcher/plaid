@@ -16,6 +16,8 @@
 
 package io.plaidapp.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
@@ -117,7 +119,7 @@ public class PostNewDesignerNewsStory extends Activity {
         });
 
         // check for share intent
-        if (getIntent() != null && Intent.ACTION_SEND.equals(getIntent().getAction())) {
+        if (isShareIntent()) {
             ShareCompat.IntentReader intentReader = ShareCompat.IntentReader.from(this);
             url.setText(intentReader.getText());
             title.setText(intentReader.getSubject());
@@ -149,6 +151,26 @@ public class PostNewDesignerNewsStory extends Activity {
         // customize window animations
         overridePendingTransition(0, R.anim.fade_out_rapidly);
         super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isShareIntent()) {
+            bottomSheetContent.animate()
+                    .translationY(bottomSheetContent.getHeight())
+                    .setDuration(160L)
+                    .setInterpolator(AnimationUtils.loadInterpolator(
+                            PostNewDesignerNewsStory.this,
+                            android.R.interpolator.fast_out_linear_in))
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            finishAfterTransition();
+                        }
+                    });
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @OnClick(R.id.bottom_sheet)
@@ -198,6 +220,10 @@ public class PostNewDesignerNewsStory extends Activity {
                     this, post, getString(R.string.transition_designer_news_login));
             startActivity(login, options.toBundle());
         }
+    }
+
+    private boolean isShareIntent() {
+        return getIntent() != null && Intent.ACTION_SEND.equals(getIntent().getAction());
     }
 
     private void setPostButtonState() {
