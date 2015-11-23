@@ -28,7 +28,6 @@
         </attr>
         <attr name="fabOverlayWidth" format="dimension" />
         <attr name="fabOverlayHeight" format="dimension" />
-        <attr name="fabId" format="reference" />
 
         <!-- standard text appearance attribs -->
         <attr name="android:text" />
@@ -37,6 +36,7 @@
         <attr name="android:letterSpacing" />
         <attr name="android:fontFeatureSettings" />
         <attr name="android:textAppearance" />
+        <attr name="android:breakStrategy" />
 
         <!-- custom font support -->
         <attr name="font" />

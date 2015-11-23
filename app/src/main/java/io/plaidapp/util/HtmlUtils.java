@@ -17,6 +17,7 @@
 package io.plaidapp.util;
 
 import android.content.res.ColorStateList;
+import android.support.annotation.ColorInt;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -63,7 +64,7 @@ public class HtmlUtils {
      */
     public static Spanned parseHtml(String input,
                                     ColorStateList linkTextColor,
-                                    int linkHighlightColor) {
+                                    @ColorInt int linkHighlightColor) {
         SpannableStringBuilder spanned = (SpannableStringBuilder) Html.fromHtml(input);
 
         // strip any trailing newlines

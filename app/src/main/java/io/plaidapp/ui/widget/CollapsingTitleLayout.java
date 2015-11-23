@@ -130,7 +130,8 @@ public class CollapsingTitleLayout extends FrameLayout {
                     R.styleable.CollapsingTitleLayout_titleInsetBottom, 0);
         }
 
-        final int textAppearance = a.getResourceId(R.styleable.CollapsingTitleLayout_android_textAppearance,
+        final int textAppearance = a.getResourceId(
+                R.styleable.CollapsingTitleLayout_android_textAppearance,
                 android.R.style.TextAppearance);
         TypedArray atp = getContext().obtainStyledAttributes(textAppearance,
                 R.styleable.CollapsingTextAppearance);

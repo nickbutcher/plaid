@@ -200,6 +200,11 @@
         <item name="android:textColor">@color/filter_text</item>
     </style>
 
+    <style name="Widget.Plaid.DribbbleShotTitle">
+        <item name="android:textAppearance">@style/TextAppearance.DribbbleShotTitle</item>
+        <item name="lineHeightHint">32sp</item>
+    </style>
+
     <style name="Widget.Plaid.DribbbleShotDescription">
         <item name="android:textAppearance">@style/TextAppearance.DribbbleShotDescription</item>
         <item name="lineHeightHint">24sp</item>

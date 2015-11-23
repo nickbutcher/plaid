@@ -16,8 +16,10 @@
 
 package io.plaidapp.data.api.dribbble.model;
 
+import android.content.res.ColorStateList;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.ColorInt;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.widget.TextView;
@@ -140,10 +142,10 @@ public class Shot extends PlaidItem implements Parcelable {
         hasFadedIn = in.readByte() != 0x00;
     }
 
-    public Spanned getParsedDescription(TextView textView) {
+    public Spanned getParsedDescription(ColorStateList linkTextColor,
+                                        @ColorInt int linkHighlightColor) {
         if (parsedDescription == null && !TextUtils.isEmpty(description)) {
-            parsedDescription = HtmlUtils.parseHtml(description, textView.getLinkTextColors(),
-                    textView.getHighlightColor());
+            parsedDescription = HtmlUtils.parseHtml(description, linkTextColor, linkHighlightColor);
         }
         return parsedDescription;
     }
