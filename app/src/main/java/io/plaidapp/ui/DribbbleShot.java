@@ -188,11 +188,13 @@ public class DribbbleShot extends Activity {
         };
 
         // load the main image
+        final int[] imageSize = shot.images.bestSize();
         Glide.with(this)
                 .load(shot.images.best())
                 .listener(shotLoadListener)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .priority(Priority.IMMEDIATE)
+                .override(imageSize[0], imageSize[1])
                 .into(imageView);
         imageView.setOnClickListener(shotClick);
         shotSpacer.setOnClickListener(shotClick);

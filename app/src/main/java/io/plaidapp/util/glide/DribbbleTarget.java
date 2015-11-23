@@ -41,18 +41,9 @@ public class DribbbleTarget extends GlideDrawableImageViewTarget implements
 
     private final boolean playGifs;
 
-    // we override the image size as we want to cache images at device width for a smooth
-    // transition from the home grid to the detail screen
-    private final int imageWidth;
-    private final int imageHeight;
-
-    public DribbbleTarget(BadgedFourThreeImageView view,
-                          boolean playGifs,
-                          int imageWidth) {
+    public DribbbleTarget(BadgedFourThreeImageView view, boolean playGifs) {
         super(view);
         this.playGifs = playGifs;
-        this.imageWidth = imageWidth;
-        this.imageHeight = imageWidth * 3 / 4;
     }
 
     @Override
@@ -107,11 +98,6 @@ public class DribbbleTarget extends GlideDrawableImageViewTarget implements
         ((BadgedFourThreeImageView) getView()).setForeground(
                 ViewUtils.createRipple(palette, 0.25f, 0.5f,
                         ContextCompat.getColor(getView().getContext(), R.color.mid_grey), true));
-    }
-
-    @Override
-    public void getSize(SizeReadyCallback cb) {
-        cb.onSizeReady(imageWidth, imageHeight);
     }
 
 }

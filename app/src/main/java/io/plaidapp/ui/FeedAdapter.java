@@ -83,7 +83,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_DRIBBBLE_SHOT = 1;
     private static final int TYPE_PRODUCT_HUNT_POST = 2;
     private static final int TYPE_LOADING_MORE = -1;
-    private static final int MAX_IMAGE_CACHE_WIDTH = 1440;
     public static final float DUPE_WEIGHT_BOOST = 0.4f;
 
     // we need to hold on to an activity ref for the shared element transitions :/
@@ -127,7 +126,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         layoutInflater.inflate(R.layout.designer_news_story_item, parent, false),
                         pocketIsInstalled);
             case TYPE_DRIBBBLE_SHOT:
-                ensureShotImageWidth(parent);
                 return new DribbbleShotHolder(
                         layoutInflater.inflate(R.layout.dribbble_shot_item, parent, false));
             case TYPE_PRODUCT_HUNT_POST:
@@ -282,6 +280,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                       final DribbbleShotHolder holder,
                                       final int position) {
         final BadgedFourThreeImageView iv = (BadgedFourThreeImageView) holder.itemView;
+        final int[] imageSize = shot.images.bestSize();
         Glide.with(host)
                 .load(shot.images.best())
                 .listener(new RequestListener<String, GlideDrawable>() {
@@ -333,7 +332,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 .placeholder(shotLoadingPlaceholders[position % shotLoadingPlaceholders.length])
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .fitCenter()
-                .into(new DribbbleTarget(iv, false, shotWidth));
+                .override(imageSize[0], imageSize[1])
+                .into(new DribbbleTarget(iv, false));
 
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -556,17 +556,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public int getItemCount() {
         // include loading footer
         return getDataItemCount() + 1;
-    }
-
-    /**
-     * We override the image size as we want to cache images at device width for a smooth
-     * transition from the home grid to the detail screen
-     */
-    private void ensureShotImageWidth(View view) {
-        if (shotWidth == 0) {
-            // constrain to a max width to reduce OutOfMemory errors!
-            shotWidth = Math.min(view.getRootView().getWidth(), MAX_IMAGE_CACHE_WIDTH);
-        }
     }
 
     /**
