@@ -18,9 +18,7 @@ package io.plaidapp.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.ActivityOptions;
@@ -35,7 +33,6 @@ import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.transition.ArcMotion;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.util.Pair;
@@ -80,11 +77,12 @@ import io.plaidapp.util.glide.DribbbleTarget;
  */
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    public static final float DUPE_WEIGHT_BOOST = 0.4f;
+
     private static final int TYPE_DESIGNER_NEWS_STORY = 0;
     private static final int TYPE_DRIBBBLE_SHOT = 1;
     private static final int TYPE_PRODUCT_HUNT_POST = 2;
     private static final int TYPE_LOADING_MORE = -1;
-    public static final float DUPE_WEIGHT_BOOST = 0.4f;
 
     // we need to hold on to an activity ref for the shared element transitions :/
     private final Activity host;
@@ -189,89 +187,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             holder.pocket.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View view) {
-                    final ImageButton pocketButton = (ImageButton) view;
-                    // actually add to pocket
                     PocketUtils.addToPocket(host,
                             ((Story) getItem(holder.getAdapterPosition())).url);
-
-                    // setup for anim
-                    holder.itemView.setHasTransientState(true);
-                    ((ViewGroup) pocketButton.getParent().getParent()).setClipChildren(false);
-                    final int initialLeft = pocketButton.getLeft();
-                    final int initialTop = pocketButton.getTop();
-                    final int translatedLeft =
-                            (holder.itemView.getWidth() - pocketButton.getWidth()) / 2;
-                    final int translatedTop =
-                        initialTop - ((holder.itemView.getHeight() - pocketButton.getHeight()) / 2);
-                    final ArcMotion arc = new ArcMotion();
-
-                    // animate the title & pocket icon up, scale the pocket icon up
-                    PropertyValuesHolder pvhTitleUp = PropertyValuesHolder.ofFloat(View
-                            .TRANSLATION_Y, -(holder.itemView.getHeight() / 5));
-                    PropertyValuesHolder pvhTitleFade = PropertyValuesHolder.ofFloat(View.ALPHA,
-                            0.54f);
-                    Animator titleMoveFadeOut = ObjectAnimator.ofPropertyValuesHolder(holder.title,
-                            pvhTitleUp, pvhTitleFade);
-
-                    Animator pocketMoveUp = ObjectAnimator.ofFloat(pocketButton, View
-                                    .TRANSLATION_X, View.TRANSLATION_Y,
-                            arc.getPath(initialLeft, initialTop, translatedLeft, translatedTop));
-                    PropertyValuesHolder pvhPocketScaleUpX = PropertyValuesHolder.ofFloat(View
-                            .SCALE_X, 3f);
-                    PropertyValuesHolder pvhPocketScaleUpY = PropertyValuesHolder.ofFloat(View
-                            .SCALE_Y, 3f);
-                    Animator pocketScaleUp = ObjectAnimator.ofPropertyValuesHolder(pocketButton,
-                            pvhPocketScaleUpX, pvhPocketScaleUpY);
-                    ObjectAnimator pocketFadeUp = ObjectAnimator.ofInt(pocketButton,
-                            ViewUtils.IMAGE_ALPHA, 255);
-
-                    AnimatorSet up = new AnimatorSet();
-                    up.playTogether(titleMoveFadeOut, pocketMoveUp, pocketScaleUp, pocketFadeUp);
-                    up.setDuration(300);
-                    up.setInterpolator(AnimationUtils.loadInterpolator(host, android.R
-                            .interpolator.fast_out_slow_in));
-
-                    // animate everything back into place
-                    PropertyValuesHolder pvhTitleMoveUp = PropertyValuesHolder.ofFloat(View
-                            .TRANSLATION_Y, 0f);
-                    PropertyValuesHolder pvhTitleFadeUp = PropertyValuesHolder.ofFloat(View
-                            .ALPHA, 1f);
-                    Animator titleMoveFadeIn = ObjectAnimator.ofPropertyValuesHolder(holder.title,
-                            pvhTitleMoveUp, pvhTitleFadeUp);
-                    Animator pocketMoveDown = ObjectAnimator.ofFloat(pocketButton, View
-                                    .TRANSLATION_X, View.TRANSLATION_Y,
-                            arc.getPath(translatedLeft, translatedTop, 0, 0));
-                    PropertyValuesHolder pvhPocketScaleDownX = PropertyValuesHolder.ofFloat(View
-                            .SCALE_X, 1f);
-                    PropertyValuesHolder pvhPocketScaleDownY = PropertyValuesHolder.ofFloat(View
-                            .SCALE_Y, 1f);
-                    Animator pvhPocketScaleDown = ObjectAnimator.ofPropertyValuesHolder
-                            (pocketButton, pvhPocketScaleDownX, pvhPocketScaleDownY);
-                    ObjectAnimator pocketFadeDown = ObjectAnimator.ofInt(pocketButton,
-                            ViewUtils.IMAGE_ALPHA, 138);
-
-                    AnimatorSet down = new AnimatorSet();
-                    down.playTogether(titleMoveFadeIn, pocketMoveDown, pvhPocketScaleDown,
-                            pocketFadeDown);
-                    down.setDuration(300);
-                    down.setInterpolator(AnimationUtils.loadInterpolator(host, android.R
-                            .interpolator.fast_out_slow_in));
-                    down.setStartDelay(500);
-
-                    // play it
-                    AnimatorSet upDown = new AnimatorSet();
-                    upDown.playSequentially(up, down);
-
-                    // clean up
-                    upDown.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            ((ViewGroup) pocketButton.getParent().getParent()).setClipChildren
-                                    (true);
-                            holder.itemView.setHasTransientState(false);
-                        }
-                    });
-                    upDown.start();
+                    // notify changed with a payload asking RV to run the anim
+                    notifyItemChanged(holder.getAdapterPosition(),
+                            HomeGridItemAnimator.ANIMATE_ADD_POCKET);
                 }
             });
         }

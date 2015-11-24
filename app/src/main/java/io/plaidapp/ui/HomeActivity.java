@@ -177,6 +177,7 @@ public class HomeActivity extends Activity {
         grid.setHasFixedSize(true);
         grid.addItemDecoration(new GridItemDividerDecoration(adapter.getDividedViewHolderClasses(),
                 this, R.dimen.divider_height, R.color.divider));
+        grid.setItemAnimator(new HomeGridItemAnimator());
 
         // drawer layout treats fitsSystemWindows specially so we have to handle insets ourselves
         drawer.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
