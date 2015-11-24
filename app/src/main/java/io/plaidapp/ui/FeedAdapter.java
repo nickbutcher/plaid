@@ -139,12 +139,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         switch (getItemViewType(position)) {
             case TYPE_DESIGNER_NEWS_STORY:
                 bindDesignerNewsStory((Story) getItem(position), (DesignerNewsStoryHolder) holder);
+                break;
             case TYPE_DRIBBBLE_SHOT:
                 bindDribbbleShotHolder((Shot) getItem(position), (DribbbleShotHolder) holder);
+                break;
             case TYPE_PRODUCT_HUNT_POST:
                 bindProductHuntPostView((Post) getItem(position), (ProductHuntStoryHolder) holder);
+                break;
             case TYPE_LOADING_MORE:
                 bindLoadingViewHolder((LoadingMoreHolder) holder);
+                break;
         }
     }
 
