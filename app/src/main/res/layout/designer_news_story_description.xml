@@ -34,6 +34,7 @@
         android:paddingEnd="@dimen/padding_normal"
         android:textColorLink="@color/designer_news_links"
         android:textColorHighlight="@color/designer_news_link_highlight"
+        android:breakStrategy="high_quality"
         tools:text="Blah blah blah blah blah blah blah blah blah blah blah"
         style="@style/Widget.Plaid.DesignerNewsDescription" />
 
