@@ -146,7 +146,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (item instanceof Story) {
                 bindDesignerNewsStory((Story) getItem(position), (DesignerNewsStoryHolder) holder);
             } else if (item instanceof Shot) {
-                bindDribbbleShotView((Shot) item, (DribbbleShotHolder) holder, position);
+                bindDribbbleShotView((Shot) item, (DribbbleShotHolder) holder);
             } else if (item instanceof Post) {
                 bindProductHuntPostView((Post) item, (ProductHuntStoryHolder) holder);
             }
@@ -278,8 +278,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private void bindDribbbleShotView(final Shot shot,
-                                      final DribbbleShotHolder holder,
-                                      final int position) {
+                                      final DribbbleShotHolder holder) {
         final BadgedFourThreeImageView iv = (BadgedFourThreeImageView) holder.itemView;
         final int[] imageSize = shot.images.bestSize();
         Glide.with(host)
@@ -330,7 +329,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         return false;
                     }
                 })
-                .placeholder(shotLoadingPlaceholders[position % shotLoadingPlaceholders.length])
+                .placeholder(shotLoadingPlaceholders[holder.getAdapterPosition() %
+                        shotLoadingPlaceholders.length])
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .fitCenter()
                 .override(imageSize[0], imageSize[1])
