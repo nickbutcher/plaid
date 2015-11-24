@@ -30,6 +30,7 @@ import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.content.ContextCompat;
@@ -93,7 +94,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private @Nullable DataLoadingSubject dataLoading;
     private final int columns;
     private final ColorDrawable[] shotLoadingPlaceholders;
-    private int shotWidth = 0;
 
     private List<PlaidItem> items;
 
@@ -122,15 +122,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case TYPE_DESIGNER_NEWS_STORY:
-                return new DesignerNewsStoryHolder(
-                        layoutInflater.inflate(R.layout.designer_news_story_item, parent, false),
-                        pocketIsInstalled);
+                return createDesignerNewsStoryHolder(parent);
             case TYPE_DRIBBBLE_SHOT:
-                return new DribbbleShotHolder(
-                        layoutInflater.inflate(R.layout.dribbble_shot_item, parent, false));
+                return createDribbbleShotHolder(parent);
             case TYPE_PRODUCT_HUNT_POST:
-                return new ProductHuntStoryHolder(
-                        layoutInflater.inflate(R.layout.product_hunt_item, parent, false));
+                return createProductHuntStoryHolder(parent);
             case TYPE_LOADING_MORE:
                 return new LoadingMoreHolder(
                         layoutInflater.inflate(R.layout.infinite_loading, parent, false));
@@ -140,40 +136,40 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (position < getDataItemCount()
-                && getDataItemCount() > 0) {
-            PlaidItem item = getItem(position);
-            if (item instanceof Story) {
+        switch (getItemViewType(position)) {
+            case TYPE_DESIGNER_NEWS_STORY:
                 bindDesignerNewsStory((Story) getItem(position), (DesignerNewsStoryHolder) holder);
-            } else if (item instanceof Shot) {
-                bindDribbbleShotView((Shot) item, (DribbbleShotHolder) holder);
-            } else if (item instanceof Post) {
-                bindProductHuntPostView((Post) item, (ProductHuntStoryHolder) holder);
-            }
-        } else {
-            bindLoadingViewHolder((LoadingMoreHolder) holder, position);
+            case TYPE_DRIBBBLE_SHOT:
+                bindDribbbleShotHolder((Shot) getItem(position), (DribbbleShotHolder) holder);
+            case TYPE_PRODUCT_HUNT_POST:
+                bindProductHuntPostView((Post) getItem(position), (ProductHuntStoryHolder) holder);
+            case TYPE_LOADING_MORE:
+                bindLoadingViewHolder((LoadingMoreHolder) holder);
         }
     }
 
-    private void bindDesignerNewsStory(final Story story, final DesignerNewsStoryHolder holder) {
-        holder.title.setText(story.title);
+    @NonNull
+    private DesignerNewsStoryHolder createDesignerNewsStoryHolder(ViewGroup parent) {
+        final DesignerNewsStoryHolder holder = new DesignerNewsStoryHolder(layoutInflater.inflate(
+                R.layout.designer_news_story_item, parent, false), pocketIsInstalled);
         holder.itemView.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        final Story story = (Story) getItem(holder.getAdapterPosition());
                         CustomTabActivityHelper.openCustomTab(host,
                                 DesignerNewsStory.getCustomTabIntent(host, story, null).build(),
                                 Uri.parse(story.url));
                     }
                 }
                                           );
-        holder.comments.setText(String.valueOf(story.comment_count));
         holder.comments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View commentsView) {
                 final Intent intent = new Intent();
                 intent.setClass(host, DesignerNewsStory.class);
-                intent.putExtra(DesignerNewsStory.EXTRA_STORY, story);
+                intent.putExtra(DesignerNewsStory.EXTRA_STORY,
+                        (Story) getItem(holder.getAdapterPosition()));
                 setGridItemContentTransitions(holder.itemView);
                 final ActivityOptions options =
                         ActivityOptions.makeSceneTransitionAnimation(host,
@@ -191,7 +187,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 public void onClick(final View view) {
                     final ImageButton pocketButton = (ImageButton) view;
                     // actually add to pocket
-                    PocketUtils.addToPocket(host, story.url);
+                    PocketUtils.addToPocket(host,
+                            ((Story) getItem(holder.getAdapterPosition())).url);
 
                     // setup for anim
                     holder.itemView.setHasTransientState(true);
@@ -201,8 +198,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     final int translatedLeft =
                             (holder.itemView.getWidth() - pocketButton.getWidth()) / 2;
                     final int translatedTop =
-                            initialTop - ((holder.itemView.getHeight() - pocketButton.getHeight()
-                            ) / 2);
+                        initialTop - ((holder.itemView.getHeight() - pocketButton.getHeight()) / 2);
                     final ArcMotion arc = new ArcMotion();
 
                     // animate the title & pocket icon up, scale the pocket icon up
@@ -275,10 +271,43 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
         }
+        return holder;
     }
 
-    private void bindDribbbleShotView(final Shot shot,
-                                      final DribbbleShotHolder holder) {
+    private void bindDesignerNewsStory(final Story story, final DesignerNewsStoryHolder holder) {
+        holder.title.setText(story.title);
+        holder.comments.setText(String.valueOf(story.comment_count));
+    }
+
+    @NonNull
+    private DribbbleShotHolder createDribbbleShotHolder(ViewGroup parent) {
+        final DribbbleShotHolder holder = new DribbbleShotHolder(
+                layoutInflater.inflate(R.layout.dribbble_shot_item, parent, false));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.itemView.setTransitionName(holder.itemView.getResources().getString(R
+                        .string.transition_shot));
+                holder.itemView.setBackgroundColor(
+                        ContextCompat.getColor(host, R.color.background_light));
+                Intent intent = new Intent();
+                intent.setClass(host, DribbbleShot.class);
+                intent.putExtra(DribbbleShot.EXTRA_SHOT,
+                        (Shot) getItem(holder.getAdapterPosition()));
+                setGridItemContentTransitions(holder.itemView);
+                ActivityOptions options =
+                        ActivityOptions.makeSceneTransitionAnimation(host,
+                                Pair.create(view, host.getString(R.string.transition_shot)),
+                                Pair.create(view, host.getString(R.string
+                                        .transition_shot_background)));
+                host.startActivity(intent, options.toBundle());
+            }
+        });
+        return holder;
+    }
+
+    private void bindDribbbleShotHolder(final Shot shot,
+                                        final DribbbleShotHolder holder) {
         final BadgedFourThreeImageView iv = (BadgedFourThreeImageView) holder.itemView;
         final int[] imageSize = shot.images.bestSize();
         Glide.with(host)
@@ -335,31 +364,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 .fitCenter()
                 .override(imageSize[0], imageSize[1])
                 .into(new DribbbleTarget(iv, false));
-
-        iv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                iv.setTransitionName(iv.getResources().getString(R.string.transition_shot));
-                iv.setBackgroundColor(
-                        ContextCompat.getColor(host, R.color.background_light));
-                Intent intent = new Intent();
-                intent.setClass(host, DribbbleShot.class);
-                intent.putExtra(DribbbleShot.EXTRA_SHOT, shot);
-                setGridItemContentTransitions(holder.itemView);
-                ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation(host,
-                                Pair.create(view, host.getString(R.string.transition_shot)),
-                                Pair.create(view, host.getString(R.string
-                                        .transition_shot_background)));
-                host.startActivity(intent, options.toBundle());
-            }
-        });
     }
 
-    private void bindProductHuntPostView(final Post item, ProductHuntStoryHolder holder) {
-        holder.title.setText(item.name);
-        holder.tagline.setText(item.tagline);
-        holder.comments.setText(String.valueOf(item.comments_count));
+    @NonNull
+    private ProductHuntStoryHolder createProductHuntStoryHolder(ViewGroup parent) {
+        final ProductHuntStoryHolder holder = new ProductHuntStoryHolder(
+                layoutInflater.inflate(R.layout.product_hunt_item, parent, false));
         holder.comments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -368,7 +378,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         new CustomTabsIntent.Builder()
                                 .setToolbarColor(ContextCompat.getColor(host, R.color.product_hunt))
                                 .build(),
-                        Uri.parse(item.discussion_url));
+                        Uri.parse(((Post) getItem(holder.getAdapterPosition())).discussion_url));
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -379,16 +389,23 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         new CustomTabsIntent.Builder()
                                 .setToolbarColor(ContextCompat.getColor(host, R.color.product_hunt))
                                 .build(),
-                        Uri.parse(item.redirect_url));
+                        Uri.parse(((Post) getItem(holder.getAdapterPosition())).redirect_url));
             }
         });
+        return holder;
     }
 
-    private void bindLoadingViewHolder(LoadingMoreHolder holder, int position) {
+    private void bindProductHuntPostView(final Post item, ProductHuntStoryHolder holder) {
+        holder.title.setText(item.name);
+        holder.tagline.setText(item.tagline);
+        holder.comments.setText(String.valueOf(item.comments_count));
+    }
+
+    private void bindLoadingViewHolder(LoadingMoreHolder holder) {
         // only show the infinite load progress spinner if there are already items in the
         // grid i.e. it's not the first item & data is being loaded
-        holder.progress.setVisibility(position > 0 && dataLoading.isDataLoading() ?
-                View.VISIBLE : View.INVISIBLE);
+        holder.progress.setVisibility((holder.getAdapterPosition() > 0
+                && dataLoading.isDataLoading()) ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
