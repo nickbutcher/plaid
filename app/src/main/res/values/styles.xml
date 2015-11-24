@@ -358,7 +358,7 @@
         <item name="android:submitBackground">@android:color/transparent</item>
     </style>
 
-    <style name="Widget.Plaid.DribbleShotAction" parent="@android:style/Widget.Material.Button">
+    <style name="Widget.Plaid.InlineActionButton" parent="@android:style/Widget.Material.Button">
         <item name="android:gravity">center_horizontal</item>
         <item name="android:textAppearance">@style/TextAppearance.CommentAuthor</item>
         <item name="android:drawablePadding">@dimen/spacing_micro</item>

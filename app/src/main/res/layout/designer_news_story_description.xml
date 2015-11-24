@@ -59,7 +59,7 @@
             android:layout_weight="2"
             android:drawableTop="@drawable/ic_upvote"
             tools:text="33 likes"
-            style="@style/Widget.Plaid.DribbleShotAction" />
+            style="@style/Widget.Plaid.InlineActionButton" />
 
         <Space
             android:layout_width="0dp"
@@ -73,7 +73,7 @@
             android:layout_weight="2"
             android:drawableTop="@drawable/ic_action_share_24dp"
             android:text="@string/share"
-            style="@style/Widget.Plaid.DribbleShotAction" />
+            style="@style/Widget.Plaid.InlineActionButton" />
 
         <Space
             android:layout_width="0dp"

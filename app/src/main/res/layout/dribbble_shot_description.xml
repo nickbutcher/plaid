@@ -52,7 +52,7 @@
             android:layout_weight="1"
             android:drawableTop="@drawable/ic_heart_full_24dp_grey"
             tools:text="33 likes"
-            style="@style/Widget.Plaid.DribbleShotAction" />
+            style="@style/Widget.Plaid.InlineActionButton" />
 
         <Button
             android:id="@+id/shot_view_count"
@@ -62,7 +62,7 @@
             android:drawableTop="@drawable/ic_views_24dp"
             android:background="@null"
             tools:text="33 views"
-            style="@style/Widget.Plaid.DribbleShotAction" />
+            style="@style/Widget.Plaid.InlineActionButton" />
 
         <Button
             android:id="@+id/shot_share_action"
@@ -72,7 +72,7 @@
             android:layout_marginBottom="@dimen/spacing_normal"
             android:drawableTop="@drawable/ic_action_share_24dp"
             android:text="@string/share"
-            style="@style/Widget.Plaid.DribbleShotAction" />
+            style="@style/Widget.Plaid.InlineActionButton" />
 
     </LinearLayout>
 
