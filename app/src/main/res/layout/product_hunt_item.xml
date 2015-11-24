@@ -20,7 +20,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/product_hunt_item_background"
+    android:background="@color/product_hunt"
     android:foreground="@drawable/dark_ripple"
     android:orientation="vertical"
     android:stateListAnimator="@animator/raise">

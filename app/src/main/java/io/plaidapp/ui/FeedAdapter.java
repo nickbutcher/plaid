@@ -201,7 +201,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     final int translatedLeft =
                             (holder.itemView.getWidth() - pocketButton.getWidth()) / 2;
                     final int translatedTop =
-                        initialTop - ((holder.itemView.getHeight() - pocketButton.getHeight()) / 2);
+                            initialTop - ((holder.itemView.getHeight() - pocketButton.getHeight()
+                            ) / 2);
                     final ArcMotion arc = new ArcMotion();
 
                     // animate the title & pocket icon up, scale the pocket icon up
@@ -583,6 +584,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public int getDataItemCount() {
         return items.size();
+    }
+
+    /**
+     * Which ViewHolder types require a divider decoration
+     */
+    public Class[] getDividedViewHolderClasses() {
+        return new Class[] { DesignerNewsStoryHolder.class, ProductHuntStoryHolder.class };
     }
 
     /* protected */ class DribbbleShotHolder extends RecyclerView.ViewHolder {
