@@ -15,27 +15,23 @@
   limitations under the License.
   -->
 
-<animated-selector
+<set
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:constantSize="true">
+    android:ordering="sequentially">
 
-    <item
-        android:id="@+id/liked"
-        android:state_checked="true"
-        android:drawable="@drawable/ic_heart_full_56dp" />
+    <!-- first reset state -->
+    <objectAnimator
+        android:propertyName="trimPathEnd"
+        android:valueFrom="0"
+        android:valueTo="0"
+        android:duration="0" />
 
-    <item
-        android:id="@+id/not_liked"
-        android:drawable="@drawable/ic_heart_empty_56dp" />
+    <objectAnimator
+        android:propertyName="trimPathEnd"
+        android:valueFrom="0"
+        android:valueTo="1"
+        android:startOffset="400"
+        android:duration="300"
+        android:interpolator="@android:interpolator/fast_out_slow_in" />
 
-    <transition
-        android:fromId="@id/not_liked"
-        android:toId="@id/liked"
-        android:drawable="@drawable/avd_heart_fill" />
-
-    <transition
-        android:fromId="@id/liked"
-        android:toId="@id/not_liked"
-        android:drawable="@drawable/avd_heart_empty" />
-
-</animated-selector>
+</set>

@@ -15,27 +15,12 @@
   limitations under the License.
   -->
 
-<animated-selector
+<animated-vector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:constantSize="true">
+    android:drawable="@drawable/heart_anim">
 
-    <item
-        android:id="@+id/liked"
-        android:state_checked="true"
-        android:drawable="@drawable/ic_heart_full_56dp" />
+    <target
+        android:name="clip"
+        android:animation="@animator/heart_fill" />
 
-    <item
-        android:id="@+id/not_liked"
-        android:drawable="@drawable/ic_heart_empty_56dp" />
-
-    <transition
-        android:fromId="@id/not_liked"
-        android:toId="@id/liked"
-        android:drawable="@drawable/avd_heart_fill" />
-
-    <transition
-        android:fromId="@id/liked"
-        android:toId="@id/not_liked"
-        android:drawable="@drawable/avd_heart_empty" />
-
-</animated-selector>
+</animated-vector>

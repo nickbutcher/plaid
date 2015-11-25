@@ -25,6 +25,6 @@
 
     <path
         android:pathData="@string/heart_full_path_56dp"
-        android:fillColor="@color/fab_heart_full"/>
+        android:fillColor="@color/fab_heart_full" />
 
 </vector>

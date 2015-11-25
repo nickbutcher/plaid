@@ -29,7 +29,7 @@ import io.plaidapp.R;
  */
 public class PinnedOffsetView extends View {
 
-    private static final int[] STATE_PINNED = {R.attr.state_pinned};
+    private static final int[] STATE_PINNED = { R.attr.state_pinned };
 
     private int minOffset;
     private boolean isPinned = false;
