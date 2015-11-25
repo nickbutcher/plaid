@@ -129,10 +129,17 @@ public class HomeGridItemAnimator extends DefaultItemAnimator {
 
             // clean up
             upDown.addListener(new AnimatorListenerAdapter() {
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    dispatchAnimationStarted(holder);
+                }
+
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     ((ViewGroup) holder.pocket.getParent().getParent()).setClipChildren(true);
                     holder.itemView.setHasTransientState(false);
+                    dispatchAnimationFinished(holder);
                 }
             });
             upDown.start();
