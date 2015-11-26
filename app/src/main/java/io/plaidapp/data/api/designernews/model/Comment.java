@@ -33,12 +33,15 @@ public class Comment implements Parcelable {
     public final String body_html;
     public final Date created_at;
     public final int depth;
-    public final int vote_count;
+    public int vote_count;
     public final long user_id;
     public final String user_display_name;
     public final String user_portrait_url;
     public final String user_job;
     public final List<Comment> comments;
+
+    // TODO move this to a decorator
+    public Boolean upvoted;
 
     public Comment(long id,
                    String body,

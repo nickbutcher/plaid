@@ -21,6 +21,7 @@
         <objectAnimator
             android:propertyName="translationZ"
             android:valueTo="@dimen/z_card"
+            android:startOffset="280"
             android:duration="@android:integer/config_shortAnimTime"
             android:interpolator="@android:interpolator/fast_out_slow_in" />
     </item>

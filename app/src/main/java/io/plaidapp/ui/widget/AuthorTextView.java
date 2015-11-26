@@ -26,7 +26,7 @@ import io.plaidapp.R;
  * An extension to TextView which supports a custom state of {@link #STATE_ORIGINAL_POSTER} for
  * denoting that a comment author was the original poster.
  */
-public class AuthorTextView extends TextView {
+public class AuthorTextView extends BaselineGridTextView {
 
     private static final int[] STATE_ORIGINAL_POSTER = {R.attr.state_original_poster};
 

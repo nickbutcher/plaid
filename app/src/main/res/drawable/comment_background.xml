@@ -21,6 +21,6 @@
     android:enterFadeDuration="@android:integer/config_shortAnimTime"
     android:exitFadeDuration="@android:integer/config_shortAnimTime">
 
-    <item android:state_activated="true" android:drawable="@android:color/white" />
+    <item android:state_activated="true" android:drawable="@color/selected_comment_background" />
 
 </selector>

@@ -84,4 +84,17 @@ public interface DesignerNewsService {
                  @Field("comment[body]") String comment,
                  Callback<Comment> callback);
 
+    @FormUrlEncoded
+    @POST("/api/v1/comments/{id}/reply")
+    void replyToComment(@Path("id") long commentId,
+                        @Field("comment[body]") String comment,
+                        Callback<Comment> callback);
+
+    @POST("/api/v1/comments/{id}/upvote")
+    void upvoteComment(@Path("id") long commentId,
+                       @Body String ignored,  // can remove when retrofit releases this fix:
+                       // https://github
+                       // .com/square/retrofit/commit/19ac1e2c4551448184ad66c4a0ec172e2741c2ee
+                       Callback<Comment> callback);
+
 }

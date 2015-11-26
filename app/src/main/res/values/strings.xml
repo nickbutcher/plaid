@@ -24,6 +24,7 @@
     <string name="need_login">Woah there chief. First you\'ll need&#160;to</string> <!-- &#160; == nbsp -->
     <string name="dribbble_logged_in_as">Logged in as</string>
     <string name="comment">Comment</string>
+    <string name="hint_reply">Reply</string>
 
     <!-- main screen -->
     <string name="search">Search</string>
@@ -100,7 +101,6 @@
         <item quantity="other">%s views</item>
     </plurals>
     <string name="share">share</string>
-    <string name="hint_reply">Reply</string>
     <string name="prospects_cant_post">Sorry but prospects cannot comment :(</string>
 
     <!-- dribbble login -->
