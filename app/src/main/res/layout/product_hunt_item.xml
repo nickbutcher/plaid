@@ -34,7 +34,8 @@
         android:paddingEnd="@dimen/padding_normal"
         android:paddingBottom="@dimen/spacing_micro"
         android:ellipsize="end"
-        style="@style/Widget.Plaid.DesignerNewsTile" />
+        android:breakStrategy="simple"
+        style="@style/Widget.Plaid.TilePrimary" />
 
     <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/tagline"
@@ -45,6 +46,7 @@
         android:paddingEnd="@dimen/padding_normal"
         android:paddingBottom="@dimen/spacing_micro"
         android:ellipsize="end"
+        android:breakStrategy="simple"
         style="@style/Widget.Plaid.TileSecondary" />
 
     <TextView
