@@ -17,9 +17,9 @@
 
 <set
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:ordering="sequentially">
+    android:ordering="together">
 
-    <!-- first reset state -->
+    <!-- first reset state as the animation is delayed -->
     <objectAnimator
         android:propertyName="trimPathEnd"
         android:valueFrom="0"
@@ -27,8 +27,23 @@
         android:duration="0" />
 
     <objectAnimator
+        android:propertyName="strokeAlpha"
+        android:valueFrom="0.4"
+        android:valueTo="0.4"
+        android:duration="0" />
+
+    <!-- now trim-reveal & fade in the heart path -->
+    <objectAnimator
         android:propertyName="trimPathEnd"
         android:valueFrom="0"
+        android:valueTo="1"
+        android:startOffset="400"
+        android:duration="300"
+        android:interpolator="@android:interpolator/fast_out_slow_in" />
+
+    <objectAnimator
+        android:propertyName="strokeAlpha"
+        android:valueFrom="0.4"
         android:valueTo="1"
         android:startOffset="400"
         android:duration="300"
