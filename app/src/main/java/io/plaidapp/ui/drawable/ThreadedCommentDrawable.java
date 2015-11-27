@@ -50,6 +50,11 @@ public class ThreadedCommentDrawable extends Drawable {
         paint.setColor(THREAD_COLOR);
     }
 
+    public ThreadedCommentDrawable(int threadWidth, int gap, int depth) {
+        this(threadWidth, gap);
+        setDepth(depth);
+    }
+
     public void setDepth(int depth) {
         this.threads = depth + 1;
         invalidateSelf();

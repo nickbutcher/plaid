@@ -67,6 +67,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -193,17 +194,17 @@ public class DesignerNewsStory extends Activity {
         View enterCommentView = setupCommentField();
 
         if (story.comment_count > 0) {
-            // flatten the comments from a nested structure {@see Comment#comments} to an
-            // array for our adapter (saving the depth).
-            List<ThreadedComment> wrapped = new ArrayList<>(story.comment_count);
-            addComments(story.comments, 0, wrapped);
+            // flatten the comments from a nested structure {@see Comment#comments} to a
+            // list appropriate for our adapter (using the depth attribute).
+            List<Comment> flattened = new ArrayList<>(story.comment_count);
+            unnestComments(story.comments, flattened);
             commentsAdapter =
-                    new DesignerNewsCommentsAdapter(header, wrapped, enterCommentView);
+                    new DesignerNewsCommentsAdapter(header, flattened, enterCommentView);
             commentsList.setAdapter(commentsAdapter);
 
         } else {
             commentsAdapter = new DesignerNewsCommentsAdapter(
-                    header, new ArrayList<ThreadedComment>(0), enterCommentView);
+                    header, new ArrayList<Comment>(0), enterCommentView);
             commentsList.setAdapter(commentsAdapter);
         }
         customTab = new CustomTabActivityHelper();
@@ -318,7 +319,7 @@ public class DesignerNewsStory extends Activity {
         final int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
         final int footerPosition = commentsAdapter.getItemCount() - 1;
         final boolean footerVisible = lastVisibleItemPosition == footerPosition;
-        final boolean replyCommentFocused = commentsAdapter.replyToCommmentIsFocused();
+        final boolean replyCommentFocused = commentsAdapter.isReplyToCommentFocused();
 
         final boolean fabShouldBeVisible =
                 ((firstVisibleItemPosition == 0 && !enterCommentFocused) || !footerVisible)
@@ -535,8 +536,7 @@ public class DesignerNewsStory extends Activity {
                                     enterComment.getText().clear();
                                     enterComment.setEnabled(true);
                                     postComment.setEnabled(true);
-                                    ((DesignerNewsCommentsAdapter) commentsList.getAdapter())
-                                            .addComment(new ThreadedComment(0, comment));
+                                    commentsAdapter.addComment(comment);
                                 }
 
                                 @Override
@@ -604,12 +604,11 @@ public class DesignerNewsStory extends Activity {
                 .create(DesignerNewsService.class);
     }
 
-    private void addComments(List<Comment> comments, int depth, List<ThreadedComment> wrapped) {
-        for (Comment comment : comments) {
-            wrapped.add(new ThreadedComment(depth, comment));
-            // todo move this to after downloading so only done once
+    private void unnestComments(List<Comment> nested, List<Comment> flat) {
+        for (Comment comment : nested) {
+            flat.add(comment);
             if (comment.comments != null && comment.comments.size() > 0) {
-                addComments(comment.comments, depth + 1, wrapped);
+                unnestComments(comment.comments, flat);
             }
         }
     }
@@ -628,19 +627,6 @@ public class DesignerNewsStory extends Activity {
         return userId.equals(story.user_id);
     }
 
-    // convenience class used to convert nested comment structure returned from the API to a flat
-    // structure with a depth attribute, suitable for showing in a list.
-    protected class ThreadedComment {
-        final int depth;
-        final Comment comment;
-
-        ThreadedComment(int depth,
-                        Comment comment) {
-            this.depth = depth;
-            this.comment = comment;
-        }
-    }
-
     /* package */ class DesignerNewsCommentsAdapter
             extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -651,13 +637,13 @@ public class DesignerNewsStory extends Activity {
         private static final int TYPE_FOOTER = 4;
 
         private View header;
-        private List<ThreadedComment> comments;
+        private List<Comment> comments;
         private View footer;
-        private int expandedReplyPosition = RecyclerView.NO_POSITION;
-        private boolean replyToCommmentFocused = false;
+        private int expandedCommentPosition = RecyclerView.NO_POSITION;
+        private boolean replyToCommentFocused = false;
 
         DesignerNewsCommentsAdapter(@NonNull View header,
-                                    @NonNull List<ThreadedComment> comments,
+                                    @NonNull List<Comment> comments,
                                     @NonNull View footer) {
             this.header = header;
             this.comments = comments;
@@ -667,7 +653,7 @@ public class DesignerNewsStory extends Activity {
         @Override
         public int getItemViewType(int position) {
             if (position == 0)  return TYPE_HEADER;
-            if (isCommentReplyExpanded() && position == expandedReplyPosition + 1)
+            if (isCommentReplyExpanded() && position == expandedCommentPosition + 1)
                 return TYPE_COMMENT_REPLY;
             int footerPosition = hasComments() ? 1 + comments.size() // header + comments
                     : 2; // header + no comments view
@@ -719,16 +705,33 @@ public class DesignerNewsStory extends Activity {
             return itemCount;
         }
 
-        public void addComment(ThreadedComment newComment) {
+        public void addComment(Comment newComment) {
             if (!hasComments()) {
                 notifyItemRemoved(1); // remove the no comments view
             }
             comments.add(newComment);
-            notifyItemInserted(comments.size());
+            notifyItemInserted(commentIndexToAdapterPosition(comments.size() - 1));
         }
 
-        public boolean replyToCommmentIsFocused() {
-            return replyToCommmentFocused;
+        /**
+         * Add a new comment and return the adapter position that it was inserted at.
+         */
+        public int addCommentReply(Comment newComment, int inReplyToAdapterPosition) {
+            // when replying to a comment, we want to insert it after any existing replies
+            // i.e. after any following comments with the same or greater depth
+            int commentIndex = adapterPositionToCommentIndex(inReplyToAdapterPosition);
+            do {
+                commentIndex++;
+            } while (commentIndex < comments.size() &&
+                    comments.get(commentIndex).depth >= newComment.depth);
+            comments.add(commentIndex, newComment);
+            int adapterPosition = commentIndexToAdapterPosition(commentIndex);
+            notifyItemInserted(adapterPosition);
+            return adapterPosition;
+        }
+
+        public boolean isReplyToCommentFocused() {
+            return replyToCommentFocused;
         }
 
         private boolean hasComments() {
@@ -736,14 +739,27 @@ public class DesignerNewsStory extends Activity {
         }
 
         private boolean isCommentReplyExpanded() {
-            return expandedReplyPosition != RecyclerView.NO_POSITION;
+            return expandedCommentPosition != RecyclerView.NO_POSITION;
         }
 
         private Comment getComment(int adapterPosition) {
+            return comments.get(adapterPositionToCommentIndex(adapterPosition));
+        }
+
+        private int adapterPositionToCommentIndex(int adapterPosition) {
             int index = adapterPosition - 1; // less header
             if (isCommentReplyExpanded()
-                    && adapterPosition > expandedReplyPosition) index--;
-            return comments.get(index).comment;
+                    && adapterPosition > expandedCommentPosition) index--;
+            return index;
+        }
+
+        private int commentIndexToAdapterPosition(int index) {
+            int adapterPosition = index + 1; // header
+            if (isCommentReplyExpanded()) {
+                int expandedCommentIndex = adapterPositionToCommentIndex(expandedCommentPosition);
+                if (index > expandedCommentIndex) adapterPosition++;
+            }
+            return adapterPosition;
         }
 
         @NonNull
@@ -753,22 +769,15 @@ public class DesignerNewsStory extends Activity {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (isCommentReplyExpanded()) {
-                        notifyItemChanged(expandedReplyPosition, CommentAnimator.COLLAPSE_COMMENT);
-                        notifyItemRemoved(expandedReplyPosition + 1);
-                        replyToCommmentFocused = false;
-                        updateFabVisibility();
+                    final boolean collapsingSelf =
+                            expandedCommentPosition == holder.getAdapterPosition();
+                    collapseExpandedComment();
+                    if (collapsingSelf) return;
 
-                        // if collapsing self, we're done
-                        if (expandedReplyPosition == holder.getAdapterPosition()) {
-                            expandedReplyPosition = RecyclerView.NO_POSITION;
-                            return;
-                        }
-                    }
                     // show reply below this
-                    expandedReplyPosition = holder.getAdapterPosition();
-                    notifyItemInserted(expandedReplyPosition + 1);
-                    notifyItemChanged(expandedReplyPosition, CommentAnimator.EXPAND_COMMENT);
+                    expandedCommentPosition = holder.getAdapterPosition();
+                    notifyItemInserted(expandedCommentPosition + 1);
+                    notifyItemChanged(expandedCommentPosition, CommentAnimator.EXPAND_COMMENT);
                 }
             });
             holder.threadDepth.setImageDrawable(
@@ -777,9 +786,18 @@ public class DesignerNewsStory extends Activity {
             return holder;
         }
 
+        private void collapseExpandedComment() {
+            if (!isCommentReplyExpanded()) return;
+            notifyItemChanged(expandedCommentPosition, CommentAnimator.COLLAPSE_COMMENT);
+            notifyItemRemoved(expandedCommentPosition + 1);
+            replyToCommentFocused = false;
+            expandedCommentPosition = RecyclerView.NO_POSITION;
+            updateFabVisibility();
+        }
+
         private void bindComment(final CommentHolder holder) {
             Comment comment = getComment(holder.getAdapterPosition());
-            holder.itemView.setActivated(holder.getAdapterPosition() == expandedReplyPosition);
+            holder.itemView.setActivated(holder.getAdapterPosition() == expandedCommentPosition);
             HtmlUtils.setTextWithNiceLinks(holder.comment, markdown.markdownToSpannable(
                     comment.body, holder.comment, new Bypass.LoadImageCallback() {
                         @Override
@@ -799,7 +817,10 @@ public class DesignerNewsStory extends Activity {
                                 System.currentTimeMillis(),
                                 DateUtils.SECOND_IN_MILLIS));
             }
-            ((ThreadedCommentDrawable) holder.threadDepth.getDrawable()).setDepth(comment.depth);
+            // FIXME updating drawable doesn't seem to be working, just create a new one
+            //((ThreadedCommentDrawable) holder.threadDepth.getDrawable()).setDepth(comment.depth);
+            holder.threadDepth.setImageDrawable(
+                    new ThreadedCommentDrawable(threadWidth, threadGap, comment.depth));
         }
 
         @NonNull
@@ -843,29 +864,38 @@ public class DesignerNewsStory extends Activity {
                 public void onClick(View v) {
                     if (designerNewsPrefs.isLoggedIn()) {
                         if (TextUtils.isEmpty(holder.commentReply.getText())) return;
-                        holder.commentReply.setEnabled(false);
-                        holder.postReply.setEnabled(false);
-                        designerNewsApi.replyToComment(getComment(holder.getAdapterPosition()).id,
+                        final int inReplyToCommentPosition = holder.getAdapterPosition() - 1;
+                        final Comment replyingTo = getComment(inReplyToCommentPosition);
+                        collapseExpandedComment();
+
+                        // insert a locally created comment before actually
+                        // hitting the API for immediate response
+                        int replyDepth = replyingTo.depth + 1;
+                        final int newReplyPosition = commentsAdapter.addCommentReply(
+                                new Comment.Builder()
+                                        .setBody(holder.commentReply.getText().toString())
+                                        .setCreatedAt(new Date())
+                                        .setDepth(replyDepth)
+                                        .setUserId(designerNewsPrefs.getUserId())
+                                        .setUserDisplayName(designerNewsPrefs.getUserName())
+                                        .setUserPortraitUrl(designerNewsPrefs.getUserAvatar())
+                                        .build(),
+                                inReplyToCommentPosition);
+                        designerNewsApi.replyToComment(replyingTo.id,
                                 holder.commentReply.getText().toString(),
                                 new Callback<Comment>() {
                                     @Override
-                                    public void success(Comment comment, Response response) {
-                                        holder.commentReply.getText().clear();
-                                        holder.commentReply.setEnabled(true);
-                                        holder.postReply.setEnabled(true);
-                                        ((DesignerNewsCommentsAdapter) commentsList.getAdapter())
-                                                .addComment(new ThreadedComment(0, comment));
-                                    }
+                                    public void success(Comment comment, Response response) { }
 
                                     @Override
                                     public void failure(RetrofitError error) {
                                         Toast.makeText(getApplicationContext(),
-                                                "Failed to post comment :(", Toast.LENGTH_SHORT)
-                                                .show();
-                                        holder.commentReply.setEnabled(true);
-                                        holder.postReply.setEnabled(true);
+                                            "Failed to post comment :(", Toast.LENGTH_SHORT).show();
                                     }
                                 });
+                        holder.commentReply.getText().clear();
+                        ImeUtils.hideIme(holder.commentReply);
+                        commentsList.scrollToPosition(newReplyPosition);
                     } else {
                         needsLogin(holder.postReply, 0);
                     }
@@ -876,7 +906,7 @@ public class DesignerNewsStory extends Activity {
             holder.commentReply.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
-                    replyToCommmentFocused = hasFocus;
+                    replyToCommentFocused = hasFocus;
                     final Interpolator interp = AnimationUtils.loadInterpolator(
                             holder.itemView.getContext(),
                             android.R.interpolator.fast_out_slow_in);
@@ -896,7 +926,17 @@ public class DesignerNewsStory extends Activity {
                                 .alpha(1f)
                                 .setDuration(200L)
                                 .setInterpolator(interp)
-                                .setListener(null);
+                                .setListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationStart(Animator animation) {
+                                        holder.itemView.setHasTransientState(true);
+                                    }
+
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        holder.itemView.setHasTransientState(false);
+                                    }
+                                });
                         updateFabVisibility();
                     } else {
                         holder.commentVotes.animate()
@@ -914,8 +954,14 @@ public class DesignerNewsStory extends Activity {
                                 .setInterpolator(interp)
                                 .setListener(new AnimatorListenerAdapter() {
                                     @Override
+                                    public void onAnimationStart(Animator animation) {
+                                        holder.itemView.setHasTransientState(true);
+                                    }
+
+                                    @Override
                                     public void onAnimationEnd(Animator animation) {
                                         holder.postReply.setVisibility(View.INVISIBLE);
+                                        holder.itemView.setHasTransientState(true);
                                     }
                                 });
                         updateFabVisibility();
@@ -1021,36 +1067,37 @@ public class DesignerNewsStory extends Activity {
             if (preInfo instanceof DesignerNewsCommentItemHolderInfo) {
                 final CommentHolder holder = (CommentHolder) newHolder;
                 if (((DesignerNewsCommentItemHolderInfo) preInfo).doExpand) {
+                    Interpolator moveInterpolator = AnimationUtils.loadInterpolator(holder.itemView
+                            .getContext(), android.R.interpolator.fast_out_slow_in);
                     holder.threadDepth.animate()
                             .translationX(-(holder.threadDepth.getWidth() + ((ViewGroup
                                     .MarginLayoutParams) holder.threadDepth.getLayoutParams())
                                     .getMarginStart()))
                             .setDuration(160L)
-                            .setInterpolator(AnimationUtils.loadInterpolator(holder.itemView
-                                    .getContext(), android.R.interpolator.fast_out_linear_in));
-                    Interpolator moveInterpolator = AnimationUtils.loadInterpolator(holder.itemView
-                            .getContext(), android.R.interpolator.fast_out_slow_in);
+                            .setInterpolator(moveInterpolator);
                     final float leftShift = -(holder.threadDepth.getWidth() +
                             ((ViewGroup.MarginLayoutParams) holder.threadDepth.getLayoutParams())
                             .getMarginEnd());
                     holder.author.animate()
                             .translationX(leftShift)
-                            .setDuration(200L)
+                            .setDuration(320L)
                             .setInterpolator(moveInterpolator);
                     holder.comment.animate()
                             .translationX(leftShift)
-                            .setDuration(200L)
+                            .setDuration(320L)
                             .setInterpolator(moveInterpolator)
                             .setListener(new AnimatorListenerAdapter() {
 
                                 @Override
                                 public void onAnimationStart(Animator animation) {
-                                    dispatchAddStarting(holder);
+                                    dispatchChangeStarting(holder, false);
+                                    holder.itemView.setHasTransientState(true);
                                 }
 
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
-                                    dispatchAddFinished(holder);
+                                    holder.itemView.setHasTransientState(false);
+                                    dispatchChangeFinished(holder, false);
                                 }
                             });
                 } else if (((DesignerNewsCommentItemHolderInfo) preInfo).doCollapse) {
@@ -1074,11 +1121,13 @@ public class DesignerNewsStory extends Activity {
                         @Override
                         public void onAnimationStart(Animator animation) {
                             dispatchAddStarting(holder);
+                            holder.itemView.setHasTransientState(true);
                         }
 
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             dispatchAddFinished(holder);
+                            holder.itemView.setHasTransientState(false);
                         }
                     });
                     fadeIn.start();
