@@ -72,7 +72,6 @@ public class HomeGridItemAnimator extends DefaultItemAnimator {
                     (FeedAdapter.DesignerNewsStoryHolder) newHolder;
 
             // setup for anim
-            holder.itemView.setHasTransientState(true);
             ((ViewGroup) holder.pocket.getParent().getParent()).setClipChildren(false);
             final int initialLeft = holder.pocket.getLeft();
             final int initialTop = holder.pocket.getTop();
@@ -132,6 +131,7 @@ public class HomeGridItemAnimator extends DefaultItemAnimator {
 
                 @Override
                 public void onAnimationStart(Animator animation) {
+                    holder.itemView.setHasTransientState(true);
                     dispatchAnimationStarted(holder);
                 }
 
