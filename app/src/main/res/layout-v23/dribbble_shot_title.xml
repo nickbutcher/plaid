@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -15,25 +14,42 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
+
 <!-- layout_[width|height] not needed as this is only included in a GridLayout -->
 <!--suppress AndroidDomInspection -->
-<io.plaidapp.ui.widget.FabOverlapTextView
+<merge
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:paddingStart="@dimen/padding_normal"
-    app:topPaddingHint="@dimen/padding_normal"
-    android:paddingEnd="@dimen/padding_room_for_fab"
-    android:paddingBottom="@dimen/padding_normal"
-    android:background="@color/light_grey"
-    android:textAppearance="@style/TextAppearance.DribbbleShotTitle"
-    android:textColor="@color/text_primary_dark"
-    android:textSize="24sp"
-    app:lineHeightHint="32sp"
-    app:font="roboto-mono-regular"
-    app:fabGravity="bottom|end"
-    app:fabOverlayHeight="@dimen/half_fab_plus_single_padding"
-    app:fabOverlayWidth="@dimen/fab_plus_single_padding"
-    app:fabId="@+id/fab_heart"
-    tools:text="Dribbble shot title"
-    tools:showIn="@layout/dribbble_shot_description" />
+    tools:showIn="@layout/dribbble_shot_description">
+
+    <io.plaidapp.ui.widget.FabOverlapTextView
+        android:id="@+id/shot_title"
+        android:layout_columnSpan="3"
+        android:layout_width="match_parent"
+        android:paddingStart="@dimen/padding_normal"
+        app:topPaddingHint="@dimen/padding_normal"
+        android:paddingEnd="@dimen/padding_normal"
+        android:paddingBottom="@dimen/padding_normal"
+        android:background="@color/light_grey"
+        android:breakStrategy="simple"
+        app:fabGravity="bottom|end"
+        app:fabOverlayHeight="@dimen/half_fab_plus_single_padding"
+        app:fabOverlayWidth="@dimen/fab_plus_single_padding"
+        tools:text="Dribbble shot title"
+        style="@style/Widget.Plaid.DribbbleShotTitle" />
+
+    <io.plaidapp.ui.widget.FabOverlapTextView
+        android:id="@+id/shot_description"
+        android:layout_columnSpan="3"
+        android:paddingStart="@dimen/padding_normal"
+        app:topPaddingHint="@dimen/padding_normal"
+        android:paddingEnd="@dimen/padding_normal"
+        android:breakStrategy="high_quality"
+        app:fabGravity="top|end"
+        app:fabOverlayHeight="@dimen/half_fab_plus_single_padding"
+        app:fabOverlayWidth="@dimen/fab_plus_single_padding"
+        tools:text="Check out this sweet eye candy!"
+        style="@style/Widget.Plaid.DribbbleShotDescription" />
+
+</merge>

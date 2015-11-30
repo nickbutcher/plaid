@@ -15,8 +15,6 @@
   limitations under the License.
   -->
 
-<nine-patch
+<ripple
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/grid_item_background"
-    android:tint="@color/product_hunt"
-    android:tintMode="multiply" />
+    android:color="@color/ripple_dark" />

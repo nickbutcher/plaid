@@ -27,7 +27,7 @@ import android.widget.ImageButton;
  */
 public class FABToggle extends ImageButton implements Checkable {
 
-    private static final int[] CHECKED_STATE_SET = {android.R.attr.state_checked};
+    private static final int[] CHECKED_STATE_SET = { android.R.attr.state_checked };
 
     private boolean isChecked = false;
     private int minOffset;
@@ -71,4 +71,5 @@ public class FABToggle extends ImageButton implements Checkable {
         }
         return drawableState;
     }
+
 }

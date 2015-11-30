@@ -24,7 +24,7 @@
         class="io.plaidapp.ui.transitions.Pop"
         android:startDelay="300"
         android:duration="300"
-        android:interpolator="@android:interpolator/fast_out_slow_in">
+        android:interpolator="@android:interpolator/linear_out_slow_in">
         <targets>
             <target android:targetId="@id/fab_heart" />
         </targets>

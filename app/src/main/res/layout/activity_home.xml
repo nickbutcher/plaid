@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -67,6 +66,7 @@
             android:id="@+id/stub_no_filters"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_huge"
             android:layout_gravity="center"
             android:layout="@layout/no_filters" />
 

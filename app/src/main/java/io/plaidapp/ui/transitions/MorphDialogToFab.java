@@ -146,7 +146,8 @@ public class MorphDialogToFab extends ChangeBounds {
         AnimatorSet transition = new AnimatorSet();
         transition.playTogether(changeBounds, corners, color);
         transition.setDuration(300);
-        transition.setInterpolator(AnimUtils.getMaterialInterpolator(sceneRoot.getContext()));
+        transition.setInterpolator(AnimationUtils.loadInterpolator(sceneRoot.getContext(),
+                android.R.interpolator.fast_out_slow_in));
         return transition;
     }
 }

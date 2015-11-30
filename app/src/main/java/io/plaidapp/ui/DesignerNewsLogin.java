@@ -29,6 +29,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.transition.Transition;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.util.Patterns;
@@ -69,6 +70,7 @@ import io.plaidapp.data.api.designernews.model.User;
 import io.plaidapp.data.api.designernews.model.UserResponse;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
+import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ScrimUtil;
 import io.plaidapp.util.glide.CircleTransform;
 import retrofit.Callback;
@@ -93,6 +95,7 @@ public class DesignerNewsLogin extends Activity {
     @Bind(R.id.login) Button login;
     @Bind(R.id.loading) ProgressBar loading;
     private DesignerNewsPrefs designerNewsPrefs;
+    private boolean shouldPromptForPermission = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,17 +104,20 @@ public class DesignerNewsLogin extends Activity {
         ButterKnife.bind(this);
         FabDialogMorphSetup.setupSharedEelementTransitions(this, container,
                 getResources().getDimensionPixelSize(R.dimen.dialog_corners));
+        if (getWindow().getSharedElementEnterTransition() != null) {
+            getWindow().getSharedElementEnterTransition().addListener(new AnimUtils
+                    .TransitionListenerAdapter() {
+                @Override
+                public void onTransitionEnd(Transition transition) {
+                    finishSetup();
+                }
+            });
+        } else {
+            finishSetup();
+        }
 
         loading.setVisibility(View.GONE);
         setupAccountAutocomplete();
-        username.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus && username.isAttachedToWindow()) {
-                    username.showDropDown();
-                }
-            }
-        });
         username.addTextChangedListener(loginFieldWatcher);
         // the primer checkbox messes with focus order so force it
         username.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -183,6 +189,26 @@ public class DesignerNewsLogin extends Activity {
         finishAfterTransition();
     }
 
+    /**
+     * Postpone some of the setup steps so that we can run it after the enter transition
+     * (if there is one). Otherwise we may show the permissions dialog or account dropdown
+     * during the enter animation which is jarring.
+     */
+    private void finishSetup() {
+        if (shouldPromptForPermission) {
+            requestPermissions(new String[]{ Manifest.permission.GET_ACCOUNTS },
+                    PERMISSIONS_REQUEST_GET_ACCOUNTS);
+            shouldPromptForPermission = false;
+        }
+        username.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                maybeShowAccounts();
+            }
+        });
+        maybeShowAccounts();
+    }
+
     private TextWatcher loginFieldWatcher = new TextWatcher() {
         @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
@@ -193,6 +219,15 @@ public class DesignerNewsLogin extends Activity {
             login.setEnabled(isLoginValid());
         }
     };
+
+    private void maybeShowAccounts() {
+        if (username.hasFocus()
+                && username.isAttachedToWindow()
+                && username.getAdapter() != null
+                && username.getAdapter().getCount() > 0) {
+            username.showDropDown();
+        }
+    }
 
     private boolean isLoginValid() {
         return username.length() > 0 && password.length() > 0;
@@ -313,8 +348,7 @@ public class DesignerNewsLogin extends Activity {
                 setupPermissionPrimer();
             } else {
                 permissionPrimer.setVisibility(View.GONE);
-                requestPermissions(new String[]{ Manifest.permission.GET_ACCOUNTS },
-                        PERMISSIONS_REQUEST_GET_ACCOUNTS);
+                shouldPromptForPermission = true;
             }
         }
     }

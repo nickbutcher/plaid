@@ -28,12 +28,10 @@ import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Spannable;
@@ -79,16 +77,14 @@ import io.plaidapp.data.api.ClientAuthInterceptor;
 import io.plaidapp.data.api.designernews.DesignerNewsService;
 import io.plaidapp.data.api.designernews.model.NewStoryRequest;
 import io.plaidapp.data.api.designernews.model.StoriesResponse;
-import io.plaidapp.data.api.designernews.model.Story;
 import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.data.prefs.DribbblePrefs;
 import io.plaidapp.data.prefs.SourceManager;
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
+import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
-import io.plaidapp.util.AnimUtils;
-import io.plaidapp.util.ColorUtils;
 import io.plaidapp.util.ViewUtils;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -179,6 +175,9 @@ public class HomeActivity extends Activity {
             }
         });
         grid.setHasFixedSize(true);
+        grid.addItemDecoration(new GridItemDividerDecoration(adapter.getDividedViewHolderClasses(),
+                this, R.dimen.divider_height, R.color.divider));
+        grid.setItemAnimator(new HomeGridItemAnimator());
 
         // drawer layout treats fitsSystemWindows specially so we have to handle insets ourselves
         drawer.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
@@ -217,9 +216,10 @@ public class HomeActivity extends Activity {
                 // need to set the padding end for landscape case
                 final boolean ltr = filtersList.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR;
                 filtersList.setPaddingRelative(filtersList.getPaddingStart(),
-                       filtersList.getPaddingTop() + insets.getSystemWindowInsetTop(),
-                       filtersList.getPaddingEnd() + (ltr ? insets.getSystemWindowInsetRight() : 0),
-                       filtersList.getPaddingBottom() + insets.getSystemWindowInsetBottom());
+                        filtersList.getPaddingTop() + insets.getSystemWindowInsetTop(),
+                        filtersList.getPaddingEnd() + (ltr ? insets.getSystemWindowInsetRight() :
+                                0),
+                        filtersList.getPaddingBottom() + insets.getSystemWindowInsetBottom());
 
                 // clear this listener so insets aren't re-applied
                 drawer.setOnApplyWindowInsetsListener(null);
@@ -392,7 +392,8 @@ public class HomeActivity extends Activity {
                     .scaleX(1f)
                     .setStartDelay(300)
                     .setDuration(900)
-                    .setInterpolator(AnimUtils.getMaterialInterpolator(this));
+                    .setInterpolator(AnimationUtils.loadInterpolator(this,
+                            android.R.interpolator.fast_out_slow_in));
         }
         View amv = toolbar.getChildAt(1);
         if (amv != null & amv instanceof ActionMenuView) {
@@ -650,6 +651,7 @@ public class HomeActivity extends Activity {
             public void onDrawerClosed(View drawerView) {
                 // reset
                 filtersList.setOnTouchListener(null);
+                drawer.setDrawerListener(null);
             }
 
             @Override

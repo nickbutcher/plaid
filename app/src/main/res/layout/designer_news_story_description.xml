@@ -34,6 +34,7 @@
         android:paddingEnd="@dimen/padding_normal"
         android:textColorLink="@color/designer_news_links"
         android:textColorHighlight="@color/designer_news_link_highlight"
+        android:breakStrategy="high_quality"
         tools:text="Blah blah blah blah blah blah blah blah blah blah blah"
         style="@style/Widget.Plaid.DesignerNewsDescription" />
 
@@ -58,7 +59,7 @@
             android:layout_weight="2"
             android:drawableTop="@drawable/ic_upvote"
             tools:text="33 likes"
-            style="@style/Widget.Plaid.DribbleShotAction" />
+            style="@style/Widget.Plaid.InlineActionButton" />
 
         <Space
             android:layout_width="0dp"
@@ -72,7 +73,7 @@
             android:layout_weight="2"
             android:drawableTop="@drawable/ic_action_share_24dp"
             android:text="@string/share"
-            style="@style/Widget.Plaid.DribbleShotAction" />
+            style="@style/Widget.Plaid.InlineActionButton" />
 
         <Space
             android:layout_width="0dp"

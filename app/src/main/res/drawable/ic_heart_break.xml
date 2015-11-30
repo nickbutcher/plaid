@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="56dp"
+    android:height="56dp"
+    android:viewportHeight="56"
+    android:viewportWidth="56">
+
+    <!-- Stroked heart, 2 paths so can 'draw' them concurrently by animating trim.
+         Initially hidden -->
+    <path
+        android:name="heart_stroke_left_atrium"
+        android:pathData="M28.7194825,38.2960196 L25.6688233,35.5523072 C21.6213379,31.793335 18.0159912,28.8906251 18.0159912,24.845337 C18.0159912,21.5882568 20.6305373,19.9651315 23.6337891,19.9651442 C24.9985352,19.96515 26.7993165,21.180664 28.643982,23.1297608"
+        android:strokeWidth="2"
+        android:strokeColor="@color/fab_heart_empty"
+        android:trimPathEnd="0" />
+
+    <path
+        android:name="heart_stroke_right_atrium"
+        android:pathData="M27.2310342,38.2944327 L30.7645263,35.2004395 C34.8336142,31.2354829 37.751709,29.1181308 38.0040283,25.0838624 C38.1681943,22.4590544 35.7730552,20.034668 33.3791503,20.034668 C30.4320068,20.034668 29.671997,21.0472412 27.2310342,23.1328126"
+        android:strokeWidth="2"
+        android:strokeColor="@color/fab_heart_empty"
+        android:trimPathEnd="0" />
+
+    <!-- left broken heart, need group to set pivot for rotation anim -->
+    <group
+        android:name="broken_heart_left_group"
+        android:pivotX="28"
+        android:pivotY="37.3">
+
+        <path
+            android:name="broken_heart_left"
+            android:pathData="M28.0307583,21.0541825 C28.020455,21.0660803 28.0102021,21.0780196 28,21.09 C26.91,19.81 25.24,19 23.5,19 C20.42,19 18,21.42 18,24.5 C18,28.28 21.4,31.36 26.55,36.03 L28,37.35 L28.0022188,37.3479954 L27.7813721,36.988221 L28.4886923,36.0733956 L27.5061678,34.7635697 L28.7816611,33.0267266 L26.9441528,31.0075072 L29.1486431,28.7245062 L27.1169819,27.143298 L29.1486431,25.0178865 L26.4880371,22.9773849 L28.0307583,21.0541825 L28.0307583,21.0541825 Z"
+            android:fillColor="@color/fab_heart_full" />
+
+    </group>
+
+    <!-- right broken heart -->
+    <group
+        android:name="broken_heart_right_group"
+        android:pivotX="28"
+        android:pivotY="37.3">
+
+        <path
+            android:name="broken_heart_right"
+            android:pathData="M28.0307583,21.0541825 C28.1689169,20.8946428 28.3161363,20.7425565 28.4714083,20.5985959 L28.9146818,20.226173 C29.9263704,19.4567073 31.193451,19 32.5,19 C35.58,19 38,21.42 38,24.5 C38,28.28 34.6,31.36 29.45,36.04 L28.0022188,37.3479954 L27.7813721,36.988221 L28.4886923,36.0733956 L27.5061678,34.7635697 L28.7816611,33.0267266 L26.9441528,31.0075072 L29.1486431,28.7245062 L27.1169819,27.143298 L29.1486431,25.0178865 L26.4880371,22.9773849 L28.0307583,21.0541825 L28.0307583,21.0541825 Z"
+            android:fillColor="@color/fab_heart_full" />
+
+    </group>
+
+</vector>

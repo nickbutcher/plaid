@@ -22,39 +22,4 @@
     android:valueTo="@string/heart_clip_shown"
     android:valueType="pathType"
     android:duration="@integer/heart_fill_time"
-
     android:interpolator="@android:interpolator/fast_out_slow_in" />
-
-<!--<set-->
-    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:ordering="sequentially">-->
-
-    <!--<objectAnimator-->
-        <!--android:propertyName="pathData"-->
-        <!--android:valueFrom="@string/heart_clip_hidden"-->
-        <!--android:valueTo="@string/heart_clip_hidden"-->
-        <!--android:valueType="pathType"-->
-        <!--android:duration="@integer/heart_fill_delay" />-->
-
-    <!--<objectAnimator-->
-        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:propertyName="pathData"-->
-        <!--android:valueFrom="@string/heart_clip_hidden"-->
-        <!--android:valueTo="@string/heart_clip_shown"-->
-        <!--android:valueType="pathType"-->
-        <!--android:duration="@integer/heart_fill_time"-->
-        <!--android:interpolator="@android:interpolator/decelerate_quad" />-->
-
-<!--</set>-->
-
-<!-- TODO: startDelay seems to be ignored so using a set with a bs first anim. work out why this is happening! -->
-
-<!--<objectAnimator-->
-    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:propertyName="pathData"-->
-    <!--android:valueFrom="@string/heart_clip_hidden"-->
-    <!--android:valueTo="@string/heart_clip_shown"-->
-    <!--android:valueType="pathType"-->
-    <!--android:startDelay="2400"-->
-    <!--android:duration="@android:integer/config_mediumAnimTime"-->
-    <!--android:interpolator="@android:interpolator/decelerate_quad" />-->

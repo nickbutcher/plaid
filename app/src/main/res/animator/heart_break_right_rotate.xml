@@ -15,15 +15,10 @@
   limitations under the License.
   -->
 
-<io.plaidapp.ui.widget.BaselineGridTextView
+<objectAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/no_filters"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/padding_normal"
-    app:topPaddingHint="@dimen/padding_normal"
-    android:textAlignment="center"
-    android:elevation="1dp"
-    android:background="?android:selectableItemBackground"
-    style="@style/Widget.Plaid.EmptyText" />
+    android:propertyName="rotation"
+    android:valueFrom="0"
+    android:valueTo="20"
+    android:duration="400"
+    android:interpolator="@android:interpolator/linear_out_slow_in" />

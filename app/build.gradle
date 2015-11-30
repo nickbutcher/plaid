@@ -16,7 +16,7 @@
 
 apply plugin: 'com.android.application'
 
-// query git for the the SHA, Tag and commit count. Use these to automate versioning.
+// query git for the SHA, Tag and commit count. Use these to automate versioning.
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
 def gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
 def gitCommitCount = 100 +
@@ -24,7 +24,7 @@ def gitCommitCount = 100 +
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.1'
+    buildToolsVersion '23.0.2'
 
     defaultConfig {
         applicationId "io.plaidapp"
@@ -32,6 +32,7 @@ android {
         targetSdkVersion 23
         versionCode gitCommitCount
         versionName gitTag
+        archivesBaseName = "plaid-${versionName}"
         buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
         buildConfigField "String", "DRIBBBLE_CLIENT_ID", "\"${dribbble_client_id}\""
         buildConfigField "String", "DRIBBBLE_CLIENT_SECRET", "\"${dribbble_client_secret}\""
@@ -42,9 +43,14 @@ android {
                 "DESIGNER_NEWS_CLIENT_SECRET", "\"${designer_news_client_secret}\""
         buildConfigField "String",
                 "PROCUCT_HUNT_DEVELOPER_TOKEN", "\"${product_hunt_developer_token}\""
+
     }
     buildTypes {
         release {
+            lintOptions {
+                checkReleaseBuilds false
+                abortOnError false
+            }
         }
     }
     compileOptions {
@@ -58,7 +64,6 @@ repositories {
 }
 
 ext {
-    archivesBaseName = "plaid-${android.defaultConfig.versionName}"
     supportLibVersion = '23.1.1'
 }
 
@@ -66,7 +71,6 @@ dependencies {
     compile "com.android.support:support-v4:${supportLibVersion}"
     compile "com.android.support:palette-v7:${supportLibVersion}"
     compile "com.android.support:recyclerview-v7:${supportLibVersion}"
-    compile "com.android.support:cardview-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:customtabs:${supportLibVersion}"
     compile 'com.squareup.retrofit:retrofit:1.9.0'

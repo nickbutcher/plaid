@@ -26,78 +26,16 @@
 
     <item
         android:id="@+id/not_liked"
-        android:drawable="@drawable/ic_heart_empty_56dp"/>
+        android:drawable="@drawable/ic_heart_empty_56dp" />
 
     <transition
         android:fromId="@id/not_liked"
-        android:toId="@id/liked">
-
-        <animated-vector android:drawable="@drawable/heart_anim">
-
-            <target
-                android:name="clip"
-                android:animation="@animator/heart_fill" />
-
-        </animated-vector>
-    </transition>
-
-    <!--<transition
-        android:fromId="@id/not_liked"
         android:toId="@id/liked"
-        android:reversible="false">
+        android:drawable="@drawable/avd_heart_fill" />
 
-        <animated-vector android:drawable="@drawable/heart_anim">
-
-            <target
-                android:name="activity_circle"
-                android:animation="@anim/fab_show_activity_circle" />
-
-            <target
-                android:name="activity_circle_progress_bar"
-                android:animation="@anim/fab_load_progress" />
-
-            <target
-                android:name="activity_circle_progress"
-                android:animation="@anim/fab_load_progress_rotate" />
-
-            <target
-                android:name="activity_circle"
-                android:animation="@anim/fab_hide_activity_circle" />
-
-            <target
-                android:name="progress_bar_empty_right"
-                android:animation="@anim/fab_show_progress_bar_emptying" />
-
-            <target
-                android:name="activity_circle_progress_bar"
-                android:animation="@anim/fab_empty_progress_left" />
-
-
-            <target
-                android:name="progress_bar_empty_right"
-                android:animation="@anim/fab_empty_progress_right" />
-
-            <target
-                android:name="clip"
-                android:animation="@anim/heart_fill" />
-
-        </animated-vector>
-    </transition>-->
-
-    <!-- the following transition does seem to be played (and including it breaks the above)
-         TODO: work out why?! -->
-
-<!--    <transition
+    <transition
         android:fromId="@id/liked"
-        android:toId="@id/not_liked">
-
-        <animated-vector android:drawable="@drawable/heart_anim">
-
-            <target
-                android:name="clip"
-                android:animation="@animator/heart_empty" />
-
-        </animated-vector>
-    </transition>-->
+        android:toId="@id/not_liked"
+        android:drawable="@drawable/avd_heart_empty" />
 
 </animated-selector>

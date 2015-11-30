@@ -38,7 +38,7 @@
         <item name="android:windowActionModeOverlay">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowBackground">@color/background_dark</item>
-        <item name="android:windowEnterTransition">@transition/main_enter</item>
+        <item name="android:windowEnterTransition">@transition/home_enter</item>
     </style>
 
     <style name="Plaid.Translucent">
@@ -171,19 +171,19 @@
         <item name="android:textColor">@color/text_primary_dark</item>
     </style>
 
-    <style name="TextAppearance.DesignerNewsTile" parent="@android:style/TextAppearance.Material.Subhead">
+    <style name="TextAppearance.TilePrimary" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:letterSpacing">0.01</item>
         <item name="lineHeightHint">20sp</item>
         <item name="font">roboto-mono-regular</item>
     </style>
 
-    <style name="Widget.Plaid.DesignerNewsTile">
-        <item name="android:textAppearance">@style/TextAppearance.DesignerNewsTile</item>
+    <style name="Widget.Plaid.TilePrimary">
+        <item name="android:textAppearance">@style/TextAppearance.TilePrimary</item>
     </style>
 
     <style name="TextAppearance.TileSecondary" parent="@android:style/TextAppearance.Material.Body2">
         <item name="android:letterSpacing">0.01</item>
-        <item name="android:textColor">@color/text_secondary_light</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
     </style>
 
     <style name="Widget.Plaid.TileSecondary">
@@ -198,6 +198,11 @@
     <style name="TextAppearance.Filter" parent="@android:style/TextAppearance.Material.Title">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/filter_text</item>
+    </style>
+
+    <style name="Widget.Plaid.DribbbleShotTitle">
+        <item name="android:textAppearance">@style/TextAppearance.DribbbleShotTitle</item>
+        <item name="lineHeightHint">32sp</item>
     </style>
 
     <style name="Widget.Plaid.DribbbleShotDescription">
@@ -353,7 +358,7 @@
         <item name="android:submitBackground">@android:color/transparent</item>
     </style>
 
-    <style name="Widget.Plaid.DribbleShotAction" parent="@android:style/Widget.Material.Button">
+    <style name="Widget.Plaid.InlineActionButton" parent="@android:style/Widget.Material.Button">
         <item name="android:gravity">center_horizontal</item>
         <item name="android:textAppearance">@style/TextAppearance.CommentAuthor</item>
         <item name="android:drawablePadding">@dimen/spacing_micro</item>

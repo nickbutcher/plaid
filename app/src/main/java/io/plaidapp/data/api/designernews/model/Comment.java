@@ -33,12 +33,15 @@ public class Comment implements Parcelable {
     public final String body_html;
     public final Date created_at;
     public final int depth;
-    public final int vote_count;
+    public int vote_count;
     public final long user_id;
     public final String user_display_name;
     public final String user_portrait_url;
     public final String user_job;
     public final List<Comment> comments;
+
+    // TODO move this to a decorator
+    public Boolean upvoted;
 
     public Comment(long id,
                    String body,
@@ -63,6 +66,76 @@ public class Comment implements Parcelable {
         this.user_job = user_job;
         this.comments = comments;
     }
+
+    public static class Builder {
+        private long id;
+        private String body;
+        private String body_html;
+        private Date created_at;
+        private int depth;
+        private int vote_count;
+        private long user_id;
+        private String user_display_name;
+        private String user_portrait_url;
+        private String user_job;
+
+        public Builder setId(long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setBody(String body) {
+            this.body = body;
+            return this;
+        }
+
+        public Builder setBodyHtml(String body_html) {
+            this.body_html = body_html;
+            return this;
+        }
+
+        public Builder setCreatedAt(Date created_at) {
+            this.created_at = created_at;
+            return this;
+        }
+
+        public Builder setDepth(int depth) {
+            this.depth = depth;
+            return this;
+        }
+
+        public Builder setVoteCount(int vote_count) {
+            this.vote_count = vote_count;
+            return this;
+        }
+
+        public Builder setUserId(long user_id) {
+            this.user_id = user_id;
+            return this;
+        }
+
+        public Builder setUserDisplayName(String user_display_name) {
+            this.user_display_name = user_display_name;
+            return this;
+        }
+
+        public Builder setUserPortraitUrl(String user_portrait_url) {
+            this.user_portrait_url = user_portrait_url;
+            return this;
+        }
+
+        public Builder setUserJob(String user_job) {
+            this.user_job = user_job;
+            return this;
+        }
+
+        public Comment build() {
+            return new Comment(id, body, body_html, created_at, depth, vote_count, user_id,
+                    user_display_name, user_portrait_url, user_job, null);
+        }
+    }
+
+    /* parcelable */
 
     protected Comment(Parcel in) {
         id = in.readLong();

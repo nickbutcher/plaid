@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -22,7 +21,7 @@
     android:id="@+id/story_title_background"
     android:layout_width="match_parent"
     android:layout_height="0dp"
-    android:background="@drawable/designer_news_item_background"
+    android:background="@color/designer_news"
     android:foreground="@drawable/light_ripple"
     android:orientation="vertical"
     android:stateListAnimator="@animator/raise"
@@ -35,8 +34,9 @@
         android:layout_margin="@dimen/padding_normal"
         android:layout_weight="1"
         android:ellipsize="end"
+        android:breakStrategy="simple"
         tools:text="Amazing designer news story"
-        style="@style/Widget.Plaid.DesignerNewsTile" />
+        style="@style/Widget.Plaid.TilePrimary" />
 
     <FrameLayout
         android:layout_width="match_parent"

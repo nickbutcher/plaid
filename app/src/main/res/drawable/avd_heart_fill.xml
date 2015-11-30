@@ -15,22 +15,12 @@
   limitations under the License.
   -->
 
-<layer-list
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/heart_anim">
 
-    <!-- blue background -->
-    <item>
-        <color android:color="@color/designer_news"/>
-    </item>
+    <target
+        android:name="clip"
+        android:animation="@animator/heart_fill" />
 
-    <!-- bottom divider -->
-    <item android:height="@dimen/divider_height" android:gravity="bottom">
-        <color android:color="@color/divider"/>
-    </item>
-
-    <!-- right divider -->
-    <item android:width="@dimen/divider_height" android:gravity="end">
-        <color android:color="@color/divider"/>
-    </item>
-
-</layer-list>
+</animated-vector>

@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Outline;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
@@ -175,5 +176,24 @@ public class ViewUtils {
                     view.getHeight() - view.getPaddingBottom());
         }
     };
+
+    /**
+     * Determines if two views intersect in the window.
+     */
+    public static boolean viewsIntersect(View view1, View view2) {
+        final int[] view1Loc = new int[2];
+        view1.getLocationOnScreen(view1Loc);
+        final Rect view1Rect = new Rect(view1Loc[0],
+                view1Loc[1],
+                view1Loc[0] + view1.getWidth(),
+                view1Loc[1] + view1.getHeight());
+        int[] view2Loc = new int[2];
+        view2.getLocationOnScreen(view2Loc);
+        final Rect view2Rect = new Rect(view2Loc[0],
+                view2Loc[1],
+                view2Loc[0] + view2.getWidth(),
+                view2Loc[1] + view2.getHeight());
+        return view1Rect.intersect(view2Rect);
+    }
 
 }

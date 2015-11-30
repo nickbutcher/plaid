@@ -25,18 +25,9 @@ import android.text.TextUtils;
  */
 public class Images implements Parcelable {
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Images> CREATOR = new Parcelable.Creator<Images>() {
-        @Override
-        public Images createFromParcel(Parcel in) {
-            return new Images(in);
-        }
+    private static final int[] NORMAL_IMAGE_SIZE = new int[] { 400, 300 };
+    private static final int[] TWO_X_IMAGE_SIZE = new int[] { 800, 600 };
 
-        @Override
-        public Images[] newArray(int size) {
-            return new Images[size];
-        }
-    };
     public final String hidpi;
     public final String normal;
     public final String teaser;
@@ -57,6 +48,10 @@ public class Images implements Parcelable {
         return !TextUtils.isEmpty(hidpi) ? hidpi : normal;
     }
 
+    public int[] bestSize() {
+        return !TextUtils.isEmpty(hidpi) ? TWO_X_IMAGE_SIZE : NORMAL_IMAGE_SIZE;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -68,4 +63,18 @@ public class Images implements Parcelable {
         dest.writeString(normal);
         dest.writeString(teaser);
     }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Images> CREATOR = new Parcelable.Creator<Images>() {
+        @Override
+        public Images createFromParcel(Parcel in) {
+            return new Images(in);
+        }
+
+        @Override
+        public Images[] newArray(int size) {
+            return new Images[size];
+        }
+    };
+
 }

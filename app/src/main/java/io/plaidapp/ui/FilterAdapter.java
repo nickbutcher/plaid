@@ -137,12 +137,44 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
 
     @Override
     public FilterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        return new FilterViewHolder(LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.filter_item, viewGroup, false));
+        final FilterViewHolder holder = new FilterViewHolder(LayoutInflater.from(viewGroup
+                .getContext()).inflate(R.layout.filter_item, viewGroup, false));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final int position = holder.getAdapterPosition();
+                if (position == RecyclerView.NO_POSITION) return;
+                final Source filter = filters.get(position);
+                if (isAuthorisedDribbbleSource(filter) &&
+                        !DribbblePrefs.get(holder.itemView.getContext()).isLoggedIn()) {
+                    authoriser.requestDribbbleAuthorisation(holder.filterIcon, filter);
+                } else {
+                    holder.itemView.setHasTransientState(true);
+                    ObjectAnimator fade = ObjectAnimator.ofInt(holder.filterIcon, ViewUtils.IMAGE_ALPHA,
+                            filter.active ? FILTER_ICON_DISABLED_ALPHA : FILTER_ICON_ENABLED_ALPHA);
+                    fade.setDuration(300);
+                    fade.setInterpolator(AnimationUtils.loadInterpolator(holder.itemView.getContext()
+                            , android.R.interpolator.fast_out_slow_in));
+                    fade.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            holder.itemView.setHasTransientState(false);
+                        }
+                    });
+                    fade.start();
+                    filter.active = !filter.active;
+                    holder.filterName.setEnabled(filter.active);
+                    notifyItemChanged(position);
+                    SourceManager.updateSource(filter, holder.itemView.getContext());
+                    dispatchFiltersChanged(filter);
+                }
+            }
+        });
+        return holder;
     }
 
     @Override
-    public void onBindViewHolder(final FilterViewHolder vh, final int position) {
+    public void onBindViewHolder(final FilterViewHolder vh, int position) {
         final Source filter = filters.get(position);
         vh.isSwipeable = filter.isSwipeDismissable();
         vh.filterName.setText(filter.name);
@@ -152,34 +184,6 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
         }
         vh.filterIcon.setImageAlpha(filter.active ? FILTER_ICON_ENABLED_ALPHA :
                 FILTER_ICON_DISABLED_ALPHA);
-        vh.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isAuthorisedDribbbleSource(filter) &&
-                        !DribbblePrefs.get(vh.itemView.getContext()).isLoggedIn()) {
-                    authoriser.requestDribbbleAuthorisation(vh.filterIcon, filter);
-                } else {
-                    vh.itemView.setHasTransientState(true);
-                    ObjectAnimator fade = ObjectAnimator.ofInt(vh.filterIcon, ViewUtils.IMAGE_ALPHA,
-                            filter.active ? FILTER_ICON_DISABLED_ALPHA : FILTER_ICON_ENABLED_ALPHA);
-                    fade.setDuration(300);
-                    fade.setInterpolator(AnimationUtils.loadInterpolator(vh.itemView.getContext()
-                            , android.R.interpolator.fast_out_slow_in));
-                    fade.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            vh.itemView.setHasTransientState(false);
-                        }
-                    });
-                    fade.start();
-                    filter.active = !filter.active;
-                    vh.filterName.setEnabled(filter.active);
-                    notifyItemChanged(position);
-                    SourceManager.updateSource(filter, vh.itemView.getContext());
-                    dispatchFiltersChanged(filter);
-                }
-            }
-        });
     }
 
     @Override

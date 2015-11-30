@@ -15,22 +15,23 @@
   limitations under the License.
   -->
 
-<layer-list
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<set
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:ordering="sequentially">
 
-    <!-- orange background -->
-    <item>
-        <color android:color="@color/product_hunt"/>
-    </item>
+    <!-- first reset state -->
+    <objectAnimator
+        android:propertyName="fillAlpha"
+        android:valueFrom="1"
+        android:valueTo="1"
+        android:duration="0" />
 
-    <!-- bottom divider -->
-    <item android:height="@dimen/divider_height" android:gravity="bottom">
-        <color android:color="@color/divider"/>
-    </item>
+    <objectAnimator
+        android:propertyName="fillAlpha"
+        android:valueFrom="1"
+        android:valueTo="0"
+        android:startOffset="100"
+        android:duration="300"
+        android:interpolator="@android:interpolator/linear_out_slow_in" />
 
-    <!-- right divider -->
-    <item android:width="@dimen/divider_height" android:gravity="end">
-        <color android:color="@color/divider"/>
-    </item>
-
-</layer-list>
+</set>
