@@ -157,7 +157,7 @@ public class BottomSheet extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (dragView != null && dragView.isLaidOut()) {
+        if (dragView != null && ViewCompat.isLaidOut(dragView)) {
             dragViewLeft = dragView.getLeft();
             dragViewExpandedTop = dragView.getTop();
             dragViewBottom = dragView.getBottom();
@@ -207,7 +207,7 @@ public class BottomSheet extends FrameLayout {
 
     @Override
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
-        return (nestedScrollAxes & View.SCROLL_AXIS_VERTICAL) != 0;
+        return (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
     }
 
     @Override
@@ -292,7 +292,7 @@ public class BottomSheet extends FrameLayout {
                 dragView.getTop(),
                 settleAt);
         settleAnim.setDuration(200L);
-        settleAnim.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(getContext()));
+        settleAnim.setInterpolator(AnimUtils.getFastOutSlowInInterpolator());
         settleAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {

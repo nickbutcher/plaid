@@ -20,6 +20,9 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.TextViewCompat;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -87,12 +90,12 @@ public class DynamicTextView extends TextView {
         // different methods for achieving this depending on whether we are snapping to the material
         // scale, and if multiple lines are allowed.  4 method for the permutations of this.
 
-        if (mSnapToMaterialScale && getMaxLines() == 1) {
+        if (mSnapToMaterialScale && TextViewCompat.getMaxLines(this) == 1) {
             // technically we could use the multi line algorithm here but this is more efficient
             fitSnappedSingleLine();
         } else if (mSnapToMaterialScale) {
             fitSnappedMultiLine();
-        } else if (!mSnapToMaterialScale && getMaxLines() == 1) {
+        } else if (!mSnapToMaterialScale && TextViewCompat.getMaxLines(this) == 1) {
             fitSingleLine();
         } else if (!mSnapToMaterialScale) {
             fitMultiline();
@@ -109,9 +112,9 @@ public class DynamicTextView extends TextView {
             StaticLayout staticLayout = null;
             int currentHeight = Integer.MAX_VALUE;
             int lines = 0;
-            boolean maxLinesSet = getMaxLines() != Integer.MAX_VALUE;
+            boolean maxLinesSet = TextViewCompat.getMaxLines(this) != Integer.MAX_VALUE;
 
-            while ((currentHeight > targetHeight || (maxLinesSet && lines > getMaxLines()))
+            while ((currentHeight > targetHeight || (maxLinesSet && lines > TextViewCompat.getMaxLines(this)))
                     && style <= mStyles.length - 1
                     && currentStyle.size * scaledDensity >= mMinTextSize
                     && currentStyle.size * scaledDensity <= mMaxTextSize) {
@@ -142,8 +145,16 @@ public class DynamicTextView extends TextView {
                         lines)));
                 setEllipsize(TextUtils.TruncateAt.END);
             }
-            setTextAlignment(TEXT_ALIGNMENT_TEXT_START);
+            setStartAlignment();
             mCalculated = true;
+        }
+    }
+
+    private void setStartAlignment() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            setTextAlignment(TEXT_ALIGNMENT_TEXT_START);
+        } else {
+            setGravity(GravityCompat.START);
         }
     }
 
@@ -198,7 +209,7 @@ public class DynamicTextView extends TextView {
                 currentHeight = staticLayout.getHeight();
             }
             setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-            setTextAlignment(TEXT_ALIGNMENT_TEXT_START);
+            setStartAlignment();
             mCalculated = true;
         }
     }

@@ -35,6 +35,7 @@ import android.util.DisplayMetrics;
 import android.view.Gravity;
 
 import io.plaidapp.R;
+import io.plaidapp.util.compat.CanvasCompat;
 
 /**
  * A view group that draws a badge drawable on top of it's contents.
@@ -134,8 +135,7 @@ public class BadgedFourThreeImageView extends FourThreeImageView {
                 final Canvas canvas = new Canvas(bitmap);
                 final Paint backgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
                 backgroundPaint.setColor(BACKGROUND_COLOR);
-                canvas.drawRoundRect(0, 0, width, height, cornerRadius, cornerRadius,
-                        backgroundPaint);
+                CanvasCompat.drawRoundRect(canvas, 0, 0, width, height, cornerRadius, cornerRadius, backgroundPaint);
                 // punch out the word 'GIF', leaving transparency
                 textPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
                 canvas.drawText(GIF, padding, height - padding, textPaint);

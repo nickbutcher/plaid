@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import in.uncod.android.bypass.style.TouchableUrlSpan;
 import io.plaidapp.ui.span.PlayerSpan;
+import io.plaidapp.util.compat.LocalTextViewCompat;
 import okhttp3.HttpUrl;
 
 public class DribbbleUtils {
@@ -55,6 +56,6 @@ public class DribbbleUtils {
     public static void parseAndSetText(TextView textView, String input) {
         if (TextUtils.isEmpty(input)) return;
         HtmlUtils.setTextWithNiceLinks(textView, parseDribbbleHtml(input,
-                textView.getLinkTextColors(), textView.getHighlightColor()));
+                textView.getLinkTextColors(), LocalTextViewCompat.getHighlightColor(textView)));
     }
 }

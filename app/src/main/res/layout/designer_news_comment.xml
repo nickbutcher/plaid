@@ -22,7 +22,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/comment_background"
-    android:foreground="?android:selectableItemBackground"
+    android:foreground="?selectableItemBackground"
     android:stateListAnimator="@animator/comment_selection_delayed">
 
     <ImageView

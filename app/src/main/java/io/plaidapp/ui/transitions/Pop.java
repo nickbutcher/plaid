@@ -19,7 +19,9 @@ package io.plaidapp.ui.transitions;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.transition.TransitionValues;
 import android.transition.Visibility;
 import android.util.AttributeSet;
@@ -31,6 +33,7 @@ import io.plaidapp.util.AnimUtils;
 /**
  * A transition that animates the alpha & scale X & Y of a view simultaneously.
  */
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class Pop extends Visibility {
 
     private static final String PROPNAME_ALPHA = "plaid:pop:alpha";

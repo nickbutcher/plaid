@@ -20,6 +20,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="@color/ripple_light">
     <item>
-        <color android:color="?android:colorPrimary" />
+        <color android:color="?colorPrimary" />
     </item>
 </ripple>

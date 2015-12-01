@@ -3,7 +3,9 @@ package io.plaidapp.ui.transitions;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.transition.Transition;
 import android.transition.TransitionValues;
 import android.util.AttributeSet;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 
 import io.plaidapp.util.ViewUtils;
 
+@TargetApi(Build.VERSION_CODES.KITKAT)
 public class TextResizeTransition extends Transition {
 
     private static final String PROPNAME_TEXT =

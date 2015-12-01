@@ -16,14 +16,19 @@
 
 package io.plaidapp.ui;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.AnimatedVectorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -60,6 +65,7 @@ import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.util.DribbbleUtils;
 import io.plaidapp.util.ViewUtils;
+import io.plaidapp.util.compat.TransitionManagerCompat;
 import io.plaidapp.util.glide.CircleTransform;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -108,7 +114,7 @@ public class PlayerActivity extends Activity {
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(getWindow()) {
             @Override
             public void onDragDismissed() {
-                finishAfterTransition();
+                ActivityCompat.finishAfterTransition(PlayerActivity.this);
             }
         };
 
@@ -163,8 +169,8 @@ public class PlayerActivity extends Activity {
         shotCount.setText(res.getQuantityString(R.plurals.shots, player.shots_count,
                 nf.format(player.shots_count)));
         if (player.shots_count == 0) {
-            shotCount.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                    null, getDrawable(R.drawable.avd_no_shots), null, null);
+            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(shotCount,
+                    null, ContextCompat.getDrawable(this, R.drawable.avd_no_shots), null, null);
         }
         setFollowerCount(player.followers_count);
         likesCount.setText(res.getQuantityString(R.plurals.likes, player.likes_count,
@@ -228,7 +234,7 @@ public class PlayerActivity extends Activity {
         // check if following
         if (dataManager.getDribbblePrefs().isLoggedIn()) {
             if (player.id == dataManager.getDribbblePrefs().getUserId()) {
-                TransitionManager.beginDelayedTransition(playerDescription);
+                TransitionManagerCompat.beginDelayedTransition(playerDescription);
                 follow.setVisibility(View.GONE);
                 ViewUtils.setPaddingTop(shots, playerDescription.getHeight() - follow.getHeight()
                         - ((ViewGroup.MarginLayoutParams) follow.getLayoutParams()).bottomMargin);
@@ -237,7 +243,7 @@ public class PlayerActivity extends Activity {
                     @Override
                     public void success(Void voyd, Response response) {
                         following = true;
-                        TransitionManager.beginDelayedTransition(playerDescription);
+                        TransitionManagerCompat.beginDelayedTransition(playerDescription);
                         follow.setText(R.string.following);
                         follow.setActivated(true);
                     }
@@ -259,6 +265,7 @@ public class PlayerActivity extends Activity {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setupSharedEnter() {
         setEnterSharedElementCallback(new SharedElementCallback() {
             private float finalSize;
@@ -337,7 +344,7 @@ public class PlayerActivity extends Activity {
         followersCount.setText(getResources().getQuantityString(R.plurals.follower_count,
                 followerCount, NumberFormat.getInstance().format(followerCount)));
         if (followerCount == 0) {
-            followersCount.setBackground(null);
+            ViewUtils.setBackground(followersCount, null);
         }
     }
 
@@ -351,7 +358,7 @@ public class PlayerActivity extends Activity {
                     @Override public void failure(RetrofitError error) { }
                 });
                 following = false;
-                TransitionManager.beginDelayedTransition(playerDescription);
+                TransitionManagerCompat.beginDelayedTransition(playerDescription);
                 follow.setText(R.string.follow);
                 follow.setActivated(false);
                 setFollowerCount(followerCount - 1);
@@ -362,7 +369,7 @@ public class PlayerActivity extends Activity {
                     @Override public void failure(RetrofitError error) { }
                 });
                 following = true;
-                TransitionManager.beginDelayedTransition(playerDescription);
+                TransitionManagerCompat.beginDelayedTransition(playerDescription);
                 follow.setText(R.string.following);
                 follow.setActivated(true);
                 setFollowerCount(followerCount + 1);
@@ -373,9 +380,9 @@ public class PlayerActivity extends Activity {
                     ContextCompat.getColor(this, R.color.dribbble));
             login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_CORNER_RADIUS,
                     getResources().getDimensionPixelSize(R.dimen.dialog_corners));
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation
                     (this, follow, getString(R.string.transition_dribbble_login));
-            startActivity(login, options.toBundle());
+            ActivityCompat.startActivity(this, login, options.toBundle());
         }
     }
 

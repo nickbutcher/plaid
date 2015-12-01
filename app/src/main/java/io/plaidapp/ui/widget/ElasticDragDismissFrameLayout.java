@@ -16,8 +16,10 @@
 
 package io.plaidapp.ui.widget;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.Window;
@@ -61,13 +63,18 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
 
     public ElasticDragDismissFrameLayout(Context context, AttributeSet attrs,
                                          int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
+        super(context, attrs, defStyleAttr);
+        init(attrs);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public ElasticDragDismissFrameLayout(Context context, AttributeSet attrs,
                                          int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        init(attrs);
+    }
 
+    private void init(AttributeSet attrs) {
         final TypedArray a = getContext().obtainStyledAttributes(
                 attrs, R.styleable.ElasticDragDismissFrameLayout, 0, 0);
 
@@ -143,7 +150,7 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
                     .scaleX(1f)
                     .scaleY(1f)
                     .setDuration(200L)
-                    .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(getContext()))
+                    .setInterpolator(AnimUtils.getFastOutSlowInInterpolator())
                     .setListener(null)
                     .start();
             totalDrag = 0;
@@ -248,28 +255,32 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
     public static abstract class SystemChromeFader implements ElasticDragDismissListener {
 
         private Window window;
+        private static final boolean SHOULD_OP = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
 
         public SystemChromeFader(Window window) {
             this.window = window;
         }
 
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onDrag(float elasticOffset, float elasticOffsetPixels,
                            float rawOffset, float rawOffsetPixels) {
-            if (elasticOffsetPixels < 0) {
-                // dragging upward, fade the navigation bar in proportion
-                // TODO don't fade nav bar on landscape phones?
-                window.setNavigationBarColor(ColorUtils.modifyAlpha(window.getNavigationBarColor(),
-                        1f - rawOffset));
-            } else if (elasticOffsetPixels == 0) {
-                // reset
-                window.setStatusBarColor(ColorUtils.modifyAlpha(window.getStatusBarColor(), 1f));
-                window.setNavigationBarColor(
-                        ColorUtils.modifyAlpha(window.getNavigationBarColor(), 1f));
-            } else {
-                // dragging downward, fade the status bar in proportion
-                window.setStatusBarColor(ColorUtils.modifyAlpha(window
-                        .getStatusBarColor(), 1f - rawOffset));
+            if (SHOULD_OP) {
+                if (elasticOffsetPixels < 0) {
+                    // dragging upward, fade the navigation bar in proportion
+                    // TODO don't fade nav bar on landscape phones?
+                    window.setNavigationBarColor(ColorUtils.modifyAlpha(window.getNavigationBarColor(),
+                            1f - rawOffset));
+                } else if (elasticOffsetPixels == 0) {
+                    // reset
+                    window.setStatusBarColor(ColorUtils.modifyAlpha(window.getStatusBarColor(), 1f));
+                    window.setNavigationBarColor(
+                            ColorUtils.modifyAlpha(window.getNavigationBarColor(), 1f));
+                } else {
+                    // dragging downward, fade the status bar in proportion
+                    window.setStatusBarColor(ColorUtils.modifyAlpha(window
+                            .getStatusBarColor(), 1f - rawOffset));
+                }
             }
         }
 

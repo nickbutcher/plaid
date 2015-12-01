@@ -16,15 +16,19 @@
 
 package io.plaidapp.ui.drawable;
 
+import android.annotation.TargetApi;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.util.Property;
 
 import io.plaidapp.util.AnimUtils;
+import io.plaidapp.util.compat.CanvasCompat;
 
 /**
  * A drawable that can morph size, shape (via it's corner radius) and color.  Specifically this is
@@ -87,12 +91,13 @@ public class MorphDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawRoundRect(getBounds().left, getBounds().top, getBounds().right, getBounds()
+        CanvasCompat.drawRoundRect(canvas, getBounds().left, getBounds().top, getBounds().right, getBounds()
                 .bottom, cornerRadius, cornerRadius, paint);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public void getOutline(Outline outline) {
+    public void getOutline(@NonNull Outline outline) {
         outline.setRoundRect(getBounds(), cornerRadius);
     }
 

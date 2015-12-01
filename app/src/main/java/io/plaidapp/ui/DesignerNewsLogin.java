@@ -23,14 +23,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.transition.Transition;
-import android.transition.TransitionManager;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.Gravity;
@@ -72,6 +74,8 @@ import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ScrimUtil;
+import io.plaidapp.util.ViewUtils;
+import io.plaidapp.util.compat.TransitionManagerCompat;
 import io.plaidapp.util.glide.CircleTransform;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -104,9 +108,9 @@ public class DesignerNewsLogin extends Activity {
         ButterKnife.bind(this);
         FabDialogMorphSetup.setupSharedEelementTransitions(this, container,
                 getResources().getDimensionPixelSize(R.dimen.dialog_corners));
-        if (getWindow().getSharedElementEnterTransition() != null) {
-            getWindow().getSharedElementEnterTransition().addListener(new AnimUtils
-                    .TransitionListenerAdapter() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                && getWindow().getSharedElementEnterTransition() != null) {
+            getWindow().getSharedElementEnterTransition().addListener(new AnimUtils.TransitionListenerAdapter() {
                 @Override
                 public void onTransitionEnd(Transition transition) {
                     finishSetup();
@@ -151,10 +155,10 @@ public class DesignerNewsLogin extends Activity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions,
-                                           int[] grantResults) {
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST_GET_ACCOUNTS) {
-            TransitionManager.beginDelayedTransition(container);
+            TransitionManagerCompat.beginDelayedTransition(container);
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 setupAccountAutocomplete();
                 username.requestFocus();
@@ -162,11 +166,11 @@ public class DesignerNewsLogin extends Activity {
             } else {
                 // if permission was denied check if we should ask again in the future (i.e. they
                 // did not check 'never ask again')
-                if (shouldShowRequestPermissionRationale(Manifest.permission.GET_ACCOUNTS)) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.GET_ACCOUNTS)) {
                     setupPermissionPrimer();
                 } else {
                     // denied & shouldn't ask again. deal with it (•_•) ( •_•)>⌐■-■ (⌐■_■)
-                    TransitionManager.beginDelayedTransition(container);
+                    TransitionManagerCompat.beginDelayedTransition(container);
                     permissionPrimer.setVisibility(View.GONE);
                 }
             }
@@ -186,7 +190,7 @@ public class DesignerNewsLogin extends Activity {
     public void dismiss(View view) {
         isDismissing = true;
         setResult(Activity.RESULT_CANCELED);
-        finishAfterTransition();
+        ActivityCompat.finishAfterTransition(this);
     }
 
     /**
@@ -196,7 +200,7 @@ public class DesignerNewsLogin extends Activity {
      */
     private void finishSetup() {
         if (shouldPromptForPermission) {
-            requestPermissions(new String[]{ Manifest.permission.GET_ACCOUNTS },
+            ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.GET_ACCOUNTS },
                     PERMISSIONS_REQUEST_GET_ACCOUNTS);
             shouldPromptForPermission = false;
         }
@@ -222,7 +226,7 @@ public class DesignerNewsLogin extends Activity {
 
     private void maybeShowAccounts() {
         if (username.hasFocus()
-                && username.isAttachedToWindow()
+                && ViewCompat.isAttachedToWindow(username)
                 && username.getAdapter() != null
                 && username.getAdapter().getCount() > 0) {
             username.showDropDown();
@@ -234,7 +238,7 @@ public class DesignerNewsLogin extends Activity {
     }
 
     private void showLoading() {
-        TransitionManager.beginDelayedTransition(container);
+        TransitionManagerCompat.beginDelayedTransition(container);
         title.setVisibility(View.GONE);
         usernameLabel.setVisibility(View.GONE);
         permissionPrimer.setVisibility(View.GONE);
@@ -244,7 +248,7 @@ public class DesignerNewsLogin extends Activity {
     }
 
     private void showLogin() {
-        TransitionManager.beginDelayedTransition(container);
+        TransitionManagerCompat.beginDelayedTransition(container);
         title.setVisibility(View.VISIBLE);
         usernameLabel.setVisibility(View.VISIBLE);
         passwordLabel.setVisibility(View.VISIBLE);
@@ -314,8 +318,8 @@ public class DesignerNewsLogin extends Activity {
                         .placeholder(R.drawable.avatar_placeholder)
                         .transform(new CircleTransform(getApplicationContext()))
                         .into((ImageView) v.findViewById(R.id.avatar));
-                v.findViewById(R.id.scrim).setBackground(ScrimUtil
-                        .makeCubicGradientScrimDrawable(
+                ViewUtils.setBackground(v.findViewById(R.id.scrim),
+                        ScrimUtil.makeCubicGradientScrimDrawable(
                                 ContextCompat.getColor(DesignerNewsLogin.this, R.color.scrim),
                                 5, Gravity.BOTTOM));
                 confirmLogin.setView(v);
@@ -345,7 +349,7 @@ public class DesignerNewsLogin extends Activity {
             username.setAdapter(new ArrayAdapter<>(this,
                     R.layout.account_dropdown_item, new ArrayList<>(emailSet)));
         } else {
-            if (shouldShowRequestPermissionRationale(Manifest.permission.GET_ACCOUNTS)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.GET_ACCOUNTS)) {
                 setupPermissionPrimer();
             } else {
                 permissionPrimer.setVisibility(View.GONE);
@@ -361,7 +365,8 @@ public class DesignerNewsLogin extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    requestPermissions(new String[]{ Manifest.permission.GET_ACCOUNTS },
+                    ActivityCompat.requestPermissions(DesignerNewsLogin.this, new String[]{ Manifest.permission
+                            .GET_ACCOUNTS },
                             PERMISSIONS_REQUEST_GET_ACCOUNTS);
                 }
             }

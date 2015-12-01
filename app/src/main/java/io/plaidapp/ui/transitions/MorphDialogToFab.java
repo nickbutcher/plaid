@@ -19,8 +19,10 @@ package io.plaidapp.ui.transitions;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.transition.ChangeBounds;
@@ -38,6 +40,7 @@ import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
 /**
  * A transition that morphs a rectangle into a circle, changing it's background color.
  */
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class MorphDialogToFab extends ChangeBounds {
 
     private static final String PROPERTY_COLOR = "io.plaidapp:rectMorph:color";
@@ -138,7 +141,7 @@ public class MorphDialogToFab extends ChangeBounds {
                         .translationY(v.getHeight() / 3)
                         .setStartDelay(0L)
                         .setDuration(50L)
-                        .setInterpolator(getFastOutLinearInInterpolator(vg.getContext()))
+                        .setInterpolator(getFastOutLinearInInterpolator())
                         .start();
             }
         }
@@ -146,7 +149,7 @@ public class MorphDialogToFab extends ChangeBounds {
         AnimatorSet transition = new AnimatorSet();
         transition.playTogether(changeBounds, corners, color);
         transition.setDuration(300);
-        transition.setInterpolator(getFastOutSlowInInterpolator(sceneRoot.getContext()));
+        transition.setInterpolator(getFastOutSlowInInterpolator());
         return transition;
     }
 }
