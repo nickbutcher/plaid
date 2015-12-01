@@ -49,7 +49,7 @@
         android:breakStrategy="simple"
         style="@style/Widget.Plaid.TileSecondary" />
 
-    <TextView
+    <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/story_comments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

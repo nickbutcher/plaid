@@ -42,13 +42,13 @@
             android:layout_rowSpan="2"
             android:src="@drawable/avatar_placeholder" />
 
-        <TextView
+        <io.plaidapp.ui.widget.BaselineGridTextView
             android:layout_marginEnd="@dimen/padding_normal"
             android:paddingTop="@dimen/spacing_micro"
             android:text="@string/dribbble_logged_in_as"
             android:textAppearance="@style/TextAppearance.Comment" />
 
-        <TextView
+        <io.plaidapp.ui.widget.BaselineGridTextView
             android:id="@+id/name"
             android:textAppearance="@style/TextAppearance.CommentAuthor"
             tools:text="Nick B" />

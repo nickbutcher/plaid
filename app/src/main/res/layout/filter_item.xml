@@ -34,7 +34,7 @@
         android:padding="@dimen/spacing_micro"
         android:src="@drawable/filter_placeholder" />
 
-    <TextView
+    <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/filter_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -18,6 +18,7 @@
 <io.plaidapp.ui.widget.ForegroundRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?android:listPreferredItemHeight"
@@ -43,7 +44,7 @@
         android:src="@drawable/avatar_placeholder"
         android:foreground="@drawable/mid_grey_ripple" />
 
-    <TextView
+    <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/comment_time_ago"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -76,11 +77,12 @@
         tools:text="Blah blah blah blah blah blah blah blah blah blah blah blah blah"
         style="@style/Widget.Plaid.Comment" />
 
-    <TextView
+    <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/comment_likes_count"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/comment_actions_height"
         android:padding="@dimen/spacing_normal"
+        app:topPaddingHint="@dimen/spacing_normal"
         android:layout_marginEnd="@dimen/comment_like_margin_adjustment"
         android:gravity="end|center_vertical"
         android:layout_alignParentEnd="true"

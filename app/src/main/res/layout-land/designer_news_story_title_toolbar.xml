@@ -26,7 +26,7 @@
     android:contentInsetEnd="@dimen/padding_normal"
     android:transitionName="@string/transition_story_title_background">
 
-    <io.plaidapp.ui.widget.FontTextView
+    <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/story_title"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
