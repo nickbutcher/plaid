@@ -16,8 +16,10 @@
 
 package io.plaidapp.ui.transitions;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.transition.ArcMotion;
@@ -29,6 +31,7 @@ import io.plaidapp.util.AnimUtils;
 /**
  * Helper class for setting up Fab <-> Dialog shared element transitions.
  */
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class FabDialogMorphSetup {
 
     public static final String EXTRA_SHARED_ELEMENT_START_COLOR =
@@ -58,7 +61,7 @@ public class FabDialogMorphSetup {
         int color = activity.getIntent().
                 getIntExtra(EXTRA_SHARED_ELEMENT_START_COLOR, Color.TRANSPARENT);
         Interpolator easeInOut =
-                AnimUtils.getFastOutSlowInInterpolator(activity);
+                AnimUtils.getFastOutSlowInInterpolator();
         MorphFabToDialog sharedEnter =
                 new MorphFabToDialog(color, dialogCornerRadius, startCornerRadius);
         sharedEnter.setPathMotion(arcMotion);

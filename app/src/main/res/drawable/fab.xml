@@ -22,7 +22,7 @@
     <item>
         <shape
             android:shape="oval">
-            <solid android:color="?android:colorAccent" />
+            <solid android:color="?colorAccent" />
         </shape>
     </item>
 </ripple>

@@ -22,6 +22,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.transition.ArcMotion;
@@ -32,6 +33,7 @@ import java.util.List;
 
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ViewUtils;
+import io.plaidapp.util.compat.ObjectAnimatorCompat;
 
 /**
  * An extension to {@link DefaultItemAnimator} for running animations specific to our home grid.
@@ -41,16 +43,17 @@ public class HomeGridItemAnimator extends DefaultItemAnimator {
     public static final int ANIMATE_ADD_POCKET = 7;
 
     @Override
-    public boolean canReuseUpdatedViewHolder(RecyclerView.ViewHolder viewHolder) {
+    public boolean canReuseUpdatedViewHolder(@NonNull RecyclerView.ViewHolder viewHolder) {
         return true;
     }
 
     @NonNull
     @Override
-    public ItemHolderInfo recordPreLayoutInformation(RecyclerView.State state,
-                                                     RecyclerView.ViewHolder viewHolder,
-                                                     int changeFlags,
-                                                     List<Object> payloads) {
+    public ItemHolderInfo recordPreLayoutInformation(
+            @NonNull RecyclerView.State state,
+            @NonNull RecyclerView.ViewHolder viewHolder,
+            int changeFlags,
+            @NonNull List<Object> payloads) {
         ItemHolderInfo info = super.recordPreLayoutInformation(state, viewHolder, changeFlags,
                 payloads);
         if (payloads.contains(ANIMATE_ADD_POCKET)) {
@@ -62,10 +65,11 @@ public class HomeGridItemAnimator extends DefaultItemAnimator {
     }
 
     @Override
-    public boolean animateChange(RecyclerView.ViewHolder oldHolder,
-                                 RecyclerView.ViewHolder newHolder,
-                                 ItemHolderInfo preInfo,
-                                 ItemHolderInfo postInfo) {
+    public boolean animateChange(
+            @NonNull RecyclerView.ViewHolder oldHolder,
+            @NonNull RecyclerView.ViewHolder newHolder,
+            @NonNull ItemHolderInfo preInfo,
+            @NonNull ItemHolderInfo postInfo) {
         if (preInfo instanceof DesignerNewsItemHolderInfo
                 && ((DesignerNewsItemHolderInfo) preInfo).animateAddToPocket) {
             final FeedAdapter.DesignerNewsStoryHolder holder =
@@ -87,7 +91,7 @@ public class HomeGridItemAnimator extends DefaultItemAnimator {
                             -(holder.itemView.getHeight() / 5)),
                     PropertyValuesHolder.ofFloat(View.ALPHA, 0.54f));
 
-            Animator pocketMoveUp = ObjectAnimator.ofFloat(holder.pocket,
+            Animator pocketMoveUp = ObjectAnimatorCompat.ofFloat(holder.pocket,
                     View.TRANSLATION_X, View.TRANSLATION_Y,
                     arc.getPath(initialLeft, initialTop, translatedLeft, translatedTop));
             Animator pocketScaleUp = ObjectAnimator.ofPropertyValuesHolder(holder.pocket,
@@ -99,13 +103,13 @@ public class HomeGridItemAnimator extends DefaultItemAnimator {
             AnimatorSet up = new AnimatorSet();
             up.playTogether(titleMoveFadeOut, pocketMoveUp, pocketScaleUp, pocketFadeUp);
             up.setDuration(300);
-            up.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(holder.itemView.getContext()));
+            up.setInterpolator(AnimUtils.getFastOutSlowInInterpolator());
 
             // animate everything back into place
             Animator titleMoveFadeIn = ObjectAnimator.ofPropertyValuesHolder(holder.title,
                     PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0f),
                     PropertyValuesHolder.ofFloat(View.ALPHA, 1f));
-            Animator pocketMoveDown = ObjectAnimator.ofFloat(holder.pocket,
+            Animator pocketMoveDown = ObjectAnimatorCompat.ofFloat(holder.pocket,
                     View.TRANSLATION_X, View.TRANSLATION_Y,
                     arc.getPath(translatedLeft, translatedTop, 0, 0));
             Animator pvhPocketScaleDown = ObjectAnimator.ofPropertyValuesHolder(holder.pocket,
@@ -117,8 +121,7 @@ public class HomeGridItemAnimator extends DefaultItemAnimator {
             AnimatorSet down = new AnimatorSet();
             down.playTogether(titleMoveFadeIn, pocketMoveDown, pvhPocketScaleDown, pocketFadeDown);
             down.setDuration(300);
-            down.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(holder.itemView
-                    .getContext()));
+            down.setInterpolator(AnimUtils.getFastOutSlowInInterpolator());
             down.setStartDelay(500);
 
             // play it
@@ -130,14 +133,14 @@ public class HomeGridItemAnimator extends DefaultItemAnimator {
 
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    holder.itemView.setHasTransientState(true);
+                    ViewCompat.setHasTransientState(holder.itemView, true);
                     dispatchAnimationStarted(holder);
                 }
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     ((ViewGroup) holder.pocket.getParent().getParent()).setClipChildren(true);
-                    holder.itemView.setHasTransientState(false);
+                    ViewCompat.setHasTransientState(holder.itemView, false);
                     dispatchAnimationFinished(holder);
                 }
             });

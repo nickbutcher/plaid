@@ -19,6 +19,7 @@ package io.plaidapp.ui.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 
@@ -59,7 +60,9 @@ public class BaselineGridTextView extends FontTextView {
         a.recycle();
 
         setIncludeFontPadding(false);
-        setElegantTextHeight(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setElegantTextHeight(false);
+        }
     }
 
     @Override

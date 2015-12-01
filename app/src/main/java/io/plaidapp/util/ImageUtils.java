@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
+import android.support.v4.content.ContextCompat;
 
 /**
  * Utility methods for working with images.
@@ -40,6 +41,6 @@ public class ImageUtils {
     }
 
     public static Bitmap vectorToBitmap(Context context, @DrawableRes int vectorDrawableId) {
-        return vectorToBitmap(context, context.getDrawable(vectorDrawableId));
+        return vectorToBitmap(context, ContextCompat.getDrawable(context, vectorDrawableId));
     }
 }

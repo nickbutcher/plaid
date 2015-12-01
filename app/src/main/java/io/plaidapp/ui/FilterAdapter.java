@@ -23,6 +23,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -44,6 +45,8 @@ import io.plaidapp.ui.recyclerview.ItemTouchHelperAdapter;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ColorUtils;
 import io.plaidapp.util.ViewUtils;
+import io.plaidapp.util.compat.ImageViewCompat;
+import io.plaidapp.util.compat.ObjectAnimatorCompat;
 
 /**
  * Adapter for showing the list of data sources used as filters for the home grid.
@@ -193,9 +196,9 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
         holder.filterName.setEnabled(filter.active);
         if (filter.iconRes > 0) {
             holder.filterIcon.setImageDrawable(
-                    holder.itemView.getContext().getDrawable(filter.iconRes));
+                    ContextCompat.getDrawable(holder.itemView.getContext(), filter.iconRes));
         }
-        holder.filterIcon.setImageAlpha(filter.active ? FILTER_ICON_ENABLED_ALPHA :
+        ImageViewCompat.setImageAlpha(holder.filterIcon, filter.active ? FILTER_ICON_ENABLED_ALPHA :
                 FILTER_ICON_DISABLED_ALPHA);
     }
 
@@ -306,7 +309,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
         public static final int HIGHLIGHT = 3;
 
         @Override
-        public boolean canReuseUpdatedViewHolder(RecyclerView.ViewHolder viewHolder) {
+        public boolean canReuseUpdatedViewHolder(@NonNull RecyclerView.ViewHolder viewHolder) {
             return true;
         }
 
@@ -323,10 +326,11 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
 
         @NonNull
         @Override
-        public ItemHolderInfo recordPreLayoutInformation(RecyclerView.State state,
-                                                         RecyclerView.ViewHolder viewHolder,
-                                                         int changeFlags,
-                                                         List<Object> payloads) {
+        public ItemHolderInfo recordPreLayoutInformation(
+                @NonNull RecyclerView.State state,
+                @NonNull RecyclerView.ViewHolder viewHolder,
+                int changeFlags,
+                @NonNull List<Object> payloads) {
             FilterHolderInfo info = (FilterHolderInfo)
                     super.recordPreLayoutInformation(state, viewHolder, changeFlags, payloads);
             if (!payloads.isEmpty()) {
@@ -338,32 +342,32 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
         }
 
         @Override
-        public boolean animateChange(RecyclerView.ViewHolder oldHolder,
-                                     RecyclerView.ViewHolder newHolder,
-                                     ItemHolderInfo preInfo,
-                                     ItemHolderInfo postInfo) {
+        public boolean animateChange(
+                @NonNull RecyclerView.ViewHolder oldHolder,
+                @NonNull RecyclerView.ViewHolder newHolder,
+                @NonNull ItemHolderInfo preInfo,
+                @NonNull ItemHolderInfo postInfo) {
             if (newHolder instanceof FilterViewHolder && preInfo instanceof FilterHolderInfo) {
                 final FilterViewHolder holder = (FilterViewHolder) newHolder;
                 final FilterHolderInfo info = (FilterHolderInfo) preInfo;
 
                 if (info.doEnable || info.doDisable) {
                     ObjectAnimator iconAlpha = ObjectAnimator.ofInt(holder.filterIcon,
-                                    ViewUtils.IMAGE_ALPHA,
-                                    info.doEnable ? FILTER_ICON_ENABLED_ALPHA :
-                                            FILTER_ICON_DISABLED_ALPHA);
+                            ViewUtils.IMAGE_ALPHA,
+                            info.doEnable ? FILTER_ICON_ENABLED_ALPHA :
+                                    FILTER_ICON_DISABLED_ALPHA);
                     iconAlpha.setDuration(300L);
-                    iconAlpha.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(holder
-                            .itemView.getContext()));
+                    iconAlpha.setInterpolator(AnimUtils.getFastOutSlowInInterpolator());
                     iconAlpha.addListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationStart(Animator animation) {
                             dispatchChangeStarting(holder, false);
-                            holder.itemView.setHasTransientState(true);
+                            ViewCompat.setHasTransientState(holder.itemView, true);
                         }
 
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            holder.itemView.setHasTransientState(false);
+                            ViewCompat.setHasTransientState(holder.itemView, false);
                             dispatchChangeFinished(holder, false);
                         }
                     });
@@ -372,7 +376,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
                     int highlightColor =
                             ContextCompat.getColor(holder.itemView.getContext(), R.color.accent);
                     int fadeFromTo = ColorUtils.modifyAlpha(highlightColor, 0);
-                    ObjectAnimator highlightBackground = ObjectAnimator.ofArgb(
+                    ObjectAnimator highlightBackground = ObjectAnimatorCompat.ofArgb(
                             holder.itemView,
                             ViewUtils.BACKGROUND_COLOR,
                             fadeFromTo,
@@ -384,13 +388,13 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
                         @Override
                         public void onAnimationStart(Animator animation) {
                             dispatchChangeStarting(holder, false);
-                            holder.itemView.setHasTransientState(true);
+                            ViewCompat.setHasTransientState(holder.itemView, true);
                         }
 
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            holder.itemView.setBackground(null);
-                            holder.itemView.setHasTransientState(false);
+                            ViewUtils.setBackground(holder.itemView, null);
+                            ViewCompat.setHasTransientState(holder.itemView, false);
                             dispatchChangeFinished(holder, false);
                         }
                     });

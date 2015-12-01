@@ -20,8 +20,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
@@ -79,12 +81,13 @@ public class AboutActivity extends Activity {
                     public void onDragDismissed() {
                         // if we drag dismiss downward then the default reversal of the enter
                         // transition would slide content upward which looks weird. So reverse it.
-                        if (draggableFrame.getTranslationY() > 0) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                                && draggableFrame.getTranslationY() > 0) {
                             getWindow().setReturnTransition(
                                     TransitionInflater.from(AboutActivity.this)
                                             .inflateTransition(R.transition.about_return_downward));
                         }
-                        finishAfterTransition();
+                        ActivityCompat.finishAfterTransition(AboutActivity.this);
                     }
                 });
     }

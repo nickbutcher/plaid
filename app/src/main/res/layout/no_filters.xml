@@ -25,5 +25,5 @@
     app:topPaddingHint="@dimen/padding_normal"
     android:textAlignment="center"
     android:elevation="1dp"
-    android:background="?android:selectableItemBackground"
+    android:background="?selectableItemBackground"
     style="@style/Widget.Plaid.EmptyText" />

@@ -26,30 +26,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
+import android.support.v7.widget.SearchView;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
-import android.transition.TransitionManager;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ViewTreeObserver;
-import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
 
 import java.util.List;
 
@@ -67,6 +65,9 @@ import io.plaidapp.ui.widget.BaselineGridTextView;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ImeUtils;
 import io.plaidapp.util.ViewUtils;
+import io.plaidapp.util.compat.ObjectAnimatorCompat;
+import io.plaidapp.util.compat.TransitionManagerCompat;
+import io.plaidapp.util.compat.ViewAnimationUtilsCompat;
 
 public class SearchActivity extends Activity {
 
@@ -122,7 +123,7 @@ public class SearchActivity extends Activity {
             public void onDataLoaded(List<? extends PlaidItem> data) {
                 if (data != null && data.size() > 0) {
                     if (results.getVisibility() != View.VISIBLE) {
-                        TransitionManager.beginDelayedTransition(container, auto);
+                        TransitionManagerCompat.beginDelayedTransition(container, auto);
                         progress.setVisibility(View.GONE);
                         results.setVisibility(View.VISIBLE);
                         fab.setVisibility(View.VISIBLE);
@@ -135,13 +136,11 @@ public class SearchActivity extends Activity {
                                 .scaleY(1f)
                                 .setStartDelay(800L)
                                 .setDuration(300L)
-                                .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator
-                                        (SearchActivity
-                                        .this));
+                                .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator());
                     }
                     adapter.addAndResort(data);
                 } else {
-                    TransitionManager.beginDelayedTransition(container, auto);
+                    TransitionManagerCompat.beginDelayedTransition(container, auto);
                     progress.setVisibility(View.GONE);
                     setNoResultsVisibility(View.VISIBLE);
                 }
@@ -176,10 +175,10 @@ public class SearchActivity extends Activity {
         searchBackContainer.animate()
                 .translationX(0f)
                 .setDuration(650L)
-                .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(this));
+                .setInterpolator(AnimUtils.getFastOutSlowInInterpolator());
         // transform from search icon to back icon
-        AnimatedVectorDrawable searchToBack = (AnimatedVectorDrawable) ContextCompat
-                .getDrawable(this, R.drawable.avd_search_to_back);
+        AnimatedVectorDrawableCompat searchToBack = AnimatedVectorDrawableCompat.create(this,
+                R.drawable.avd_search_to_back);
         searchBack.setImageDrawable(searchToBack);
         searchToBack.start();
         // for some reason the animation doesn't always finish (leaving a part arrow!?) so after
@@ -198,12 +197,12 @@ public class SearchActivity extends Activity {
         searchBackground.animate()
                 .alpha(1f)
                 .setDuration(300L)
-                .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(this));
+                .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator());
         searchView.animate()
                 .alpha(1f)
                 .setStartDelay(400L)
                 .setDuration(400L)
-                .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(this))
+                .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator())
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -219,21 +218,20 @@ public class SearchActivity extends Activity {
                 scrim.getViewTreeObserver().removeOnPreDrawListener(this);
                 AnimatorSet showScrim = new AnimatorSet();
                 showScrim.playTogether(
-                        ViewAnimationUtils.createCircularReveal(
+                        ViewAnimationUtilsCompat.createCircularReveal(
                                 scrim,
                                 searchIconCenterX,
                                 searchBackground.getBottom(),
                                 0,
                                 (float) Math.hypot(searchBackDistanceX, scrim.getHeight()
                                         - searchBackground.getBottom())),
-                        ObjectAnimator.ofArgb(
+                        ObjectAnimatorCompat.ofArgb(
                                 scrim,
                                 ViewUtils.BACKGROUND_COLOR,
                                 Color.TRANSPARENT,
                                 ContextCompat.getColor(SearchActivity.this, R.color.scrim)));
                 showScrim.setDuration(400L);
-                showScrim.setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(SearchActivity
-                        .this));
+                showScrim.setInterpolator(AnimUtils.getLinearOutSlowInInterpolator());
                 showScrim.start();
                 return false;
             }
@@ -274,55 +272,54 @@ public class SearchActivity extends Activity {
         searchBackContainer.animate()
                 .translationX(searchBackDistanceX)
                 .setDuration(600L)
-                .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(this))
+                .setInterpolator(AnimUtils.getFastOutSlowInInterpolator())
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        finishAfterTransition();
+                        ActivityCompat.finishAfterTransition(SearchActivity.this);
                     }
                 })
                 .start();
         // transform from back icon to search icon
-        AnimatedVectorDrawable backToSearch = (AnimatedVectorDrawable) ContextCompat
-                .getDrawable(this, R.drawable.avd_back_to_search);
+        AnimatedVectorDrawableCompat backToSearch = AnimatedVectorDrawableCompat.create(this,
+                R.drawable.avd_back_to_search);
         searchBack.setImageDrawable(backToSearch);
         // clear the background else the touch ripple moves with the translation which looks bad
-        searchBack.setBackground(null);
+        ViewUtils.setBackground(searchBack, null);
         backToSearch.start();
         // fade out the other search chrome
         searchView.animate()
                 .alpha(0f)
                 .setStartDelay(0L)
                 .setDuration(120L)
-                .setInterpolator(AnimUtils.getFastOutLinearInInterpolator(this))
+                .setInterpolator(AnimUtils.getFastOutLinearInInterpolator())
                 .setListener(null)
                 .start();
         searchBackground.animate()
                 .alpha(0f)
                 .setStartDelay(300L)
                 .setDuration(160L)
-                .setInterpolator(AnimUtils.getFastOutLinearInInterpolator(this))
+                .setInterpolator(AnimUtils.getFastOutLinearInInterpolator())
                 .setListener(null)
                 .start();
-        if (searchToolbar.getZ() != 0f) {
-            searchToolbar.animate()
+        if (ViewCompat.getZ(searchToolbar) != 0f) {
+            ViewCompat.animate(searchToolbar)
                     .z(0f)
                     .setDuration(600L)
-                    .setInterpolator(AnimUtils.getFastOutLinearInInterpolator(this))
+                    .setInterpolator(AnimUtils.getFastOutLinearInInterpolator())
                     .start();
         }
 
         // if we're showing search results, circular hide them
         if (resultsContainer.getHeight() > 0) {
-            Animator closeResults = ViewAnimationUtils.createCircularReveal(
+            Animator closeResults = ViewAnimationUtilsCompat.createCircularReveal(
                     resultsContainer,
                     searchIconCenterX,
                     0,
                     (float) Math.hypot(searchIconCenterX, resultsContainer.getHeight()),
                     0f);
             closeResults.setDuration(500L);
-            closeResults.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(SearchActivity
-                    .this));
+            closeResults.setInterpolator(AnimUtils.getFastOutSlowInInterpolator());
             closeResults.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -336,7 +333,7 @@ public class SearchActivity extends Activity {
         scrim.animate()
                 .alpha(0f)
                 .setDuration(400L)
-                .setInterpolator(AnimUtils.getFastOutLinearInInterpolator(this))
+                .setInterpolator(AnimUtils.getFastOutLinearInInterpolator())
                 .setListener(null)
                 .start();
     }
@@ -355,35 +352,33 @@ public class SearchActivity extends Activity {
             public boolean onPreDraw() {
                 // expand the confirmation
                 confirmSaveContainer.getViewTreeObserver().removeOnPreDrawListener(this);
-                Animator reveal = ViewAnimationUtils.createCircularReveal(confirmSaveContainer,
+                Animator reveal = ViewAnimationUtilsCompat.createCircularReveal(confirmSaveContainer,
                         confirmSaveContainer.getWidth() / 2,
                         confirmSaveContainer.getHeight() / 2,
                         fab.getWidth() / 2,
                         confirmSaveContainer.getWidth() / 2);
                 reveal.setDuration(250L);
-                reveal.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(SearchActivity.this));
+                reveal.setInterpolator(AnimUtils.getFastOutSlowInInterpolator());
                 reveal.start();
 
                 // show the scrim
                 int centerX = (fab.getLeft() + fab.getRight()) / 2;
                 int centerY = (fab.getTop() + fab.getBottom()) / 2;
-                Animator revealScrim = ViewAnimationUtils.createCircularReveal(
+                Animator revealScrim = ViewAnimationUtilsCompat.createCircularReveal(
                         resultsScrim,
                         centerX,
                         centerY,
                         0,
                         (float) Math.hypot(centerX, centerY));
                 revealScrim.setDuration(400L);
-                revealScrim.setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(SearchActivity
-                        .this));
+                revealScrim.setInterpolator(AnimUtils.getLinearOutSlowInInterpolator());
                 revealScrim.start();
-                ObjectAnimator fadeInScrim = ObjectAnimator.ofArgb(resultsScrim,
+                ObjectAnimator fadeInScrim = ObjectAnimatorCompat.ofArgb(resultsScrim,
                         ViewUtils.BACKGROUND_COLOR,
                         Color.TRANSPARENT,
                         ContextCompat.getColor(SearchActivity.this, R.color.scrim));
                 fadeInScrim.setDuration(800L);
-                fadeInScrim.setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(SearchActivity
-                        .this));
+                fadeInScrim.setInterpolator(AnimUtils.getLinearOutSlowInInterpolator());
                 fadeInScrim.start();
 
                 // ease in the checkboxes
@@ -393,16 +388,14 @@ public class SearchActivity extends Activity {
                         .alpha(1f)
                         .translationY(0f)
                         .setDuration(200L)
-                        .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(SearchActivity
-                                .this));
+                        .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator());
                 saveDesignerNews.setAlpha(0.6f);
                 saveDesignerNews.setTranslationY(saveDesignerNews.getHeight() * 0.5f);
                 saveDesignerNews.animate()
                         .alpha(1f)
                         .translationY(0f)
                         .setDuration(200L)
-                        .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(SearchActivity
-                                .this));
+                        .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator());
                 return false;
             }
         });
@@ -424,17 +417,16 @@ public class SearchActivity extends Activity {
             // contract the bubble & hide the scrim
             AnimatorSet hideConfirmation = new AnimatorSet();
             hideConfirmation.playTogether(
-                    ViewAnimationUtils.createCircularReveal(confirmSaveContainer,
+                    ViewAnimationUtilsCompat.createCircularReveal(confirmSaveContainer,
                             confirmSaveContainer.getWidth() / 2,
                             confirmSaveContainer.getHeight() / 2,
                             confirmSaveContainer.getWidth() / 2,
                             fab.getWidth() / 2),
-                    ObjectAnimator.ofArgb(resultsScrim,
+                    ObjectAnimatorCompat.ofArgb(resultsScrim,
                             ViewUtils.BACKGROUND_COLOR,
                             Color.TRANSPARENT));
             hideConfirmation.setDuration(150L);
-            hideConfirmation.setInterpolator(AnimUtils.getFastOutSlowInInterpolator
-                    (SearchActivity.this));
+            hideConfirmation.setInterpolator(AnimUtils.getFastOutSlowInInterpolator());
             hideConfirmation.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -450,11 +442,6 @@ public class SearchActivity extends Activity {
     private void setupSearchView() {
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        // hint, inputType & ime options seem to be ignored from XML! Set in code
-        searchView.setQueryHint(getString(R.string.search_hint));
-        searchView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-        searchView.setImeOptions(searchView.getImeOptions() | EditorInfo.IME_ACTION_SEARCH |
-                EditorInfo.IME_FLAG_NO_EXTRACT_UI | EditorInfo.IME_FLAG_NO_FULLSCREEN);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -483,7 +470,7 @@ public class SearchActivity extends Activity {
     private void clearResults() {
         adapter.clear();
         dataManager.clear();
-        TransitionManager.beginDelayedTransition(container, auto);
+        TransitionManagerCompat.beginDelayedTransition(container, auto);
         results.setVisibility(View.GONE);
         progress.setVisibility(View.GONE);
         fab.setVisibility(View.GONE);

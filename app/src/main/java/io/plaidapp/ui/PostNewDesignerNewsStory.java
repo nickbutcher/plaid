@@ -19,12 +19,14 @@ package io.plaidapp.ui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
@@ -88,21 +90,19 @@ public class PostNewDesignerNewsStory extends Activity {
             @Override
             public void onScrolled(int scrollY) {
                 if (scrollY != 0
-                        && sheetTitle.getTranslationZ() != appBarElevation) {
-                    sheetTitle.animate()
+                        && ViewCompat.getTranslationZ(sheetTitle) != appBarElevation) {
+                    ViewCompat.animate(sheetTitle)
                             .translationZ(appBarElevation)
                             .setStartDelay(0L)
                             .setDuration(80L)
-                            .setInterpolator(AnimUtils.getFastOutSlowInInterpolator
-                                    (PostNewDesignerNewsStory.this))
+                            .setInterpolator(AnimUtils.getFastOutSlowInInterpolator())
                             .start();
-                } else if (scrollY == 0 && sheetTitle.getTranslationZ() == appBarElevation) {
-                    sheetTitle.animate()
+                } else if (scrollY == 0 && ViewCompat.getTranslationZ(sheetTitle) == appBarElevation) {
+                    ViewCompat.animate(sheetTitle)
                             .translationZ(0f)
                             .setStartDelay(0L)
                             .setDuration(80L)
-                            .setInterpolator(AnimUtils.getFastOutSlowInInterpolator
-                                    (PostNewDesignerNewsStory.this))
+                            .setInterpolator(AnimUtils.getFastOutSlowInInterpolator())
                             .start();
                 }
             }
@@ -127,8 +127,7 @@ public class PostNewDesignerNewsStory extends Activity {
                             .translationY(0f)
                             .setStartDelay(120L)
                             .setDuration(240L)
-                            .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator
-                                    (PostNewDesignerNewsStory.this));
+                            .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator());
                     return false;
                 }
             });
@@ -148,12 +147,11 @@ public class PostNewDesignerNewsStory extends Activity {
             bottomSheetContent.animate()
                     .translationY(bottomSheetContent.getHeight())
                     .setDuration(160L)
-                    .setInterpolator(AnimUtils.getFastOutLinearInInterpolator
-                            (PostNewDesignerNewsStory.this))
+                    .setInterpolator(AnimUtils.getFastOutLinearInInterpolator())
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            finishAfterTransition();
+                            ActivityCompat.finishAfterTransition(PostNewDesignerNewsStory.this);
                         }
                     });
         } else {
@@ -163,7 +161,7 @@ public class PostNewDesignerNewsStory extends Activity {
 
     @OnClick(R.id.bottom_sheet)
     protected void dismiss() {
-        finishAfterTransition();
+        ActivityCompat.finishAfterTransition(this);
     }
 
     @OnTextChanged(R.id.new_story_title)
@@ -202,15 +200,15 @@ public class PostNewDesignerNewsStory extends Activity {
                     getIntent().getBooleanExtra(PostStoryService.EXTRA_BROADCAST_RESULT, false));
             startService(postIntent);
             setResult(RESULT_POSTING);
-            finishAfterTransition();
+            ActivityCompat.finishAfterTransition(this);
         } else {
             Intent login = new Intent(this, DesignerNewsLogin.class);
             login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR,
                     ContextCompat.getColor(this, R.color.designer_news));
             login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_CORNER_RADIUS, 0);
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                     this, post, getString(R.string.transition_designer_news_login));
-            startActivity(login, options.toBundle());
+            ActivityCompat.startActivity(this, login, options.toBundle());
         }
     }
 

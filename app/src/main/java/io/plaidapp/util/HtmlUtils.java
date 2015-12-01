@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import in.uncod.android.bypass.Bypass;
 import in.uncod.android.bypass.style.TouchableUrlSpan;
+import io.plaidapp.util.compat.LocalTextViewCompat;
 
 /**
  * Utility methods for working with HTML.
@@ -81,7 +82,7 @@ public class HtmlUtils {
     public static void parseAndSetText(TextView textView, String input) {
         if (TextUtils.isEmpty(input)) return;
         setTextWithNiceLinks(textView, parseHtml(input, textView.getLinkTextColors(),
-                textView.getHighlightColor()));
+                LocalTextViewCompat.getHighlightColor(textView)));
     }
 
     /**
@@ -110,7 +111,7 @@ public class HtmlUtils {
             for (URLSpan urlSpan : urlSpans) {
                 ssb.setSpan(new TouchableUrlSpan(urlSpan.getURL(),
                                 textView.getLinkTextColors(),
-                                textView.getHighlightColor()),
+                                LocalTextViewCompat.getHighlightColor(textView)),
                         plainLinks.getSpanStart(urlSpan),
                         plainLinks.getSpanEnd(urlSpan),
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -21,12 +21,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="?android:listPreferredItemHeight"
+    android:minHeight="?listPreferredItemHeight"
     android:paddingTop="@dimen/padding_normal"
     android:paddingEnd="@dimen/padding_normal"
     android:paddingBottom="@dimen/padding_normal"
     android:clipToPadding="false"
-    android:foreground="?android:selectableItemBackground"
+    android:foreground="?selectableItemBackground"
     android:background="@drawable/comment_background"
     android:stateListAnimator="@animator/comment_selection"
     android:descendantFocusability="blocksDescendants">
@@ -89,7 +89,7 @@
         android:layout_below="@id/comment_text"
         android:textColor="@color/dark_icon"
         android:text="0"
-        android:background="?android:selectableItemBackgroundBorderless"
+        android:background="?selectableItemBackgroundBorderless"
         android:visibility="gone"  />
 
     <io.plaidapp.ui.widget.CheckableImageButton
@@ -101,7 +101,7 @@
         android:layout_toStartOf="@id/comment_likes_count"
         android:layout_below="@id/comment_text"
         android:src="@drawable/comment_heart"
-        android:background="?android:selectableItemBackgroundBorderless"
+        android:background="?selectableItemBackgroundBorderless"
         android:visibility="gone" />
 
     <ImageButton
@@ -112,7 +112,7 @@
         android:layout_toStartOf="@id/comment_like"
         android:layout_below="@id/comment_text"
         android:src="@drawable/ic_reply"
-        android:background="?android:selectableItemBackgroundBorderless"
+        android:background="?selectableItemBackgroundBorderless"
         android:stateListAnimator="@animator/reply"
         android:visibility="gone" />
 

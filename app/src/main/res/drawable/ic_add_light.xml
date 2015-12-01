@@ -22,7 +22,7 @@
         android:height="24dp"
         android:viewportWidth="48"
         android:viewportHeight="48"
-        android:tint="?android:colorControlNormal">
+        android:tint="?colorControlNormal">
 
     <path
         android:pathData="@string/path_add"

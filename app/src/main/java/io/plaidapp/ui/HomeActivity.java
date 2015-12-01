@@ -18,9 +18,7 @@ package io.plaidapp.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.ActivityOptions;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -28,20 +26,29 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.NetworkRequest;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.OnApplyWindowInsetsListener;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.WindowInsetsCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -58,16 +65,13 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.view.WindowInsets;
 import android.view.animation.AnimationUtils;
-import android.widget.ActionMenuView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -97,7 +101,7 @@ import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ViewUtils;
 
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends AppCompatActivity {
 
     private static final int RC_SEARCH = 0;
     private static final int RC_AUTH_DRIBBBLE_FOLLOWING = 1;
@@ -105,6 +109,15 @@ public class HomeActivity extends Activity {
     private static final int RC_AUTH_DRIBBBLE_USER_SHOTS = 3;
     private static final int RC_NEW_DESIGNER_NEWS_STORY = 4;
     private static final int RC_NEW_DESIGNER_NEWS_LOGIN = 5;
+
+    private static final OnApplyWindowInsetsListener NOOP_WINDOW_INSETS_LISTENER = new OnApplyWindowInsetsListener() {
+        @Override
+        public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
+            // We have to noop this because the support implementation assumes the input listener is't null
+            // https://code.google.com/p/android/issues/detail?id=197492
+            return insets.consumeSystemWindowInsets();
+        }
+    };
 
     @Bind(R.id.drawer) DrawerLayout drawer;
     @Bind(R.id.toolbar) Toolbar toolbar;
@@ -133,12 +146,14 @@ public class HomeActivity extends Activity {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
-        drawer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            drawer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        }
 
         //toolbar.inflateMenu(R.menu.main);
-        setActionBar(toolbar);
+        setSupportActionBar(toolbar);
         if (savedInstanceState == null) {
             animateToolbar();
         }
@@ -152,10 +167,10 @@ public class HomeActivity extends Activity {
                 Intent login = new Intent(HomeActivity.this, DribbbleLogin.class);
                 login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR,
                         ContextCompat.getColor(HomeActivity.this, R.color.background_dark));
-                ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation(HomeActivity.this,
+                ActivityOptionsCompat options =
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(HomeActivity.this,
                                 sharedElemeent, getString(R.string.transition_dribbble_login));
-                startActivityForResult(login,
+                ActivityCompat.startActivityForResult(HomeActivity.this, login,
                         getAuthSourceRequestCode(forSource), options.toBundle());
             }
         });
@@ -189,26 +204,23 @@ public class HomeActivity extends Activity {
         grid.setItemAnimator(new HomeGridItemAnimator());
 
         // drawer layout treats fitsSystemWindows specially so we have to handle insets ourselves
-        drawer.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+        ViewCompat.setOnApplyWindowInsetsListener(drawer, new OnApplyWindowInsetsListener() {
             @Override
-            public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+            public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
                 // inset the toolbar down by the status bar height
-                ViewGroup.MarginLayoutParams lpToolbar = (ViewGroup.MarginLayoutParams) toolbar
-                        .getLayoutParams();
+                ViewGroup.MarginLayoutParams lpToolbar = (ViewGroup.MarginLayoutParams) toolbar.getLayoutParams();
                 lpToolbar.topMargin += insets.getSystemWindowInsetTop();
                 lpToolbar.rightMargin += insets.getSystemWindowInsetRight();
                 toolbar.setLayoutParams(lpToolbar);
 
                 // inset the grid top by statusbar+toolbar & the bottom by the navbar (don't clip)
                 grid.setPadding(grid.getPaddingLeft(),
-                        insets.getSystemWindowInsetTop() + ViewUtils.getActionBarSize
-                                (HomeActivity.this),
+                        insets.getSystemWindowInsetTop() + ViewUtils.getActionBarSize(HomeActivity.this),
                         grid.getPaddingRight() + insets.getSystemWindowInsetRight(), // landscape
                         grid.getPaddingBottom() + insets.getSystemWindowInsetBottom());
 
                 // inset the fab for the navbar
-                ViewGroup.MarginLayoutParams lpFab = (ViewGroup.MarginLayoutParams) fab
-                        .getLayoutParams();
+                ViewGroup.MarginLayoutParams lpFab = (ViewGroup.MarginLayoutParams) fab.getLayoutParams();
                 lpFab.bottomMargin += insets.getSystemWindowInsetBottom(); // portrait
                 lpFab.rightMargin += insets.getSystemWindowInsetRight(); // landscape
                 fab.setLayoutParams(lpFab);
@@ -223,22 +235,20 @@ public class HomeActivity extends Activity {
                 // we place a background behind the status bar to combine with it's semi-transparent
                 // color to get the desired appearance.  Set it's height to the status bar height
                 View statusBarBackground = findViewById(R.id.status_bar_background);
-                FrameLayout.LayoutParams lpStatus = (FrameLayout.LayoutParams)
-                        statusBarBackground.getLayoutParams();
+                FrameLayout.LayoutParams lpStatus = (FrameLayout.LayoutParams) statusBarBackground.getLayoutParams();
                 lpStatus.height = insets.getSystemWindowInsetTop();
                 statusBarBackground.setLayoutParams(lpStatus);
 
                 // inset the filters list for the status bar / navbar
                 // need to set the padding end for landscape case
-                final boolean ltr = filtersList.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR;
-                filtersList.setPaddingRelative(filtersList.getPaddingStart(),
+                final boolean ltr = ViewCompat.getLayoutDirection(filtersList) == ViewCompat.LAYOUT_DIRECTION_LTR;
+                ViewCompat.setPaddingRelative(filtersList, ViewCompat.getPaddingStart(filtersList),
                         filtersList.getPaddingTop() + insets.getSystemWindowInsetTop(),
-                        filtersList.getPaddingEnd() + (ltr ? insets.getSystemWindowInsetRight() :
-                                0),
+                        ViewCompat.getPaddingEnd(filtersList) + (ltr ? insets.getSystemWindowInsetRight() : 0),
                         filtersList.getPaddingBottom() + insets.getSystemWindowInsetBottom());
 
                 // clear this listener so insets aren't re-applied
-                drawer.setOnApplyWindowInsetsListener(null);
+                ViewCompat.setOnApplyWindowInsetsListener(drawer, NOOP_WINDOW_INSETS_LISTENER);
 
                 return insets.consumeSystemWindowInsets();
             }
@@ -308,9 +318,10 @@ public class HomeActivity extends Activity {
                 View searchMenuView = toolbar.findViewById(R.id.menu_search);
                 int[] loc = new int[2];
                 searchMenuView.getLocationOnScreen(loc);
-                startActivityForResult(SearchActivity.createStartIntent(this, loc[0], loc[0] +
-                        (searchMenuView.getWidth() / 2)), RC_SEARCH, ActivityOptions
-                        .makeSceneTransitionAnimation(this).toBundle());
+                ActivityCompat.startActivityForResult(this, SearchActivity.createStartIntent(this, loc[0], loc[0] +
+                        (searchMenuView.getWidth() / 2)),
+                        RC_SEARCH,
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle());
                 searchMenuView.setAlpha(0f);
                 return true;
             case R.id.menu_dribbble_login:
@@ -334,8 +345,9 @@ public class HomeActivity extends Activity {
                 }
                 return true;
             case R.id.menu_about:
-                startActivity(new Intent(HomeActivity.this, AboutActivity.class),
-                        ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+                ActivityCompat.startActivity(this,
+                        new Intent(HomeActivity.this, AboutActivity.class),
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle());
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -437,13 +449,13 @@ public class HomeActivity extends Activity {
             if (newState == RecyclerView.SCROLL_STATE_IDLE
                     && layoutManager.findFirstVisibleItemPosition() == 0
                     && layoutManager.findViewByPosition(0).getTop() == grid.getPaddingTop()
-                    && toolbar.getTranslationZ() != 0) {
+                    && ViewCompat.getTranslationZ(toolbar) != 0) {
                 // at top, reset elevation
-                toolbar.setTranslationZ(0f);
+                ViewCompat.setTranslationZ(toolbar, 0f);
             } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING
-                    && toolbar.getTranslationZ() != -1f) {
+                    && ViewCompat.getTranslationZ(toolbar) != -1f) {
                 // grid scrolled, lower toolbar to allow content to pass in front
-                toolbar.setTranslationZ(-1f);
+                ViewCompat.setTranslationZ(toolbar, -1f);
             }
         }
     };
@@ -456,16 +468,16 @@ public class HomeActivity extends Activity {
                     ContextCompat.getColor(this, R.color.accent));
             intent.putExtra(PostStoryService.EXTRA_BROADCAST_RESULT, true);
             registerPostStoryResultListener();
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, fab,
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, fab,
                     getString(R.string.transition_new_designer_news_post));
-            startActivityForResult(intent, RC_NEW_DESIGNER_NEWS_STORY, options.toBundle());
+            ActivityCompat.startActivityForResult(this, intent, RC_NEW_DESIGNER_NEWS_STORY, options.toBundle());
         } else {
             Intent intent = new Intent(this, DesignerNewsLogin.class);
             intent.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR,
                     ContextCompat.getColor(this, R.color.accent));
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, fab,
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, fab,
                     getString(R.string.transition_designer_news_login));
-            startActivityForResult(intent, RC_NEW_DESIGNER_NEWS_LOGIN, options.toBundle());
+            ActivityCompat.startActivityForResult(this, intent, RC_NEW_DESIGNER_NEWS_LOGIN, options.toBundle());
         }
     }
 
@@ -476,8 +488,9 @@ public class HomeActivity extends Activity {
             switch (intent.getAction()) {
                 case PostStoryService.BROADCAST_ACTION_SUCCESS:
                     // success animation
-                    AnimatedVectorDrawable complete =
-                            (AnimatedVectorDrawable) getDrawable(R.drawable.avd_upload_complete);
+                    AnimatedVectorDrawableCompat complete =
+                            AnimatedVectorDrawableCompat.create(HomeActivity.this,
+                                    R.drawable.avd_upload_complete);
                     fabPosting.setImageDrawable(complete);
                     complete.start();
                     fabPosting.postDelayed(new Runnable() {
@@ -493,8 +506,9 @@ public class HomeActivity extends Activity {
                     break;
                 case PostStoryService.BROADCAST_ACTION_FAILURE:
                     // failure animation
-                    AnimatedVectorDrawable failed =
-                            (AnimatedVectorDrawable) getDrawable(R.drawable.avd_upload_error);
+                    AnimatedVectorDrawableCompat failed =
+                            AnimatedVectorDrawableCompat.create(HomeActivity.this,
+                                    R.drawable.avd_upload_error);
                     fabPosting.setImageDrawable(failed);
                     failed.start();
                     // remove the upload progress 'fab' and reshow the regular one
@@ -503,8 +517,7 @@ public class HomeActivity extends Activity {
                             .rotation(90f)
                             .setStartDelay(2000L) // leave error on screen briefly
                             .setDuration(300L)
-                            .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(HomeActivity
-                                    .this))
+                            .setInterpolator(AnimUtils.getFastOutSlowInInterpolator())
                             .setListener(new AnimatorListenerAdapter() {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
@@ -535,7 +548,7 @@ public class HomeActivity extends Activity {
         ensurePostingProgressInflated();
         fabPosting.setVisibility(View.VISIBLE);
         // if stub has just been inflated then it will not have been laid out yet
-        if (fabPosting.isLaidOut()) {
+        if (ViewCompat.isLaidOut(fabPosting)) {
             revealPostingProgress();
         } else {
             fabPosting.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
@@ -556,10 +569,10 @@ public class HomeActivity extends Activity {
                 0f,
                 fabPosting.getWidth() / 2)
                 .setDuration(600L);
-        reveal.setInterpolator(AnimUtils.getFastOutLinearInInterpolator(this));
+        reveal.setInterpolator(AnimUtils.getFastOutLinearInInterpolator());
         reveal.start();
-        AnimatedVectorDrawable uploading =
-                (AnimatedVectorDrawable) getDrawable(R.drawable.avd_uploading);
+        AnimatedVectorDrawableCompat uploading =
+                AnimatedVectorDrawableCompat.create(HomeActivity.this, R.drawable.avd_uploading);
         fabPosting.setImageDrawable(uploading);
         uploading.start();
     }
@@ -581,7 +594,7 @@ public class HomeActivity extends Activity {
                 loading.setVisibility(View.GONE);
                 setNoFiltersEmptyTextVisibility(View.VISIBLE);
             }
-            toolbar.setTranslationZ(0f);
+            ViewCompat.setTranslationZ(toolbar, 0f);
         } else {
             loading.setVisibility(View.GONE);
             setNoFiltersEmptyTextVisibility(View.GONE);
@@ -634,11 +647,13 @@ public class HomeActivity extends Activity {
         // and looks bad on top of colorPrimary
         //Bitmap overviewIcon = ImageUtils.vectorToBitmap(this, R.drawable.ic_launcher_silhouette);
         // TODO replace launcher icon with a monochrome version from RN.
-        Bitmap overviewIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-        setTaskDescription(new ActivityManager.TaskDescription(getString(R.string.app_name),
-                overviewIcon,
-                ContextCompat.getColor(this, R.color.primary)));
-        overviewIcon.recycle();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Bitmap overviewIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+            setTaskDescription(new ActivityManager.TaskDescription(getString(R.string.app_name),
+                    overviewIcon,
+                    ContextCompat.getColor(this, R.color.primary)));
+            overviewIcon.recycle();
+        }
     }
 
     private void animateToolbar() {
@@ -657,7 +672,7 @@ public class HomeActivity extends Activity {
                     .scaleX(1f)
                     .setStartDelay(300)
                     .setDuration(900)
-                    .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(this));
+                    .setInterpolator(AnimUtils.getFastOutSlowInInterpolator());
         }
         View amv = toolbar.getChildAt(1);
         if (amv != null & amv instanceof ActionMenuView) {
@@ -695,7 +710,7 @@ public class HomeActivity extends Activity {
                 .scaleY(1f)
                 .translationY(0f)
                 .setDuration(300L)
-                .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(this))
+                .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator())
                 .start();
     }
 
@@ -780,8 +795,8 @@ public class HomeActivity extends Activity {
                 final ViewStub stub = (ViewStub) findViewById(R.id.stub_no_connection);
                 noConnection = (ImageView) stub.inflate();
             }
-            final AnimatedVectorDrawable avd =
-                    (AnimatedVectorDrawable) getDrawable(R.drawable.avd_no_connection);
+            final AnimatedVectorDrawableCompat avd =
+                    AnimatedVectorDrawableCompat.create(this, R.drawable.avd_no_connection);
             noConnection.setImageDrawable(avd);
             avd.start();
 

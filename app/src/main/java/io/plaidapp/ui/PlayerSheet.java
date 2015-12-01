@@ -19,18 +19,19 @@ package io.plaidapp.ui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,16 +102,16 @@ public class PlayerSheet extends Activity {
         Intent starter = new Intent(launching, PlayerSheet.class);
         starter.putExtra(EXTRA_MODE, MODE_SHOT_LIKES);
         starter.putExtra(EXTRA_SHOT, shot);
-        launching.startActivity(starter,
-                ActivityOptions.makeSceneTransitionAnimation(launching).toBundle());
+        ActivityCompat.startActivity(launching, starter,
+                ActivityOptionsCompat.makeSceneTransitionAnimation(launching).toBundle());
     }
 
     public static void start(Activity launching, User player) {
         Intent starter = new Intent(launching, PlayerSheet.class);
         starter.putExtra(EXTRA_MODE, MODE_FOLLOWERS);
         starter.putExtra(EXTRA_USER, player);
-        launching.startActivity(starter,
-                ActivityOptions.makeSceneTransitionAnimation(launching).toBundle());
+        ActivityCompat.startActivity(launching, starter,
+                ActivityOptionsCompat.makeSceneTransitionAnimation(launching).toBundle());
     }
 
     @Override
@@ -155,7 +156,7 @@ public class PlayerSheet extends Activity {
         bottomSheet.registerCallback(new BottomSheet.Callbacks() {
             @Override
             public void onSheetDismissed() {
-                finishAfterTransition();
+                ActivityCompat.finishAfterTransition(PlayerSheet.this);
             }
 
             @Override
@@ -199,7 +200,7 @@ public class PlayerSheet extends Activity {
                 .scaleX(1f)
                 .scaleY(1f)
                 .setDuration(200L)
-                .setInterpolator(getLinearOutSlowInInterpolator(PlayerSheet.this))
+                .setInterpolator(getLinearOutSlowInInterpolator())
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationStart(Animator animation) {
@@ -216,7 +217,7 @@ public class PlayerSheet extends Activity {
                 .scaleX(0.8f)
                 .scaleY(0.8f)
                 .setDuration(200L)
-                .setInterpolator(getFastOutLinearInInterpolator(PlayerSheet.this))
+                .setInterpolator(getFastOutLinearInInterpolator())
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -271,13 +272,13 @@ public class PlayerSheet extends Activity {
                     final User user = items.get(holder.getAdapterPosition()).getPlayer();
                     final Intent player = new Intent(PlayerSheet.this, PlayerActivity.class);
                     player.putExtra(PlayerActivity.EXTRA_PLAYER, user);
-                    final ActivityOptions options =
-                            ActivityOptions.makeSceneTransitionAnimation(PlayerSheet.this,
+                    final ActivityOptionsCompat options =
+                            ActivityOptionsCompat.makeSceneTransitionAnimation(PlayerSheet.this,
                                     Pair.create((View) holder.playerAvatar,
                                             getString(R.string.transition_player_avatar)),
                                     Pair.create(holder.itemView,
                                             getString(R.string.transition_player_background)));
-                    startActivity(player, options.toBundle());
+                    ActivityCompat.startActivity(PlayerSheet.this, player, options.toBundle());
                 }
             });
             return holder;

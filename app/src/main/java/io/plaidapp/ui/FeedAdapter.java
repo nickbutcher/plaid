@@ -20,8 +20,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -31,14 +31,18 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.support.annotation.ColorInt;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.Pair;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -77,6 +81,7 @@ import io.plaidapp.ui.widget.BadgedFourThreeImageView;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ObservableColorMatrix;
 import io.plaidapp.util.ViewUtils;
+import io.plaidapp.util.compat.ImageViewCompat;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.util.glide.DribbbleTarget;
 
@@ -213,17 +218,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 intent.putExtra(DesignerNewsStory.EXTRA_STORY,
                         (Story) getItem(holder.getAdapterPosition()));
                 setGridItemContentTransitions(holder.itemView);
-                final ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation(host,
+                final ActivityOptionsCompat options =
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(host,
                                 Pair.create(holder.itemView,
                                         host.getString(R.string.transition_story_title_background)),
                                 Pair.create(holder.itemView,
                                         host.getString(R.string.transition_story_background)));
-                host.startActivity(intent, options.toBundle());
+                ActivityCompat.startActivity(host, intent, options.toBundle());
             }
         });
         if (pocketIsInstalled) {
-            holder.pocket.setImageAlpha(178); // grumble... no xml setter, grumble...
+            ImageViewCompat.setImageAlpha(holder.pocket, 178); // grumble... no xml setter, grumble...
             holder.pocket.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View view) {
@@ -251,19 +256,19 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.image.setTransitionName(holder.itemView.getResources().getString(R
-                        .string.transition_shot));
+                ViewCompat.setTransitionName(holder.image, holder.itemView.getResources()
+                        .getString(R.string.transition_shot));
                 Intent intent = new Intent();
                 intent.setClass(host, DribbbleShot.class);
                 intent.putExtra(DribbbleShot.EXTRA_SHOT,
                         (Shot) getItem(holder.getAdapterPosition()));
                 setGridItemContentTransitions(holder.image);
-                ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation(host,
+                ActivityOptionsCompat options =
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(host,
                                 Pair.create(view, host.getString(R.string.transition_shot)),
                                 Pair.create(view, host.getString(R.string
                                         .transition_shot_background)));
-                host.startActivity(intent, options.toBundle());
+                ActivityCompat.startActivity(host, intent, options.toBundle());
             }
         });
         // play animated GIFs whilst touched
@@ -323,7 +328,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                                    boolean isFromMemoryCache,
                                                    boolean isFirstResource) {
                         if (!shot.hasFadedIn) {
-                            holder.image.setHasTransientState(true);
+                            ViewCompat.setHasTransientState(holder.image, true);
                             final ObservableColorMatrix cm = new ObservableColorMatrix();
                             final ObjectAnimator saturation = ObjectAnimator.ofFloat(
                                     cm, ObservableColorMatrix.SATURATION, 0f, 1f);
@@ -338,12 +343,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                 }
                             });
                             saturation.setDuration(2000L);
-                            saturation.setInterpolator(getFastOutSlowInInterpolator(host));
+                            saturation.setInterpolator(getFastOutSlowInInterpolator());
                             saturation.addListener(new AnimatorListenerAdapter() {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
                                     holder.image.clearColorFilter();
-                                    holder.image.setHasTransientState(false);
+                                    ViewCompat.setHasTransientState(holder.image, false);
                                 }
                             });
                             saturation.start();
@@ -365,7 +370,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 .override(imageSize[0], imageSize[1])
                 .into(new DribbbleTarget(holder.image, false));
         // need both placeholder & background to prevent seeing through shot as it fades in
-        holder.image.setBackground(shotLoadingPlaceholders[holder.getAdapterPosition() %
+        ViewUtils.setBackground(holder.image, shotLoadingPlaceholders[holder.getAdapterPosition() %
                 shotLoadingPlaceholders.length]);
         holder.image.showBadge(shot.animated);
     }
@@ -589,8 +594,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      * This can cause a strange layers-passing-through-each-other effect, especially on return.
      * In this situation, hide the FAB on exit and re-show it on return.
      */
+    @SuppressLint("NewApi")
     private void setGridItemContentTransitions(View gridItem) {
-        if (!ViewUtils.viewsIntersect(gridItem, host.findViewById(R.id.fab))) return;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP
+                || !ViewUtils.viewsIntersect(gridItem, host.findViewById(R.id.fab))) {
+            return;
+        }
 
         final TransitionInflater ti = TransitionInflater.from(host);
         host.getWindow().setExitTransition(

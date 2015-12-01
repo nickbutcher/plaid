@@ -18,6 +18,7 @@ package io.plaidapp.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 
@@ -72,7 +73,7 @@ public class DynamicTypeTextView extends BaselineGridTextView {
         super.onSizeChanged(w, h, oldw, oldh);
         final float expandedTitleTextSize = Math.max(minTextSize,
                 ViewUtils.getSingleLineTextSize(getText().toString(), getPaint(),
-                        w - getPaddingStart() - getPaddingEnd(),
+                        w - ViewCompat.getPaddingStart(this) - ViewCompat.getPaddingEnd(this),
                         minTextSize,
                         maxTextSize, 0.5f, getResources().getDisplayMetrics()));
         setTextSize(TypedValue.COMPLEX_UNIT_PX, expandedTitleTextSize);

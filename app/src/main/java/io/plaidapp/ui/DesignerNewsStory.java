@@ -22,13 +22,11 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.app.PendingIntent;
 import android.app.assist.AssistContent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Path;
-import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,11 +35,18 @@ import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.customtabs.CustomTabsSession;
 import android.support.design.widget.TextInputLayout;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MarginLayoutParamsCompat;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -51,7 +56,6 @@ import android.transition.ArcMotion;
 import android.transition.Transition;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.Button;
@@ -60,7 +64,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -90,13 +93,14 @@ import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.widget.AuthorTextView;
 import io.plaidapp.ui.widget.CollapsingTitleLayout;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
-import io.plaidapp.ui.widget.FontTextView;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.HtmlUtils;
 import io.plaidapp.util.ImageUtils;
 import io.plaidapp.util.ImeUtils;
 import io.plaidapp.util.ViewUtils;
+import io.plaidapp.util.compat.ObjectAnimatorCompat;
+import io.plaidapp.util.compat.ViewAnimationUtilsCompat;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.util.glide.CircleTransform;
 import io.plaidapp.util.glide.ImageSpanTarget;
@@ -143,7 +147,9 @@ public class DesignerNewsStory extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_story);
         ButterKnife.bind(this);
-        getWindow().getSharedElementReturnTransition().addListener(returnHomeListener);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().getSharedElementReturnTransition().addListener(returnHomeListener);
+        }
 
         story = getIntent().getParcelableExtra(EXTRA_STORY);
         fab.setOnClickListener(fabClick);
@@ -292,7 +298,7 @@ public class DesignerNewsStory extends Activity {
     private final View.OnClickListener backClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            finishAfterTransition();
+            ActivityCompat.finishAfterTransition(DesignerNewsStory.this);
         }
     };
 
@@ -326,23 +332,23 @@ public class DesignerNewsStory extends Activity {
 
         if (!fabShouldBeVisible && fabIsVisible) {
             fabIsVisible = false;
-            fab.animate()
+            ViewCompat.animate(fab)
                     .scaleX(0f)
                     .scaleY(0f)
                     .alpha(0.6f)
                     .setDuration(200L)
-                    .setInterpolator(getFastOutLinearInInterpolator(this))
+                    .setInterpolator(getFastOutLinearInInterpolator())
                     .withLayer()
                     .setListener(postHideFab)
                     .start();
         } else if (fabShouldBeVisible && !fabIsVisible) {
             fabIsVisible = true;
-            fab.animate()
+            ViewCompat.animate(fab)
                     .scaleX(1f)
                     .scaleY(1f)
                     .alpha(1f)
                     .setDuration(200L)
-                    .setInterpolator(getLinearOutSlowInInterpolator(this))
+                    .setInterpolator(getLinearOutSlowInInterpolator())
                     .withLayer()
                     .setListener(preShowFab)
                     .start();
@@ -350,16 +356,16 @@ public class DesignerNewsStory extends Activity {
         }
     }
 
-    private AnimatorListenerAdapter preShowFab = new AnimatorListenerAdapter() {
+    private ViewPropertyAnimatorListenerAdapter preShowFab = new ViewPropertyAnimatorListenerAdapter() {
         @Override
-        public void onAnimationStart(Animator animation) {
+        public void onAnimationStart(View view) {
             fab.setVisibility(View.VISIBLE);
         }
     };
 
-    private AnimatorListenerAdapter postHideFab = new AnimatorListenerAdapter() {
+    private ViewPropertyAnimatorListenerAdapter postHideFab = new ViewPropertyAnimatorListenerAdapter() {
         @Override
-        public void onAnimationEnd(Animator animation) {
+        public void onAnimationEnd(View view) {
             fab.setVisibility(View.GONE);
         }
     };
@@ -370,9 +376,9 @@ public class DesignerNewsStory extends Activity {
         public void onLayoutChange(View v, int left, int top, int right, int bottom, int
                 oldLeft, int oldTop, int oldRight, int oldBottom) {
             if ((bottom - top) != (oldBottom - oldTop)) {
-                commentsList.setPaddingRelative(commentsList.getPaddingStart(),
+                ViewCompat.setPaddingRelative(commentsList, ViewCompat.getPaddingStart(commentsList),
                         collapsingToolbar.getHeight(),
-                        commentsList.getPaddingEnd(),
+                        ViewCompat.getPaddingEnd(commentsList),
                         commentsList.getPaddingBottom());
                 commentsList.scrollToPosition(0);
             }
@@ -417,7 +423,7 @@ public class DesignerNewsStory extends Activity {
 
         // then reveal the placeholder ui, starting from the center & same dimens as fab
         fabExpand.setVisibility(View.VISIBLE);
-        Animator reveal = ViewAnimationUtils.createCircularReveal(
+        Animator reveal = ViewAnimationUtilsCompat.createCircularReveal(
                 fabExpand,
                 fabExpand.getWidth() / 2,
                 fabExpand.getHeight() / 2,
@@ -429,12 +435,12 @@ public class DesignerNewsStory extends Activity {
         ArcMotion arcMotion = new ArcMotion();
         arcMotion.setMinimumVerticalAngle(70f);
         Path motionPath = arcMotion.getPath(translateX, translateY, 0, 0);
-        Animator position = ObjectAnimator.ofFloat(fabExpand, View.TRANSLATION_X, View
+        Animator position = ObjectAnimatorCompat.ofFloat(fabExpand, View.TRANSLATION_X, View
                 .TRANSLATION_Y, motionPath)
                 .setDuration(fabExpandDuration);
 
         // animate from the FAB colour to the placeholder background color
-        Animator background = ObjectAnimator.ofArgb(fabExpand,
+        Animator background = ObjectAnimatorCompat.ofArgb(fabExpand,
                 ViewUtils.BACKGROUND_COLOR,
                 ContextCompat.getColor(this, R.color.designer_news),
                 ContextCompat.getColor(this, R.color.background_light))
@@ -446,7 +452,7 @@ public class DesignerNewsStory extends Activity {
 
         // play 'em all together with the material interpolator
         AnimatorSet show = new AnimatorSet();
-        show.setInterpolator(getFastOutSlowInInterpolator(DesignerNewsStory.this));
+        show.setInterpolator(getFastOutSlowInInterpolator());
         show.playTogether(reveal, background, position, fadeOutFab);
         show.start();
     }
@@ -483,7 +489,7 @@ public class DesignerNewsStory extends Activity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((AnimatedVectorDrawable) share.getCompoundDrawables()[1]).start();
+                ((AnimatedVectorDrawableCompat) share.getCompoundDrawables()[1]).start();
                 startActivity(ShareCompat.IntentBuilder.from(DesignerNewsStory.this)
                         .setText(story.url)
                         .setType("text/plain")
@@ -586,10 +592,10 @@ public class DesignerNewsStory extends Activity {
                 DesignerNewsLogin.class);
         login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR,
                 ContextCompat.getColor(DesignerNewsStory.this, R.color.background_light));
-        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                 DesignerNewsStory.this,
                 triggeringView, getString(R.string.transition_designer_news_login));
-        startActivityForResult(login, requestCode, options.toBundle());
+        ActivityCompat.startActivityForResult(this, login, requestCode, options.toBundle());
     }
 
     private void createDesignerNewsApi() {
@@ -844,13 +850,14 @@ public class DesignerNewsStory extends Activity {
             holder.itemView.setActivated(holder.getAdapterPosition() == expandedCommentPosition);
             if (holder.getAdapterPosition() == expandedCommentPosition) {
                 final int threadDepthWidth = holder.threadDepth.getDrawable().getIntrinsicWidth();
-                final float leftShift = -(threadDepthWidth + ((ViewGroup.MarginLayoutParams)
-                        holder.threadDepth.getLayoutParams()).getMarginEnd());
+                final float leftShift = -(threadDepthWidth
+                        + MarginLayoutParamsCompat.getMarginEnd(
+                        (ViewGroup.MarginLayoutParams) holder.threadDepth.getLayoutParams()));
                 holder.author.setTranslationX(leftShift);
                 holder.comment.setTranslationX(leftShift);
                 holder.threadDepth.setTranslationX(-(threadDepthWidth
-                        + ((ViewGroup.MarginLayoutParams)
-                        holder.threadDepth.getLayoutParams()).getMarginStart()));
+                        + MarginLayoutParamsCompat.getMarginStart(
+                        (ViewGroup.MarginLayoutParams) holder.threadDepth.getLayoutParams())));
             } else {
                 holder.threadDepth.setTranslationX(0f);
                 holder.author.setTranslationX(0f);
@@ -942,8 +949,7 @@ public class DesignerNewsStory extends Activity {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     replyToCommentFocused = hasFocus;
-                    final Interpolator interp = getFastOutSlowInInterpolator(holder
-                            .itemView.getContext());
+                    final Interpolator interp = getFastOutSlowInInterpolator();
                     if (hasFocus) {
                         holder.commentVotes.animate()
                                 .translationX(-holder.commentVotes.getWidth())
@@ -963,12 +969,12 @@ public class DesignerNewsStory extends Activity {
                                 .setListener(new AnimatorListenerAdapter() {
                                     @Override
                                     public void onAnimationStart(Animator animation) {
-                                        holder.itemView.setHasTransientState(true);
+                                        ViewCompat.setHasTransientState(holder.itemView, true);
                                     }
 
                                     @Override
                                     public void onAnimationEnd(Animator animation) {
-                                        holder.itemView.setHasTransientState(false);
+                                        ViewCompat.setHasTransientState(holder.itemView, false);
                                     }
                                 });
                         updateFabVisibility();
@@ -989,13 +995,13 @@ public class DesignerNewsStory extends Activity {
                                 .setListener(new AnimatorListenerAdapter() {
                                     @Override
                                     public void onAnimationStart(Animator animation) {
-                                        holder.itemView.setHasTransientState(true);
+                                        ViewCompat.setHasTransientState(holder.itemView, true);
                                     }
 
                                     @Override
                                     public void onAnimationEnd(Animator animation) {
                                         holder.postReply.setVisibility(View.INVISIBLE);
-                                        holder.itemView.setHasTransientState(true);
+                                        ViewCompat.setHasTransientState(holder.itemView, true);
                                     }
                                 });
                         updateFabVisibility();
@@ -1068,16 +1074,17 @@ public class DesignerNewsStory extends Activity {
         public static final int COLLAPSE_COMMENT = 2;
 
         @Override
-        public boolean canReuseUpdatedViewHolder(RecyclerView.ViewHolder viewHolder) {
+        public boolean canReuseUpdatedViewHolder(@NonNull RecyclerView.ViewHolder viewHolder) {
             return true;
         }
 
         @NonNull
         @Override
-        public ItemHolderInfo recordPreLayoutInformation(RecyclerView.State state,
-                                                         RecyclerView.ViewHolder viewHolder,
-                                                         int changeFlags,
-                                                         List<Object> payloads) {
+        public ItemHolderInfo recordPreLayoutInformation(
+                @NonNull RecyclerView.State state,
+                @NonNull RecyclerView.ViewHolder viewHolder,
+                int changeFlags,
+                @NonNull List<Object> payloads) {
             CommentItemHolderInfo info = (CommentItemHolderInfo)
                     super.recordPreLayoutInformation(state, viewHolder, changeFlags, payloads);
             info.doExpand = payloads.contains(EXPAND_COMMENT);
@@ -1086,23 +1093,23 @@ public class DesignerNewsStory extends Activity {
         }
 
         @Override
-        public boolean animateChange(RecyclerView.ViewHolder oldHolder,
-                                     RecyclerView.ViewHolder newHolder,
-                                     ItemHolderInfo preInfo,
-                                     ItemHolderInfo postInfo) {
+        public boolean animateChange(
+                @NonNull RecyclerView.ViewHolder oldHolder,
+                @NonNull RecyclerView.ViewHolder newHolder,
+                @NonNull ItemHolderInfo preInfo,
+                @NonNull ItemHolderInfo postInfo) {
             if (newHolder instanceof CommentHolder && preInfo instanceof CommentItemHolderInfo) {
                 final CommentHolder holder = (CommentHolder) newHolder;
                 final CommentItemHolderInfo info = (CommentItemHolderInfo) preInfo;
-                final float expandedThreadOffset = -(holder.threadDepth.getWidth() + ((ViewGroup
-                        .MarginLayoutParams) holder.threadDepth.getLayoutParams())
-                        .getMarginStart());
-                final float expandedAuthorCommentOffset = -(holder.threadDepth.getWidth() +
-                        ((ViewGroup.MarginLayoutParams) holder.threadDepth.getLayoutParams())
-                                .getMarginEnd());
+                final float expandedThreadOffset = -(holder.threadDepth.getWidth()
+                        + MarginLayoutParamsCompat.getMarginStart(
+                        (ViewGroup.MarginLayoutParams) holder.threadDepth.getLayoutParams()));
+                final float expandedAuthorCommentOffset = -(holder.threadDepth.getWidth()
+                        + MarginLayoutParamsCompat.getMarginEnd(
+                        (ViewGroup.MarginLayoutParams) holder.threadDepth.getLayoutParams()));
 
                 if (info.doExpand) {
-                    Interpolator moveInterpolator = getFastOutSlowInInterpolator(holder
-                            .itemView.getContext());
+                    Interpolator moveInterpolator = getFastOutSlowInInterpolator();
                     holder.threadDepth.setTranslationX(0f);
                     holder.threadDepth.animate()
                             .translationX(expandedThreadOffset)
@@ -1123,22 +1130,18 @@ public class DesignerNewsStory extends Activity {
                                 @Override
                                 public void onAnimationStart(Animator animation) {
                                     dispatchChangeStarting(holder, false);
-                                    holder.itemView.setHasTransientState(true);
+                                    ViewCompat.setHasTransientState(holder.itemView, true);
                                 }
 
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
-                                    holder.itemView.setHasTransientState(false);
+                                    ViewCompat.setHasTransientState(holder.itemView, false);
                                     dispatchChangeFinished(holder, false);
                                 }
                             });
                 } else if (info.doCollapse) {
-                    Interpolator enterInterpolator = getLinearOutSlowInInterpolator
-                            (holder.itemView
-                            .getContext());
-                    Interpolator moveInterpolator = getFastOutSlowInInterpolator(holder
-                            .itemView
-                            .getContext());
+                    Interpolator enterInterpolator = getLinearOutSlowInInterpolator();
+                    Interpolator moveInterpolator = getFastOutSlowInInterpolator();
 
                     // return the thread depth indicator into place
                     holder.threadDepth.setTranslationX(expandedThreadOffset);
@@ -1151,12 +1154,12 @@ public class DesignerNewsStory extends Activity {
                                 @Override
                                 public void onAnimationStart(Animator animation) {
                                     dispatchChangeStarting(holder, false);
-                                    holder.itemView.setHasTransientState(true);
+                                    ViewCompat.setHasTransientState(holder.itemView, true);
                                 }
 
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
-                                    holder.itemView.setHasTransientState(false);
+                                    ViewCompat.setHasTransientState(holder.itemView, false);
                                     dispatchChangeFinished(holder, false);
                                 }
                             });

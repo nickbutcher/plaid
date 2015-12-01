@@ -23,7 +23,6 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
 import android.app.assist.AssistContent;
 import android.content.Context;
@@ -33,23 +32,25 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.RectF;
-import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.Snackbar;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.Pair;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.graphics.Palette;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.transition.AutoTransition;
 import android.transition.Transition;
-import android.transition.TransitionManager;
 import android.util.Log;
-import android.util.Pair;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -94,6 +95,7 @@ import io.plaidapp.data.prefs.DribbblePrefs;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.widget.AuthorTextView;
 import io.plaidapp.ui.widget.CheckableImageButton;
+import io.plaidapp.ui.widget.CircularImageView;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.FABToggle;
 import io.plaidapp.ui.widget.FabOverlapTextView;
@@ -104,6 +106,7 @@ import io.plaidapp.util.ColorUtils;
 import io.plaidapp.util.HtmlUtils;
 import io.plaidapp.util.ImeUtils;
 import io.plaidapp.util.ViewUtils;
+import io.plaidapp.util.compat.TransitionManagerCompat;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.util.glide.CircleTransform;
 import io.plaidapp.util.glide.GlideUtils;
@@ -114,6 +117,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 
+import static io.plaidapp.util.AnimUtils.getFastOutLinearInInterpolator;
 import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
 import static io.plaidapp.util.AnimUtils.getLinearOutSlowInInterpolator;
 
@@ -161,8 +165,10 @@ public class DribbbleShot extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_shot);
         setupDribbble();
-        setExitSharedElementCallback(fabLoginSharedElementCallback);
-        getWindow().getSharedElementReturnTransition().addListener(shotReturnHomeListener);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setExitSharedElementCallback(fabLoginSharedElementCallback());
+            getWindow().getSharedElementReturnTransition().addListener(shotReturnHomeListener);
+        }
         circleTransform = new CircleTransform(this);
 
         ButterKnife.bind(this);
@@ -294,7 +300,7 @@ public class DribbbleShot extends Activity {
         imageView.setOnClickListener(shotClick);
         shotSpacer.setOnClickListener(shotClick);
 
-        if (postponeEnterTransition) postponeEnterTransition();
+        if (postponeEnterTransition) ActivityCompat.postponeEnterTransition(this);
         imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver
                 .OnPreDrawListener() {
             @Override
@@ -302,7 +308,7 @@ public class DribbbleShot extends Activity {
                 imageView.getViewTreeObserver().removeOnPreDrawListener(this);
                 calculateFabPosition();
                 enterAnimation(animateFabManually);
-                if (postponeEnterTransition) startPostponedEnterTransition();
+                if (postponeEnterTransition) ActivityCompat.startPostponedEnterTransition(DribbbleShot.this);
                 return true;
             }
         });
@@ -332,14 +338,14 @@ public class DribbbleShot extends Activity {
         likeCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((AnimatedVectorDrawable) likeCount.getCompoundDrawables()[1]).start();
+                ((AnimatedVectorDrawableCompat) likeCount.getCompoundDrawables()[1]).start();
                 if (shot.likes_count > 0) {
                     PlayerSheet.start(DribbbleShot.this, shot);
                 }
             }
         });
         if (shot.likes_count == 0) {
-            likeCount.setBackground(null); // clear touch ripple if doesn't do anything
+            ViewUtils.setBackground(likeCount, null); // clear touch ripple if doesn't do anything
         }
         viewCount.setText(
                 res.getQuantityString(R.plurals.views,
@@ -348,13 +354,13 @@ public class DribbbleShot extends Activity {
         viewCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((AnimatedVectorDrawable) viewCount.getCompoundDrawables()[1]).start();
+                ((AnimatedVectorDrawableCompat) viewCount.getCompoundDrawables()[1]).start();
             }
         });
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((AnimatedVectorDrawable) share.getCompoundDrawables()[1]).start();
+                ((AnimatedVectorDrawableCompat) share.getCompoundDrawables()[1]).start();
                 new ShareDribbbleImageTask(DribbbleShot.this, shot).execute();
             }
         });
@@ -378,10 +384,10 @@ public class DribbbleShot extends Activity {
                         player.putExtra(PlayerActivity.EXTRA_PLAYER_NAME, shot.user.username);
                         player.putExtra(PlayerActivity.EXTRA_PLAYER_ID, shot.user.id);
                     }
-                    ActivityOptions options =
-                            ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this,
+                    ActivityOptionsCompat options =
+                            ActivityOptionsCompat.makeSceneTransitionAnimation(DribbbleShot.this,
                                     playerAvatar, getString(R.string.transition_player_avatar));
-                    startActivity(player, options.toBundle());
+                    ActivityCompat.startActivity(DribbbleShot.this, player, options.toBundle());
                 }
             };
             playerAvatar.setOnClickListener(playerClick);
@@ -410,7 +416,7 @@ public class DribbbleShot extends Activity {
         draggableFrame.postDelayed(new Runnable() {
             @Override
             public void run() {
-                finishAfterTransition();
+                ActivityCompat.finishAfterTransition(DribbbleShot.this);
             }
         }, 3000L);
     }
@@ -462,9 +468,10 @@ public class DribbbleShot extends Activity {
 
     private RequestListener shotLoadListener = new RequestListener<String, GlideDrawable>() {
         @Override
-        public boolean onResourceReady(GlideDrawable resource, String model,
-                                       Target<GlideDrawable> target, boolean isFromMemoryCache,
-                                       boolean isFirstResource) {
+        public boolean onResourceReady(
+                GlideDrawable resource, String model,
+                Target<GlideDrawable> target, boolean isFromMemoryCache,
+                boolean isFirstResource) {
             final Bitmap bitmap = GlideUtils.getBitmap(resource);
             final int twentyFourDip = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                     24, DribbbleShot.this.getResources().getDisplayMetrics());
@@ -490,37 +497,39 @@ public class DribbbleShot extends Activity {
                                         DribbbleShot.this, R.color.dark_icon));
                             }
 
-                            // color the status bar. Set a complementary dark color on L,
-                            // light or dark color on M (with matching status bar icons)
-                            int statusBarColor = getWindow().getStatusBarColor();
-                            final Palette.Swatch topColor =
-                                    ColorUtils.getMostPopulousSwatch(palette);
-                            if (topColor != null &&
-                                    (isDark || Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
-                                statusBarColor = ColorUtils.scrimify(topColor.getRgb(),
-                                        isDark, SCRIM_ADJUSTMENT);
-                                // set a light status bar on M+
-                                if (!isDark && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    ViewUtils.setLightStatusBar(imageView);
-                                }
-                            }
-
-                            if (statusBarColor != getWindow().getStatusBarColor()) {
-                                imageView.setScrimColor(statusBarColor);
-                                ValueAnimator statusBarColorAnim = ValueAnimator.ofArgb(
-                                        getWindow().getStatusBarColor(), statusBarColor);
-                                statusBarColorAnim.addUpdateListener(new ValueAnimator
-                                        .AnimatorUpdateListener() {
-                                    @Override
-                                    public void onAnimationUpdate(ValueAnimator animation) {
-                                        getWindow().setStatusBarColor(
-                                                (int) animation.getAnimatedValue());
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                // color the status bar. Set a complementary dark color on L,
+                                // light or dark color on M (with matching status bar icons)
+                                int statusBarColor = getWindow().getStatusBarColor();
+                                final Palette.Swatch topColor =
+                                        ColorUtils.getMostPopulousSwatch(palette);
+                                if (topColor != null &&
+                                        (isDark || Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
+                                    statusBarColor = ColorUtils.scrimify(topColor.getRgb(),
+                                            isDark, SCRIM_ADJUSTMENT);
+                                    // set a light status bar on M+
+                                    if (!isDark && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        ViewUtils.setLightStatusBar(imageView);
                                     }
-                                });
-                                statusBarColorAnim.setDuration(1000L);
-                                statusBarColorAnim.setInterpolator(
-                                        getFastOutSlowInInterpolator(DribbbleShot.this));
-                                statusBarColorAnim.start();
+                                }
+
+                                if (statusBarColor != getWindow().getStatusBarColor()) {
+                                    imageView.setScrimColor(statusBarColor);
+                                    ValueAnimator statusBarColorAnim = ValueAnimator.ofArgb(
+                                            getWindow().getStatusBarColor(), statusBarColor);
+                                    statusBarColorAnim.addUpdateListener(new ValueAnimator
+                                            .AnimatorUpdateListener() {
+                                        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+                                        @Override
+                                        public void onAnimationUpdate(ValueAnimator animation) {
+                                            getWindow().setStatusBarColor(
+                                                    (int) animation.getAnimatedValue());
+                                        }
+                                    });
+                                    statusBarColorAnim.setDuration(1000L);
+                                    statusBarColorAnim.setInterpolator(getFastOutSlowInInterpolator());
+                                    statusBarColorAnim.start();
+                                }
                             }
                         }
                     });
@@ -531,7 +540,7 @@ public class DribbbleShot extends Activity {
                         @Override
                         public void onGenerated(Palette palette) {
                             // color the ripple on the image spacer (default is grey)
-                            shotSpacer.setBackground(ViewUtils.createRipple(palette, 0.25f, 0.5f,
+                            ViewUtils.setBackground(shotSpacer, ViewUtils.createRipple(palette, 0.25f, 0.5f,
                                     ContextCompat.getColor(DribbbleShot.this, R.color.mid_grey),
                                     true));
                             // slightly more opaque ripple on the pinned image to compensate
@@ -543,13 +552,14 @@ public class DribbbleShot extends Activity {
                     });
 
             // TODO should keep the background if the image contains transparency?!
-            imageView.setBackground(null);
+            ViewUtils.setBackground(imageView, null);
             return false;
         }
 
         @Override
-        public boolean onException(Exception e, String model, Target<GlideDrawable> target,
-                                   boolean isFirstResource) {
+        public boolean onException(
+                Exception e, String model, Target<GlideDrawable> target,
+                boolean isFirstResource) {
             return false;
         }
     };
@@ -595,51 +605,54 @@ public class DribbbleShot extends Activity {
                 final Intent login = new Intent(DribbbleShot.this, DribbbleLogin.class);
                 login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR,
                         ContextCompat.getColor(DribbbleShot.this, R.color.dribbble));
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation
                         (DribbbleShot.this, fab, getString(R.string.transition_dribbble_login));
-                startActivityForResult(login, RC_LOGIN_LIKE, options.toBundle());
+                ActivityCompat.startActivityForResult(DribbbleShot.this, login, RC_LOGIN_LIKE, options.toBundle());
             }
         }
     };
 
-    private SharedElementCallback fabLoginSharedElementCallback = new SharedElementCallback() {
-        @Override
-        public Parcelable onCaptureSharedElementSnapshot(View sharedElement,
-                                                         Matrix viewToGlobalMatrix,
-                                                         RectF screenBounds) {
-            // store a snapshot of the fab to fade out when morphing to the login dialog
-            int bitmapWidth = Math.round(screenBounds.width());
-            int bitmapHeight = Math.round(screenBounds.height());
-            Bitmap bitmap = null;
-            if (bitmapWidth > 0 && bitmapHeight > 0) {
-                bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
-                sharedElement.draw(new Canvas(bitmap));
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private SharedElementCallback fabLoginSharedElementCallback() {
+        return new SharedElementCallback() {
+            @Override
+            public Parcelable onCaptureSharedElementSnapshot(View sharedElement,
+                    Matrix viewToGlobalMatrix,
+                    RectF screenBounds) {
+                // store a snapshot of the fab to fade out when morphing to the login dialog
+                int bitmapWidth = Math.round(screenBounds.width());
+                int bitmapHeight = Math.round(screenBounds.height());
+                Bitmap bitmap = null;
+                if (bitmapWidth > 0 && bitmapHeight > 0) {
+                    bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
+                    sharedElement.draw(new Canvas(bitmap));
+                }
+                return bitmap;
             }
-            return bitmap;
-        }
-    };
+        };
+    }
 
-    private Transition.TransitionListener shotReturnHomeListener = new AnimUtils
-            .TransitionListenerAdapter() {
-        @Override
-        public void onTransitionStart(Transition transition) {
-            super.onTransitionStart(transition);
-            // hide the fab as for some reason it jumps position??  TODO work out why
-            fab.setVisibility(View.INVISIBLE);
-            // fade out the "toolbar" & list as we don't want them to be visible during return
-            // animation
-            back.animate()
-                    .alpha(0f)
-                    .setDuration(100)
-                    .setInterpolator(getLinearOutSlowInInterpolator(DribbbleShot.this));
-            imageView.setElevation(1f);
-            back.setElevation(0f);
-            commentsList.animate()
-                    .alpha(0f)
-                    .setDuration(50)
-                    .setInterpolator(getLinearOutSlowInInterpolator(DribbbleShot.this));
-        }
-    };
+        private Transition.TransitionListener shotReturnHomeListener = new AnimUtils
+                .TransitionListenerAdapter() {
+            @Override
+            public void onTransitionStart(Transition transition) {
+                super.onTransitionStart(transition);
+                // hide the fab as for some reason it jumps position??  TODO work out why
+                fab.setVisibility(View.INVISIBLE);
+                // fade out the "toolbar" & list as we don't want them to be visible during return
+                // animation
+                back.animate()
+                        .alpha(0f)
+                        .setDuration(100)
+                        .setInterpolator(getLinearOutSlowInInterpolator());
+                ViewCompat.setElevation(imageView, 1f);
+                ViewCompat.setElevation(back, 0f);
+                commentsList.animate()
+                        .alpha(0f)
+                        .setDuration(50)
+                        .setInterpolator(getLinearOutSlowInInterpolator());
+            }
+        };
 
     private void loadComments() {
         commentsList.setAdapter(getLoadingCommentsAdapter());
@@ -653,7 +666,7 @@ public class DribbbleShot extends Activity {
                     commentsAdapter = new DribbbleCommentsAdapter(DribbbleShot.this, R.layout
                             .dribbble_comment, comments);
                     commentsList.setAdapter(commentsAdapter);
-                    commentsList.setDivider(getDrawable(R.drawable.list_divider));
+                    commentsList.setDivider(ContextCompat.getDrawable(DribbbleShot.this, R.drawable.list_divider));
                     commentsList.setDividerHeight(getResources().getDimensionPixelSize(R.dimen
                             .divider_height));
                 }
@@ -670,16 +683,16 @@ public class DribbbleShot extends Activity {
             Animator expandImage = ObjectAnimator.ofFloat(imageView, ParallaxScrimageView.OFFSET,
                     0f);
             expandImage.setDuration(80);
-            expandImage.setInterpolator(getFastOutSlowInInterpolator(this));
+            expandImage.setInterpolator(getFastOutSlowInInterpolator());
             expandImage.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    finishAfterTransition();
+                    ActivityCompat.finishAfterTransition(DribbbleShot.this);
                 }
             });
             expandImage.start();
         } else {
-            finishAfterTransition();
+            ActivityCompat.finishAfterTransition(this);
         }
     }
 
@@ -703,7 +716,7 @@ public class DribbbleShot extends Activity {
         fab.setOffset(fabOffset);
 
         // calculate min position i.e. pinned to the collapsed image when scrolled
-        fab.setMinOffset(imageView.getMinimumHeight() - (fab.getHeight() / 2));
+        fab.setMinOffset(ViewCompat.getMinimumHeight(imageView) - (fab.getHeight() / 2));
     }
 
     /**
@@ -712,7 +725,7 @@ public class DribbbleShot extends Activity {
      * plays nicely with #calculateFabPosition
      */
     private void enterAnimation(boolean animateFabManually) {
-        Interpolator interp = getFastOutSlowInInterpolator(this);
+        Interpolator interp = getFastOutSlowInInterpolator();
         int offset = title.getHeight();
         viewEnterAnimation(title, offset, interp);
         if (description.getVisibility() == View.VISIBLE) {
@@ -749,7 +762,7 @@ public class DribbbleShot extends Activity {
                     PropertyValuesHolder.ofFloat(View.SCALE_Y, 0f, 1f));
             showFab.setStartDelay(300L);
             showFab.setDuration(300L);
-            showFab.setInterpolator(getLinearOutSlowInInterpolator(this));
+            showFab.setInterpolator(getLinearOutSlowInInterpolator());
             showFab.start();
         }
     }
@@ -837,10 +850,10 @@ public class DribbbleShot extends Activity {
             Intent login = new Intent(DribbbleShot.this, DribbbleLogin.class);
             login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR, ContextCompat.getColor
                     (this, R.color.background_light));
-            ActivityOptions options =
-                    ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this, postComment,
+            ActivityOptionsCompat options =
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(DribbbleShot.this, postComment,
                             getString(R.string.transition_dribbble_login));
-            startActivityForResult(login, RC_LOGIN_COMMENT, options.toBundle());
+            ActivityCompat.startActivityForResult(this, login, RC_LOGIN_COMMENT, options.toBundle());
         }
     }
 
@@ -872,8 +885,7 @@ public class DribbbleShot extends Activity {
 
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                return DribbbleShot.this.getLayoutInflater().inflate(R.layout.loading, parent,
-                        false);
+                return DribbbleShot.this.getLayoutInflater().inflate(R.layout.loading, parent, false);
             }
         };
     }
@@ -881,15 +893,23 @@ public class DribbbleShot extends Activity {
     protected class DribbbleCommentsAdapter extends ArrayAdapter<Comment> {
 
         private final LayoutInflater inflater;
-        private final Transition change;
+        private Object change;
         private int expandedCommentPosition = ListView.INVALID_POSITION;
 
         public DribbbleCommentsAdapter(Context context, int resource, List<Comment> comments) {
             super(context, resource, comments);
             inflater = LayoutInflater.from(context);
-            change = new AutoTransition();
-            change.setDuration(200L);
-            change.setInterpolator(getFastOutSlowInInterpolator(context));
+        }
+
+        @TargetApi(Build.VERSION_CODES.KITKAT)
+        private Transition getChange() {
+            if (change == null) {
+                Transition transition = new AutoTransition();
+                transition.setDuration(200L);
+                transition.setInterpolator(getFastOutLinearInInterpolator());
+                change = transition;
+            }
+            return (Transition) change;
         }
 
         @Override
@@ -934,13 +954,13 @@ public class DribbbleShot extends Activity {
                 public void onClick(View v) {
                     Intent player = new Intent(DribbbleShot.this, PlayerActivity.class);
                     player.putExtra(PlayerActivity.EXTRA_PLAYER, comment.user);
-                    ActivityOptions options =
-                            ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this,
+                    ActivityOptionsCompat options =
+                            ActivityOptionsCompat.makeSceneTransitionAnimation(DribbbleShot.this,
                                     Pair.create(view,
                                             getString(R.string.transition_player_background)),
                                     Pair.create((View) avatar,
                                             getString(R.string.transition_player_avatar)));
-                    startActivity(player, options.toBundle());
+                    ActivityCompat.startActivity(DribbbleShot.this, player, options.toBundle());
                 }
             });
             author.setText(comment.user.name);
@@ -956,7 +976,7 @@ public class DribbbleShot extends Activity {
                 @Override
                 public void onClick(View v) {
                     final boolean isExpanded = reply.getVisibility() == View.VISIBLE;
-                    TransitionManager.beginDelayedTransition(commentsList, change);
+                    TransitionManagerCompat.beginDelayedTransition(commentsList, getChange());
                     view.setActivated(!isExpanded);
                     if (!isExpanded) { // do expand
                         expandedCommentPosition = position;
@@ -964,7 +984,7 @@ public class DribbbleShot extends Activity {
                         // work around issue where avatar of selected comment not shown during
                         // shared element transition (returning from player screen)
                         avatar.setOutlineProvider(null);
-                        avatar.setElevation(cardElevation);
+                        ViewCompat.setElevation(avatar, cardElevation);
 
                         reply.setVisibility(View.VISIBLE);
                         likeHeart.setVisibility(View.VISIBLE);
@@ -994,8 +1014,8 @@ public class DribbbleShot extends Activity {
                         view.requestFocus();
                     } else { // do collapse
                         expandedCommentPosition = ListView.INVALID_POSITION;
-                        avatar.setOutlineProvider(ViewUtils.CIRCULAR_OUTLINE);
-                        avatar.setElevation(0f);
+                        avatar.setOutlineProvider(CircularImageView.CIRCULAR_OUTLINE);
+                        ViewCompat.setElevation(avatar, 0f);
                         reply.setVisibility(View.GONE);
                         likeHeart.setVisibility(View.GONE);
                         likesCount.setVisibility(View.GONE);
