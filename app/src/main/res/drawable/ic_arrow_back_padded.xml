@@ -15,7 +15,14 @@
   limitations under the License.
   -->
 
-<inset
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:insetLeft="12dp"
-    android:drawable="@drawable/ic_arrow_back" />
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="36dp"
+        android:height="24dp"
+        android:viewportWidth="36"
+        android:viewportHeight="24">
+
+    <path
+        android:pathData="M32,11 L19.83,11 L25.42,5.41 L24,4 L16,12 L24,20 L25.41,18.59 L19.83,13 L32,13 L32,11 L32,11 Z"
+        android:fillColor="@android:color/white"/>
+
+</vector>

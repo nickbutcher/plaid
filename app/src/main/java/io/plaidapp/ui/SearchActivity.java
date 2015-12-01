@@ -193,7 +193,7 @@ public class SearchActivity extends Activity {
                 searchBack.setImageDrawable(ContextCompat.getDrawable(SearchActivity.this,
                         R.drawable.ic_arrow_back_padded));
             }
-        }, 600);
+        }, 600L);
 
         // fade in the other search chrome
         searchBackground.animate()
