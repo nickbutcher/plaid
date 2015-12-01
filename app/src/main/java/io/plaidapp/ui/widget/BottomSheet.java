@@ -249,7 +249,7 @@ public class BottomSheet extends FrameLayout {
                 initialOffset,
                 targetOffset);
         settleAnim.setDuration(duration);
-        settleAnim.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(getContext()));
+        settleAnim.setInterpolator(AnimUtils.getFastOutSlowInInterpolator());
         settleAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {

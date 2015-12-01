@@ -43,7 +43,7 @@
             android:paddingEnd="@dimen/padding_normal"
             android:paddingBottom="@dimen/spacing_micro"
             android:gravity="start|center_vertical"
-            android:minHeight="?android:actionBarSize"
+            android:minHeight="?actionBarSize"
             android:text="@string/new_story_title"
             android:background="@color/background_light"
             style="@style/Widget.Plaid.DialogTitle" />
@@ -140,7 +140,7 @@
                 <Button
                     android:id="@+id/new_story_post"
                     android:layout_width="match_parent"
-                    android:layout_height="?android:actionBarSize"
+                    android:layout_height="?actionBarSize"
                     android:layout_marginTop="@dimen/spacing_normal"
                     android:enabled="false"
                     android:background="@drawable/post_story"

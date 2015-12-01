@@ -17,20 +17,23 @@
 package io.plaidapp.ui;
 
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.OnApplyWindowInsetsListener;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.WindowInsetsCompat;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.transition.TransitionManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowInsets;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -57,6 +60,7 @@ import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.util.DribbbleUtils;
 import io.plaidapp.util.ViewUtils;
+import io.plaidapp.util.compat.TransitionManagerCompat;
 import io.plaidapp.util.glide.CircleTransform;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -124,17 +128,17 @@ public class PlayerActivity extends Activity {
         draggableFrame.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-        draggableFrame.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+        ViewCompat.setOnApplyWindowInsetsListener(draggableFrame, new OnApplyWindowInsetsListener() {
             @Override
-            public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+            public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
                 ((ViewGroup.MarginLayoutParams) draggableFrame.getLayoutParams()).rightMargin
                         += insets.getSystemWindowInsetRight(); // landscape
                 ((ViewGroup.MarginLayoutParams) avatar.getLayoutParams()).topMargin
-                    += insets.getSystemWindowInsetTop();
+                        += insets.getSystemWindowInsetTop();
                 ViewUtils.setPaddingTop(playerDescription, insets.getSystemWindowInsetTop());
                 ViewUtils.setPaddingBottom(shots, insets.getSystemWindowInsetBottom());
                 // clear this listener so insets aren't re-applied
-                draggableFrame.setOnApplyWindowInsetsListener(null);
+                ViewCompat.setOnApplyWindowInsetsListener(draggableFrame, null);
                 return insets;
             }
         });
@@ -177,8 +181,8 @@ public class PlayerActivity extends Activity {
         shotCount.setText(res.getQuantityString(R.plurals.shots, player.shots_count,
                 nf.format(player.shots_count)));
         if (player.shots_count == 0) {
-            shotCount.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                    null, getDrawable(R.drawable.avd_no_shots), null, null);
+            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(shotCount,
+                    null, ContextCompat.getDrawable(this, R.drawable.avd_no_shots), null, null);
         }
         setFollowerCount(player.followers_count);
         likesCount.setText(res.getQuantityString(R.plurals.likes, player.likes_count,
@@ -242,7 +246,7 @@ public class PlayerActivity extends Activity {
         // check if following
         if (dataManager.getDribbblePrefs().isLoggedIn()) {
             if (player.id == dataManager.getDribbblePrefs().getUserId()) {
-                TransitionManager.beginDelayedTransition(playerDescription);
+                TransitionManagerCompat.beginDelayedTransition(playerDescription);
                 follow.setVisibility(View.GONE);
                 ViewUtils.setPaddingTop(shots, playerDescription.getHeight() - follow.getHeight()
                         - ((ViewGroup.MarginLayoutParams) follow.getLayoutParams()).bottomMargin);
@@ -253,7 +257,7 @@ public class PlayerActivity extends Activity {
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         following = response.isSuccessful();
                         if (!following) return;
-                        TransitionManager.beginDelayedTransition(playerDescription);
+                        TransitionManagerCompat.beginDelayedTransition(playerDescription);
                         follow.setText(R.string.following);
                         follow.setActivated(true);
                     }
@@ -301,7 +305,7 @@ public class PlayerActivity extends Activity {
         followersCount.setText(getResources().getQuantityString(R.plurals.follower_count,
                 followerCount, NumberFormat.getInstance().format(followerCount)));
         if (followerCount == 0) {
-            followersCount.setBackground(null);
+            ViewUtils.setBackground(followersCount, null);
         }
     }
 
@@ -316,7 +320,7 @@ public class PlayerActivity extends Activity {
                     @Override public void onFailure(Call<Void> call, Throwable t) { }
                 });
                 following = false;
-                TransitionManager.beginDelayedTransition(playerDescription);
+                TransitionManagerCompat.beginDelayedTransition(playerDescription);
                 follow.setText(R.string.follow);
                 follow.setActivated(false);
                 setFollowerCount(followerCount - 1);
@@ -328,7 +332,7 @@ public class PlayerActivity extends Activity {
                     @Override public void onFailure(Call<Void> call, Throwable t) { }
                 });
                 following = true;
-                TransitionManager.beginDelayedTransition(playerDescription);
+                TransitionManagerCompat.beginDelayedTransition(playerDescription);
                 follow.setText(R.string.following);
                 follow.setActivated(true);
                 setFollowerCount(followerCount + 1);
@@ -339,15 +343,15 @@ public class PlayerActivity extends Activity {
                     ContextCompat.getColor(this, R.color.dribbble));
             login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_CORNER_RADIUS,
                     getResources().getDimensionPixelSize(R.dimen.dialog_corners));
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation
                     (this, follow, getString(R.string.transition_dribbble_login));
-            startActivity(login, options.toBundle());
+            ActivityCompat.startActivity(this, login, options.toBundle());
         }
     }
 
     @OnClick({R.id.shot_count, R.id.followers_count, R.id.likes_count })
     /* package */ void playerActionClick(TextView view) {
-        ((AnimatedVectorDrawable) view.getCompoundDrawables()[1]).start();
+        ((AnimatedVectorDrawableCompat) view.getCompoundDrawables()[1]).start();
         switch (view.getId()) {
             case R.id.followers_count:
                 PlayerSheet.start(PlayerActivity.this, player);

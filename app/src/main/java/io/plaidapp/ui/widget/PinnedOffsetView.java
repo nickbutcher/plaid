@@ -16,7 +16,9 @@
 
 package io.plaidapp.ui.widget;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
@@ -42,6 +44,7 @@ public class PinnedOffsetView extends View {
         super(context, attrs, defStyleAttr);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public PinnedOffsetView(Context context, AttributeSet attrs, int defStyleAttr, int
             defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -59,7 +62,7 @@ public class PinnedOffsetView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        minOffset = -(h - getMinimumHeight());
+        minOffset = -(h - ViewCompat.getMinimumHeight(this));
     }
 
     @Override

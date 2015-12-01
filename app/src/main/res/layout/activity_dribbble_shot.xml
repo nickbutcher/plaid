@@ -61,8 +61,8 @@
                  margins push out parent for the borderless ripple -->
             <ImageButton
                 android:id="@+id/back"
-                android:layout_width="?android:actionBarSize"
-                android:layout_height="?android:actionBarSize"
+                android:layout_width="?actionBarSize"
+                android:layout_height="?actionBarSize"
                 android:layout_marginEnd="@dimen/padding_normal"
                 android:layout_marginBottom="@dimen/padding_normal"
                 android:src="@drawable/ic_arrow_back"

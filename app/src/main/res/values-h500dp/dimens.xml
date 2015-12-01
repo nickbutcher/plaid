@@ -18,7 +18,7 @@
 <resources>
 
     <!-- standard metrics -->
-    <dimen name="drag_dismiss_distance">168dp</dimen> <!-- 3 * ?android:actionBarSize -->
+    <dimen name="drag_dismiss_distance">168dp</dimen> <!-- 3 * ?actionBarSize -->
 
     <!-- about screen -->
     <dimen name="about_header_height">400dp</dimen>

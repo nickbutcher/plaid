@@ -32,7 +32,7 @@
     <dimen name="padding_room_for_fab">88dp</dimen> <!-- padding_normal + fab_size + padding_normal -->
     <dimen name="fab_plus_single_padding">72dp</dimen> <!-- fab_size + padding_normal -->
     <dimen name="half_fab_plus_single_padding">44dp</dimen> <!-- (fab_size / 2) + padding_normal -->
-    <dimen name="drag_dismiss_distance">112dp</dimen> <!-- 2 * ?android:actionBarSize -->
+    <dimen name="drag_dismiss_distance">112dp</dimen> <!-- 2 * ?actionBarSize -->
     <!-- text input layout seems to add 4dp of extra padding. The following account for this -->
     <dimen name="padding_normal_til">12dp</dimen>
     <dimen name="til_margin_fix">-4dp</dimen>
@@ -64,7 +64,7 @@
     <dimen name="designer_news_story_comments_vertical_padding">0dp</dimen>
 
     <!-- dribbble shot -->
-    <dimen name="shot_collapsed_app_bar_height">168dp</dimen> <!-- 3 * ?android:actionBarSize -->
+    <dimen name="shot_collapsed_app_bar_height">168dp</dimen> <!-- 3 * ?actionBarSize -->
     <!-- avatar should be a 40dp asset in a 48dp touch target & optically aligned with standard padding -->
     <dimen name="avatar_size">40dp</dimen>
     <dimen name="avatar_bounds">48dp</dimen>

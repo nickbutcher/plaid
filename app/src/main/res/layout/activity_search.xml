@@ -17,6 +17,7 @@
 
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:plaid="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -30,7 +31,7 @@
     <FrameLayout
         android:id="@+id/search_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?android:actionBarSize"
+        android:layout_height="?actionBarSize"
         android:outlineProvider="bounds"
         android:elevation="@dimen/z_app_bar"
         android:theme="@style/SearchViewTheme">
@@ -42,13 +43,19 @@
             android:alpha="0"
             android:background="@color/background_dark" />
 
-        <SearchView
+        <android.support.v7.widget.SearchView
             android:id="@+id/search_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/padding_normal"
+            android:layout_marginStart="40dp"
             android:alpha="0"
-            android:iconifiedByDefault="false" />
+            android:background="@null"
+            android:layout_gravity="center_vertical"
+            android:inputType="textCapWords"
+            android:imeOptions="actionSearch|flagNoExtractUi|flagNoFullscreen"
+            plaid:queryHint="@string/search_hint"
+            />
 
         <!-- wrapping layout needed for the touch ripple -->
         <FrameLayout
@@ -63,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="start|center_vertical"
-                android:background="?android:selectableItemBackgroundBorderless"
+                android:background="?selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_search_24dp" />
 
         </FrameLayout>
@@ -74,7 +81,7 @@
         android:id="@+id/results_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="?android:actionBarSize"
+        android:layout_marginTop="?actionBarSize"
         android:background="@color/background_dark"
         android:elevation="@dimen/z_app_bar">
 
@@ -86,7 +93,7 @@
             android:paddingBottom="@dimen/spacing_huge"
             android:visibility="gone"
             android:indeterminate="true"
-            android:indeterminateTint="?android:colorAccent"
+            android:indeterminateTint="?colorAccent"
             android:indeterminateTintMode="src_in" />
 
         <ViewStub
@@ -154,7 +161,7 @@
                     android:paddingBottom="@dimen/padding_normal"
                     android:checked="true"
                     android:text="@string/confirm_save_dribbble_search"
-                    android:textAppearance="@android:style/TextAppearance.Material.Body2"  />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"  />
 
                 <CheckBox
                     android:id="@+id/save_designer_news"
@@ -165,7 +172,7 @@
                     android:paddingBottom="@dimen/padding_normal"
                     android:checked="true"
                     android:text="@string/confirm_save_designer_news_search"
-                    android:textAppearance="@android:style/TextAppearance.Material.Body2" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
                 <Button
                     android:id="@+id/save_confirmed"
@@ -175,7 +182,7 @@
                     android:drawablePadding="@dimen/padding_normal"
                     android:padding="@dimen/padding_normal"
                     android:text="@string/confirm_save_search"
-                    style="?android:borderlessButtonStyle" />
+                    style="?borderlessButtonStyle" />
 
             </LinearLayout>
 

@@ -23,9 +23,9 @@
     android:padding="@dimen/padding_normal"
     android:orientation="horizontal"
     android:baselineAligned="false"
-    android:minHeight="?android:listPreferredItemHeightSmall"
+    android:minHeight="?listPreferredItemHeightSmall"
     android:theme="@style/PlaidDarkOverlay"
-    android:foreground="?android:selectableItemBackground">
+    android:foreground="?selectableItemBackground">
 
     <ImageView
         android:id="@+id/filter_icon"

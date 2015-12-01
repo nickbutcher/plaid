@@ -21,7 +21,7 @@
 <layer-list
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:opacity="opaque">
-    <item android:height="?android:actionBarSize">
+    <item android:height="?actionBarSize">
         <color android:color="@color/designer_news" />
     </item>
 </layer-list>

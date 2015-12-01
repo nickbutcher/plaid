@@ -44,6 +44,8 @@ android {
                 "DESIGNER_NEWS_CLIENT_SECRET", "\"${designer_news_client_secret}\""
         buildConfigField "String",
                 "PROCUCT_HUNT_DEVELOPER_TOKEN", "\"${product_hunt_developer_token}\""
+
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {

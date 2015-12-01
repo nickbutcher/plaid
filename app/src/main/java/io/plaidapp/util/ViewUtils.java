@@ -16,12 +16,12 @@
 
 package io.plaidapp.util;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Outline;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -30,15 +30,19 @@ import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.graphics.Palette;
 import android.text.TextPaint;
+import android.transition.ChangeBounds;
 import android.util.DisplayMetrics;
 import android.util.Property;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import io.plaidapp.util.compat.ImageViewCompat;
 
 /**
  * Utility methods for working with Views.
@@ -72,6 +76,7 @@ public class ViewUtils {
         return(!canMove || dm.widthPixels < dm.heightPixels);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static RippleDrawable createRipple(@ColorInt int color,
                                               @FloatRange(from = 0f, to = 1f) float alpha,
                                               boolean bounded) {
@@ -80,6 +85,7 @@ public class ViewUtils {
                 bounded ? new ColorDrawable(Color.WHITE) : null);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static RippleDrawable createRipple(@NonNull Palette palette,
                                               @FloatRange(from = 0f, to = 1f) float darkAlpha,
                                               @FloatRange(from = 0f, to = 1f) float lightAlpha,
@@ -179,22 +185,12 @@ public class ViewUtils {
 
         @Override
         public void setValue(ImageView imageView, int value) {
-            imageView.setImageAlpha(value);
+            ImageViewCompat.setImageAlpha(imageView, value);
         }
 
         @Override
         public Integer get(ImageView imageView) {
-            return imageView.getImageAlpha();
-        }
-    };
-
-    public static final ViewOutlineProvider CIRCULAR_OUTLINE = new ViewOutlineProvider() {
-        @Override
-        public void getOutline(View view, Outline outline) {
-            outline.setOval(view.getPaddingLeft(),
-                    view.getPaddingTop(),
-                    view.getWidth() - view.getPaddingRight(),
-                    view.getHeight() - view.getPaddingBottom());
+            return ImageViewCompat.getImageAlpha(imageView);
         }
     };
 
@@ -220,31 +216,44 @@ public class ViewUtils {
     }
 
     public static void setPaddingStart(View view, int paddingStart) {
-        view.setPaddingRelative(paddingStart,
+        ViewCompat.setPaddingRelative(view,
+                paddingStart,
                 view.getPaddingTop(),
-                view.getPaddingEnd(),
+                ViewCompat.getPaddingEnd(view),
                 view.getPaddingBottom());
     }
 
     public static void setPaddingTop(View view, int paddingTop) {
-        view.setPaddingRelative(view.getPaddingStart(),
+        ViewCompat.setPaddingRelative(view,
+                ViewCompat.getPaddingStart(view),
                 paddingTop,
-                view.getPaddingEnd(),
+                ViewCompat.getPaddingEnd(view),
                 view.getPaddingBottom());
     }
 
     public static void setPaddingEnd(View view, int paddingEnd) {
-        view.setPaddingRelative(view.getPaddingStart(),
+        ViewCompat.setPaddingRelative(view,
+                ViewCompat.getPaddingStart(view),
                 view.getPaddingTop(),
                 paddingEnd,
                 view.getPaddingBottom());
     }
 
     public static void setPaddingBottom(View view, int paddingBottom) {
-        view.setPaddingRelative(view.getPaddingStart(),
+        ViewCompat.setPaddingRelative(view,
+                ViewCompat.getPaddingStart(view),
                 view.getPaddingTop(),
-                view.getPaddingEnd(),
+                ViewCompat.getPaddingEnd(view),
                 paddingBottom);
+    }
+
+    public static void setBackground(@NonNull View view, @Nullable Drawable drawable) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            view.setBackground(drawable);
+        } else {
+            //noinspection deprecation
+            view.setBackgroundDrawable(drawable);
+        }
     }
 
 }

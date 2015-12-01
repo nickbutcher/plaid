@@ -83,12 +83,17 @@ public class CollapsingTitleLayout extends FrameLayout {
     }
 
     public CollapsingTitleLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
+        super(context, attrs, defStyleAttr);
+        init(context, attrs);
     }
 
-    public CollapsingTitleLayout(Context context, AttributeSet attrs, int defStyleAttr,
-                                 int defStyleRes) {
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public CollapsingTitleLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        init(context, attrs);
+    }
+
+    private void init(Context context, AttributeSet attrs) {
         setWillNotDraw(false);
         paint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 
@@ -217,9 +222,9 @@ public class CollapsingTitleLayout extends FrameLayout {
     }
 
     private int getDesiredHeight() {
-        if (layout == null) return getMinimumHeight();
+        if (layout == null) return ViewCompat.getMinimumHeight(this);
         return Math.max(
-                (int) (titleInsetTop + layout.getHeight() + titleInsetBottom), getMinimumHeight());
+                (int) (titleInsetTop + layout.getHeight() + titleInsetBottom), ViewCompat.getMinimumHeight(this));
     }
 
     private void recalculate(int width) {
@@ -258,7 +263,7 @@ public class CollapsingTitleLayout extends FrameLayout {
             collapsingText.setExpandedBounds(titleInsetStart,
                     (int) titleInsetTop,
                     width - titleInsetEnd,
-                    getMinimumHeight() - titleInsetBottom);
+                    ViewCompat.getMinimumHeight(this) - titleInsetBottom);
             collapsingText.setCollapsedTextColor(paint.getColor());
             collapsingText.setExpandedTextColor(paint.getColor());
             collapsingText.setCollapsedTextSize(collapsedTextSize);
@@ -277,7 +282,7 @@ public class CollapsingTitleLayout extends FrameLayout {
             fm = paint.getFontMetricsInt();
             fontHeight = Math.abs(fm.ascent - fm.descent) + fm.leading;
             textTop = getHeight() - titleInsetBottom - fontHeight;
-            scrollRange = getMinimumHeight() - (int) collapsedHeight;
+            scrollRange = ViewCompat.getMinimumHeight(this) - (int) collapsedHeight;
         } else { // multi-line mode
             // bottom align the text
             textTop = getDesiredHeight() - titleInsetBottom - layout.getHeight();

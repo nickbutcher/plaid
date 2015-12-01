@@ -21,7 +21,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="?android:listPreferredItemHeight"
+    android:minHeight="?listPreferredItemHeight"
     android:paddingStart="@dimen/designer_news_story_comment_actions_padding_start"
     android:paddingEnd="@dimen/designer_news_story_comment_actions_padding_end"
     android:paddingBottom="@dimen/spacing_normal"
@@ -37,7 +37,7 @@
         android:drawableTop="@drawable/ic_upvote"
         android:textAppearance="@style/TextAppearance.CommentAuthor"
         tools:text="33 likes"
-        style="?android:borderlessButtonStyle" />
+        style="?borderlessButtonStyle" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/comment_reply_label"
@@ -67,7 +67,7 @@
         android:layout_gravity="end"
         android:padding="@dimen/spacing_normal"
         android:src="@drawable/ic_add_comment"
-        android:background="?android:selectableItemBackgroundBorderless"
+        android:background="?selectableItemBackgroundBorderless"
         android:visibility="invisible" />
 
 </FrameLayout>

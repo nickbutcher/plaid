@@ -21,7 +21,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
-import android.transition.TransitionManager;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -31,6 +30,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import java.lang.ref.WeakReference;
 
 import in.uncod.android.bypass.style.ImageLoadingSpan;
+import io.plaidapp.util.compat.TransitionManagerCompat;
 
 /**
  * A target that puts a downloaded image into an ImageSpan in the provided TextView.  It uses a
@@ -68,7 +68,7 @@ public class ImageSpanTarget extends SimpleTarget<Bitmap> {
             }
             ssb.removeSpan(loadingSpan);
             // animate the change
-            TransitionManager.beginDelayedTransition((ViewGroup) tv.getParent());
+            TransitionManagerCompat.beginDelayedTransition((ViewGroup) tv.getParent());
             tv.setText(ssb);
         }
     }

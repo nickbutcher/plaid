@@ -18,11 +18,14 @@ package io.plaidapp.util;
 
 import android.animation.Animator;
 import android.animation.TimeInterpolator;
-import android.content.Context;
+import android.annotation.TargetApi;
+import android.os.Build;
+import android.support.v4.util.ArrayMap;
+import android.support.v4.view.animation.FastOutLinearInInterpolator;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.transition.Transition;
-import android.util.ArrayMap;
 import android.util.Property;
-import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 
 import java.util.ArrayList;
@@ -38,26 +41,23 @@ public class AnimUtils {
     private static Interpolator fastOutLinearIn;
     private static Interpolator linearOutSlowIn;
 
-    public static Interpolator getFastOutSlowInInterpolator(Context context) {
+    public static Interpolator getFastOutSlowInInterpolator() {
         if (fastOutSlowIn == null) {
-            fastOutSlowIn = AnimationUtils.loadInterpolator(context,
-                    android.R.interpolator.fast_out_slow_in);
+            fastOutSlowIn = new FastOutSlowInInterpolator();
         }
         return fastOutSlowIn;
     }
 
-    public static Interpolator getFastOutLinearInInterpolator(Context context) {
+    public static Interpolator getFastOutLinearInInterpolator() {
         if (fastOutLinearIn == null) {
-            fastOutLinearIn = AnimationUtils.loadInterpolator(context,
-                    android.R.interpolator.fast_out_linear_in);
+            fastOutLinearIn = new FastOutLinearInInterpolator();
         }
         return fastOutLinearIn;
     }
 
-    public static Interpolator getLinearOutSlowInInterpolator(Context context) {
+    public static Interpolator getLinearOutSlowInInterpolator() {
         if (linearOutSlowIn == null) {
-            linearOutSlowIn = AnimationUtils.loadInterpolator(context,
-                    android.R.interpolator.linear_out_slow_in);
+            linearOutSlowIn = new LinearOutSlowInInterpolator();
         }
         return linearOutSlowIn;
     }
@@ -165,6 +165,7 @@ public class AnimUtils {
             return mAnimator.getDuration();
         }
 
+        @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
         @Override
         public TimeInterpolator getInterpolator() {
             return mAnimator.getInterpolator();
@@ -190,6 +191,7 @@ public class AnimUtils {
             mAnimator.setStartDelay(delayMS);
         }
 
+        @TargetApi(Build.VERSION_CODES.KITKAT)
         @Override
         public boolean isPaused() {
             return mAnimator.isPaused();
@@ -288,6 +290,7 @@ public class AnimUtils {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     public static class TransitionListenerAdapter implements Transition.TransitionListener {
 
         @Override

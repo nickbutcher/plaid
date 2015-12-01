@@ -18,6 +18,7 @@ package io.plaidapp.util.glide;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.support.v4.app.ActivityManagerCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
@@ -34,7 +35,7 @@ public class GlideConfiguration implements GlideModule {
         // Prefer higher quality images unless we're on a low RAM device
         ActivityManager activityManager =
                 (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        builder.setDecodeFormat(activityManager.isLowRamDevice() ?
+        builder.setDecodeFormat(ActivityManagerCompat.isLowRamDevice(activityManager) ?
                         DecodeFormat.PREFER_RGB_565 : DecodeFormat.PREFER_ARGB_8888);
     }
 
