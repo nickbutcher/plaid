@@ -27,6 +27,8 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,6 +39,7 @@ import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -47,6 +50,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
@@ -150,6 +154,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+    @Override
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+        if (holder instanceof DribbbleShotHolder) {
+            // reset the badge & ripple which are dynamically determined
+            DribbbleShotHolder shotHolder = (DribbbleShotHolder) holder;
+            shotHolder.image.showBadge(false);
+            shotHolder.image.setForeground(
+                    ContextCompat.getDrawable(host, R.drawable.mid_grey_ripple));
+        }
+    }
+
     @NonNull
     private DesignerNewsStoryHolder createDesignerNewsStoryHolder(ViewGroup parent) {
         final DesignerNewsStoryHolder holder = new DesignerNewsStoryHolder(layoutInflater.inflate(
@@ -207,7 +222,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private DribbbleShotHolder createDribbbleShotHolder(ViewGroup parent) {
         final DribbbleShotHolder holder = new DribbbleShotHolder(
                 layoutInflater.inflate(R.layout.dribbble_shot_item, parent, false));
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 holder.itemView.setTransitionName(holder.itemView.getResources().getString(R
@@ -227,12 +242,45 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 host.startActivity(intent, options.toBundle());
             }
         });
+        // play animated GIFs whilst touched
+        holder.image.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // get the image and check if it's an animated GIF
+                final Drawable drawable = holder.image.getDrawable();
+                if (drawable == null) return false;
+                GifDrawable gif = null;
+                if (drawable instanceof GifDrawable) {
+                    gif = (GifDrawable) drawable;
+                } else if (drawable instanceof TransitionDrawable) {
+                    // we fade in images on load which uses a TransitionDrawable; check its layers
+                    TransitionDrawable fadingIn = (TransitionDrawable) drawable;
+                    for (int i = 0; i < fadingIn.getNumberOfLayers(); i++) {
+                        if (fadingIn.getDrawable(i) instanceof GifDrawable) {
+                            gif = (GifDrawable) fadingIn.getDrawable(i);
+                            break;
+                        }
+                    }
+                }
+                if (gif == null) return false;
+                // GIF found, start/stop it on press/lift
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        gif.start();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        gif.stop();
+                        break;
+                }
+                return false;
+            }
+        });
         return holder;
     }
 
     private void bindDribbbleShotHolder(final Shot shot,
                                         final DribbbleShotHolder holder) {
-        final BadgedFourThreeImageView iv = (BadgedFourThreeImageView) holder.itemView;
         final int[] imageSize = shot.images.bestSize();
         Glide.with(host)
                 .load(shot.images.best())
@@ -244,7 +292,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                                            isFromMemoryCache, boolean
                                                            isFirstResource) {
                         if (!shot.hasFadedIn) {
-                            iv.setHasTransientState(true);
+                            holder.image.setHasTransientState(true);
                             final ObservableColorMatrix cm = new ObservableColorMatrix();
                             ObjectAnimator saturation = ObjectAnimator.ofFloat(cm,
                                     ObservableColorMatrix.SATURATION, 0f, 1f);
@@ -255,9 +303,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                     // just animating the color matrix does not invalidate the
                                     // drawable so need this update listener.  Also have to create a
                                     // new CMCF as the matrix is immutable :(
-                                    if (iv.getDrawable() != null) {
-                                        iv.getDrawable().setColorFilter(new
-                                                ColorMatrixColorFilter(cm));
+                                    if (holder.image.getDrawable() != null) {
+                                        holder.image.getDrawable().setColorFilter(
+                                                new ColorMatrixColorFilter(cm));
                                     }
                                 }
                             });
@@ -267,7 +315,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             saturation.addListener(new AnimatorListenerAdapter() {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
-                                    iv.setHasTransientState(false);
+                                    holder.image.setHasTransientState(false);
                                 }
                             });
                             saturation.start();
@@ -287,7 +335,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .fitCenter()
                 .override(imageSize[0], imageSize[1])
-                .into(new DribbbleTarget(iv, false));
+                .into(new DribbbleTarget(holder.image, false));
     }
 
     @NonNull
@@ -536,8 +584,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     /* protected */ class DribbbleShotHolder extends RecyclerView.ViewHolder {
 
+        BadgedFourThreeImageView image;
+
         public DribbbleShotHolder(View itemView) {
             super(itemView);
+            image = (BadgedFourThreeImageView) itemView;
         }
 
     }
