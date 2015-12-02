@@ -19,8 +19,10 @@ package io.plaidapp.ui;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -29,6 +31,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -41,7 +44,6 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -61,6 +63,7 @@ import android.widget.Toolbar;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -68,15 +71,12 @@ import butterknife.Bind;
 import butterknife.BindInt;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.plaidapp.BuildConfig;
 import io.plaidapp.R;
 import io.plaidapp.data.DataManager;
 import io.plaidapp.data.PlaidItem;
 import io.plaidapp.data.Source;
-import io.plaidapp.data.api.ClientAuthInterceptor;
-import io.plaidapp.data.api.designernews.DesignerNewsService;
-import io.plaidapp.data.api.designernews.model.NewStoryRequest;
-import io.plaidapp.data.api.designernews.model.StoriesResponse;
+import io.plaidapp.data.api.designernews.PostStoryService;
+import io.plaidapp.data.api.designernews.model.Story;
 import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.data.prefs.DribbblePrefs;
@@ -86,10 +86,6 @@ import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.util.ViewUtils;
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 
 public class HomeActivity extends Activity {
@@ -277,6 +273,8 @@ public class HomeActivity extends Activity {
             Intent intent = new Intent(this, PostNewDesignerNewsStory.class);
             intent.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR,
                     ContextCompat.getColor(this, R.color.accent));
+            intent.putExtra(PostStoryService.EXTRA_BROADCAST_RESULT, true);
+            registerPostStoryResultListener();
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, fab,
                     getString(R.string.transition_new_designer_news_post));
             startActivityForResult(intent, RC_NEW_DESIGNER_NEWS_STORY, options.toBundle());
@@ -288,6 +286,35 @@ public class HomeActivity extends Activity {
                     getString(R.string.transition_designer_news_login));
             startActivityForResult(intent, RC_NEW_DESIGNER_NEWS_LOGIN, options.toBundle());
         }
+    }
+
+    BroadcastReceiver postStoryResultReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case PostStoryService.BROADCAST_ACTION_SUCCESS:
+                    Story newStory = intent.getParcelableExtra(PostStoryService.EXTRA_NEW_STORY);
+                    adapter.addAndResort(Arrays.asList(new Story[]{ newStory }));
+                    // todo prettier feedback!
+                    break;
+                case PostStoryService.BROADCAST_ACTION_FAILURE:
+                    // todo
+                    break;
+            }
+            unregisterPostStoryResultListener();
+        }
+    };
+
+    private void registerPostStoryResultListener() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(PostStoryService.BROADCAST_ACTION_SUCCESS);
+        intentFilter.addAction(PostStoryService.BROADCAST_ACTION_FAILURE);
+        LocalBroadcastManager.getInstance(this).
+                registerReceiver(postStoryResultReceiver, intentFilter);
+    }
+
+    private void unregisterPostStoryResultListener() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(postStoryResultReceiver);
     }
 
     private void checkEmptyState() {
@@ -515,47 +542,18 @@ public class HomeActivity extends Activity {
                 }
                 break;
             case RC_NEW_DESIGNER_NEWS_STORY:
-                if (resultCode == PostNewDesignerNewsStory.RESULT_DRAG_DISMISSED) {
-                    // need to reshow the FAB as there's no shared element transition
-                    showFab();
-                } else if (resultCode == PostNewDesignerNewsStory.RESULT_POST) {
-                    String title = data.getStringExtra(PostNewDesignerNewsStory.EXTRA_STORY_TITLE);
-                    String url = data.getStringExtra(PostNewDesignerNewsStory.EXTRA_STORY_URL);
-                    String comment = data.getStringExtra(
-                            PostNewDesignerNewsStory.EXTRA_STORY_COMMENT);
-                    if (!TextUtils.isEmpty(title)) {
-                        NewStoryRequest storyToPost = null;
-                        if (!TextUtils.isEmpty(url)) {
-                            storyToPost = NewStoryRequest.createWithUrl(title, url);
-                        } else if (!TextUtils.isEmpty(comment)) {
-                            storyToPost = NewStoryRequest.createWithComment(title, comment);
-                        }
-                        if (storyToPost != null) {
-                            // TODO: move this to a service in follow up CL?
-                            DesignerNewsService designerNewsApi = new RestAdapter.Builder()
-                                    .setEndpoint(DesignerNewsService.ENDPOINT)
-                                    .setRequestInterceptor(new ClientAuthInterceptor
-                                            (designerNewsPrefs.getAccessToken(),
-                                                    BuildConfig.DESIGNER_NEWS_CLIENT_ID))
-                                    .build()
-                                    .create(DesignerNewsService.class);
-                            designerNewsApi.postStory(storyToPost, new Callback<StoriesResponse>() {
-                                @Override
-                                public void success(StoriesResponse story, Response response) {
-                                    if (story != null
-                                            && story.stories != null
-                                            && story.stories.size() > 0) {
-                                        long id = story.stories.get(0).id;
-                                    }
-                                }
-
-                                @Override
-                                public void failure(RetrofitError error) {
-                                    Log.e("HomeActivity", "Failed posting story", error);
-                                }
-                            });
-                        }
-                    }
+                switch (resultCode) {
+                    case PostNewDesignerNewsStory.RESULT_DRAG_DISMISSED:
+                        // need to reshow the FAB as there's no shared element transition
+                        showFab();
+                        unregisterPostStoryResultListener();
+                        break;
+                    case PostNewDesignerNewsStory.RESULT_POSTING:
+                        // todo show progress
+                        break;
+                    default:
+                        unregisterPostStoryResultListener();
+                        break;
                 }
                 break;
             case RC_NEW_DESIGNER_NEWS_LOGIN:

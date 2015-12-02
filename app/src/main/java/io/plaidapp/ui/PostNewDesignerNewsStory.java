@@ -42,6 +42,7 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import butterknife.OnTextChanged;
 import io.plaidapp.R;
+import io.plaidapp.data.api.designernews.PostStoryService;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.widget.BottomSheet;
@@ -50,14 +51,8 @@ import io.plaidapp.util.ImeUtils;
 
 public class PostNewDesignerNewsStory extends Activity {
 
-    public static final String EXTRA_STORY_TITLE =
-            "EXTRA_STORY_TITLE";
-    public static final String EXTRA_STORY_URL =
-            "EXTRA_STORY_URL";
-    public static final String EXTRA_STORY_COMMENT =
-            "EXTRA_STORY_COMMENT";
-    public static final int RESULT_POST = 2;
     public static final int RESULT_DRAG_DISMISSED = 3;
+    public static final int RESULT_POSTING = 4;
 
     @Bind(R.id.bottom_sheet) BottomSheet bottomSheet;
     @Bind(R.id.bottom_sheet_content) ViewGroup bottomSheetContent;
@@ -205,11 +200,15 @@ public class PostNewDesignerNewsStory extends Activity {
     protected void postNewStory() {
         if (DesignerNewsPrefs.get(this).isLoggedIn()) {
             ImeUtils.hideIme(title);
-            Intent data = new Intent();
-            data.putExtra(EXTRA_STORY_TITLE, title.getText().toString());
-            data.putExtra(EXTRA_STORY_URL, url.getText().toString());
-            data.putExtra(EXTRA_STORY_COMMENT, comment.getText().toString());
-            setResult(RESULT_POST, data);
+            Intent postIntent = new Intent(PostStoryService.ACTION_POST_NEW_STORY, null,
+                    this, PostStoryService.class);
+            postIntent.putExtra(PostStoryService.EXTRA_STORY_TITLE, title.getText().toString());
+            postIntent.putExtra(PostStoryService.EXTRA_STORY_URL, url.getText().toString());
+            postIntent.putExtra(PostStoryService.EXTRA_STORY_COMMENT, comment.getText().toString());
+            postIntent.putExtra(PostStoryService.EXTRA_BROADCAST_RESULT,
+                    getIntent().getBooleanExtra(PostStoryService.EXTRA_BROADCAST_RESULT, false));
+            startService(postIntent);
+            setResult(RESULT_POSTING);
             finishAfterTransition();
         } else {
             Intent login = new Intent(this, DesignerNewsLogin.class);

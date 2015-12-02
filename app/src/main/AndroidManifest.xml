@@ -129,6 +129,10 @@
         </activity>
 
         <service
+            android:name=".data.api.designernews.PostStoryService"
+            android:exported="false" />
+
+        <service
             android:name=".data.api.designernews.UpvoteStoryService"
             android:exported="false" />
 

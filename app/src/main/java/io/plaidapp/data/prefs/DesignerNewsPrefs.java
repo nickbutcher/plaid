@@ -110,6 +110,14 @@ public class DesignerNewsPrefs {
         return userAvatar;
     }
 
+    public User getUser() {
+        return new User.Builder()
+                .setId(userId)
+                .setDisplayName(username)
+                .setPortraitUrl(userAvatar)
+                .build();
+    }
+
     public void logout() {
         isLoggedIn = false;
         accessToken = null;

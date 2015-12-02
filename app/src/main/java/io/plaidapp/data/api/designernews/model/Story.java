@@ -101,6 +101,131 @@ public class Story extends PlaidItem implements Parcelable {
         weight = Math.min(weight + weightBoost, 1f);
     }
 
+    public static class Builder {
+        private long id;
+        private String title;
+        private String url;
+        private String comment;
+        private String commentHtml;
+        private int commentCount;
+        private int voteCount;
+        private Date createdAt;
+        private long userId;
+        private String userDisplayName;
+        private String userPortraitUrl;
+        private String hostname;
+        private String badge;
+        private String userJob;
+        private List<Comment> comments;
+
+        public Builder setId(long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setTitle(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public Builder setUrl(String url) {
+            this.url = url;
+            return this;
+        }
+
+        public Builder setDefaultUrl(long id) {
+             this.url = "https://www.designernews.co/click/stories/" + id;
+            return this;
+        }
+
+        public Builder setComment(String comment) {
+            this.comment = comment;
+            return this;
+        }
+
+        public Builder setCommentHtml(String comment_html) {
+            this.commentHtml = comment_html;
+            return this;
+        }
+
+        public Builder setCommentCount(int comment_count) {
+            this.commentCount = comment_count;
+            return this;
+        }
+
+        public Builder setVoteCount(int vote_count) {
+            this.voteCount = vote_count;
+            return this;
+        }
+
+        public Builder setCreatedAt(Date created_at) {
+            this.createdAt = created_at;
+            return this;
+        }
+
+        public Builder setUserId(long user_id) {
+            this.userId = user_id;
+            return this;
+        }
+
+        public Builder setUserDisplayName(String user_display_name) {
+            this.userDisplayName = user_display_name;
+            return this;
+        }
+
+        public Builder setUserPortraitUrl(String user_portrait_url) {
+            this.userPortraitUrl = user_portrait_url;
+            return this;
+        }
+
+        public Builder setHostname(String hostname) {
+            this.hostname = hostname;
+            return this;
+        }
+
+        public Builder setBadge(String badge) {
+            this.badge = badge;
+            return this;
+        }
+
+        public Builder setUserJob(String user_job) {
+            this.userJob = user_job;
+            return this;
+        }
+
+        public Builder setComments(List<Comment> comments) {
+            this.comments = comments;
+            return this;
+        }
+
+        public Story build() {
+            return new Story(id, title, url, comment, commentHtml, commentCount, voteCount,
+                    createdAt, userId, userDisplayName, userPortraitUrl, hostname, badge,
+                    userJob, comments);
+        }
+
+        public static Builder from(Story existing) {
+            return new Builder()
+                    .setId(existing.id)
+                    .setTitle(existing.title)
+                    .setUrl(existing.url)
+                    .setComment(existing.comment)
+                    .setCommentHtml(existing.comment_html)
+                    .setCommentCount(existing.comment_count)
+                    .setVoteCount(existing.vote_count)
+                    .setCreatedAt(existing.created_at)
+                    .setUserId(existing.user_id)
+                    .setUserDisplayName(existing.user_display_name)
+                    .setUserPortraitUrl(existing.user_portrait_url)
+                    .setHostname(existing.hostname)
+                    .setBadge(existing.badge)
+                    .setUserJob(existing.user_job)
+                    .setComments(existing.comments);
+        }
+    }
+
+    /* Parcelable stuff */
+
     @Override
     public int describeContents() {
         return 0;
