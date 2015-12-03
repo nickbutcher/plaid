@@ -32,6 +32,9 @@
     <dimen name="padding_room_for_fab">88dp</dimen> <!-- padding_normal + fab_size + padding_normal -->
     <dimen name="fab_plus_single_padding">72dp</dimen> <!-- fab_size + padding_normal -->
     <dimen name="half_fab_plus_single_padding">44dp</dimen> <!-- (fab_size / 2) + padding_normal -->
+    <!-- text input layout seems to add 4dp of extra padding. The following account for this -->
+    <dimen name="padding_normal_til">12dp</dimen>
+    <dimen name="til_margin_fix">-4dp</dimen>
 
 
     <!-- dialogs -->

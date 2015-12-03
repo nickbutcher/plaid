@@ -76,7 +76,7 @@
                     android:id="@+id/new_story_title_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_normal"
+                    android:layout_marginStart="@dimen/padding_normal_til"
                     android:layout_marginTop="@dimen/spacing_normal"
                     android:layout_marginEnd="@dimen/padding_normal"
                     app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
@@ -94,7 +94,7 @@
                     android:id="@+id/new_story_url_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_normal"
+                    android:layout_marginStart="@dimen/padding_normal_til"
                     android:layout_marginEnd="@dimen/padding_normal"
                     android:stateListAnimator="@animator/disable_text_entry"
                     app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
@@ -122,7 +122,7 @@
                     android:id="@+id/new_story_comment_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_normal"
+                    android:layout_marginStart="@dimen/padding_normal_til"
                     android:layout_marginTop="@dimen/spacing_normal"
                     android:layout_marginEnd="@dimen/padding_normal"
                     android:stateListAnimator="@animator/disable_text_entry"

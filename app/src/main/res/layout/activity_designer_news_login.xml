@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright 2015 Google Inc.
 
@@ -53,7 +54,7 @@
             android:id="@+id/username_float_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_normal"
+            android:layout_marginStart="@dimen/spacing_micro"
             app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
             <AutoCompleteTextView
@@ -79,7 +80,7 @@
             android:id="@+id/password_float_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_normal"
+            android:layout_marginStart="@dimen/spacing_micro"
             app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
             <EditText
