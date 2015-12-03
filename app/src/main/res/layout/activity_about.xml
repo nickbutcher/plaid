@@ -22,7 +22,7 @@
     android:id="@+id/draggable_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:dragDismissDistance="@dimen/about_drag_dismiss_distance"
+    app:dragDismissDistance="@dimen/drag_dismiss_distance"
     app:dragDismissScale="0.95"
     tools:context="io.plaidapp.ui.AboutActivity">
 
