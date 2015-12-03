@@ -246,6 +246,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         holder.image.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                // check if it's an event we care about, else bail fast
+                final int action = event.getAction();
+                if (!(action == MotionEvent.ACTION_DOWN
+                        || action == MotionEvent.ACTION_UP
+                        || action == MotionEvent.ACTION_CANCEL)) return false;
+
                 // get the image and check if it's an animated GIF
                 final Drawable drawable = holder.image.getDrawable();
                 if (drawable == null) return false;
@@ -264,7 +270,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
                 if (gif == null) return false;
                 // GIF found, start/stop it on press/lift
-                switch (event.getAction()) {
+                switch (action) {
                     case MotionEvent.ACTION_DOWN:
                         gif.start();
                         break;
@@ -287,10 +293,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 .listener(new RequestListener<String, GlideDrawable>() {
 
                     @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model,
-                                                   Target<GlideDrawable> target, boolean
-                                                           isFromMemoryCache, boolean
-                                                           isFirstResource) {
+                    public boolean onResourceReady(GlideDrawable resource,
+                                                   String model,
+                                                   Target<GlideDrawable> target,
+                                                   boolean isFromMemoryCache,
+                                                   boolean isFirstResource) {
                         if (!shot.hasFadedIn) {
                             holder.image.setHasTransientState(true);
                             final ObservableColorMatrix cm = new ObservableColorMatrix();
@@ -544,8 +551,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        // include loading footer
-        return getDataItemCount() + 1;
+        return getDataItemCount() + 1; // include loading footer
     }
 
     /**
@@ -582,7 +588,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return new Class[] { DesignerNewsStoryHolder.class, ProductHuntStoryHolder.class };
     }
 
-    /* protected */ class DribbbleShotHolder extends RecyclerView.ViewHolder {
+    /* package */ class DribbbleShotHolder extends RecyclerView.ViewHolder {
 
         BadgedFourThreeImageView image;
 
@@ -593,7 +599,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     }
 
-    /* protected */ class DesignerNewsStoryHolder extends RecyclerView.ViewHolder {
+    /* package */ class DesignerNewsStoryHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.story_title) TextView title;
         @Bind(R.id.story_comments) TextView comments;
@@ -606,7 +612,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    /* protected */ class ProductHuntStoryHolder extends RecyclerView.ViewHolder {
+    /* package */ class ProductHuntStoryHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.hunt_title) TextView title;
         @Bind(R.id.tagline) TextView tagline;
@@ -618,7 +624,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    /* protected */ class LoadingMoreHolder extends RecyclerView.ViewHolder {
+    /* package */ class LoadingMoreHolder extends RecyclerView.ViewHolder {
 
         ProgressBar progress;
 
