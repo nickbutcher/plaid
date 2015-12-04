@@ -65,6 +65,10 @@
     <dimen name="comment_actions_height">40dp</dimen>
     <dimen name="comment_like_margin_adjustment">-8dp</dimen>
 
+    <!-- dribbble player -->
+    <dimen name="large_avatar_size">120dp</dimen> <!-- 2 * actionBarSize - 2 * avatar_padding -->
+    <dimen name="large_avatar_margin">28dp</dimen> <!-- spacing_large - avatar_padding -->
+
     <!-- bottom sheet -->
     <dimen name="bottom_sheet_width">@dimen/match_parent</dimen>
 

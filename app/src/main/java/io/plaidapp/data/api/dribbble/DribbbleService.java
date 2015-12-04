@@ -31,6 +31,7 @@ import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
@@ -180,6 +181,49 @@ public interface DribbbleService {
 
     @GET("/user")
     void getAuthenticatedUser(Callback<User> callback);
+
+    @GET("/users/{user}/shots")
+    void getUsersShots(@Path("user") long userId,
+                      @Query("page") Integer page,
+                      @Query("per_page") Integer pageSize,
+                      Callback<List<Shot>> callback);
+
+    @GET("/users/{user}/shots")
+    void getUsersShots(@Path("user") String username,
+                       @Query("page") Integer page,
+                       @Query("per_page") Integer pageSize,
+                       Callback<List<Shot>> callback);
+
+    @GET("/user/following/{user}")
+    void following(@Path("user") long userId, Callback<Void> callback);
+
+    @GET("/user/following/{user}")
+    void following(@Path("user") String username, Callback<Void> callback);
+
+    @PUT("/users/{user}/follow")
+    void follow(@Path("user") long userId,
+                @Body String ignored,  // can remove when retrofit releases this fix: https://github.com/square/retrofit/commit/19ac1e2c4551448184ad66c4a0ec172e2741c2ee
+                Callback<Void> callback);
+
+    @PUT("/users/{user}/follow")
+    void follow(@Path("user") String username,
+                @Body String ignored,  // can remove when retrofit releases this fix: https://github.com/square/retrofit/commit/19ac1e2c4551448184ad66c4a0ec172e2741c2ee
+                Callback<Void> callback);
+
+    @DELETE("/users/{user}/follow")
+    void unfollow(@Path("user") long userId, Callback<Void> callback);
+
+    @DELETE("/users/{user}/follow")
+    void unfollow(@Path("user") String username, Callback<Void> callback);
+
+
+    /* Teams */
+
+    @GET("/teams/{team}/shots")
+    void getTeamShots(@Path("team") long teamId,
+                      @Query("page") Integer page,
+                      @Query("per_page") Integer pageSize,
+                      Callback<List<Shot>> callback);
 
 
     /* Magic Constants */

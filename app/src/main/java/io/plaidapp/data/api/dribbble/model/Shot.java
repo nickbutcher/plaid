@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 import io.plaidapp.data.PlaidItem;
+import io.plaidapp.util.DribbbleUtils;
 import io.plaidapp.util.HtmlUtils;
 
 /**
@@ -145,7 +146,8 @@ public class Shot extends PlaidItem implements Parcelable {
     public Spanned getParsedDescription(ColorStateList linkTextColor,
                                         @ColorInt int linkHighlightColor) {
         if (parsedDescription == null && !TextUtils.isEmpty(description)) {
-            parsedDescription = HtmlUtils.parseHtml(description, linkTextColor, linkHighlightColor);
+            parsedDescription = DribbbleUtils.parseDribbbleHtml(description, linkTextColor,
+                    linkHighlightColor);
         }
         return parsedDescription;
     }

@@ -21,6 +21,7 @@ import android.support.annotation.ColorInt;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.URLSpan;
 import android.widget.TextView;
 
@@ -62,7 +63,7 @@ public class HtmlUtils {
      * @param linkHighlightColor
      * @return
      */
-    public static Spanned parseHtml(String input,
+    public static SpannableStringBuilder parseHtml(String input,
                                     ColorStateList linkTextColor,
                                     @ColorInt int linkHighlightColor) {
         SpannableStringBuilder spanned = (SpannableStringBuilder) Html.fromHtml(input);
@@ -77,12 +78,16 @@ public class HtmlUtils {
             int start = spanned.getSpanStart(urlSpan);
             int end = spanned.getSpanEnd(urlSpan);
             spanned.removeSpan(urlSpan);
-            // spanned.subSequence(start, start + 1) == "@" TODO send to our own user activity...
-            // when i've written it
             spanned.setSpan(new TouchableUrlSpan(urlSpan.getURL(), linkTextColor,
                     linkHighlightColor), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         return spanned;
+    }
+
+    public static void parseAndSetText(TextView textView, String input) {
+        if (TextUtils.isEmpty(input)) return;
+        setTextWithNiceLinks(textView, parseHtml(input, textView.getLinkTextColors(),
+                textView.getHighlightColor()));
     }
 
 }

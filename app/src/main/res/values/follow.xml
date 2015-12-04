@@ -15,16 +15,11 @@
   limitations under the License.
   -->
 
-<io.plaidapp.ui.widget.BadgedFourThreeImageView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/shot"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:elevation="@dimen/z_card"
-    android:stateListAnimator="@animator/raise"
-    android:background="@color/background_dark"
-    android:foreground="@drawable/mid_grey_ripple"
-    android:theme="@style/PlaidDarkOverlay"
-    app:badgeGravity="end|bottom"
-    app:badgePadding="@dimen/padding_normal" />
+<resources>
+
+    <!-- paths used for the follow/unfollow avd -->
+    <string name="path_follow_person">M15,12C17.21,12 19,10.21 19,8C19,5.79 17.21,4 15,4C12.79,4 11,5.79 11,8C11,10.21 12.79,12 15,12L15,12ZM15,14C12.33,14 7,15.34 7,18L7,20L23,20L23,18C23,15.34 17.67,14 15,14L15,14Z</string>
+    <string name="path_follow_plus">M6,7 L4,7 L4,10 L1,10 L1,12 L4,12 L4,15 L6,15 L6,12 L9,12 L9,10 L6,10 L6,7 Z</string>
+    <string name="path_follow_minus">M6,10 L4,10 L4,10 L1,10 L1,12 L4,12 L4,12 L6,12 L6,12 L9,12 L9,10 L6,10 L6,10 Z</string>
+
+</resources>

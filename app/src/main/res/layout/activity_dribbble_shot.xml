@@ -24,7 +24,7 @@
     android:layout_height="match_parent"
     app:dragDismissDistance="@dimen/drag_dismiss_distance"
     app:dragDismissScale="0.95"
-    tools:context="io.plaidapp.ui.DribbbleShot">
+    tools:context=".ui.DribbbleShot">
 
     <FrameLayout
         android:id="@+id/container"

@@ -32,21 +32,14 @@ import retrofit.client.Response;
  * Responsible for loading search results from dribbble and designer news. Instantiating classes are
  * responsible for providing the {code onDataLoaded} method to do something with the data.
  */
-public abstract class SearchDataManager extends BaseDataManager implements DataLoadingSubject {
+public abstract class SearchDataManager extends BaseDataManager {
 
     // state
     private String query = "";
-    private boolean loadingDribbble = false;
-    private boolean loadingDesignerNews = false;
     private int page = 1;
 
     public SearchDataManager(Context context) {
         super(context);
-    }
-
-    @Override
-    public boolean isDataLoading() {
-        return loadingDribbble || loadingDesignerNews;
     }
 
     public void searchFor(String query) {
@@ -67,9 +60,7 @@ public abstract class SearchDataManager extends BaseDataManager implements DataL
     public void clear() {
         query = "";
         page = 1;
-        loadingDribbble = false;
-        loadingDesignerNews = false;
-
+        resetLoadingCount();
     }
 
     public String getQuery() {
@@ -77,7 +68,7 @@ public abstract class SearchDataManager extends BaseDataManager implements DataL
     }
 
     private void searchDesignerNews(final String query, final int resultsPage) {
-        loadingDesignerNews = true;
+        loadStarted();
         getDesignerNewsApi().search(query, resultsPage, new Callback<StoriesResponse>() {
             @Override
             public void success(StoriesResponse storiesResponse, Response response) {
@@ -87,18 +78,18 @@ public abstract class SearchDataManager extends BaseDataManager implements DataL
                             Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX + query);
                     onDataLoaded(storiesResponse.stories);
                 }
-                loadingDesignerNews = false;
+                loadFinished();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                loadingDesignerNews = false;
+                loadFinished();
             }
         });
     }
 
     private void searchDribbble(final String query, final int page) {
-        loadingDribbble = true;
+        loadStarted();
         new AsyncTask<Void, Void, List<Shot>>() {
             @Override
             protected List<Shot> doInBackground(Void... params) {
@@ -112,7 +103,7 @@ public abstract class SearchDataManager extends BaseDataManager implements DataL
                     setDataSource(shots, "Dribbble Search");
                     onDataLoaded(shots);
                 }
-                loadingDribbble = false;
+                loadFinished();
             }
         }.execute();
     }

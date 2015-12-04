@@ -17,8 +17,15 @@
 package io.plaidapp.data;
 
 /**
- * An interface for classes offering data loading state to be observed
+ * An interface for classes offering data loading state to be observed.
  */
 public interface DataLoadingSubject {
     boolean isDataLoading();
+    void addCallbacks(DataLoadingCallbacks callbacks);
+    void removeCallbacks(DataLoadingCallbacks callbacks);
+
+    interface DataLoadingCallbacks {
+        void dataStartedLoading();
+        void dataFinishedLoading();
+    }
 }

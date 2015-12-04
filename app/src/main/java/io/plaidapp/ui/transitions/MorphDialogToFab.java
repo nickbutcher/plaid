@@ -39,7 +39,7 @@ import io.plaidapp.util.AnimUtils;
  */
 public class MorphDialogToFab extends ChangeBounds {
 
-    private static final String PROPERTY_COLOR = "plaid:rectMorph:color";
+    private static final String PROPERTY_COLOR = "io.plaidapp:rectMorph:color";
     private static final String PROPERTY_CORNER_RADIUS = "plaid:rectMorph:cornerRadius";
     private static final String[] TRANSITION_PROPERTIES = {
             PROPERTY_COLOR,

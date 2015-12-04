@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import io.plaidapp.data.api.designernews.model.StoriesResponse;
 import io.plaidapp.data.api.dribbble.DribbbleSearch;
@@ -43,20 +42,15 @@ import retrofit.client.Response;
  * providing the {code onDataLoaded} method to do something with the data.
  */
 public abstract class DataManager extends BaseDataManager
-        implements FilterAdapter.FiltersChangedListener, DataLoadingSubject {
+        implements FilterAdapter.FiltersChangedListener {
 
     private final FilterAdapter filterAdapter;
-    private AtomicInteger loadingCount;
     private Map<String, Integer> pageIndexes;
 
-    /**
-     * @param filterAdapter
-     */
     public DataManager(Context context,
                        FilterAdapter filterAdapter) {
         super(context);
         this.filterAdapter = filterAdapter;
-        loadingCount = new AtomicInteger(0);
         setupPageIndexes();
     }
 
@@ -64,11 +58,6 @@ public abstract class DataManager extends BaseDataManager
         for (Source filter : filterAdapter.getFilters()) {
             loadSource(filter);
         }
-    }
-
-    @Override
-    public boolean isDataLoading() {
-        return loadingCount.get() > 0;
     }
 
     @Override
@@ -86,7 +75,7 @@ public abstract class DataManager extends BaseDataManager
 
     private void loadSource(Source source) {
         if (source.active) {
-            loadingCount.incrementAndGet();
+            loadStarted();
             int page = getNextPageIndex(source.key);
             switch (source.key) {
                 case SourceManager.SOURCE_DESIGNER_NEWS_POPULAR:
@@ -162,12 +151,12 @@ public abstract class DataManager extends BaseDataManager
                             SourceManager.SOURCE_DESIGNER_NEWS_POPULAR);
                     onDataLoaded(storiesResponse.stories);
                 }
-                loadingCount.decrementAndGet();
+                loadFinished();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                loadingCount.decrementAndGet();
+                loadFinished();
             }
         });
     }
@@ -183,12 +172,12 @@ public abstract class DataManager extends BaseDataManager
                             SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
                     onDataLoaded(storiesResponse.stories);
                 }
-                loadingCount.decrementAndGet();
+                loadFinished();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                loadingCount.decrementAndGet();
+                loadFinished();
             }
         });
     }
@@ -203,12 +192,12 @@ public abstract class DataManager extends BaseDataManager
                     setDataSource(storiesResponse.stories, source.key);
                     onDataLoaded(storiesResponse.stories);
                 }
-                loadingCount.decrementAndGet();
+                loadFinished();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                loadingCount.decrementAndGet();
+                loadFinished();
             }
         });
     }
@@ -223,12 +212,12 @@ public abstract class DataManager extends BaseDataManager
                     setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_POPULAR);
                     onDataLoaded(shots);
                 }
-                loadingCount.decrementAndGet();
+                loadFinished();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                loadingCount.decrementAndGet();
+                loadFinished();
             }
         });
     }
@@ -243,12 +232,12 @@ public abstract class DataManager extends BaseDataManager
                     setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_DEBUTS);
                     onDataLoaded(shots);
                 }
-                loadingCount.decrementAndGet();
+                loadFinished();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                loadingCount.decrementAndGet();
+                loadFinished();
             }
         });
     }
@@ -263,12 +252,12 @@ public abstract class DataManager extends BaseDataManager
                     setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_ANIMATED);
                     onDataLoaded(shots);
                 }
-                loadingCount.decrementAndGet();
+                loadFinished();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                loadingCount.decrementAndGet();
+                loadFinished();
             }
         });
     }
@@ -283,12 +272,12 @@ public abstract class DataManager extends BaseDataManager
                     setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_RECENT);
                     onDataLoaded(shots);
                 }
-                loadingCount.decrementAndGet();
+                loadFinished();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                loadingCount.decrementAndGet();
+                loadFinished();
             }
         });
     }
@@ -304,16 +293,16 @@ public abstract class DataManager extends BaseDataManager
                                 setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_FOLLOWING);
                                 onDataLoaded(shots);
                             }
-                            loadingCount.decrementAndGet();
+                            loadFinished();
                         }
 
                         @Override
                         public void failure(RetrofitError error) {
-                            loadingCount.decrementAndGet();
+                            loadFinished();
                         }
                     });
         } else {
-            loadingCount.decrementAndGet();
+            loadFinished();
         }
     }
 
@@ -335,16 +324,16 @@ public abstract class DataManager extends BaseDataManager
                                 setDataSource(likedShots, SourceManager.SOURCE_DRIBBBLE_USER_LIKES);
                                 onDataLoaded(likedShots);
                             }
-                            loadingCount.decrementAndGet();
+                            loadFinished();
                         }
 
                         @Override
                         public void failure(RetrofitError error) {
-                            loadingCount.decrementAndGet();
+                            loadFinished();
                         }
                     });
         } else {
-            loadingCount.decrementAndGet();
+            loadFinished();
         }
     }
 
@@ -365,16 +354,16 @@ public abstract class DataManager extends BaseDataManager
                                 setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
                                 onDataLoaded(shots);
                             }
-                            loadingCount.decrementAndGet();
+                            loadFinished();
                         }
 
                         @Override
                         public void failure(RetrofitError error) {
-                            loadingCount.decrementAndGet();
+                            loadFinished();
                         }
                     });
         } else {
-            loadingCount.decrementAndGet();
+            loadFinished();
         }
     }
 
@@ -393,7 +382,7 @@ public abstract class DataManager extends BaseDataManager
                     setDataSource(shots, source.key);
                     onDataLoaded(shots);
                 }
-                loadingCount.decrementAndGet();
+                loadFinished();
             }
         }.execute();
     }
@@ -409,12 +398,12 @@ public abstract class DataManager extends BaseDataManager
                             SourceManager.SOURCE_PRODUCT_HUNT);
                     onDataLoaded(postsResponse.posts);
                 }
-                loadingCount.decrementAndGet();
+                loadFinished();
             }
 
             @Override
             public void failure(RetrofitError error) {
-                loadingCount.decrementAndGet();
+                loadFinished();
             }
         });
     }

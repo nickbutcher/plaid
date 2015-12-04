@@ -20,7 +20,9 @@ import android.content.Context;
 
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.plaidapp.BuildConfig;
 import io.plaidapp.data.api.AuthInterceptor;
@@ -37,6 +39,7 @@ import retrofit.converter.GsonConverter;
  * Base class for loading data.
  */
 public abstract class BaseDataManager implements
+        DataLoadingSubject,
         DribbblePrefs.DribbbleLoginStatusListener,
         DesignerNewsPrefs.DesignerNewsLoginStatusListener{
 
@@ -45,6 +48,8 @@ public abstract class BaseDataManager implements
     private DribbblePrefs dribbblePrefs;
     private DribbbleService dribbbleApi;
     private ProductHuntService productHuntApi;
+    private AtomicInteger loadingCount;
+    private List<DataLoadingSubject.DataLoadingCallbacks> loadingCallbacks;
 
     public BaseDataManager(Context context) {
         // setup the API access objects
@@ -53,9 +58,31 @@ public abstract class BaseDataManager implements
         dribbblePrefs = DribbblePrefs.get(context);
         createDribbbleApi();
         createProductHuntApi();
+        loadingCount = new AtomicInteger(0);
     }
 
     public abstract void onDataLoaded(List<? extends PlaidItem> data);
+
+    @Override
+    public boolean isDataLoading() {
+        return loadingCount.get() > 0;
+    }
+
+    protected void loadStarted() {
+        if (0 == loadingCount.getAndIncrement()) {
+            notifyCallbacksLoadingStarted();
+        }
+    }
+
+    protected void loadFinished() {
+        if (0 == loadingCount.decrementAndGet()) {
+            notifyCallbacksLoadingFinished();
+        }
+    }
+
+    protected void resetLoadingCount() {
+        loadingCount.set(0);
+    }
 
     protected static void setPage(List<? extends PlaidItem> items, int page) {
         for (PlaidItem item : items) {
@@ -116,6 +143,35 @@ public abstract class BaseDataManager implements
 
     public ProductHuntService getProductHuntApi() {
         return productHuntApi;
+    }
+
+    @Override
+    public void addCallbacks(DataLoadingSubject.DataLoadingCallbacks callbacks) {
+        if (loadingCallbacks == null) {
+            loadingCallbacks = new ArrayList<>(1);
+        }
+        loadingCallbacks.add(callbacks);
+    }
+
+    @Override
+    public void removeCallbacks(DataLoadingSubject.DataLoadingCallbacks callbacks) {
+        if (loadingCallbacks.contains(callbacks)) {
+            loadingCallbacks.remove(callbacks);
+        }
+    }
+
+    protected void notifyCallbacksLoadingStarted() {
+        if (loadingCallbacks == null) return;
+        for (DataLoadingCallbacks loadingCallback : loadingCallbacks) {
+            loadingCallback.dataStartedLoading();
+        }
+    }
+
+    protected void notifyCallbacksLoadingFinished() {
+        if (loadingCallbacks == null) return;
+        for (DataLoadingCallbacks loadingCallback : loadingCallbacks) {
+            loadingCallback.dataFinishedLoading();
+        }
     }
 
     @Override

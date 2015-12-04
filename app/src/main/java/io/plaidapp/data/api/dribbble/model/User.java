@@ -142,6 +142,10 @@ public class User implements Parcelable {
         updated_at = tmpUpdated_at != -1 ? new Date(tmpUpdated_at) : null;
     }
 
+    public String getHighQualityAvatarUrl() {
+        return avatar_url == null ? null : avatar_url.replace("/normal/", "/original/");
+    }
+
     public static class Builder {
         private long id;
         private String name;

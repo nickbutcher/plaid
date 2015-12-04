@@ -36,6 +36,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * Utility methods for working with Views.
@@ -178,9 +179,47 @@ public class ViewUtils {
     };
 
     /**
+     * Allows changes to the text size in transitions and animations.
+     * Using this with something else than {@link ChangeBounds}
+     * can result in a severe performance penalty due to layout passes.
+     */
+    public static final Property<TextView, Float> PROPERTY_TEXT_SIZE =
+            new AnimUtils.FloatProperty<TextView>("textSize") {
+                @Override
+                public Float get(TextView view) {
+                    return view.getTextSize();
+                }
+
+                @Override
+                public void setValue(TextView view, float textSize) {
+                    view.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+                }
+            };
+
+    /**
+     * Allows making changes to the start padding of a view.
+     * Using this with something else than {@link ChangeBounds}
+     * can result in a severe performance penalty due to layout passes.
+     */
+    public static final Property<TextView, Integer> PROPERTY_TEXT_PADDING_START =
+            new AnimUtils.IntProperty<TextView>("paddingStart") {
+                @Override
+                public Integer get(TextView view) {
+                    return view.getPaddingStart();
+                }
+
+                @Override
+                public void setValue(TextView view, int paddingStart) {
+                    setPaddingStart(view, paddingStart);
+                }
+            };
+
+    /**
      * Determines if two views intersect in the window.
      */
     public static boolean viewsIntersect(View view1, View view2) {
+        if (view1 == null || view2 == null) return false;
+
         final int[] view1Loc = new int[2];
         view1.getLocationOnScreen(view1Loc);
         final Rect view1Rect = new Rect(view1Loc[0],
@@ -194,6 +233,34 @@ public class ViewUtils {
                 view2Loc[0] + view2.getWidth(),
                 view2Loc[1] + view2.getHeight());
         return view1Rect.intersect(view2Rect);
+    }
+
+    public static void setPaddingStart(View view, int paddingStart) {
+        view.setPaddingRelative(paddingStart,
+                view.getPaddingTop(),
+                view.getPaddingEnd(),
+                view.getPaddingBottom());
+    }
+
+    public static void setPaddingTop(View view, int paddingTop) {
+        view.setPaddingRelative(view.getPaddingStart(),
+                paddingTop,
+                view.getPaddingEnd(),
+                view.getPaddingBottom());
+    }
+
+    public static void setPaddingEnd(View view, int paddingEnd) {
+        view.setPaddingRelative(view.getPaddingStart(),
+                view.getPaddingTop(),
+                paddingEnd,
+                view.getPaddingBottom());
+    }
+
+    public static void setPaddingBottom(View view, int paddingBottom) {
+        view.setPaddingRelative(view.getPaddingStart(),
+                view.getPaddingTop(),
+                view.getPaddingEnd(),
+                paddingBottom);
     }
 
 }

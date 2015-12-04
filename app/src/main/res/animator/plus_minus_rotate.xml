@@ -15,16 +15,10 @@
   limitations under the License.
   -->
 
-<io.plaidapp.ui.widget.BadgedFourThreeImageView
+<objectAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/shot"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:elevation="@dimen/z_card"
-    android:stateListAnimator="@animator/raise"
-    android:background="@color/background_dark"
-    android:foreground="@drawable/mid_grey_ripple"
-    android:theme="@style/PlaidDarkOverlay"
-    app:badgeGravity="end|bottom"
-    app:badgePadding="@dimen/padding_normal" />
+    android:propertyName="rotation"
+    android:valueFrom="-180"
+    android:valueTo="0"
+    android:duration="@integer/heart_fill_time"
+    android:interpolator="@android:interpolator/fast_out_slow_in" />

@@ -79,7 +79,8 @@ import io.plaidapp.util.glide.DribbbleTarget;
 /**
  * Adapter for the main screen grid of items
  */
-public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+                         implements DataLoadingSubject.DataLoadingCallbacks {
 
     public static final float DUPE_WEIGHT_BOOST = 0.4f;
 
@@ -102,22 +103,31 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public FeedAdapter(Activity hostActivity,
                        DataLoadingSubject dataLoading,
                        int columns,
-                       boolean pocketInstalled) {
+                       boolean pocketInstalled,
+                       boolean dark) {
         this.host = hostActivity;
         this.dataLoading = dataLoading;
+        dataLoading.addCallbacks(this);
         this.columns = columns;
         this.pocketIsInstalled = pocketInstalled;
         layoutInflater = LayoutInflater.from(host);
         comparator = new PlaidItemComparator();
         items = new ArrayList<>();
         setHasStableIds(true);
-        TypedArray placeholderColors = hostActivity.getResources()
-                .obtainTypedArray(R.array.loading_placeholders);
+        TypedArray placeholderColors = hostActivity.getResources().obtainTypedArray(
+                dark ? R.array.loading_placeholders_dark : R.array.loading_placeholders_light);
         shotLoadingPlaceholders = new ColorDrawable[placeholderColors.length()];
         for (int i = 0; i < placeholderColors.length(); i++) {
             shotLoadingPlaceholders[i] = new ColorDrawable(
                     placeholderColors.getColor(i, Color.DKGRAY));
         }
+    }
+
+    public FeedAdapter(Activity hostActivity,
+                       DataLoadingSubject dataLoading,
+                       int columns,
+                       boolean pocketInstalled) {
+        this(hostActivity, dataLoading, columns, pocketInstalled, true);
     }
 
     @Override
@@ -586,6 +596,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
      */
     public Class[] getDividedViewHolderClasses() {
         return new Class[] { DesignerNewsStoryHolder.class, ProductHuntStoryHolder.class };
+    }
+
+    @Override
+    public void dataStartedLoading() {
+        notifyItemChanged(getItemCount());
+    }
+
+    @Override
+    public void dataFinishedLoading() {
+        notifyItemChanged(getItemCount());
     }
 
     /* package */ class DribbbleShotHolder extends RecyclerView.ViewHolder {

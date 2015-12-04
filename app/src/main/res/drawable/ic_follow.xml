@@ -15,16 +15,27 @@
   limitations under the License.
   -->
 
-<io.plaidapp.ui.widget.BadgedFourThreeImageView
+<animated-selector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/shot"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:elevation="@dimen/z_card"
-    android:stateListAnimator="@animator/raise"
-    android:background="@color/background_dark"
-    android:foreground="@drawable/mid_grey_ripple"
-    android:theme="@style/PlaidDarkOverlay"
-    app:badgeGravity="end|bottom"
-    app:badgePadding="@dimen/padding_normal" />
+    android:constantSize="true">
+
+    <item
+        android:id="@+id/following"
+        android:state_activated="true"
+        android:drawable="@drawable/ic_unfollow_24dp" />
+
+    <item
+        android:id="@+id/not_following"
+        android:drawable="@drawable/ic_follow_24dp" />
+
+    <transition
+        android:fromId="@id/following"
+        android:toId="@id/not_following"
+        android:drawable="@drawable/avd_unfollow" />
+
+    <transition
+        android:fromId="@id/not_following"
+        android:toId="@id/following"
+        android:drawable="@drawable/avd_follow" />
+
+</animated-selector>

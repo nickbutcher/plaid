@@ -55,11 +55,15 @@
         <activity
             android:name=".ui.DribbbleShot"
             android:parentActivityName=".ui.HomeActivity"
-            android:theme="@style/Plaid.Translucent.DribbbleShot">
+            android:theme="@style/Plaid.Translucent.Dribbble.Shot">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.HomeActivity" />
         </activity>
+
+        <activity
+            android:name=".ui.PlayerActivity"
+            android:theme="@style/Plaid.Translucent.Dribbble.Player" />
 
         <activity
             android:name=".ui.DesignerNewsStory"
@@ -90,7 +94,7 @@
             android:name=".ui.DribbbleLogin"
             android:exported="true"
             android:launchMode="singleTop"
-            android:theme="@style/Plaid.Translucent.DribbbleLogin">
+            android:theme="@style/Plaid.Translucent.Dribbble.Login">
             <intent-filter>
                 <data
                     android:host="dribbble-auth-callback"

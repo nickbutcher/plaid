@@ -73,11 +73,17 @@
     <color name="fab_heart_full">#ffffffff</color>
     <color name="gif_badge_light_image">#40000000</color>
     <color name="gif_badge_dark_image">#b3ffffff</color>
-    <array name="loading_placeholders">
+    <array name="loading_placeholders_dark">
         <item>#ff191919</item>
         <item>#ff212121</item>
         <item>#ff232323</item>
     </array>
+    <array name="loading_placeholders_light">
+        <item>#fff5f5f5</item>
+        <item>#ffeeeeee</item>
+        <item>#ffe0e0e0</item>
+    </array>
+
 
     <!-- product hunt-->
     <color name="product_hunt">#ffff9800</color>

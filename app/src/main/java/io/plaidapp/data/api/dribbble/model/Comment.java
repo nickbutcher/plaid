@@ -16,12 +16,20 @@
 
 package io.plaidapp.data.api.dribbble.model;
 
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.URLSpan;
 import android.widget.TextView;
 
-import java.util.Date;
+import com.squareup.okhttp.HttpUrl;
 
+import java.util.Date;
+import java.util.List;
+
+import in.uncod.android.bypass.style.TouchableUrlSpan;
+import io.plaidapp.ui.span.PlayerSpan;
+import io.plaidapp.util.DribbbleUtils;
 import io.plaidapp.util.HtmlUtils;
 
 /**
@@ -58,8 +66,8 @@ public class Comment {
 
     public Spanned getParsedBody(TextView textView) {
         if (parsedBody == null && !TextUtils.isEmpty(body)) {
-            parsedBody = HtmlUtils.parseHtml(body, textView.getLinkTextColors(), textView
-                    .getHighlightColor());
+            parsedBody = DribbbleUtils.parseDribbbleHtml(body, textView.getLinkTextColors(),
+                    textView.getHighlightColor());
         }
         return parsedBody;
     }

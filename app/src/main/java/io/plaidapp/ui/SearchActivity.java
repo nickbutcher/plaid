@@ -163,7 +163,6 @@ public class SearchActivity extends Activity {
             }
         });
         results.setHasFixedSize(true);
-        results.addOnScrollListener(gridScroll);
 
         // extract the search icon's location passed from the launching activity, minus 4dp to
         // compensate for different paddings in the views
@@ -536,27 +535,4 @@ public class SearchActivity extends Activity {
         searchView.clearFocus();
         dataManager.searchFor(query);
     }
-
-    private int gridScrollY = 0;
-    private RecyclerView.OnScrollListener gridScroll = new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            gridScrollY += dy;
-            if (gridScrollY > 0 && searchToolbar.getTranslationZ() != appBarElevation) {
-                searchToolbar.animate()
-                        .translationZ(appBarElevation)
-                        .setDuration(300L)
-                        .setInterpolator(AnimationUtils.loadInterpolator(SearchActivity.this,
-                                android.R.interpolator.fast_out_slow_in))
-                        .start();
-            } else if (gridScrollY == 0 && searchToolbar.getTranslationZ() != 0) {
-                searchToolbar.animate()
-                        .translationZ(0f)
-                        .setDuration(300L)
-                        .setInterpolator(AnimationUtils.loadInterpolator(SearchActivity.this,
-                                android.R.interpolator.fast_out_slow_in))
-                        .start();
-            }
-        }
-    };
 }

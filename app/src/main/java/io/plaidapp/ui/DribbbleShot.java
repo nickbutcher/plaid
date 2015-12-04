@@ -47,6 +47,7 @@ import android.transition.AutoTransition;
 import android.transition.Transition;
 import android.transition.TransitionManager;
 import android.util.Log;
+import android.util.Pair;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,6 +81,7 @@ import java.text.NumberFormat;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindDimen;
 import butterknife.ButterKnife;
 import io.plaidapp.R;
 import io.plaidapp.data.api.AuthInterceptor;
@@ -111,7 +113,7 @@ import retrofit.converter.GsonConverter;
 
 public class DribbbleShot extends Activity {
 
-    protected final static String EXTRA_SHOT = "shot";
+    public final static String EXTRA_SHOT = "EXTRA_SHOT";
     private static final int RC_LOGIN_LIKE = 0;
     private static final int RC_LOGIN_COMMENT = 1;
     private static final float SCRIM_ADJUSTMENT = 0.075f;
@@ -145,6 +147,7 @@ public class DribbbleShot extends Activity {
     private boolean allowComment;
     private CircleTransform circleTransform;
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
+    @BindDimen(R.dimen.large_avatar_size) int largeAvatarSize;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -249,17 +252,34 @@ public class DribbbleShot extends Activity {
         if (shot.user != null) {
             playerName.setText("–" + shot.user.name);
             Glide.with(this)
-                    .load(shot.user.avatar_url)
+                    .load(shot.user.getHighQualityAvatarUrl())
                     .transform(circleTransform)
                     .placeholder(R.drawable.avatar_placeholder)
+                    .override(largeAvatarSize, largeAvatarSize)
                     .into(playerAvatar);
-            playerAvatar.setOnClickListener(new View.OnClickListener() {
+            View.OnClickListener playerClick = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DribbbleShot.this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(shot
-                            .user.html_url)));
+                    Intent player = new Intent(DribbbleShot.this, PlayerActivity.class);
+                    if (shot.user.shots_count > 0) { // legit user object
+                        player.putExtra(PlayerActivity.EXTRA_PLAYER, shot.user);
+                    } else {
+                        // search doesn't fully populate the user object,
+                        // in this case send the ID not the full user
+                        player.putExtra(PlayerActivity.EXTRA_PLAYER_NAME, shot.user.username);
+                        player.putExtra(PlayerActivity.EXTRA_PLAYER_ID, shot.user.id);
+                    }
+                    ActivityOptions options =
+                            ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this,
+                                    Pair.create((View) playerAvatar,
+                                            getString(R.string.transition_player_avatar)),
+                                    Pair.create((View) playerName,
+                                            getString(R.string.transition_player_name)));
+                    startActivity(player, options.toBundle());
                 }
-            });
+            };
+            playerAvatar.setOnClickListener(playerClick);
+            playerName.setOnClickListener(playerClick);
             if (shot.created_at != null) {
                 shotTimeAgo.setText(DateUtils.getRelativeTimeSpanString(shot.created_at.getTime(),
                         System.currentTimeMillis(),
@@ -845,15 +865,23 @@ public class DribbbleShot extends Activity {
             final TextView likesCount = (TextView) view.getTag(R.id.comment_likes_count);
 
             Glide.with(DribbbleShot.this)
-                    .load(comment.user.avatar_url)
+                    .load(comment.user.getHighQualityAvatarUrl())
                     .transform(circleTransform)
                     .placeholder(R.drawable.avatar_placeholder)
+                    .override(largeAvatarSize, largeAvatarSize)
                     .into(avatar);
             avatar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DribbbleShot.this.startActivity(new Intent(Intent.ACTION_VIEW,
-                            Uri.parse(comment.user.html_url)));
+                    Intent player = new Intent(DribbbleShot.this, PlayerActivity.class);
+                    player.putExtra(PlayerActivity.EXTRA_PLAYER, comment.user);
+                    ActivityOptions options =
+                            ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this,
+                                    Pair.create((View) avatar,
+                                            getString(R.string.transition_player_avatar)),
+                                    Pair.create((View) author,
+                                            getString(R.string.transition_player_name)));
+                    startActivity(player, options.toBundle());
                 }
             });
             author.setText(comment.user.name);
