@@ -797,7 +797,6 @@ public class DesignerNewsStory extends Activity {
 
         private void bindComment(final CommentHolder holder) {
             Comment comment = getComment(holder.getAdapterPosition());
-            holder.itemView.setActivated(holder.getAdapterPosition() == expandedCommentPosition);
             HtmlUtils.setTextWithNiceLinks(holder.comment, markdown.markdownToSpannable(
                     comment.body, holder.comment, new Bypass.LoadImageCallback() {
                         @Override
@@ -821,6 +820,23 @@ public class DesignerNewsStory extends Activity {
             //((ThreadedCommentDrawable) holder.threadDepth.getDrawable()).setDepth(comment.depth);
             holder.threadDepth.setImageDrawable(
                     new ThreadedCommentDrawable(threadWidth, threadGap, comment.depth));
+
+            // set/clear expanded comment state
+            holder.itemView.setActivated(holder.getAdapterPosition() == expandedCommentPosition);
+            if (holder.getAdapterPosition() == expandedCommentPosition) {
+                final int threadDepthWidth = holder.threadDepth.getDrawable().getIntrinsicWidth();
+                final float leftShift = -(threadDepthWidth + ((ViewGroup.MarginLayoutParams)
+                        holder.threadDepth.getLayoutParams()).getMarginEnd());
+                holder.author.setTranslationX(leftShift);
+                holder.comment.setTranslationX(leftShift);
+                holder.threadDepth.setTranslationX(-(threadDepthWidth
+                        + ((ViewGroup.MarginLayoutParams)
+                        holder.threadDepth.getLayoutParams()).getMarginStart()));
+            } else {
+                holder.threadDepth.setTranslationX(0f);
+                holder.author.setTranslationX(0f);
+                holder.comment.setTranslationX(0f);
+            }
         }
 
         @NonNull
@@ -836,11 +852,11 @@ public class DesignerNewsStory extends Activity {
                         if (!holder.commentVotes.isActivated()) {
                             designerNewsApi.upvoteComment(comment.id, "",
                                     new Callback<Comment>() {
-                                @Override
-                                public void success(Comment returnedComment, Response response) { }
+                                        @Override
+                                        public void success(Comment upvoted, Response resp) { }
 
-                                @Override public void failure(RetrofitError error) { }
-                            });
+                                        @Override public void failure(RetrofitError error) { }
+                                    });
                             comment.upvoted = true;
                             comment.vote_count++;
                             holder.commentVotes.setText(String.valueOf(comment.vote_count));
@@ -1044,18 +1060,10 @@ public class DesignerNewsStory extends Activity {
                                                          RecyclerView.ViewHolder viewHolder,
                                                          int changeFlags,
                                                          List<Object> payloads) {
-            ItemHolderInfo info =
+            CommentItemHolderInfo info = (CommentItemHolderInfo)
                     super.recordPreLayoutInformation(state, viewHolder, changeFlags, payloads);
-            if (payloads.contains(EXPAND_COMMENT)) {
-                DesignerNewsCommentItemHolderInfo dnInfo = (DesignerNewsCommentItemHolderInfo) info;
-                dnInfo.doExpand = true;
-                return dnInfo;
-            }
-            if (payloads.contains(COLLAPSE_COMMENT)) {
-                DesignerNewsCommentItemHolderInfo dnInfo = (DesignerNewsCommentItemHolderInfo) info;
-                dnInfo.doCollapse = true;
-                return dnInfo;
-            }
+            info.doExpand = payloads.contains(EXPAND_COMMENT);
+            info.doCollapse = payloads.contains(COLLAPSE_COMMENT);
             return info;
         }
 
@@ -1064,26 +1072,32 @@ public class DesignerNewsStory extends Activity {
                                      RecyclerView.ViewHolder newHolder,
                                      ItemHolderInfo preInfo,
                                      ItemHolderInfo postInfo) {
-            if (preInfo instanceof DesignerNewsCommentItemHolderInfo) {
+            if (newHolder instanceof CommentHolder && preInfo instanceof CommentItemHolderInfo) {
                 final CommentHolder holder = (CommentHolder) newHolder;
-                if (((DesignerNewsCommentItemHolderInfo) preInfo).doExpand) {
-                    Interpolator moveInterpolator = AnimationUtils.loadInterpolator(holder.itemView
-                            .getContext(), android.R.interpolator.fast_out_slow_in);
+                final CommentItemHolderInfo info = (CommentItemHolderInfo) preInfo;
+                final float expandedThreadOffset = -(holder.threadDepth.getWidth() + ((ViewGroup
+                        .MarginLayoutParams) holder.threadDepth.getLayoutParams())
+                        .getMarginStart());
+                final float expandedAuthorCommentOffset = -(holder.threadDepth.getWidth() +
+                        ((ViewGroup.MarginLayoutParams) holder.threadDepth.getLayoutParams())
+                                .getMarginEnd());
+
+                if (info.doExpand) {
+                    Interpolator moveInterpolator = AnimationUtils.loadInterpolator(
+                            holder.itemView.getContext(), android.R.interpolator.fast_out_slow_in);
+                    holder.threadDepth.setTranslationX(0f);
                     holder.threadDepth.animate()
-                            .translationX(-(holder.threadDepth.getWidth() + ((ViewGroup
-                                    .MarginLayoutParams) holder.threadDepth.getLayoutParams())
-                                    .getMarginStart()))
+                            .translationX(expandedThreadOffset)
                             .setDuration(160L)
                             .setInterpolator(moveInterpolator);
-                    final float leftShift = -(holder.threadDepth.getWidth() +
-                            ((ViewGroup.MarginLayoutParams) holder.threadDepth.getLayoutParams())
-                            .getMarginEnd());
+                    holder.author.setTranslationX(0f);
                     holder.author.animate()
-                            .translationX(leftShift)
+                            .translationX(expandedAuthorCommentOffset)
                             .setDuration(320L)
                             .setInterpolator(moveInterpolator);
+                    holder.comment.setTranslationX(0f);
                     holder.comment.animate()
-                            .translationX(leftShift)
+                            .translationX(expandedAuthorCommentOffset)
                             .setDuration(320L)
                             .setInterpolator(moveInterpolator)
                             .setListener(new AnimatorListenerAdapter() {
@@ -1100,44 +1114,40 @@ public class DesignerNewsStory extends Activity {
                                     dispatchChangeFinished(holder, false);
                                 }
                             });
-                } else if (((DesignerNewsCommentItemHolderInfo) preInfo).doCollapse) {
-                    // setup
-                    holder.threadDepth.setAlpha(0f);
+                } else if (info.doCollapse) {
                     Interpolator enterInterpolator = AnimationUtils.loadInterpolator(holder.itemView
                             .getContext(), android.R.interpolator.linear_out_slow_in);
                     Interpolator moveInterpolator = AnimationUtils.loadInterpolator(holder.itemView
                             .getContext(), android.R.interpolator.fast_out_slow_in);
 
-                    // move & fade the thread depth indicator back into place (at different rates)
-                    Animator fadeIn = ObjectAnimator.ofFloat(holder.threadDepth, View.ALPHA, 1f);
-                    fadeIn.setDuration(400L);
-                    fadeIn.setInterpolator(enterInterpolator);
-                    Animator moveIn = ObjectAnimator.ofFloat(holder.threadDepth,
-                            View.TRANSLATION_X, 0f);
-                    moveIn.setDuration(400L);
-                    moveIn.setInterpolator(enterInterpolator);
-                    moveIn.addListener(new AnimatorListenerAdapter() {
+                    // return the thread depth indicator into place
+                    holder.threadDepth.setTranslationX(expandedThreadOffset);
+                    holder.threadDepth.animate()
+                            .translationX(0f)
+                            .setDuration(200L)
+                            .setInterpolator(enterInterpolator)
+                            .setListener(new AnimatorListenerAdapter() {
 
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            dispatchAddStarting(holder);
-                            holder.itemView.setHasTransientState(true);
-                        }
+                                @Override
+                                public void onAnimationStart(Animator animation) {
+                                    dispatchChangeStarting(holder, false);
+                                    holder.itemView.setHasTransientState(true);
+                                }
 
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            dispatchAddFinished(holder);
-                            holder.itemView.setHasTransientState(false);
-                        }
-                    });
-                    fadeIn.start();
-                    moveIn.start();
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    holder.itemView.setHasTransientState(false);
+                                    dispatchChangeFinished(holder, false);
+                                }
+                            });
 
                     // return the text into place
+                    holder.author.setTranslationX(expandedAuthorCommentOffset);
                     holder.author.animate()
                             .translationX(0f)
                             .setDuration(200L)
                             .setInterpolator(moveInterpolator);
+                    holder.comment.setTranslationX(expandedAuthorCommentOffset);
                     holder.comment.animate()
                             .translationX(0f)
                             .setDuration(200L)
@@ -1149,10 +1159,10 @@ public class DesignerNewsStory extends Activity {
 
         @Override
         public ItemHolderInfo obtainHolderInfo() {
-            return new DesignerNewsCommentItemHolderInfo();
+            return new CommentItemHolderInfo();
         }
 
-        /* package */ class DesignerNewsCommentItemHolderInfo extends ItemHolderInfo {
+        /* package */ class CommentItemHolderInfo extends ItemHolderInfo {
             boolean doExpand;
             boolean doCollapse;
         }
