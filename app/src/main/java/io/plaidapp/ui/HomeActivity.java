@@ -16,6 +16,8 @@
 
 package io.plaidapp.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
@@ -52,6 +54,7 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.WindowInsets;
 import android.view.animation.AnimationUtils;
+import android.view.animation.Interpolator;
 import android.widget.ActionMenuView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -104,6 +107,8 @@ public class HomeActivity extends Activity {
     @Bind(R.id.filters) RecyclerView filtersList;
     @Bind(android.R.id.empty) ProgressBar loading;
     private TextView noFiltersEmptyText;
+    private ImageButton fabPosting;
+    private ProgressBar postingProgress;
     private GridLayoutManager layoutManager;
     @BindInt(R.integer.num_columns) int columns;
 
@@ -200,6 +205,13 @@ public class HomeActivity extends Activity {
                 lpFab.rightMargin += insets.getSystemWindowInsetRight(); // landscape
                 fab.setLayoutParams(lpFab);
 
+                View postingStub = findViewById(R.id.stub_posting_progress);
+                ViewGroup.MarginLayoutParams lpPosting =
+                        (ViewGroup.MarginLayoutParams) postingStub.getLayoutParams();
+                lpPosting.bottomMargin += insets.getSystemWindowInsetBottom(); // portrait
+                lpPosting.rightMargin += insets.getSystemWindowInsetRight(); // landscape
+                postingStub.setLayoutParams(lpPosting);
+
                 // we place a background behind the status bar to combine with it's semi-transparent
                 // color to get the desired appearance.  Set it's height to the status bar height
                 View statusBarBackground = findViewById(R.id.status_bar_background);
@@ -293,12 +305,63 @@ public class HomeActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case PostStoryService.BROADCAST_ACTION_SUCCESS:
+                    // success animation
+                    AnimatedVectorDrawable complete =
+                            (AnimatedVectorDrawable) getDrawable(R.drawable.avd_upload_complete);
+                    fabPosting.setImageDrawable(complete);
+                    complete.start();
+                    postingProgress.setVisibility(View.INVISIBLE);
+                    fabPosting.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            fabPosting.setVisibility(View.GONE);
+                            fab.setVisibility(View.VISIBLE);
+                        }
+                    }, 2100); // length of R.drawable.avd_upload_complete
+
+                    // actually add the story to the grid
                     Story newStory = intent.getParcelableExtra(PostStoryService.EXTRA_NEW_STORY);
                     adapter.addAndResort(Arrays.asList(new Story[]{ newStory }));
-                    // todo prettier feedback!
                     break;
                 case PostStoryService.BROADCAST_ACTION_FAILURE:
-                    // todo
+                    // failure animation
+                    AnimatedVectorDrawable failed =
+                            (AnimatedVectorDrawable) getDrawable(R.drawable.avd_upload_error);
+                    fabPosting.setImageDrawable(failed);
+                    failed.start();
+                    final Interpolator fadeInterp = AnimationUtils.loadInterpolator(
+                            HomeActivity.this, android.R.interpolator.fast_out_linear_in);
+                    postingProgress.animate()
+                            .alpha(0f)
+                            .setDuration(200L)
+                            .setInterpolator(fadeInterp)
+                            .setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    postingProgress.setVisibility(View.INVISIBLE);
+                                    postingProgress.setAlpha(1f);
+                                }
+                            });
+                    // remove the upload progress 'fab' and reshow the regular one
+                    fabPosting.animate()
+                            .alpha(0f)
+                            .rotation(90f)
+                            .setStartDelay(2000L) // leave error on screen for a while before hiding
+                            .setDuration(200L)
+                            .setInterpolator(fadeInterp)
+                            .setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationStart(Animator animation) {
+                                    fab.setVisibility(View.VISIBLE);
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    fabPosting.setVisibility(View.GONE);
+                                    fabPosting.setAlpha(1f);
+                                    fabPosting.setRotation(0f);
+                                }
+                            });
                     break;
             }
             unregisterPostStoryResultListener();
@@ -315,6 +378,21 @@ public class HomeActivity extends Activity {
 
     private void unregisterPostStoryResultListener() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(postStoryResultReceiver);
+    }
+
+    private void showPostingProgress() {
+        if (fabPosting == null) {
+            View v = ((ViewStub) findViewById(R.id.stub_posting_progress)).inflate();
+            fabPosting = (ImageButton) v.findViewById(R.id.fab_posting);
+            postingProgress = (ProgressBar) v.findViewById(R.id.posting_progress);
+        }
+        fab.setVisibility(View.INVISIBLE);
+        fabPosting.setVisibility(View.VISIBLE);
+        AnimatedVectorDrawable uploading =
+                (AnimatedVectorDrawable) getDrawable(R.drawable.avd_uploading);
+        fabPosting.setImageDrawable(uploading);
+        uploading.start();
+        postingProgress.setVisibility(View.VISIBLE);
     }
 
     private void checkEmptyState() {
@@ -549,7 +627,7 @@ public class HomeActivity extends Activity {
                         unregisterPostStoryResultListener();
                         break;
                     case PostNewDesignerNewsStory.RESULT_POSTING:
-                        // todo show progress
+                        showPostingProgress();
                         break;
                     default:
                         unregisterPostStoryResultListener();

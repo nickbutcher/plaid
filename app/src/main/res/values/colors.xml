@@ -44,11 +44,14 @@
     <color name="grey_300">#ffe0e0e0</color>
     <color name="content_placeholder">#ffe0e0e0</color>
     <color name="dark_icon">#99000000</color> <!-- 60% black-->
+    <color name="dark_icon_half_alpha">#4d000000</color> <!-- 30% black-->
+    <color name="dark_icon_on_primary">#ff2a6046</color> <!-- 60% black on @color/primary -->
     <color name="light_icon">#ffffffff</color>
     <color name="divider">#1f000000</color> <!-- 12% black -->
     <color name="page_indicator_dark">#80333333</color>
     <color name="page_indicator_dark_selected">#ff333333</color>
     <color name="selected_comment_background">#ffffffff</color>
+    <color name="error">#ffdd2c00</color>
 
     <!-- text (most text uses material theme colours) -->
     <color name="hint_disabled_dark">#43000000</color> <!-- 26% black -->
