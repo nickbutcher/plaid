@@ -16,21 +16,13 @@
 
 package io.plaidapp.data.api.dribbble.model;
 
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.URLSpan;
 import android.widget.TextView;
 
-import com.squareup.okhttp.HttpUrl;
-
 import java.util.Date;
-import java.util.List;
 
-import in.uncod.android.bypass.style.TouchableUrlSpan;
-import io.plaidapp.ui.span.PlayerSpan;
 import io.plaidapp.util.DribbbleUtils;
-import io.plaidapp.util.HtmlUtils;
 
 /**
  * Models a commend on a Dribbble shot.

@@ -7,10 +7,9 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.widget.TextView;
 
-import com.squareup.okhttp.HttpUrl;
-
 import in.uncod.android.bypass.style.TouchableUrlSpan;
 import io.plaidapp.ui.span.PlayerSpan;
+import okhttp3.HttpUrl;
 
 public class DribbbleUtils {
 
@@ -18,7 +17,7 @@ public class DribbbleUtils {
 
     /**
      * An extension to {@link HtmlUtils#parseHtml(String, ColorStateList, int)} which adds Dribbble
-     * specific behaviour;
+     * specific behaviour.
      */
     public static Spanned parseDribbbleHtml(String input,
                                                    ColorStateList linkTextColor,
