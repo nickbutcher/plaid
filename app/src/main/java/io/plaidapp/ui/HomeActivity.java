@@ -108,7 +108,6 @@ public class HomeActivity extends Activity {
     @Bind(android.R.id.empty) ProgressBar loading;
     private TextView noFiltersEmptyText;
     private ImageButton fabPosting;
-    private ProgressBar postingProgress;
     private GridLayoutManager layoutManager;
     @BindInt(R.integer.num_columns) int columns;
 
@@ -303,6 +302,7 @@ public class HomeActivity extends Activity {
     BroadcastReceiver postStoryResultReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            ensurePostingProgressInflated();
             switch (intent.getAction()) {
                 case PostStoryService.BROADCAST_ACTION_SUCCESS:
                     // success animation
@@ -310,7 +310,6 @@ public class HomeActivity extends Activity {
                             (AnimatedVectorDrawable) getDrawable(R.drawable.avd_upload_complete);
                     fabPosting.setImageDrawable(complete);
                     complete.start();
-                    postingProgress.setVisibility(View.INVISIBLE);
                     fabPosting.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -329,26 +328,14 @@ public class HomeActivity extends Activity {
                             (AnimatedVectorDrawable) getDrawable(R.drawable.avd_upload_error);
                     fabPosting.setImageDrawable(failed);
                     failed.start();
-                    final Interpolator fadeInterp = AnimationUtils.loadInterpolator(
-                            HomeActivity.this, android.R.interpolator.fast_out_linear_in);
-                    postingProgress.animate()
-                            .alpha(0f)
-                            .setDuration(200L)
-                            .setInterpolator(fadeInterp)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    postingProgress.setVisibility(View.INVISIBLE);
-                                    postingProgress.setAlpha(1f);
-                                }
-                            });
                     // remove the upload progress 'fab' and reshow the regular one
                     fabPosting.animate()
                             .alpha(0f)
                             .rotation(90f)
                             .setStartDelay(2000L) // leave error on screen for a while before hiding
                             .setDuration(200L)
-                            .setInterpolator(fadeInterp)
+                            .setInterpolator(AnimationUtils.loadInterpolator(
+                                    HomeActivity.this, android.R.interpolator.fast_out_linear_in))
                             .setListener(new AnimatorListenerAdapter() {
                                 @Override
                                 public void onAnimationStart(Animator animation) {
@@ -381,18 +368,18 @@ public class HomeActivity extends Activity {
     }
 
     private void showPostingProgress() {
-        if (fabPosting == null) {
-            View v = ((ViewStub) findViewById(R.id.stub_posting_progress)).inflate();
-            fabPosting = (ImageButton) v.findViewById(R.id.fab_posting);
-            postingProgress = (ProgressBar) v.findViewById(R.id.posting_progress);
-        }
+        ensurePostingProgressInflated();
         fab.setVisibility(View.INVISIBLE);
         fabPosting.setVisibility(View.VISIBLE);
         AnimatedVectorDrawable uploading =
                 (AnimatedVectorDrawable) getDrawable(R.drawable.avd_uploading);
         fabPosting.setImageDrawable(uploading);
         uploading.start();
-        postingProgress.setVisibility(View.VISIBLE);
+    }
+
+    private void ensurePostingProgressInflated() {
+        if (fabPosting != null) return;
+        fabPosting = (ImageButton) ((ViewStub) findViewById(R.id.stub_posting_progress)).inflate();
     }
 
     private void checkEmptyState() {

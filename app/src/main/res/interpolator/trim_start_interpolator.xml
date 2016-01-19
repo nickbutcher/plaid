@@ -15,20 +15,6 @@
   limitations under the License.
   -->
 
-<animated-vector
+<pathInterpolator
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/ic_uploading">
-
-    <target
-        android:name="upload_arrow_fill_clip"
-        android:animation="@animator/upload_arrow_fill" />
-
-    <target
-        android:name="progress_bar"
-        android:animation="@animator/upload_progress" />
-
-    <target
-        android:name="progress_spinner"
-        android:animation="@animator/upload_progress_rotation" />
-
-</animated-vector>
+    android:pathData="L0.5,0 C 0.7,0 0.6,1 1, 1" />

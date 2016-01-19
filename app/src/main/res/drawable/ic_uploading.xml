@@ -46,4 +46,21 @@
         android:pathData="M21,34L35,34L35,36L21,36L21,34Z"
         android:fillColor="@color/dark_icon" />
 
+    <group
+        android:name="progress_spinner"
+        android:pivotX="28"
+        android:pivotY="28">
+
+        <path
+            android:name="progress_bar"
+            android:pathData="M28,2C42.36,2 54,13.64 54,28C54,42.36 42.36,54 28,54C13.64,54 2,42.36 2,28C2,13.64 13.76,2 28,2"
+            android:strokeColor="@color/dark_icon"
+            android:strokeWidth="4"
+            android:trimPathStart="0"
+            android:trimPathEnd="0"
+            android:strokeLineCap="square"
+            android:strokeLineJoin="miter" />
+
+    </group>
+
 </vector>

@@ -15,33 +15,14 @@
   limitations under the License.
   -->
 
-<!-- Ideally this would be a merge tag but can't have a merge in a ViewStub. As posting new stories
-     is likely relatively rare, favour having a ViewStub and use an unnecessary wrapping layout. -->
-<FrameLayout
+<ImageButton
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="64dp"
-    android:layout_height="64dp"
+    android:id="@+id/fab_posting"
+    android:layout_width="@dimen/fab_size"
+    android:layout_height="@dimen/fab_size"
+    android:background="@drawable/fab"
+    android:clickable="true"
     android:elevation="@dimen/z_fab"
-    tools:showIn="@layout/activity_home">
-
-    <ImageButton
-        android:id="@+id/fab_posting"
-        android:layout_width="@dimen/fab_size"
-        android:layout_height="@dimen/fab_size"
-        android:layout_gravity="center"
-        android:background="@drawable/fab"
-        android:src="@drawable/avd_uploading"
-        android:clickable="true" />
-
-    <!-- progress spinner has some padding in it (40dp spinner in a 48dp frame) so we need to use
-         a larger spinner to make it line up with the 56dp background. -->
-    <ProgressBar
-        android:id="@+id/posting_progress"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:indeterminate="true"
-        android:indeterminateTint="@color/dark_icon"
-        android:indeterminateTintMode="src_in" />
-
-</FrameLayout>
+    android:src="@drawable/avd_uploading"
+    tools:showIn="@layout/activity_home" />

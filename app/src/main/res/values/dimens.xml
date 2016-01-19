@@ -36,8 +36,6 @@
     <!-- text input layout seems to add 4dp of extra padding. The following account for this -->
     <dimen name="padding_normal_til">12dp</dimen>
     <dimen name="til_margin_fix">-4dp</dimen>
-    <!-- indeterminate progress bars bake in 4dp of padding, use this to align to padding normal -->
-    <dimen name="padding_normal_less_4dp">12dp</dimen>
 
 
     <!-- dialogs -->

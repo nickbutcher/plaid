@@ -20,7 +20,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import io.plaidapp.BuildConfig;
@@ -50,6 +49,8 @@ public class PostStoryService extends IntentService {
     public static final String EXTRA_NEW_STORY = "EXTRA_NEW_STORY";
     public static final String BROADCAST_ACTION_SUCCESS = "BROADCAST_ACTION_SUCCESS";
     public static final String BROADCAST_ACTION_FAILURE = "BROADCAST_ACTION_FAILURE";
+    public static final String BROADCAST_ACTION_FAILURE_REASON = "BROADCAST_ACTION_FAILURE_REASON";
+    public static final String SOURCE_NEW_DN_POST = "SOURCE_NEW_DN_POST";
 
     public PostStoryService() {
         super("PostStoryService");
@@ -98,7 +99,7 @@ public class PostStoryService extends IntentService {
                                 builder.setDefaultUrl(returnedStory.id);
                             }
                             Story newStory = builder.build();
-                            newStory.dataSource = "SOURCE_NEW_DN_POST";
+                            newStory.dataSource = SOURCE_NEW_DN_POST;
                             success.putExtra(EXTRA_NEW_STORY, newStory);
                             LocalBroadcastManager.getInstance(getApplicationContext())
                                     .sendBroadcast(success);
@@ -111,10 +112,14 @@ public class PostStoryService extends IntentService {
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Log.e("PostStoryService", "Failed posting story", error);
+                    final String reason = error.getResponse().getReason();
                     if (broadcastResult) {
+                        Intent failure = new Intent(BROADCAST_ACTION_FAILURE);
+                        failure.putExtra(BROADCAST_ACTION_FAILURE_REASON, reason);
                         LocalBroadcastManager.getInstance(getApplicationContext())
-                                .sendBroadcast(new Intent(BROADCAST_ACTION_FAILURE));
+                                .sendBroadcast(failure);
+                    } else {
+                        Toast.makeText(getApplicationContext(), reason, Toast.LENGTH_SHORT).show();
                     }
                 }
             });

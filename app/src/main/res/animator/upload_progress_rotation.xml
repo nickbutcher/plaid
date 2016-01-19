@@ -6,7 +6,7 @@
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+       http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,20 +15,11 @@
   limitations under the License.
   -->
 
-<animated-vector
+<objectAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/ic_uploading">
-
-    <target
-        android:name="upload_arrow_fill_clip"
-        android:animation="@animator/upload_arrow_fill" />
-
-    <target
-        android:name="progress_bar"
-        android:animation="@animator/upload_progress" />
-
-    <target
-        android:name="progress_spinner"
-        android:animation="@animator/upload_progress_rotation" />
-
-</animated-vector>
+    android:propertyName="rotation"
+    android:valueFrom="0"
+    android:valueTo="720"
+    android:repeatCount="-1"
+    android:duration="6665"
+    android:interpolator="@android:anim/linear_interpolator" />
