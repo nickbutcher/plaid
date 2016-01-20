@@ -23,6 +23,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,7 +93,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
                 if (!existing.active) {
                     existing.active = true;
                     dispatchFiltersChanged(existing);
-                    notifyItemChanged(i);
+                    notifyItemChanged(i, FilterAnimator.FILTER_ENABLED);
                     SourceManager.updateSource(existing, context);
                 }
                 return false;
@@ -126,11 +127,33 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
             if (filter.key.equals(key)) {
                 if (!filter.active) {
                     filter.active = true;
-                    notifyItemChanged(i);
+                    notifyItemChanged(i, FilterAnimator.FILTER_ENABLED);
                     dispatchFiltersChanged(filter);
                     SourceManager.updateSource(filter, context);
-                    return;
                 }
+                return;
+            }
+        }
+    }
+
+    public void highlightFilter(int adapterPosition) {
+        notifyItemChanged(adapterPosition, FilterAnimator.HIGHLIGHT);
+    }
+
+    @Override
+    public void onDribbbleLogin() {
+        // no-op
+    }
+
+    @Override
+    public void onDribbbleLogout() {
+        for (int i = 0; i < filters.size(); i++) {
+            Source filter = filters.get(i);
+            if (filter.active && isAuthorisedDribbbleSource(filter)) {
+                filter.active = false;
+                SourceManager.updateSource(filter, context);
+                dispatchFiltersChanged(filter);
+                notifyItemChanged(i, FilterAnimator.FILTER_DISABLED);
             }
         }
     }
@@ -149,22 +172,10 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
                         !DribbblePrefs.get(holder.itemView.getContext()).isLoggedIn()) {
                     authoriser.requestDribbbleAuthorisation(holder.filterIcon, filter);
                 } else {
-                    holder.itemView.setHasTransientState(true);
-                    ObjectAnimator fade = ObjectAnimator.ofInt(holder.filterIcon, ViewUtils.IMAGE_ALPHA,
-                            filter.active ? FILTER_ICON_DISABLED_ALPHA : FILTER_ICON_ENABLED_ALPHA);
-                    fade.setDuration(300);
-                    fade.setInterpolator(AnimationUtils.loadInterpolator(holder.itemView.getContext()
-                            , android.R.interpolator.fast_out_slow_in));
-                    fade.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            holder.itemView.setHasTransientState(false);
-                        }
-                    });
-                    fade.start();
                     filter.active = !filter.active;
                     holder.filterName.setEnabled(filter.active);
-                    notifyItemChanged(position);
+                    notifyItemChanged(position, filter.active ? FilterAnimator.FILTER_ENABLED
+                            : FilterAnimator.FILTER_DISABLED);
                     SourceManager.updateSource(filter, holder.itemView.getContext());
                     dispatchFiltersChanged(filter);
                 }
@@ -174,16 +185,36 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
     }
 
     @Override
-    public void onBindViewHolder(final FilterViewHolder vh, int position) {
+    public void onBindViewHolder(final FilterViewHolder holder, int position) {
         final Source filter = filters.get(position);
-        vh.isSwipeable = filter.isSwipeDismissable();
-        vh.filterName.setText(filter.name);
-        vh.filterName.setEnabled(filter.active);
+        holder.isSwipeable = filter.isSwipeDismissable();
+        holder.filterName.setText(filter.name);
+        holder.filterName.setEnabled(filter.active);
         if (filter.iconRes > 0) {
-            vh.filterIcon.setImageDrawable(vh.itemView.getContext().getDrawable(filter.iconRes));
+            holder.filterIcon.setImageDrawable(
+                    holder.itemView.getContext().getDrawable(filter.iconRes));
         }
-        vh.filterIcon.setImageAlpha(filter.active ? FILTER_ICON_ENABLED_ALPHA :
+        holder.filterIcon.setImageAlpha(filter.active ? FILTER_ICON_ENABLED_ALPHA :
                 FILTER_ICON_DISABLED_ALPHA);
+    }
+
+    @Override
+    public void onBindViewHolder(FilterViewHolder holder,
+                                 int position,
+                                 List<Object> partialChangePayloads) {
+        if (!partialChangePayloads.isEmpty()) {
+            // if we're doing a partial re-bind i.e. an item is enabling/disabling or being
+            // highlighted then data hasn't changed. Just set state based on the payload
+            boolean filterEnabled = partialChangePayloads.contains(FilterAnimator.FILTER_ENABLED);
+            boolean filterDisabled = partialChangePayloads.contains(FilterAnimator.FILTER_DISABLED);
+            if (filterEnabled || filterDisabled) {
+                holder.filterName.setEnabled(filterEnabled);
+                // icon is handled by the animator
+            }
+            // nothing to do for highlight
+        } else {
+            onBindViewHolder(holder, position);
+        }
     }
 
     @Override
@@ -194,12 +225,6 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
     @Override
     public long getItemId(int position) {
         return filters.get(position).key.hashCode();
-    }
-
-    private boolean isAuthorisedDribbbleSource(Source source) {
-        return source.key.equals(SourceManager.SOURCE_DRIBBBLE_FOLLOWING)
-                || source.key.equals(SourceManager.SOURCE_DRIBBBLE_USER_LIKES)
-                || source.key.equals(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
     }
 
     @Override
@@ -231,6 +256,12 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
         if (listeners != null) {
             listeners.remove(listener);
         }
+    }
+
+    private boolean isAuthorisedDribbbleSource(Source source) {
+        return source.key.equals(SourceManager.SOURCE_DRIBBBLE_FOLLOWING)
+                || source.key.equals(SourceManager.SOURCE_DRIBBBLE_USER_LIKES)
+                || source.key.equals(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
     }
 
     private void dispatchFiltersChanged(Source filter) {
@@ -265,49 +296,109 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
             filterName = (TextView) itemView.findViewById(R.id.filter_name);
             filterIcon = (ImageView) itemView.findViewById(R.id.filter_icon);
         }
+    }
 
-        public void highlightFilter() {
-            itemView.setHasTransientState(true);
-            int highlightColor = ContextCompat.getColor(itemView.getContext(), R.color.accent);
-            int fadeFromTo = ColorUtils.modifyAlpha(highlightColor, 0);
-            ObjectAnimator background = ObjectAnimator.ofArgb(
-                    itemView,
-                    ViewUtils.BACKGROUND_COLOR,
-                    fadeFromTo,
-                    highlightColor,
-                    fadeFromTo);
-            background.setDuration(1000L);
-            background.setInterpolator(AnimationUtils.loadInterpolator(itemView.getContext(),
-                    android.R.interpolator.linear));
-            background.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    itemView.setBackground(null);
-                    itemView.setHasTransientState(false);
-                }
-            });
-            background.start();
+    public static class FilterAnimator extends DefaultItemAnimator {
+
+        public static final int FILTER_ENABLED = 1;
+        public static final int FILTER_DISABLED = 2;
+        public static final int HIGHLIGHT = 3;
+
+        @Override
+        public boolean canReuseUpdatedViewHolder(RecyclerView.ViewHolder viewHolder) {
+            return true;
         }
-    }
 
-    @Override
-    public void onDribbbleLogin() {
-        // no-op
-    }
+        @Override
+        public ItemHolderInfo obtainHolderInfo() {
+            return new FilterHolderInfo();
+        }
 
-    @Override
-    public void onDribbbleLogout() {
-        boolean changed = false;
-        for (Source filter : filters) {
-            if (filter.active && isAuthorisedDribbbleSource(filter)) {
-                filter.active = false;
-                SourceManager.updateSource(filter, context);
-                dispatchFiltersChanged(filter);
-                changed = true;
+        /* package */ static class FilterHolderInfo extends ItemHolderInfo {
+            boolean doEnable;
+            boolean doDisable;
+            boolean doHighlight;
+        }
+
+        @NonNull
+        @Override
+        public ItemHolderInfo recordPreLayoutInformation(RecyclerView.State state,
+                                                         RecyclerView.ViewHolder viewHolder,
+                                                         int changeFlags,
+                                                         List<Object> payloads) {
+            FilterHolderInfo info = (FilterHolderInfo)
+                    super.recordPreLayoutInformation(state, viewHolder, changeFlags, payloads);
+            if (!payloads.isEmpty()) {
+                info.doEnable = payloads.contains(FILTER_ENABLED);
+                info.doDisable = payloads.contains(FILTER_DISABLED);
+                info.doHighlight = payloads.contains(HIGHLIGHT);
             }
+            return info;
         }
-        if (changed) {
-            notifyDataSetChanged();
+
+        @Override
+        public boolean animateChange(RecyclerView.ViewHolder oldHolder,
+                                     RecyclerView.ViewHolder newHolder,
+                                     ItemHolderInfo preInfo,
+                                     ItemHolderInfo postInfo) {
+            if (newHolder instanceof FilterViewHolder && preInfo instanceof FilterHolderInfo) {
+                final FilterViewHolder holder = (FilterViewHolder) newHolder;
+                final FilterHolderInfo info = (FilterHolderInfo) preInfo;
+
+                if (info.doEnable || info.doDisable) {
+                    ObjectAnimator iconAlpha = ObjectAnimator.ofInt(holder.filterIcon,
+                                    ViewUtils.IMAGE_ALPHA,
+                                    info.doEnable ? FILTER_ICON_ENABLED_ALPHA :
+                                            FILTER_ICON_DISABLED_ALPHA);
+                    iconAlpha.setDuration(300L);
+                    iconAlpha.setInterpolator(AnimationUtils.loadInterpolator(
+                            holder.itemView.getContext(), android.R.interpolator.fast_out_slow_in));
+                    iconAlpha.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            dispatchChangeStarting(holder, false);
+                            holder.itemView.setHasTransientState(true);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            holder.itemView.setHasTransientState(false);
+                            dispatchChangeFinished(holder, false);
+                        }
+                    });
+                    iconAlpha.start();
+                } else if (info.doHighlight) {
+                    int highlightColor =
+                            ContextCompat.getColor(holder.itemView.getContext(), R.color.accent);
+                    int fadeFromTo = ColorUtils.modifyAlpha(highlightColor, 0);
+                    ObjectAnimator highlightBackground = ObjectAnimator.ofArgb(
+                            holder.itemView,
+                            ViewUtils.BACKGROUND_COLOR,
+                            fadeFromTo,
+                            highlightColor,
+                            fadeFromTo);
+                    highlightBackground.setDuration(1000L);
+                    highlightBackground.setInterpolator(
+                            AnimationUtils.loadInterpolator(holder.itemView.getContext(),
+                            android.R.interpolator.linear));
+                    highlightBackground.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            dispatchChangeStarting(holder, false);
+                            holder.itemView.setHasTransientState(true);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            holder.itemView.setBackground(null);
+                            holder.itemView.setHasTransientState(false);
+                            dispatchChangeFinished(holder, false);
+                        }
+                    });
+                    highlightBackground.start();
+                }
+            }
+            return super.animateChange(oldHolder, newHolder, preInfo, postInfo);
         }
     }
 

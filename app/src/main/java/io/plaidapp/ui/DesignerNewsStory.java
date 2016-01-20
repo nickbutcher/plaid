@@ -1066,7 +1066,7 @@ public class DesignerNewsStory extends Activity {
         }
     }
 
-    private class CommentAnimator extends DefaultItemAnimator {
+    private static class CommentAnimator extends DefaultItemAnimator {
 
         public static final int EXPAND_COMMENT = 1;
         public static final int COLLAPSE_COMMENT = 2;
@@ -1184,7 +1184,7 @@ public class DesignerNewsStory extends Activity {
             return new CommentItemHolderInfo();
         }
 
-        /* package */ class CommentItemHolderInfo extends ItemHolderInfo {
+        /* package */ static class CommentItemHolderInfo extends ItemHolderInfo {
             boolean doExpand;
             boolean doCollapse;
         }

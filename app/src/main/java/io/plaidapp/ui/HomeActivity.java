@@ -237,6 +237,7 @@ public class HomeActivity extends Activity {
         setupTaskDescription();
 
         filtersList.setAdapter(filtersAdapter);
+        filtersList.setItemAnimator(new FilterAdapter.FilterAnimator());
         filtersAdapter.addFilterChangedListener(filtersChangedListener);
         filtersAdapter.addFilterChangedListener(dataManager);
         dataManager.loadAllDataSources();
@@ -663,11 +664,11 @@ public class HomeActivity extends Activity {
     }
 
     /**
-     * Highlight the new item by:
+     * Highlight the new source(s) by:
      *      1. opening the drawer
-     *      2. scrolling it into view
-     *      3. flashing it's background
-     *      4. closing the drawer
+     *      2. scrolling new source(s) into view
+     *      3. flashing new source(s) background
+     *      4. closing the drawer (if user hasn't interacted with it)
      */
     private void highlightNewSources(final Source... sources) {
         final Runnable closeDrawerRunnable = new Runnable() {
@@ -699,13 +700,7 @@ public class HomeActivity extends Activity {
                 int scrollTo = Collections.max(filterPositions);
                 filtersList.smoothScrollToPosition(scrollTo);
                 for (int position : filterPositions) {
-                    FilterAdapter.FilterViewHolder holder = (FilterAdapter.FilterViewHolder)
-                            filtersList.findViewHolderForAdapterPosition(position);
-                    if (holder != null) {
-                        // this is failing for the first saved search, then working for subsequent calls
-                        // TODO work out why!
-                        holder.highlightFilter();
-                    }
+                    filtersAdapter.highlightFilter(position);
                 }
                 filtersList.setOnTouchListener(filtersTouch);
             }
@@ -726,7 +721,7 @@ public class HomeActivity extends Activity {
             }
         });
         drawer.openDrawer(GravityCompat.END);
-        drawer.postDelayed(closeDrawerRunnable, 2000);
+        drawer.postDelayed(closeDrawerRunnable, 2000L);
     }
 
     @Override
