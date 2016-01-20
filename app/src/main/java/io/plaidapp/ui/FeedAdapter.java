@@ -537,19 +537,18 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         // sort by weight
         Collections.sort(items, comparator);
-        notifyDataSetChanged(); // TODO call the more specific RV variants
+        notifyDataSetChanged();
     }
 
     public void removeDataSource(String dataSource) {
-        int i = items.size() - 1;
-        while (i >= 0) {
+        for (int i = items.size() - 1; i >= 0; i--) {
             PlaidItem item = items.get(i);
             if (dataSource.equals(item.dataSource)) {
                 items.remove(i);
             }
-            i--;
         }
-        notifyDataSetChanged();
+        sort();
+        expandPopularItems();
     }
 
     @Override
@@ -577,7 +576,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         host.getWindow().setExitTransition(
                 ti.inflateTransition(R.transition.home_content_item_exit));
         final Transition reenter = ti.inflateTransition(R.transition.home_content_item_reenter);
-        // we only want this content transition in certain cases so clear it out after it's done.
+        // we only want these content transitions in certain cases so clear out when done.
         reenter.addListener(new AnimUtils.TransitionListenerAdapter() {
             @Override
             public void onTransitionEnd(Transition transition) {
