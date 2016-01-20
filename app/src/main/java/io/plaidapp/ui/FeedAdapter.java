@@ -353,6 +353,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 .fitCenter()
                 .override(imageSize[0], imageSize[1])
                 .into(new DribbbleTarget(holder.image, false));
+        holder.image.showBadge(shot.animated);
     }
 
     @NonNull

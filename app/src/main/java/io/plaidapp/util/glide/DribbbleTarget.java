@@ -58,11 +58,9 @@ public class DribbbleTarget extends GlideDrawableImageViewTarget implements
             Palette.from(((GlideBitmapDrawable) resource).getBitmap())
                     .clearFilters()
                     .generate(this);
-            badgedImageView.showBadge(false);
         } else if (resource instanceof GifDrawable) {
             Bitmap image = ((GifDrawable) resource).getFirstFrame();
             Palette.from(image).clearFilters().generate(this);
-            badgedImageView.showBadge(true);
 
             // look at the corner to determine the gif badge color
             int cornerSize = (int) (56 * getView().getContext().getResources().getDisplayMetrics
