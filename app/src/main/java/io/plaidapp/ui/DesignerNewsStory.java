@@ -685,12 +685,25 @@ public class DesignerNewsStory extends Activity {
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             switch (getItemViewType(position)) {
                 case TYPE_COMMENT:
-                    bindComment((CommentHolder) holder);
+                    bindComment((CommentHolder) holder, null);
                     break;
                 case TYPE_COMMENT_REPLY:
                     bindCommentReply((CommentReplyHolder) holder);
                     break;
             } // nothing to bind for header / no comment / footer views
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder,
+                                     int position,
+                                     List<Object> partialChangePayloads) {
+            switch (getItemViewType(position)) {
+                case TYPE_COMMENT:
+                    bindComment((CommentHolder) holder, partialChangePayloads);
+                    break;
+                default:
+                    onBindViewHolder(holder, position);
+            }
         }
 
         @Override
@@ -795,31 +808,40 @@ public class DesignerNewsStory extends Activity {
             updateFabVisibility();
         }
 
-        private void bindComment(final CommentHolder holder) {
-            Comment comment = getComment(holder.getAdapterPosition());
-            HtmlUtils.setTextWithNiceLinks(holder.comment, markdown.markdownToSpannable(
-                    comment.body, holder.comment, new Bypass.LoadImageCallback() {
-                        @Override
-                        public void loadImage(String src, ImageLoadingSpan loadingSpan) {
-                            Glide.with(DesignerNewsStory.this)
-                                    .load(src)
-                                    .asBitmap()
-                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .into(new ImageSpanTarget(holder.comment, loadingSpan));
-                        }
-                    }));
-            holder.author.setText(comment.user_display_name);
-            holder.author.setOriginalPoster(isOP(comment.user_id));
-            if (comment.created_at != null) {
-                holder.timeAgo.setText(
-                        DateUtils.getRelativeTimeSpanString(comment.created_at.getTime(),
-                                System.currentTimeMillis(),
-                                DateUtils.SECOND_IN_MILLIS));
+        private void bindComment(final CommentHolder holder, List<Object> partialChanges) {
+            // Check if this is a partial update for expanding/collapsing a comment. If it is we
+            // can do a partial bind as the bound data has not changed.
+            if (partialChanges == null || partialChanges.isEmpty() ||
+                    !(partialChanges.contains(CommentAnimator.COLLAPSE_COMMENT)
+                        || partialChanges.contains(CommentAnimator.EXPAND_COMMENT))) {
+
+                Comment comment = getComment(holder.getAdapterPosition());
+                HtmlUtils.setTextWithNiceLinks(holder.comment, markdown.markdownToSpannable(
+                        comment.body, holder.comment, new Bypass.LoadImageCallback() {
+                            @Override
+                            public void loadImage(String src, ImageLoadingSpan loadingSpan) {
+                                Glide.with(DesignerNewsStory.this)
+                                        .load(src)
+                                        .asBitmap()
+                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                        .into(new ImageSpanTarget(holder.comment, loadingSpan));
+                            }
+                        }));
+                holder.author.setText(comment.user_display_name);
+                holder.author.setOriginalPoster(isOP(comment.user_id));
+                if (comment.created_at != null) {
+                    holder.timeAgo.setText(
+                            DateUtils.getRelativeTimeSpanString(comment.created_at.getTime(),
+                                    System.currentTimeMillis(),
+                                    DateUtils.SECOND_IN_MILLIS));
+                }
+                // FIXME updating drawable doesn't seem to be working, just create a new one
+                //((ThreadedCommentDrawable) holder.threadDepth.getDrawable())
+                //     .setDepth(comment.depth);
+
+                holder.threadDepth.setImageDrawable(
+                        new ThreadedCommentDrawable(threadWidth, threadGap, comment.depth));
             }
-            // FIXME updating drawable doesn't seem to be working, just create a new one
-            //((ThreadedCommentDrawable) holder.threadDepth.getDrawable()).setDepth(comment.depth);
-            holder.threadDepth.setImageDrawable(
-                    new ThreadedCommentDrawable(threadWidth, threadGap, comment.depth));
 
             // set/clear expanded comment state
             holder.itemView.setActivated(holder.getAdapterPosition() == expandedCommentPosition);
