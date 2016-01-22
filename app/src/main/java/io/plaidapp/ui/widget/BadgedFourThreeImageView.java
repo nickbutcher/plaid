@@ -105,7 +105,7 @@ public class BadgedFourThreeImageView extends FourThreeImageView {
         private static final int TEXT_SIZE = 12;    // sp
         private static final int PADDING = 4;       // dp
         private static final int CORNER_RADIUS = 2; // dp
-        private static final int BACKGROUND_COLOR = Color.WHITE;
+        private static final int BACKGROUND_COLOR = 0x40ffffff;
         private static final String TYPEFACE = "sans-serif-black";
         private static final int TYPEFACE_STYLE = Typeface.NORMAL;
         private static Bitmap bitmap;
