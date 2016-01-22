@@ -17,17 +17,20 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:state_enabled="true"
-        android:state_pressed="true">
+        android:state_enabled="true">
         <objectAnimator
-            android:duration="@android:integer/config_shortAnimTime"
-            android:propertyName="translationZ"
-            android:valueTo="@dimen/touch_raise" />
+            android:propertyName="textColor"
+            android:duration="300"
+            android:valueFrom="@color/text_disabled_light"
+            android:valueTo="@color/text_primary_light"
+            android:valueType="colorType" />
     </item>
     <item>
         <objectAnimator
-            android:duration="@android:integer/config_shortAnimTime"
-            android:propertyName="translationZ"
-            android:valueTo="0dp" />
+            android:propertyName="textColor"
+            android:duration="300"
+            android:valueFrom="@color/text_primary_light"
+            android:valueTo="@color/text_disabled_light"
+            android:valueType="colorType" />
     </item>
 </selector>

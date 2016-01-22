@@ -42,6 +42,7 @@
         android:layout_gravity="center_vertical"
         android:ellipsize="end"
         android:textAppearance="@style/TextAppearance.Filter"
+        android:stateListAnimator="@animator/filter_active"
         tools:text="Popular Designer News"/>
 
 </io.plaidapp.ui.widget.ForegroundLinearLayout>
