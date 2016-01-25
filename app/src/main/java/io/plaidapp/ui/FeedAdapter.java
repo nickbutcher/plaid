@@ -131,11 +131,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
         final int initialGifBadgeColorId =
                 a.getResourceId(R.styleable.DribbbleFeed_initialBadgeColor, 0);
-        if (initialGifBadgeColorId != 0) {
-            initialGifBadgeColor = ContextCompat.getColor(host, initialGifBadgeColorId);
-        } else {
-            initialGifBadgeColor = 0x40ffffff;
-        }
+        initialGifBadgeColor = initialGifBadgeColorId != 0 ?
+                ContextCompat.getColor(host, initialGifBadgeColorId) : 0x40ffffff;
         a.recycle();
     }
 
