@@ -30,6 +30,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
@@ -94,17 +95,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final LayoutInflater layoutInflater;
     private final PlaidItemComparator comparator;
     private final boolean pocketIsInstalled;
-    private @Nullable DataLoadingSubject dataLoading;
+    private final @Nullable DataLoadingSubject dataLoading;
     private final int columns;
     private final ColorDrawable[] shotLoadingPlaceholders;
+    private final @ColorInt int initialGifBadgeColor;
 
     private List<PlaidItem> items;
 
     public FeedAdapter(Activity hostActivity,
                        DataLoadingSubject dataLoading,
                        int columns,
-                       boolean pocketInstalled,
-                       boolean dark) {
+                       boolean pocketInstalled) {
         this.host = hostActivity;
         this.dataLoading = dataLoading;
         dataLoading.addCallbacks(this);
@@ -114,20 +115,28 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         comparator = new PlaidItemComparator();
         items = new ArrayList<>();
         setHasStableIds(true);
-        TypedArray placeholderColors = hostActivity.getResources().obtainTypedArray(
-                dark ? R.array.loading_placeholders_dark : R.array.loading_placeholders_light);
-        shotLoadingPlaceholders = new ColorDrawable[placeholderColors.length()];
-        for (int i = 0; i < placeholderColors.length(); i++) {
-            shotLoadingPlaceholders[i] = new ColorDrawable(
-                    placeholderColors.getColor(i, Color.DKGRAY));
-        }
-    }
 
-    public FeedAdapter(Activity hostActivity,
-                       DataLoadingSubject dataLoading,
-                       int columns,
-                       boolean pocketInstalled) {
-        this(hostActivity, dataLoading, columns, pocketInstalled, true);
+        // get the dribbble shot placeholder colors & badge color from the theme
+        final TypedArray a = host.obtainStyledAttributes(R.styleable.DribbbleFeed);
+        final int loadingColorArrayId =
+                a.getResourceId(R.styleable.DribbbleFeed_shotLoadingPlaceholderColors, 0);
+        if (loadingColorArrayId != 0) {
+            int[] placeholderColors = host.getResources().getIntArray(loadingColorArrayId);
+            shotLoadingPlaceholders = new ColorDrawable[placeholderColors.length];
+            for (int i = 0; i < placeholderColors.length; i++) {
+                shotLoadingPlaceholders[i] = new ColorDrawable(placeholderColors[i]);
+            }
+        } else {
+            shotLoadingPlaceholders = new ColorDrawable[] { new ColorDrawable(Color.DKGRAY) };
+        }
+        final int initialGifBadgeColorId =
+                a.getResourceId(R.styleable.DribbbleFeed_initialBadgeColor, 0);
+        if (initialGifBadgeColorId != 0) {
+            initialGifBadgeColor = ContextCompat.getColor(host, initialGifBadgeColorId);
+        } else {
+            initialGifBadgeColor = 0x40ffffff;
+        }
+        a.recycle();
     }
 
     @Override
@@ -169,6 +178,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (holder instanceof DribbbleShotHolder) {
             // reset the badge & ripple which are dynamically determined
             DribbbleShotHolder shotHolder = (DribbbleShotHolder) holder;
+            shotHolder.image.setBadgeColor(initialGifBadgeColor);
             shotHolder.image.showBadge(false);
             shotHolder.image.setForeground(
                     ContextCompat.getDrawable(host, R.drawable.mid_grey_ripple));
@@ -232,6 +242,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private DribbbleShotHolder createDribbbleShotHolder(ViewGroup parent) {
         final DribbbleShotHolder holder = new DribbbleShotHolder(
                 layoutInflater.inflate(R.layout.dribbble_shot_item, parent, false));
+        holder.image.setBadgeColor(initialGifBadgeColor);
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

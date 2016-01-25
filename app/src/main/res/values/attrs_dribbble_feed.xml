@@ -16,9 +16,8 @@
   -->
 
 <resources>
-    <declare-styleable name="DynamicTextView">
-        <attr name="snapToMaterialScale" format="boolean|reference" />
-        <attr name="minTextSize" format="dimension|reference" />
-        <attr name="maxTextSize" format="dimension|reference" />
+    <declare-styleable name="DribbbleFeed">
+        <attr name="shotLoadingPlaceholderColors" format="reference" />
+        <attr name="initialBadgeColor" format="color" />
     </declare-styleable>
 </resources>

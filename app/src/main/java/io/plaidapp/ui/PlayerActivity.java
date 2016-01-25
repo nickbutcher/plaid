@@ -179,7 +179,7 @@ public class PlayerActivity extends Activity {
                 }
             }
         };
-        adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this), false);
+        adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this));
         shots.setAdapter(adapter);
         shots.setVisibility(View.VISIBLE);
         layoutManager = new GridLayoutManager(this, columns);

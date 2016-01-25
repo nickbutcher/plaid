@@ -39,6 +39,8 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowBackground">@color/background_dark</item>
         <item name="android:windowEnterTransition">@transition/home_enter</item>
+        <item name="shotLoadingPlaceholderColors">@array/loading_placeholders_dark</item>
+        <item name="initialBadgeColor">@color/gif_badge_dark_image</item>
     </style>
 
     <style name="Plaid.Translucent">
@@ -57,6 +59,8 @@
         <item name="android:statusBarColor">@color/background_super_dark</item>
         <item name="android:navigationBarColor">@color/background_super_dark</item>
         <item name="android:windowEnterTransition">@transition/search_enter</item>
+        <item name="shotLoadingPlaceholderColors">@array/loading_placeholders_dark</item>
+        <item name="initialBadgeColor">@color/gif_badge_dark_image</item>
     </style>
 
     <style name="Plaid.Translucent.DesignerNewsStory">
@@ -95,6 +99,8 @@
         <item name="android:windowEnterTransition">@transition/dribbble_player_enter</item>
         <item name="android:windowReturnTransition">@transition/dribbble_player_return</item>
         <item name="android:windowTransitionBackgroundFadeDuration">200</item>
+        <item name="shotLoadingPlaceholderColors">@array/loading_placeholders_light</item>
+        <item name="initialBadgeColor">@color/gif_badge_light_image</item>
     </style>
 
     <style name="Plaid.Translucent.Dribbble.Login">
