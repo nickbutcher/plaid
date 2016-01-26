@@ -56,7 +56,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -65,11 +64,16 @@ import butterknife.ButterKnife;
 import io.plaidapp.R;
 import io.plaidapp.data.DataLoadingSubject;
 import io.plaidapp.data.PlaidItem;
-import io.plaidapp.data.PlaidItemComparator;
+import io.plaidapp.data.PlaidItemSorting;
+import io.plaidapp.data.PlayerDataManager;
+import io.plaidapp.data.api.designernews.StoryWeigher;
 import io.plaidapp.data.api.designernews.model.Story;
+import io.plaidapp.data.api.dribbble.ShotWeigher;
 import io.plaidapp.data.api.dribbble.model.Shot;
+import io.plaidapp.data.api.producthunt.PostWeigher;
 import io.plaidapp.data.api.producthunt.model.Post;
 import io.plaidapp.data.pocket.PocketUtils;
+import io.plaidapp.data.prefs.SourceManager;
 import io.plaidapp.ui.widget.BadgedFourThreeImageView;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ObservableColorMatrix;
@@ -78,12 +82,10 @@ import io.plaidapp.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.util.glide.DribbbleTarget;
 
 /**
- * Adapter for the main screen grid of items
+ * Adapter for displaying a grid of {@link PlaidItem}s.
  */
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                          implements DataLoadingSubject.DataLoadingCallbacks {
-
-    public static final float DUPE_WEIGHT_BOOST = 0.4f;
 
     private static final int TYPE_DESIGNER_NEWS_STORY = 0;
     private static final int TYPE_DRIBBBLE_SHOT = 1;
@@ -93,7 +95,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     // we need to hold on to an activity ref for the shared element transitions :/
     private final Activity host;
     private final LayoutInflater layoutInflater;
-    private final PlaidItemComparator comparator;
+    private final PlaidItemSorting.PlaidItemComparator comparator;
     private final boolean pocketIsInstalled;
     private final @Nullable DataLoadingSubject dataLoading;
     private final int columns;
@@ -101,6 +103,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final @ColorInt int initialGifBadgeColor;
 
     private List<PlaidItem> items;
+    private PlaidItemSorting.NaturalOrderWeigher naturalOrderWeigher;
+    private ShotWeigher shotWeigher;
+    private StoryWeigher storyWeigher;
+    private PostWeigher postWeigher;
 
     public FeedAdapter(Activity hostActivity,
                        DataLoadingSubject dataLoading,
@@ -112,7 +118,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.columns = columns;
         this.pocketIsInstalled = pocketInstalled;
         layoutInflater = LayoutInflater.from(host);
-        comparator = new PlaidItemComparator();
+        comparator = new PlaidItemSorting.PlaidItemComparator();
         items = new ArrayList<>();
         setHasStableIds(true);
 
@@ -435,44 +441,95 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    private void add(PlaidItem item) {
-        items.add(item);
-    }
-
     public void clear() {
         items.clear();
         notifyDataSetChanged();
     }
 
-    public void addAndResort(Collection<? extends PlaidItem> newItems) {
-        // de-dupe results as the same item can be returned by multiple feeds
-        boolean add = true;
+    /**
+     * Main entry point for adding items to this adapter. Takes care of de-duplicating items and
+     * sorting them (depending on the data source). Will also expand some items to span multiple
+     * grid columns.
+     */
+    public void addAndResort(List<? extends PlaidItem> newItems) {
+        weighItems(newItems);
+        deduplicateAndAdd(newItems);
+        sort();
+        expandPopularItems();
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Calculate a 'weight' [0, 1] for each data type for sorting. Each data type/source has a
+     * different metric for weighing it e.g. Dribbble uses likes etc. but some sources should keep
+     * the order returned by the API. Weights are 'scoped' to the page they belong to and lower
+     * weights are sorted earlier in the grid (i.e. in ascending weight).
+     */
+    private void weighItems(List<? extends PlaidItem> items) {
+        if (items == null || items.isEmpty()) return;
+
+        PlaidItemSorting.PlaidItemGroupWeigher weigher = null;
+        switch (items.get(0).dataSource) {
+            // some sources should just use the natural order i.e. as returned by the API as users
+            // have an expectation about the order they appear in
+            case SourceManager.SOURCE_DRIBBBLE_USER_SHOTS:
+            case SourceManager.SOURCE_DRIBBBLE_USER_LIKES:
+            case SourceManager.SOURCE_PRODUCT_HUNT:
+            case PlayerDataManager.SOURCE_PLAYER_SHOTS:
+            case PlayerDataManager.SOURCE_TEAM_SHOTS:
+                if (naturalOrderWeigher == null) {
+                    naturalOrderWeigher = new PlaidItemSorting.NaturalOrderWeigher();
+                }
+                weigher = naturalOrderWeigher;
+                break;
+            default:
+                // otherwise use our own weight calculation. We prefer this as it leads to a less
+                // regular pattern of items in the grid
+                if (items.get(0) instanceof Shot) {
+                    if (shotWeigher == null) shotWeigher = new ShotWeigher();
+                    weigher = shotWeigher;
+                } else if (items.get(0) instanceof Story) {
+                    if (storyWeigher == null) storyWeigher = new StoryWeigher();
+                    weigher = storyWeigher;
+                } else if (items.get(0) instanceof Post) {
+                    if (postWeigher == null) postWeigher = new PostWeigher();
+                    weigher = postWeigher;
+                }
+        }
+        weigher.weigh(items);
+    }
+
+    /**
+     * De-dupe as the same item can be returned by multiple feeds
+     */
+    private void deduplicateAndAdd(List<? extends PlaidItem> newItems) {
+        final int count = getDataItemCount();
         for (PlaidItem newItem : newItems) {
-            int count = getDataItemCount();
+            boolean add = true;
             for (int i = 0; i < count; i++) {
                 PlaidItem existingItem = getItem(i);
                 if (existingItem.equals(newItem)) {
-                    // if we find a dupe mark the weight boost field on the first-in, but don't add
-                    // the dupe. We use the fact that an item comes from multiple sources to indicate it
-                    // is more important and sort it higher
-                    existingItem.weightBoost = DUPE_WEIGHT_BOOST;
                     add = false;
                     break;
                 }
             }
             if (add) {
                 add(newItem);
-                add = true;
             }
         }
-        sort();
-        expandPopularItems();
+    }
+
+    private void add(PlaidItem item) {
+        items.add(item);
+    }
+
+    private void sort() {
+        Collections.sort(items, comparator); // sort by weight
     }
 
     private void expandPopularItems() {
         // for now just expand the first dribbble image per page which should be
-        // the most popular according to #sort.
-        // TODO make this smarter & handle other item types
+        // the most popular according to our weighing & sorting
         List<Integer> expandedPositions = new ArrayList<>();
         int page = -1;
         final int count = items.size();
@@ -502,52 +559,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    protected void sort() {
-        // calculate the 'weight' for each data type and then sort by that. Each data type has a
-        // different metric for weighing it e.g. Dribbble uses likes etc. Weights are 'scoped' to
-        // the page they belong to and lower weights are sorted higher in the grid.
-        int count = getDataItemCount();
-        int maxDesignNewsVotes = 0;
-        int maxDesignNewsComments = 0;
-        long maxDribbleLikes = 0;
-        int maxProductHuntVotes = 0;
-        int maxProductHuntComments = 0;
-
-        // work out some maximum values to weigh individual items against
-        for (int i = 0; i < count; i++) {
-            PlaidItem item = getItem(i);
-            if (item instanceof Story) {
-                maxDesignNewsComments = Math.max(((Story) item).comment_count,
-                        maxDesignNewsComments);
-                maxDesignNewsVotes = Math.max(((Story) item).vote_count, maxDesignNewsVotes);
-            } else if (item instanceof Shot) {
-                maxDribbleLikes = Math.max(((Shot) item).likes_count, maxDribbleLikes);
-            } else if (item instanceof Post) {
-                maxProductHuntComments = Math.max(((Post) item).comments_count,
-                        maxProductHuntComments);
-                maxProductHuntVotes = Math.max(((Post) item).votes_count, maxProductHuntVotes);
-            }
-        }
-
-        // now go through and set the weight of each item
-        for (int i = 0; i < count; i++) {
-            PlaidItem item = getItem(i);
-            if (item instanceof Story) {
-                ((Story) item).weigh(maxDesignNewsComments, maxDesignNewsVotes);
-            } else if (item instanceof Shot) {
-                ((Shot) item).weigh(maxDribbleLikes);
-            } else if (item instanceof Post) {
-                ((Post) item).weigh(maxProductHuntComments, maxProductHuntVotes);
-            }
-            // scope it to the page it came from
-            item.weight += item.page;
-        }
-
-        // sort by weight
-        Collections.sort(items, comparator);
-        notifyDataSetChanged();
-    }
-
     public void removeDataSource(String dataSource) {
         for (int i = items.size() - 1; i >= 0; i--) {
             PlaidItem item = items.get(i);
@@ -557,6 +568,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
         sort();
         expandPopularItems();
+        notifyDataSetChanged();
     }
 
     @Override

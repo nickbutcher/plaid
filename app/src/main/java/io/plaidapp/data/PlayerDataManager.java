@@ -37,6 +37,9 @@ import retrofit.client.Response;
  */
 public abstract class PlayerDataManager extends BaseDataManager {
 
+    public static final String SOURCE_PLAYER_SHOTS = "SOURCE_PLAYER_SHOTS";
+    public static final String SOURCE_TEAM_SHOTS = "SOURCE_TEAM_SHOTS";
+
     private final long userId;
     private final boolean isTeam;
 
@@ -68,6 +71,7 @@ public abstract class PlayerDataManager extends BaseDataManager {
                     @Override
                     public void success(List<Shot> shots, Response response) {
                         setPage(shots, page);
+                        setDataSource(shots, SOURCE_PLAYER_SHOTS);
                         onDataLoaded(shots);
                         loadFinished();
                         moreShotsToLoad = shots.size() == DribbbleService.PER_PAGE_DEFAULT;
@@ -88,6 +92,7 @@ public abstract class PlayerDataManager extends BaseDataManager {
                     @Override
                     public void success(List<Shot> shots, Response response) {
                         setPage(shots, page);
+                        setDataSource(shots, SOURCE_TEAM_SHOTS);
                         onDataLoaded(shots);
                         loadFinished();
                         moreShotsToLoad = shots.size() == DribbbleService.PER_PAGE_DEFAULT;

@@ -156,11 +156,6 @@ public class Shot extends PlaidItem implements Parcelable {
         return parsedDescription;
     }
 
-    public void weigh(long maxLikes) {
-        weight = 1f - (float) likes_count / maxLikes * 0.8f;
-        weight = Math.min(weight + weightBoost, 1f);
-    }
-
     public static class Builder {
         private long id;
         private String title;

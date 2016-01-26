@@ -95,12 +95,6 @@ public class Story extends PlaidItem implements Parcelable {
         }
     }
 
-    public void weigh(float maxDesignNewsComments, float maxDesignNewsVotes) {
-        weight = 1f - ((((float) comment_count) / maxDesignNewsComments) +
-                ((float) vote_count / maxDesignNewsVotes)) / 2f;
-        weight = Math.min(weight + weightBoost, 1f);
-    }
-
     public static class Builder {
         private long id;
         private String title;

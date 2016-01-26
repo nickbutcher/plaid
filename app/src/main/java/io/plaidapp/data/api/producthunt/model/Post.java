@@ -31,18 +31,7 @@ import io.plaidapp.util.ParcelUtils;
  */
 public class Post extends PlaidItem implements Parcelable {
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Post> CREATOR = new Parcelable.Creator<Post>() {
-        @Override
-        public Post createFromParcel(Parcel in) {
-            return new Post(in);
-        }
 
-        @Override
-        public Post[] newArray(int size) {
-            return new Post[size];
-        }
-    };
     public final String name;
     public final String tagline;
     public final String discussion_url;
@@ -124,11 +113,20 @@ public class Post extends PlaidItem implements Parcelable {
         return url;
     }
 
-    public void weigh(float maxProductHuntComments, float maxProductHuntVotes) {
-        weight = 1f - ((((float) comments_count) / maxProductHuntComments) +
-                ((float) votes_count / maxProductHuntVotes)) / 2f;
-        weight = Math.min(weight + weightBoost, 1f);
-    }
+    /* Parcelable stuff */
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Post> CREATOR = new Parcelable.Creator<Post>() {
+        @Override
+        public Post createFromParcel(Parcel in) {
+            return new Post(in);
+        }
+
+        @Override
+        public Post[] newArray(int size) {
+            return new Post[size];
+        }
+    };
 
     @Override
     public int describeContents() {

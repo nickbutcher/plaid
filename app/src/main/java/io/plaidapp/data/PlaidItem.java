@@ -26,8 +26,7 @@ public abstract class PlaidItem {
     public String url; // can't be final as some APIs use different serialized names
     public String dataSource;
     public int page;
-    public float weight;
-    public float weightBoost;
+    public float weight; // used for sorting
     public int colspan;
 
     public PlaidItem(long id,
