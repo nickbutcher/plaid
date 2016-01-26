@@ -75,6 +75,7 @@ public class Story extends PlaidItem implements Parcelable {
 
     protected Story(Parcel in) {
         super(in.readLong(), in.readString(), in.readString());
+        dataSource = in.readString();
         comment = in.readString();
         comment_html = in.readString();
         comment_count = in.readInt();
@@ -230,6 +231,7 @@ public class Story extends PlaidItem implements Parcelable {
         dest.writeLong(id);
         dest.writeString(title);
         dest.writeString(url);
+        dest.writeString(dataSource);
         dest.writeString(comment);
         dest.writeString(comment_html);
         dest.writeInt(comment_count);

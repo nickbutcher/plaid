@@ -24,5 +24,6 @@
     android:background="@drawable/fab"
     android:clickable="true"
     android:elevation="@dimen/z_fab"
+    android:outlineProvider="none"
     android:src="@drawable/avd_uploading"
     tools:showIn="@layout/activity_home" />

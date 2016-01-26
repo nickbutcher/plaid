@@ -50,6 +50,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.WindowInsets;
@@ -315,7 +316,6 @@ public class HomeActivity extends Activity {
                         @Override
                         public void run() {
                             fabPosting.setVisibility(View.GONE);
-                            fab.setVisibility(View.VISIBLE);
                         }
                     }, 2100); // length of R.drawable.avd_upload_complete
 
@@ -333,16 +333,11 @@ public class HomeActivity extends Activity {
                     fabPosting.animate()
                             .alpha(0f)
                             .rotation(90f)
-                            .setStartDelay(2000L) // leave error on screen for a while before hiding
-                            .setDuration(200L)
+                            .setStartDelay(2000L) // leave error on screen briefly
+                            .setDuration(300L)
                             .setInterpolator(AnimationUtils.loadInterpolator(
-                                    HomeActivity.this, android.R.interpolator.fast_out_linear_in))
+                                    HomeActivity.this, android.R.interpolator.fast_out_slow_in))
                             .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationStart(Animator animation) {
-                                    fab.setVisibility(View.VISIBLE);
-                                }
-
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
                                     fabPosting.setVisibility(View.GONE);
@@ -370,8 +365,32 @@ public class HomeActivity extends Activity {
 
     private void showPostingProgress() {
         ensurePostingProgressInflated();
-        fab.setVisibility(View.INVISIBLE);
         fabPosting.setVisibility(View.VISIBLE);
+        // if stub has just been inflated then it will not have been laid out yet
+        if (fabPosting.isLaidOut()) {
+            revealPostingProgress();
+        } else {
+            fabPosting.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int l, int t, int r, int b,
+                                           int oldL, int oldT, int oldR, int oldB) {
+                    fabPosting.removeOnLayoutChangeListener(this);
+                    revealPostingProgress();
+                }
+            });
+        }
+    }
+
+    private void revealPostingProgress() {
+        Animator reveal = ViewAnimationUtils.createCircularReveal(fabPosting,
+                (int) fabPosting.getPivotX(),
+                (int) fabPosting.getPivotY(),
+                0f,
+                fabPosting.getWidth() / 2)
+                .setDuration(600L);
+        reveal.setInterpolator(AnimationUtils.loadInterpolator(this,
+                android.R.interpolator.fast_out_linear_in));
+        reveal.start();
         AnimatedVectorDrawable uploading =
                 (AnimatedVectorDrawable) getDrawable(R.drawable.avd_uploading);
         fabPosting.setImageDrawable(uploading);
