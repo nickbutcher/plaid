@@ -103,6 +103,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final @ColorInt int initialGifBadgeColor;
 
     private List<PlaidItem> items;
+    private boolean showLoadingMore = false;
     private PlaidItemSorting.NaturalOrderWeigher naturalOrderWeigher;
     private ShotWeigher shotWeigher;
     private StoryWeigher storyWeigher;
@@ -581,7 +582,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        return getDataItemCount() + 1; // include loading footer
+        return getDataItemCount() + (showLoadingMore ? 1 : 0);
     }
 
     /**
@@ -611,6 +612,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return items.size();
     }
 
+    private int getLoadingMoreItemPosition() {
+        return showLoadingMore ? getItemCount() - 1 : RecyclerView.NO_POSITION;
+    }
+
     /**
      * Which ViewHolder types require a divider decoration
      */
@@ -620,12 +625,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void dataStartedLoading() {
-        notifyItemChanged(getItemCount());
+        if (showLoadingMore) return;
+        notifyItemInserted(getLoadingMoreItemPosition());
+        showLoadingMore = true;
     }
 
     @Override
     public void dataFinishedLoading() {
-        notifyItemChanged(getItemCount());
+        if (!showLoadingMore) return;
+        showLoadingMore = false;
+        notifyItemRemoved(getLoadingMoreItemPosition());
+
     }
 
     /* package */ class DribbbleShotHolder extends RecyclerView.ViewHolder {

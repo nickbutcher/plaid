@@ -196,7 +196,7 @@ public class HomeActivity extends Activity {
                         insets.getSystemWindowInsetTop() + ViewUtils.getActionBarSize
                                 (HomeActivity.this),
                         grid.getPaddingRight() + insets.getSystemWindowInsetRight(), // landscape
-                        grid.getPaddingBottom());
+                        grid.getPaddingBottom() + insets.getSystemWindowInsetBottom());
 
                 // inset the fab for the navbar
                 ViewGroup.MarginLayoutParams lpFab = (ViewGroup.MarginLayoutParams) fab
