@@ -41,7 +41,7 @@ import io.plaidapp.util.ViewOffsetHelper;
 /**
  * A {@link FrameLayout} which can be dragged downward to be dismissed (either directly or via a
  * specified nested scrolling child).  It expects to contain a single child view and exposes a
- * listener interface to react to it's dismissal.
+ * {@link Listener} interface to react to it's dismissal.
  *
  * View dragging has the benefit of reporting it's velocity allowing us to respond to flings etc
  * but does not allow children to scroll.  Nested scrolling allows child views to scroll (duh)
@@ -68,6 +68,7 @@ public class BottomSheet extends FrameLayout {
     private int dragViewTop;
     private int dragViewBottom;
     private boolean lastNestedScrollWasDownward;
+    private boolean scrollingChildTouched;
 
     public BottomSheet(Context context) {
         this(context, null, 0);
@@ -95,6 +96,14 @@ public class BottomSheet extends FrameLayout {
         a.recycle();
     }
 
+    /**
+     * Interface for responding to interactions with the bottom sheet.
+     */
+    public interface Listener {
+        void onDragDismissed();
+        void onDrag(int top);
+    }
+
     public void addListener(Listener listener) {
         if (listeners == null) {
             listeners = new ArrayList<>();
@@ -102,9 +111,8 @@ public class BottomSheet extends FrameLayout {
         listeners.add(listener);
     }
 
-    public interface Listener {
-        void onDragDismissed();
-        void onDrag(int top);
+    public void removeListener(Listener listener) {
+        listeners.remove(listener);
     }
 
     public void doDismiss() {
@@ -148,12 +156,14 @@ public class BottomSheet extends FrameLayout {
             viewDragHelper.cancel();
             return false;
         }
+        checkScrollingChildHit(ev);
         return isDraggableViewUnder((int) ev.getX(), (int) ev.getY())
             && (viewDragHelper.shouldInterceptTouchEvent(ev) || super.onInterceptTouchEvent(ev));
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        checkScrollingChildHit(ev);
         viewDragHelper.processTouchEvent(ev);
         if (viewDragHelper.getCapturedView() == null) {
             return super.onTouchEvent(ev);
@@ -226,7 +236,7 @@ public class BottomSheet extends FrameLayout {
     }
 
     protected void dispatchDismissCallback() {
-        if (listeners != null && listeners.size() > 0) {
+        if (listeners != null && !listeners.isEmpty()) {
             for (Listener listener : listeners) {
                 listener.onDragDismissed();
             }
@@ -234,7 +244,7 @@ public class BottomSheet extends FrameLayout {
     }
 
     protected void dispatchDragCallback() {
-        if (listeners != null && listeners.size() > 0) {
+        if (listeners != null && !listeners.isEmpty()) {
             for (Listener listener : listeners) {
                 listener.onDrag(getTop());
             }
@@ -245,16 +255,27 @@ public class BottomSheet extends FrameLayout {
         return getVisibility() == VISIBLE && viewDragHelper.isViewUnder(this, x, y);
     }
 
+    private void checkScrollingChildHit(MotionEvent ev) {
+        // we need to know if the scrolling child was touched in dragHelperCallbacks#tryCaptureView
+        // but that does not have access to the motion event, so check earlier & store
+        if (hasScrollingChild && MotionEventCompat.getActionMasked(ev) == MotionEvent.ACTION_DOWN) {
+            scrollingChildTouched =
+                    viewDragHelper.isViewUnder(scrollingChild, (int) ev.getX(), (int) ev.getY());
+        }
+    }
+
     private ViewDragHelper.Callback dragHelperCallbacks = new ViewDragHelper.Callback() {
 
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
-            // if we have a scrolling child and it can scroll then don't drag, it'll be handled
-            // by nested scrolling
-            boolean childCanScroll = scrollingChild != null
-                    && (scrollingChild.canScrollVertically(1)
-                            || scrollingChild.canScrollVertically(-1));
-            return !childCanScroll;
+            if (scrollingChildTouched) {
+                // if we have a scrolling child and it can scroll then don't drag, it'll be handled
+                // by nested scrolling
+                final boolean childCanScroll = scrollingChild.canScrollVertically(1)
+                        || scrollingChild.canScrollVertically(-1);
+                return !childCanScroll;
+            }
+            return child == dragView;
         }
 
         @Override
