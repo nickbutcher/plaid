@@ -168,7 +168,7 @@ public class HomeActivity extends Activity {
             }
         });
         grid.setLayoutManager(layoutManager);
-        grid.addOnScrollListener(gridScroll);
+        grid.addOnScrollListener(toolbarElevation);
         grid.addOnScrollListener(new InfiniteScrollListener(layoutManager, dataManager) {
             @Override
             public void onLoadMore() {
@@ -267,15 +267,18 @@ public class HomeActivity extends Activity {
         }
     };
 
-    private int gridScrollY = 0;
-    private RecyclerView.OnScrollListener gridScroll = new RecyclerView.OnScrollListener() {
+    private RecyclerView.OnScrollListener toolbarElevation = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            gridScrollY += dy;
-            if (gridScrollY > 0 && toolbar.getTranslationZ() != -1f) {
-                toolbar.setTranslationZ(-1f);
-            } else if (gridScrollY == 0 && toolbar.getTranslationZ() != 0) {
+            // we want the grid to scroll over the top of the toolbar but for the toolbar items
+            // to be clickable when visible. To achieve this we play games with elevation. The
+            // toolbar is laid out in front of the grid but when we scroll, we lower it's elevation
+            // to allow the content to pass in front (and reset when scrolled to top of the grid)
+            final int firstVisibleItemPos = layoutManager.findFirstCompletelyVisibleItemPosition();
+            if (firstVisibleItemPos <= 0 && toolbar.getTranslationZ() != 0) {
                 toolbar.setTranslationZ(0f);
+            } else if (firstVisibleItemPos > 0 && toolbar.getTranslationZ() != -1f) {
+                toolbar.setTranslationZ(-1f);
             }
         }
     };
@@ -411,9 +414,6 @@ public class HomeActivity extends Activity {
                 loading.setVisibility(View.GONE);
                 setNoFiltersEmptyTextVisibility(View.VISIBLE);
             }
-            // ensure grid scroll tracking/toolbar z-order is reset
-            gridScrollY = 0;
-            toolbar.setTranslationZ(0f);
         } else {
             loading.setVisibility(View.GONE);
             setNoFiltersEmptyTextVisibility(View.GONE);
