@@ -17,16 +17,12 @@
 package io.plaidapp.data;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
 import java.util.List;
 
-import io.plaidapp.data.api.designernews.model.StoriesResponse;
-import io.plaidapp.data.api.dribbble.DribbbleSearch;
 import io.plaidapp.data.api.dribbble.DribbbleService;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.dribbble.model.User;
-import io.plaidapp.data.prefs.SourceManager;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;

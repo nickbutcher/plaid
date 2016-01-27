@@ -22,7 +22,6 @@ import android.os.Parcelable;
 import android.support.annotation.ColorInt;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,7 +29,6 @@ import java.util.List;
 
 import io.plaidapp.data.PlaidItem;
 import io.plaidapp.util.DribbbleUtils;
-import io.plaidapp.util.HtmlUtils;
 
 /**
  * Models a dibbble shot

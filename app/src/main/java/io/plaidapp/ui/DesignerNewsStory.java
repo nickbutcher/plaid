@@ -52,7 +52,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.EditText;
@@ -104,6 +103,10 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import static io.plaidapp.util.AnimUtils.getFastOutLinearInInterpolator;
+import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
+import static io.plaidapp.util.AnimUtils.getLinearOutSlowInInterpolator;
 
 public class DesignerNewsStory extends Activity {
 
@@ -332,8 +335,7 @@ public class DesignerNewsStory extends Activity {
                     .scaleY(0f)
                     .alpha(0.6f)
                     .setDuration(200L)
-                    .setInterpolator(AnimationUtils.loadInterpolator(this,
-                            android.R.interpolator.fast_out_linear_in))
+                    .setInterpolator(getFastOutLinearInInterpolator(this))
                     .withLayer()
                     .setListener(postHideFab)
                     .start();
@@ -344,8 +346,7 @@ public class DesignerNewsStory extends Activity {
                     .scaleY(1f)
                     .alpha(1f)
                     .setDuration(200L)
-                    .setInterpolator(AnimationUtils.loadInterpolator(this,
-                            android.R.interpolator.linear_out_slow_in))
+                    .setInterpolator(getLinearOutSlowInInterpolator(this))
                     .withLayer()
                     .setListener(preShowFab)
                     .start();
@@ -449,8 +450,7 @@ public class DesignerNewsStory extends Activity {
 
         // play 'em all together with the material interpolator
         AnimatorSet show = new AnimatorSet();
-        show.setInterpolator(AnimationUtils.loadInterpolator(DesignerNewsStory.this,
-                android.R.interpolator.fast_out_slow_in));
+        show.setInterpolator(getFastOutSlowInInterpolator(DesignerNewsStory.this));
         show.playTogether(reveal, background, position, fadeOutFab);
         show.start();
     }
@@ -945,9 +945,8 @@ public class DesignerNewsStory extends Activity {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     replyToCommentFocused = hasFocus;
-                    final Interpolator interp = AnimationUtils.loadInterpolator(
-                            holder.itemView.getContext(),
-                            android.R.interpolator.fast_out_slow_in);
+                    final Interpolator interp = getFastOutSlowInInterpolator(holder
+                            .itemView.getContext());
                     if (hasFocus) {
                         holder.commentVotes.animate()
                                 .translationX(-holder.commentVotes.getWidth())
@@ -1105,8 +1104,8 @@ public class DesignerNewsStory extends Activity {
                                 .getMarginEnd());
 
                 if (info.doExpand) {
-                    Interpolator moveInterpolator = AnimationUtils.loadInterpolator(
-                            holder.itemView.getContext(), android.R.interpolator.fast_out_slow_in);
+                    Interpolator moveInterpolator = getFastOutSlowInInterpolator(holder
+                            .itemView.getContext());
                     holder.threadDepth.setTranslationX(0f);
                     holder.threadDepth.animate()
                             .translationX(expandedThreadOffset)
@@ -1137,10 +1136,12 @@ public class DesignerNewsStory extends Activity {
                                 }
                             });
                 } else if (info.doCollapse) {
-                    Interpolator enterInterpolator = AnimationUtils.loadInterpolator(holder.itemView
-                            .getContext(), android.R.interpolator.linear_out_slow_in);
-                    Interpolator moveInterpolator = AnimationUtils.loadInterpolator(holder.itemView
-                            .getContext(), android.R.interpolator.fast_out_slow_in);
+                    Interpolator enterInterpolator = getLinearOutSlowInInterpolator
+                            (holder.itemView
+                            .getContext());
+                    Interpolator moveInterpolator = getFastOutSlowInInterpolator(holder
+                            .itemView
+                            .getContext());
 
                     // return the thread depth indicator into place
                     holder.threadDepth.setTranslationX(expandedThreadOffset);

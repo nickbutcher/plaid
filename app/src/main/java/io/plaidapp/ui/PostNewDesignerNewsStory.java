@@ -29,7 +29,6 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,6 +46,7 @@ import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.widget.BottomSheet;
 import io.plaidapp.ui.widget.ObservableScrollView;
+import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ImeUtils;
 
 public class PostNewDesignerNewsStory extends Activity {
@@ -96,18 +96,16 @@ public class PostNewDesignerNewsStory extends Activity {
                             .translationZ(appBarElevation)
                             .setStartDelay(0L)
                             .setDuration(80L)
-                            .setInterpolator(AnimationUtils.loadInterpolator
-                                    (PostNewDesignerNewsStory.this, android.R.interpolator
-                                            .fast_out_slow_in))
+                            .setInterpolator(AnimUtils.getFastOutSlowInInterpolator
+                                    (PostNewDesignerNewsStory.this))
                             .start();
                 } else if (scrollY == 0 && sheetTitle.getTranslationZ() == appBarElevation) {
                     sheetTitle.animate()
                             .translationZ(0f)
                             .setStartDelay(0L)
                             .setDuration(80L)
-                            .setInterpolator(AnimationUtils.loadInterpolator
-                                    (PostNewDesignerNewsStory.this,
-                                            android.R.interpolator.fast_out_slow_in))
+                            .setInterpolator(AnimUtils.getFastOutSlowInInterpolator
+                                    (PostNewDesignerNewsStory.this))
                             .start();
                 }
             }
@@ -132,9 +130,8 @@ public class PostNewDesignerNewsStory extends Activity {
                             .translationY(0f)
                             .setStartDelay(120L)
                             .setDuration(240L)
-                            .setInterpolator(AnimationUtils.loadInterpolator(
-                                    PostNewDesignerNewsStory.this,
-                                    android.R.interpolator.linear_out_slow_in));
+                            .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator
+                                    (PostNewDesignerNewsStory.this));
                     return false;
                 }
             });
@@ -154,9 +151,8 @@ public class PostNewDesignerNewsStory extends Activity {
             bottomSheetContent.animate()
                     .translationY(bottomSheetContent.getHeight())
                     .setDuration(160L)
-                    .setInterpolator(AnimationUtils.loadInterpolator(
-                            PostNewDesignerNewsStory.this,
-                            android.R.interpolator.fast_out_linear_in))
+                    .setInterpolator(AnimUtils.getFastOutLinearInInterpolator
+                            (PostNewDesignerNewsStory.this))
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {

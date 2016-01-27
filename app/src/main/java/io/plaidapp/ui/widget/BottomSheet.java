@@ -29,13 +29,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.plaidapp.R;
+import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ViewOffsetHelper;
 
 /**
@@ -213,8 +213,7 @@ public class BottomSheet extends FrameLayout {
                 dragView.getTop(),
                 dismiss ? dragViewBottom : dragViewTop);
         settleAnim.setDuration(200L);
-        settleAnim.setInterpolator(AnimationUtils.loadInterpolator(getContext(),
-                android.R.interpolator.fast_out_slow_in));
+        settleAnim.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(getContext()));
         if (dismiss) {
             settleAnim.addListener(new AnimatorListenerAdapter() {
                 @Override

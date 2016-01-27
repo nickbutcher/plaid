@@ -18,7 +18,6 @@ package io.plaidapp.ui.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import io.plaidapp.R;
 

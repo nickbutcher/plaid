@@ -55,7 +55,6 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.WindowInsets;
 import android.view.animation.AnimationUtils;
-import android.view.animation.Interpolator;
 import android.widget.ActionMenuView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -89,6 +88,7 @@ import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
+import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ViewUtils;
 
 
@@ -335,8 +335,8 @@ public class HomeActivity extends Activity {
                             .rotation(90f)
                             .setStartDelay(2000L) // leave error on screen briefly
                             .setDuration(300L)
-                            .setInterpolator(AnimationUtils.loadInterpolator(
-                                    HomeActivity.this, android.R.interpolator.fast_out_slow_in))
+                            .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(HomeActivity
+                                    .this))
                             .setListener(new AnimatorListenerAdapter() {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
@@ -388,8 +388,7 @@ public class HomeActivity extends Activity {
                 0f,
                 fabPosting.getWidth() / 2)
                 .setDuration(600L);
-        reveal.setInterpolator(AnimationUtils.loadInterpolator(this,
-                android.R.interpolator.fast_out_linear_in));
+        reveal.setInterpolator(AnimUtils.getFastOutLinearInInterpolator(this));
         reveal.start();
         AnimatedVectorDrawable uploading =
                 (AnimatedVectorDrawable) getDrawable(R.drawable.avd_uploading);
@@ -504,8 +503,7 @@ public class HomeActivity extends Activity {
                     .scaleX(1f)
                     .setStartDelay(300)
                     .setDuration(900)
-                    .setInterpolator(AnimationUtils.loadInterpolator(this,
-                            android.R.interpolator.fast_out_slow_in));
+                    .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(this));
         }
         View amv = toolbar.getChildAt(1);
         if (amv != null & amv instanceof ActionMenuView) {
@@ -527,8 +525,8 @@ public class HomeActivity extends Activity {
                     .scaleY(1f)
                     .setStartDelay(startDelay)
                     .setDuration(duration)
-                    .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator
-                            .overshoot));
+                    .setInterpolator(AnimationUtils.loadInterpolator(this,
+                            android.R.interpolator.overshoot));
         }
     }
 
@@ -677,8 +675,7 @@ public class HomeActivity extends Activity {
                 .scaleY(1f)
                 .translationY(0f)
                 .setDuration(300L)
-                .setInterpolator(AnimationUtils.loadInterpolator(this, android.R.interpolator
-                        .linear_out_slow_in))
+                .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(this))
                 .start();
     }
 

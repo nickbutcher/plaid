@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,6 +42,7 @@ import io.plaidapp.data.Source;
 import io.plaidapp.data.prefs.DribbblePrefs;
 import io.plaidapp.data.prefs.SourceManager;
 import io.plaidapp.ui.recyclerview.ItemTouchHelperAdapter;
+import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ColorUtils;
 import io.plaidapp.util.ViewUtils;
 
@@ -351,8 +353,8 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
                                     info.doEnable ? FILTER_ICON_ENABLED_ALPHA :
                                             FILTER_ICON_DISABLED_ALPHA);
                     iconAlpha.setDuration(300L);
-                    iconAlpha.setInterpolator(AnimationUtils.loadInterpolator(
-                            holder.itemView.getContext(), android.R.interpolator.fast_out_slow_in));
+                    iconAlpha.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(holder
+                            .itemView.getContext()));
                     iconAlpha.addListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationStart(Animator animation) {
@@ -378,9 +380,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
                             highlightColor,
                             fadeFromTo);
                     highlightBackground.setDuration(1000L);
-                    highlightBackground.setInterpolator(
-                            AnimationUtils.loadInterpolator(holder.itemView.getContext(),
-                            android.R.interpolator.linear));
+                    highlightBackground.setInterpolator(new LinearInterpolator());
                     highlightBackground.addListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationStart(Animator animation) {

@@ -53,7 +53,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
@@ -110,6 +109,9 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
+
+import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
+import static io.plaidapp.util.AnimUtils.getLinearOutSlowInInterpolator;
 
 public class DribbbleShot extends Activity {
 
@@ -451,9 +453,8 @@ public class DribbbleShot extends Activity {
                                     }
                                 });
                                 statusBarColorAnim.setDuration(1000);
-                                statusBarColorAnim.setInterpolator(AnimationUtils
-                                        .loadInterpolator(DribbbleShot.this, android.R
-                                                .interpolator.fast_out_slow_in));
+                                statusBarColorAnim.setInterpolator(
+                                        getFastOutSlowInInterpolator(DribbbleShot.this));
                                 statusBarColorAnim.start();
                             }
                         }
@@ -566,15 +567,13 @@ public class DribbbleShot extends Activity {
             back.animate()
                     .alpha(0f)
                     .setDuration(100)
-                    .setInterpolator(AnimationUtils.loadInterpolator(DribbbleShot.this, android.R
-                            .interpolator.linear_out_slow_in));
+                    .setInterpolator(getLinearOutSlowInInterpolator(DribbbleShot.this));
             imageView.setElevation(1f);
             back.setElevation(0f);
             commentsList.animate()
                     .alpha(0f)
                     .setDuration(50)
-                    .setInterpolator(AnimationUtils.loadInterpolator(DribbbleShot.this, android.R
-                            .interpolator.linear_out_slow_in));
+                    .setInterpolator(getLinearOutSlowInInterpolator(DribbbleShot.this));
         }
     };
 
@@ -607,8 +606,7 @@ public class DribbbleShot extends Activity {
             Animator expandImage = ObjectAnimator.ofFloat(imageView, ParallaxScrimageView.OFFSET,
                     0f);
             expandImage.setDuration(80);
-            expandImage.setInterpolator(AnimationUtils.loadInterpolator(this, android.R
-                    .interpolator.fast_out_slow_in));
+            expandImage.setInterpolator(getFastOutSlowInInterpolator(this));
             expandImage.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -650,8 +648,7 @@ public class DribbbleShot extends Activity {
      * plays nicely with #calculateFabPosition
      */
     private void enterAnimation(boolean isOrientationChange) {
-        Interpolator interp = AnimationUtils.loadInterpolator(this, android.R.interpolator
-                .fast_out_slow_in);
+        Interpolator interp = getFastOutSlowInInterpolator(this);
         int offset = title.getHeight();
         viewEnterAnimation(title, offset, interp);
         if (description.getVisibility() == View.VISIBLE) {
@@ -688,8 +685,7 @@ public class DribbbleShot extends Activity {
                     PropertyValuesHolder.ofFloat(View.SCALE_Y, 0f, 1f));
             showFab.setStartDelay(300L);
             showFab.setDuration(300L);
-            showFab.setInterpolator(AnimationUtils.loadInterpolator(this,
-                    android.R.interpolator.linear_out_slow_in));
+            showFab.setInterpolator(getLinearOutSlowInInterpolator(this));
             showFab.start();
         }
     }
@@ -829,8 +825,7 @@ public class DribbbleShot extends Activity {
             inflater = LayoutInflater.from(context);
             change = new AutoTransition();
             change.setDuration(200L);
-            change.setInterpolator(AnimationUtils.loadInterpolator(context,
-                    android.R.interpolator.fast_out_slow_in));
+            change.setInterpolator(getFastOutSlowInInterpolator(context));
         }
 
         @Override

@@ -36,6 +36,7 @@ import android.view.animation.Interpolator;
 import java.util.Arrays;
 
 import io.plaidapp.R;
+import io.plaidapp.util.AnimUtils;
 
 /**
  * An ink inspired widget for indicating pages in a {@link ViewPager}.
@@ -149,8 +150,7 @@ public class InkPageIndicator extends View implements ViewPager.OnPageChangeList
         unselectedPaint.setColor(unselectedColour);
         selectedPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         selectedPaint.setColor(selectedColour);
-        interpolator = android.view.animation.AnimationUtils.loadInterpolator(context,
-                android.R.interpolator.fast_out_slow_in);
+        interpolator = AnimUtils.getFastOutSlowInInterpolator(context);
 
         // create paths & rect now – reuse & rewind later
         combinedUnselectedPath = new Path();

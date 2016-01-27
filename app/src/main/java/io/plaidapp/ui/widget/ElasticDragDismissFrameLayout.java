@@ -21,13 +21,13 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.plaidapp.R;
+import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ColorUtils;
 
 /**
@@ -143,8 +143,7 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
                     .scaleX(1f)
                     .scaleY(1f)
                     .setDuration(200L)
-                    .setInterpolator(AnimationUtils.loadInterpolator(getContext(), android.R
-                            .interpolator.fast_out_slow_in))
+                    .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(getContext()))
                     .setListener(null)
                     .start();
             totalDrag = 0;

@@ -43,7 +43,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -80,6 +79,8 @@ import io.plaidapp.util.ObservableColorMatrix;
 import io.plaidapp.util.ViewUtils;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.util.glide.DribbbleTarget;
+
+import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
 
 /**
  * Adapter for displaying a grid of {@link PlaidItem}s.
@@ -342,8 +343,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                 }
                             });
                             saturation.setDuration(2000);
-                            saturation.setInterpolator(AnimationUtils.loadInterpolator(host,
-                                    android.R.interpolator.fast_out_slow_in));
+                            saturation.setInterpolator(getFastOutSlowInInterpolator(host));
                             saturation.addListener(new AnimatorListenerAdapter() {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {

@@ -27,10 +27,10 @@ import android.support.v7.widget.RecyclerView;
 import android.transition.ArcMotion;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 
 import java.util.List;
 
+import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ViewUtils;
 
 /**
@@ -99,8 +99,7 @@ public class HomeGridItemAnimator extends DefaultItemAnimator {
             AnimatorSet up = new AnimatorSet();
             up.playTogether(titleMoveFadeOut, pocketMoveUp, pocketScaleUp, pocketFadeUp);
             up.setDuration(300);
-            up.setInterpolator(AnimationUtils.loadInterpolator(holder.itemView.getContext(),
-                    android.R.interpolator.fast_out_slow_in));
+            up.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(holder.itemView.getContext()));
 
             // animate everything back into place
             Animator titleMoveFadeIn = ObjectAnimator.ofPropertyValuesHolder(holder.title,
@@ -118,8 +117,8 @@ public class HomeGridItemAnimator extends DefaultItemAnimator {
             AnimatorSet down = new AnimatorSet();
             down.playTogether(titleMoveFadeIn, pocketMoveDown, pvhPocketScaleDown, pocketFadeDown);
             down.setDuration(300);
-            down.setInterpolator(AnimationUtils.loadInterpolator(holder.itemView.getContext(),
-                    android.R.interpolator.fast_out_slow_in));
+            down.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(holder.itemView
+                    .getContext()));
             down.setStartDelay(500);
 
             // play it
