@@ -19,6 +19,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:propertyName="rotation"
     android:valueFrom="0"
-    android:valueTo="90"
+    android:valueTo="180"
     android:duration="@integer/comment_lines_add_duration"
     android:interpolator="@android:interpolator/fast_out_slow_in" />

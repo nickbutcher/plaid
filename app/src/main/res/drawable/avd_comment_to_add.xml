@@ -15,11 +15,16 @@
   limitations under the License.
   -->
 
-<objectAnimator
+<animated-vector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:propertyName="pathData"
-    android:valueFrom="@string/heart_clip_shown"
-    android:valueTo="@string/heart_clip_hidden"
-    android:valueType="pathType"
-    android:duration="@android:integer/config_mediumAnimTime"
-    android:interpolator="@android:interpolator/accelerate_quad" />
+    android:drawable="@drawable/ic_comment_lines">
+
+    <target
+        android:name="@string/comment_lines"
+        android:animation="@animator/comment_lines_to_add" />
+
+    <target
+        android:name="@string/comment_lines_add_group"
+        android:animation="@animator/comment_lines_add_rotate" />
+
+</animated-vector>

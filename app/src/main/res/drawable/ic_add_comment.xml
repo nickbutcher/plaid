@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright 2015 Google Inc.
 
@@ -13,42 +14,28 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-        android:width="24dp"
-        android:height="24dp"
-        android:viewportWidth="@integer/comment_lines_add_viewport_width"
-        android:viewportHeight="@integer/comment_lines_add_viewport_height">
 
-    <path
-        android:pathData="@string/path_comment_line_1"
-        android:fillColor="@color/comment_bubble" />
+<animated-selector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:constantSize="true">
 
-    <group
-        android:name="@string/comment_line_add_group"
-        android:pivotX="@integer/comment_lines_add_center_x"
-        android:pivotY="@integer/comment_lines_add_center_y">
+    <item
+        android:id="@+id/focused"
+        android:state_activated="true"
+        android:drawable="@drawable/ic_comment_add" />
 
-        <path
-            android:name="@string/comment_line_1"
-            android:pathData="@string/path_add_comment_line_1"
-            android:strokeWidth="@integer/comment_line_stroke_width"
-            android:strokeLineCap="square"
-            android:strokeColor="@color/comment_line_stroke_color" />
+    <item
+        android:id="@+id/not_focused"
+        android:drawable="@drawable/ic_comment_lines" />
 
-        <path
-            android:name="@string/comment_line_2"
-            android:pathData="@string/path_add_comment_line_2"
-            android:strokeWidth="@integer/comment_line_stroke_width"
-            android:strokeLineCap="square"
-            android:strokeColor="@color/comment_line_stroke_color" />
+    <transition
+        android:fromId="@id/not_focused"
+        android:toId="@id/focused"
+        android:drawable="@drawable/avd_comment_to_add" />
 
-        <path
-            android:name="@string/comment_line_3"
-            android:pathData="@string/path_add_comment_line_3"
-            android:strokeWidth="@integer/comment_line_stroke_width"
-            android:strokeLineCap="square"
-            android:strokeColor="@color/comment_line_stroke_color" />
+    <transition
+        android:fromId="@id/focused"
+        android:toId="@id/not_focused"
+        android:drawable="@drawable/avd_add_to_comment" />
 
-    </group>
-
-</vector>
+</animated-selector>

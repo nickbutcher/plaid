@@ -17,9 +17,9 @@
 
 <objectAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:propertyName="trimPathStart"
-    android:valueFrom="1"
-    android:valueTo="0"
-    android:valueType="floatType"
-    android:duration="@integer/activity_bar_progress_time"
-    android:interpolator="@android:interpolator/decelerate_quad" />
+    android:propertyName="pathData"
+    android:valueFrom="@string/path_comment_add"
+    android:valueTo="@string/path_comment_lines"
+    android:duration="@integer/comment_lines_add_duration"
+    android:interpolator="@android:interpolator/fast_out_slow_in"
+    android:valueType="pathType" />

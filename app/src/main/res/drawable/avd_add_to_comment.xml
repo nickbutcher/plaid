@@ -15,25 +15,16 @@
   limitations under the License.
   -->
 
-<set
+<animated-vector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:ordering="sequentially">
+    android:drawable="@drawable/ic_comment_add">
 
-    <objectAnimator
-        android:propertyName="strokeAlpha"
-        android:valueFrom="1"
-        android:valueTo="1"
-        android:valueType="floatType"
-        android:duration="@integer/activity_done_time" />
+    <target
+        android:name="@string/comment_add"
+        android:animation="@animator/comment_add_to_lines" />
 
-    <objectAnimator
-        android:propertyName="trimPathStart"
-        android:valueFrom="0.5"
-        android:valueTo="1"
-        android:valueType="floatType"
-        android:duration="@integer/empty_progress_time"
-        android:interpolator="@android:interpolator/decelerate_quad" />
+    <target
+        android:name="@string/comment_lines_add_group"
+        android:animation="@animator/comment_lines_add_rotate" />
 
-</set>
-
-<!-- TODO: startDelay seems to be ignored so using a set with a bs first anim. work out why this is happening! -->
+</animated-vector>

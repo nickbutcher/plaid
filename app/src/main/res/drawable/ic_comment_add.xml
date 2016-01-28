@@ -33,8 +33,8 @@
         android:pivotY="@integer/comment_lines_add_center_y">
 
         <path
-            android:name="@string/comment_lines"
-            android:pathData="@string/path_comment_lines"
+            android:name="@string/comment_add"
+            android:pathData="@string/path_comment_add"
             android:strokeColor="@color/comment_line_stroke_color"
             android:strokeLineCap="square"
             android:strokeWidth="@integer/comment_line_stroke_width" />
