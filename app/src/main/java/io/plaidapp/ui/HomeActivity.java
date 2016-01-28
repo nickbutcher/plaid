@@ -274,10 +274,12 @@ public class HomeActivity extends Activity {
             // to be clickable when visible. To achieve this we play games with elevation. The
             // toolbar is laid out in front of the grid but when we scroll, we lower it's elevation
             // to allow the content to pass in front (and reset when scrolled to top of the grid)
-            final int firstVisibleItemPos = layoutManager.findFirstCompletelyVisibleItemPosition();
-            if (firstVisibleItemPos <= 0 && toolbar.getTranslationZ() != 0) {
+            final int firstVisibleItemPos = layoutManager.findFirstVisibleItemPosition();
+            if (firstVisibleItemPos == 0
+                    && layoutManager.findViewByPosition(0).getTop() == grid.getPaddingTop()
+                    && toolbar.getTranslationZ() != 0) {
                 toolbar.setTranslationZ(0f);
-            } else if (firstVisibleItemPos > 0 && toolbar.getTranslationZ() != -1f) {
+            } else if (toolbar.getTranslationZ() != -1f) {
                 toolbar.setTranslationZ(-1f);
             }
         }
