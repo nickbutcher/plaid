@@ -269,17 +269,20 @@ public class HomeActivity extends Activity {
 
     private RecyclerView.OnScrollListener toolbarElevation = new RecyclerView.OnScrollListener() {
         @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             // we want the grid to scroll over the top of the toolbar but for the toolbar items
             // to be clickable when visible. To achieve this we play games with elevation. The
             // toolbar is laid out in front of the grid but when we scroll, we lower it's elevation
             // to allow the content to pass in front (and reset when scrolled to top of the grid)
-            final int firstVisibleItemPos = layoutManager.findFirstVisibleItemPosition();
-            if (firstVisibleItemPos == 0
+            if (newState == RecyclerView.SCROLL_STATE_IDLE
+                    && layoutManager.findFirstVisibleItemPosition() == 0
                     && layoutManager.findViewByPosition(0).getTop() == grid.getPaddingTop()
                     && toolbar.getTranslationZ() != 0) {
+                // at top, reset elevation
                 toolbar.setTranslationZ(0f);
-            } else if (toolbar.getTranslationZ() != -1f) {
+            } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING
+                    && toolbar.getTranslationZ() != -1f) {
+                // grid scrolled, lower toolbar to allow content to pass in front
                 toolbar.setTranslationZ(-1f);
             }
         }
@@ -416,6 +419,7 @@ public class HomeActivity extends Activity {
                 loading.setVisibility(View.GONE);
                 setNoFiltersEmptyTextVisibility(View.VISIBLE);
             }
+            toolbar.setTranslationZ(0f);
         } else {
             loading.setVisibility(View.GONE);
             setNoFiltersEmptyTextVisibility(View.GONE);
