@@ -458,8 +458,8 @@ public class DesignerNewsStory extends Activity {
     private void bindDescription() {
         final TextView storyComment = (TextView) header.findViewById(R.id.story_comment);
         if (!TextUtils.isEmpty(story.comment)) {
-            HtmlUtils.setTextWithNiceLinks(storyComment, markdown.markdownToSpannable(story
-                    .comment, storyComment, new Bypass.LoadImageCallback() {
+            HtmlUtils.parseMarkdownAndSetText(storyComment, story.comment, markdown,
+                    new Bypass.LoadImageCallback() {
                 @Override
                 public void loadImage(String src, ImageLoadingSpan loadingSpan) {
                     Glide.with(DesignerNewsStory.this)
@@ -468,7 +468,7 @@ public class DesignerNewsStory extends Activity {
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(new ImageSpanTarget(storyComment, loadingSpan));
                 }
-            }));
+            });
         } else {
             storyComment.setVisibility(View.GONE);
         }
@@ -815,18 +815,18 @@ public class DesignerNewsStory extends Activity {
                     !(partialChanges.contains(CommentAnimator.COLLAPSE_COMMENT)
                         || partialChanges.contains(CommentAnimator.EXPAND_COMMENT))) {
 
-                Comment comment = getComment(holder.getAdapterPosition());
-                HtmlUtils.setTextWithNiceLinks(holder.comment, markdown.markdownToSpannable(
-                        comment.body, holder.comment, new Bypass.LoadImageCallback() {
-                            @Override
-                            public void loadImage(String src, ImageLoadingSpan loadingSpan) {
-                                Glide.with(DesignerNewsStory.this)
-                                        .load(src)
-                                        .asBitmap()
-                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                        .into(new ImageSpanTarget(holder.comment, loadingSpan));
-                            }
-                        }));
+                final Comment comment = getComment(holder.getAdapterPosition());
+                HtmlUtils.parseMarkdownAndSetText(holder.comment, comment.body, markdown,
+                        new Bypass.LoadImageCallback() {
+                    @Override
+                    public void loadImage(String src, ImageLoadingSpan loadingSpan) {
+                        Glide.with(DesignerNewsStory.this)
+                                .load(src)
+                                .asBitmap()
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(new ImageSpanTarget(holder.comment, loadingSpan));
+                    }
+                });
                 holder.author.setText(comment.user_display_name);
                 holder.author.setOriginalPoster(isOP(comment.user_id));
                 if (comment.created_at != null) {
