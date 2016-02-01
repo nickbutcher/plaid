@@ -402,14 +402,14 @@ public class DribbbleShot extends Activity {
                                        Target<GlideDrawable> target, boolean isFromMemoryCache,
                                        boolean isFirstResource) {
             final Bitmap bitmap = GlideUtils.getBitmap(resource);
-            float imageScale = (float) imageView.getHeight() / (float) bitmap.getHeight();
-            float twentyFourDip = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24,
-                    DribbbleShot.this.getResources().getDisplayMetrics());
+            final int twentyFourDip = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                    24, DribbbleShot.this.getResources().getDisplayMetrics());
             Palette.from(bitmap)
                     .maximumColorCount(3)
-                    .clearFilters()
-                    .setRegion(0, 0, bitmap.getWidth() - 1, (int) (twentyFourDip / imageScale))
-                    // - 1 to work around https://code.google.com/p/android/issues/detail?id=191013
+                    .clearFilters() /* by default palette ignore certain hues
+                        (e.g. pure black/white) but we don't want this. */
+                    .setRegion(0, 0, bitmap.getWidth() - 1, twentyFourDip) /* - 1 to work around
+                        https://code.google.com/p/android/issues/detail?id=191013 */
                     .generate(new Palette.PaletteAsyncListener() {
                         @Override
                         public void onGenerated(Palette palette) {
@@ -429,7 +429,8 @@ public class DribbbleShot extends Activity {
                             // color the status bar. Set a complementary dark color on L,
                             // light or dark color on M (with matching status bar icons)
                             int statusBarColor = getWindow().getStatusBarColor();
-                            Palette.Swatch topColor = ColorUtils.getMostPopulousSwatch(palette);
+                            final Palette.Swatch topColor =
+                                    ColorUtils.getMostPopulousSwatch(palette);
                             if (topColor != null &&
                                     (isDark || Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
                                 statusBarColor = ColorUtils.scrimify(topColor.getRgb(),
@@ -442,17 +443,17 @@ public class DribbbleShot extends Activity {
 
                             if (statusBarColor != getWindow().getStatusBarColor()) {
                                 imageView.setScrimColor(statusBarColor);
-                                ValueAnimator statusBarColorAnim = ValueAnimator.ofArgb(getWindow
-                                        ().getStatusBarColor(), statusBarColor);
+                                ValueAnimator statusBarColorAnim = ValueAnimator.ofArgb(
+                                        getWindow().getStatusBarColor(), statusBarColor);
                                 statusBarColorAnim.addUpdateListener(new ValueAnimator
                                         .AnimatorUpdateListener() {
                                     @Override
                                     public void onAnimationUpdate(ValueAnimator animation) {
-                                        getWindow().setStatusBarColor((int) animation
-                                                .getAnimatedValue());
+                                        getWindow().setStatusBarColor(
+                                                (int) animation.getAnimatedValue());
                                     }
                                 });
-                                statusBarColorAnim.setDuration(1000);
+                                statusBarColorAnim.setDuration(1000L);
                                 statusBarColorAnim.setInterpolator(
                                         getFastOutSlowInInterpolator(DribbbleShot.this));
                                 statusBarColorAnim.start();
@@ -461,8 +462,7 @@ public class DribbbleShot extends Activity {
                     });
 
             Palette.from(bitmap)
-                    .clearFilters() // by default palette ignore certain hues (e.g. pure
-                            // black/white) but we don't want this.
+                    .clearFilters()
                     .generate(new Palette.PaletteAsyncListener() {
                         @Override
                         public void onGenerated(Palette palette) {
@@ -494,7 +494,7 @@ public class DribbbleShot extends Activity {
         @Override
         public void onFocusChange(View view, boolean hasFocus) {
             // kick off an anim (via animated state list) on the post button. see
-            // @drawable/ic_add_comment_state
+            // @drawable/ic_add_comment
             postComment.setActivated(hasFocus);
         }
     };
@@ -506,7 +506,7 @@ public class DribbbleShot extends Activity {
             if (commentsList.getMaxScrollAmount() > 0
                     && firstVisibleItemPosition == 0
                     && commentsList.getChildAt(0) != null) {
-                int listScroll = commentsList.getChildAt(0).getTop();
+                final int listScroll = commentsList.getChildAt(0).getTop();
                 imageView.setOffset(listScroll);
                 fab.setOffset(fabOffset + listScroll);
             }
@@ -516,8 +516,8 @@ public class DribbbleShot extends Activity {
             // as we animate the main image's elevation change when it 'pins' at it's min height
             // a fling can cause the title to go over the image before the animation has a chance to
             // run. In this case we short circuit the animation and just jump to state.
-            imageView.setImmediatePin(scrollState == AbsListView.OnScrollListener
-                    .SCROLL_STATE_FLING);
+            imageView.setImmediatePin(
+                    scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING);
         }
     };
 
@@ -528,7 +528,7 @@ public class DribbbleShot extends Activity {
                 fab.toggle();
                 doLike();
             } else {
-                Intent login = new Intent(DribbbleShot.this, DribbbleLogin.class);
+                final Intent login = new Intent(DribbbleShot.this, DribbbleLogin.class);
                 login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR,
                         ContextCompat.getColor(DribbbleShot.this, R.color.dribbble));
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation
