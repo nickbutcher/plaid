@@ -237,6 +237,7 @@ public class DesignerNewsLogin extends Activity {
         TransitionManager.beginDelayedTransition(container);
         title.setVisibility(View.GONE);
         usernameLabel.setVisibility(View.GONE);
+        permissionPrimer.setVisibility(View.GONE);
         passwordLabel.setVisibility(View.GONE);
         actionsContainer.setVisibility(View.GONE);
         loading.setVisibility(View.VISIBLE);

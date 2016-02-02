@@ -21,6 +21,7 @@ import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -48,9 +49,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.plaidapp.R;
 import io.plaidapp.data.PlaidItem;
-import io.plaidapp.data.PlayerDataManager;
 import io.plaidapp.data.api.AuthInterceptor;
 import io.plaidapp.data.api.dribbble.DribbbleService;
+import io.plaidapp.data.api.dribbble.PlayerShotsDataManager;
 import io.plaidapp.data.api.dribbble.model.User;
 import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.data.prefs.DribbblePrefs;
@@ -78,7 +79,7 @@ public class PlayerActivity extends Activity {
 
     private User player;
     private CircleTransform circleTransform;
-    private PlayerDataManager dataManager;
+    private PlayerShotsDataManager dataManager;
     private FeedAdapter adapter;
     private GridLayoutManager layoutManager;
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
@@ -161,13 +162,16 @@ public class PlayerActivity extends Activity {
 
         shotCount.setText(res.getQuantityString(R.plurals.shots, player.shots_count,
                 nf.format(player.shots_count)));
-        followerCount = player.followers_count;
-        setFollowerCount();
+        if (player.shots_count == 0) {
+            shotCount.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    null, getDrawable(R.drawable.avd_no_shots), null, null);
+        }
+        setFollowerCount(player.followers_count);
         likesCount.setText(res.getQuantityString(R.plurals.likes, player.likes_count,
                 nf.format(player.likes_count)));
 
         // load the users shots
-        dataManager = new PlayerDataManager(this, player) {
+        dataManager = new PlayerShotsDataManager(this, player) {
             @Override
             public void onDataLoaded(List<? extends PlaidItem> data) {
                 if (data != null && data.size() > 0) {
@@ -193,7 +197,7 @@ public class PlayerActivity extends Activity {
         shots.addOnScrollListener(new InfiniteScrollListener(layoutManager, dataManager) {
             @Override
             public void onLoadMore() {
-                dataManager.loadMore();
+                dataManager.loadData();
             }
         });
         shots.setHasFixedSize(true);
@@ -204,9 +208,16 @@ public class PlayerActivity extends Activity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 final int firstVisible = layoutManager.findFirstVisibleItemPosition();
-                if (firstVisible != 0) return false;
+                if (firstVisible > 0) return false;
 
-                final int firstTop = shots.findViewHolderForAdapterPosition(0).itemView.getTop();
+                // if no data loaded then pass through
+                if (adapter.getDataItemCount() == 0) {
+                    return playerDescription.dispatchTouchEvent(event);
+                }
+
+                final RecyclerView.ViewHolder vh = shots.findViewHolderForAdapterPosition(0);
+                if (vh == null) return false;
+                final int firstTop = vh.itemView.getTop();
                 if (event.getY() < firstTop) {
                      return playerDescription.dispatchTouchEvent(event);
                 }
@@ -242,9 +253,9 @@ public class PlayerActivity extends Activity {
         }
 
         if (player.shots_count > 0) {
-            dataManager.loadMore(); // kick off initial load
+            dataManager.loadData(); // kick off initial load
         } else {
-            // todo show empty text
+            loading.setVisibility(View.GONE);
         }
     }
 
@@ -321,9 +332,13 @@ public class PlayerActivity extends Activity {
                 .create((DribbbleService.class));
     }
 
-    private void setFollowerCount() {
+    private void setFollowerCount(int count) {
+        followerCount = count;
         followersCount.setText(getResources().getQuantityString(R.plurals.follower_count,
                 followerCount, NumberFormat.getInstance().format(followerCount)));
+        if (followerCount == 0) {
+            followersCount.setBackground(null);
+        }
     }
 
     @OnClick(R.id.follow)
@@ -339,8 +354,7 @@ public class PlayerActivity extends Activity {
                 TransitionManager.beginDelayedTransition(playerDescription);
                 follow.setText(R.string.follow);
                 follow.setActivated(false);
-                followerCount--;
-                setFollowerCount();
+                setFollowerCount(followerCount - 1);
             } else {
                 dataManager.getDribbbleApi().follow(player.id, "", new Callback<Void>() {
                     @Override public void success(Void voyd, Response response) { }
@@ -351,8 +365,7 @@ public class PlayerActivity extends Activity {
                 TransitionManager.beginDelayedTransition(playerDescription);
                 follow.setText(R.string.following);
                 follow.setActivated(true);
-                followerCount++;
-                setFollowerCount();
+                setFollowerCount(followerCount + 1);
             }
         } else {
             Intent login = new Intent(this, DribbbleLogin.class);
@@ -363,6 +376,16 @@ public class PlayerActivity extends Activity {
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation
                     (this, follow, getString(R.string.transition_dribbble_login));
             startActivity(login, options.toBundle());
+        }
+    }
+
+    @OnClick({R.id.shot_count, R.id.followers_count, R.id.likes_count })
+    /* package */ void playerActionClick(TextView view) {
+        ((AnimatedVectorDrawable) view.getCompoundDrawables()[1]).start();
+        switch (view.getId()) {
+            case R.id.followers_count:
+                PlayerSheet.start(PlayerActivity.this, player);
+                break;
         }
     }
 

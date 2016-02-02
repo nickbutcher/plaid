@@ -28,6 +28,7 @@ import android.app.assist.AssistContent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Path;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -483,10 +484,11 @@ public class DesignerNewsStory extends Activity {
             }
         });
 
-        Button share = (Button) header.findViewById(R.id.story_share_action);
+        final Button share = (Button) header.findViewById(R.id.story_share_action);
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((AnimatedVectorDrawable) share.getCompoundDrawables()[1]).start();
                 startActivity(ShareCompat.IntentBuilder.from(DesignerNewsStory.this)
                         .setText(story.url)
                         .setType("text/plain")

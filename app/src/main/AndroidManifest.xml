@@ -66,6 +66,10 @@
             android:theme="@style/Plaid.Translucent.Dribbble.Player" />
 
         <activity
+            android:name=".ui.PlayerSheet"
+            android:theme="@style/Plaid.Translucent.Dribbble.PlayerSheet" />
+
+        <activity
             android:name=".ui.DesignerNewsStory"
             android:parentActivityName=".ui.HomeActivity"
             android:theme="@style/Plaid.Translucent.DesignerNewsStory">

@@ -73,18 +73,15 @@ public class PostNewDesignerNewsStory extends Activity {
         ButterKnife.bind(this);
         FabDialogMorphSetup.setupSharedEelementTransitions(this, bottomSheetContent, 0);
 
-        bottomSheet.addListener(new BottomSheet.Listener() {
+        bottomSheet.registerCallback(new BottomSheet.Callbacks() {
             @Override
-            public void onDragDismissed() {
+            public void onSheetDismissed() {
                 // After a drag dismiss, finish without the shared element return transition as
                 // it no longer makes sense.  Let the launching window know it's a drag dismiss so
                 // that it can restore any UI used as an entering shared element
                 setResult(RESULT_DRAG_DISMISSED);
                 finish();
             }
-
-            @Override
-            public void onDrag(int top) { /* no-op */ }
         });
 
         scrollContainer.setListener(new ObservableScrollView.OnScrollListener() {

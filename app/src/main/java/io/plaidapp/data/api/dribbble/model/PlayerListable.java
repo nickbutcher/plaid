@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package io.plaidapp.data;
+package io.plaidapp.data.api.dribbble.model;
+
+import java.util.Date;
 
 /**
- * An interface for classes offering data loading state to be observed.
+ * An interface for model items that can be displayed as a list of players.
  */
-public interface DataLoadingSubject {
-    boolean isDataLoading();
-    void registerCallback(DataLoadingCallbacks callbacks);
-    void unregisterCallback(DataLoadingCallbacks callbacks);
+public interface PlayerListable {
 
-    interface DataLoadingCallbacks {
-        void dataStartedLoading();
-        void dataFinishedLoading();
-    }
+    User getPlayer();
+    long getId();
+    Date getDateCreated();
+
 }

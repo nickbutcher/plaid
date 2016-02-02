@@ -144,6 +144,7 @@ public abstract class DataManager extends BaseDataManager
         getDesignerNewsApi().getTopStories(page, new Callback<StoriesResponse>() {
             @Override
             public void success(StoriesResponse storiesResponse, Response response) {
+                loadFinished();
                 if (storiesResponse != null
                         && sourceIsEnabled(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)) {
                     setPage(storiesResponse.stories, page);
@@ -151,7 +152,6 @@ public abstract class DataManager extends BaseDataManager
                             SourceManager.SOURCE_DESIGNER_NEWS_POPULAR);
                     onDataLoaded(storiesResponse.stories);
                 }
-                loadFinished();
             }
 
             @Override
@@ -165,6 +165,7 @@ public abstract class DataManager extends BaseDataManager
         getDesignerNewsApi().getRecentStories(page, new Callback<StoriesResponse>() {
             @Override
             public void success(StoriesResponse storiesResponse, Response response) {
+                loadFinished();
                 if (storiesResponse != null
                         && sourceIsEnabled(SourceManager.SOURCE_DESIGNER_NEWS_RECENT)) {
                     setPage(storiesResponse.stories, page);
@@ -172,7 +173,6 @@ public abstract class DataManager extends BaseDataManager
                             SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
                     onDataLoaded(storiesResponse.stories);
                 }
-                loadFinished();
             }
 
             @Override
@@ -187,12 +187,12 @@ public abstract class DataManager extends BaseDataManager
         getDesignerNewsApi().search(source.query, page, new Callback<StoriesResponse>() {
             @Override
             public void success(StoriesResponse storiesResponse, Response response) {
+                loadFinished();
                 if (storiesResponse != null) {
                     setPage(storiesResponse.stories, page);
                     setDataSource(storiesResponse.stories, source.key);
                     onDataLoaded(storiesResponse.stories);
                 }
-                loadFinished();
             }
 
             @Override
@@ -207,12 +207,12 @@ public abstract class DataManager extends BaseDataManager
                 Callback<List<Shot>>() {
             @Override
             public void success(List<Shot> shots, Response response) {
+                loadFinished();
                 if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_POPULAR)) {
                     setPage(shots, page);
                     setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_POPULAR);
                     onDataLoaded(shots);
                 }
-                loadFinished();
             }
 
             @Override
@@ -227,12 +227,12 @@ public abstract class DataManager extends BaseDataManager
                 Callback<List<Shot>>() {
             @Override
             public void success(List<Shot> shots, Response response) {
+                loadFinished();
                 if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_DEBUTS)) {
                     setPage(shots, page);
                     setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_DEBUTS);
                     onDataLoaded(shots);
                 }
-                loadFinished();
             }
 
             @Override
@@ -247,12 +247,12 @@ public abstract class DataManager extends BaseDataManager
                 Callback<List<Shot>>() {
             @Override
             public void success(List<Shot> shots, Response response) {
+                loadFinished();
                 if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_ANIMATED)) {
                     setPage(shots, page);
                     setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_ANIMATED);
                     onDataLoaded(shots);
                 }
-                loadFinished();
             }
 
             @Override
@@ -267,12 +267,12 @@ public abstract class DataManager extends BaseDataManager
                 Callback<List<Shot>>() {
             @Override
             public void success(List<Shot> shots, Response response) {
+                loadFinished();
                 if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_RECENT)) {
                     setPage(shots, page);
                     setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_RECENT);
                     onDataLoaded(shots);
                 }
-                loadFinished();
             }
 
             @Override
@@ -288,12 +288,12 @@ public abstract class DataManager extends BaseDataManager
                     new Callback<List<Shot>>() {
                         @Override
                         public void success(List<Shot> shots, Response response) {
+                            loadFinished();
                             if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_FOLLOWING)) {
                                 setPage(shots, page);
                                 setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_FOLLOWING);
                                 onDataLoaded(shots);
                             }
-                            loadFinished();
                         }
 
                         @Override
@@ -312,19 +312,17 @@ public abstract class DataManager extends BaseDataManager
                     new Callback<List<Like>>() {
                         @Override
                         public void success(List<Like> likes, Response response) {
+                            loadFinished();
                             if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_USER_LIKES)) {
                                 // API returns Likes but we just want the Shots
                                 List<Shot> likedShots = new ArrayList<>(likes.size());
                                 for (Like like : likes) {
                                     likedShots.add(like.shot);
                                 }
-                                // these will be sorted like any other shot (popularity per page)
-                                // TODO figure out a more appropriate sorting strategy for likes
                                 setPage(likedShots, page);
                                 setDataSource(likedShots, SourceManager.SOURCE_DRIBBBLE_USER_LIKES);
                                 onDataLoaded(likedShots);
                             }
-                            loadFinished();
                         }
 
                         @Override
@@ -343,18 +341,17 @@ public abstract class DataManager extends BaseDataManager
                     new Callback<List<Shot>>() {
                         @Override
                         public void success(List<Shot> shots, Response response) {
+                            loadFinished();
                             if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS)) {
                                 // this api call doesn't populate the shot user field but we need it
                                 User user = getDribbblePrefs().getUser();
                                 for (Shot shot : shots) {
                                     shot.user = user;
                                 }
-
                                 setPage(shots, page);
                                 setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
                                 onDataLoaded(shots);
                             }
-                            loadFinished();
                         }
 
                         @Override
@@ -377,12 +374,12 @@ public abstract class DataManager extends BaseDataManager
 
             @Override
             protected void onPostExecute(List<Shot> shots) {
+                loadFinished();
                 if (shots != null && shots.size() > 0 && sourceIsEnabled(source.key)) {
                     setPage(shots, page);
                     setDataSource(shots, source.key);
                     onDataLoaded(shots);
                 }
-                loadFinished();
             }
         }.execute();
     }
@@ -392,13 +389,13 @@ public abstract class DataManager extends BaseDataManager
         getProductHuntApi().getPosts(page - 1, new Callback<PostsResponse>() {
             @Override
             public void success(PostsResponse postsResponse, Response response) {
+                loadFinished();
                 if (postsResponse != null && sourceIsEnabled(SourceManager.SOURCE_PRODUCT_HUNT)) {
                     setPage(postsResponse.posts, page);
                     setDataSource(postsResponse.posts,
                             SourceManager.SOURCE_PRODUCT_HUNT);
                     onDataLoaded(postsResponse.posts);
                 }
-                loadFinished();
             }
 
             @Override

@@ -19,12 +19,14 @@ package io.plaidapp.ui.widget;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -40,8 +42,8 @@ import io.plaidapp.util.ViewOffsetHelper;
 
 /**
  * A {@link FrameLayout} which can be dragged downward to be dismissed (either directly or via a
- * specified nested scrolling child).  It expects to contain a single child view and exposes a
- * {@link Listener} interface to react to it's dismissal.
+ * specified nested scrolling child).  It must contain a single child view and exposes
+ * {@link Callbacks} to react to it's movement & dismissal.
  *
  * View dragging has the benefit of reporting it's velocity allowing us to respond to flings etc
  * but does not allow children to scroll.  Nested scrolling allows child views to scroll (duh)
@@ -62,13 +64,16 @@ public class BottomSheet extends FrameLayout {
 
     // state
     private final int FLING_VELOCITY;
-    private List<Listener> listeners;
+    private List<Callbacks> callbacks;
     private boolean isDismissing;
     private int dragViewLeft;
-    private int dragViewTop;
+    private int dragViewExpandedTop;
+    private int dragViewLastSettledTop;
     private int dragViewBottom;
+    private boolean settling;
     private boolean lastNestedScrollWasDownward;
     private boolean scrollingChildTouched;
+    private boolean initialHeightChecked = false;
 
     public BottomSheet(Context context) {
         this(context, null, 0);
@@ -97,26 +102,30 @@ public class BottomSheet extends FrameLayout {
     }
 
     /**
-     * Interface for responding to interactions with the bottom sheet.
+     * Callbacks for responding to interactions with the bottom sheet.
      */
-    public interface Listener {
-        void onDragDismissed();
-        void onDrag(int top);
+    public static abstract class Callbacks {
+        public void onSheetDismissed() { }
+        public void onSheetPositionChanged(int sheetTop) { }
     }
 
-    public void addListener(Listener listener) {
-        if (listeners == null) {
-            listeners = new ArrayList<>();
+    public void registerCallback(Callbacks callback) {
+        if (callbacks == null) {
+            callbacks = new ArrayList<>();
         }
-        listeners.add(listener);
+        callbacks.add(callback);
     }
 
-    public void removeListener(Listener listener) {
-        listeners.remove(listener);
+    public void dismiss() {
+        animateSettle(true);
     }
 
-    public void doDismiss() {
-        viewDragHelper.settleCapturedViewAt(dragViewLeft, dragViewBottom);
+    public void expand() {
+        animateSettle(false);
+    }
+
+    public void unregisterCallback(Callbacks callback) {
+        callbacks.remove(callback);
     }
 
     @Override
@@ -128,7 +137,12 @@ public class BottomSheet extends FrameLayout {
         dragViewOffsetHelper = new ViewOffsetHelper(dragView);
         if (hasScrollingChild) {
             scrollingChild = dragView.findViewById(scrollingChildId);
+            if (scrollingChild == null) {
+                throw new RuntimeException("Scrolling child specified but not found");
+            }
         }
+        // force the sheet contents to be gravity bottom. This ain't a top sheet.
+        ((LayoutParams) params).gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
         super.addView(child, index, params);
     }
 
@@ -143,9 +157,20 @@ public class BottomSheet extends FrameLayout {
         super.onLayout(changed, left, top, right, bottom);
         if (dragView != null && dragView.isLaidOut()) {
             dragViewLeft = dragView.getLeft();
-            dragViewTop = dragView.getTop();
+            dragViewExpandedTop = dragView.getTop();
             dragViewBottom = dragView.getBottom();
             dragViewOffsetHelper.onViewLayout();
+
+            if (!initialHeightChecked) {
+                // bottom sheet content should not initially be taller than the 16:9 keyline
+                final int minimumGap = dragView.getMeasuredWidth() / 16 * 9;
+                final int gap = getMeasuredHeight() - dragView.getMeasuredHeight();
+                if (gap < minimumGap) {
+                    dragViewOffsetHelper.setTopAndBottomOffset(minimumGap - gap);
+                }
+                dragViewLastSettledTop = dragView.getTop();
+                initialHeightChecked = true;
+            }
         }
     }
 
@@ -191,6 +216,7 @@ public class BottomSheet extends FrameLayout {
         lastNestedScrollWasDownward = dyUnconsumed < 0;
         if (lastNestedScrollWasDownward) {
             dragView.offsetTopAndBottom(-dyUnconsumed);
+            dispatchPositionChangedCallback();
         }
     }
 
@@ -199,10 +225,11 @@ public class BottomSheet extends FrameLayout {
         // if scrolling upward & the sheet has been dragged downward
         // then drag back into place before allowing scrolls
         if (dy > 0) {
-            final int dragDisplacement = dragView.getTop() - dragViewTop;
-            if (dragDisplacement > 0) {
-                final int consume = Math.min(dragDisplacement, dy);
+            final int upwardDragRange = dragView.getTop() - dragViewExpandedTop;
+            if (upwardDragRange > 0) {
+                final int consume = Math.min(upwardDragRange, dy);
                 dragView.offsetTopAndBottom(-consume);
+                dispatchPositionChangedCallback();
                 consumed[1] = consume;
                 lastNestedScrollWasDownward = false;
             }
@@ -211,42 +238,27 @@ public class BottomSheet extends FrameLayout {
 
     @Override
     public void onStopNestedScroll(View child) {
-        final int dragDisplacement = dragView.getTop() - dragViewTop;
+        final int dragDisplacement = dragView.getTop() - dragViewLastSettledTop;
         if (dragDisplacement == 0) return;
 
         // check if we should perform a dismiss or settle back into place
         final boolean dismiss =
                 lastNestedScrollWasDownward && dragDisplacement >= dragDismissDistance;
-        // animate either back into place or to bottom
-        ObjectAnimator settleAnim = ObjectAnimator.ofInt(dragViewOffsetHelper,
-                ViewOffsetHelper.OFFSET_Y,
-                dragView.getTop(),
-                dismiss ? dragViewBottom : dragViewTop);
-        settleAnim.setDuration(200L);
-        settleAnim.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(getContext()));
-        if (dismiss) {
-            settleAnim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    dispatchDismissCallback();
-                }
-            });
-        }
-        settleAnim.start();
+        animateSettle(dismiss);
     }
 
-    protected void dispatchDismissCallback() {
-        if (listeners != null && !listeners.isEmpty()) {
-            for (Listener listener : listeners) {
-                listener.onDragDismissed();
+    private void dispatchDismissCallback() {
+        if (callbacks != null && !callbacks.isEmpty()) {
+            for (Callbacks callback : callbacks) {
+                callback.onSheetDismissed();
             }
         }
     }
 
-    protected void dispatchDragCallback() {
-        if (listeners != null && !listeners.isEmpty()) {
-            for (Listener listener : listeners) {
-                listener.onDrag(getTop());
+    private void dispatchPositionChangedCallback() {
+        if (callbacks != null && !callbacks.isEmpty()) {
+            for (Callbacks callback : callbacks) {
+                callback.onSheetPositionChanged(dragView.getTop());
             }
         }
     }
@@ -260,8 +272,44 @@ public class BottomSheet extends FrameLayout {
         // but that does not have access to the motion event, so check earlier & store
         if (hasScrollingChild && MotionEventCompat.getActionMasked(ev) == MotionEvent.ACTION_DOWN) {
             scrollingChildTouched =
-                    viewDragHelper.isViewUnder(scrollingChild, (int) ev.getX(), (int) ev.getY());
+                    viewDragHelper.isViewUnder(scrollingChild,
+                            (int) ev.getX() - dragView.getLeft(),
+                            (int) ev.getY() - dragView.getTop());
         }
+    }
+
+    private void animateSettle(final boolean dismiss) {
+        if (settling) return;
+        settling = true;
+
+        // animate either back into place or to bottom
+        final ObjectAnimator settleAnim = ObjectAnimator.ofInt(dragViewOffsetHelper,
+                ViewOffsetHelper.OFFSET_Y,
+                dragView.getTop(),
+                dismiss ? dragViewBottom : dragViewExpandedTop);
+        settleAnim.setDuration(200L);
+        settleAnim.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(getContext()));
+        settleAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (dismiss) {
+                    dispatchDismissCallback();
+                } else {
+                    dragViewLastSettledTop = dragViewExpandedTop;
+                }
+                settling = false;
+                dispatchPositionChangedCallback();
+            }
+        });
+        if (callbacks != null && !callbacks.isEmpty()) {
+            settleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    dispatchPositionChangedCallback();
+                }
+            });
+        }
+        settleAnim.start();
     }
 
     private ViewDragHelper.Callback dragHelperCallbacks = new ViewDragHelper.Callback() {
@@ -280,7 +328,7 @@ public class BottomSheet extends FrameLayout {
 
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
-            return Math.min(Math.max(top, dragViewTop), dragViewBottom);
+            return Math.min(Math.max(top, dragViewExpandedTop), dragViewBottom);
         }
 
         @Override
@@ -290,22 +338,23 @@ public class BottomSheet extends FrameLayout {
 
         @Override
         public int getViewVerticalDragRange(View child) {
-            return dragViewBottom - dragViewTop;
+            return dragViewBottom - dragViewExpandedTop;
         }
 
         @Override
         public void onViewPositionChanged(View child, int left, int top, int dx, int dy) {
-            dispatchDragCallback();
+            dispatchPositionChangedCallback();
         }
 
         @Override
         public void onViewReleased(View releasedChild, float velocityX, float velocityY) {
             if (velocityY >= FLING_VELOCITY) {
                 isDismissing = true;
-                doDismiss();
+                viewDragHelper.settleCapturedViewAt(dragViewLeft, dragViewBottom);
             } else {
                 // settle back into position
-                viewDragHelper.settleCapturedViewAt(dragViewLeft, dragViewTop);
+                viewDragHelper.settleCapturedViewAt(dragViewLeft, dragViewExpandedTop);
+                dragViewLastSettledTop = dragViewExpandedTop;
             }
             ViewCompat.postInvalidateOnAnimation(BottomSheet.this);
         }

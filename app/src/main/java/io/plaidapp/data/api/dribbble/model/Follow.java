@@ -16,25 +16,24 @@
 
 package io.plaidapp.data.api.dribbble.model;
 
-import android.support.annotation.Nullable;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
 /**
- * Models a like of a Dribbble shot.
+ * Models a a follow of a dribbble user
  */
-public class Like implements PlayerListable {
+public class Follow implements PlayerListable {
 
     public final long id;
     public final Date created_at;
-    public final @Nullable User user; // some calls do not populate the user field
-    public final @Nullable Shot shot; // some calls do not populate the shot field
+    @SerializedName("follower")
+    public final User user;
 
-    public Like(long id, Date created_at, User user, Shot shot) {
+    public Follow(long id, Date created_at, User user) {
         this.id = id;
         this.created_at = created_at;
         this.user = user;
-        this.shot = shot;
     }
 
     @Override

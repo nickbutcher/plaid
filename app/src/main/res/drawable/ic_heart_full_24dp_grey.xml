@@ -22,8 +22,15 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
 
-    <path
-        android:pathData="@string/heart_full_path_24dp"
-        android:fillColor="@color/text_secondary_dark" />
+    <group
+        android:name="heart"
+        android:pivotX="12"
+        android:pivotY="12">
+
+        <path
+            android:pathData="@string/heart_full_path_24dp"
+            android:fillColor="@color/inline_action_icon" />
+
+    </group>
 
 </vector>

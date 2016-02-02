@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2016 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+<resources>
+
+    <!-- Describes an animation of the share icon.
+         Totally inspired by (stolen from) http://j-scott.com/work/#/span2015/
+
+         Animate between three states:
+           1. collapsed (single dot)
+           2. mid expand (center to top left)
+           3. full (standard share icon)
+
+         Each state has to draw all 5 shapes (3 circles & 2 lines) so that path morphing works
+         (even when all paths are overlapping like in the collapsed state). We use 2 path objects as
+         the dots are filled while the lines are stroked. I guess I could have used filled
+         rectangles but whatever; I drew lines in Sketch :p -->
+
+    <string name="path_share_dots">M18,19m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0 M6,12m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0 M18,5m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0</string>
+    <string name="path_share_dots_collapsed">M12,12m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0 M12,12m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0 M12,12m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0</string>
+    <string name="path_share_dots_mid_expand">M18,12m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0 M18,12m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0 M6,5m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0</string>
+
+    <string name="path_share_lines">M6,12L18,19 M18,5L6,12</string>
+    <string name="path_share_lines_collapsed">M12,12L12,12 M12,12L12,12</string>
+    <string name="path_share_lines_mid_expand">M18,12L18,12 M6,5L18,12</string>
+
+    <string name="name_dots">dots</string>
+    <string name="name_lines">lines</string>
+
+    <integer name="share_duration_collapse">120</integer>
+    <integer name="share_duration_mid_expand">150</integer>
+    <integer name="share_duration_full_expand">250</integer>
+    <integer name="share_delay_start_expand">450</integer>
+    <integer name="share_delay_full_expand">700</integer>
+
+</resources>

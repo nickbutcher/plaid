@@ -33,6 +33,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.RectF;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -240,14 +241,32 @@ public class DribbbleShot extends Activity {
                 res.getQuantityString(R.plurals.likes,
                         (int) shot.likes_count,
                         nf.format(shot.likes_count)));
-        // TODO onClick show likes
+        likeCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((AnimatedVectorDrawable) likeCount.getCompoundDrawables()[1]).start();
+                if (shot.likes_count > 0) {
+                    PlayerSheet.start(DribbbleShot.this, shot);
+                }
+            }
+        });
+        if (shot.likes_count == 0) {
+            likeCount.setBackground(null); // clear touch ripple if doesn't do anything
+        }
         viewCount.setText(
                 res.getQuantityString(R.plurals.views,
                         (int) shot.views_count,
                         nf.format(shot.views_count)));
+        viewCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((AnimatedVectorDrawable) viewCount.getCompoundDrawables()[1]).start();
+            }
+        });
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((AnimatedVectorDrawable) share.getCompoundDrawables()[1]).start();
                 new ShareDribbbleImageTask(DribbbleShot.this, shot).execute();
             }
         });

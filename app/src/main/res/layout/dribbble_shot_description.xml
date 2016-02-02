@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -51,7 +50,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_heart_full_24dp_grey"
+            android:drawableTop="@drawable/avd_likes"
             tools:text="33 likes"
             style="@style/Widget.Plaid.InlineActionButton" />
 
@@ -60,7 +59,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_views_24dp"
+            android:drawableTop="@drawable/avd_views"
             android:background="@null"
             tools:text="33 views"
             style="@style/Widget.Plaid.InlineActionButton" />
@@ -71,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginBottom="@dimen/spacing_normal"
-            android:drawableTop="@drawable/ic_action_share_24dp"
+            android:drawableTop="@drawable/avd_share"
             android:text="@string/share"
             style="@style/Widget.Plaid.InlineActionButton" />
 

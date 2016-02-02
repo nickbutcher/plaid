@@ -64,9 +64,9 @@ import io.plaidapp.R;
 import io.plaidapp.data.DataLoadingSubject;
 import io.plaidapp.data.PlaidItem;
 import io.plaidapp.data.PlaidItemSorting;
-import io.plaidapp.data.PlayerDataManager;
 import io.plaidapp.data.api.designernews.StoryWeigher;
 import io.plaidapp.data.api.designernews.model.Story;
+import io.plaidapp.data.api.dribbble.PlayerShotsDataManager;
 import io.plaidapp.data.api.dribbble.ShotWeigher;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.producthunt.PostWeigher;
@@ -116,7 +116,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                        boolean pocketInstalled) {
         this.host = hostActivity;
         this.dataLoading = dataLoading;
-        dataLoading.addCallbacks(this);
+        dataLoading.registerCallback(this);
         this.columns = columns;
         this.pocketIsInstalled = pocketInstalled;
         layoutInflater = LayoutInflater.from(host);
@@ -476,8 +476,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             case SourceManager.SOURCE_DRIBBBLE_USER_SHOTS:
             case SourceManager.SOURCE_DRIBBBLE_USER_LIKES:
             case SourceManager.SOURCE_PRODUCT_HUNT:
-            case PlayerDataManager.SOURCE_PLAYER_SHOTS:
-            case PlayerDataManager.SOURCE_TEAM_SHOTS:
+            case PlayerShotsDataManager.SOURCE_PLAYER_SHOTS:
+            case PlayerShotsDataManager.SOURCE_TEAM_SHOTS:
                 if (naturalOrderWeigher == null) {
                     naturalOrderWeigher = new PlaidItemSorting.NaturalOrderWeigher();
                 }
@@ -626,16 +626,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public void dataStartedLoading() {
         if (showLoadingMore) return;
-        notifyItemInserted(getLoadingMoreItemPosition());
         showLoadingMore = true;
+        notifyItemInserted(getLoadingMoreItemPosition());
     }
 
     @Override
     public void dataFinishedLoading() {
         if (!showLoadingMore) return;
+        final int loadingPos = getLoadingMoreItemPosition();
         showLoadingMore = false;
-        notifyItemRemoved(getLoadingMoreItemPosition());
-
+        notifyItemRemoved(loadingPos);
     }
 
     /* package */ class DribbbleShotHolder extends RecyclerView.ViewHolder {

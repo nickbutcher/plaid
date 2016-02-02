@@ -70,13 +70,13 @@ public abstract class BaseDataManager implements
 
     protected void loadStarted() {
         if (0 == loadingCount.getAndIncrement()) {
-            notifyCallbacksLoadingStarted();
+            dispatchLoadingStartedCallbacks();
         }
     }
 
     protected void loadFinished() {
         if (0 == loadingCount.decrementAndGet()) {
-            notifyCallbacksLoadingFinished();
+            dispatchLoadingFinishedCallbacks();
         }
     }
 
@@ -146,29 +146,29 @@ public abstract class BaseDataManager implements
     }
 
     @Override
-    public void addCallbacks(DataLoadingSubject.DataLoadingCallbacks callbacks) {
+    public void registerCallback(DataLoadingSubject.DataLoadingCallbacks callback) {
         if (loadingCallbacks == null) {
             loadingCallbacks = new ArrayList<>(1);
         }
-        loadingCallbacks.add(callbacks);
+        loadingCallbacks.add(callback);
     }
 
     @Override
-    public void removeCallbacks(DataLoadingSubject.DataLoadingCallbacks callbacks) {
-        if (loadingCallbacks.contains(callbacks)) {
-            loadingCallbacks.remove(callbacks);
+    public void unregisterCallback(DataLoadingSubject.DataLoadingCallbacks callback) {
+        if (loadingCallbacks.contains(callback)) {
+            loadingCallbacks.remove(callback);
         }
     }
 
-    protected void notifyCallbacksLoadingStarted() {
-        if (loadingCallbacks == null) return;
+    protected void dispatchLoadingStartedCallbacks() {
+        if (loadingCallbacks == null || loadingCallbacks.isEmpty()) return;
         for (DataLoadingCallbacks loadingCallback : loadingCallbacks) {
             loadingCallback.dataStartedLoading();
         }
     }
 
-    protected void notifyCallbacksLoadingFinished() {
-        if (loadingCallbacks == null) return;
+    protected void dispatchLoadingFinishedCallbacks() {
+        if (loadingCallbacks == null || loadingCallbacks.isEmpty()) return;
         for (DataLoadingCallbacks loadingCallback : loadingCallbacks) {
             loadingCallback.dataFinishedLoading();
         }

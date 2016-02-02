@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2015 Google Inc.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,15 +15,27 @@
   limitations under the License.
   -->
 
-<vector
+<set
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:interpolator="@android:interpolator/fast_out_slow_in">
 
-    <path
-        android:pathData="M21,19V5c0,-1.1 -0.9,-2 -2,-2H5c-1.1,0 -2,0.9 -2,2v14c0,1.1 0.9,2 2,2h14c1.1,0 2,-0.9 2,-2zM8.5,13.5l2.5,3.01L14.5,12l4.5,6H5l3.5,-4.5z"
-        android:fillColor="@color/inline_action_icon" />
+    <objectAnimator
+        android:propertyName="translateX"
+        android:valueTo="-8"
+        android:duration="550" />
 
-</vector>
+    <objectAnimator
+        android:propertyName="translateX"
+        android:valueFrom="16"
+        android:valueTo="0"
+        android:startOffset="550"
+        android:duration="300" />
+
+    <objectAnimator
+        android:propertyName="translateY"
+        android:valueFrom="-4"
+        android:valueTo="0"
+        android:startOffset="550"
+        android:duration="250" />
+
+</set>

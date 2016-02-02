@@ -38,7 +38,8 @@
         android:id="@+id/player_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@android:color/transparent"> <!-- background needed for ripples -->
 
         <ImageView
             android:id="@+id/avatar"
@@ -76,7 +77,9 @@
             android:paddingEnd="@dimen/padding_normal"
             android:paddingBottom="@dimen/spacing_normal"
             android:textAppearance="@style/TextAppearance.DarkButton"
-            android:text="@string/follow" />
+            android:text="@string/follow"
+            android:theme="@style/LightRippleOverlay"
+            style="@style/Widget.AppCompat.Button.Colored" />
 
         <io.plaidapp.ui.widget.BaselineGridTextView
             android:id="@+id/player_bio"
@@ -104,7 +107,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/ic_image_24dp"
+                android:drawableTop="@drawable/avd_shots"
+                android:background="@null"
                 tools:text="1337 shots"
                 style="@style/Widget.Plaid.InlineActionButton" />
 
@@ -113,8 +117,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/ic_followers_24dp"
-                android:background="@null"
+                android:drawableTop="@drawable/avd_followers"
                 tools:text="1337 followers"
                 style="@style/Widget.Plaid.InlineActionButton" />
 
@@ -124,7 +127,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginBottom="@dimen/spacing_normal"
-                android:drawableTop="@drawable/ic_heart_full_24dp_grey"
+                android:drawableTop="@drawable/avd_likes"
+                android:background="@null"
                 tools:text="1,000,000 likes"
                 style="@style/Widget.Plaid.InlineActionButton" />
 

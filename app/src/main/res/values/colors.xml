@@ -46,6 +46,7 @@
     <color name="dark_icon">#99000000</color> <!-- 60% black-->
     <color name="dark_icon_half_alpha">#4d000000</color> <!-- 30% black-->
     <color name="dark_icon_on_primary">#ff2a6046</color> <!-- 60% black on @color/primary -->
+    <color name="inline_action_icon">#ff757575</color> <!-- grey 600 -->
     <color name="light_icon">#ffffffff</color>
     <color name="divider">#1f000000</color> <!-- 12% black -->
     <color name="page_indicator_dark">#80333333</color>

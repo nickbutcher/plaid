@@ -24,7 +24,7 @@
 
     <path
         android:pathData="@string/path_upvote"
-        android:strokeColor="@color/text_secondary_dark"
+        android:strokeColor="@color/inline_action_icon"
         android:strokeWidth="2"
         android:strokeLineJoin="round" />
 

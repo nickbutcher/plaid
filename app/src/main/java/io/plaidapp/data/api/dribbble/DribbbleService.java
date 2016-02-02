@@ -23,6 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 import io.plaidapp.data.api.dribbble.model.Comment;
+import io.plaidapp.data.api.dribbble.model.Follow;
 import io.plaidapp.data.api.dribbble.model.Like;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.dribbble.model.User;
@@ -101,7 +102,9 @@ public interface DribbbleService {
     /* Shot likes */
 
     @GET("/shots/{id}/likes")
-    void getUserLikes(@Path("id") long shotId,
+    void getShotLikes(@Path("id") long shotId,
+                      @Query("page") Integer page,
+                      @Query("per_page") Integer pageSize,
                       Callback<List<Like>> callback);
 
     @GET("/shots/{id}/like")
@@ -215,6 +218,12 @@ public interface DribbbleService {
 
     @DELETE("/users/{user}/follow")
     void unfollow(@Path("user") String username, Callback<Void> callback);
+
+    @GET("/users/{user}/followers")
+    void getUserFollowers(@Path("user") long userId,
+                          @Query("page") Integer page,
+                          @Query("per_page") Integer pageSize,
+                          Callback<List<Follow>> callback);
 
 
     /* Teams */

@@ -72,13 +72,13 @@ public abstract class SearchDataManager extends BaseDataManager {
         getDesignerNewsApi().search(query, resultsPage, new Callback<StoriesResponse>() {
             @Override
             public void success(StoriesResponse storiesResponse, Response response) {
+                loadFinished();
                 if (storiesResponse != null) {
                     setPage(storiesResponse.stories, resultsPage);
                     setDataSource(storiesResponse.stories,
                             Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX + query);
                     onDataLoaded(storiesResponse.stories);
                 }
-                loadFinished();
             }
 
             @Override
@@ -98,12 +98,12 @@ public abstract class SearchDataManager extends BaseDataManager {
 
             @Override
             protected void onPostExecute(List<Shot> shots) {
+                loadFinished();
                 if (shots != null && shots.size() > 0) {
                     setPage(shots, page);
                     setDataSource(shots, "Dribbble Search");
                     onDataLoaded(shots);
                 }
-                loadFinished();
             }
         }.execute();
     }

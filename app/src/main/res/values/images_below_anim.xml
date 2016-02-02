@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2016 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+<resources>
+
+    <!-- Config for AVD showing that shots are below. Morph from the shots icon (mountains)
+         to a down arrow (with a bounce) then back.
+
+         Actually we morph from the mountains to an up arrow + a 180º rotation then swap this
+         instantaneously for a down arrow and morph that back to the mountains.
+         Cus it looks cool. -->
+
+    <string name="path_image_mountains">M11,16.51L14.5,12L19,18L15,18L9,18L5,18L8.5,13.5Z</string>
+    <string name="path_image_arrow_down">M10,9L14,9L14,13L17,13L12,18L7,13L10,13Z</string>
+    <string name="path_image_arrow_up">M7,11L12,6L17,11L14,11L14,15L10,15L10,11Z</string>
+
+</resources>
