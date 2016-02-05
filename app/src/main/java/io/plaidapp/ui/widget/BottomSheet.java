@@ -116,16 +116,18 @@ public class BottomSheet extends FrameLayout {
         callbacks.add(callback);
     }
 
+    public void unregisterCallback(Callbacks callback) {
+        if (callbacks != null && !callbacks.isEmpty()) {
+            callbacks.remove(callback);
+        }
+    }
+
     public void dismiss() {
         animateSettle(true);
     }
 
     public void expand() {
         animateSettle(false);
-    }
-
-    public void unregisterCallback(Callbacks callback) {
-        callbacks.remove(callback);
     }
 
     @Override
@@ -280,13 +282,15 @@ public class BottomSheet extends FrameLayout {
 
     private void animateSettle(final boolean dismiss) {
         if (settling) return;
-        settling = true;
+        final int settleAt = dismiss ? dragViewBottom : dragViewExpandedTop;
+        if (dragView.getTop() == settleAt) return;
 
         // animate either back into place or to bottom
+        settling = true;
         final ObjectAnimator settleAnim = ObjectAnimator.ofInt(dragViewOffsetHelper,
                 ViewOffsetHelper.OFFSET_Y,
                 dragView.getTop(),
-                dismiss ? dragViewBottom : dragViewExpandedTop);
+                settleAt);
         settleAnim.setDuration(200L);
         settleAnim.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(getContext()));
         settleAnim.addListener(new AnimatorListenerAdapter() {

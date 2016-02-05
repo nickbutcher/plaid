@@ -24,7 +24,7 @@
     android:layout_height="match_parent"
     app:scrollingChild="@+id/player_list"
     app:dragDismissDistance="@dimen/drag_dismiss_distance"
-    tools:context="io.plaidapp.ui.PostNewDesignerNewsStory">
+    tools:context="io.plaidapp.ui.PlayerSheet">
 
     <LinearLayout
         android:id="@+id/bottom_sheet_content"
@@ -40,6 +40,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?android:actionBarSize"
+            android:paddingTop="@dimen/spacing_micro"
+            android:paddingBottom="@dimen/spacing_micro"
             android:orientation="horizontal"
             android:baselineAligned="false"
             android:background="@color/background_light"

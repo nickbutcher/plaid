@@ -103,6 +103,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/padding_normal_til"
+                    android:layout_marginTop="@dimen/spacing_normal"
                     android:layout_marginEnd="@dimen/padding_normal"
                     android:stateListAnimator="@animator/disable_text_entry"
                     app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
@@ -142,7 +143,7 @@
                     android:id="@+id/new_story_post"
                     android:layout_width="match_parent"
                     android:layout_height="?android:actionBarSize"
-                    android:layout_marginTop="@dimen/padding_normal"
+                    android:layout_marginTop="@dimen/spacing_normal"
                     android:enabled="false"
                     android:background="@drawable/post_story"
                     android:padding="@dimen/spacing_micro"

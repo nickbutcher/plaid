@@ -89,14 +89,12 @@ public class PlayerSheet extends Activity {
     @Bind(R.id.close) ImageView close;
     @Bind(R.id.title) TextView title;
     @Bind(R.id.player_list) RecyclerView playerList;
-    @BindDimen(R.dimen.z_app_bar) float appBarElevation;
     @BindDimen(R.dimen.large_avatar_size) int largeAvatarSize;
     private @Nullable Shot shot;
     private @Nullable User player;
     private PaginatedDataManager dataManager;
     private LinearLayoutManager layoutManager;
     private PlayerAdapter adapter;
-    private boolean titleBarPinned = false;
     private boolean showingClose = false;
 
     public static void start(Activity launching, Shot shot) {
@@ -125,7 +123,7 @@ public class PlayerSheet extends Activity {
         final @PlayerSheetMode int mode = intent.getIntExtra(EXTRA_MODE, -1);
         switch (mode) {
             case MODE_SHOT_LIKES:
-                shot = getIntent().getParcelableExtra(EXTRA_SHOT);
+                shot = intent.getParcelableExtra(EXTRA_SHOT);
                 title.setText(getResources().getQuantityString(
                         R.plurals.fans,
                         (int) shot.likes_count,
@@ -138,7 +136,7 @@ public class PlayerSheet extends Activity {
                 };
                 break;
             case MODE_FOLLOWERS:
-                player = getIntent().getParcelableExtra(EXTRA_USER);
+                player = intent.getParcelableExtra(EXTRA_USER);
                 title.setText(getResources().getQuantityString(
                         R.plurals.follower_count,
                         player.followers_count,
@@ -356,7 +354,7 @@ public class PlayerSheet extends Activity {
         }
 
         public void addItems(List<T> newItems) {
-            final int insertRangeStart = getItemCount();
+            final int insertRangeStart = getDataItemCount();
             items.addAll(newItems);
             notifyItemRangeInserted(insertRangeStart, newItems.size());
         }
