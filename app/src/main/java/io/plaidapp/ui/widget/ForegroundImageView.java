@@ -20,6 +20,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.AttributeSet;
 import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
@@ -43,7 +45,10 @@ public class ForegroundImageView extends ImageView {
             setForeground(d);
         }
         a.recycle();
-        setOutlineProvider(ViewOutlineProvider.BOUNDS);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setOutlineProvider(ViewOutlineProvider.BOUNDS);
+        }
     }
 
     @Override
@@ -128,7 +133,7 @@ public class ForegroundImageView extends ImageView {
     public void drawableHotspotChanged(float x, float y) {
         super.drawableHotspotChanged(x, y);
         if (foreground != null) {
-            foreground.setHotspot(x, y);
+            DrawableCompat.setHotspot(foreground, x, y);
         }
     }
 }

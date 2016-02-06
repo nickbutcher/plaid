@@ -21,11 +21,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/padding_normal"
-    android:minHeight="?android:listPreferredItemHeight"
+    android:minHeight="?listPreferredItemHeight"
     android:paddingTop="@dimen/padding_normal"
     android:paddingEnd="@dimen/padding_normal"
     android:paddingBottom="@dimen/spacing_normal"
-    android:foreground="?android:selectableItemBackground"
+    android:foreground="?selectableItemBackground"
     android:stateListAnimator="@animator/raise"
     android:background="@color/background_light"
     android:elevation="@dimen/z_card">
@@ -58,6 +58,6 @@
         android:layout_below="@id/library_name"
         android:text="@string/about_lib_link"
         android:textColor="@color/text_secondary_dark"
-        style="?android:borderlessButtonStyle" />
+        style="?borderlessButtonStyle" />
 
 </io.plaidapp.ui.widget.ForegroundRelativeLayout>

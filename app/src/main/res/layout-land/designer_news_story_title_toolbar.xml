@@ -15,15 +15,16 @@
   limitations under the License.
   -->
 
-<Toolbar
+<android.support.v7.widget.Toolbar
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:plaid="http://schemas.android.com/apk/res-auto"
     android:id="@+id/story_toolbar"
     android:layout_width="match_parent"
-    android:layout_height="?android:actionBarSize"
+    android:layout_height="?actionBarSize"
     android:background="@drawable/designer_news_app_bar_background"
-    android:navigationIcon="@drawable/ic_arrow_back"
-    android:contentInsetStart="@dimen/keyline_1"
-    android:contentInsetEnd="@dimen/padding_normal"
+    plaid:navigationIcon="@drawable/ic_arrow_back"
+    plaid:contentInsetStart="@dimen/keyline_1"
+    plaid:contentInsetEnd="@dimen/padding_normal"
     android:transitionName="@string/transition_story_title_background">
 
     <io.plaidapp.ui.widget.BaselineGridTextView
@@ -34,4 +35,4 @@
         android:ellipsize="end"
         android:textAppearance="@style/TextAppearance.ToolbarTitle" />
 
-</Toolbar>
+</android.support.v7.widget.Toolbar>

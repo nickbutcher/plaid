@@ -105,9 +105,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:text="@string/sign_up"
-                android:textColor="?android:colorAccent"
+                android:textColor="?colorAccent"
                 android:onClick="signup"
-                style="?android:borderlessButtonStyle" />
+                style="?borderlessButtonStyle" />
 
             <Button
                 android:id="@+id/login"

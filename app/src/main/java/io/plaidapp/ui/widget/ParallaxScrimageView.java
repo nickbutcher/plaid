@@ -95,7 +95,7 @@ public class ParallaxScrimageView extends FourThreeImageView {
         if (offset != getTranslationY()) {
             setTranslationY(offset);
             imageOffset = (int) (offset * parallaxFactor);
-            setScrimAlpha(Math.min((-offset / getMinimumHeight()) * maxScrimAlpha, maxScrimAlpha));
+            setScrimAlpha(Math.min((-offset / ViewCompat.getMinimumHeight(this)) * maxScrimAlpha, maxScrimAlpha));
             ViewCompat.postInvalidateOnAnimation(this);
         }
         setPinned(offset == minOffset);
@@ -119,8 +119,8 @@ public class ParallaxScrimageView extends FourThreeImageView {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        if (h > getMinimumHeight()) {
-            minOffset = getMinimumHeight() - h;
+        if (h > ViewCompat.getMinimumHeight(this)) {
+            minOffset = ViewCompat.getMinimumHeight(this) - h;
         }
     }
 

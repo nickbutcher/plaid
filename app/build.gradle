@@ -44,6 +44,7 @@ android {
         buildConfigField "String",
                 "PROCUCT_HUNT_DEVELOPER_TOKEN", "\"${product_hunt_developer_token}\""
 
+        generatedDensities = []
     }
     buildTypes {
         release {

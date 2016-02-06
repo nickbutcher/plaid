@@ -16,33 +16,34 @@
   limitations under the License.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:plaid="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/menu_search"
         android:title="@string/search"
         android:icon="@drawable/ic_search_24dp"
-        android:showAsAction="always" />
+        plaid:showAsAction="always" />
 
     <item
         android:id="@+id/menu_filter"
         android:title="@string/filter"
         android:icon="@drawable/ic_filter"
-        android:showAsAction="always" />
+        plaid:showAsAction="always" />
 
     <item
         android:id="@+id/menu_dribbble_login"
         android:title="@string/dribbble_login"
-        android:showAsAction="never" />
+        plaid:showAsAction="never" />
 
     <item
         android:id="@+id/menu_designer_news_login"
         android:title="@string/designer_news_login"
-        android:showAsAction="never" />
+        plaid:showAsAction="never" />
 
     <item
         android:id="@+id/menu_about"
         android:title="@string/about"
-        android:showAsAction="never" />
+        plaid:showAsAction="never" />
 
 </menu>

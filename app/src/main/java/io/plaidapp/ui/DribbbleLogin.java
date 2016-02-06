@@ -17,17 +17,19 @@
 package io.plaidapp.ui;
 
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.SharedElementCallback;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -55,6 +57,8 @@ import io.plaidapp.data.api.dribbble.model.User;
 import io.plaidapp.data.prefs.DribbblePrefs;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.util.ScrimUtil;
+import io.plaidapp.util.ViewUtils;
+import io.plaidapp.util.compat.TransitionManagerCompat;
 import io.plaidapp.util.glide.CircleTransform;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -102,7 +106,7 @@ public class DribbbleLogin extends Activity {
     public void dismiss(View view) {
         isDismissing = true;
         setResult(Activity.RESULT_CANCELED);
-        finishAfterTransition();
+        ActivityCompat.finishAfterTransition(this);
     }
 
     @Override
@@ -111,14 +115,14 @@ public class DribbbleLogin extends Activity {
     }
 
     private void showLoading() {
-        TransitionManager.beginDelayedTransition(container);
+        TransitionManagerCompat.beginDelayedTransition(container);
         message.setVisibility(View.GONE);
         login.setVisibility(View.GONE);
         loading.setVisibility(View.VISIBLE);
     }
 
     private void showLogin() {
-        TransitionManager.beginDelayedTransition(container);
+        TransitionManagerCompat.beginDelayedTransition(container);
         message.setVisibility(View.VISIBLE);
         login.setVisibility(View.VISIBLE);
         loading.setVisibility(View.GONE);
@@ -149,7 +153,7 @@ public class DribbbleLogin extends Activity {
                         dribbblePrefs.setAccessToken(accessToken.access_token);
                         showLoggedInUser();
                         setResult(Activity.RESULT_OK);
-                        finishAfterTransition();
+                        ActivityCompat.finishAfterTransition(DribbbleLogin.this);
                     }
 
                     @Override
@@ -190,7 +194,7 @@ public class DribbbleLogin extends Activity {
                         .placeholder(R.drawable.ic_player)
                         .transform(new CircleTransform(getApplicationContext()))
                         .into((ImageView) v.findViewById(R.id.avatar));
-                v.findViewById(R.id.scrim).setBackground(ScrimUtil.makeCubicGradientScrimDrawable
+                ViewUtils.setBackground(v.findViewById(R.id.scrim), ScrimUtil.makeCubicGradientScrimDrawable
                         (ContextCompat.getColor(DribbbleLogin.this, R.color.scrim),
                                 5, Gravity.BOTTOM));
                 confirmLogin.setView(v);
@@ -215,56 +219,60 @@ public class DribbbleLogin extends Activity {
                 .getBottom());
     }
 
-    private SharedElementCallback sharedElementEnterCallback = new SharedElementCallback() {
-        @Override
-        public View onCreateSnapshotView(Context context, Parcelable snapshot) {
-            // grab the saved fab snapshot and pass it to the below via a View
-            View view = new View(context);
-            final Bitmap snapshotBitmap = getSnapshot(snapshot);
-            if (snapshotBitmap != null) {
-                view.setBackground(new BitmapDrawable(context.getResources(), snapshotBitmap));
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private SharedElementCallback sharedElementEnterCallback() {
+        return new SharedElementCallback() {
+            @Override
+            public View onCreateSnapshotView(Context context, Parcelable snapshot) {
+                // grab the saved fab snapshot and pass it to the below via a View
+                View view = new View(context);
+                final Bitmap snapshotBitmap = getSnapshot(snapshot);
+                if (snapshotBitmap != null) {
+                    view.setBackground(new BitmapDrawable(context.getResources(), snapshotBitmap));
+                }
+                return view;
             }
-            return view;
-        }
 
-        @Override
-        public void onSharedElementStart(List<String> sharedElementNames,
-                                         List<View> sharedElements,
-                                         List<View> sharedElementSnapshots) {
-            // grab the fab snapshot and fade it out/in (depending on if we are entering or exiting)
-            for (int i = 0; i < sharedElements.size(); i++) {
-                if (sharedElements.get(i) == container) {
-                    View snapshot = sharedElementSnapshots.get(i);
-                    BitmapDrawable fabSnapshot = (BitmapDrawable) snapshot.getBackground();
-                    fabSnapshot.setBounds(0, 0, snapshot.getWidth(), snapshot.getHeight());
-                    container.getOverlay().clear();
-                    container.getOverlay().add(fabSnapshot);
-                    if (!isDismissing) {
-                        // fab -> login: fade out the fab snapshot
-                        ObjectAnimator.ofInt(fabSnapshot, "alpha", 0).setDuration(100).start();
-                    } else {
-                        // login -> fab: fade in the fab snapshot toward the end of the transition
-                        fabSnapshot.setAlpha(0);
-                        ObjectAnimator fadeIn = ObjectAnimator.ofInt(fabSnapshot, "alpha", 255)
-                                .setDuration(150);
-                        fadeIn.setStartDelay(150);
-                        fadeIn.start();
+            @Override
+            public void onSharedElementStart(
+                    List<String> sharedElementNames,
+                    List<View> sharedElements,
+                    List<View> sharedElementSnapshots) {
+                // grab the fab snapshot and fade it out/in (depending on if we are entering or exiting)
+                for (int i = 0; i < sharedElements.size(); i++) {
+                    if (sharedElements.get(i) == container) {
+                        View snapshot = sharedElementSnapshots.get(i);
+                        BitmapDrawable fabSnapshot = (BitmapDrawable) snapshot.getBackground();
+                        fabSnapshot.setBounds(0, 0, snapshot.getWidth(), snapshot.getHeight());
+                        container.getOverlay().clear();
+                        container.getOverlay().add(fabSnapshot);
+                        if (!isDismissing) {
+                            // fab -> login: fade out the fab snapshot
+                            ObjectAnimator.ofInt(fabSnapshot, "alpha", 0).setDuration(100).start();
+                        } else {
+                            // login -> fab: fade in the fab snapshot toward the end of the transition
+                            fabSnapshot.setAlpha(0);
+                            ObjectAnimator fadeIn = ObjectAnimator.ofInt(fabSnapshot, "alpha", 255)
+                                    .setDuration(150);
+                            fadeIn.setStartDelay(150);
+                            fadeIn.start();
+                        }
+                        forceSharedElementLayout();
+                        break;
                     }
-                    forceSharedElementLayout();
-                    break;
                 }
             }
-        }
 
-        private Bitmap getSnapshot(Parcelable parcel) {
-            if (parcel instanceof Bitmap) {
-                return (Bitmap) parcel;
-            } else if (parcel instanceof Bundle) {
-                Bundle bundle = (Bundle) parcel;
-                // see SharedElementCallback#onCaptureSharedElementSnapshot
-                return (Bitmap) bundle.getParcelable("sharedElement:snapshot:bitmap");
+            private Bitmap getSnapshot(Parcelable parcel) {
+                if (parcel instanceof Bitmap) {
+                    return (Bitmap) parcel;
+                } else if (parcel instanceof Bundle) {
+                    Bundle bundle = (Bundle) parcel;
+                    // see SharedElementCallback#onCaptureSharedElementSnapshot
+                    return (Bitmap) bundle.getParcelable("sharedElement:snapshot:bitmap");
+                }
+                return null;
             }
-            return null;
-        }
-    };
+        };
+    }
 }

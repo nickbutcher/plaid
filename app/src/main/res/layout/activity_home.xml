@@ -44,10 +44,10 @@
             android:clipToPadding="false"
             android:elevation="1dp" />
 
-        <Toolbar
+        <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?android:actionBarSize"
+            android:layout_height="?actionBarSize"
             android:title="@string/app_name"
             android:outlineProvider="none"
             android:elevation="1dp"
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminate="true"
-            android:indeterminateTint="?android:colorAccent"
+            android:indeterminateTint="?colorAccent"
             android:indeterminateTintMode="src_in" />
 
         <ViewStub
