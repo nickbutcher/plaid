@@ -275,8 +275,8 @@ public class PlayerSheet extends Activity {
                             ActivityOptions.makeSceneTransitionAnimation(PlayerSheet.this,
                                     Pair.create((View) holder.playerAvatar,
                                             getString(R.string.transition_player_avatar)),
-                                    Pair.create((View) holder.playerName,
-                                            getString(R.string.transition_player_name)));
+                                    Pair.create(holder.itemView,
+                                            getString(R.string.transition_player_background)));
                     startActivity(player, options.toBundle());
                 }
             });

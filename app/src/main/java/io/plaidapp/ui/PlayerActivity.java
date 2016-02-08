@@ -18,7 +18,6 @@ package io.plaidapp.ui;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.AnimatedVectorDrawable;
@@ -28,7 +27,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.transition.TransitionManager;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,7 +114,6 @@ public class PlayerActivity extends Activity {
         if (intent.hasExtra(EXTRA_PLAYER)) {
             player = intent.getParcelableExtra(EXTRA_PLAYER);
             bindPlayer();
-            setupSharedEnter();
         } else if (intent.hasExtra(EXTRA_PLAYER_NAME)) {
             String name = intent.getStringExtra(EXTRA_PLAYER_NAME);
             playerName.setText(name);
@@ -257,43 +254,6 @@ public class PlayerActivity extends Activity {
         } else {
             loading.setVisibility(View.GONE);
         }
-    }
-
-    private void setupSharedEnter() {
-        setEnterSharedElementCallback(new SharedElementCallback() {
-            private float finalSize;
-            private int finalPaddingStart;
-
-            @Override
-            public void onSharedElementStart(List<String> sharedElementNames, List<View>
-                    sharedElements, List<View> sharedElementSnapshots) {
-                finalSize = playerName.getTextSize();
-                finalPaddingStart = playerName.getPaddingStart();
-                playerName.setTextSize(14);
-                ViewUtils.setPaddingStart(playerName, 0);
-                forceSharedElementLayout();
-            }
-
-            @Override
-            public void onSharedElementEnd(List<String> sharedElementNames, List<View>
-                    sharedElements, List<View> sharedElementSnapshots) {
-                playerName.setTextSize(TypedValue.COMPLEX_UNIT_PX, finalSize);
-                ViewUtils.setPaddingStart(playerName, finalPaddingStart);
-                forceSharedElementLayout();
-            }
-
-            private void forceSharedElementLayout() {
-                playerName.measure(
-                        View.MeasureSpec.makeMeasureSpec(playerName.getWidth(),
-                                View.MeasureSpec.EXACTLY),
-                        View.MeasureSpec.makeMeasureSpec(playerName.getHeight(),
-                                View.MeasureSpec.EXACTLY));
-                playerName.layout(playerName.getLeft(),
-                        playerName.getTop(),
-                        playerName.getRight(),
-                        playerName.getBottom());
-            }
-        });
     }
 
     private void loadPlayer(long userId) {

@@ -21,13 +21,6 @@
     android:transitionOrdering="together">
 
     <changeBounds />
-
     <arcMotion android:maximumAngle="50" />
-
-    <transition class="io.plaidapp.ui.transitions.TextResizeTransition">
-        <targets>
-            <target android:targetId="@id/player_name" />
-        </targets>
-    </transition>
 
 </transitionSet>

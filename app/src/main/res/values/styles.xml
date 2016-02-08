@@ -90,7 +90,6 @@
     </style>
 
     <style name="Plaid.Translucent.Dribbble.Player">
-        <item name="android:windowSharedElementsUseOverlay">true</item>
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
         <item name="android:windowSharedElementEnterTransition">@transition/dribbble_player_shared_enter</item>
@@ -108,10 +107,8 @@
     </style>
 
     <style name="Plaid.Translucent.Dribbble.PlayerSheet">
-        <item name="android:windowAnimationStyle">@null</item>
-        <!-- re-use player activity's content transitions -->
-        <item name="android:windowEnterTransition">@transition/dribbble_player_enter</item>
-        <item name="android:windowReturnTransition">@transition/dribbble_player_return</item>
+        <item name="android:windowEnterTransition">@transition/dribbble_player_sheet_enter</item>
+        <item name="android:windowReturnTransition">@transition/dribbble_player_sheet_return</item>
     </style>
 
     <style name="Plaid.Translucent.DesignerNewsLogin">

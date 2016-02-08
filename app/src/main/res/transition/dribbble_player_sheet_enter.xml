@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2015 Google Inc.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -22,22 +22,14 @@
 
     <slide
         android:slideEdge="bottom"
-        android:startDelay="100"
-        android:duration="300">
+        android:duration="200">
         <targets>
             <target android:excludeId="@android:id/navigationBarBackground" />
             <target android:excludeId="@android:id/statusBarBackground" />
-            <target android:excludeId="@id/background" />
         </targets>
     </slide>
 
-    <fade android:duration="200">
-        <targets>
-            <target android:targetId="@id/background" />
-        </targets>
-    </fade>
-
-    <fade android:duration="400">
+    <fade android:duration="300">
         <targets>
             <target android:targetId="@android:id/navigationBarBackground" />
             <target android:targetId="@android:id/statusBarBackground" />

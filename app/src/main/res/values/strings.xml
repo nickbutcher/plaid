@@ -145,7 +145,7 @@
     <string name="transition_designer_news_login" translatable="false">transition_designer_news_login</string>
     <string name="transition_new_designer_news_post" translatable="false">new_designer_news_post</string>
     <string name="transition_player_avatar" translatable="false">transition_player_avatar</string>
-    <string name="transition_player_name" translatable="false">transition_player_name</string>
+    <string name="transition_player_background" translatable="false">transition_player_background</string>
 
     <!-- content authorities -->
     <string name="share_authority" translatable="false">io.plaidapp.shareprovider</string>

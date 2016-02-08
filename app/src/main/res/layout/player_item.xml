@@ -70,6 +70,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/spacing_micro"
         android:maxLines="2"
+        android:ellipsize="end"
         android:textColorLink="@color/dribbble_links"
         android:textColorHighlight="@color/dribbble_link_highlight"
         tools:text="Blah blah blah blah blah blah blah blah blah blah blah blah blah"

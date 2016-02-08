@@ -292,10 +292,7 @@ public class DribbbleShot extends Activity {
                     }
                     ActivityOptions options =
                             ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this,
-                                    Pair.create((View) playerAvatar,
-                                            getString(R.string.transition_player_avatar)),
-                                    Pair.create((View) playerName,
-                                            getString(R.string.transition_player_name)));
+                                    playerAvatar, getString(R.string.transition_player_avatar));
                     startActivity(player, options.toBundle());
                 }
             };
@@ -893,8 +890,8 @@ public class DribbbleShot extends Activity {
                             ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this,
                                     Pair.create((View) avatar,
                                             getString(R.string.transition_player_avatar)),
-                                    Pair.create((View) author,
-                                            getString(R.string.transition_player_name)));
+                                    Pair.create(view,
+                                            getString(R.string.transition_player_background)));
                     startActivity(player, options.toBundle());
                 }
             });

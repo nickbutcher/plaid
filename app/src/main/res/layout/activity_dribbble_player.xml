@@ -32,35 +32,51 @@
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_light" />
+        android:background="@color/background_light"
+        android:elevation="@dimen/z_card"
+        android:transitionName="@string/transition_player_background" />
+
+    <!-- the below avatar view *should* be in the linear layout below but this causes clipping
+         issues during the shared element transition. This could be resolved by using the overlay
+         during the transition but this does not work when we also transition the background as a
+         shared element (i.e. background in the overlay == draw over everything). Work around this
+         by pulling the avatar up into the root view (to prevent clipping) and adding a spacer
+         in the below. -->
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/large_avatar_size"
+        android:layout_height="@dimen/large_avatar_size"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/large_avatar_margin"
+        android:layout_marginBottom="@dimen/avatar_margin"
+        android:elevation="@dimen/z_card"
+        android:padding="@dimen/avatar_padding"
+        android:transitionName="@string/transition_player_avatar"
+        android:src="@drawable/avatar_placeholder" />
 
     <LinearLayout
         android:id="@+id/player_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:transitionGroup="false"
+        android:elevation="@dimen/z_card"
         android:background="@android:color/transparent"> <!-- background needed for ripples -->
 
-        <ImageView
-            android:id="@+id/avatar"
-            android:layout_width="@dimen/large_avatar_size"
-            android:layout_height="@dimen/large_avatar_size"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/large_avatar_margin"
-            android:layout_marginBottom="@dimen/avatar_margin"
-            android:padding="@dimen/avatar_padding"
-            android:transitionName="@string/transition_player_avatar"
-            android:src="@drawable/avatar_placeholder" />
+        <!-- spacer for avatar, see above -->
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="@dimen/large_avatar_height" />
 
         <io.plaidapp.ui.widget.BaselineGridTextView
             android:id="@+id/player_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:paddingBottom="@dimen/spacing_normal"
             android:paddingStart="@dimen/padding_normal"
             android:paddingEnd="@dimen/padding_normal"
-            android:gravity="center_horizontal"
-            android:transitionName="@string/transition_player_name"
             tools:text="Nick Butcher"
             style="@style/Widget.Plaid.PlayerTitle" />
 
@@ -100,7 +116,8 @@
             android:paddingStart="@dimen/padding_normal"
             android:paddingTop="@dimen/spacing_normal"
             android:paddingEnd="@dimen/padding_normal"
-            android:paddingBottom="@dimen/padding_normal">
+            android:paddingBottom="@dimen/padding_normal"
+            android:clipToPadding="false">
 
             <io.plaidapp.ui.widget.BaselineGridTextView
                 android:id="@+id/shot_count"
@@ -147,6 +164,7 @@
         android:id="@+id/player_shots"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:elevation="@dimen/z_card"
         android:scrollbars="vertical"
         android:scrollbarStyle="outsideOverlay"
         android:clipToPadding="false"
