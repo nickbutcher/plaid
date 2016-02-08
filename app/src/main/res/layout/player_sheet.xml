@@ -32,7 +32,6 @@
         android:layout_height="match_parent"
         android:background="@color/background_light"
         android:elevation="@dimen/z_fab"
-        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <LinearLayout

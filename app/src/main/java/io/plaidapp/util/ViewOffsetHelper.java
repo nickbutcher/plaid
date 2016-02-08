@@ -23,14 +23,14 @@ import android.view.View;
 import android.view.ViewParent;
 
 /**
- * Borrowed from the design lib.
- *
  * Utility helper for moving a {@link android.view.View} around using
  * {@link android.view.View#offsetLeftAndRight(int)} and
  * {@link android.view.View#offsetTopAndBottom(int)}.
- * <p>
- * Also the setting of absolute offsets (similar to translationX/Y), rather than additive
- * offsets.
+ *
+ * <p>Allows the setting of absolute offsets (similar to translationX/Y), in addition to relative
+ * offsets. Reapplies offsets after a layout pass (as long as you call {@link #onViewLayout()}).
+ *
+ * <p>Adapted from the mDesign support library.
  */
 public class ViewOffsetHelper {
 
@@ -54,6 +54,93 @@ public class ViewOffsetHelper {
         updateOffsets();
     }
 
+    /**
+     * Set the top and bottom offset for this {@link ViewOffsetHelper}'s view by
+     * an absolute amount.
+     *
+     * @param absoluteOffset the offset in px.
+     * @return true if the offset has changed
+     */
+    public boolean setTopAndBottomOffset(int absoluteOffset) {
+        if (mOffsetTop != absoluteOffset) {
+            mOffsetTop = absoluteOffset;
+            updateOffsets();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Set the top and bottom offset for this {@link ViewOffsetHelper}'s view by
+     * an relative amount.
+     *
+     * @param relativeOffset
+     */
+    public void offsetTopAndBottom(int relativeOffset) {
+        mOffsetTop += relativeOffset;
+        updateOffsets();
+    }
+
+    /**
+     * Set the left and right offset for this {@link ViewOffsetHelper}'s view by
+     * an absolute amount.
+     *
+     * @param absoluteOffset the offset in px.
+     * @return true if the offset has changed
+     */
+    public boolean setLeftAndRightOffset(int absoluteOffset) {
+        if (mOffsetLeft != absoluteOffset) {
+            mOffsetLeft = absoluteOffset;
+            updateOffsets();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Set the left and right offset for this {@link ViewOffsetHelper}'s view by
+     * an relative amount.
+     *
+     * @param relativeOffset
+     */
+    public void offsetLeftAndRight(int relativeOffset) {
+        mOffsetLeft += relativeOffset;
+        updateOffsets();
+    }
+
+    public int getTopAndBottomOffset() {
+        return mOffsetTop;
+    }
+
+    public int getLeftAndRightOffset() {
+        return mOffsetLeft;
+    }
+
+    /**
+     * Notify this helper that a change to the view's offsets has occurred outside of this class.
+     */
+    public void resyncOffsets() {
+        mOffsetTop = mView.getTop() - mLayoutTop;
+        mOffsetLeft = mView.getLeft() - mLayoutLeft;
+    }
+
+    /**
+     * Animatable property
+     */
+    public static final Property<ViewOffsetHelper, Integer> OFFSET_Y = new AnimUtils
+            .IntProperty<ViewOffsetHelper>("topAndBottomOffset") {
+
+        @Override
+        public void setValue(ViewOffsetHelper viewOffsetHelper, int offset) {
+            viewOffsetHelper.setTopAndBottomOffset(offset);
+        }
+
+        @Override
+        public Integer get(ViewOffsetHelper viewOffsetHelper) {
+            return viewOffsetHelper.getTopAndBottomOffset();
+        }
+    };
+
     private void updateOffsets() {
         ViewCompat.offsetTopAndBottom(mView, mOffsetTop - (mView.getTop() - mLayoutTop));
         ViewCompat.offsetLeftAndRight(mView, mOffsetLeft - (mView.getLeft() - mLayoutLeft));
@@ -73,56 +160,4 @@ public class ViewOffsetHelper {
         ViewCompat.setTranslationY(view, x + 1);
         ViewCompat.setTranslationY(view, x);
     }
-
-    /**
-     * Set the top and bottom offset for this {@link ViewOffsetHelper}'s view.
-     *
-     * @param offset the offset in px.
-     * @return true if the offset has changed
-     */
-    public boolean setTopAndBottomOffset(int offset) {
-        if (mOffsetTop != offset) {
-            mOffsetTop = offset;
-            updateOffsets();
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Set the left and right offset for this {@link ViewOffsetHelper}'s view.
-     *
-     * @param offset the offset in px.
-     * @return true if the offset has changed
-     */
-    public boolean setLeftAndRightOffset(int offset) {
-        if (mOffsetLeft != offset) {
-            mOffsetLeft = offset;
-            updateOffsets();
-            return true;
-        }
-        return false;
-    }
-
-    public int getTopAndBottomOffset() {
-        return mOffsetTop;
-    }
-
-    public int getLeftAndRightOffset() {
-        return mOffsetLeft;
-    }
-
-    public static final Property<ViewOffsetHelper, Integer> OFFSET_Y = new AnimUtils
-            .IntProperty<ViewOffsetHelper>("topAndBottomOffset") {
-
-        @Override
-        public void setValue(ViewOffsetHelper viewOffsetHelper, int offset) {
-            viewOffsetHelper.setTopAndBottomOffset(offset);
-        }
-
-        @Override
-        public Integer get(ViewOffsetHelper viewOffsetHelper) {
-            return viewOffsetHelper.getTopAndBottomOffset();
-        }
-    };
 }
