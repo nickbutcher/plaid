@@ -58,6 +58,8 @@ public class GridItemDividerDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void onDrawOver(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
+        if (parent.isAnimating()) return;
+
         final int childCount = parent.getChildCount();
         final RecyclerView.LayoutManager lm = parent.getLayoutManager();
         for (int i = 0; i < childCount; i++) {
