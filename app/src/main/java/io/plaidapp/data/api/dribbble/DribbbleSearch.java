@@ -111,6 +111,7 @@ public class DribbbleSearch {
                 .setTitle(descriptionBlock.select("strong").first().text())
                 .setDescription(description)
                 .setImages(new Images(null, imgUrl, null))
+                .setAnimated(element.select("div.gif-indicator").first() != null)
                 .setCreatedAt(createdAt)
                 .setLikesCount(Long.parseLong(element.select("li.fav").first().child(0).text()
                         .replaceAll(",", "")))
