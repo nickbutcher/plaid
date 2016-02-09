@@ -71,22 +71,27 @@ public class ViewUtils {
                                               @ColorInt int fallbackColor,
                                               boolean bounded) {
         int rippleColor = fallbackColor;
-        // try the named swatches in preference order
-        if (palette.getVibrantSwatch() != null) {
-            rippleColor = ColorUtils.modifyAlpha(palette.getVibrantSwatch().getRgb(), darkAlpha);
-        } else if (palette.getLightVibrantSwatch() != null) {
-            rippleColor = ColorUtils.modifyAlpha(palette.getLightVibrantSwatch().getRgb(),
-                    lightAlpha);
-        } else if (palette.getDarkVibrantSwatch() != null) {
-            rippleColor = ColorUtils.modifyAlpha(palette.getDarkVibrantSwatch().getRgb(),
-                    darkAlpha);
-        } else if (palette.getMutedSwatch() != null) {
-            rippleColor = ColorUtils.modifyAlpha(palette.getMutedSwatch().getRgb(), darkAlpha);
-        } else if (palette.getLightMutedSwatch() != null) {
-            rippleColor = ColorUtils.modifyAlpha(palette.getLightMutedSwatch().getRgb(),
-                    lightAlpha);
-        } else if (palette.getDarkMutedSwatch() != null) {
-            rippleColor = ColorUtils.modifyAlpha(palette.getDarkMutedSwatch().getRgb(), darkAlpha);
+        if (palette != null) {
+            // try the named swatches in preference order
+            if (palette.getVibrantSwatch() != null) {
+                rippleColor =
+                        ColorUtils.modifyAlpha(palette.getVibrantSwatch().getRgb(), darkAlpha);
+
+            } else if (palette.getLightVibrantSwatch() != null) {
+                rippleColor = ColorUtils.modifyAlpha(palette.getLightVibrantSwatch().getRgb(),
+                        lightAlpha);
+            } else if (palette.getDarkVibrantSwatch() != null) {
+                rippleColor = ColorUtils.modifyAlpha(palette.getDarkVibrantSwatch().getRgb(),
+                        darkAlpha);
+            } else if (palette.getMutedSwatch() != null) {
+                rippleColor = ColorUtils.modifyAlpha(palette.getMutedSwatch().getRgb(), darkAlpha);
+            } else if (palette.getLightMutedSwatch() != null) {
+                rippleColor = ColorUtils.modifyAlpha(palette.getLightMutedSwatch().getRgb(),
+                        lightAlpha);
+            } else if (palette.getDarkMutedSwatch() != null) {
+                rippleColor =
+                        ColorUtils.modifyAlpha(palette.getDarkMutedSwatch().getRgb(), darkAlpha);
+            }
         }
         return new RippleDrawable(ColorStateList.valueOf(rippleColor), null,
                 bounded ? new ColorDrawable(Color.WHITE) : null);
@@ -177,42 +182,6 @@ public class ViewUtils {
                     view.getHeight() - view.getPaddingBottom());
         }
     };
-
-    /**
-     * Allows changes to the text size in transitions and animations.
-     * Using this with something else than {@link ChangeBounds}
-     * can result in a severe performance penalty due to layout passes.
-     */
-    public static final Property<TextView, Float> PROPERTY_TEXT_SIZE =
-            new AnimUtils.FloatProperty<TextView>("textSize") {
-                @Override
-                public Float get(TextView view) {
-                    return view.getTextSize();
-                }
-
-                @Override
-                public void setValue(TextView view, float textSize) {
-                    view.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-                }
-            };
-
-    /**
-     * Allows making changes to the start padding of a view.
-     * Using this with something else than {@link ChangeBounds}
-     * can result in a severe performance penalty due to layout passes.
-     */
-    public static final Property<TextView, Integer> PROPERTY_TEXT_PADDING_START =
-            new AnimUtils.IntProperty<TextView>("paddingStart") {
-                @Override
-                public Integer get(TextView view) {
-                    return view.getPaddingStart();
-                }
-
-                @Override
-                public void setValue(TextView view, int paddingStart) {
-                    setPaddingStart(view, paddingStart);
-                }
-            };
 
     /**
      * Determines if two views intersect in the window.
