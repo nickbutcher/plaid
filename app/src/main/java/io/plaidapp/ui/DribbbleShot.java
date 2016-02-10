@@ -39,6 +39,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.customtabs.CustomTabsIntent;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.text.Spanned;
@@ -106,6 +107,8 @@ import io.plaidapp.util.ViewUtils;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.util.glide.CircleTransform;
 import io.plaidapp.util.glide.GlideUtils;
+import okhttp3.HttpUrl;
+import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -157,12 +160,10 @@ public class DribbbleShot extends Activity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_shot);
-        shot = getIntent().getParcelableExtra(EXTRA_SHOT);
         setupDribbble();
         setExitSharedElementCallback(fabLoginSharedElementCallback);
         getWindow().getSharedElementReturnTransition().addListener(shotReturnHomeListener);
         circleTransform = new CircleTransform(this);
-        Resources res = getResources();
 
         ButterKnife.bind(this);
         View shotDescription = getLayoutInflater().inflate(R.layout.dribbble_shot_description,
@@ -195,6 +196,92 @@ public class DribbbleShot extends Activity {
             }
         };
 
+        final Intent intent = getIntent();
+        if (intent.hasExtra(EXTRA_SHOT)) {
+            shot = intent.getParcelableExtra(EXTRA_SHOT);
+            bindShot(true, savedInstanceState != null);
+        } else if (intent.getData() != null) {
+            final HttpUrl url = HttpUrl.parse(intent.getDataString());
+            if (url.pathSize() == 2 && url.pathSegments().get(0).equals("shots")) {
+                try {
+                    final String shotPath = url.pathSegments().get(1);
+                    final long id = Long.parseLong(shotPath.substring(0, shotPath.indexOf("-")));
+
+                    dribbbleApi.getShot(id, new Callback<Shot>() {
+                        @Override
+                        public void success(Shot shot, Response response) {
+                            DribbbleShot.this.shot = shot;
+                            bindShot(false, true);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            reportUrlError();
+                        }
+                    });
+                } catch (NumberFormatException|StringIndexOutOfBoundsException ex) {
+                    reportUrlError();
+                }
+            } else {
+                reportUrlError();
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!performingLike) {
+            checkLiked();
+        }
+        draggableFrame.addListener(chromeFader);
+    }
+
+    @Override
+    protected void onPause() {
+        draggableFrame.removeListener(chromeFader);
+        super.onPause();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case RC_LOGIN_LIKE:
+                if (resultCode == RESULT_OK) {
+                    setupDribbble(); // recreate to capture the new access token
+                    // TODO when we add more authenticated actions will need to keep track of what
+                    // the user was trying to do when forced to login
+                    fab.setChecked(true);
+                    doLike();
+                    setupCommenting();
+                }
+                break;
+            case RC_LOGIN_COMMENT:
+                if (resultCode == RESULT_OK) {
+                    setupCommenting();
+                }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        expandImageAndFinish();
+    }
+
+    @Override
+    public boolean onNavigateUp() {
+        expandImageAndFinish();
+        return true;
+    }
+
+    @Override @TargetApi(Build.VERSION_CODES.M)
+    public void onProvideAssistContent(AssistContent outContent) {
+        outContent.setWebUri(Uri.parse(shot.url));
+    }
+
+    private void bindShot(final boolean postponeEnterTransition, final boolean animateFabManually) {
+        final Resources res = getResources();
+
         // load the main image
         final int[] imageSize = shot.images.bestSize();
         Glide.with(this)
@@ -207,15 +294,15 @@ public class DribbbleShot extends Activity {
         imageView.setOnClickListener(shotClick);
         shotSpacer.setOnClickListener(shotClick);
 
-        postponeEnterTransition();
+        if (postponeEnterTransition) postponeEnterTransition();
         imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver
                 .OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
                 imageView.getViewTreeObserver().removeOnPreDrawListener(this);
                 calculateFabPosition();
-                enterAnimation(savedInstanceState != null);
-                startPostponedEnterTransition();
+                enterAnimation(animateFabManually);
+                if (postponeEnterTransition) startPostponedEnterTransition();
                 return true;
             }
         });
@@ -317,55 +404,14 @@ public class DribbbleShot extends Activity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (!performingLike) {
-            checkLiked();
-        }
-        draggableFrame.addListener(chromeFader);
-    }
-
-    @Override
-    protected void onPause() {
-        draggableFrame.removeListener(chromeFader);
-        super.onPause();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case RC_LOGIN_LIKE:
-                if (resultCode == RESULT_OK) {
-                    setupDribbble(); // recreate to capture the new access token
-                    // TODO when we add more authenticated actions will need to keep track of what
-                    // the user was trying to do when forced to login
-                    fab.setChecked(true);
-                    doLike();
-                    setupCommenting();
-                }
-                break;
-            case RC_LOGIN_COMMENT:
-                if (resultCode == RESULT_OK) {
-                    setupCommenting();
-                }
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        expandImageAndFinish();
-    }
-
-    @Override
-    public boolean onNavigateUp() {
-        expandImageAndFinish();
-        return true;
-    }
-
-    @Override @TargetApi(Build.VERSION_CODES.M)
-    public void onProvideAssistContent(AssistContent outContent) {
-        outContent.setWebUri(Uri.parse(shot.url));
+    private void reportUrlError() {
+        Snackbar.make(draggableFrame, R.string.bad_dribbble_shot_url, Snackbar.LENGTH_SHORT).show();
+        draggableFrame.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finishAfterTransition();
+            }
+        }, 3000L);
     }
 
     private void setupCommenting() {
@@ -664,7 +710,7 @@ public class DribbbleShot extends Activity {
      * are within the ListView so do it manually.  Also handle the FAB tanslation here so that it
      * plays nicely with #calculateFabPosition
      */
-    private void enterAnimation(boolean isOrientationChange) {
+    private void enterAnimation(boolean animateFabManually) {
         Interpolator interp = getFastOutSlowInInterpolator(this);
         int offset = title.getHeight();
         viewEnterAnimation(title, offset, interp);
@@ -693,7 +739,7 @@ public class DribbbleShot extends Activity {
                 .setInterpolator(interp)
                 .start();
 
-        if (isOrientationChange) {
+        if (animateFabManually) {
             // we rely on the window enter content transition to show the fab. This isn't run on
             // orientation changes so manually show it.
             Animator showFab = ObjectAnimator.ofPropertyValuesHolder(fab,

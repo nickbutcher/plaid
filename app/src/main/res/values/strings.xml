@@ -102,6 +102,7 @@
     </plurals>
     <string name="share">share</string>
     <string name="prospects_cant_post">Sorry but prospects cannot comment :(</string>
+    <string name="bad_dribbble_shot_url">Can\'t open that link :(</string>
 
     <!-- dribbble player -->
     <string name="follow">Follow</string>
