@@ -99,7 +99,7 @@
         android:textColorHighlight="@color/dribbble"
         android:stateListAnimator="@animator/raise"
         android:src="@drawable/avatar_placeholder"
-        android:foreground="@drawable/mid_grey_ripple" />
+        android:foreground="@drawable/avatar_ripple" />
 
     <!-- can't use a marginEnd on the above image view as it pushes in the whole column so instead
          add another column to contain the below space element -->

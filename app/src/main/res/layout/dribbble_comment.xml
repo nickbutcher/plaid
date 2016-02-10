@@ -42,7 +42,7 @@
         android:padding="@dimen/avatar_padding"
         android:stateListAnimator="@animator/raise"
         android:src="@drawable/avatar_placeholder"
-        android:foreground="@drawable/mid_grey_ripple" />
+        android:foreground="@drawable/avatar_ripple" />
 
     <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/comment_time_ago"

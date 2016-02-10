@@ -151,6 +151,7 @@ public class DribbbleShot extends Activity {
     private CircleTransform circleTransform;
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
     @BindDimen(R.dimen.large_avatar_size) int largeAvatarSize;
+    @BindDimen(R.dimen.z_card) int cardElevation;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -888,10 +889,10 @@ public class DribbbleShot extends Activity {
                     player.putExtra(PlayerActivity.EXTRA_PLAYER, comment.user);
                     ActivityOptions options =
                             ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this,
-                                    Pair.create((View) avatar,
-                                            getString(R.string.transition_player_avatar)),
                                     Pair.create(view,
-                                            getString(R.string.transition_player_background)));
+                                            getString(R.string.transition_player_background)),
+                                    Pair.create((View) avatar,
+                                            getString(R.string.transition_player_avatar)));
                     startActivity(player, options.toBundle());
                 }
             });
@@ -912,6 +913,12 @@ public class DribbbleShot extends Activity {
                     view.setActivated(!isExpanded);
                     if (!isExpanded) { // do expand
                         expandedCommentPosition = position;
+
+                        // work around issue where avatar of selected comment not shown during
+                        // shared element transition (returning from player screen)
+                        avatar.setOutlineProvider(null);
+                        avatar.setElevation(cardElevation);
+
                         reply.setVisibility(View.VISIBLE);
                         likeHeart.setVisibility(View.VISIBLE);
                         likesCount.setVisibility(View.VISIBLE);
@@ -940,6 +947,8 @@ public class DribbbleShot extends Activity {
                         view.requestFocus();
                     } else { // do collapse
                         expandedCommentPosition = ListView.INVALID_POSITION;
+                        avatar.setOutlineProvider(ViewUtils.CIRCULAR_OUTLINE);
+                        avatar.setElevation(0f);
                         reply.setVisibility(View.GONE);
                         likeHeart.setVisibility(View.GONE);
                         likesCount.setVisibility(View.GONE);

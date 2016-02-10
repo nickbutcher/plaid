@@ -62,6 +62,7 @@
     <dimen name="avatar_bounds">48dp</dimen>
     <dimen name="avatar_padding">4dp</dimen> <!-- (avatar_bounds - avatar_size) / 2 -->
     <dimen name="avatar_margin">12dp</dimen> <!-- padding_normal - avatar_padding -->
+    <dimen name="avatar_ripple_radius">20dp</dimen> <!-- avatar_size / 2 -->
     <dimen name="comment_actions_height">40dp</dimen>
     <dimen name="comment_like_margin_adjustment">-8dp</dimen>
 
