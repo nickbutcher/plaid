@@ -17,18 +17,11 @@
 
 <resources>
 
-    <attr name="dragDismissDistance" format="dimension" />
-
     <declare-styleable name="ElasticDragDismissFrameLayout">
-        <attr name="dragDismissDistance" />
+        <attr name="dragDismissDistance" format="dimension" />
         <attr name="dragDismissFraction" format="float" />
         <attr name="dragDismissScale" format="float" />
         <attr name="dragElasticity" format="float" />
-    </declare-styleable>
-
-    <declare-styleable name="BottomSheet">
-        <attr name="scrollingChild" format="reference" />
-        <attr name="dragDismissDistance" />
     </declare-styleable>
 
 </resources>
