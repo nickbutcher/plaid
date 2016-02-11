@@ -402,6 +402,7 @@ public class DribbbleShot extends Activity {
         } else {
             commentsList.setAdapter(getNoCommentsAdapter());
         }
+        checkLiked();
     }
 
     private void reportUrlError() {
@@ -795,7 +796,7 @@ public class DribbbleShot extends Activity {
     }
 
     private void checkLiked() {
-        if (dribbblePrefs.isLoggedIn()) {
+        if (shot != null && dribbblePrefs.isLoggedIn()) {
             dribbbleApi.liked(shot.id, new retrofit.Callback<Like>() {
                 @Override
                 public void success(Like like, Response response) {
