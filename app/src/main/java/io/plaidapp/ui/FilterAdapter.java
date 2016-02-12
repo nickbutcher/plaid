@@ -282,8 +282,8 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
     }
 
     public static abstract class FiltersChangedCallbacks {
-        public void onFiltersChanged(Source changedFilter) { };
-        public void onFilterRemoved(Source removed) { };
+        public void onFiltersChanged(Source changedFilter) { }
+        public void onFilterRemoved(Source removed) { }
     }
 
     public static class FilterViewHolder extends RecyclerView.ViewHolder {
