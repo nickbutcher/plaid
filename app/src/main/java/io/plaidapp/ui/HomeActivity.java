@@ -239,8 +239,7 @@ public class HomeActivity extends Activity {
 
         filtersList.setAdapter(filtersAdapter);
         filtersList.setItemAnimator(new FilterAdapter.FilterAnimator());
-        filtersAdapter.addFilterChangedListener(filtersChangedListener);
-        filtersAdapter.addFilterChangedListener(dataManager);
+        filtersAdapter.registerFilterChangedCallback(filtersChangedCallbacks);
         dataManager.loadAllDataSources();
         ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
@@ -250,8 +249,8 @@ public class HomeActivity extends Activity {
     }
 
     // listener for notifying adapter when data sources are deactivated
-    private FilterAdapter.FiltersChangedListener filtersChangedListener =
-            new FilterAdapter.FiltersChangedListener() {
+    private FilterAdapter.FiltersChangedCallbacks filtersChangedCallbacks =
+            new FilterAdapter.FiltersChangedCallbacks() {
         @Override
         public void onFiltersChanged(Source changedFilter) {
             if (!changedFilter.active) {

@@ -41,8 +41,7 @@ import retrofit.client.Response;
  * Responsible for loading data from the various sources. Instantiating classes are responsible for
  * providing the {code onDataLoaded} method to do something with the data.
  */
-public abstract class DataManager extends BaseDataManager
-        implements FilterAdapter.FiltersChangedListener {
+public abstract class DataManager extends BaseDataManager {
 
     private final FilterAdapter filterAdapter;
     private Map<String, Integer> pageIndexes;
@@ -51,6 +50,7 @@ public abstract class DataManager extends BaseDataManager
                        FilterAdapter filterAdapter) {
         super(context);
         this.filterAdapter = filterAdapter;
+        filterAdapter.registerFilterChangedCallback(filterListener);
         setupPageIndexes();
     }
 
@@ -60,18 +60,18 @@ public abstract class DataManager extends BaseDataManager
         }
     }
 
-    @Override
-    public void onFiltersChanged(Source changedFilter){
-        if (changedFilter.active) {
-            loadSource(changedFilter);
-        } else {
-            // clear the page index for the source
-            pageIndexes.put(changedFilter.key, 0);
+    private FilterAdapter.FiltersChangedCallbacks filterListener =
+            new FilterAdapter.FiltersChangedCallbacks() {
+        @Override
+        public void onFiltersChanged(Source changedFilter) {
+            if (changedFilter.active) {
+                loadSource(changedFilter);
+            } else {
+                // clear the page index for the source
+                pageIndexes.put(changedFilter.key, 0);
+            }
         }
-    }
-
-    @Override
-    public void onFilterRemoved(Source removed) { } // no-op
+    };
 
     private void loadSource(Source source) {
         if (source.active) {
