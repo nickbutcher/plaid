@@ -148,12 +148,7 @@ public class DesignerNewsStory extends Activity {
         story = getIntent().getParcelableExtra(EXTRA_STORY);
         fab.setOnClickListener(fabClick);
 
-        chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(getWindow()) {
-            @Override
-            public void onDragDismissed() {
-                finishAfterTransition();
-            }
-        };
+        chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this);
 
         markdown = new Bypass(this, new Bypass.Options()
                 .setBlockQuoteLineColor(

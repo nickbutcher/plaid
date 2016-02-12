@@ -18,6 +18,7 @@ package io.plaidapp.util;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.support.annotation.CheckResult;
 import android.support.annotation.ColorInt;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
@@ -43,15 +44,16 @@ public class ColorUtils {
     /**
      * Set the alpha component of {@code color} to be {@code alpha}.
      */
-    public static int modifyAlpha(@ColorInt int color, @IntRange(from = 0, to = 255) int alpha) {
+    public static @CheckResult @ColorInt int modifyAlpha(@ColorInt int color,
+                                                         @IntRange(from = 0, to = 255) int alpha) {
         return (color & 0x00ffffff) | (alpha << 24);
     }
 
     /**
      * Set the alpha component of {@code color} to be {@code alpha}.
      */
-    public static int modifyAlpha(@ColorInt int color,
-                                  @FloatRange(from = 0f, to = 1f) float alpha) {
+    public static @CheckResult @ColorInt int modifyAlpha(@ColorInt int color,
+                                                      @FloatRange(from = 0f, to = 1f) float alpha) {
         return modifyAlpha(color, (int) (255f * alpha));
     }
 
@@ -61,7 +63,7 @@ public class ColorUtils {
      * @param ratio of which to blend. 0.0 will return {@code color1}, 0.5 will give an even blend,
      *              1.0 will return {@code color2}.
      */
-    public static @ColorInt int blendColors(@ColorInt int color1,
+    public static @CheckResult @ColorInt int blendColors(@ColorInt int color1,
                                             @ColorInt int color2,
                                             @FloatRange(from = 0f, to = 1f) float ratio) {
         final float inverseRatio = 1f - ratio;

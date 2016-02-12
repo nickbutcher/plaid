@@ -18,6 +18,8 @@ package io.plaidapp.util;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Outline;
 import android.graphics.Rect;
@@ -55,6 +57,19 @@ public class ViewUtils {
                     .getResources().getDisplayMetrics());
         }
         return actionBarSize;
+    }
+
+    /**
+     * Determine if the navigation bar will be on the bottom of the screen, based on logic in
+     * PhoneWindowManager.
+     */
+    public static boolean isNavBarOnBottom(@NonNull Context context) {
+        final Resources res= context.getResources();
+        final Configuration cfg = context.getResources().getConfiguration();
+        final DisplayMetrics dm =res.getDisplayMetrics();
+        boolean canMove = (dm.widthPixels != dm.heightPixels &&
+                cfg.smallestScreenWidthDp < 600);
+        return(!canMove || dm.widthPixels < dm.heightPixels);
     }
 
     public static RippleDrawable createRipple(@ColorInt int color,

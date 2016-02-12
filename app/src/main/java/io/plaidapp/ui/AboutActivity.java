@@ -74,7 +74,7 @@ public class AboutActivity extends Activity {
         pageIndicator.setViewPager(pager);
 
         draggableFrame.addListener(
-                new ElasticDragDismissFrameLayout.SystemChromeFader(getWindow()) {
+                new ElasticDragDismissFrameLayout.SystemChromeFader(this) {
                     @Override
                     public void onDragDismissed() {
                         // if we drag dismiss downward then the default reversal of the enter

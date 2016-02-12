@@ -189,7 +189,7 @@ public class DribbbleShot extends Activity {
             }
         });
         fab.setOnClickListener(fabClick);
-        chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(getWindow()) {
+        chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this) {
             @Override
             public void onDragDismissed() {
                 expandImageAndFinish();

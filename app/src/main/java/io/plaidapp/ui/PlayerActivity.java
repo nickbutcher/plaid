@@ -30,6 +30,7 @@ import android.transition.TransitionManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -103,12 +104,7 @@ public class PlayerActivity extends Activity {
         setContentView(R.layout.activity_dribbble_player);
         ButterKnife.bind(this);
         circleTransform = new CircleTransform(this);
-        chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(getWindow()) {
-            @Override
-            public void onDragDismissed() {
-                finishAfterTransition();
-            }
-        };
+        chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this);
 
         final Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_PLAYER)) {
@@ -127,6 +123,25 @@ public class PlayerActivity extends Activity {
         } else if (intent.getData() != null) {
             // todo support url intents
         }
+
+        // setup immersive mode i.e. draw behind the system chrome & adjust insets
+        draggableFrame.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        draggableFrame.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+                ((ViewGroup.MarginLayoutParams) draggableFrame.getLayoutParams()).rightMargin
+                        += insets.getSystemWindowInsetRight(); // landscape
+                ((ViewGroup.MarginLayoutParams) avatar.getLayoutParams()).topMargin
+                    += insets.getSystemWindowInsetTop();
+                ViewUtils.setPaddingTop(playerDescription, insets.getSystemWindowInsetTop());
+                ViewUtils.setPaddingBottom(shots, insets.getSystemWindowInsetBottom());
+                // clear this listener so insets aren't re-applied
+                draggableFrame.setOnApplyWindowInsetsListener(null);
+                return insets;
+            }
+        });
     }
 
     @Override
