@@ -368,6 +368,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 .fitCenter()
                 .override(imageSize[0], imageSize[1])
                 .into(new DribbbleTarget(holder.image, false));
+        // need both placeholder & background to prevent seeing through shot as it fades in
+        holder.image.setBackground(shotLoadingPlaceholders[holder.getAdapterPosition() %
+                shotLoadingPlaceholders.length]);
         holder.image.showBadge(shot.animated);
     }
 
