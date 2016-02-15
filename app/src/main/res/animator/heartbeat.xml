@@ -23,23 +23,23 @@
     <objectAnimator
         android:propertyName="scaleX"
         android:valueTo="1.2"
-        android:duration="150" />
+        android:duration="100" />
 
     <objectAnimator
         android:propertyName="scaleY"
         android:valueTo="1.2"
-        android:duration="150" />
+        android:duration="100" />
 
     <objectAnimator
         android:propertyName="scaleX"
         android:valueTo="1"
-        android:startOffset="150"
+        android:startOffset="100"
         android:duration="150" />
 
     <objectAnimator
         android:propertyName="scaleY"
         android:valueTo="1"
-        android:startOffset="150"
+        android:startOffset="100"
         android:duration="150" />
 
     <!-- beat 2 -->
@@ -47,24 +47,24 @@
         android:propertyName="scaleX"
         android:valueTo="1.2"
         android:startOffset="500"
-        android:duration="150" />
+        android:duration="100" />
 
     <objectAnimator
         android:propertyName="scaleY"
         android:valueTo="1.2"
         android:startOffset="500"
-        android:duration="150" />
+        android:duration="100" />
 
     <objectAnimator
         android:propertyName="scaleX"
         android:valueTo="1"
-        android:startOffset="650"
+        android:startOffset="600"
         android:duration="150" />
 
     <objectAnimator
         android:propertyName="scaleY"
         android:valueTo="1"
-        android:startOffset="650"
+        android:startOffset="600"
         android:duration="150" />
 
 </set>
