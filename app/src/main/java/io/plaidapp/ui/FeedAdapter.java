@@ -251,15 +251,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.itemView.setTransitionName(holder.itemView.getResources().getString(R
+                holder.image.setTransitionName(holder.itemView.getResources().getString(R
                         .string.transition_shot));
-                holder.itemView.setBackgroundColor(
-                        ContextCompat.getColor(host, R.color.background_light));
                 Intent intent = new Intent();
                 intent.setClass(host, DribbbleShot.class);
                 intent.putExtra(DribbbleShot.EXTRA_SHOT,
                         (Shot) getItem(holder.getAdapterPosition()));
-                setGridItemContentTransitions(holder.itemView);
+                setGridItemContentTransitions(holder.image);
                 ActivityOptions options =
                         ActivityOptions.makeSceneTransitionAnimation(host,
                                 Pair.create(view, host.getString(R.string.transition_shot)),
