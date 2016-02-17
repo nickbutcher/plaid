@@ -639,7 +639,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         notifyItemRemoved(loadingPos);
     }
 
-    /* package */ class DribbbleShotHolder extends RecyclerView.ViewHolder {
+    /* package */ static class DribbbleShotHolder extends RecyclerView.ViewHolder {
 
         BadgedFourThreeImageView image;
 
@@ -650,7 +650,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     }
 
-    /* package */ class DesignerNewsStoryHolder extends RecyclerView.ViewHolder {
+    /* package */ static class DesignerNewsStoryHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.story_title) TextView title;
         @Bind(R.id.story_comments) TextView comments;
@@ -663,7 +663,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    /* package */ class ProductHuntStoryHolder extends RecyclerView.ViewHolder {
+    /* package */ static class ProductHuntStoryHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.hunt_title) TextView title;
         @Bind(R.id.tagline) TextView tagline;
@@ -675,7 +675,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    /* package */ class LoadingMoreHolder extends RecyclerView.ViewHolder {
+    /* package */ static class LoadingMoreHolder extends RecyclerView.ViewHolder {
 
         ProgressBar progress;
 
