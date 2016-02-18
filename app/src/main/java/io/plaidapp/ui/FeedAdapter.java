@@ -325,8 +325,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         if (!shot.hasFadedIn) {
                             holder.image.setHasTransientState(true);
                             final ObservableColorMatrix cm = new ObservableColorMatrix();
-                            ObjectAnimator saturation = ObjectAnimator.ofFloat(cm,
-                                    ObservableColorMatrix.SATURATION, 0f, 1f);
+                            final ObjectAnimator saturation = ObjectAnimator.ofFloat(
+                                    cm, ObservableColorMatrix.SATURATION, 0f, 1f);
                             saturation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener
                                     () {
                                 @Override
@@ -334,17 +334,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                     // just animating the color matrix does not invalidate the
                                     // drawable so need this update listener.  Also have to create a
                                     // new CMCF as the matrix is immutable :(
-                                    if (holder.image.getDrawable() != null) {
-                                        holder.image.getDrawable().setColorFilter(
-                                                new ColorMatrixColorFilter(cm));
-                                    }
+                                    holder.image.setColorFilter(new ColorMatrixColorFilter(cm));
                                 }
                             });
-                            saturation.setDuration(2000);
+                            saturation.setDuration(2000L);
                             saturation.setInterpolator(getFastOutSlowInInterpolator(host));
                             saturation.addListener(new AnimatorListenerAdapter() {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
+                                    holder.image.clearColorFilter();
                                     holder.image.setHasTransientState(false);
                                 }
                             });
