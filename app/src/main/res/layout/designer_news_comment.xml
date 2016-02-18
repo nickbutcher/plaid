@@ -21,9 +21,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/comment_background"
+    android:paddingStart="@dimen/designer_news_story_comment_horizontal_padding"
+    android:paddingEnd="@dimen/designer_news_story_comment_horizontal_padding"
+    android:elevation="@dimen/designer_news_story_comment_elevation"
+    android:background="@color/designer_news_story_comment_background"
     android:foreground="?android:selectableItemBackground"
-    android:stateListAnimator="@animator/comment_selection_delayed">
+    android:stateListAnimator="@animator/selected_comment">
 
     <ImageView
         android:id="@+id/depth"

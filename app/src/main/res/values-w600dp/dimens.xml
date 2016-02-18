@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2016 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<resources>
+
+    <!-- designer news story -->
+    <dimen name="extended_height_toolbar">178dp</dimen>
+    <dimen name="designer_news_story_title_height">112dp</dimen> <!-- extended_height_toolbar - actionBarSize -->
+    <dimen name="designer_news_story_comments_max_width">480dp</dimen>
+    <dimen name="designer_news_story_comment_elevation">@dimen/z_card</dimen>
+    <dimen name="designer_news_story_comment_action_elevation">4dp</dimen>
+    <dimen name="designer_news_story_comment_horizontal_padding">@dimen/padding_normal</dimen>
+    <dimen name="designer_news_story_comment_actions_padding_start">24dp</dimen>
+    <dimen name="designer_news_story_comment_actions_padding_end">32dp</dimen>
+    <dimen name="designer_news_story_enter_comment_padding_start">28dp</dimen>
+    <dimen name="designer_news_story_enter_comment_padding_end">32dp</dimen>
+    <dimen name="designer_news_story_comments_vertical_padding">@dimen/padding_normal</dimen>
+
+</resources>

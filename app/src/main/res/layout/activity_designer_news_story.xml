@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -66,11 +65,10 @@
             android:layout_width="match_parent"
             android:layout_height="?android:actionBarSize"
             android:navigationIcon="@drawable/ic_arrow_back"
-            android:elevation="@dimen/z_fab"
+            android:elevation="@dimen/z_app_bar"
             android:contentInsetStart="@dimen/keyline_1"
             android:contentInsetEnd="@dimen/padding_normal"
             android:theme="@style/PlaidDarkOverlay" />
-            <!-- use fab elevation as the image raises on touch and don't want it to jump this -->
 
     </io.plaidapp.ui.widget.CollapsingTitleLayout>
 

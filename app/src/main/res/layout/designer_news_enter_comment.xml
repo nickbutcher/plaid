@@ -21,9 +21,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?android:listPreferredItemHeight"
-    android:paddingStart="@dimen/padding_normal_til"
+    android:paddingStart="@dimen/designer_news_story_enter_comment_padding_start"
     android:paddingTop="@dimen/spacing_large"
-    android:paddingEnd="@dimen/padding_normal"
+    android:paddingEnd="@dimen/designer_news_story_enter_comment_padding_end"
+    android:paddingBottom="@dimen/designer_news_story_comments_vertical_padding"
+    android:elevation="@dimen/designer_news_story_comment_elevation"
+    android:background="@drawable/comment_background"
     android:orientation="horizontal"
     android:baselineAligned="false">
 

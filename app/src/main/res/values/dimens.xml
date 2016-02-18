@@ -54,6 +54,14 @@
     <dimen name="comment_thread_width">4dp</dimen>
     <dimen name="comment_thread_gap">4dp</dimen>
     <dimen name="comment_separation">16dp</dimen>
+    <dimen name="designer_news_story_comment_elevation">0dp</dimen>
+    <dimen name="designer_news_story_comment_action_elevation">2dp</dimen>
+    <dimen name="designer_news_story_comment_horizontal_padding">0dp</dimen>
+    <dimen name="designer_news_story_comment_actions_padding_start">@dimen/spacing_normal</dimen>
+    <dimen name="designer_news_story_comment_actions_padding_end">@dimen/padding_normal</dimen>
+    <dimen name="designer_news_story_enter_comment_padding_start">@dimen/padding_normal_til</dimen>
+    <dimen name="designer_news_story_enter_comment_padding_end">@dimen/padding_normal</dimen>
+    <dimen name="designer_news_story_comments_vertical_padding">0dp</dimen>
 
     <!-- dribbble shot -->
     <dimen name="shot_collapsed_app_bar_height">168dp</dimen> <!-- 3 * ?android:actionBarSize -->

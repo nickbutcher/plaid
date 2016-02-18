@@ -171,27 +171,20 @@ public class DesignerNewsStory extends Activity {
                 R.layout.designer_news_story_description, commentsList, false);
         bindDescription();
 
-        // setup toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.story_toolbar);
-        if (collapsingToolbar != null) { // portrait: collapsing toolbar
+        // setup title/toolbar
+        if (collapsingToolbar != null) { // narrow device: collapsing toolbar
             collapsingToolbar.addOnLayoutChangeListener(titlebarLayout);
             collapsingToolbar.setTitle(story.title);
-        } else { // landscape: scroll toolbar with content
-            toolbar = (Toolbar) header.findViewById(R.id.story_toolbar);
-            FontTextView title = (FontTextView) toolbar.findViewById(R.id.story_title);
+            final Toolbar toolbar = (Toolbar) findViewById(R.id.story_toolbar);
+            toolbar.setNavigationOnClickListener(backClick);
+            commentsList.addOnScrollListener(headerScrollListener);
+        } else { // w600dp configuration: content card scrolls over title bar
+            final TextView title = (TextView) findViewById(R.id.story_title);
             title.setText(story.title);
+            findViewById(R.id.back).setOnClickListener(backClick);
         }
-        commentsList.addOnScrollListener(headerScrollListener);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finishAfterTransition();
-            }
-        });
-
-        View enterCommentView = setupCommentField();
-
+        final View enterCommentView = setupCommentField();
         if (story.comment_count > 0) {
             // flatten the comments from a nested structure {@see Comment#comments} to a
             // list appropriate for our adapter (using the depth attribute).
@@ -288,11 +281,18 @@ public class DesignerNewsStory extends Activity {
         @Override public void onCustomTabsDisconnected() { }
     };
 
-    private RecyclerView.OnScrollListener headerScrollListener
+    private final RecyclerView.OnScrollListener headerScrollListener
             = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             updateScrollDependentUi();
+        }
+    };
+
+    private final View.OnClickListener backClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            finishAfterTransition();
         }
     };
 

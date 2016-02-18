@@ -32,7 +32,8 @@
     <color name="text_disabled_light">#4dffffff</color> <!-- 30% -->
     <color name="ripple_light">#99ffffff</color>
     <color name="ripple_dark">@color/mid_grey</color>
-    <color name="background_light">#fafafa</color>
+    <color name="background_light">#fafafa</color> <!-- grey 50 -->
+    <color name="background_lightish">#e0e0e0</color> <!-- grey 300 -->
     <color name="background_dark">#ff333333</color>
     <color name="immersive_bars">#99000000</color>
     <color name="light_immersive_bars">@color/immersive_bars</color>
@@ -63,6 +64,8 @@
     <color name="designer_news">#03a9f4</color> <!--light blue 500 -->-->
     <color name="designer_news_dark">#039be5</color> <!-- light blue 600 -->
     <color name="designer_news_link_highlight">#b303a9f4</color>
+    <color name="designer_news_story_comment_background">@android:color/transparent</color>
+
 
     <color name="designer_news_super_dark">#000133</color>
     <color name="designer_news_quote_line">#ffeceef1</color>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2015 Google Inc.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
   limitations under the License.
   -->
 
-<!-- unused view, only needed in landscape -->
-<Space
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="0dp"
-    android:layout_height="0dp" />
+<resources>
+
+    <!-- designer news -->
+    <color name="designer_news_story_comment_background">@color/background_light</color>
+
+</resources>

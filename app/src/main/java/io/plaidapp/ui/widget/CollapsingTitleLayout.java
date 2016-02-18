@@ -50,8 +50,6 @@ import io.plaidapp.util.ViewUtils;
  */
 public class CollapsingTitleLayout extends FrameLayout {
 
-    private static final float density = 420f / 160f;
-
     // configurable attributes
     private int titleInsetStart;
     private float titleInsetTop;

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -23,13 +22,15 @@
     android:id="@android:id/empty"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/padding_normal"
+    android:paddingStart="@dimen/designer_news_story_comment_horizontal_padding"
     app:topPaddingHint="@dimen/spacing_large"
-    android:paddingEnd="@dimen/padding_normal"
+    android:paddingEnd="@dimen/designer_news_story_comment_horizontal_padding"
     android:paddingBottom="@dimen/spacing_large"
-    android:clickable="false"
-    android:drawableTop="@drawable/ic_no_comments"
     android:gravity="center"
+    android:drawableTop="@drawable/ic_no_comments"
     android:text="@string/no_comments"
     android:textAppearance="@style/TextAppearance.EmptyState"
-    tools:showIn="@layout/activity_designer_news_story"/>
+    android:elevation="@dimen/designer_news_story_comment_elevation"
+    android:background="@drawable/comment_background"
+    android:clickable="false"
+    tools:showIn="@layout/activity_designer_news_story" />
