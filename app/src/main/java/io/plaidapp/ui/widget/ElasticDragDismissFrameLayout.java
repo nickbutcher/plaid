@@ -22,7 +22,6 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.Window;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
     private boolean draggingDown = false;
     private boolean draggingUp = false;
 
-    private List<ElasticDragDismissListener> listeners;
+    private List<ElasticDragDismissCallback> callbacks;
 
     public ElasticDragDismissFrameLayout(Context context) {
         this(context, null, 0, 0);
@@ -93,7 +92,7 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
         a.recycle();
     }
 
-    public interface ElasticDragDismissListener {
+    public static abstract class ElasticDragDismissCallback {
 
         /**
          * Called for each drag event.
@@ -107,12 +106,12 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
          * @param rawOffsetPixels     The raw distance the user has dragged
          */
         void onDrag(float elasticOffset, float elasticOffsetPixels,
-                    float rawOffset, float rawOffsetPixels);
+                    float rawOffset, float rawOffsetPixels) { }
 
         /**
          * Called when dragging is released and has exceeded the threshold dismiss distance.
          */
-        void onDragDismissed();
+        void onDragDismissed() { }
 
     }
 
@@ -163,16 +162,16 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
         }
     }
 
-    public void addListener(ElasticDragDismissListener listener) {
-        if (listeners == null) {
-            listeners = new ArrayList<>();
+    public void addListener(ElasticDragDismissCallback listener) {
+        if (callbacks == null) {
+            callbacks = new ArrayList<>();
         }
-        listeners.add(listener);
+        callbacks.add(listener);
     }
 
-    public void removeListener(ElasticDragDismissListener listener) {
-        if (listeners != null && listeners.size() > 0) {
-            listeners.remove(listener);
+    public void removeListener(ElasticDragDismissCallback listener) {
+        if (callbacks != null && callbacks.size() > 0) {
+            callbacks.remove(listener);
         }
     }
 
@@ -227,28 +226,28 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
 
     private void dispatchDragCallback(float elasticOffset, float elasticOffsetPixels,
                                       float rawOffset, float rawOffsetPixels) {
-        if (listeners != null && listeners.size() > 0) {
-            for (ElasticDragDismissListener listener : listeners) {
-                listener.onDrag(elasticOffset, elasticOffsetPixels,
+        if (callbacks != null && !callbacks.isEmpty()) {
+            for (ElasticDragDismissCallback callback : callbacks) {
+                callback.onDrag(elasticOffset, elasticOffsetPixels,
                         rawOffset, rawOffsetPixels);
             }
         }
     }
 
     private void dispatchDismissCallback() {
-        if (listeners != null && listeners.size() > 0) {
-            for (ElasticDragDismissListener listener : listeners) {
-                listener.onDragDismissed();
+        if (callbacks != null && !callbacks.isEmpty()) {
+            for (ElasticDragDismissCallback callback : callbacks) {
+                callback.onDragDismissed();
             }
         }
     }
 
     /**
-     * An {@link ElasticDragDismissListener} which fades system chrome (i.e. status bar and
+     * An {@link ElasticDragDismissCallback} which fades system chrome (i.e. status bar and
      * navigation bar) whilst elastic drags are performed and
      * {@link Activity#finishAfterTransition() finishes} the activity when drag dismissed.
      */
-    public static class SystemChromeFader implements ElasticDragDismissListener {
+    public static class SystemChromeFader extends ElasticDragDismissCallback {
 
         private final Activity activity;
         private final int statusBarAlpha;
