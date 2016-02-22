@@ -30,8 +30,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
@@ -46,6 +50,7 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.style.StyleSpan;
+import android.transition.TransitionManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -107,10 +112,13 @@ public class HomeActivity extends Activity {
     @Bind(R.id.fab) ImageButton fab;
     @Bind(R.id.filters) RecyclerView filtersList;
     @Bind(android.R.id.empty) ProgressBar loading;
+    @Nullable @Bind(R.id.no_connection) ImageView noConnection;
     private TextView noFiltersEmptyText;
     private ImageButton fabPosting;
     private GridLayoutManager layoutManager;
     @BindInt(R.integer.num_columns) int columns;
+    private boolean connected = true;
+    private boolean monitoringConnectivity = false;
 
     // data
     private DataManager dataManager;
@@ -245,7 +253,160 @@ public class HomeActivity extends Activity {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(filtersList);
         checkEmptyState();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        dribbblePrefs.addLoginStatusListener(dataManager);
+        dribbblePrefs.addLoginStatusListener(filtersAdapter);
         checkConnectivity();
+    }
+
+    @Override
+    protected void onPause() {
+        dribbblePrefs.removeLoginStatusListener(dataManager);
+        dribbblePrefs.removeLoginStatusListener(filtersAdapter);
+        if (monitoringConnectivity) {
+            final ConnectivityManager connectivityManager
+                    = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            connectivityManager.unregisterNetworkCallback(connectivityCallback);
+            monitoringConnectivity = false;
+        }
+        super.onPause();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        final MenuItem dribbbleLogin = menu.findItem(R.id.menu_dribbble_login);
+        if (dribbbleLogin != null) {
+            dribbbleLogin.setTitle(dribbblePrefs.isLoggedIn() ?
+                    R.string.dribbble_log_out : R.string.dribbble_login);
+        }
+        final MenuItem designerNewsLogin = menu.findItem(R.id.menu_designer_news_login);
+        if (designerNewsLogin != null) {
+            designerNewsLogin.setTitle(designerNewsPrefs.isLoggedIn() ?
+                    R.string.designer_news_log_out : R.string.designer_news_login);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_filter:
+                drawer.openDrawer(GravityCompat.END);
+                return true;
+            case R.id.menu_search:
+                // get the icon's location on screen to pass through to the search screen
+                View searchMenuView = toolbar.findViewById(R.id.menu_search);
+                int[] loc = new int[2];
+                searchMenuView.getLocationOnScreen(loc);
+                startActivityForResult(SearchActivity.createStartIntent(this, loc[0], loc[0] +
+                        (searchMenuView.getWidth() / 2)), RC_SEARCH, ActivityOptions
+                        .makeSceneTransitionAnimation(this).toBundle());
+                searchMenuView.setAlpha(0f);
+                return true;
+            case R.id.menu_dribbble_login:
+                if (!dribbblePrefs.isLoggedIn()) {
+                    dribbblePrefs.login(HomeActivity.this);
+                } else {
+                    dribbblePrefs.logout();
+                    // TODO something better than a toast!!
+                    Toast.makeText(getApplicationContext(), R.string.dribbble_logged_out, Toast
+                            .LENGTH_SHORT).show();
+                }
+                return true;
+            case R.id.menu_designer_news_login:
+                if (!designerNewsPrefs.isLoggedIn()) {
+                    startActivity(new Intent(this, DesignerNewsLogin.class));
+                } else {
+                    designerNewsPrefs.logout();
+                    // TODO something better than a toast!!
+                    Toast.makeText(getApplicationContext(), R.string.designer_news_logged_out,
+                            Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            case R.id.menu_about:
+                startActivity(new Intent(HomeActivity.this, AboutActivity.class),
+                        ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case RC_SEARCH:
+                // reset the search icon which we hid
+                View searchMenuView = toolbar.findViewById(R.id.menu_search);
+                if (searchMenuView != null) {
+                    searchMenuView.setAlpha(1f);
+                }
+                if (resultCode == SearchActivity.RESULT_CODE_SAVE) {
+                    String query = data.getStringExtra(SearchActivity.EXTRA_QUERY);
+                    if (TextUtils.isEmpty(query)) return;
+                    Source dribbbleSearch = null;
+                    Source designerNewsSearch = null;
+                    boolean newSource = false;
+                    if (data.getBooleanExtra(SearchActivity.EXTRA_SAVE_DRIBBBLE, false)) {
+                        dribbbleSearch = new Source.DribbbleSearchSource(query, true);
+                        newSource |= filtersAdapter.addFilter(dribbbleSearch);
+                    }
+                    if (data.getBooleanExtra(SearchActivity.EXTRA_SAVE_DESIGNER_NEWS, false)) {
+                        designerNewsSearch = new Source.DesignerNewsSearchSource(query, true);
+                        newSource |= filtersAdapter.addFilter(designerNewsSearch);
+                    }
+                    if (newSource && (dribbbleSearch != null || designerNewsSearch != null)) {
+                        highlightNewSources(dribbbleSearch, designerNewsSearch);
+                    }
+                }
+                break;
+            case RC_NEW_DESIGNER_NEWS_STORY:
+                switch (resultCode) {
+                    case PostNewDesignerNewsStory.RESULT_DRAG_DISMISSED:
+                        // need to reshow the FAB as there's no shared element transition
+                        showFab();
+                        unregisterPostStoryResultListener();
+                        break;
+                    case PostNewDesignerNewsStory.RESULT_POSTING:
+                        showPostingProgress();
+                        break;
+                    default:
+                        unregisterPostStoryResultListener();
+                        break;
+                }
+                break;
+            case RC_NEW_DESIGNER_NEWS_LOGIN:
+                if (resultCode == RESULT_OK) {
+                    showFab();
+                }
+                break;
+            case RC_AUTH_DRIBBBLE_FOLLOWING:
+                if (resultCode == RESULT_OK) {
+                    filtersAdapter.enableFilterByKey(SourceManager.SOURCE_DRIBBBLE_FOLLOWING, this);
+                }
+                break;
+            case RC_AUTH_DRIBBBLE_USER_LIKES:
+                if (resultCode == RESULT_OK) {
+                    filtersAdapter.enableFilterByKey(
+                            SourceManager.SOURCE_DRIBBBLE_USER_LIKES, this);
+                }
+                break;
+            case RC_AUTH_DRIBBBLE_USER_SHOTS:
+                if (resultCode == RESULT_OK) {
+                    filtersAdapter.enableFilterByKey(
+                            SourceManager.SOURCE_DRIBBBLE_USER_SHOTS, this);
+                }
+                break;
+        }
     }
 
     // listener for notifying adapter when data sources are deactivated
@@ -412,8 +573,10 @@ public class HomeActivity extends Activity {
         if (adapter.getDataItemCount() == 0) {
             // if grid is empty check whether we're loading or if no filters are selected
             if (filtersAdapter.getEnabledSourcesCount() > 0) {
-                loading.setVisibility(View.VISIBLE);
-                setNoFiltersEmptyTextVisibility(View.GONE);
+                if (connected) {
+                    loading.setVisibility(View.VISIBLE);
+                    setNoFiltersEmptyTextVisibility(View.GONE);
+                }
             } else {
                 loading.setVisibility(View.GONE);
                 setNoFiltersEmptyTextVisibility(View.VISIBLE);
@@ -478,20 +641,6 @@ public class HomeActivity extends Activity {
         overviewIcon.recycle();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        dribbblePrefs.addLoginStatusListener(dataManager);
-        dribbblePrefs.addLoginStatusListener(filtersAdapter);
-    }
-
-    @Override
-    protected void onPause() {
-        dribbblePrefs.removeLoginStatusListener(dataManager);
-        dribbblePrefs.removeLoginStatusListener(filtersAdapter);
-        super.onPause();
-    }
-
     private void animateToolbar() {
         // this is gross but toolbar doesn't expose it's children to animate them :(
         View t = toolbar.getChildAt(0);
@@ -532,140 +681,6 @@ public class HomeActivity extends Activity {
                     .setDuration(duration)
                     .setInterpolator(AnimationUtils.loadInterpolator(this,
                             android.R.interpolator.overshoot));
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem dribbbleLogin = menu.findItem(R.id.menu_dribbble_login);
-        if (dribbbleLogin != null) {
-            dribbbleLogin.setTitle(dribbblePrefs.isLoggedIn() ? R.string.dribbble_log_out : R
-                    .string.dribbble_login);
-        }
-        MenuItem designerNewsLogin = menu.findItem(R.id.menu_designer_news_login);
-        if (designerNewsLogin != null) {
-            designerNewsLogin.setTitle(designerNewsPrefs.isLoggedIn() ? R.string
-                    .designer_news_log_out : R.string.designer_news_login);
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_filter:
-                drawer.openDrawer(GravityCompat.END);
-                return true;
-            case R.id.menu_search:
-                // get the icon's location on screen to pass through to the search screen
-                View searchMenuView = toolbar.findViewById(R.id.menu_search);
-                int[] loc = new int[2];
-                searchMenuView.getLocationOnScreen(loc);
-                startActivityForResult(SearchActivity.createStartIntent(this, loc[0], loc[0] +
-                        (searchMenuView.getWidth() / 2)), RC_SEARCH, ActivityOptions
-                        .makeSceneTransitionAnimation(this).toBundle());
-                searchMenuView.setAlpha(0f);
-                return true;
-            case R.id.menu_dribbble_login:
-                if (!dribbblePrefs.isLoggedIn()) {
-                    dribbblePrefs.login(HomeActivity.this);
-                } else {
-                    dribbblePrefs.logout();
-                    // TODO something better than a toast!!
-                    Toast.makeText(getApplicationContext(), R.string.dribbble_logged_out, Toast
-                            .LENGTH_SHORT).show();
-                }
-                return true;
-            case R.id.menu_designer_news_login:
-                if (!designerNewsPrefs.isLoggedIn()) {
-                    startActivity(new Intent(this, DesignerNewsLogin.class));
-                } else {
-                    designerNewsPrefs.logout();
-                    // TODO something better than a toast!!
-                    Toast.makeText(getApplicationContext(), R.string.designer_news_logged_out,
-                            Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            case R.id.menu_about:
-                startActivity(new Intent(HomeActivity.this, AboutActivity.class),
-                        ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case RC_SEARCH:
-                // reset the search icon which we hid
-                View searchMenuView = toolbar.findViewById(R.id.menu_search);
-                if (searchMenuView != null) {
-                    searchMenuView.setAlpha(1f);
-                }
-                if (resultCode == SearchActivity.RESULT_CODE_SAVE) {
-                    String query = data.getStringExtra(SearchActivity.EXTRA_QUERY);
-                    if (TextUtils.isEmpty(query)) return;
-                    Source dribbbleSearch = null;
-                    Source designerNewsSearch = null;
-                    boolean newSource = false;
-                    if (data.getBooleanExtra(SearchActivity.EXTRA_SAVE_DRIBBBLE, false)) {
-                        dribbbleSearch = new Source.DribbbleSearchSource(query, true);
-                        newSource |= filtersAdapter.addFilter(dribbbleSearch);
-                    }
-                    if (data.getBooleanExtra(SearchActivity.EXTRA_SAVE_DESIGNER_NEWS, false)) {
-                        designerNewsSearch = new Source.DesignerNewsSearchSource(query, true);
-                        newSource |= filtersAdapter.addFilter(designerNewsSearch);
-                    }
-                    if (newSource && (dribbbleSearch != null || designerNewsSearch != null)) {
-                        highlightNewSources(dribbbleSearch, designerNewsSearch);
-                    }
-                }
-                break;
-            case RC_NEW_DESIGNER_NEWS_STORY:
-                switch (resultCode) {
-                    case PostNewDesignerNewsStory.RESULT_DRAG_DISMISSED:
-                        // need to reshow the FAB as there's no shared element transition
-                        showFab();
-                        unregisterPostStoryResultListener();
-                        break;
-                    case PostNewDesignerNewsStory.RESULT_POSTING:
-                        showPostingProgress();
-                        break;
-                    default:
-                        unregisterPostStoryResultListener();
-                        break;
-                }
-                break;
-            case RC_NEW_DESIGNER_NEWS_LOGIN:
-                if (resultCode == RESULT_OK) {
-                    showFab();
-                }
-                break;
-            case RC_AUTH_DRIBBBLE_FOLLOWING:
-                if (resultCode == RESULT_OK) {
-                    filtersAdapter.enableFilterByKey(SourceManager.SOURCE_DRIBBBLE_FOLLOWING, this);
-                }
-                break;
-            case RC_AUTH_DRIBBBLE_USER_LIKES:
-                if (resultCode == RESULT_OK) {
-                    filtersAdapter.enableFilterByKey(
-                            SourceManager.SOURCE_DRIBBBLE_USER_LIKES, this);
-                }
-                break;
-            case RC_AUTH_DRIBBBLE_USER_SHOTS:
-                if (resultCode == RESULT_OK) {
-                    filtersAdapter.enableFilterByKey(
-                            SourceManager.SOURCE_DRIBBBLE_USER_SHOTS, this);
-                }
-                break;
         }
     }
 
@@ -755,20 +770,50 @@ public class HomeActivity extends Activity {
     }
 
     private void checkConnectivity() {
-        ConnectivityManager connectivityManager
+        final ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        boolean connected = activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        final NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        connected = activeNetworkInfo != null && activeNetworkInfo.isConnected();
         if (!connected) {
             loading.setVisibility(View.GONE);
-            ViewStub stub = (ViewStub) findViewById(R.id.stub_no_connection);
-            ImageView iv = (ImageView) stub.inflate();
+            if (noConnection == null) {
+                final ViewStub stub = (ViewStub) findViewById(R.id.stub_no_connection);
+                noConnection = (ImageView) stub.inflate();
+            }
             final AnimatedVectorDrawable avd =
                     (AnimatedVectorDrawable) getDrawable(R.drawable.avd_no_connection);
-            iv.setImageDrawable(avd);
+            noConnection.setImageDrawable(avd);
             avd.start();
+
+            connectivityManager.registerNetworkCallback(
+                    new NetworkRequest.Builder()
+                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build(),
+                    connectivityCallback);
+            monitoringConnectivity = true;
         }
     }
+
+    private ConnectivityManager.NetworkCallback connectivityCallback = new ConnectivityManager.NetworkCallback() {
+        @Override
+        public void onAvailable(Network network) {
+            connected = true;
+            if (adapter.getDataItemCount() != 0) return;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    TransitionManager.beginDelayedTransition(drawer);
+                    noConnection.setVisibility(View.GONE);
+                    loading.setVisibility(View.VISIBLE);
+                    dataManager.loadAllDataSources();
+                }
+            });
+        }
+
+        @Override
+        public void onLost(Network network) {
+            connected = false;
+        }
+    };
 
     private int getAuthSourceRequestCode(Source filter) {
         switch (filter.key) {
