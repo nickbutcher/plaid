@@ -76,8 +76,9 @@ import io.plaidapp.data.api.producthunt.PostWeigher;
 import io.plaidapp.data.api.producthunt.model.Post;
 import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.data.prefs.SourceManager;
+import io.plaidapp.ui.recyclerview.SpannedGridLayoutManager;
 import io.plaidapp.ui.transitions.ReflowText;
-import io.plaidapp.ui.widget.BadgedFourThreeImageView;
+import io.plaidapp.ui.widget.BadgedImageView;
 import io.plaidapp.util.ObservableColorMatrix;
 import io.plaidapp.util.TransitionUtils;
 import io.plaidapp.util.ViewUtils;
@@ -90,7 +91,8 @@ import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
  * Adapter for displaying a grid of {@link PlaidItem}s.
  */
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-                         implements DataLoadingSubject.DataLoadingCallbacks {
+                         implements DataLoadingSubject.DataLoadingCallbacks,
+                                    SpannedGridLayoutManager.GridSpanLookup {
 
     public static final int REQUEST_CODE_VIEW_SHOT = 5407;
 
@@ -106,6 +108,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final boolean pocketIsInstalled;
     private final @Nullable DataLoadingSubject dataLoading;
     private final int columns;
+    private final int expandedItemColumnSpan;
     private final ColorDrawable[] shotLoadingPlaceholders;
     private final @ColorInt int initialGifBadgeColor;
 
@@ -119,11 +122,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public FeedAdapter(Activity hostActivity,
                        DataLoadingSubject dataLoading,
                        int columns,
+                       int expandedItemColumnSpan,
                        boolean pocketInstalled) {
         this.host = hostActivity;
         this.dataLoading = dataLoading;
         dataLoading.registerCallback(this);
         this.columns = columns;
+        this.expandedItemColumnSpan = expandedItemColumnSpan;
         this.pocketIsInstalled = pocketInstalled;
         layoutInflater = LayoutInflater.from(host);
         comparator = new PlaidItemSorting.PlaidItemComparator();
@@ -445,15 +450,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return items.get(position);
     }
 
-    public int getItemColumnSpan(int position) {
-        switch (getItemViewType(position)) {
-            case TYPE_LOADING_MORE:
-                return columns;
-            default:
-                return getItem(position).colspan;
-        }
-    }
-
     public void clear() {
         items.clear();
         notifyDataSetChanged();
@@ -543,32 +539,33 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void expandPopularItems() {
         // for now just expand the first dribbble image per page which should be
         // the most popular according to our weighing & sorting
-        List<Integer> expandedPositions = new ArrayList<>();
+        final List<Integer> expandedPositions = new ArrayList<>();
         int page = -1;
         final int count = items.size();
         for (int i = 0; i < count; i++) {
-            PlaidItem item = getItem(i);
+            final PlaidItem item = getItem(i);
             if (item instanceof Shot && item.page > page) {
-                item.colspan = columns;
+                item.gridSpan = expandedItemColumnSpan;
                 page = item.page;
                 expandedPositions.add(i);
             } else {
-                item.colspan = 1;
+                item.gridSpan = 1;
             }
         }
 
-        // make sure that any expanded items are at the start of a row
-        // so that we don't leave any gaps in the grid
+        // make sure that any expanded items are positioned so that they don't leave any gaps
+        // in the grid i.e. does not span beyond the number of columns
+        int extraSpannedCells = 0;
         for (int expandedPos = 0; expandedPos < expandedPositions.size(); expandedPos++) {
             int pos = expandedPositions.get(expandedPos);
-            int extraSpannedSpaces = expandedPos * (columns - 1);
-            int rowPosition = (pos + extraSpannedSpaces) % columns;
-            if (rowPosition != 0) {
-                int swapWith = pos + (columns - rowPosition);
+            int rowPosition = (pos + extraSpannedCells) % columns;
+            if (rowPosition + expandedItemColumnSpan > columns) {
+                int swapWith = pos + (rowPosition + expandedItemColumnSpan - columns);
                 if (swapWith < items.size()) {
                     Collections.swap(items, pos, swapWith);
                 }
             }
+            extraSpannedCells += ((expandedItemColumnSpan * expandedItemColumnSpan) - 1);
         }
     }
 
@@ -685,13 +682,25 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         };
     }
 
+    @Override
+    public SpannedGridLayoutManager.SpanInfo getSpanInfo(int position) {
+        switch (getItemViewType(position)) {
+            case TYPE_LOADING_MORE:
+                return new SpannedGridLayoutManager.SpanInfo(columns, 1);
+            default:
+                final int span = getItem(position).gridSpan;
+                return span == 1 ? SpannedGridLayoutManager.SpanInfo.SINGLE_CELL
+                        : new SpannedGridLayoutManager.SpanInfo(span, span);
+        }
+    }
+
     /* package */ static class DribbbleShotHolder extends RecyclerView.ViewHolder {
 
-        BadgedFourThreeImageView image;
+        BadgedImageView image;
 
         public DribbbleShotHolder(View itemView) {
             super(itemView);
-            image = (BadgedFourThreeImageView) itemView;
+            image = (BadgedImageView) itemView;
         }
 
     }
