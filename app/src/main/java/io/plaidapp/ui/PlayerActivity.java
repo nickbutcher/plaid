@@ -318,7 +318,7 @@ public class PlayerActivity extends Activity {
 
     @OnClick(R.id.follow)
     /* package */ void follow() {
-        if (dataManager.getDribbblePrefs().isLoggedIn()) {
+        if (DribbblePrefs.get(this).isLoggedIn()) {
             if (following != null && following) {
                 dataManager.getDribbbleApi().unfollow(player.id, new Callback<Void>() {
                     @Override public void success(Void voyd, Response response) { }
