@@ -248,28 +248,36 @@ public class ViewUtils {
     }
 
     public static void setPaddingStart(View view, int paddingStart) {
-        view.setPaddingRelative(paddingStart,
+        if (view.getPaddingStart() == paddingStart) return;
+        view.setPaddingRelative(
+                paddingStart,
                 view.getPaddingTop(),
                 view.getPaddingEnd(),
                 view.getPaddingBottom());
     }
 
     public static void setPaddingTop(View view, int paddingTop) {
-        view.setPaddingRelative(view.getPaddingStart(),
+        if (view.getPaddingTop() == paddingTop) return;
+        view.setPaddingRelative(
+                view.getPaddingStart(),
                 paddingTop,
                 view.getPaddingEnd(),
                 view.getPaddingBottom());
     }
 
     public static void setPaddingEnd(View view, int paddingEnd) {
-        view.setPaddingRelative(view.getPaddingStart(),
+        if (view.getPaddingEnd() == paddingEnd) return;
+        view.setPaddingRelative(
+                view.getPaddingStart(),
                 view.getPaddingTop(),
                 paddingEnd,
                 view.getPaddingBottom());
     }
 
     public static void setPaddingBottom(View view, int paddingBottom) {
-        view.setPaddingRelative(view.getPaddingStart(),
+        if (view.getPaddingBottom() == paddingBottom) return;
+        view.setPaddingRelative(
+                view.getPaddingStart(),
                 view.getPaddingTop(),
                 view.getPaddingEnd(),
                 paddingBottom);

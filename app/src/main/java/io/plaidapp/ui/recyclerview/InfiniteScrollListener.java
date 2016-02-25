@@ -32,12 +32,31 @@ public abstract class InfiniteScrollListener extends RecyclerView.OnScrollListen
     // The minimum number of items remaining before we should loading more.
     private static final int VISIBLE_THRESHOLD = 5;
 
-    private final LinearLayoutManager layoutManager;
+    private final RecyclerView.LayoutManager layoutManager;
+    private final FirstVisibleItemPositionFetcher firstVisiblePositionFetcher;
     private final DataLoadingSubject dataLoading;
 
-    public InfiniteScrollListener(@NonNull LinearLayoutManager layoutManager,
-                                  @NonNull DataLoadingSubject dataLoading) {
-        this.layoutManager = layoutManager;
+    public InfiniteScrollListener(@NonNull final LinearLayoutManager llm,
+                                  @NonNull final DataLoadingSubject dataLoading) {
+        this.layoutManager = llm;
+        firstVisiblePositionFetcher = new FirstVisibleItemPositionFetcher() {
+            @Override
+            public int getFirstVisibleItemPosition() {
+                return llm.findFirstVisibleItemPosition();
+            }
+        };
+        this.dataLoading = dataLoading;
+    }
+
+    public InfiniteScrollListener(@NonNull final SpannedGridLayoutManager sglm,
+                                  @NonNull final DataLoadingSubject dataLoading) {
+        this.layoutManager = sglm;
+        firstVisiblePositionFetcher = new FirstVisibleItemPositionFetcher() {
+            @Override
+            public int getFirstVisibleItemPosition() {
+                return sglm.getFirstVisibleItemPosition();
+            }
+        };
         this.dataLoading = dataLoading;
     }
 
@@ -48,7 +67,7 @@ public abstract class InfiniteScrollListener extends RecyclerView.OnScrollListen
 
         final int visibleItemCount = recyclerView.getChildCount();
         final int totalItemCount = layoutManager.getItemCount();
-        final int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+        final int firstVisibleItem = firstVisiblePositionFetcher.getFirstVisibleItemPosition();
 
         if ((totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_THRESHOLD)) {
             onLoadMore();
@@ -56,5 +75,9 @@ public abstract class InfiniteScrollListener extends RecyclerView.OnScrollListen
     }
 
     public abstract void onLoadMore();
+
+    private interface FirstVisibleItemPositionFetcher {
+        int getFirstVisibleItemPosition();
+    }
 
 }

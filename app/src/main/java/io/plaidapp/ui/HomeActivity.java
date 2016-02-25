@@ -40,7 +40,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Spannable;
@@ -92,6 +91,7 @@ import io.plaidapp.data.prefs.SourceManager;
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
+import io.plaidapp.ui.recyclerview.SpannedGridLayoutManager;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.util.AnimUtils;
@@ -116,8 +116,9 @@ public class HomeActivity extends Activity {
     @Nullable @BindView(R.id.no_connection) ImageView noConnection;
     private TextView noFiltersEmptyText;
     private ImageButton fabPosting;
-    private GridLayoutManager layoutManager;
+    private SpannedGridLayoutManager layoutManager;
     @BindInt(R.integer.num_columns) int columns;
+    @BindInt(R.integer.expanded_item_column_span) int expandedItemColSpan;
     private boolean connected = true;
     private boolean monitoringConnectivity = false;
 
@@ -169,16 +170,10 @@ public class HomeActivity extends Activity {
                 checkEmptyState();
             }
         };
-        adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this));
-
+        adapter = new FeedAdapter(this, dataManager, columns, expandedItemColSpan,
+                PocketUtils.isPocketInstalled(this));
         grid.setAdapter(adapter);
-        layoutManager = new GridLayoutManager(this, columns);
-        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                return adapter.getItemColumnSpan(position);
-            }
-        });
+        layoutManager = new SpannedGridLayoutManager(adapter, columns, 4f / 3f);
         grid.setLayoutManager(layoutManager);
         grid.addOnScrollListener(toolbarElevation);
         grid.addOnScrollListener(new InfiniteScrollListener(layoutManager, dataManager) {
@@ -470,7 +465,7 @@ public class HomeActivity extends Activity {
             // toolbar is laid out in front of the grid but when we scroll, we lower it's elevation
             // to allow the content to pass in front (and reset when scrolled to top of the grid)
             if (newState == RecyclerView.SCROLL_STATE_IDLE
-                    && layoutManager.findFirstVisibleItemPosition() == 0
+                    && layoutManager.getFirstVisibleItemPosition() == 0
                     && layoutManager.findViewByPosition(0).getTop() == grid.getPaddingTop()
                     && toolbar.getTranslationZ() != 0) {
                 // at top, reset elevation

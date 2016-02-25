@@ -23,7 +23,6 @@ import android.content.res.Resources;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.transition.TransitionManager;
@@ -53,6 +52,7 @@ import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.data.prefs.DribbblePrefs;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
+import io.plaidapp.ui.recyclerview.SpannedGridLayoutManager;
 import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.util.DribbbleUtils;
@@ -76,7 +76,7 @@ public class PlayerActivity extends Activity {
     private CircleTransform circleTransform;
     private PlayerShotsDataManager dataManager;
     private FeedAdapter adapter;
-    private GridLayoutManager layoutManager;
+    private SpannedGridLayoutManager layoutManager;
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
     private Boolean following;
     private int followerCount;
@@ -93,6 +93,7 @@ public class PlayerActivity extends Activity {
     @BindView(R.id.loading) ProgressBar loading;
     @BindView(R.id.player_shots) RecyclerView shots;
     @BindInt(R.integer.num_columns) int columns;
+    @BindInt(R.integer.expanded_item_column_span) int expandedItemColSpan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,6 +221,14 @@ public class PlayerActivity extends Activity {
         setFollowerCount(player.followers_count);
         likesCount.setText(res.getQuantityString(R.plurals.likes, player.likes_count,
                 nf.format(player.likes_count)));
+        ViewUtils.setPaddingTop(shots, playerDescription.getHeight());
+        playerDescription.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                ViewUtils.setPaddingTop(shots, playerDescription.getHeight());
+            }
+        });
 
         // load the users shots
         dataManager = new PlayerShotsDataManager(this, player) {
@@ -228,23 +237,17 @@ public class PlayerActivity extends Activity {
                 if (data != null && data.size() > 0) {
                     if (adapter.getDataItemCount() == 0) {
                         loading.setVisibility(View.GONE);
-                        ViewUtils.setPaddingTop(shots, playerDescription.getHeight());
                     }
                     adapter.addAndResort(data);
                 }
             }
         };
-        adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this));
+        adapter = new FeedAdapter(this, dataManager, columns, expandedItemColSpan,
+                PocketUtils.isPocketInstalled(this));
         shots.setAdapter(adapter);
         shots.setItemAnimator(new SlideInItemAnimator());
         shots.setVisibility(View.VISIBLE);
-        layoutManager = new GridLayoutManager(this, columns);
-        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                return adapter.getItemColumnSpan(position);
-            }
-        });
+        layoutManager = new SpannedGridLayoutManager(adapter, columns,  4f / 3f);
         shots.setLayoutManager(layoutManager);
         shots.addOnScrollListener(new InfiniteScrollListener(layoutManager, dataManager) {
             @Override
@@ -259,7 +262,7 @@ public class PlayerActivity extends Activity {
         shots.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                final int firstVisible = layoutManager.findFirstVisibleItemPosition();
+                final int firstVisible = layoutManager.getFirstVisibleItemPosition();
                 if (firstVisible > 0) return false;
 
                 // if no data loaded then pass through
