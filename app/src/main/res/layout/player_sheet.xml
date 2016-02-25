@@ -26,7 +26,7 @@
     <LinearLayout
         android:id="@+id/bottom_sheet_content"
         android:layout_width="@dimen/bottom_sheet_width"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/background_light"
         android:elevation="@dimen/z_fab"
         android:orientation="vertical">
@@ -70,8 +70,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/player_list"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:paddingBottom="@dimen/spacing_normal"
             android:clipToPadding="false"
             android:scrollbars="vertical" />
