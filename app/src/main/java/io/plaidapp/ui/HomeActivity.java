@@ -110,15 +110,6 @@ public class HomeActivity extends AppCompatActivity {
     private static final int RC_NEW_DESIGNER_NEWS_STORY = 4;
     private static final int RC_NEW_DESIGNER_NEWS_LOGIN = 5;
 
-    private static final OnApplyWindowInsetsListener NOOP_WINDOW_INSETS_LISTENER = new OnApplyWindowInsetsListener() {
-        @Override
-        public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
-            // We have to noop this because the support implementation assumes the input listener is't null
-            // https://code.google.com/p/android/issues/detail?id=197492
-            return insets.consumeSystemWindowInsets();
-        }
-    };
-
     @Bind(R.id.drawer) DrawerLayout drawer;
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.stories_grid) RecyclerView grid;
@@ -248,7 +239,7 @@ public class HomeActivity extends AppCompatActivity {
                         filtersList.getPaddingBottom() + insets.getSystemWindowInsetBottom());
 
                 // clear this listener so insets aren't re-applied
-                ViewCompat.setOnApplyWindowInsetsListener(drawer, NOOP_WINDOW_INSETS_LISTENER);
+                ViewCompat.setOnApplyWindowInsetsListener(drawer, null);
 
                 return insets.consumeSystemWindowInsets();
             }
