@@ -83,11 +83,6 @@
     </style>
 
     <style name="Plaid.Translucent.Dribbble.Shot">
-        <item name="colorPrimary">@color/dribbble</item>
-        <item name="colorAccent">@color/dribbble</item>
-        <item name="colorControlActivated">?colorAccent</item>
-        <item name="android:statusBarColor">@color/dribbble_super_dark</item>
-        <item name="android:navigationBarColor">@color/dribbble_super_dark</item>
         <item name="android:windowSharedElementEnterTransition">@transition/dribbble_shot_shared_enter</item>
         <item name="android:windowSharedElementReturnTransition">@transition/dribbble_shot_shared_return</item>
         <item name="android:windowEnterTransition">@transition/dribbble_shot_enter</item>
@@ -113,9 +108,6 @@
         <item name="android:windowAnimationStyle">@null</item>
         <item name="colorButtonNormal">@color/dribbble_button</item>
         <item name="colorControlHighlight">@color/ripple_light</item>
-        <item name="colorPrimary">@color/dribbble</item>
-        <item name="android:statusBarColor">@color/dribbble_super_dark</item>
-        <item name="android:navigationBarColor">@color/dribbble_super_dark</item>
     </style>
 
     <style name="Plaid.Translucent.Dribbble.PlayerSheet">
@@ -127,8 +119,6 @@
         <item name="android:windowAnimationStyle">@null</item>
         <item name="colorPrimary">@color/designer_news</item>
         <item name="colorAccent">@color/designer_news</item>
-        <item name="colorButtonNormal">@color/designer_news_button</item>
-        <item name="colorControlActivated">@color/designer_news</item>
         <item name="android:statusBarColor">@color/designer_news_super_dark</item>
         <item name="android:navigationBarColor">@color/designer_news_super_dark</item>
     </style>
@@ -137,9 +127,6 @@
         <item name="android:windowAnimationStyle">@null</item>
         <item name="colorPrimary">@color/designer_news</item>
         <item name="colorAccent">@color/designer_news</item>
-        <item name="colorButtonNormal">@color/designer_news_button</item>
-        <item name="colorControlActivated">@color/designer_news</item>
-        <item name="colorControlNormal">@color/hint_disabled_dark</item>
         <item name="android:statusBarColor">@color/background_super_dark</item>
         <item name="android:navigationBarColor">@color/background_super_dark</item>
     </style>
