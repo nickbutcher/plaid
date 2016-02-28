@@ -54,8 +54,7 @@
             android:layout_gravity="center_vertical"
             android:inputType="textCapWords"
             android:imeOptions="actionSearch|flagNoExtractUi|flagNoFullscreen"
-            app:queryHint="@string/search_hint"
-            />
+            app:queryHint="@string/search_hint" />
 
         <!-- wrapping layout needed for the touch ripple -->
         <FrameLayout
