@@ -22,11 +22,11 @@ public final class LocalTextViewCompat {
     }
 
     @ColorInt
-    public static int getHighlightColor(@NonNull TextView textView, @ColorRes int defaultColor) {
+    public static int getHighlightColor(@NonNull TextView textView, @ColorRes int defaultColorResId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             return textView.getHighlightColor();
         } else {
-            return ContextCompat.getColor(textView.getContext(), defaultColor);
+            return ContextCompat.getColor(textView.getContext(), defaultColorResId);
         }
     }
 }
