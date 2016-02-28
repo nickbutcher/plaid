@@ -384,8 +384,8 @@
     <style name="Widget.Plaid.SearchView" parent="Widget.AppCompat.SearchView">
         <item name="searchIcon">@null</item>
         <item name="searchHintIcon">@null</item>
-        <item name="queryBackground">@null</item>
-        <item name="submitBackground">@null</item>
+        <item name="queryBackground">@android:color/transparent</item>
+        <item name="submitBackground">@android:color/transparent</item>
         <item name="iconifiedByDefault">false</item>
     </style>
 
