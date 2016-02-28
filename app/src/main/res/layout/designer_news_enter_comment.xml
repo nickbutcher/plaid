@@ -33,8 +33,7 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
+        android:layout_weight="1">
 
         <EditText
             android:id="@+id/comment"

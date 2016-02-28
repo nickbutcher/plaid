@@ -352,16 +352,6 @@
         <item name="android:textColor">@color/text_primary_light</item>
     </style>
 
-    <!-- By default float labels (well, the design lib) rely on AppCompat which we're not using
-         yet (minSdk=21). We use this style to work around this and to provide the accent color. -->
-    <style name="TextAppearance.FloatLabelHint" parent="TextAppearance.AppCompat.Caption">
-        <item name="android:textColor">?colorAccent</item>
-    </style>
-
-    <style name="Widget.Plaid.HintCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
-        <item name="android:textColor">@color/text_secondary_dark</item>
-    </style>
-
     <style name="Widget.Plaid.Subhead">
         <item name="android:textAppearance">@style/TextAppearance.Subhead</item>
         <item name="lineHeightHint">24sp</item>
