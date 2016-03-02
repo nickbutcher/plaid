@@ -381,6 +381,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         host,
                         new CustomTabsIntent.Builder()
                                 .setToolbarColor(ContextCompat.getColor(host, R.color.product_hunt))
+                                .addDefaultShareMenuItem()
                                 .build(),
                         Uri.parse(((Post) getItem(holder.getAdapterPosition())).discussion_url));
             }
@@ -392,6 +393,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         host,
                         new CustomTabsIntent.Builder()
                                 .setToolbarColor(ContextCompat.getColor(host, R.color.product_hunt))
+                                .addDefaultShareMenuItem()
                                 .build(),
                         Uri.parse(((Post) getItem(holder.getAdapterPosition())).redirect_url));
             }

@@ -456,6 +456,7 @@ public class DribbbleShot extends Activity {
                 DribbbleShot.this,
                 new CustomTabsIntent.Builder()
                     .setToolbarColor(ContextCompat.getColor(DribbbleShot.this, R.color.dribbble))
+                    .addDefaultShareMenuItem()
                     .build(),
                 Uri.parse(url));
     }

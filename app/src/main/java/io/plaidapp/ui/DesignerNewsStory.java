@@ -267,7 +267,8 @@ public class DesignerNewsStory extends Activity {
                         pendingIntent,
                         false)
                 .setShowTitle(true)
-                .enableUrlBarHiding();
+                .enableUrlBarHiding()
+                .addDefaultShareMenuItem();
     }
 
     private final CustomTabActivityHelper.ConnectionCallback customTabConnect
