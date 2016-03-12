@@ -53,3 +53,7 @@
 -keepclasseswithmembers class * {
     @retrofit.http.* <methods>;
 }
+
+# Transitions-Everywhere
+-keep class com.transitionseverywhere.** { *; }
+-keep class com.transitionseverywhere.**.** { *; }

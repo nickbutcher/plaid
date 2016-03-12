@@ -38,8 +38,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +46,9 @@ import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+
+import com.transitionseverywhere.Transition;
+import com.transitionseverywhere.TransitionInflater;
 
 import java.util.List;
 

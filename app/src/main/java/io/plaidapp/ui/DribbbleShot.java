@@ -48,7 +48,6 @@ import android.support.v7.graphics.Palette;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.transition.AutoTransition;
 import android.transition.Transition;
 import android.util.Log;
 import android.util.TypedValue;
@@ -76,6 +75,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.transitionseverywhere.AutoTransition;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -627,8 +627,7 @@ public class DribbbleShot extends Activity {
         };
     }
 
-        private Transition.TransitionListener shotReturnHomeListener = new AnimUtils
-                .TransitionListenerAdapter() {
+        private Transition.TransitionListener shotReturnHomeListener = new AnimUtils.TransitionListenerAdapter() {
             @Override
             public void onTransitionStart(Transition transition) {
                 super.onTransitionStart(transition);
@@ -886,15 +885,14 @@ public class DribbbleShot extends Activity {
             inflater = LayoutInflater.from(context);
         }
 
-        @TargetApi(Build.VERSION_CODES.KITKAT)
-        private Transition getChange() {
+        private com.transitionseverywhere.Transition getChange() {
             if (change == null) {
-                Transition transition = new AutoTransition();
+                com.transitionseverywhere.Transition transition = new AutoTransition();
                 transition.setDuration(200L);
                 transition.setInterpolator(getFastOutLinearInInterpolator());
                 change = transition;
             }
-            return (Transition) change;
+            return (com.transitionseverywhere.Transition) change;
         }
 
         @Override

@@ -75,7 +75,7 @@ public class DribbbleLogin extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_login);
-        FabDialogMorphSetup.setupSharedEelementTransitions(this, container,
+        FabDialogMorphSetup.setupSharedElementTransitions(this, container,
                 getResources().getDimensionPixelSize(R.dimen.dialog_corners));
 
         container = (ViewGroup) findViewById(R.id.container);

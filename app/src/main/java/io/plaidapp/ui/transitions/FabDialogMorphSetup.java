@@ -47,7 +47,8 @@ public class FabDialogMorphSetup {
      * and the dialog corner radius which is dynamically supplied depending upon where this screen
      * is launched from.
      */
-    public static void setupSharedEelementTransitions(@NonNull Activity activity,
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static void setupSharedElementTransitions(@NonNull Activity activity,
                                                       @Nullable View target,
                                                       int dialogCornerRadius) {
         if (!activity.getIntent().hasExtra(EXTRA_SHARED_ELEMENT_START_COLOR)) return;

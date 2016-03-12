@@ -70,6 +70,7 @@ ext {
 }
 
 dependencies {
+    compile 'com.andkulikov:transitionseverywhere:1.6.1'
     compile "com.android.support:support-v4:${supportLibVersion}"
     compile "com.android.support:palette-v7:${supportLibVersion}"
     compile "com.android.support:recyclerview-v7:${supportLibVersion}"

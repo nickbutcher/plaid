@@ -52,7 +52,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.style.TextAppearanceSpan;
-import android.transition.ArcMotion;
 import android.transition.Transition;
 import android.util.TypedValue;
 import android.view.View;
@@ -67,6 +66,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.transitionseverywhere.ArcMotion;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;

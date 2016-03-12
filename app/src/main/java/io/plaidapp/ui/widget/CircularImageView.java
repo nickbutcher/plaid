@@ -26,6 +26,7 @@ public class CircularImageView extends ForegroundImageView {
         }
     };
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public CircularImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setOutlineProvider(CIRCULAR_OUTLINE);

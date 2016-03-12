@@ -104,16 +104,17 @@ public class DesignerNewsLogin extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_login);
         ButterKnife.bind(this);
-        FabDialogMorphSetup.setupSharedEelementTransitions(this, container,
-                getResources().getDimensionPixelSize(R.dimen.dialog_corners));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-                && getWindow().getSharedElementEnterTransition() != null) {
-            getWindow().getSharedElementEnterTransition().addListener(new AnimUtils.TransitionListenerAdapter() {
-                @Override
-                public void onTransitionEnd(Transition transition) {
-                    finishSetup();
-                }
-            });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            FabDialogMorphSetup.setupSharedElementTransitions(this, container,
+                    getResources().getDimensionPixelSize(R.dimen.dialog_corners));
+            if (getWindow().getSharedElementEnterTransition() != null) {
+                getWindow().getSharedElementEnterTransition().addListener(new AnimUtils.TransitionListenerAdapter() {
+                    @Override
+                    public void onTransitionEnd(Transition transition) {
+                        finishSetup();
+                    }
+                });
+            }
         } else {
             finishSetup();
         }

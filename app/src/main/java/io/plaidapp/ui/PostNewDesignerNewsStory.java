@@ -73,7 +73,7 @@ public class PostNewDesignerNewsStory extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_new_designer_news_story);
         ButterKnife.bind(this);
-        FabDialogMorphSetup.setupSharedEelementTransitions(this, bottomSheetContent, 0);
+        FabDialogMorphSetup.setupSharedElementTransitions(this, bottomSheetContent, 0);
 
         bottomSheet.registerCallback(new BottomSheet.Callbacks() {
             @Override
