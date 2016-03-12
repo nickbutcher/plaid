@@ -17,7 +17,6 @@
 
 <io.plaidapp.ui.widget.BottomSheet
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
@@ -74,10 +73,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/padding_normal_til"
+                    android:layout_marginLeft="@dimen/padding_normal_til"
                     android:layout_marginTop="@dimen/spacing_normal"
-                    android:layout_marginEnd="@dimen/padding_normal">
+                    android:layout_marginEnd="@dimen/padding_normal"
+                    android:layout_marginRight="@dimen/padding_normal">
 
-                    <EditText
+                    <android.support.design.widget.TextInputEditText
                         android:id="@+id/new_story_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -100,11 +101,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/padding_normal_til"
+                    android:layout_marginLeft="@dimen/padding_normal_til"
                     android:layout_marginTop="@dimen/spacing_normal"
                     android:layout_marginEnd="@dimen/padding_normal"
+                    android:layout_marginRight="@dimen/padding_normal"
                     android:stateListAnimator="@animator/disable_text_entry">
 
-                    <EditText
+                    <android.support.design.widget.TextInputEditText
                         android:id="@+id/new_story_url"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -119,11 +122,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/padding_normal_til"
+                    android:layout_marginLeft="@dimen/padding_normal_til"
                     android:layout_marginTop="@dimen/spacing_normal"
                     android:layout_marginEnd="@dimen/padding_normal"
+                    android:layout_marginRight="@dimen/padding_normal"
                     android:stateListAnimator="@animator/disable_text_entry">
 
-                    <EditText
+                    <android.support.design.widget.TextInputEditText
                         android:id="@+id/new_story_comment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -134,7 +139,7 @@
 
                 </android.support.design.widget.TextInputLayout>
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/new_story_post"
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"

@@ -15,7 +15,7 @@
   limitations under the License.
   -->
 
-<animated-selector
+<selector
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:constantSize="true">
 
@@ -28,18 +28,4 @@
         android:id="@+id/not_upvoted"
         android:drawable="@drawable/ic_upvote_empty_24dp_grey" />
 
-    <transition
-        android:fromId="@id/not_upvoted"
-        android:toId="@id/upvoted">
-
-        <animated-vector android:drawable="@drawable/ic_upvote_anim">
-
-            <target
-                android:name="filled"
-                android:animation="@animator/upvote" />
-
-        </animated-vector>
-
-    </transition>
-
-</animated-selector>
+</selector>

@@ -78,7 +78,7 @@
         <item name="colorAccent">@color/dribbble</item>
         <item name="android:statusBarColor">@color/dribbble_super_dark</item>
         <item name="android:navigationBarColor">@color/dribbble_super_dark</item>
-        <item name="colorControlActivated">?android:colorAccent</item>
+        <item name="colorControlActivated">?colorAccent</item>
         <item name="android:windowAllowReturnTransitionOverlap">false</item>
     </style>
 

@@ -15,7 +15,7 @@
   limitations under the License.
   -->
 
-<ripple
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/mid_grey"
-    android:radius="@dimen/avatar_ripple_radius" />
+<selector
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@color/mid_grey"/>
+</selector>

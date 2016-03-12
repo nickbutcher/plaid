@@ -48,12 +48,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/padding_normal"
+            android:layout_marginRight="@dimen/padding_normal"
             android:layout_marginStart="40dp"
+            android:layout_marginLeft="40dp"
             android:alpha="0"
             android:background="@null"
             android:layout_gravity="center_vertical"
             android:inputType="textCapWords"
             android:imeOptions="actionSearch|flagNoExtractUi|flagNoFullscreen"
+            app:theme="@style/SearchViewTheme"
             app:queryHint="@string/search_hint" />
 
         <!-- wrapping layout needed for the touch ripple -->
@@ -62,15 +65,16 @@
             android:layout_width="96dp"
             android:layout_height="match_parent"
             android:paddingStart="4dp"
+            android:paddingLeft="4dp"
             android:background="@android:color/transparent">
 
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/searchback"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="start|center_vertical"
                 android:background="?selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_search_24dp" />
+                app:srcCompat="@drawable/ic_search_24dp" />
 
         </FrameLayout>
 
@@ -110,18 +114,17 @@
             android:clipToPadding="false"
             android:visibility="gone" />
 
-        <ImageButton
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="@dimen/fab_size"
             android:layout_height="@dimen/fab_size"
-            android:elevation="@dimen/z_fab"
-            android:background="@drawable/fab"
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="@dimen/padding_normal"
+            android:layout_marginRight="@dimen/padding_normal"
             android:layout_marginBottom="@dimen/padding_normal"
-            android:stateListAnimator="@animator/raise"
-            android:src="@drawable/ic_save_24dp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:rippleColor="@color/ripple_dark"
+            app:srcCompat="@drawable/ic_save_24dp"/>
 
         <View
             android:id="@+id/results_scrim"
@@ -136,6 +139,7 @@
             android:layout_height="448dp"
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="@dimen/padding_normal"
+            android:layout_marginRight="@dimen/padding_normal"
             android:layout_marginBottom="@dimen/padding_normal"
             android:translationX="196dp"
             android:translationY="196dp"
@@ -151,33 +155,36 @@
                 android:gravity="bottom|end"
                 android:orientation="vertical">
 
-                <CheckBox
+                <android.support.v7.widget.AppCompatCheckBox
                     android:id="@+id/save_dribbble"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingTop="@dimen/padding_normal"
                     android:paddingEnd="@dimen/padding_normal"
+                    android:paddingRight="@dimen/padding_normal"
                     android:paddingBottom="@dimen/padding_normal"
                     android:checked="true"
                     android:text="@string/confirm_save_dribbble_search"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2"  />
 
-                <CheckBox
+                <android.support.v7.widget.AppCompatCheckBox
                     android:id="@+id/save_designer_news"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingTop="@dimen/padding_normal"
                     android:paddingEnd="@dimen/padding_normal"
+                    android:paddingRight="@dimen/padding_normal"
                     android:paddingBottom="@dimen/padding_normal"
                     android:checked="true"
                     android:text="@string/confirm_save_designer_news_search"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/save_confirmed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableEnd="@drawable/ic_save_24dp"
+                    android:drawableEnd="@drawable/ic_save_24dp_as_selector"
+                    android:drawableRight="@drawable/ic_save_24dp_as_selector"
                     android:drawablePadding="@dimen/padding_normal"
                     android:padding="@dimen/padding_normal"
                     android:text="@string/confirm_save_search"

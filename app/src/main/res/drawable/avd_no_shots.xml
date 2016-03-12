@@ -14,13 +14,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
+<selector
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-<animated-vector
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/ic_images">
+    <item android:drawable="@drawable/ic_images" />
 
-    <target
-        android:name="root"
-        android:animation="@animator/no_shots" />
-
-</animated-vector>
+</selector>

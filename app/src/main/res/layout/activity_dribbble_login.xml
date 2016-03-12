@@ -45,7 +45,7 @@
             android:text="@string/need_login"
             style="@style/Widget.Plaid.DialogText" />
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,10 +53,10 @@
             android:padding="@dimen/padding_normal"
             android:layout_marginBottom="@dimen/spacing_micro"
             android:text="@string/login_to"
+            android:drawableEnd="@drawable/dribbble_logo_selector"
+            android:drawableRight="@drawable/dribbble_logo_selector"
             android:textAppearance="@style/TextAppearance.DarkButton"
-            android:drawableEnd="@drawable/dribbble_logo"
-            android:drawablePadding="@dimen/spacing_micro"
-            android:onClick="doLogin" />
+            android:drawablePadding="@dimen/spacing_micro" />
 
         <include layout="@layout/loading" />
 

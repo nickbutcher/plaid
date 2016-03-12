@@ -18,7 +18,7 @@
 <objectAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:duration="@integer/searchback_show_hide_arrow_head_duration"
-    android:interpolator="@android:interpolator/fast_out_slow_in"
+    android:interpolator="@android:interpolator/decelerate_cubic"
     android:propertyName="trimPathEnd"
     android:valueFrom="@fraction/searchback_arrow_head_back_trim_end"
     android:valueTo="@fraction/searchback_arrow_head_search_trim_end" />

@@ -24,9 +24,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -45,6 +47,9 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.plaidapp.BuildConfig;
 import io.plaidapp.R;
 import io.plaidapp.data.api.dribbble.DribbbleAuthService;
@@ -64,10 +69,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DribbbleLogin extends Activity {
 
+    @Bind(R.id.login)
+    Button login;
+
     boolean isDismissing = false;
     private ViewGroup container;
     private TextView message;
-    private Button login;
     private ProgressBar loading;
     private DribbblePrefs dribbblePrefs;
 
@@ -75,8 +82,11 @@ public class DribbbleLogin extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_login);
-        FabDialogMorphSetup.setupSharedElementTransitions(this, container,
-                getResources().getDimensionPixelSize(R.dimen.dialog_corners));
+        ButterKnife.bind(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            FabDialogMorphSetup.setupSharedElementTransitions(this, container,
+                    getResources().getDimensionPixelSize(R.dimen.dialog_corners));
+        }
 
         container = (ViewGroup) findViewById(R.id.container);
         message = (TextView) findViewById(R.id.login_message);
@@ -94,7 +104,8 @@ public class DribbbleLogin extends Activity {
         checkAuthCallback(intent);
     }
 
-    public void doLogin(View view) {
+    @OnClick(R.id.login)
+    public void doLogin() {
         showLoading();
         dribbblePrefs.login(DribbbleLogin.this);
     }
@@ -176,9 +187,10 @@ public class DribbbleLogin extends Activity {
                         .toast_logged_in_confirmation, null, false);
                 ((TextView) v.findViewById(R.id.name)).setText(user.name);
                 // need to use app context here as the activity will be destroyed shortly
+                Drawable placeholder = VectorDrawableCompat.create(getResources(), R.drawable.ic_player, getTheme());
                 Glide.with(getApplicationContext())
                         .load(user.avatar_url)
-                        .placeholder(R.drawable.ic_player)
+                        .placeholder(placeholder)
                         .transform(new CircleTransform(getApplicationContext()))
                         .into((ImageView) v.findViewById(R.id.avatar));
                 ViewUtils.setBackground(v.findViewById(R.id.scrim), ScrimUtil.makeCubicGradientScrimDrawable

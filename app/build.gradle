@@ -59,6 +59,17 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+    lintOptions {
+        abortOnError true
+        check 'NewApi', 'InlinedApi'
+        fatal 'NewApi', 'InlinedApi'
+        enable 'UnusedResources'
+        checkReleaseBuilds true
+        textReport false
+        textOutput 'stdout'
+        htmlReport true
+        xmlReport true
+    }
 }
 
 repositories {

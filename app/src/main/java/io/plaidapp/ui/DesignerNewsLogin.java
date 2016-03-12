@@ -64,6 +64,7 @@ import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.plaidapp.BuildConfig;
 import io.plaidapp.R;
 import io.plaidapp.data.api.designernews.model.AccessToken;
@@ -176,6 +177,7 @@ public class DesignerNewsLogin extends Activity {
         }
     }
 
+    @OnClick(R.id.login)
     public void doLogin(View view) {
         showLoading();
         getAccessToken();

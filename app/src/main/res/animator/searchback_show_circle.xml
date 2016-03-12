@@ -29,7 +29,7 @@
     <!-- then run the animation after a delay -->
     <objectAnimator
         android:duration="@integer/searchback_show_hide_circle_duration"
-        android:interpolator="@android:interpolator/fast_out_slow_in"
+        android:interpolator="@android:interpolator/decelerate_cubic"
         android:propertyName="trimPathEnd"
         android:startOffset="@integer/searchback_show_circle_delay"
         android:valueFrom="@fraction/searchback_circle_back_trim_end"

@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
@@ -73,7 +74,11 @@ public class PostNewDesignerNewsStory extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_new_designer_news_story);
         ButterKnife.bind(this);
-        FabDialogMorphSetup.setupSharedElementTransitions(this, bottomSheetContent, 0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            FabDialogMorphSetup.setupSharedElementTransitions(this, bottomSheetContent, 0);
+        } else {
+            // TODO Need to animate it in nicely here on pre-lollipop
+        }
 
         bottomSheet.registerCallback(new BottomSheet.Callbacks() {
             @Override

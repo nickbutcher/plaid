@@ -22,6 +22,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
@@ -31,7 +32,7 @@ import io.plaidapp.R;
 /**
  * An extension to {@link ImageView} which has a foreground drawable.
  */
-public class ForegroundImageView extends ImageView {
+public class ForegroundImageView extends AppCompatImageView {
 
     private Drawable foreground;
 

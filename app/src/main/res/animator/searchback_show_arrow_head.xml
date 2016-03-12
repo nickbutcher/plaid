@@ -33,7 +33,7 @@
         android:valueTo="@fraction/searchback_arrow_head_back_trim_end"
         android:startOffset="@integer/searchback_show_arrow_head_delay"
         android:duration="@integer/searchback_show_hide_arrow_head_duration"
-        android:interpolator="@android:interpolator/fast_out_slow_in" />
+        android:interpolator="@android:interpolator/decelerate_cubic" />
 
     <objectAnimator
         android:propertyName="translateX"
@@ -41,6 +41,6 @@
         android:valueTo="20"
         android:startOffset="@integer/searchback_show_arrow_head_delay"
         android:duration="@integer/searchback_show_hide_arrow_head_duration"
-        android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        android:interpolator="@android:interpolator/decelerate_cubic"/>
 
 </set>

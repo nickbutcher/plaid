@@ -34,8 +34,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.customtabs.CustomTabsSession;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.ShareCompat;
@@ -118,7 +120,7 @@ public class DesignerNewsStory extends Activity {
     @Bind(R.id.comments_list) RecyclerView commentsList;
     private LinearLayoutManager layoutManager;
     private DesignerNewsCommentsAdapter commentsAdapter;
-    @Bind(R.id.fab) ImageButton fab;
+    @Bind(R.id.fab) FloatingActionButton fab;
     @Bind(R.id.fab_expand) View fabExpand;
     @Bind(R.id.comments_container) ElasticDragDismissFrameLayout draggableFrame;
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
@@ -143,7 +145,14 @@ public class DesignerNewsStory extends Activity {
         setContentView(R.layout.activity_designer_news_story);
         ButterKnife.bind(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().getSharedElementReturnTransition().addListener(returnHomeListener);
+            getWindow().getSharedElementReturnTransition().addListener(new AnimUtils.TransitionListenerAdapter() {
+                @Override
+                public void onTransitionStart(Transition transition) {
+                    super.onTransitionStart(transition);
+                    // hide the fab as for some reason it jumps position??  TODO work out why
+                    fab.setVisibility(View.INVISIBLE);
+                }
+            });
         }
 
         story = getIntent().getParcelableExtra(EXTRA_STORY);
@@ -175,6 +184,8 @@ public class DesignerNewsStory extends Activity {
             collapsingToolbar.addOnLayoutChangeListener(titlebarLayout);
             collapsingToolbar.setTitle(story.title);
             final Toolbar toolbar = (Toolbar) findViewById(R.id.story_toolbar);
+            toolbar.setNavigationIcon(
+                    VectorDrawableCompat.create(getResources(), R.drawable.ic_arrow_back, getTheme()));
             toolbar.setNavigationOnClickListener(backClick);
             commentsList.addOnScrollListener(headerScrollListener);
         } else { // w600dp configuration: content card scrolls over title bar
@@ -367,7 +378,8 @@ public class DesignerNewsStory extends Activity {
     // title can expand up to a max number of lines. If it does then adjust UI to reflect
     private View.OnLayoutChangeListener titlebarLayout = new View.OnLayoutChangeListener() {
         @Override
-        public void onLayoutChange(View v, int left, int top, int right, int bottom, int
+        public void onLayoutChange(
+                View v, int left, int top, int right, int bottom, int
                 oldLeft, int oldTop, int oldRight, int oldBottom) {
             if ((bottom - top) != (oldBottom - oldTop)) {
                 ViewCompat.setPaddingRelative(commentsList, ViewCompat.getPaddingStart(commentsList),
@@ -393,16 +405,6 @@ public class DesignerNewsStory extends Activity {
                                     R.anim.fade_out_rapidly)
                             .build(),
                     Uri.parse(story.url));
-        }
-    };
-
-    private Transition.TransitionListener returnHomeListener = new AnimUtils
-            .TransitionListenerAdapter() {
-        @Override
-        public void onTransitionStart(Transition transition) {
-            super.onTransitionStart(transition);
-            // hide the fab as for some reason it jumps position??  TODO work out why
-            fab.setVisibility(View.INVISIBLE);
         }
     };
 
@@ -483,7 +485,9 @@ public class DesignerNewsStory extends Activity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((AnimatedVectorDrawableCompat) share.getCompoundDrawables()[1]).start();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ((AnimatedVectorDrawableCompat) share.getCompoundDrawables()[1]).start();
+                }
                 startActivity(ShareCompat.IntentBuilder.from(DesignerNewsStory.this)
                         .setText(story.url)
                         .setType("text/plain")
@@ -505,6 +509,7 @@ public class DesignerNewsStory extends Activity {
         if (!TextUtils.isEmpty(story.user_portrait_url)) {
             Glide.with(this)
                     .load(story.user_portrait_url)
+                    .asBitmap()
                     .placeholder(R.drawable.avatar_placeholder)
                     .transform(circleTransform)
                     .into(avatar);

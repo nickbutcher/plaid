@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- CircularImageView Custom Styling -->
+    <declare-styleable name="CircularImageView">
+
+        <!-- Whether or not to draw a circular border around the image. -->
+        <attr name="civ_border" format="boolean"/>
+        <!-- The color of the border draw around the image. (if enabled) -->
+        <attr name="civ_borderColor" format="color"/>
+        <!-- Makes the border this pixels wide. (if enabled) -->
+        <attr name="civ_borderWidth" format="dimension"/>
+        <!-- Whether or not to draw a selector on this view upon touch events. -->
+        <attr name="civ_selector" format="boolean"/>
+        <!-- The color of the selector draw on top of the image upon touch events. (if enabled) -->
+        <attr name="civ_selectorColor" format="color"/>
+        <!-- The color of the selector stroke drawn around the image upon touch events. Be sure to provide some opacity. (if enabled) -->
+        <attr name="civ_selectorStrokeColor" format="color"/>
+        <!-- The selector stroke drawn around the image upon touch events this pixels wide. (if enabled) -->
+        <attr name="civ_selectorStrokeWidth" format="dimension"/>
+        <!-- Whether or not to draw a shadow around your circular image. -->
+        <attr name="civ_shadow" format="boolean"/>
+        <!-- The radius for the shadow to extend to. (if enabled) -->
+        <attr name="civ_shadowRadius" format="float"/>
+        <!-- Horizontal shadow offset. (if enabled) -->
+        <attr name="civ_shadowDx" format="float"/>
+        <!-- Vertical shadow offset. (if enabled) -->
+        <attr name="civ_shadowDy" format="float"/>
+        <!-- The color of the shadow drawn around your circular image. (if enabled) -->
+        <attr name="civ_shadowColor" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="CircularImageViewStyle">
+        <attr name="circularImageViewDefault" format="reference"/>
+    </declare-styleable>
+</resources>

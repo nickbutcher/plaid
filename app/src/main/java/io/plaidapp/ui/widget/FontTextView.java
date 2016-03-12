@@ -21,8 +21,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.os.Build;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import io.plaidapp.R;
 import io.plaidapp.util.FontUtil;
@@ -30,17 +30,15 @@ import io.plaidapp.util.FontUtil;
 /**
  * Extension to TextView that adds support for custom fonts.
  */
-public class FontTextView extends TextView {
+public class FontTextView extends AppCompatTextView {
 
 
     public FontTextView(Context context) {
-        super(context);
-        init(context, null);
+        this(context, null);
     }
 
     public FontTextView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs);
+        this(context, attrs, 0);
     }
 
     public FontTextView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -50,7 +48,7 @@ public class FontTextView extends TextView {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public FontTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
+        super(context, attrs, defStyleAttr);
         init(context, attrs);
     }
 

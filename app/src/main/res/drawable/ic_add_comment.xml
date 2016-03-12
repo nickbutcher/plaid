@@ -15,7 +15,7 @@
   limitations under the License.
   -->
 
-<animated-selector
+<selector
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:constantSize="true">
 
@@ -28,14 +28,4 @@
         android:id="@+id/not_focused"
         android:drawable="@drawable/ic_comment_lines" />
 
-    <transition
-        android:fromId="@id/not_focused"
-        android:toId="@id/focused"
-        android:drawable="@drawable/avd_comment_to_add" />
-
-    <transition
-        android:fromId="@id/focused"
-        android:toId="@id/not_focused"
-        android:drawable="@drawable/avd_add_to_comment" />
-
-</animated-selector>
+</selector>

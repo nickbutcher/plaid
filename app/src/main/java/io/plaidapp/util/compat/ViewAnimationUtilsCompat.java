@@ -1,6 +1,7 @@
 package io.plaidapp.util.compat;
 
 import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.os.Build;
 import android.view.View;
@@ -49,7 +50,9 @@ public final class ViewAnimationUtilsCompat {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return ViewAnimationUtils.createCircularReveal(view, centerX, centerY, startRadius, endRadius);
         } else {
-            return NOOP;
+            // Give a fade so things don't flash at least. Fades either in or out
+            // TODO Possibly do a scale to the points instead for more similar behavior?
+            return ObjectAnimator.ofFloat(view, View.ALPHA, view.getAlpha(), endRadius > startRadius ? 1f : 0f);
         }
     }
 }

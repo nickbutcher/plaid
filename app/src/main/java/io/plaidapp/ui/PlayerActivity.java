@@ -19,6 +19,7 @@ package io.plaidapp.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.app.ActivityCompat;
@@ -31,6 +32,7 @@ import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +62,7 @@ import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.util.DribbbleUtils;
 import io.plaidapp.util.ViewUtils;
+import io.plaidapp.util.compat.LocalTextViewCompat;
 import io.plaidapp.util.compat.TransitionManagerCompat;
 import io.plaidapp.util.glide.CircleTransform;
 import retrofit2.Call;
@@ -103,6 +106,10 @@ public class PlayerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_player);
         ButterKnife.bind(this);
+        LocalTextViewCompat.setDrawable(Gravity.TOP, followersCount,
+                AnimatedVectorDrawableCompat.create(this, R.drawable.avd_followers), true);
+        LocalTextViewCompat.setDrawable(Gravity.TOP, likesCount,
+                AnimatedVectorDrawableCompat.create(this, R.drawable.avd_likes), true);
         circleTransform = new CircleTransform(this);
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this);
 
@@ -124,10 +131,12 @@ public class PlayerActivity extends Activity {
             // todo support url intents
         }
 
-        // setup immersive mode i.e. draw behind the system chrome & adjust insets
-        draggableFrame.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            // setup immersive mode i.e. draw behind the system chrome & adjust insets
+            draggableFrame.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        }
         ViewCompat.setOnApplyWindowInsetsListener(draggableFrame, new OnApplyWindowInsetsListener() {
             @Override
             public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
@@ -168,6 +177,7 @@ public class PlayerActivity extends Activity {
 
         Glide.with(this)
                 .load(player.getHighQualityAvatarUrl())
+                .asBitmap() // TODO Won't load without this, not sure why
                 .placeholder(R.drawable.avatar_placeholder)
                 .transform(circleTransform)
                 .into(avatar);
@@ -182,7 +192,7 @@ public class PlayerActivity extends Activity {
                 nf.format(player.shots_count)));
         if (player.shots_count == 0) {
             TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(shotCount,
-                    null, ContextCompat.getDrawable(this, R.drawable.avd_no_shots), null, null);
+                    null, AnimatedVectorDrawableCompat.create(this, R.drawable.avd_no_shots), null, null);
         }
         setFollowerCount(player.followers_count);
         likesCount.setText(res.getQuantityString(R.plurals.likes, player.likes_count,
@@ -351,7 +361,9 @@ public class PlayerActivity extends Activity {
 
     @OnClick({R.id.shot_count, R.id.followers_count, R.id.likes_count })
     /* package */ void playerActionClick(TextView view) {
-        ((AnimatedVectorDrawableCompat) view.getCompoundDrawables()[1]).start();
+        if (view.getId() == R.id.shot_count && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ((AnimatedVectorDrawableCompat) view.getCompoundDrawables()[1]).start();
+        }
         switch (view.getId()) {
             case R.id.followers_count:
                 PlayerSheet.start(PlayerActivity.this, player);

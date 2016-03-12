@@ -331,15 +331,18 @@ public class InkPageIndicator extends View implements ViewPager.OnPageChangeList
         // draw any settled, revealing or joining dots
         for (int page = 0; page < pageCount; page++) {
             int nextXIndex = page == pageCount - 1 ? page : page + 1;
-            combinedUnselectedPath.op(getUnselectedPath(page,
+            Path unselectedPath = getUnselectedPath(page,
                     dotCenterX[page],
                     dotCenterX[nextXIndex],
                     page == pageCount - 1 ? INVALID_FRACTION : joiningFractions[page],
-                    dotRevealFractions[page]), Path.Op.UNION);
+                    dotRevealFractions[page]);
+            unselectedPath.addPath(combinedUnselectedPath);
+            combinedUnselectedPath.addPath(unselectedPath);
         }
         // draw any retreating joins
         if (retreatingJoinX1 != INVALID_FRACTION) {
-            combinedUnselectedPath.op(getRetreatingJoinPath(), Path.Op.UNION);
+            Path retreatingJoinPath = getRetreatingJoinPath();
+            combinedUnselectedPath.addPath(retreatingJoinPath);
         }
         canvas.drawPath(combinedUnselectedPath, unselectedPaint);
     }
@@ -418,7 +421,7 @@ public class InkPageIndicator extends View implements ViewPager.OnPageChangeList
                     controlX2, controlY2,
                     endX2, endY2);
 
-            unselectedDotPath.op(unselectedDotLeftPath, Path.Op.UNION);
+            unselectedDotPath.addPath(unselectedDotLeftPath);
 
             // now do the next dot to the right
             unselectedDotRightPath.rewind();
@@ -451,7 +454,7 @@ public class InkPageIndicator extends View implements ViewPager.OnPageChangeList
             unselectedDotRightPath.cubicTo(controlX1, controlY1,
                     controlX2, controlY2,
                     endX2, endY2);
-            unselectedDotPath.op(unselectedDotRightPath, Path.Op.UNION);
+            unselectedDotPath.addPath(unselectedDotRightPath);
         }
 
         if (joiningFraction > 0.5f && joiningFraction < 1f

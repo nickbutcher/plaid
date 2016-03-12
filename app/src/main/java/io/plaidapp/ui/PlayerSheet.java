@@ -292,6 +292,7 @@ public class PlayerSheet extends Activity {
         private void bindPlayer(PlayerViewHolder holder, T player) {
             Glide.with(holder.itemView.getContext())
                     .load(player.getPlayer().getHighQualityAvatarUrl())
+                    .asBitmap() // TODO Doesn't work without this
                     .transform(circleTransform)
                     .placeholder(R.drawable.avatar_placeholder)
                     .override(largeAvatarSize, largeAvatarSize)

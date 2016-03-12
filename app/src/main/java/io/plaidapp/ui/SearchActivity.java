@@ -26,8 +26,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
@@ -47,8 +50,8 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
+import com.transitionseverywhere.AutoTransition;
 import com.transitionseverywhere.Transition;
-import com.transitionseverywhere.TransitionInflater;
 
 import java.util.List;
 
@@ -88,7 +91,7 @@ public class SearchActivity extends Activity {
     @Bind(R.id.container) ViewGroup container;
     @Bind(R.id.search_toolbar) ViewGroup searchToolbar;
     @Bind(R.id.results_container) ViewGroup resultsContainer;
-    @Bind(R.id.fab) ImageButton fab;
+    @Bind(R.id.fab) FloatingActionButton fab;
     @Bind(R.id.confirm_save_container) ViewGroup confirmSaveContainer;
     @Bind(R.id.save_dribbble) CheckBox saveDribbble;
     @Bind(R.id.save_designer_news) CheckBox saveDesignerNews;
@@ -117,7 +120,8 @@ public class SearchActivity extends Activity {
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
         setupSearchView();
-        auto = TransitionInflater.from(this).inflateTransition(R.transition.auto);
+        auto = new AutoTransition();
+        auto.setInterpolator(AnimUtils.getFastOutSlowInInterpolator());
 
         dataManager = new SearchDataManager(this) {
             @Override
@@ -189,8 +193,8 @@ public class SearchActivity extends Activity {
         searchBack.postDelayed(new Runnable() {
             @Override
             public void run() {
-                searchBack.setImageDrawable(ContextCompat.getDrawable(SearchActivity.this,
-                        R.drawable.ic_arrow_back_padded));
+                searchBack.setImageDrawable(VectorDrawableCompat.create(getResources(),
+                        R.drawable.ic_arrow_back_padded, getTheme()));
             }
         }, 600L);
 
@@ -263,7 +267,9 @@ public class SearchActivity extends Activity {
     @Override
     protected void onPause() {
         // needed to suppress the default window animation when closing the activity
-        overridePendingTransition(0, 0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            overridePendingTransition(0, 0);
+        }
         super.onPause();
     }
 
@@ -448,6 +454,14 @@ public class SearchActivity extends Activity {
 
     private void setupSearchView() {
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            searchView.setIconifiedByDefault(false);    // To make it expanded automatically. Not remotely obvious.
+            SearchView.SearchAutoComplete theTextArea
+                    = (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
+            theTextArea.setTextColor(Color.WHITE);
+            theTextArea.setHintTextColor(Color.GRAY);
+        }
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -472,6 +486,15 @@ public class SearchActivity extends Activity {
                 }
             }
         });
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            // This doesn't get automatically themed?
+            ViewUtils.setBackground(searchView, null);
+            SearchView.SearchAutoComplete input = ButterKnife.findById(searchView, R.id.search_src_text);
+            input.setTextColor(Color.WHITE);
+            ViewUtils.setBackground(input, null);
+            input.setHintTextColor(ContextCompat.getColor(this, R.color.mid_grey));
+        }
     }
 
     private void clearResults() {

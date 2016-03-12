@@ -93,7 +93,7 @@ public class DribbbleTarget extends GlideDrawableImageViewTarget implements
     @Override
     public void onGenerated(Palette palette) {
         ((BadgedFourThreeImageView) getView()).setForeground(
-                ViewUtils.createRipple(palette, 0.25f, 0.5f,
+                ViewUtils.createColorSelector(palette, 0.25f, 0.5f,
                         ContextCompat.getColor(getView().getContext(), R.color.mid_grey), true));
     }
 

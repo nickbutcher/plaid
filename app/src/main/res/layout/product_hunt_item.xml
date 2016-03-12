@@ -57,7 +57,8 @@
         android:layout_margin="@dimen/spacing_micro"
         android:background="@drawable/dark_ripple"
         android:drawablePadding="@dimen/spacing_normal"
-        android:drawableStart="@drawable/ic_comment_light"
+        android:drawableStart="@drawable/ic_comment_light_selector"
+        android:drawableLeft="@drawable/ic_comment_light_selector"
         android:gravity="center_vertical"
         android:padding="@dimen/spacing_normal"
         style="@style/Widget.Plaid.TileSecondary" />
