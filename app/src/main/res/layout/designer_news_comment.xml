@@ -18,7 +18,6 @@
 <io.plaidapp.ui.widget.ForegroundRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingStart="@dimen/designer_news_story_comment_horizontal_padding"
@@ -44,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        app:topPaddingHint="@dimen/spacing_normal"
+        android:paddingTop="@dimen/spacing_normal"
         android:paddingEnd="@dimen/padding_normal"
         android:textAppearance="@style/TextAppearance.CommentTimestamp"
         tools:text="3 hours ago" />
@@ -56,7 +55,7 @@
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@id/depth"
         android:layout_toStartOf="@id/comment_time_ago"
-        app:topPaddingHint="@dimen/spacing_normal"
+        android:paddingTop="@dimen/spacing_normal"
         android:ellipsize="end"
         android:textAppearance="@style/TextAppearance.CommentAuthor.DesignerNews"
         tools:text="Nick B" />

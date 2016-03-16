@@ -58,7 +58,8 @@ public class FabOverlapTextView extends View {
     private int fabOverlapWidth;
     private int fabGravity;
     private int lineHeightHint;
-    private int topPaddingHint;
+    private int unalignedTopPadding;
+    private int unalignedBottomPadding;
     private int breakStrategy;
     private StaticLayout layout;
     private CharSequence text;
@@ -130,7 +131,8 @@ public class FabOverlapTextView extends View {
         }
 
         lineHeightHint = a.getDimensionPixelSize(R.styleable.FabOverlapTextView_lineHeightHint, 0);
-        topPaddingHint = a.getDimensionPixelSize(R.styleable.FabOverlapTextView_topPaddingHint, 0);
+        unalignedTopPadding = getPaddingTop();
+        unalignedBottomPadding = getPaddingBottom();
 
         breakStrategy = a.getInt(R.styleable.FabOverlapTextView_android_breakStrategy,
                 Layout.BREAK_STRATEGY_BALANCED);
@@ -186,20 +188,20 @@ public class FabOverlapTextView extends View {
     private void recompute(int width) {
         if (text != null) {
             // work out the top padding and line height to align text to a 4dp grid
-            float fourDip = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4,
+            final float fourDip = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4,
                     getResources().getDisplayMetrics());
 
-            // Ensure that the first line's baselines sits on 4dp grid by setting the top padding
-            Paint.FontMetricsInt fm = paint.getFontMetricsInt();
-            int gridAlignedTopPadding = (int) (fourDip * (float)
-                    Math.ceil((topPaddingHint + Math.abs(fm.ascent)) / fourDip)
+            // ensure that the first line's baselines sits on 4dp grid by setting the top padding
+            final Paint.FontMetricsInt fm = paint.getFontMetricsInt();
+            final int gridAlignedTopPadding = (int) (fourDip * (float)
+                    Math.ceil((unalignedTopPadding + Math.abs(fm.ascent)) / fourDip)
                     - Math.ceil(Math.abs(fm.ascent)));
-            setPadding(getPaddingLeft(), gridAlignedTopPadding, getPaddingRight(),
-                    getPaddingBottom());
+            super.setPadding(
+                    getPaddingLeft(), gridAlignedTopPadding, getPaddingTop(), getPaddingBottom());
 
-            // Ensures line height is a multiple of 4dp
-            int fontHeight = Math.abs(fm.ascent - fm.descent) + fm.leading;
-            int baselineAlignedLineHeight =
+            // ensures line height is a multiple of 4dp
+            final int fontHeight = Math.abs(fm.ascent - fm.descent) + fm.leading;
+            final int baselineAlignedLineHeight =
                     (int) (fourDip * (float) Math.ceil(lineHeightHint / fourDip));
 
             // before we can workout indents we need to know how many lines of text there are;
@@ -208,18 +210,19 @@ public class FabOverlapTextView extends View {
                     .setLineSpacing(baselineAlignedLineHeight - fontHeight, 1f)
                     .setBreakStrategy(breakStrategy)
                     .build();
-            int preIndentedLineCount = layout.getLineCount();
+            final int preIndentedLineCount = layout.getLineCount();
 
             // now we can calculate the indents required for the given fab gravity
-            boolean gravityTop = (fabGravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.TOP;
-            boolean gravityLeft = (fabGravity & Gravity.HORIZONTAL_GRAVITY_MASK) == Gravity.LEFT;
+            final boolean gravityTop = (fabGravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.TOP;
+            final boolean gravityLeft =
+                    (fabGravity & Gravity.HORIZONTAL_GRAVITY_MASK) == Gravity.LEFT;
             // we want to iterate forward/backward over the lines depending on whether the fab
             // overlap vertical gravity is top/bottom
             int currentLine = gravityTop ? 0 : preIndentedLineCount - 1;
             int remainingHeightOverlap = fabOverlapHeight -
                     (gravityTop ? getPaddingTop() : getPaddingBottom());
-            int[] leftIndents = new int[preIndentedLineCount];
-            int[] rightIndents = new int[preIndentedLineCount];
+            final int[] leftIndents = new int[preIndentedLineCount];
+            final int[] rightIndents = new int[preIndentedLineCount];
             do {
                 if (remainingHeightOverlap > 0) {
                     // still have overlap height to consume, set the appropriate indent
@@ -244,6 +247,14 @@ public class FabOverlapTextView extends View {
                     .setIndents(leftIndents, rightIndents)
                     .setBreakStrategy(breakStrategy)
                     .build();
+
+            // ensure that the view's height sits on the grid (as we've changed padding etc).
+            final int height = getPaddingTop() + layout.getHeight() + getPaddingBottom();
+            final float overhang = height % fourDip;
+            if (overhang != 0) {
+                super.setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(),
+                        unalignedBottomPadding + (int) (fourDip - overhang));
+            }
         }
     }
 
@@ -269,6 +280,22 @@ public class FabOverlapTextView extends View {
             canvas.translate(getPaddingLeft(), getPaddingTop());
             layout.draw(canvas);
         }
+    }
+
+    @Override
+    public void setPadding(int left, int top, int right, int bottom) {
+        super.setPadding(left, top, right, bottom);
+        unalignedTopPadding = top;
+        unalignedBottomPadding = bottom;
+        if (layout != null) recompute(layout.getWidth());
+    }
+
+    @Override
+    public void setPaddingRelative(int start, int top, int end, int bottom) {
+        super.setPaddingRelative(start, top, end, bottom);
+        unalignedTopPadding = top;
+        unalignedBottomPadding = bottom;
+        if (layout != null) recompute(layout.getWidth());
     }
 
     /**

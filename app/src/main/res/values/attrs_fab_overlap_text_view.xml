@@ -43,7 +43,6 @@
 
         <!-- 4dp grid alignment -->
         <attr name="lineHeightHint" />
-        <attr name="topPaddingHint" />
 
     </declare-styleable>
 </resources>

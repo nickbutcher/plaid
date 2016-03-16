@@ -18,12 +18,11 @@
 <io.plaidapp.ui.widget.BaselineGridTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@android:id/empty"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingStart="@dimen/designer_news_story_comment_horizontal_padding"
-    app:topPaddingHint="@dimen/spacing_large"
+    android:paddingTop="@dimen/spacing_large"
     android:paddingEnd="@dimen/designer_news_story_comment_horizontal_padding"
     android:paddingBottom="@dimen/spacing_large"
     android:gravity="center"

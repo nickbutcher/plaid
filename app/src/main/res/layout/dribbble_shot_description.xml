@@ -18,7 +18,6 @@
 <GridLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:alignmentMode="alignBounds"
@@ -82,7 +81,7 @@
         android:layout_width="wrap_content"
         android:gravity="end"
         android:layout_marginTop="@dimen/padding_normal"
-        app:topPaddingHint="@dimen/avatar_padding"
+        android:paddingTop="@dimen/avatar_padding"
         android:textAppearance="@style/TextAppearance.CommentAuthor"
         android:clickable="false"
         tools:text="—Nick B" />

@@ -42,7 +42,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:paddingStart="@dimen/padding_normal"
-            app:topPaddingHint="24dp"
+            android:paddingTop="@dimen/padding_normal"
             android:paddingEnd="@dimen/padding_normal"
             android:paddingBottom="@dimen/spacing_large"
             android:background="@color/background_light"

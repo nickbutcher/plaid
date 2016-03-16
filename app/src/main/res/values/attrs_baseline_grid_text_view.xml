@@ -16,12 +16,12 @@
   -->
 
 <resources>
+
     <attr name="lineHeightHint" format="dimension" />
-    <attr name="topPaddingHint" format="dimension" />
 
     <declare-styleable name="BaselineGridTextView">
         <attr name="lineHeightMultiplierHint" format="float" />
         <attr name="lineHeightHint" />
-        <attr name="topPaddingHint" />
     </declare-styleable>
+
 </resources>

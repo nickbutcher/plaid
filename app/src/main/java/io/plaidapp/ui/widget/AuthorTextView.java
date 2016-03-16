@@ -27,7 +27,7 @@ import io.plaidapp.R;
  */
 public class AuthorTextView extends BaselineGridTextView {
 
-    private static final int[] STATE_ORIGINAL_POSTER = {R.attr.state_original_poster};
+    private static final int[] STATE_ORIGINAL_POSTER = { R.attr.state_original_poster };
 
     private boolean isOP = false;
 

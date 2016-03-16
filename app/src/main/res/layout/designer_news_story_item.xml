@@ -18,7 +18,6 @@
 <io.plaidapp.ui.widget.FourThreeLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/story_title_background"
     android:layout_width="match_parent"
     android:layout_height="0dp"
@@ -69,7 +68,7 @@
             android:drawableStart="@drawable/ic_comment_light"
             android:gravity="center_vertical"
             android:padding="@dimen/spacing_normal"
-            app:topPaddingHint="@dimen/spacing_normal"
+            android:paddingTop="@dimen/spacing_normal"
             tools:text="7"
             style="@style/Widget.Plaid.TileSecondary" />
 

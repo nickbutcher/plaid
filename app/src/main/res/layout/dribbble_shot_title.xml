@@ -18,7 +18,6 @@
 <!-- layout_[width|height] not needed as this is only included in a GridLayout -->
 <!--suppress AndroidDomInspection -->
 <merge
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     tools:showIn="@layout/dribbble_shot_description">
@@ -29,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_marginBottom="@dimen/spacing_large"
         android:paddingStart="@dimen/padding_normal"
-        app:topPaddingHint="@dimen/padding_normal"
+        android:paddingTop="@dimen/padding_normal"
         android:paddingEnd="@dimen/padding_room_for_fab"
         android:paddingBottom="@dimen/padding_normal"
         android:background="@color/light_grey"
