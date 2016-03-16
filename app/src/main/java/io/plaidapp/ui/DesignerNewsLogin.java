@@ -25,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -63,8 +64,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.plaidapp.BuildConfig;
 import io.plaidapp.R;
-import io.plaidapp.data.api.ClientAuthInterceptor;
-import io.plaidapp.data.api.designernews.DesignerNewsService;
 import io.plaidapp.data.api.designernews.model.AccessToken;
 import io.plaidapp.data.api.designernews.model.User;
 import io.plaidapp.data.api.designernews.model.UserResponse;
@@ -73,10 +72,9 @@ import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ScrimUtil;
 import io.plaidapp.util.glide.CircleTransform;
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DesignerNewsLogin extends Activity {
 
@@ -253,37 +251,37 @@ public class DesignerNewsLogin extends Activity {
     }
 
     private void getAccessToken() {
-        DesignerNewsService designerNewsService = new RestAdapter.Builder()
-                .setEndpoint(DesignerNewsService.ENDPOINT)
-                .setRequestInterceptor(new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
-                        BuildConfig.DESIGNER_NEWS_CLIENT_ID))
-                .build()
-                .create(DesignerNewsService.class);
-        designerNewsService.login(
-                buildLoginParams(username.getText().toString(), password.getText().toString()),
-                new Callback<AccessToken>() {
-                    @Override
-                    public void success(AccessToken accessToken, Response response) {
-                        designerNewsPrefs.setAccessToken(accessToken.access_token);
-                        showLoggedInUser();
-                        setResult(Activity.RESULT_OK);
-                        finish();
-                    }
+        final Call<AccessToken> login = designerNewsPrefs.getApi().login(
+                buildLoginParams(username.getText().toString(), password.getText().toString()));
+        login.enqueue(new Callback<AccessToken>() {
+            @Override
+            public void onResponse(Call<AccessToken> call, Response<AccessToken> response) {
+                if (response.isSuccessful()) {
+                    designerNewsPrefs.setAccessToken(response.body().access_token);
+                    showLoggedInUser();
+                    setResult(Activity.RESULT_OK);
+                    finish();
+                } else {
+                    showLoginFailed();
+                }
+            }
 
-                    @Override
-                    public void failure(RetrofitError error) {
-                        Log.e(getClass().getCanonicalName(), error.getMessage(), error);
-                        // TODO snackbar?
-                        Toast.makeText(getApplicationContext(), "Log in failed",
-                                Toast.LENGTH_LONG).show();
-                        showLogin();
-                        password.requestFocus();
-                    }
-                });
+            @Override
+            public void onFailure(Call<AccessToken> call, Throwable t) {
+                Log.e(getClass().getCanonicalName(), t.getMessage(), t);
+                showLoginFailed();
+            }
+        });
     }
 
-    private Map buildLoginParams(@NonNull String username, @NonNull String password) {
-        Map loginParams = new HashMap(5);
+    private void showLoginFailed() {
+        Snackbar.make(container, "Log in failed", Snackbar.LENGTH_SHORT).show();
+        showLogin();
+        password.requestFocus();
+    }
+
+    private Map<String, String> buildLoginParams(@NonNull String username, @NonNull String password) {
+        final Map<String, String> loginParams = new HashMap<>(5);
         loginParams.put("client_id", BuildConfig.DESIGNER_NEWS_CLIENT_ID);
         loginParams.put("client_secret", BuildConfig.DESIGNER_NEWS_CLIENT_SECRET);
         loginParams.put("grant_type", "password");
@@ -293,19 +291,14 @@ public class DesignerNewsLogin extends Activity {
     }
 
     private void showLoggedInUser() {
-        DesignerNewsService designerNewsService = new RestAdapter.Builder()
-                .setEndpoint(DesignerNewsService.ENDPOINT)
-                .setRequestInterceptor(new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
-                        BuildConfig.DESIGNER_NEWS_CLIENT_ID))
-                .build()
-                .create(DesignerNewsService.class);
-        designerNewsService.getAuthedUser(new Callback<UserResponse>() {
+        final Call<UserResponse> authedUser = designerNewsPrefs.getApi().getAuthedUser();
+        authedUser.enqueue(new Callback<UserResponse>() {
             @Override
-            public void success(UserResponse userResponse, Response response) {
-                final User user = userResponse.user;
+            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                final User user = response.body().user;
                 designerNewsPrefs.setLoggedInUser(user);
-                Toast confirmLogin = new Toast(getApplicationContext());
-                View v = LayoutInflater.from(DesignerNewsLogin.this).inflate(R.layout
+                final Toast confirmLogin = new Toast(getApplicationContext());
+                final View v = LayoutInflater.from(DesignerNewsLogin.this).inflate(R.layout
                         .toast_logged_in_confirmation, null, false);
                 ((TextView) v.findViewById(R.id.name)).setText(user.display_name);
                 // need to use app context here as the activity will be destroyed shortly
@@ -325,8 +318,8 @@ public class DesignerNewsLogin extends Activity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                Log.e(getClass().getCanonicalName(), error.getMessage(), error);
+            public void onFailure(Call<UserResponse> call, Throwable t) {
+                Log.e(getClass().getCanonicalName(), t.getMessage(), t);
             }
         });
     }

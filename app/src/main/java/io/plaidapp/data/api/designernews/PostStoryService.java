@@ -22,16 +22,12 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import io.plaidapp.BuildConfig;
-import io.plaidapp.data.api.ClientAuthInterceptor;
 import io.plaidapp.data.api.designernews.model.NewStoryRequest;
 import io.plaidapp.data.api.designernews.model.StoriesResponse;
 import io.plaidapp.data.api.designernews.model.Story;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit2.Call;
+import retrofit2.Response;
 
 /**
  * An intent service which posts a new story to Designer News. Invokers can listen for results by
@@ -64,9 +60,9 @@ public class PostStoryService extends IntentService {
             final DesignerNewsPrefs designerNewsPrefs = DesignerNewsPrefs.get(this);
             if (!designerNewsPrefs.isLoggedIn()) return; // shouldn't happen...
 
-            String title = intent.getStringExtra(EXTRA_STORY_TITLE);
-            String url = intent.getStringExtra(EXTRA_STORY_URL);
-            String comment = intent.getStringExtra(EXTRA_STORY_COMMENT);
+            final String title = intent.getStringExtra(EXTRA_STORY_TITLE);
+            final String url = intent.getStringExtra(EXTRA_STORY_URL);
+            final String comment = intent.getStringExtra(EXTRA_STORY_COMMENT);
             if (TextUtils.isEmpty(title)) return;
             NewStoryRequest storyToPost = null;
             if (!TextUtils.isEmpty(url)) {
@@ -75,54 +71,46 @@ public class PostStoryService extends IntentService {
                 storyToPost = NewStoryRequest.createWithComment(title, comment);
             }
             if (storyToPost == null) return;
-            DesignerNewsService designerNewsApi = new RestAdapter.Builder()
-                    .setEndpoint(DesignerNewsService.ENDPOINT)
-                    .setRequestInterceptor(new ClientAuthInterceptor
-                            (designerNewsPrefs.getAccessToken(),
-                                    BuildConfig.DESIGNER_NEWS_CLIENT_ID))
-                    .build()
-                    .create(DesignerNewsService.class);
-            designerNewsApi.postStory(storyToPost, new Callback<StoriesResponse>() {
-                @Override
-                public void success(StoriesResponse story, Response response) {
-                    if (story != null && story.stories != null && story.stories.size() > 0) {
-                        if (broadcastResult) {
-                            Intent success = new Intent(BROADCAST_ACTION_SUCCESS);
-                            // API doesn't fill in author details so add them here
-                            Story returnedStory = story.stories.get(0);
-                            Story.Builder builder = Story.Builder.from(returnedStory)
-                                    .setUserId(designerNewsPrefs.getUserId())
-                                    .setUserDisplayName(designerNewsPrefs.getUserName())
-                                    .setUserPortraitUrl(designerNewsPrefs.getUserAvatar());
-                            // API doesn't add a self URL, so potentially add one for consistency
-                            if (TextUtils.isEmpty(returnedStory.url)) {
-                                builder.setDefaultUrl(returnedStory.id);
-                            }
-                            Story newStory = builder.build();
-                            newStory.dataSource = SOURCE_NEW_DN_POST;
-                            success.putExtra(EXTRA_NEW_STORY, newStory);
-                            LocalBroadcastManager.getInstance(getApplicationContext())
-                                    .sendBroadcast(success);
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Story posted",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
 
-                @Override
-                public void failure(RetrofitError error) {
-                    final String reason = error.getResponse().getReason();
+            final Call<StoriesResponse> postStoryCall =
+                    designerNewsPrefs.getApi().postStory(storyToPost);
+            try {
+                final Response<StoriesResponse> response = postStoryCall.execute();
+                final StoriesResponse story = response.body();
+                if (story != null && story.stories != null && !story.stories.isEmpty()) {
                     if (broadcastResult) {
-                        Intent failure = new Intent(BROADCAST_ACTION_FAILURE);
-                        failure.putExtra(BROADCAST_ACTION_FAILURE_REASON, reason);
+                        final Intent success = new Intent(BROADCAST_ACTION_SUCCESS);
+                        // API doesn't fill in author details so add them here
+                        final Story returnedStory = story.stories.get(0);
+                        final Story.Builder builder = Story.Builder.from(returnedStory)
+                                .setUserId(designerNewsPrefs.getUserId())
+                                .setUserDisplayName(designerNewsPrefs.getUserName())
+                                .setUserPortraitUrl(designerNewsPrefs.getUserAvatar());
+                        // API doesn't add a self URL, so potentially add one for consistency
+                        if (TextUtils.isEmpty(returnedStory.url)) {
+                            builder.setDefaultUrl(returnedStory.id);
+                        }
+                        final Story newStory = builder.build();
+                        newStory.dataSource = SOURCE_NEW_DN_POST;
+                        success.putExtra(EXTRA_NEW_STORY, newStory);
                         LocalBroadcastManager.getInstance(getApplicationContext())
-                                .sendBroadcast(failure);
+                                .sendBroadcast(success);
                     } else {
-                        Toast.makeText(getApplicationContext(), reason, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Story posted",
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
-            });
+            } catch (Exception e) {
+                final String reason = e.getMessage();
+                if (broadcastResult) {
+                    final Intent failure = new Intent(BROADCAST_ACTION_FAILURE);
+                    failure.putExtra(BROADCAST_ACTION_FAILURE_REASON, reason);
+                    LocalBroadcastManager.getInstance(getApplicationContext())
+                            .sendBroadcast(failure);
+                } else {
+                    Toast.makeText(getApplicationContext(), reason, Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 

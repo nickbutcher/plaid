@@ -258,14 +258,12 @@ public class HomeActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        dribbblePrefs.addLoginStatusListener(dataManager);
         dribbblePrefs.addLoginStatusListener(filtersAdapter);
         checkConnectivity();
     }
 
     @Override
     protected void onPause() {
-        dribbblePrefs.removeLoginStatusListener(dataManager);
         dribbblePrefs.removeLoginStatusListener(filtersAdapter);
         if (monitoringConnectivity) {
             final ConnectivityManager connectivityManager
@@ -407,6 +405,12 @@ public class HomeActivity extends Activity {
                 }
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        dataManager.cancelLoading();
+        super.onDestroy();
     }
 
     // listener for notifying adapter when data sources are deactivated

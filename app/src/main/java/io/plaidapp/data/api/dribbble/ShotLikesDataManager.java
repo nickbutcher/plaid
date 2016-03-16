@@ -23,13 +23,14 @@ import java.util.List;
 import io.plaidapp.data.PaginatedDataManager;
 import io.plaidapp.data.PlaidItem;
 import io.plaidapp.data.api.dribbble.model.Like;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public abstract class ShotLikesDataManager extends PaginatedDataManager {
 
     private final long shotId;
+    private Call shotLikesCall;
 
     public ShotLikesDataManager(Context context, long shotId) {
         super(context);
@@ -44,21 +45,30 @@ public abstract class ShotLikesDataManager extends PaginatedDataManager {
     }
 
     @Override
+    public void cancelLoading() {
+        if (shotLikesCall != null) shotLikesCall.cancel();
+    }
+
+    @Override
     protected void loadData(int page) {
-        getDribbbleApi().getShotLikes(shotId, page, DribbbleService.PER_PAGE_DEFAULT,
-                new Callback<List<Like>>() {
+        shotLikesCall = getDribbbleApi()
+                .getShotLikes(shotId, page, DribbbleService.PER_PAGE_DEFAULT);
+        shotLikesCall.enqueue(new Callback<List<Like>>() {
 
             @Override
-            public void success(List<Like> likes, Response response) {
+            public void onResponse(Call<List<Like>> call, Response<List<Like>> response) {
                 loadFinished();
+                final List<Like> likes = response.body();
                 moreDataAvailable = likes.size() == DribbbleService.PER_PAGE_DEFAULT;
                 onLikesLoaded(likes);
+                shotLikesCall = null;
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Call<List<Like>> call, Throwable t) {
                 loadFinished();
                 moreDataAvailable = false;
+                shotLikesCall = null;
             }
         });
     }

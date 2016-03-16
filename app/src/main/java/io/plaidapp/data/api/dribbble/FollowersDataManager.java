@@ -23,13 +23,14 @@ import java.util.List;
 import io.plaidapp.data.PaginatedDataManager;
 import io.plaidapp.data.PlaidItem;
 import io.plaidapp.data.api.dribbble.model.Follow;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public abstract class FollowersDataManager extends PaginatedDataManager {
 
     private final long playerId;
+    private Call userFollowersCall;
 
     public FollowersDataManager(Context context, long playerId) {
         super(context);
@@ -44,21 +45,29 @@ public abstract class FollowersDataManager extends PaginatedDataManager {
     }
 
     @Override
+    public void cancelLoading() {
+        if (userFollowersCall != null) userFollowersCall.cancel();
+    }
+
+    @Override
     protected void loadData(int page) {
-        getDribbbleApi().getUserFollowers(playerId, page, DribbbleService.PER_PAGE_DEFAULT,
-                new Callback<List<Follow>>() {
+        userFollowersCall = getDribbbleApi()
+                .getUserFollowers(playerId, page, DribbbleService.PER_PAGE_DEFAULT);
+        userFollowersCall.enqueue(new Callback<List<Follow>>() {
 
             @Override
-            public void success(List<Follow> followers, Response response) {
+            public void onResponse(Call<List<Follow>> call, Response<List<Follow>> response) {
                 loadFinished();
-                moreDataAvailable = followers.size() == DribbbleService.PER_PAGE_DEFAULT;
-                onFollowersLoaded(followers);
+                moreDataAvailable = response.body().size() == DribbbleService.PER_PAGE_DEFAULT;
+                onFollowersLoaded(response.body());
+                userFollowersCall = null;
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Call<List<Follow>> call, Throwable t) {
                 loadFinished();
                 moreDataAvailable = false;
+                userFollowersCall = null;
             }
         });
     }

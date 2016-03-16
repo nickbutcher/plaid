@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package io.plaidapp.data.api.dribbble;
 
-import android.support.annotation.StringDef;
-import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
 import org.jsoup.Jsoup;
@@ -25,8 +23,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,50 +36,42 @@ import java.util.regex.Pattern;
 import io.plaidapp.data.api.dribbble.model.Images;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.dribbble.model.User;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.ResponseBody;
+import retrofit2.Converter;
+import retrofit2.Retrofit;
 
 /**
  * Dribbble API does not have a search endpoint so we have to do gross things :(
  */
-public class DribbbleSearch {
+public class DribbbleSearchConverter implements Converter<ResponseBody, List<Shot>> {
 
-    private static final String HOST = "https://dribbble.com";
-    public static final String SORT_POPULAR = "";
-    public static final String SORT_RECENT = "latest";
-    private static final Pattern PATTERN_PLAYER_ID =
-            Pattern.compile("users/(\\d+?)/", Pattern.DOTALL);
+    /** Factory for creating converter. We only care about decoding responses. **/
+    public static final class Factory extends Converter.Factory {
 
-    @WorkerThread
-    public static List<Shot> search(String query, @SortOrder String sort, int page) {
-        String html = null;
-        // e.g https://dribbble.com/search?q=material+design&page=7&per_page=12
-        HttpUrl url = new HttpUrl.Builder()
-                .scheme("https")
-                .host("dribbble.com")
-                .addPathSegment("search")
-                .addQueryParameter("q", query)
-                .addQueryParameter("s", sort)
-                .addQueryParameter("page", String.valueOf(page))
-                .addQueryParameter("per_page", "12")
-                .build();
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url(url).build();
-        try {
-            Response response = client.newCall(request).execute();
-            html = response.body().string();
-        } catch (IOException ioe) {
-            return null;
+        @Override
+        public Converter<ResponseBody, ?> responseBodyConverter(Type type,
+                                                                Annotation[] annotations,
+                                                                Retrofit retrofit) {
+            return INSTANCE;
         }
 
-        if (html == null) return null;
-        Elements shotElements = Jsoup.parse(html, HOST).select("li[id^=screenshot]");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy");
-        List<Shot> shots = new ArrayList<>(shotElements.size());
+    }
+
+    private DribbbleSearchConverter() { }
+    static final DribbbleSearchConverter INSTANCE = new DribbbleSearchConverter();
+
+    private static final String HOST = "https://dribbble.com";
+    private static final Pattern PATTERN_PLAYER_ID =
+            Pattern.compile("users/(\\d+?)/", Pattern.DOTALL);
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMMM d, yyyy");
+
+    @Override
+    public List<Shot> convert(ResponseBody value) throws IOException {
+        final Elements shotElements =
+                Jsoup.parse(value.string(), HOST).select("li[id^=screenshot]");
+        final List<Shot> shots = new ArrayList<>(shotElements.size());
         for (Element element : shotElements) {
-            Shot shot = parseShot(element, dateFormat);
+            final Shot shot = parseShot(element, DATE_FORMAT);
             if (shot != null) {
                 shots.add(shot);
             }
@@ -90,7 +80,7 @@ public class DribbbleSearch {
     }
 
     private static Shot parseShot(Element element, SimpleDateFormat dateFormat) {
-        Element descriptionBlock = element.select("a.dribbble-over").first();
+        final Element descriptionBlock = element.select("a.dribbble-over").first();
         // API responses wrap description in a <p> tag. Do the same for consistent display.
         String description = descriptionBlock.select("span.comment").text().trim();
         if (!TextUtils.isEmpty(description)) {
@@ -124,18 +114,19 @@ public class DribbbleSearch {
     }
 
     private static User parsePlayer(Element element) {
-        Element userBlock = element.select("a.url").first();
+        final Element userBlock = element.select("a.url").first();
         String avatarUrl = userBlock.select("img.photo").first().attr("src");
         if (avatarUrl.contains("/mini/")) {
             avatarUrl = avatarUrl.replace("/mini/", "/normal/");
         }
-        Matcher matchId = PATTERN_PLAYER_ID.matcher(avatarUrl);
+        final Matcher matchId = PATTERN_PLAYER_ID.matcher(avatarUrl);
         Long id = -1l;
         if (matchId.find() && matchId.groupCount() == 1) {
             id = Long.parseLong(matchId.group(1));
         }
-        String slashUsername = userBlock.attr("href");
-        String username = TextUtils.isEmpty(slashUsername) ? null : slashUsername.substring(1);
+        final String slashUsername = userBlock.attr("href");
+        final String username =
+                TextUtils.isEmpty(slashUsername) ? null : slashUsername.substring(1);
         return new User.Builder()
                 .setId(id)
                 .setName(userBlock.text())
@@ -145,12 +136,5 @@ public class DribbbleSearch {
                 .setPro(element.select("span.badge-pro").size() > 0)
                 .build();
     }
-
-    @Retention(RetentionPolicy.SOURCE)
-    @StringDef({
-            SORT_POPULAR,
-            SORT_RECENT
-    })
-    public @interface SortOrder {}
 
 }

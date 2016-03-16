@@ -184,6 +184,12 @@ public class PlayerSheet extends Activity {
         dataManager.loadData(); // kick off initial load
     }
 
+    @Override
+    protected void onDestroy() {
+        dataManager.cancelLoading();
+        super.onDestroy();
+    }
+
     private RecyclerView.OnScrollListener titleElevation = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

@@ -17,8 +17,7 @@
 package io.plaidapp.data;
 
 import android.content.Context;
-
-import com.google.gson.GsonBuilder;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,46 +25,83 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import io.plaidapp.BuildConfig;
 import io.plaidapp.data.api.AuthInterceptor;
-import io.plaidapp.data.api.ClientAuthInterceptor;
 import io.plaidapp.data.api.designernews.DesignerNewsService;
+import io.plaidapp.data.api.dribbble.DribbbleSearchConverter;
+import io.plaidapp.data.api.dribbble.DribbbleSearchService;
 import io.plaidapp.data.api.dribbble.DribbbleService;
 import io.plaidapp.data.api.producthunt.ProductHuntService;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.data.prefs.DribbblePrefs;
-import retrofit.RestAdapter;
-import retrofit.converter.GsonConverter;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Base class for loading data.
  */
-public abstract class BaseDataManager implements
-        DataLoadingSubject,
-        DribbblePrefs.DribbbleLoginStatusListener,
-        DesignerNewsPrefs.DesignerNewsLoginStatusListener{
+public abstract class BaseDataManager implements DataLoadingSubject {
 
-    private DesignerNewsPrefs designerNewsPrefs;
-    private DesignerNewsService designerNewsApi;
-    private DribbblePrefs dribbblePrefs;
-    private DribbbleService dribbbleApi;
+    private final AtomicInteger loadingCount;
+    private final DesignerNewsPrefs designerNewsPrefs;
+    private final DribbblePrefs dribbblePrefs;
+    private DribbbleSearchService dribbbleSearchApi;
     private ProductHuntService productHuntApi;
-    private AtomicInteger loadingCount;
     private List<DataLoadingSubject.DataLoadingCallbacks> loadingCallbacks;
 
-    public BaseDataManager(Context context) {
-        // setup the API access objects
-        designerNewsPrefs = DesignerNewsPrefs.get(context);
-        createDesignerNewsApi();
-        dribbblePrefs = DribbblePrefs.get(context);
-        createDribbbleApi();
-        createProductHuntApi();
+    public BaseDataManager(@NonNull Context context) {
         loadingCount = new AtomicInteger(0);
+        designerNewsPrefs = DesignerNewsPrefs.get(context);
+        dribbblePrefs = DribbblePrefs.get(context);
     }
 
     public abstract void onDataLoaded(List<? extends PlaidItem> data);
 
+    public abstract void cancelLoading();
+
     @Override
     public boolean isDataLoading() {
         return loadingCount.get() > 0;
+    }
+
+    public DesignerNewsPrefs getDesignerNewsPrefs() {
+        return designerNewsPrefs;
+    }
+
+    public DesignerNewsService getDesignerNewsApi() {
+        return designerNewsPrefs.getApi();
+    }
+
+    public DribbblePrefs getDribbblePrefs() {
+        return dribbblePrefs;
+    }
+
+    public DribbbleService getDribbbleApi() {
+        return dribbblePrefs.getApi();
+    }
+
+    public ProductHuntService getProductHuntApi() {
+        if (productHuntApi == null) createProductHuntApi();
+        return productHuntApi;
+    }
+
+    public DribbbleSearchService getDribbbleSearchApi() {
+        if (dribbbleSearchApi == null) createDribbbleSearchApi();
+        return dribbbleSearchApi;
+    }
+
+    @Override
+    public void registerCallback(DataLoadingSubject.DataLoadingCallbacks callback) {
+        if (loadingCallbacks == null) {
+            loadingCallbacks = new ArrayList<>(1);
+        }
+        loadingCallbacks.add(callback);
+    }
+
+    @Override
+    public void unregisterCallback(DataLoadingSubject.DataLoadingCallbacks callback) {
+        if (loadingCallbacks != null && loadingCallbacks.contains(callback)) {
+            loadingCallbacks.remove(callback);
+        }
     }
 
     protected void loadStarted() {
@@ -96,70 +132,6 @@ public abstract class BaseDataManager implements
         }
     }
 
-    private void createDesignerNewsApi() {
-        designerNewsApi = new RestAdapter.Builder()
-                .setEndpoint(DesignerNewsService.ENDPOINT)
-                .setRequestInterceptor(new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
-                        BuildConfig.DESIGNER_NEWS_CLIENT_ID))
-                .build()
-                .create(DesignerNewsService.class);
-    }
-
-    public DesignerNewsService getDesignerNewsApi() {
-        return designerNewsApi;
-    }
-
-    public DesignerNewsPrefs getDesignerNewsPrefs() {
-        return designerNewsPrefs;
-    }
-
-    private void createDribbbleApi() {
-        dribbbleApi = new RestAdapter.Builder()
-                .setEndpoint(DribbbleService.ENDPOINT)
-                .setConverter(new GsonConverter(new GsonBuilder()
-                        .setDateFormat(DribbbleService.DATE_FORMAT)
-                        .create()))
-                .setRequestInterceptor(new AuthInterceptor(dribbblePrefs.getAccessToken()))
-                .build()
-                .create((DribbbleService.class));
-    }
-
-    public DribbbleService getDribbbleApi() {
-        return dribbbleApi;
-    }
-
-    public DribbblePrefs getDribbblePrefs() {
-        return dribbblePrefs;
-    }
-
-    private void createProductHuntApi() {
-        productHuntApi = new RestAdapter.Builder()
-                .setEndpoint(ProductHuntService.ENDPOINT)
-                .setRequestInterceptor(
-                        new AuthInterceptor(BuildConfig.PROCUCT_HUNT_DEVELOPER_TOKEN))
-                .build()
-                .create(ProductHuntService.class);
-    }
-
-    public ProductHuntService getProductHuntApi() {
-        return productHuntApi;
-    }
-
-    @Override
-    public void registerCallback(DataLoadingSubject.DataLoadingCallbacks callback) {
-        if (loadingCallbacks == null) {
-            loadingCallbacks = new ArrayList<>(1);
-        }
-        loadingCallbacks.add(callback);
-    }
-
-    @Override
-    public void unregisterCallback(DataLoadingSubject.DataLoadingCallbacks callback) {
-        if (loadingCallbacks.contains(callback)) {
-            loadingCallbacks.remove(callback);
-        }
-    }
-
     protected void dispatchLoadingStartedCallbacks() {
         if (loadingCallbacks == null || loadingCallbacks.isEmpty()) return;
         for (DataLoadingCallbacks loadingCallback : loadingCallbacks) {
@@ -174,24 +146,24 @@ public abstract class BaseDataManager implements
         }
     }
 
-    @Override
-    public void onDribbbleLogin() {
-        createDribbbleApi(); // capture the auth token
+    private void createDribbbleSearchApi() {
+        dribbbleSearchApi = new Retrofit.Builder()
+                .baseUrl(DribbbleSearchService.ENDPOINT)
+                .addConverterFactory(new DribbbleSearchConverter.Factory())
+                .build()
+                .create((DribbbleSearchService.class));
     }
 
-    @Override
-    public void onDribbbleLogout() {
-        createDribbbleApi(); // clear the auth token
-    }
-
-    @Override
-    public void onDesignerNewsLogin() {
-        createDesignerNewsApi(); // capture the auth token
-    }
-
-    @Override
-    public void onDesignerNewsLogout() {
-        createDesignerNewsApi(); // clear the auth token
+    private void createProductHuntApi() {
+        final OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new AuthInterceptor(BuildConfig.PROCUCT_HUNT_DEVELOPER_TOKEN))
+                .build();
+        productHuntApi = new Retrofit.Builder()
+                .baseUrl(ProductHuntService.ENDPOINT)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(ProductHuntService.class);
     }
 
 }

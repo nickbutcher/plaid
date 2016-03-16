@@ -76,10 +76,7 @@ import butterknife.BindInt;
 import butterknife.ButterKnife;
 import in.uncod.android.bypass.Bypass;
 import in.uncod.android.bypass.style.ImageLoadingSpan;
-import io.plaidapp.BuildConfig;
 import io.plaidapp.R;
-import io.plaidapp.data.api.ClientAuthInterceptor;
-import io.plaidapp.data.api.designernews.DesignerNewsService;
 import io.plaidapp.data.api.designernews.UpvoteStoryService;
 import io.plaidapp.data.api.designernews.model.Comment;
 import io.plaidapp.data.api.designernews.model.Story;
@@ -90,7 +87,6 @@ import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.widget.AuthorTextView;
 import io.plaidapp.ui.widget.CollapsingTitleLayout;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
-import io.plaidapp.ui.widget.FontTextView;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.HtmlUtils;
@@ -100,10 +96,9 @@ import io.plaidapp.util.ViewUtils;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.util.glide.CircleTransform;
 import io.plaidapp.util.glide.ImageSpanTarget;
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static io.plaidapp.util.AnimUtils.getFastOutLinearInInterpolator;
 import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
@@ -133,7 +128,6 @@ public class DesignerNewsStory extends Activity {
 
     private Story story;
     private DesignerNewsPrefs designerNewsPrefs;
-    private DesignerNewsService designerNewsApi;
     private Bypass markdown;
     private CustomTabActivityHelper customTab;
     private CircleTransform circleTransform;
@@ -159,9 +153,7 @@ public class DesignerNewsStory extends Activity {
                 .setBlockQuoteIndentSize(TypedValue.COMPLEX_UNIT_DIP, 2f)
                 .setBlockQuoteTextColor(ContextCompat.getColor(this, R.color.designer_news_quote)));
         circleTransform = new CircleTransform(this);
-
         designerNewsPrefs = DesignerNewsPrefs.get(this);
-        createDesignerNewsApi();
 
         layoutManager = new LinearLayoutManager(this);
         commentsList.setLayoutManager(layoutManager);
@@ -527,24 +519,25 @@ public class DesignerNewsStory extends Activity {
                     if (TextUtils.isEmpty(enterComment.getText())) return;
                     enterComment.setEnabled(false);
                     postComment.setEnabled(false);
-                    designerNewsApi.comment(story.id, enterComment.getText().toString(),
-                            new Callback<Comment>() {
-                                @Override
-                                public void success(Comment comment, Response response) {
-                                    enterComment.getText().clear();
-                                    enterComment.setEnabled(true);
-                                    postComment.setEnabled(true);
-                                    commentsAdapter.addComment(comment);
-                                }
+                    final Call<Comment> comment = designerNewsPrefs.getApi()
+                            .comment(story.id, enterComment.getText().toString());
+                    comment.enqueue(new Callback<Comment>() {
+                        @Override
+                        public void onResponse(Call<Comment> call, Response<Comment> response) {
+                            enterComment.getText().clear();
+                            enterComment.setEnabled(true);
+                            postComment.setEnabled(true);
+                            commentsAdapter.addComment(response.body());
+                        }
 
-                                @Override
-                                public void failure(RetrofitError error) {
-                                    Toast.makeText(getApplicationContext(),
-                                            "Failed to post comment :(", Toast.LENGTH_SHORT).show();
-                                    enterComment.setEnabled(true);
-                                    postComment.setEnabled(true);
-                                }
-                            });
+                        @Override
+                        public void onFailure(Call<Comment> call, Throwable t) {
+                            Toast.makeText(getApplicationContext(),
+                                    "Failed to post comment :(", Toast.LENGTH_SHORT).show();
+                            enterComment.setEnabled(true);
+                            postComment.setEnabled(true);
+                        }
+                    });
                 } else {
                     needsLogin(postComment, 0);
                 }
@@ -559,19 +552,23 @@ public class DesignerNewsStory extends Activity {
         if (designerNewsPrefs.isLoggedIn()) {
             if (!upvoteStory.isActivated()) {
                 upvoteStory.setActivated(true);
-                designerNewsApi.upvoteStory(story.id, "",
-                        new Callback<StoryResponse>() {
-                            @Override
-                            public void success(StoryResponse storyResponse, Response
-                                    response) {
-                                final int newUpvoteCount = storyResponse.story.vote_count;
-                                upvoteStory.setText(getResources().getQuantityString(
-                                        R.plurals.upvotes, newUpvoteCount,
-                                        NumberFormat.getInstance().format(newUpvoteCount)));
-                            }
+                final Call<StoryResponse> upvoteStory
+                        = designerNewsPrefs.getApi().upvoteStory(story.id);
+                upvoteStory.enqueue(new Callback<StoryResponse>() {
+                    @Override
+                    public void onResponse(Call<StoryResponse> call, Response<StoryResponse>
+                            response) {
+                        final int newUpvoteCount = response.body().story.vote_count;
+                        DesignerNewsStory.this.upvoteStory.setText(getResources().getQuantityString(
+                                R.plurals.upvotes, newUpvoteCount,
+                                NumberFormat.getInstance().format(newUpvoteCount)));
+                    }
 
-                            @Override public void failure(RetrofitError error) { }
-                        });
+                    @Override
+                    public void onFailure(Call<StoryResponse> call, Throwable t) {
+
+                    }
+                });
             } else {
                 upvoteStory.setActivated(false);
                 // TODO delete upvote. Not available in v1 API.
@@ -591,15 +588,6 @@ public class DesignerNewsStory extends Activity {
                 DesignerNewsStory.this,
                 triggeringView, getString(R.string.transition_designer_news_login));
         startActivityForResult(login, requestCode, options.toBundle());
-    }
-
-    private void createDesignerNewsApi() {
-        designerNewsApi = new RestAdapter.Builder()
-                .setEndpoint(DesignerNewsService.ENDPOINT)
-                .setRequestInterceptor(new ClientAuthInterceptor(designerNewsPrefs.getAccessToken(),
-                        BuildConfig.DESIGNER_NEWS_CLIENT_ID))
-                .build()
-                .create(DesignerNewsService.class);
     }
 
     private void unnestComments(List<Comment> nested, List<Comment> flat) {
@@ -870,13 +858,16 @@ public class DesignerNewsStory extends Activity {
                     if (designerNewsPrefs.isLoggedIn()) {
                         Comment comment = getComment(holder.getAdapterPosition());
                         if (!holder.commentVotes.isActivated()) {
-                            designerNewsApi.upvoteComment(comment.id, "",
-                                    new Callback<Comment>() {
-                                        @Override
-                                        public void success(Comment upvoted, Response resp) { }
+                            final Call<Comment> upvoteComment =
+                                    designerNewsPrefs.getApi().upvoteComment(comment.id);
+                            upvoteComment.enqueue(new Callback<Comment>() {
+                                @Override
+                                public void onResponse(Call<Comment> call,
+                                                       Response<Comment> response) { }
 
-                                        @Override public void failure(RetrofitError error) { }
-                                    });
+                                @Override
+                                public void onFailure(Call<Comment> call, Throwable t) { }
+                            });
                             comment.upvoted = true;
                             comment.vote_count++;
                             holder.commentVotes.setText(String.valueOf(comment.vote_count));
@@ -917,18 +908,21 @@ public class DesignerNewsStory extends Activity {
                                         .setUserPortraitUrl(designerNewsPrefs.getUserAvatar())
                                         .build(),
                                 inReplyToCommentPosition);
-                        designerNewsApi.replyToComment(replyingTo.id,
-                                holder.commentReply.getText().toString(),
-                                new Callback<Comment>() {
-                                    @Override
-                                    public void success(Comment comment, Response response) { }
+                        final Call<Comment> replyToComment = designerNewsPrefs.getApi()
+                                .replyToComment(replyingTo.id,
+                                        holder.commentReply.getText().toString());
+                        replyToComment.enqueue(new Callback<Comment>() {
+                            @Override
+                            public void onResponse(Call<Comment> call, Response<Comment> response) {
 
-                                    @Override
-                                    public void failure(RetrofitError error) {
-                                        Toast.makeText(getApplicationContext(),
-                                            "Failed to post comment :(", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                            }
+
+                            @Override
+                            public void onFailure(Call<Comment> call, Throwable t) {
+                                Toast.makeText(getApplicationContext(),
+                                        "Failed to post comment :(", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         holder.commentReply.getText().clear();
                         ImeUtils.hideIme(holder.commentReply);
                         commentsList.scrollToPosition(newReplyPosition);

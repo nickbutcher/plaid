@@ -40,27 +40,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.List;
 
 import io.plaidapp.BuildConfig;
 import io.plaidapp.R;
-import io.plaidapp.data.api.AuthInterceptor;
 import io.plaidapp.data.api.dribbble.DribbbleAuthService;
-import io.plaidapp.data.api.dribbble.DribbbleService;
 import io.plaidapp.data.api.dribbble.model.AccessToken;
 import io.plaidapp.data.api.dribbble.model.User;
 import io.plaidapp.data.prefs.DribbblePrefs;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.util.ScrimUtil;
 import io.plaidapp.util.glide.CircleTransform;
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import retrofit.converter.GsonConverter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DribbbleLogin extends Activity {
 
@@ -135,53 +131,44 @@ public class DribbbleLogin extends Activity {
     }
 
     private void getAccessToken(String code) {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(DribbbleAuthService.ENDPOINT)
-                .build();
+        final DribbbleAuthService dribbbleAuthApi = new Retrofit.Builder()
+                .baseUrl(DribbbleAuthService.ENDPOINT)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create((DribbbleAuthService.class));
 
-        DribbbleAuthService dribbbleAuthApi = restAdapter.create((DribbbleAuthService.class));
-
-        dribbbleAuthApi.getAccessToken(BuildConfig.DRIBBBLE_CLIENT_ID,
+        final Call<AccessToken> accessTokenCall = dribbbleAuthApi.getAccessToken(BuildConfig
+                .DRIBBBLE_CLIENT_ID,
                 BuildConfig.DRIBBBLE_CLIENT_SECRET,
-                code, "", new Callback<AccessToken>() {
-                    @Override
-                    public void success(AccessToken accessToken, Response response) {
-                        dribbblePrefs.setAccessToken(accessToken.access_token);
-                        showLoggedInUser();
-                        setResult(Activity.RESULT_OK);
-                        finishAfterTransition();
-                    }
+                code);
+        accessTokenCall.enqueue(new Callback<AccessToken>() {
+            @Override
+            public void onResponse(Call<AccessToken> call, Response<AccessToken> response) {
+                dribbblePrefs.setAccessToken(response.body().access_token);
+                showLoggedInUser();
+                setResult(Activity.RESULT_OK);
+                finishAfterTransition();
+            }
 
-                    @Override
-                    public void failure(RetrofitError error) {
-                        Log.e(getClass().getCanonicalName(), error.getMessage(), error);
-                        // TODO snackbar?
-                        Toast.makeText(getApplicationContext(), "Log in failed: " + error
-                                .getResponse()
-                                .getStatus(), Toast.LENGTH_LONG).show();
-                        showLogin();
-                    }
-                });
+            @Override
+            public void onFailure(Call<AccessToken> call, Throwable t) {
+                Log.e(getClass().getCanonicalName(), t.getMessage(), t);
+                // TODO snackbar?
+                Toast.makeText(getApplicationContext(), "Login failed", Toast.LENGTH_LONG).show();
+                showLogin();
+            }
+        });
     }
 
     private void showLoggedInUser() {
-        Gson gson = new GsonBuilder()
-                .setDateFormat(DribbbleService.DATE_FORMAT)
-                .create();
-
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(DribbbleService.ENDPOINT)
-                .setConverter(new GsonConverter(gson))
-                .setRequestInterceptor(new AuthInterceptor(dribbblePrefs.getAccessToken()))
-                .build();
-
-        DribbbleService dribbbleApi = restAdapter.create((DribbbleService.class));
-        dribbbleApi.getAuthenticatedUser(new Callback<User>() {
+        final Call<User> authenticatedUser = dribbblePrefs.getApi().getAuthenticatedUser();
+        authenticatedUser.enqueue(new Callback<User>() {
             @Override
-            public void success(User user, Response response) {
+            public void onResponse(Call<User> call, Response<User> response) {
+                final User user = response.body();
                 dribbblePrefs.setLoggedInUser(user);
-                Toast confirmLogin = new Toast(getApplicationContext());
-                View v = LayoutInflater.from(DribbbleLogin.this).inflate(R.layout
+                final Toast confirmLogin = new Toast(getApplicationContext());
+                final View v = LayoutInflater.from(DribbbleLogin.this).inflate(R.layout
                         .toast_logged_in_confirmation, null, false);
                 ((TextView) v.findViewById(R.id.name)).setText(user.name);
                 // need to use app context here as the activity will be destroyed shortly
@@ -200,7 +187,8 @@ public class DribbbleLogin extends Activity {
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Call<User> call, Throwable t) {
+
             }
         });
     }

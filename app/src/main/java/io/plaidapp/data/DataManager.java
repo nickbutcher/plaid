@@ -17,7 +17,6 @@
 package io.plaidapp.data;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,17 +24,19 @@ import java.util.List;
 import java.util.Map;
 
 import io.plaidapp.data.api.designernews.model.StoriesResponse;
-import io.plaidapp.data.api.dribbble.DribbbleSearch;
+import io.plaidapp.data.api.designernews.model.Story;
+import io.plaidapp.data.api.dribbble.DribbbleSearchService;
 import io.plaidapp.data.api.dribbble.DribbbleService;
 import io.plaidapp.data.api.dribbble.model.Like;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.dribbble.model.User;
+import io.plaidapp.data.api.producthunt.model.Post;
 import io.plaidapp.data.api.producthunt.model.PostsResponse;
 import io.plaidapp.data.prefs.SourceManager;
 import io.plaidapp.ui.FilterAdapter;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Responsible for loading data from the various sources. Instantiating classes are responsible for
@@ -45,6 +46,7 @@ public abstract class DataManager extends BaseDataManager {
 
     private final FilterAdapter filterAdapter;
     private Map<String, Integer> pageIndexes;
+    private Map<String, Call> inflight;
 
     public DataManager(Context context,
                        FilterAdapter filterAdapter) {
@@ -52,6 +54,7 @@ public abstract class DataManager extends BaseDataManager {
         this.filterAdapter = filterAdapter;
         filterAdapter.registerFilterChangedCallback(filterListener);
         setupPageIndexes();
+        inflight = new HashMap<>();
     }
 
     public void loadAllDataSources() {
@@ -60,15 +63,31 @@ public abstract class DataManager extends BaseDataManager {
         }
     }
 
-    private FilterAdapter.FiltersChangedCallbacks filterListener =
+    @Override
+    public void cancelLoading() {
+        if (inflight.size() > 0) {
+            for (Call call : inflight.values()) {
+                call.cancel();
+            }
+            inflight.clear();
+        }
+    }
+
+    private final FilterAdapter.FiltersChangedCallbacks filterListener =
             new FilterAdapter.FiltersChangedCallbacks() {
         @Override
         public void onFiltersChanged(Source changedFilter) {
             if (changedFilter.active) {
                 loadSource(changedFilter);
-            } else {
+            } else { // filter deactivated
+                final String key = changedFilter.key;
+                if (inflight.containsKey(key)) {
+                    final Call call = inflight.get(key);
+                    if (call != null) call.cancel();
+                    inflight.remove(key);
+                }
                 // clear the page index for the source
-                pageIndexes.put(changedFilter.key, 0);
+                pageIndexes.put(key, 0);
             }
         }
     };
@@ -76,7 +95,7 @@ public abstract class DataManager extends BaseDataManager {
     private void loadSource(Source source) {
         if (source.active) {
             loadStarted();
-            int page = getNextPageIndex(source.key);
+            final int page = getNextPageIndex(source.key);
             switch (source.key) {
                 case SourceManager.SOURCE_DESIGNER_NEWS_POPULAR:
                     loadDesignerNewsTopStories(page);
@@ -120,7 +139,7 @@ public abstract class DataManager extends BaseDataManager {
     }
 
     private void setupPageIndexes() {
-        List<Source> dateSources = filterAdapter.getFilters();
+        final List<Source> dateSources = filterAdapter.getFilters();
         pageIndexes = new HashMap<>(dateSources.size());
         for (Source source : dateSources) {
             pageIndexes.put(source.key, 0);
@@ -140,196 +159,186 @@ public abstract class DataManager extends BaseDataManager {
         return pageIndexes.get(key) != 0;
     }
 
+    private void sourceLoaded(List<? extends PlaidItem> data, int page, String key) {
+        loadFinished();
+        if (data != null && !data.isEmpty() && sourceIsEnabled(key)) {
+            setPage(data, page);
+            setDataSource(data, key);
+            onDataLoaded(data);
+        }
+        inflight.remove(key);
+    }
+
+    private void loadFailed(String key) {
+        loadFinished();
+        inflight.remove(key);
+    }
+
     private void loadDesignerNewsTopStories(final int page) {
-        getDesignerNewsApi().getTopStories(page, new Callback<StoriesResponse>() {
+        final Call<StoriesResponse> topStories = getDesignerNewsApi().getTopStories(page);
+        topStories.enqueue(new Callback<StoriesResponse>() {
             @Override
-            public void success(StoriesResponse storiesResponse, Response response) {
-                loadFinished();
-                if (storiesResponse != null
-                        && sourceIsEnabled(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)) {
-                    setPage(storiesResponse.stories, page);
-                    setDataSource(storiesResponse.stories,
-                            SourceManager.SOURCE_DESIGNER_NEWS_POPULAR);
-                    onDataLoaded(storiesResponse.stories);
-                }
+            public void onResponse(Call<StoriesResponse> call, Response<StoriesResponse> response) {
+                final List<Story> stories =
+                        response.body() != null ? response.body().stories : null;
+                sourceLoaded(stories, page, SourceManager.SOURCE_DESIGNER_NEWS_POPULAR);
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                loadFinished();
+            public void onFailure(Call<StoriesResponse> call, Throwable t) {
+                loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR);
             }
         });
+        inflight.put(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR, topStories);
     }
 
     private void loadDesignerNewsRecent(final int page) {
-        getDesignerNewsApi().getRecentStories(page, new Callback<StoriesResponse>() {
+        final Call<StoriesResponse> recentStoriesCall = getDesignerNewsApi().getRecentStories(page);
+        recentStoriesCall.enqueue(new Callback<StoriesResponse>() {
             @Override
-            public void success(StoriesResponse storiesResponse, Response response) {
-                loadFinished();
-                if (storiesResponse != null
-                        && sourceIsEnabled(SourceManager.SOURCE_DESIGNER_NEWS_RECENT)) {
-                    setPage(storiesResponse.stories, page);
-                    setDataSource(storiesResponse.stories,
-                            SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
-                    onDataLoaded(storiesResponse.stories);
-                }
+            public void onResponse(Call<StoriesResponse> call, Response<StoriesResponse> response) {
+                final List<Story> stories =
+                        response.body() != null ? response.body().stories : null;
+                sourceLoaded(stories, page, SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                loadFinished();
+            public void onFailure(Call<StoriesResponse> call, Throwable t) {
+                loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
             }
         });
+        inflight.put(SourceManager.SOURCE_DESIGNER_NEWS_RECENT, recentStoriesCall);
     }
 
     private void loadDesignerNewsSearch(final Source.DesignerNewsSearchSource source,
                                         final int page) {
-        getDesignerNewsApi().search(source.query, page, new Callback<StoriesResponse>() {
+        final Call<StoriesResponse> searchCall = getDesignerNewsApi().search(source.query, page);
+        searchCall.enqueue(new Callback<StoriesResponse>() {
             @Override
-            public void success(StoriesResponse storiesResponse, Response response) {
-                loadFinished();
-                if (storiesResponse != null) {
-                    setPage(storiesResponse.stories, page);
-                    setDataSource(storiesResponse.stories, source.key);
-                    onDataLoaded(storiesResponse.stories);
-                }
+            public void onResponse(Call<StoriesResponse> call, Response<StoriesResponse> response) {
+                final List<Story> stories =
+                        response.body() != null ? response.body().stories : null;
+                sourceLoaded(stories, page, source.key);
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                loadFinished();
+            public void onFailure(Call<StoriesResponse> call, Throwable t) {
+                loadFailed(source.key);
             }
         });
+        inflight.put(source.key, searchCall);
     }
 
     private void loadDribbblePopular(final int page) {
-        getDribbbleApi().getPopular(page, DribbbleService.PER_PAGE_DEFAULT, new
-                Callback<List<Shot>>() {
+        final Call<List<Shot>> popularCall = getDribbbleApi()
+                .getPopular(page, DribbbleService.PER_PAGE_DEFAULT);
+        popularCall.enqueue(new Callback<List<Shot>>() {
             @Override
-            public void success(List<Shot> shots, Response response) {
-                loadFinished();
-                if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_POPULAR)) {
-                    setPage(shots, page);
-                    setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_POPULAR);
-                    onDataLoaded(shots);
-                }
+            public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
+                sourceLoaded(response.body(), page, SourceManager.SOURCE_DRIBBBLE_POPULAR);
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                loadFinished();
+            public void onFailure(Call<List<Shot>> call, Throwable t) {
+                loadFailed(SourceManager.SOURCE_DRIBBBLE_POPULAR);
             }
         });
+        inflight.put(SourceManager.SOURCE_DRIBBBLE_POPULAR, popularCall);
     }
 
     private void loadDribbbleDebuts(final int page) {
-        getDribbbleApi().getDebuts(page, DribbbleService.PER_PAGE_DEFAULT, new
-                Callback<List<Shot>>() {
+        final Call<List<Shot>> debutsCall = getDribbbleApi()
+                .getDebuts(page, DribbbleService.PER_PAGE_DEFAULT);
+        debutsCall.enqueue(new Callback<List<Shot>>() {
             @Override
-            public void success(List<Shot> shots, Response response) {
-                loadFinished();
-                if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_DEBUTS)) {
-                    setPage(shots, page);
-                    setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_DEBUTS);
-                    onDataLoaded(shots);
-                }
+            public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
+                sourceLoaded(response.body(), page, SourceManager.SOURCE_DRIBBBLE_DEBUTS);
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                loadFinished();
+            public void onFailure(Call<List<Shot>> call, Throwable t) {
+                loadFailed(SourceManager.SOURCE_DRIBBBLE_DEBUTS);
             }
         });
+        inflight.put(SourceManager.SOURCE_DRIBBBLE_DEBUTS, debutsCall);
     }
 
     private void loadDribbbleAnimated(final int page) {
-        getDribbbleApi().getAnimated(page, DribbbleService.PER_PAGE_DEFAULT, new
-                Callback<List<Shot>>() {
+        final Call<List<Shot>> animatedCall = getDribbbleApi()
+                .getAnimated(page, DribbbleService.PER_PAGE_DEFAULT);
+        animatedCall.enqueue(new Callback<List<Shot>>() {
             @Override
-            public void success(List<Shot> shots, Response response) {
-                loadFinished();
-                if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_ANIMATED)) {
-                    setPage(shots, page);
-                    setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_ANIMATED);
-                    onDataLoaded(shots);
-                }
+            public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
+                sourceLoaded(response.body(), page, SourceManager.SOURCE_DRIBBBLE_ANIMATED);
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                loadFinished();
+            public void onFailure(Call<List<Shot>> call, Throwable t) {
+                loadFailed(SourceManager.SOURCE_DRIBBBLE_ANIMATED);
             }
         });
+        inflight.put(SourceManager.SOURCE_DRIBBBLE_ANIMATED, animatedCall);
     }
 
     private void loadDribbbleRecent(final int page) {
-        getDribbbleApi().getRecent(page, DribbbleService.PER_PAGE_DEFAULT, new
-                Callback<List<Shot>>() {
+        final Call<List<Shot>> recentCall = getDribbbleApi()
+                .getRecent(page, DribbbleService.PER_PAGE_DEFAULT);
+        recentCall.enqueue(new Callback<List<Shot>>() {
             @Override
-            public void success(List<Shot> shots, Response response) {
-                loadFinished();
-                if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_RECENT)) {
-                    setPage(shots, page);
-                    setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_RECENT);
-                    onDataLoaded(shots);
-                }
+            public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
+                sourceLoaded(response.body(), page, SourceManager.SOURCE_DRIBBBLE_RECENT);
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                loadFinished();
+            public void onFailure(Call<List<Shot>> call, Throwable t) {
+                loadFailed(SourceManager.SOURCE_DRIBBBLE_RECENT);
             }
         });
+        inflight.put(SourceManager.SOURCE_DRIBBBLE_RECENT, recentCall);
     }
 
     private void loadDribbbleFollowing(final int page) {
-        if (getDribbblePrefs().isLoggedIn()) {
-            getDribbbleApi().getFollowing(page, DribbbleService.PER_PAGE_DEFAULT,
-                    new Callback<List<Shot>>() {
-                        @Override
-                        public void success(List<Shot> shots, Response response) {
-                            loadFinished();
-                            if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_FOLLOWING)) {
-                                setPage(shots, page);
-                                setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_FOLLOWING);
-                                onDataLoaded(shots);
-                            }
-                        }
+        final Call<List<Shot>> followingCall = getDribbbleApi()
+                .getFollowing(page, DribbbleService.PER_PAGE_DEFAULT);
+        followingCall.enqueue(new Callback<List<Shot>>() {
+            @Override
+            public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
+                sourceLoaded(response.body(), page, SourceManager.SOURCE_DRIBBBLE_FOLLOWING);
+            }
 
-                        @Override
-                        public void failure(RetrofitError error) {
-                            loadFinished();
-                        }
-                    });
-        } else {
-            loadFinished();
-        }
+            @Override
+            public void onFailure(Call<List<Shot>> call, Throwable t) {
+                loadFailed(SourceManager.SOURCE_DRIBBBLE_FOLLOWING);
+            }
+        });
+        inflight.put(SourceManager.SOURCE_DRIBBBLE_FOLLOWING, followingCall);
     }
 
     private void loadDribbbleUserLikes(final int page) {
         if (getDribbblePrefs().isLoggedIn()) {
-            getDribbbleApi().getUserLikes(page, DribbbleService.PER_PAGE_DEFAULT,
-                    new Callback<List<Like>>() {
-                        @Override
-                        public void success(List<Like> likes, Response response) {
-                            loadFinished();
-                            if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_USER_LIKES)) {
-                                // API returns Likes but we just want the Shots
-                                List<Shot> likedShots = new ArrayList<>(likes.size());
-                                for (Like like : likes) {
-                                    likedShots.add(like.shot);
-                                }
-                                setPage(likedShots, page);
-                                setDataSource(likedShots, SourceManager.SOURCE_DRIBBBLE_USER_LIKES);
-                                onDataLoaded(likedShots);
-                            }
+            final Call<List<Like>> userLikesCall = getDribbbleApi()
+                    .getUserLikes(page, DribbbleService.PER_PAGE_DEFAULT);
+            userLikesCall.enqueue(new Callback<List<Like>>() {
+                @Override
+                public void onResponse(Call<List<Like>> call, Response<List<Like>> response) {
+                    // API returns Likes but we just want the Shots
+                    final List<Like> likes = response.body();
+                    List<Shot> likedShots = null;
+                    if (likes != null && !likes.isEmpty()) {
+                        likedShots = new ArrayList<>(likes.size());
+                        for (Like like : likes) {
+                            likedShots.add(like.shot);
                         }
+                    }
+                    sourceLoaded(likedShots, page, SourceManager.SOURCE_DRIBBBLE_USER_LIKES);
+                }
 
-                        @Override
-                        public void failure(RetrofitError error) {
-                            loadFinished();
-                        }
-                    });
+                @Override
+                public void onFailure(Call<List<Like>> call, Throwable t) {
+                    loadFailed(SourceManager.SOURCE_DRIBBBLE_USER_LIKES);
+                }
+            });
+            inflight.put(SourceManager.SOURCE_DRIBBBLE_USER_LIKES, userLikesCall);
         } else {
             loadFinished();
         }
@@ -337,28 +346,29 @@ public abstract class DataManager extends BaseDataManager {
 
     private void loadDribbbleUserShots(final int page) {
         if (getDribbblePrefs().isLoggedIn()) {
-            getDribbbleApi().getUserShots(page, DribbbleService.PER_PAGE_DEFAULT,
-                    new Callback<List<Shot>>() {
-                        @Override
-                        public void success(List<Shot> shots, Response response) {
-                            loadFinished();
-                            if (sourceIsEnabled(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS)) {
-                                // this api call doesn't populate the shot user field but we need it
-                                User user = getDribbblePrefs().getUser();
-                                for (Shot shot : shots) {
-                                    shot.user = user;
-                                }
-                                setPage(shots, page);
-                                setDataSource(shots, SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
-                                onDataLoaded(shots);
-                            }
+            final Call<List<Shot>> userShotsCall = getDribbbleApi()
+                    .getUserShots(page, DribbbleService.PER_PAGE_DEFAULT);
+            userShotsCall.enqueue(new Callback<List<Shot>>() {
+                @Override
+                public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
+                    loadFinished();
+                    final List<Shot> shots = response.body();
+                    if (shots != null && !shots.isEmpty()) {
+                        // this api call doesn't populate the shot user field but we need it
+                        final User user = getDribbblePrefs().getUser();
+                        for (Shot shot : shots) {
+                            shot.user = user;
                         }
+                    }
+                    sourceLoaded(shots, page, SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
+                }
 
-                        @Override
-                        public void failure(RetrofitError error) {
-                            loadFinished();
-                        }
-                    });
+                @Override
+                public void onFailure(Call<List<Shot>> call, Throwable t) {
+                    loadFailed(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
+                }
+            });
+            inflight.put(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS, userShotsCall);
         } else {
             loadFinished();
         }
@@ -366,42 +376,37 @@ public abstract class DataManager extends BaseDataManager {
 
 
     private void loadDribbbleSearch(final Source.DribbbleSearchSource source, final int page) {
-        new AsyncTask<Void, Void, List<Shot>>() {
+        final Call<List<Shot>> searchCall = getDribbbleSearchApi().search(source.query, page,
+                DribbbleSearchService.PER_PAGE_DEFAULT, DribbbleSearchService.SORT_RECENT);
+        searchCall.enqueue(new Callback<List<Shot>>() {
             @Override
-            protected List<Shot> doInBackground(Void... params) {
-                return DribbbleSearch.search(source.query, DribbbleSearch.SORT_RECENT, page);
+            public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
+                sourceLoaded(response.body(), page, source.key);
             }
 
             @Override
-            protected void onPostExecute(List<Shot> shots) {
-                loadFinished();
-                if (shots != null && shots.size() > 0 && sourceIsEnabled(source.key)) {
-                    setPage(shots, page);
-                    setDataSource(shots, source.key);
-                    onDataLoaded(shots);
-                }
+            public void onFailure(Call<List<Shot>> call, Throwable t) {
+                loadFailed(source.key);
             }
-        }.execute();
+        });
+        inflight.put(source.key, searchCall);
     }
 
     private void loadProductHunt(final int page) {
         // this API's paging is 0 based but this class (& sorting) is 1 based so adjust locally
-        getProductHuntApi().getPosts(page - 1, new Callback<PostsResponse>() {
+        final Call<PostsResponse> postsCall = getProductHuntApi().getPosts(page - 1);
+        postsCall.enqueue(new Callback<PostsResponse>() {
             @Override
-            public void success(PostsResponse postsResponse, Response response) {
-                loadFinished();
-                if (postsResponse != null && sourceIsEnabled(SourceManager.SOURCE_PRODUCT_HUNT)) {
-                    setPage(postsResponse.posts, page);
-                    setDataSource(postsResponse.posts,
-                            SourceManager.SOURCE_PRODUCT_HUNT);
-                    onDataLoaded(postsResponse.posts);
-                }
+            public void onResponse(Call<PostsResponse> call, Response<PostsResponse> response) {
+                final List<Post> posts = response.body() != null ? response.body().posts : null;
+                sourceLoaded(posts, page, SourceManager.SOURCE_PRODUCT_HUNT);
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                loadFinished();
+            public void onFailure(Call<PostsResponse> call, Throwable t) {
+                loadFailed(SourceManager.SOURCE_PRODUCT_HUNT);
             }
         });
+        inflight.put(SourceManager.SOURCE_PRODUCT_HUNT, postsCall);
     }
 }

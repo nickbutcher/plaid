@@ -268,6 +268,12 @@ public class SearchActivity extends Activity {
         super.onPause();
     }
 
+    @Override
+    protected void onDestroy() {
+        dataManager.cancelLoading();
+        super.onDestroy();
+    }
+
     @OnClick({ R.id.scrim, R.id.searchback })
     protected void dismiss() {
         // translate the icon to match position in the launching activity

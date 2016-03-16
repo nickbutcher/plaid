@@ -17,30 +17,20 @@
 package io.plaidapp.data.api.dribbble;
 
 import io.plaidapp.data.api.dribbble.model.AccessToken;
-import retrofit.Callback;
-import retrofit.http.Body;
-import retrofit.http.POST;
-import retrofit.http.Query;
+import retrofit2.Call;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 /**
  * Dribbble Auth API (a different endpoint)
  */
 public interface DribbbleAuthService {
 
-    public static final String ENDPOINT = "https://dribbble.com/";
+    String ENDPOINT = "https://dribbble.com/";
 
     @POST("/oauth/token")
-    public AccessToken getAccessToken(@Query("client_id") String client_id,
-                                      @Query("client_secret") String client_secret,
-                                      @Query("code") String code);
-
-    @POST("/oauth/token")
-    public void getAccessToken(@Query("client_id") String client_id,
-                               @Query("client_secret") String client_secret,
-                               @Query("code") String code,
-                               @Body String unused, // can remove when retrofit releases this
-                               // fix: https://github
-                               // .com/square/retrofit/commit/19ac1e2c4551448184ad66c4a0ec172e2741c2ee
-                               Callback<AccessToken> callback);
+    Call<AccessToken> getAccessToken(@Query("client_id") String client_id,
+                                     @Query("client_secret") String client_secret,
+                                     @Query("code") String code);
 
 }

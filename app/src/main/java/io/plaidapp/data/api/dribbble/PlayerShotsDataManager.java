@@ -23,9 +23,9 @@ import java.util.List;
 import io.plaidapp.data.PaginatedDataManager;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.dribbble.model.User;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Responsible for loading a dribbble player's shots. Instantiating classes are
@@ -38,6 +38,7 @@ public abstract class PlayerShotsDataManager extends PaginatedDataManager {
 
     private final long userId;
     private final boolean isTeam;
+    private Call loadShotsCall;
 
     public PlayerShotsDataManager(Context context, User player) {
         super(context);
@@ -54,42 +55,55 @@ public abstract class PlayerShotsDataManager extends PaginatedDataManager {
         }
     }
 
-    private void loadUserShots(final int page) {
-        getDribbbleApi().getUsersShots(userId, page, DribbbleService.PER_PAGE_DEFAULT,
-                new Callback<List<Shot>>() {
-                    @Override
-                    public void success(List<Shot> shots, Response response) {
-                        setPage(shots, page);
-                        setDataSource(shots, SOURCE_PLAYER_SHOTS);
-                        onDataLoaded(shots);
-                        loadFinished();
-                        moreDataAvailable = shots.size() == DribbbleService.PER_PAGE_DEFAULT;
-                    }
+    @Override
+    public void cancelLoading() {
+        if (loadShotsCall != null) loadShotsCall.cancel();
+    }
 
-                    @Override
-                    public void failure(RetrofitError error) {
-                        loadFinished();
-                    }
-                });
+    private void loadUserShots(final int page) {
+        loadShotsCall = getDribbbleApi()
+                .getUsersShots(userId, page, DribbbleService.PER_PAGE_DEFAULT);
+        loadShotsCall.enqueue(new Callback<List<Shot>>() {
+            @Override
+            public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
+                final List<Shot> shots = response.body();
+                setPage(shots, page);
+                setDataSource(shots, SOURCE_PLAYER_SHOTS);
+                onDataLoaded(shots);
+                loadFinished();
+                moreDataAvailable = shots.size() == DribbbleService.PER_PAGE_DEFAULT;
+                loadShotsCall = null;
+            }
+
+            @Override
+            public void onFailure(Call<List<Shot>> call, Throwable t) {
+                loadFinished();
+                loadShotsCall = null;
+            }
+        });
     }
 
     private void loadTeamShots(final int page) {
-        getDribbbleApi().getTeamShots(userId, page, DribbbleService.PER_PAGE_DEFAULT,
-                new Callback<List<Shot>>() {
-                    @Override
-                    public void success(List<Shot> shots, Response response) {
-                        setPage(shots, page);
-                        setDataSource(shots, SOURCE_TEAM_SHOTS);
-                        onDataLoaded(shots);
-                        loadFinished();
-                        moreDataAvailable = shots.size() == DribbbleService.PER_PAGE_DEFAULT;
-                    }
+        loadShotsCall = getDribbbleApi()
+                .getTeamShots(userId, page, DribbbleService.PER_PAGE_DEFAULT);
+        loadShotsCall.enqueue(new Callback<List<Shot>>() {
+            @Override
+            public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
+                final List<Shot> shots = response.body();
+                setPage(shots, page);
+                setDataSource(shots, SOURCE_TEAM_SHOTS);
+                onDataLoaded(shots);
+                loadFinished();
+                moreDataAvailable = shots.size() == DribbbleService.PER_PAGE_DEFAULT;
+                loadShotsCall = null;
+            }
 
-                    @Override
-                    public void failure(RetrofitError error) {
-                        loadFinished();
-                    }
-                });
+            @Override
+            public void onFailure(Call<List<Shot>> call, Throwable t) {
+                loadFinished();
+                loadShotsCall = null;
+            }
+        });
     }
 
 }
