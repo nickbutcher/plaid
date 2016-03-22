@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2015 Google Inc.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,22 +15,20 @@
   limitations under the License.
   -->
 
-<set
+<animated-vector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:ordering="together">
+    android:drawable="@drawable/ic_close_down">
 
-    <objectAnimator
-        android:duration="500"
-        android:propertyName="scaleX"
-        android:valueFrom="0.0"
-        android:valueTo="1.0"
-        android:interpolator="@android:interpolator/overshoot" />
+    <target
+        android:name="root"
+        android:animation="@animator/close_to_down" />
 
-    <objectAnimator
-        android:duration="500"
-        android:propertyName="scaleY"
-        android:valueFrom="0.0"
-        android:valueTo="1.0"
-        android:interpolator="@android:interpolator/overshoot" />
+    <target
+        android:name="bottom_left"
+        android:animation="@animator/close_to_down_trim_legs" />
 
-</set>
+    <target
+        android:name="bottom_right"
+        android:animation="@animator/close_to_down_trim_legs" />
+
+</animated-vector>

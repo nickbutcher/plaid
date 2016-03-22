@@ -93,7 +93,7 @@ public class BottomSheet extends FrameLayout {
      */
     public static abstract class Callbacks {
         public void onSheetDismissed() { }
-        public void onSheetPositionChanged(int sheetTop) { }
+        public void onSheetPositionChanged(int sheetTop, boolean userInteracted) { }
     }
 
     public void registerCallback(Callbacks callback) {
@@ -264,7 +264,9 @@ public class BottomSheet extends FrameLayout {
             settleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    dispatchPositionChangedCallback();
+                    if (animation.getAnimatedFraction() > 0f) {
+                        dispatchPositionChangedCallback();
+                    }
                 }
             });
         }
@@ -371,7 +373,7 @@ public class BottomSheet extends FrameLayout {
     private void dispatchPositionChangedCallback() {
         if (callbacks != null && !callbacks.isEmpty()) {
             for (Callbacks callback : callbacks) {
-                callback.onSheetPositionChanged(sheet.getTop());
+                callback.onSheetPositionChanged(sheet.getTop(), hasInteractedWithSheet);
             }
         }
     }

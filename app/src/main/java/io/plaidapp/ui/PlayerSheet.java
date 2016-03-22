@@ -22,10 +22,13 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -66,12 +69,15 @@ import io.plaidapp.util.DribbbleUtils;
 import io.plaidapp.util.glide.CircleTransform;
 
 import static io.plaidapp.util.AnimUtils.getFastOutLinearInInterpolator;
+import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
 import static io.plaidapp.util.AnimUtils.getLinearOutSlowInInterpolator;
 
 public class PlayerSheet extends Activity {
 
     private static final int MODE_SHOT_LIKES = 1;
     private static final int MODE_FOLLOWERS = 2;
+    private static final int DISMISS_DOWN = 0;
+    private static final int DISMISS_CLOSE = 1;
     private static final String EXTRA_MODE = "EXTRA_MODE";
     private static final String EXTRA_SHOT = "EXTRA_SHOT";
     private static final String EXTRA_USER = "EXTRA_USER";
@@ -95,7 +101,7 @@ public class PlayerSheet extends Activity {
     private PaginatedDataManager dataManager;
     private LinearLayoutManager layoutManager;
     private PlayerAdapter adapter;
-    private boolean showingClose = false;
+    private int dismissState = DISMISS_DOWN;
 
     public static void start(Activity launching, Shot shot) {
         Intent starter = new Intent(launching, PlayerSheet.class);
@@ -159,11 +165,20 @@ public class PlayerSheet extends Activity {
             }
 
             @Override
-            public void onSheetPositionChanged(int sheetTop) {
+            public void onSheetPositionChanged(int sheetTop, boolean interacted) {
+                if (interacted && close.getVisibility() != View.VISIBLE) {
+                    close.setVisibility(View.VISIBLE);
+                    close.setAlpha(0f);
+                    close.animate()
+                            .alpha(1f)
+                            .setDuration(400L)
+                            .setInterpolator(getLinearOutSlowInInterpolator(PlayerSheet.this))
+                            .start();
+                }
                 if (sheetTop == 0) {
                     showClose();
                 } else {
-                    hideClose();
+                    showDown();
                 }
             }
         });
@@ -180,7 +195,6 @@ public class PlayerSheet extends Activity {
             }
         });
         playerList.addOnScrollListener(titleElevation);
-        playerList.setHasFixedSize(true);
         dataManager.loadData(); // kick off initial load
     }
 
@@ -199,37 +213,21 @@ public class PlayerSheet extends Activity {
     };
 
     private void showClose() {
-        if (showingClose) return;
-        close.animate()
-                .alpha(1f)
-                .scaleX(1f)
-                .scaleY(1f)
-                .setDuration(200L)
-                .setInterpolator(getLinearOutSlowInInterpolator(PlayerSheet.this))
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        close.setVisibility(View.VISIBLE);
-                    }
-                });
-        showingClose = true;
+        if (dismissState == DISMISS_CLOSE) return;
+        dismissState = DISMISS_CLOSE;
+        final AnimatedVectorDrawable downToClose = (AnimatedVectorDrawable)
+                ContextCompat.getDrawable(this, R.drawable.avd_down_to_close);
+        close.setImageDrawable(downToClose);
+        downToClose.start();
     }
 
-    private void hideClose() {
-        if (!showingClose) return;
-        close.animate()
-                .alpha(0f)
-                .scaleX(0.8f)
-                .scaleY(0.8f)
-                .setDuration(200L)
-                .setInterpolator(getFastOutLinearInInterpolator(PlayerSheet.this))
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        close.setVisibility(View.INVISIBLE);
-                    }
-                });
-        showingClose = false;
+    private void showDown() {
+        if (dismissState == DISMISS_DOWN) return;
+        dismissState = DISMISS_DOWN;
+        final AnimatedVectorDrawable closeToDown = (AnimatedVectorDrawable)
+                ContextCompat.getDrawable(this, R.drawable.avd_close_to_down);
+        close.setImageDrawable(closeToDown);
+        closeToDown.start();
     }
 
     @OnClick({ R.id.bottom_sheet, R.id.close })

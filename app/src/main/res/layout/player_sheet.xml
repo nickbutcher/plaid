@@ -52,7 +52,7 @@
                 android:layout_gravity="center"
                 android:padding="@dimen/avatar_margin"
                 android:background="?android:selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_close"
+                android:src="@drawable/ic_down"
                 android:visibility="invisible" />
 
             <TextView
