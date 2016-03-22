@@ -20,7 +20,7 @@
     <!-- designer news story -->
     <dimen name="extended_height_toolbar">178dp</dimen>
     <dimen name="designer_news_story_title_height">112dp</dimen> <!-- extended_height_toolbar - actionBarSize -->
-    <dimen name="designer_news_story_comments_max_width">480dp</dimen>
+    <dimen name="designer_news_story_comments_max_width">504dp</dimen> <!-- constrain text width (in increments of 56dp) -->
     <dimen name="designer_news_story_comment_elevation">@dimen/z_card</dimen>
     <dimen name="designer_news_story_comment_action_elevation">4dp</dimen>
     <dimen name="designer_news_story_comment_horizontal_padding">@dimen/padding_normal</dimen>
