@@ -21,13 +21,15 @@ import android.content.Context;
 import java.util.List;
 
 import io.plaidapp.data.PaginatedDataManager;
-import io.plaidapp.data.PlaidItem;
 import io.plaidapp.data.api.dribbble.model.Like;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public abstract class ShotLikesDataManager extends PaginatedDataManager {
+/**
+ * Loads the dribbble players who like a given shot.
+ */
+public abstract class ShotLikesDataManager extends PaginatedDataManager<List<Like>> {
 
     private final long shotId;
     private Call shotLikesCall;
@@ -35,13 +37,6 @@ public abstract class ShotLikesDataManager extends PaginatedDataManager {
     public ShotLikesDataManager(Context context, long shotId) {
         super(context);
         this.shotId = shotId;
-    }
-
-    public abstract void onLikesLoaded(List<Like> likes);
-
-    @Override
-    public void onDataLoaded(List<? extends PlaidItem> data) {
-        /* no-op. Use #onLikesLoaded instead please. */
     }
 
     @Override
@@ -60,7 +55,7 @@ public abstract class ShotLikesDataManager extends PaginatedDataManager {
                 loadFinished();
                 final List<Like> likes = response.body();
                 moreDataAvailable = likes.size() == DribbbleService.PER_PAGE_DEFAULT;
-                onLikesLoaded(likes);
+                onDataLoaded(likes);
                 shotLikesCall = null;
             }
 

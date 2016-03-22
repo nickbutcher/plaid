@@ -21,13 +21,15 @@ import android.content.Context;
 import java.util.List;
 
 import io.plaidapp.data.PaginatedDataManager;
-import io.plaidapp.data.PlaidItem;
 import io.plaidapp.data.api.dribbble.model.Follow;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public abstract class FollowersDataManager extends PaginatedDataManager {
+/**
+ * Loads a dribbble user's followers.
+ */
+public abstract class FollowersDataManager extends PaginatedDataManager<List<Follow>> {
 
     private final long playerId;
     private Call userFollowersCall;
@@ -35,13 +37,6 @@ public abstract class FollowersDataManager extends PaginatedDataManager {
     public FollowersDataManager(Context context, long playerId) {
         super(context);
         this.playerId = playerId;
-    }
-
-    public abstract void onFollowersLoaded(List<Follow> followers);
-
-    @Override
-    public void onDataLoaded(List<? extends PlaidItem> data) {
-        /* no-op. Use #onFollowersLoaded instead please. */
     }
 
     @Override
@@ -59,7 +54,7 @@ public abstract class FollowersDataManager extends PaginatedDataManager {
             public void onResponse(Call<List<Follow>> call, Response<List<Follow>> response) {
                 loadFinished();
                 moreDataAvailable = response.body().size() == DribbbleService.PER_PAGE_DEFAULT;
-                onFollowersLoaded(response.body());
+                onDataLoaded(response.body());
                 userFollowersCall = null;
             }
 

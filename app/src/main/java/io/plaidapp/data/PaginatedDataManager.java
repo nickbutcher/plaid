@@ -23,7 +23,7 @@ import android.content.Context;
  * of {@link #loadData(int)} to actually load the data, and {@link #onDataLoaded} to do something
  * with it.
  */
-public abstract class PaginatedDataManager extends BaseDataManager {
+public abstract class PaginatedDataManager<T> extends BaseDataManager<T> {
 
     // state
     private int page = 0;

@@ -31,7 +31,7 @@ import retrofit2.Response;
  * Responsible for loading a dribbble player's shots. Instantiating classes are
  * responsible for providing the {code onDataLoaded} method to do something with the data.
  */
-public abstract class PlayerShotsDataManager extends PaginatedDataManager {
+public abstract class PlayerShotsDataManager extends PaginatedDataManager<List<Shot>> {
 
     public static final String SOURCE_PLAYER_SHOTS = "SOURCE_PLAYER_SHOTS";
     public static final String SOURCE_TEAM_SHOTS = "SOURCE_TEAM_SHOTS";
@@ -42,8 +42,8 @@ public abstract class PlayerShotsDataManager extends PaginatedDataManager {
 
     public PlayerShotsDataManager(Context context, User player) {
         super(context);
-        this.userId = player.id;
-        this.isTeam = player.type.equals("Team");
+        userId = player.id;
+        isTeam = player.type.equals("Team");
     }
 
     @Override

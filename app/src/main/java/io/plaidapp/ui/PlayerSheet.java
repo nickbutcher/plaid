@@ -136,7 +136,7 @@ public class PlayerSheet extends Activity {
                         NumberFormat.getInstance().format(shot.likes_count)));
                 dataManager = new ShotLikesDataManager(this, shot.id) {
                     @Override
-                    public void onLikesLoaded(List<Like> likes) {
+                    public void onDataLoaded(List<Like> likes) {
                         adapter.addItems(likes);
                     }
                 };
@@ -149,7 +149,7 @@ public class PlayerSheet extends Activity {
                         NumberFormat.getInstance().format(player.followers_count)));
                 dataManager = new FollowersDataManager(this, player.id) {
                     @Override
-                    public void onFollowersLoaded(List<Follow> followers) {
+                    public void onDataLoaded(List<Follow> followers) {
                         adapter.addItems(followers);
                     }
                 };

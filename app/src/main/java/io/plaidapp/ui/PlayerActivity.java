@@ -48,6 +48,7 @@ import butterknife.OnClick;
 import io.plaidapp.R;
 import io.plaidapp.data.PlaidItem;
 import io.plaidapp.data.api.dribbble.PlayerShotsDataManager;
+import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.dribbble.model.User;
 import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.data.prefs.DribbblePrefs;
@@ -186,7 +187,7 @@ public class PlayerActivity extends Activity {
         // load the users shots
         dataManager = new PlayerShotsDataManager(this, player) {
             @Override
-            public void onDataLoaded(List<? extends PlaidItem> data) {
+            public void onDataLoaded(List<Shot> data) {
                 if (data != null && data.size() > 0) {
                     if (adapter.getDataItemCount() == 0) {
                         loading.setVisibility(View.GONE);

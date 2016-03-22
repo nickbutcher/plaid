@@ -33,7 +33,7 @@ import retrofit2.Response;
  * Responsible for loading search results from dribbble and designer news. Instantiating classes are
  * responsible for providing the {code onDataLoaded} method to do something with the data.
  */
-public abstract class SearchDataManager extends BaseDataManager {
+public abstract class SearchDataManager extends BaseDataManager<List<? extends PlaidItem>> {
 
     // state
     private String query = "";

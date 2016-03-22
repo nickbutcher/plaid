@@ -42,7 +42,7 @@ import retrofit2.Response;
  * Responsible for loading data from the various sources. Instantiating classes are responsible for
  * providing the {code onDataLoaded} method to do something with the data.
  */
-public abstract class DataManager extends BaseDataManager {
+public abstract class DataManager extends BaseDataManager<List<? extends PlaidItem>> {
 
     private final FilterAdapter filterAdapter;
     private Map<String, Integer> pageIndexes;

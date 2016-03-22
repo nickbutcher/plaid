@@ -37,9 +37,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Base class for loading data.
+ * Base class for loading data; extending types are responsible for providing implementations of
+ * {@link #onDataLoaded(Object)} to do something with the data and {@link #cancelLoading()} to
+ * cancel any activity.
  */
-public abstract class BaseDataManager implements DataLoadingSubject {
+public abstract class BaseDataManager<T> implements DataLoadingSubject {
 
     private final AtomicInteger loadingCount;
     private final DesignerNewsPrefs designerNewsPrefs;
@@ -54,7 +56,7 @@ public abstract class BaseDataManager implements DataLoadingSubject {
         dribbblePrefs = DribbblePrefs.get(context);
     }
 
-    public abstract void onDataLoaded(List<? extends PlaidItem> data);
+    public abstract void onDataLoaded(T data);
 
     public abstract void cancelLoading();
 
