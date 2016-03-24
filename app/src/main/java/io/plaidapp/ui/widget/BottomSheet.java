@@ -241,7 +241,12 @@ public class BottomSheet extends FrameLayout {
 
     private void animateSettle(int initialOffset, final int targetOffset, long duration) {
         if (settling) return;
-        if (sheetOffsetHelper.getTopAndBottomOffset() == targetOffset) return;
+        if (sheetOffsetHelper.getTopAndBottomOffset() == targetOffset) {
+          if (targetOffset >= dismissOffset) {
+              dispatchDismissCallback();
+          }
+          return;
+        }
 
         settling = true;
         final ObjectAnimator settleAnim = ObjectAnimator.ofInt(sheetOffsetHelper,
