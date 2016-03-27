@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
@@ -211,8 +212,8 @@ public class PlayerSheet extends Activity {
     private void showClose() {
         if (dismissState == DISMISS_CLOSE) return;
         dismissState = DISMISS_CLOSE;
-        final AnimatedVectorDrawable downToClose = (AnimatedVectorDrawable)
-                ContextCompat.getDrawable(this, R.drawable.avd_down_to_close);
+        final AnimatedVectorDrawableCompat downToClose
+                = AnimatedVectorDrawableCompat.create(this, R.drawable.avd_down_to_close);
         close.setImageDrawable(downToClose);
         downToClose.start();
     }
@@ -220,8 +221,8 @@ public class PlayerSheet extends Activity {
     private void showDown() {
         if (dismissState == DISMISS_DOWN) return;
         dismissState = DISMISS_DOWN;
-        final AnimatedVectorDrawable closeToDown = (AnimatedVectorDrawable)
-                ContextCompat.getDrawable(this, R.drawable.avd_close_to_down);
+        final AnimatedVectorDrawableCompat closeToDown
+                = AnimatedVectorDrawableCompat.create(this, R.drawable.avd_close_to_down);
         close.setImageDrawable(closeToDown);
         closeToDown.start();
     }

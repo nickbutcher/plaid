@@ -27,6 +27,7 @@ import android.app.assist.AssistContent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Path;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -486,7 +487,7 @@ public class DesignerNewsStory extends Activity {
             @Override
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ((AnimatedVectorDrawableCompat) share.getCompoundDrawables()[1]).start();
+                    ((AnimatedVectorDrawable) share.getCompoundDrawables()[1]).start();
                 }
                 startActivity(ShareCompat.IntentBuilder.from(DesignerNewsStory.this)
                         .setText(story.url)
