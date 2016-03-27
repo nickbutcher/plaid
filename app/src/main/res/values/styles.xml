@@ -20,6 +20,7 @@
     <style name="Plaid" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorAccent">@color/accent</item>
+        <item name="android:actionModeBackground">@color/background_dark</item>
         <item name="android:colorBackground">@color/background_light</item>
         <item name="android:textColorHint">@color/hint_disabled_dark</item>
         <item name="android:windowBackground">@color/background_light</item>

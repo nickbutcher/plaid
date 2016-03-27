@@ -57,6 +57,7 @@ import android.text.format.DateUtils;
 import android.text.style.TextAppearanceSpan;
 import android.transition.Transition;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
@@ -99,6 +100,7 @@ import io.plaidapp.util.HtmlUtils;
 import io.plaidapp.util.ImageUtils;
 import io.plaidapp.util.ImeUtils;
 import io.plaidapp.util.ViewUtils;
+import io.plaidapp.util.compat.LocalTextViewCompat;
 import io.plaidapp.util.compat.ObjectAnimatorCompat;
 import io.plaidapp.util.compat.ViewAnimationUtilsCompat;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
@@ -1060,6 +1062,11 @@ public class DesignerNewsStory extends Activity {
 
         public NoCommentsHolder(View itemView) {
             super(itemView);
+            LocalTextViewCompat.setDrawable(Gravity.TOP, (TextView) itemView,
+                    VectorDrawableCompat.create(itemView.getResources(),
+                            R.drawable.ic_no_comments,
+                            itemView.getContext().getTheme()),
+                    true);
         }
     }
 
