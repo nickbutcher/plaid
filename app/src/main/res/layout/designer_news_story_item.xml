@@ -17,6 +17,7 @@
 
 <io.plaidapp.ui.widget.FourThreeLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/story_title_background"
     android:layout_width="match_parent"
@@ -45,7 +46,7 @@
 
         <!-- Needs a concrete height/width as we animate the icon's scale so the asset
              needs to be larger to stay crisp.  Thus can't wrap height. -->
-        <ImageButton
+        <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/pocket"
             android:layout_width="@dimen/grid_icon_with_padding"
             android:layout_height="@dimen/grid_icon_with_padding"
@@ -54,7 +55,7 @@
             android:background="@drawable/light_ripple"
             android:padding="@dimen/spacing_normal"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_pocket"/>
+            app:srcCompat="@drawable/ic_pocket"/>
 
         <!-- Using a TextView rather than a button to have better control over the padding -->
         <io.plaidapp.ui.widget.BaselineGridTextView
@@ -65,7 +66,8 @@
             android:layout_margin="@dimen/spacing_micro"
             android:background="@drawable/light_ripple"
             android:drawablePadding="@dimen/spacing_normal"
-            android:drawableStart="@drawable/ic_comment_light"
+            android:drawableStart="@drawable/ic_comment_light_selector"
+            android:drawableLeft="@drawable/ic_comment_light_selector"
             android:gravity="center_vertical"
             android:padding="@dimen/spacing_normal"
             android:paddingTop="@dimen/spacing_normal"

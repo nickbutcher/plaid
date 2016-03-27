@@ -64,7 +64,6 @@
             android:id="@+id/story_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:navigationIcon="@drawable/ic_arrow_back"
             android:elevation="@dimen/z_app_bar"
             android:contentInsetStart="@dimen/keyline_1"
             android:contentInsetEnd="@dimen/padding_normal"

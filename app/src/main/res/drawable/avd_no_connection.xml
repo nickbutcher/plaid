@@ -15,20 +15,9 @@
   limitations under the License.
   -->
 
-<animated-vector
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/no_connection">
+<selector
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <target
-        android:name="connection_mask"
-        android:animation="@animator/show_connection_line" />
+    <item android:drawable="@drawable/no_connection" />
 
-    <target
-        android:name="cross_group"
-        android:animation="@animator/show_connection_cross" />
-
-    <target
-        android:name="button"
-        android:animation="@animator/button_frown" />
-
-</animated-vector>
+</selector>

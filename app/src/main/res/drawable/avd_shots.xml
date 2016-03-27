@@ -15,16 +15,9 @@
   limitations under the License.
   -->
 
-<animated-vector
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/ic_images">
+<selector
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <target
-        android:name="image"
-        android:animation="@animator/shots_below_morph" />
+    <item android:drawable="@drawable/ic_images" />
 
-    <target
-        android:name="image_group"
-        android:animation="@animator/shots_below_move" />
-
-</animated-vector>
+</selector>

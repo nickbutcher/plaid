@@ -29,7 +29,7 @@
     android:background="@color/selected_comment_background"
     android:elevation="@dimen/designer_news_story_comment_action_elevation">
 
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/comment_votes"
         android:layout_width="@dimen/fab_size"
         android:layout_height="wrap_content"
@@ -44,9 +44,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/fab_size"
-        android:paddingStart="@dimen/spacing_micro">
+        android:layout_marginLeft="@dimen/fab_size"
+        android:paddingStart="@dimen/spacing_micro"
+        android:paddingLeft="@dimen/spacing_micro"
+        >
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/comment_reply"
             android:hint="@string/hint_reply"
             android:layout_width="match_parent"
@@ -59,13 +62,13 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <ImageButton
+    <android.support.v7.widget.AppCompatImageButton
         android:id="@+id/post_reply"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:padding="@dimen/spacing_normal"
-        android:src="@drawable/ic_add_comment"
+        app:srcCompat="@drawable/ic_add_comment"
         android:background="?selectableItemBackgroundBorderless"
         android:visibility="invisible" />
 

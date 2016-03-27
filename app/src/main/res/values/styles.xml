@@ -20,6 +20,7 @@
     <style name="Plaid" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorAccent">@color/accent</item>
+        <item name="android:actionModeBackground">@color/background_dark</item>
         <item name="android:colorBackground">@color/background_light</item>
         <item name="android:textColorHint">@color/hint_disabled_dark</item>
         <item name="android:windowBackground">@color/background_light</item>
@@ -78,7 +79,7 @@
         <item name="colorAccent">@color/dribbble</item>
         <item name="android:statusBarColor">@color/dribbble_super_dark</item>
         <item name="android:navigationBarColor">@color/dribbble_super_dark</item>
-        <item name="colorControlActivated">?android:colorAccent</item>
+        <item name="colorControlActivated">?colorAccent</item>
         <item name="android:windowAllowReturnTransitionOverlap">false</item>
     </style>
 

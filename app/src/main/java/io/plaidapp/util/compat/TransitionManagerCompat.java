@@ -1,9 +1,9 @@
 package io.plaidapp.util.compat;
 
-import android.os.Build;
-import android.transition.Transition;
-import android.transition.TransitionManager;
 import android.view.ViewGroup;
+
+import com.transitionseverywhere.Transition;
+import com.transitionseverywhere.TransitionManager;
 
 public final class TransitionManagerCompat {
 
@@ -12,14 +12,10 @@ public final class TransitionManagerCompat {
     }
 
     public static void beginDelayedTransition(ViewGroup sceneRoot) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            TransitionManager.beginDelayedTransition(sceneRoot);
-        }
+        TransitionManager.beginDelayedTransition(sceneRoot);
     }
 
     public static void beginDelayedTransition(ViewGroup sceneRoot, Transition transition) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            TransitionManager.beginDelayedTransition(sceneRoot, transition);
-        }
+        TransitionManager.beginDelayedTransition(sceneRoot, transition);
     }
 }

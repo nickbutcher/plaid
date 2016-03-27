@@ -20,6 +20,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="@dimen/designer_news_story_comments_vertical_padding"
     android:elevation="@dimen/designer_news_story_comment_elevation"
     android:background="@color/designer_news_story_comment_background"
@@ -52,7 +53,7 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/story_vote_action"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -66,7 +67,7 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/story_share_action"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -86,6 +87,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingEnd="@dimen/padding_normal"
+        android:paddingRight="@dimen/padding_normal"
         android:paddingBottom="@dimen/padding_normal"
         android:orientation="horizontal">
 
@@ -95,6 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingStart="@dimen/padding_normal"
+            android:paddingLeft="@dimen/padding_normal"
             android:gravity="end"
             android:textAppearance="@style/TextAppearance.CommentTimestamp"
             tools:text="Nick B, Designer+Developer @ Google" />
@@ -104,7 +107,8 @@
             android:layout_width="@dimen/avatar_bounds"
             android:layout_height="@dimen/avatar_bounds"
             android:layout_marginStart="@dimen/avatar_margin"
-            android:src="@drawable/avatar_placeholder" />
+            android:layout_marginLeft="@dimen/avatar_margin"
+            app:srcCompat="@drawable/avatar_placeholder" />
 
     </LinearLayout>
 

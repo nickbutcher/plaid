@@ -16,6 +16,7 @@
 
 package io.plaidapp.ui.widget;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
@@ -39,14 +40,15 @@ import io.plaidapp.R;
  */
 public class BaselineGridTextView extends FontTextView {
 
-    private final int FOUR_DIP;
+    private int fourDip;
 
     private float lineHeightMultiplierHint = 1f;
     private float lineHeightHint = 0f;
     private int unalignedTopPadding = 0;
 
     public BaselineGridTextView(Context context) {
-        this(context, null);
+        super(context);
+        init(context, null);
     }
 
     public BaselineGridTextView(Context context, AttributeSet attrs) {
@@ -54,15 +56,19 @@ public class BaselineGridTextView extends FontTextView {
     }
 
     public BaselineGridTextView(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
+        super(context, attrs, defStyleAttr);
+        init(context, attrs);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public BaselineGridTextView(Context context, AttributeSet attrs,
                                 int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        init(context, attrs);
+    }
 
-        final TypedArray a = context.obtainStyledAttributes(
-                attrs, R.styleable.BaselineGridTextView, defStyleAttr, defStyleRes);
+    private void init(Context context, AttributeSet attrs) {
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BaselineGridTextView);
 
         lineHeightMultiplierHint =
                 a.getFloat(R.styleable.BaselineGridTextView_lineHeightMultiplierHint, 1f);
@@ -71,7 +77,7 @@ public class BaselineGridTextView extends FontTextView {
         unalignedTopPadding = getPaddingTop();
         a.recycle();
 
-        FOUR_DIP = (int) TypedValue.applyDimension(
+        fourDip = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics());
 
         setIncludeFontPadding(false);
@@ -85,9 +91,9 @@ public class BaselineGridTextView extends FontTextView {
         recomputeLineHeight();
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         final int height = getMeasuredHeight();
-        final int gridOverhang = height % FOUR_DIP;
+        final int gridOverhang = height % fourDip;
         if (gridOverhang != 0) {
-            final int addition = FOUR_DIP - gridOverhang;
+            final int addition = fourDip - gridOverhang;
             super.setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(),
                     getPaddingBottom() + addition);
             setMeasuredDimension(getMeasuredWidth(), height + addition);
@@ -133,8 +139,8 @@ public class BaselineGridTextView extends FontTextView {
     private void recomputeLineHeight() {
         // ensure that the first line's baselines sits on 4dp grid by setting the top padding
         final Paint.FontMetricsInt fm = getPaint().getFontMetricsInt();
-        final int gridAlignedTopPadding = (int) (FOUR_DIP * (float)
-                Math.ceil((unalignedTopPadding + Math.abs(fm.ascent)) / FOUR_DIP)
+        final int gridAlignedTopPadding = (int) (fourDip * (float)
+                Math.ceil((unalignedTopPadding + Math.abs(fm.ascent)) / fourDip)
                 - Math.ceil(Math.abs(fm.ascent)));
         super.setPadding(
                 getPaddingLeft(), gridAlignedTopPadding, getPaddingRight(), getPaddingBottom());
@@ -146,7 +152,7 @@ public class BaselineGridTextView extends FontTextView {
                 : lineHeightMultiplierHint * fontHeight;
 
         final int baselineAlignedLineHeight =
-                (int) (FOUR_DIP * (float) Math.ceil(desiredLineHeight / FOUR_DIP));
+                (int) (fourDip * (float) Math.ceil(desiredLineHeight / fourDip));
         setLineSpacing(baselineAlignedLineHeight - fontHeight, 1f);
     }
 }

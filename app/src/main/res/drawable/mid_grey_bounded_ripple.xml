@@ -15,11 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
-
-<ripple
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/mid_grey">
-    <item android:id="@android:id/mask">
-        <color android:color="@android:color/white" />
-    </item>
-</ripple>
+<selector
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@color/mid_grey"/>
+</selector>

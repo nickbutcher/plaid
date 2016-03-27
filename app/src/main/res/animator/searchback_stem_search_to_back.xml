@@ -24,13 +24,13 @@
         android:valueFrom="@fraction/searchback_stem_search_trim_start"
         android:valueTo="@fraction/searchback_stem_back_trim_start"
         android:duration="@integer/searchback_stem_trim_longer_duration"
-        android:interpolator="@android:interpolator/fast_out_slow_in" />
+        android:interpolator="@android:interpolator/decelerate_cubic" />
 
     <objectAnimator
         android:propertyName="trimPathEnd"
         android:valueFrom="@fraction/searchback_stem_search_trim_end"
         android:valueTo="@fraction/searchback_stem_back_trim_end"
         android:duration="@integer/searchback_stem_trim_shorter_duration"
-        android:interpolator="@android:interpolator/fast_out_slow_in" />
+        android:interpolator="@android:interpolator/decelerate_cubic" />
 
 </set>

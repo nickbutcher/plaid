@@ -26,7 +26,6 @@
     android:paddingEnd="@dimen/designer_news_story_comment_horizontal_padding"
     android:paddingBottom="@dimen/spacing_large"
     android:gravity="center"
-    android:drawableTop="@drawable/ic_no_comments"
     android:text="@string/no_comments"
     android:textAppearance="@style/TextAppearance.EmptyState"
     android:elevation="@dimen/designer_news_story_comment_elevation"

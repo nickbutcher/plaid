@@ -32,6 +32,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.RectF;
+import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,6 +42,7 @@ import android.os.Parcelable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.Snackbar;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
@@ -48,10 +52,10 @@ import android.support.v7.graphics.Palette;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.transition.AutoTransition;
 import android.transition.Transition;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,6 +80,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.transitionseverywhere.AutoTransition;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -92,7 +97,6 @@ import io.plaidapp.data.prefs.DribbblePrefs;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.widget.AuthorTextView;
 import io.plaidapp.ui.widget.CheckableImageButton;
-import io.plaidapp.ui.widget.CircularImageView;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.FABToggle;
 import io.plaidapp.ui.widget.FabOverlapTextView;
@@ -103,6 +107,7 @@ import io.plaidapp.util.ColorUtils;
 import io.plaidapp.util.HtmlUtils;
 import io.plaidapp.util.ImeUtils;
 import io.plaidapp.util.ViewUtils;
+import io.plaidapp.util.compat.LocalTextViewCompat;
 import io.plaidapp.util.compat.TransitionManagerCompat;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.util.glide.CircleTransform;
@@ -161,11 +166,43 @@ public class DribbbleShot extends Activity {
         dribbblePrefs = DribbblePrefs.get(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setExitSharedElementCallback(fabLoginSharedElementCallback());
-            getWindow().getSharedElementReturnTransition().addListener(shotReturnHomeListener);
+            getWindow().getSharedElementReturnTransition().addListener(new AnimUtils.TransitionListenerAdapter() {
+                @Override
+                public void onTransitionStart(Transition transition) {
+                    super.onTransitionStart(transition);
+                    // hide the fab as for some reason it jumps position??  TODO work out why
+                    fab.setVisibility(View.INVISIBLE);
+                    // fade out the "toolbar" & list as we don't want them to be visible during return
+                    // animation
+                    back.animate()
+                            .alpha(0f)
+                            .setDuration(100)
+                            .setInterpolator(getLinearOutSlowInInterpolator());
+                    ViewCompat.setElevation(imageView, 1f);
+                    ViewCompat.setElevation(back, 0f);
+                    commentsList.animate()
+                            .alpha(0f)
+                            .setDuration(50)
+                            .setInterpolator(getLinearOutSlowInInterpolator());
+                }
+            });
         }
         circleTransform = new CircleTransform(this);
 
         ButterKnife.bind(this);
+
+        Drawable fabIcon = ContextCompat.getDrawable(this, R.drawable.fab_heart);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            // Add the vectors for states manually since AppCompat can't intercept these at inflation.
+            // Wouldn't have to do this if FloatingActionButton extended from AppCompatImageButton ¯\_(ツ)_/¯
+            StateListDrawable states = (StateListDrawable) fabIcon;
+            states.addState(new int[]{android.R.attr.state_checked},
+                    VectorDrawableCompat.create(getResources(), R.drawable.ic_heart_full_56dp, getTheme()));
+            states.addState(new int[]{ },
+                    VectorDrawableCompat.create(getResources(), R.drawable.ic_heart_empty_56dp, getTheme()));
+        }
+        fab.setImageDrawable(fabIcon);
+
         View shotDescription = getLayoutInflater().inflate(R.layout.dribbble_shot_description,
                 commentsList, false);
         shotSpacer = shotDescription.findViewById(R.id.shot_spacer);
@@ -173,7 +210,15 @@ public class DribbbleShot extends Activity {
         description = shotDescription.findViewById(R.id.shot_description);
         shotActions = (LinearLayout) shotDescription.findViewById(R.id.shot_actions);
         likeCount = (Button) shotDescription.findViewById(R.id.shot_like_count);
+        LocalTextViewCompat.setDrawable(Gravity.TOP,
+                likeCount,
+                AnimatedVectorDrawableCompat.create(this, R.drawable.avd_likes),
+                true);
         viewCount = (Button) shotDescription.findViewById(R.id.shot_view_count);
+        LocalTextViewCompat.setDrawable(Gravity.TOP,
+                viewCount,
+                AnimatedVectorDrawableCompat.create(this, R.drawable.avd_views),
+                true);
         share = (Button) shotDescription.findViewById(R.id.shot_share_action);
         playerName = (TextView) shotDescription.findViewById(R.id.player_name);
         playerAvatar = (ImageView) shotDescription.findViewById(R.id.player_avatar);
@@ -354,7 +399,9 @@ public class DribbbleShot extends Activity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((AnimatedVectorDrawableCompat) share.getCompoundDrawables()[1]).start();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ((AnimatedVectorDrawable) share.getCompoundDrawables()[1]).start();
+                }
                 new ShareDribbbleImageTask(DribbbleShot.this, shot).execute();
             }
         });
@@ -362,6 +409,7 @@ public class DribbbleShot extends Activity {
             playerName.setText("–" + shot.user.name);
             Glide.with(this)
                     .load(shot.user.getHighQualityAvatarUrl())
+                    .asBitmap() // TODO Doesn't work with the CircularImageView implementation without this.
                     .transform(circleTransform)
                     .placeholder(R.drawable.avatar_placeholder)
                     .override(largeAvatarSize, largeAvatarSize)
@@ -424,6 +472,12 @@ public class DribbbleShot extends Activity {
             userAvatar = (ForegroundImageView) commentFooter.findViewById(R.id.avatar);
             enterComment = (EditText) commentFooter.findViewById(R.id.comment);
             postComment = (ImageButton) commentFooter.findViewById(R.id.post_comment);
+            postComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    postComment(v);
+                }
+            });
             enterComment.setOnFocusChangeListener(enterCommentFocus);
             commentsList.addFooterView(commentFooter);
         } else if (!allowComment && commentFooter != null) {
@@ -436,10 +490,11 @@ public class DribbbleShot extends Activity {
         if (allowComment
                 && dribbblePrefs.isLoggedIn()
                 && !TextUtils.isEmpty(dribbblePrefs.getUserAvatar())) {
+            Drawable placeholder = VectorDrawableCompat.create(getResources(), R.drawable.ic_player, getTheme());
             Glide.with(this)
                     .load(dribbblePrefs.getUserAvatar())
                     .transform(circleTransform)
-                    .placeholder(R.drawable.ic_player)
+                    .placeholder(placeholder)
                     .into(userAvatar);
         }
     }
@@ -535,12 +590,12 @@ public class DribbbleShot extends Activity {
                         @Override
                         public void onGenerated(Palette palette) {
                             // color the ripple on the image spacer (default is grey)
-                            ViewUtils.setBackground(shotSpacer, ViewUtils.createRipple(palette, 0.25f, 0.5f,
+                            ViewUtils.setBackground(shotSpacer, ViewUtils.createColorSelector(palette, 0.25f, 0.5f,
                                     ContextCompat.getColor(DribbbleShot.this, R.color.mid_grey),
                                     true));
                             // slightly more opaque ripple on the pinned image to compensate
                             // for the scrim
-                            imageView.setForeground(ViewUtils.createRipple(palette, 0.3f, 0.6f,
+                            imageView.setForeground(ViewUtils.createColorSelector(palette, 0.3f, 0.6f,
                                     ContextCompat.getColor(DribbbleShot.this, R.color.mid_grey),
                                     true));
                         }
@@ -626,28 +681,6 @@ public class DribbbleShot extends Activity {
             }
         };
     }
-
-        private Transition.TransitionListener shotReturnHomeListener = new AnimUtils
-                .TransitionListenerAdapter() {
-            @Override
-            public void onTransitionStart(Transition transition) {
-                super.onTransitionStart(transition);
-                // hide the fab as for some reason it jumps position??  TODO work out why
-                fab.setVisibility(View.INVISIBLE);
-                // fade out the "toolbar" & list as we don't want them to be visible during return
-                // animation
-                back.animate()
-                        .alpha(0f)
-                        .setDuration(100)
-                        .setInterpolator(getLinearOutSlowInInterpolator());
-                ViewCompat.setElevation(imageView, 1f);
-                ViewCompat.setElevation(back, 0f);
-                commentsList.animate()
-                        .alpha(0f)
-                        .setDuration(50)
-                        .setInterpolator(getLinearOutSlowInInterpolator());
-            }
-        };
 
     private void loadComments() {
         commentsList.setAdapter(getLoadingCommentsAdapter());
@@ -886,15 +919,14 @@ public class DribbbleShot extends Activity {
             inflater = LayoutInflater.from(context);
         }
 
-        @TargetApi(Build.VERSION_CODES.KITKAT)
-        private Transition getChange() {
+        private com.transitionseverywhere.Transition getChange() {
             if (change == null) {
-                Transition transition = new AutoTransition();
+                com.transitionseverywhere.Transition transition = new AutoTransition();
                 transition.setDuration(200L);
                 transition.setInterpolator(getFastOutLinearInInterpolator());
                 change = transition;
             }
-            return (Transition) change;
+            return (com.transitionseverywhere.Transition) change;
         }
 
         @Override
@@ -968,7 +1000,6 @@ public class DribbbleShot extends Activity {
 
                         // work around issue where avatar of selected comment not shown during
                         // shared element transition (returning from player screen)
-                        avatar.setOutlineProvider(null);
                         ViewCompat.setElevation(avatar, cardElevation);
 
                         reply.setVisibility(View.VISIBLE);
@@ -995,7 +1026,6 @@ public class DribbbleShot extends Activity {
                         view.requestFocus();
                     } else { // do collapse
                         expandedCommentPosition = ListView.INVALID_POSITION;
-                        avatar.setOutlineProvider(CircularImageView.CIRCULAR_OUTLINE);
                         ViewCompat.setElevation(avatar, 0f);
                         reply.setVisibility(View.GONE);
                         likeHeart.setVisibility(View.GONE);
@@ -1005,6 +1035,7 @@ public class DribbbleShot extends Activity {
                 }
             });
 
+            // TODO this doesn't seem to actually hide the reply option correctly anymore
             reply.setVisibility((position == expandedCommentPosition && allowComment) ?
                     View.VISIBLE : View.GONE);
             reply.setOnClickListener(new View.OnClickListener() {

@@ -15,12 +15,12 @@
   limitations under the License.
   -->
 
-<ScrollView
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:nestedScrollingEnabled="true"
     tools:showIn="@layout/activity_about">
 
     <LinearLayout
@@ -30,14 +30,14 @@
         android:background="@color/background_light"
         android:elevation="@dimen/z_card">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/icon"
             android:layout_width="match_parent"
             android:layout_height="@dimen/about_header_height"
             android:layout_marginTop="@dimen/spacing_large"
             android:padding="@dimen/about_icon_padding"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_launcher_512px" />
+            app:srcCompat="@drawable/ic_launcher_512px" />
 
         <io.plaidapp.ui.widget.BaselineGridTextView
             android:id="@+id/icon_description"
@@ -54,4 +54,4 @@
 
     </LinearLayout>
 
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>

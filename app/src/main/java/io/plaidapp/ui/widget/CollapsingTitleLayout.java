@@ -75,11 +75,11 @@ public class CollapsingTitleLayout extends FrameLayout {
     private int lineCount;
 
     public CollapsingTitleLayout(Context context) {
-        this(context, null, 0, 0);
+        this(context, null);
     }
 
     public CollapsingTitleLayout(Context context, AttributeSet attrs) {
-        this(context, attrs, 0, 0);
+        this(context, attrs, 0);
     }
 
     public CollapsingTitleLayout(Context context, AttributeSet attrs, int defStyleAttr) {

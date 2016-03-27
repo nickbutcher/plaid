@@ -17,6 +17,7 @@
 package io.plaidapp.ui.widget;
 
 import android.content.Context;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.widget.Checkable;
@@ -25,7 +26,7 @@ import android.widget.ImageButton;
 /**
  * A {@link Checkable} {@link ImageButton} which has a minimum offset i.e. translation Y.
  */
-public class FABToggle extends ImageButton implements Checkable {
+public class FABToggle extends FloatingActionButton implements Checkable {
 
     private static final int[] CHECKED_STATE_SET = { android.R.attr.state_checked };
 
@@ -48,28 +49,28 @@ public class FABToggle extends ImageButton implements Checkable {
         this.minOffset = minOffset;
     }
 
+    @Override
     public boolean isChecked() {
         return isChecked;
     }
 
-    public void setChecked(boolean isChecked) {
-        if (this.isChecked != isChecked) {
-            this.isChecked = isChecked;
-            refreshDrawableState();
-        }
+    @Override
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+        refreshDrawableState();
     }
 
+    @Override
     public void toggle() {
         setChecked(!isChecked);
     }
 
     @Override
     public int[] onCreateDrawableState(int extraSpace) {
-        final int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
+        int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
         if (isChecked()) {
             mergeDrawableStates(drawableState, CHECKED_STATE_SET);
         }
         return drawableState;
     }
-
 }

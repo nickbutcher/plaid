@@ -39,13 +39,13 @@
         android:background="@android:color/transparent"
         android:theme="@style/LightRippleOverlay">
 
-        <ImageButton
+        <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/back"
             android:layout_width="?android:actionBarSize"
             android:layout_height="?android:actionBarSize"
             android:layout_marginEnd="@dimen/padding_normal"
             android:layout_marginBottom="@dimen/padding_normal"
-            android:src="@drawable/ic_arrow_back"
+            app:srcCompat="@drawable/ic_arrow_back"
             android:background="?android:selectableItemBackgroundBorderless" />
 
     </FrameLayout>

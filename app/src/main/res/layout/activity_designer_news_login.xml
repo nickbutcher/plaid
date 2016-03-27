@@ -18,7 +18,6 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:onClick="dismiss"
@@ -31,8 +30,10 @@
         android:layout_marginStart="@dimen/spacing_large"
         android:layout_marginEnd="@dimen/spacing_large"
         android:paddingStart="@dimen/padding_normal"
+        android:paddingLeft="@dimen/padding_normal"
         android:paddingTop="@dimen/padding_dialog"
         android:paddingEnd="@dimen/padding_dialog"
+        android:paddingRight="@dimen/padding_dialog"
         android:paddingBottom="@dimen/padding_normal"
         android:orientation="vertical"
         android:layout_gravity="center"
@@ -46,6 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_normal"
+            android:layout_marginLeft="@dimen/spacing_normal"
             android:layout_marginBottom="@dimen/dialog_title_spacing"
             android:text="@string/designer_news_login"
             style="@style/Widget.Plaid.DialogTitle" />
@@ -54,9 +56,10 @@
             android:id="@+id/username_float_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_micro">
+            android:layout_marginStart="@dimen/spacing_micro"
+            android:layout_marginLeft="@dimen/spacing_micro">
 
-            <AutoCompleteTextView
+            <android.support.v7.widget.AppCompatAutoCompleteTextView
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -67,20 +70,22 @@
 
         </android.support.design.widget.TextInputLayout>
 
-        <CheckBox
+        <android.support.v7.widget.AppCompatCheckBox
             android:id="@+id/permission_primer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_normal"
+            android:layout_marginLeft="@dimen/spacing_normal"
             android:text="@string/get_accounts_permission_primer_message" />
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/password_float_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_micro">
+            android:layout_marginStart="@dimen/spacing_micro"
+            android:layout_marginLeft="@dimen/spacing_micro">
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -96,7 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_normal">
 
-            <Button
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/signup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -106,15 +111,14 @@
                 android:onClick="signup"
                 style="?borderlessButtonStyle" />
 
-            <Button
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:enabled="false"
                 android:text="@string/dn_login_action"
-                android:textAppearance="@style/TextAppearance.DarkButton"
-                android:onClick="doLogin" />
+                android:textAppearance="@style/TextAppearance.DarkButton" />
 
         </FrameLayout>
 

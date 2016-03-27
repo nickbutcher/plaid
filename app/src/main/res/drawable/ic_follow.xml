@@ -15,7 +15,7 @@
   limitations under the License.
   -->
 
-<animated-selector
+<selector
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:constantSize="true">
 
@@ -28,14 +28,4 @@
         android:id="@+id/not_following"
         android:drawable="@drawable/ic_follow_24dp" />
 
-    <transition
-        android:fromId="@id/following"
-        android:toId="@id/not_following"
-        android:drawable="@drawable/avd_unfollow" />
-
-    <transition
-        android:fromId="@id/not_following"
-        android:toId="@id/following"
-        android:drawable="@drawable/avd_follow" />
-
-</animated-selector>
+</selector>

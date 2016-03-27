@@ -22,8 +22,10 @@
     android:layout_height="wrap_content"
     android:minHeight="?listPreferredItemHeight"
     android:paddingStart="@dimen/designer_news_story_enter_comment_padding_start"
+    android:paddingLeft="@dimen/designer_news_story_enter_comment_padding_start"
     android:paddingTop="@dimen/spacing_large"
     android:paddingEnd="@dimen/designer_news_story_enter_comment_padding_end"
+    android:paddingRight="@dimen/designer_news_story_enter_comment_padding_end"
     android:paddingBottom="@dimen/designer_news_story_comments_vertical_padding"
     android:elevation="@dimen/designer_news_story_comment_elevation"
     android:background="@drawable/comment_background"
@@ -35,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/comment"
             android:hint="@string/comment"
             android:layout_width="match_parent"
@@ -48,13 +50,13 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <ImageButton
+    <android.support.v7.widget.AppCompatImageButton
         android:id="@+id/post_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:padding="@dimen/spacing_normal"
-        android:src="@drawable/ic_add_comment"
-        android:background="?selectableItemBackgroundBorderless" />
+        android:background="?selectableItemBackgroundBorderless"
+        app:srcCompat="@drawable/ic_add_comment"/>
 
 </LinearLayout>

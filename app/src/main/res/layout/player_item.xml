@@ -17,15 +17,17 @@
 
 <io.plaidapp.ui.widget.ForegroundRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?android:listPreferredItemHeight"
     android:paddingTop="@dimen/padding_normal"
     android:paddingEnd="@dimen/padding_normal"
+    android:paddingRight="@dimen/padding_normal"
     android:paddingBottom="@dimen/padding_normal"
     android:clipToPadding="false"
-    android:foreground="?android:selectableItemBackground"
+    android:foreground="?selectableItemBackground"
     android:background="@color/background_light"
     android:stateListAnimator="@animator/raise">
 
@@ -35,10 +37,11 @@
         android:layout_height="@dimen/avatar_bounds"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_marginEnd="@dimen/avatar_margin"
         android:layout_marginStart="@dimen/avatar_margin"
         android:padding="@dimen/avatar_padding"
-        android:src="@drawable/avatar_placeholder" />
+        app:srcCompat="@drawable/avatar_placeholder" />
 
     <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/time_ago"
@@ -46,6 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:textAppearance="@style/TextAppearance.CommentTimestamp"
         tools:text="3 hours ago" />
 
@@ -54,8 +58,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/player_avatar"
+        android:layout_toRightOf="@id/player_avatar"
         android:layout_toStartOf="@id/time_ago"
+        android:layout_toLeftOf="@id/time_ago"
         android:layout_marginEnd="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"
         android:lines="1"
         android:ellipsize="end"
         android:textAppearance="@style/TextAppearance.CommentAuthor.Dribbble"
@@ -66,8 +73,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/player_avatar"
+        android:layout_toRightOf="@id/player_avatar"
         android:layout_below="@id/player_name"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_marginTop="@dimen/spacing_micro"
         android:maxLines="2"
         android:ellipsize="end"

@@ -63,7 +63,7 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
     }
 
     public ElasticDragDismissFrameLayout(Context context, AttributeSet attrs) {
-        this(context, attrs, 0, 0);
+        this(context, attrs, 0);
     }
 
     public ElasticDragDismissFrameLayout(Context context, AttributeSet attrs,

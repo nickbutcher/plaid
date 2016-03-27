@@ -17,6 +17,7 @@
 
 <GridLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -44,26 +45,24 @@
         android:paddingTop="@dimen/spacing_large"
         android:paddingEnd="@dimen/padding_normal">
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/shot_like_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/avd_likes"
             tools:text="33 likes"
             style="@style/Widget.Plaid.InlineActionButton" />
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/shot_view_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/avd_views"
             android:background="@null"
             tools:text="33 views"
             style="@style/Widget.Plaid.InlineActionButton" />
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/shot_share_action"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -92,12 +91,13 @@
         android:layout_height="@dimen/avatar_bounds"
         android:gravity="center_horizontal"
         android:layout_marginStart="@dimen/avatar_margin"
+        android:layout_marginLeft="@dimen/avatar_margin"
         android:layout_rowSpan="2"
         android:padding="@dimen/avatar_padding"
         android:textColorLink="@color/dribbble_links"
         android:textColorHighlight="@color/dribbble"
         android:stateListAnimator="@animator/raise"
-        android:src="@drawable/avatar_placeholder"
+        app:srcCompat="@drawable/avatar_placeholder"
         android:foreground="@drawable/avatar_ripple" />
 
     <!-- can't use a marginEnd on the above image view as it pushes in the whole column so instead

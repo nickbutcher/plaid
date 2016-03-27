@@ -18,7 +18,9 @@ package io.plaidapp.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +28,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -34,6 +37,7 @@ import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -57,12 +61,10 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.style.StyleSpan;
-import android.transition.TransitionManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.animation.AnimationUtils;
@@ -99,6 +101,8 @@ import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ViewUtils;
+import io.plaidapp.util.compat.TransitionManagerCompat;
+import io.plaidapp.util.compat.ViewAnimationUtilsCompat;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -113,7 +117,7 @@ public class HomeActivity extends AppCompatActivity {
     @Bind(R.id.drawer) DrawerLayout drawer;
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.stories_grid) RecyclerView grid;
-    @Bind(R.id.fab) ImageButton fab;
+    @Bind(R.id.fab) FloatingActionButton fab;
     @Bind(R.id.filters) RecyclerView filtersList;
     @Bind(android.R.id.empty) ProgressBar loading;
     @Nullable @Bind(R.id.no_connection) ImageView noConnection;
@@ -137,10 +141,14 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             drawer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        } else {
+            // Because we can't order the recyclerview on top without also hijacking toolbar touches, so just always
+            // show the toolbar on top on pre-lollipop.
+            toolbar.setBackgroundResource(R.color.background_dark);
         }
 
         //toolbar.inflateMenu(R.menu.main);
@@ -267,9 +275,13 @@ public class HomeActivity extends AppCompatActivity {
     protected void onPause() {
         dribbblePrefs.removeLoginStatusListener(filtersAdapter);
         if (monitoringConnectivity) {
-            final ConnectivityManager connectivityManager
-                    = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            connectivityManager.unregisterNetworkCallback(connectivityCallback);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                unregisterReceiver(connectivityReceiver);
+            } else {
+                final ConnectivityManager connectivityManager
+                        = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                connectivityManager.unregisterNetworkCallback((PendingIntent) networkCallbackCompat.get());
+            }
             monitoringConnectivity = false;
         }
         super.onPause();
@@ -558,7 +570,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void revealPostingProgress() {
-        Animator reveal = ViewAnimationUtils.createCircularReveal(fabPosting,
+        Animator reveal = ViewAnimationUtilsCompat.createCircularReveal(fabPosting,
                 (int) fabPosting.getPivotX(),
                 (int) fabPosting.getPivotY(),
                 0f,
@@ -575,6 +587,7 @@ public class HomeActivity extends AppCompatActivity {
     private void ensurePostingProgressInflated() {
         if (fabPosting != null) return;
         fabPosting = (ImageButton) ((ViewStub) findViewById(R.id.stub_posting_progress)).inflate();
+        fabPosting.setImageDrawable(AnimatedVectorDrawableCompat.create(this, R.drawable.avd_uploading));
     }
 
     private void checkEmptyState() {
@@ -790,40 +803,87 @@ public class HomeActivity extends AppCompatActivity {
                 final ViewStub stub = (ViewStub) findViewById(R.id.stub_no_connection);
                 noConnection = (ImageView) stub.inflate();
             }
-            final AnimatedVectorDrawableCompat avd =
-                    AnimatedVectorDrawableCompat.create(this, R.drawable.avd_no_connection);
-            noConnection.setImageDrawable(avd);
-            avd.start();
 
-            connectivityManager.registerNetworkCallback(
-                    new NetworkRequest.Builder()
-                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build(),
-                    connectivityCallback);
-            monitoringConnectivity = true;
-        }
-    }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                final AnimatedVectorDrawable avd =
+                        (AnimatedVectorDrawable) getDrawable(R.drawable.avd_no_connection);
+                noConnection.setImageDrawable(avd);
+                avd.start();
+            }
 
-    private ConnectivityManager.NetworkCallback connectivityCallback = new ConnectivityManager.NetworkCallback() {
-        @Override
-        public void onAvailable(Network network) {
-            connected = true;
-            if (adapter.getDataItemCount() != 0) return;
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                registerReceiver(connectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+            } else {
+                connectivityManager.registerNetworkCallback(
+                        new NetworkRequest.Builder()
+                        .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build(),
+                        (ConnectivityManager.NetworkCallback) networkCallbackCompat.init().get());
+            }
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    TransitionManager.beginDelayedTransition(drawer);
+                    TransitionManagerCompat.beginDelayedTransition(drawer);
                     noConnection.setVisibility(View.GONE);
                     loading.setVisibility(View.VISIBLE);
                     dataManager.loadAllDataSources();
                 }
             });
+            monitoringConnectivity = true;
         }
+    }
 
+    private void onReconnected() {
+        if (adapter.getDataItemCount() != 0) return;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                TransitionManagerCompat.beginDelayedTransition(drawer);
+                noConnection.setVisibility(View.GONE);
+                loading.setVisibility(View.VISIBLE);
+                dataManager.loadAllDataSources();
+            }
+        });
+    }
+
+    private BroadcastReceiver connectivityReceiver = new BroadcastReceiver() {
         @Override
-        public void onLost(Network network) {
-            connected = false;
+        public void onReceive(Context context, Intent intent) {
+            ConnectivityManager connectivityManager
+                    = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            final NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            connected = activeNetworkInfo != null && activeNetworkInfo.isConnected();
+            if (connected) {
+                onReconnected();
+            }
         }
     };
+
+    private NetworkCallbackCompat networkCallbackCompat = new NetworkCallbackCompat();
+
+    private class NetworkCallbackCompat {
+        Object holder = null;
+
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        NetworkCallbackCompat init() {
+            holder = new ConnectivityManager.NetworkCallback() {
+                @Override
+                public void onAvailable(android.net.Network network) {
+                    connected = true;
+                    onReconnected();
+                }
+
+                @Override
+                public void onLost(Network network) {
+                    connected = false;
+                }
+            };
+            return this;
+        }
+
+        Object get() {
+            return holder;
+        }
+    }
 
     private int getAuthSourceRequestCode(Source filter) {
         switch (filter.key) {

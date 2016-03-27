@@ -24,6 +24,6 @@
 
     <path
         android:pathData="@string/path_comment"
-        android:fillColor="?android:textColorSecondary" />
+        android:fillColor="@color/text_secondary_light" />
 
 </vector>

@@ -15,15 +15,14 @@
   limitations under the License.
   -->
 
-<ImageButton
+<android.support.design.widget.FloatingActionButton
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fab_posting"
     android:layout_width="@dimen/fab_size"
     android:layout_height="@dimen/fab_size"
-    android:background="@drawable/fab"
     android:clickable="true"
-    android:elevation="@dimen/z_fab"
-    android:outlineProvider="none"
-    android:src="@drawable/avd_uploading"
-    tools:showIn="@layout/activity_home" />
+    app:rippleColor="@color/ripple_dark"
+    app:srcCompat="@drawable/avd_uploading"
+    tools:showIn="@layout/activity_home"/>

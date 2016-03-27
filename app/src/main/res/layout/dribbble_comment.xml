@@ -17,12 +17,14 @@
 
 <io.plaidapp.ui.widget.ForegroundRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?listPreferredItemHeight"
     android:paddingTop="@dimen/padding_normal"
     android:paddingEnd="@dimen/padding_normal"
+    android:paddingRight="@dimen/padding_normal"
     android:paddingBottom="@dimen/padding_normal"
     android:clipToPadding="false"
     android:foreground="?selectableItemBackground"
@@ -36,11 +38,12 @@
         android:layout_height="@dimen/avatar_bounds"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_marginEnd="@dimen/avatar_margin"
         android:layout_marginStart="@dimen/avatar_margin"
         android:padding="@dimen/avatar_padding"
         android:stateListAnimator="@animator/raise"
-        android:src="@drawable/avatar_placeholder"
+        app:srcCompat="@drawable/avatar_placeholder"
         android:foreground="@drawable/avatar_ripple" />
 
     <io.plaidapp.ui.widget.BaselineGridTextView
@@ -49,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:textAppearance="@style/TextAppearance.CommentTimestamp"
         tools:text="3 hours ago" />
 
@@ -57,8 +61,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/player_avatar"
+        android:layout_toRightOf="@id/player_avatar"
         android:layout_toStartOf="@id/comment_time_ago"
+        android:layout_toLeftOf="@id/comment_time_ago"
         android:layout_marginEnd="@dimen/spacing_normal"
+        android:layout_marginRight="@dimen/spacing_normal"
         android:lines="1"
         android:ellipsize="end"
         android:textAppearance="@style/TextAppearance.CommentAuthor.Dribbble"
@@ -69,9 +76,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/player_avatar"
+        android:layout_toRightOf="@id/player_avatar"
         android:layout_below="@id/comment_author"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/spacing_micro"
+        android:layout_alignParentRight="true"
         android:textColorLink="@color/dribbble_links"
         android:textColorHighlight="@color/dribbble_link_highlight"
         tools:text="Blah blah blah blah blah blah blah blah blah blah blah blah blah"
@@ -84,8 +93,10 @@
         android:padding="@dimen/spacing_normal"
         android:paddingTop="@dimen/spacing_normal"
         android:layout_marginEnd="@dimen/comment_like_margin_adjustment"
+        android:layout_marginRight="@dimen/comment_like_margin_adjustment"
         android:gravity="end|center_vertical"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_below="@id/comment_text"
         android:textColor="@color/dark_icon"
         android:text="0"
@@ -98,20 +109,22 @@
         android:layout_height="@dimen/comment_actions_height"
         android:padding="@dimen/spacing_normal"
         android:layout_marginEnd="@dimen/comment_like_margin_adjustment"
-        android:layout_toStartOf="@id/comment_likes_count"
+        android:layout_marginRight="@dimen/comment_like_margin_adjustment"
+        android:layout_toLeftOf="@id/comment_likes_count"
         android:layout_below="@id/comment_text"
-        android:src="@drawable/comment_heart"
+        app:srcCompat="@drawable/comment_heart"
         android:background="?selectableItemBackgroundBorderless"
         android:visibility="gone" />
 
-    <ImageButton
+    <android.support.v7.widget.AppCompatImageButton
         android:id="@+id/comment_reply"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/comment_actions_height"
         android:padding="@dimen/spacing_normal"
         android:layout_toStartOf="@id/comment_like"
+        android:layout_toLeftOf="@id/comment_like"
         android:layout_below="@id/comment_text"
-        android:src="@drawable/ic_reply"
+        app:srcCompat="@drawable/ic_reply"
         android:background="?selectableItemBackgroundBorderless"
         android:stateListAnimator="@animator/reply"
         android:visibility="gone" />

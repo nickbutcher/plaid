@@ -15,16 +15,10 @@
   limitations under the License.
   -->
 
-<animated-vector
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/ic_share_avd">
+<!-- Having this only point to the ic share avd vector rather than copying it in manually. -->
+<selector
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <target
-        android:name="@string/name_dots"
-        android:animation="@animator/share_dots" />
+    <item android:drawable="@drawable/ic_share_avd" />
 
-    <target
-        android:name="@string/name_lines"
-        android:animation="@animator/share_lines" />
-
-</animated-vector>
+</selector>

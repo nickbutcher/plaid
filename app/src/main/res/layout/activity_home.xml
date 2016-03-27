@@ -41,6 +41,7 @@
             android:layout_height="match_parent"
             android:scrollbars="vertical"
             android:scrollbarStyle="outsideOverlay"
+            android:paddingTop="?actionBarSize"
             android:clipToPadding="false"
             android:elevation="1dp" />
 
@@ -77,17 +78,16 @@
             android:layout_gravity="center"
             android:layout="@layout/no_connection" />
 
-        <ImageButton
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="@dimen/fab_size"
             android:layout_height="@dimen/fab_size"
-            android:elevation="@dimen/z_fab"
-            android:background="@drawable/fab"
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="@dimen/padding_normal"
+            android:layout_marginRight="@dimen/padding_normal"
             android:layout_marginBottom="@dimen/padding_normal"
-            android:stateListAnimator="@animator/raise"
-            android:src="@drawable/ic_add_dark" />
+            app:rippleColor="@color/ripple_dark"
+            app:srcCompat="@drawable/ic_add_dark" />
 
         <ViewStub
             android:id="@+id/stub_posting_progress"
@@ -96,6 +96,7 @@
             android:layout_gravity="bottom|end"
             android:layout_marginBottom="@dimen/padding_normal"
             android:layout_marginEnd="@dimen/padding_normal"
+            android:layout_marginRight="@dimen/padding_normal"
             android:layout="@layout/posting_progress" />
 
     </FrameLayout>
