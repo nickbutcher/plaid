@@ -87,22 +87,25 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
         dnSearchCall.enqueue(new Callback<StoriesResponse>() {
             @Override
             public void onResponse(Call<StoriesResponse> call, Response<StoriesResponse> response) {
-                loadFinished();
-                final List<Story> stories =
-                        response.body() != null ? response.body().stories : null;
-                if (stories != null) {
-                    setPage(stories, resultsPage);
-                    setDataSource(stories,
-                            Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query);
-                    onDataLoaded(stories);
+                if (response.isSuccessful()) {
+                    loadFinished();
+                    final List<Story> stories =
+                            response.body() != null ? response.body().stories : null;
+                    if (stories != null) {
+                        setPage(stories, resultsPage);
+                        setDataSource(stories,
+                                Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query);
+                        onDataLoaded(stories);
+                    }
+                    inflight.remove(dnSearchCall);
+                } else {
+                    failure(dnSearchCall);
                 }
-                inflight.remove(dnSearchCall);
             }
 
             @Override
             public void onFailure(Call<StoriesResponse> call, Throwable t) {
-                loadFinished();
-                inflight.remove(dnSearchCall);
+                failure(dnSearchCall);
             }
         });
         inflight.add(dnSearchCall);
@@ -116,24 +119,32 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
         dribbbleSearchCall.enqueue(new Callback<List<Shot>>() {
             @Override
             public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
-                loadFinished();
-                final List<Shot> shots = response.body();
-                if (shots != null) {
-                    setPage(shots, resultsPage);
-                    setDataSource(shots,
-                            Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX + query);
-                    onDataLoaded(shots);
+                if (response.isSuccessful()) {
+                    loadFinished();
+                    final List<Shot> shots = response.body();
+                    if (shots != null) {
+                        setPage(shots, resultsPage);
+                        setDataSource(shots,
+                                Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX + query);
+                        onDataLoaded(shots);
+                    }
+                    inflight.remove(dribbbleSearchCall);
+                } else {
+                    failure(dribbbleSearchCall);
                 }
-                inflight.remove(dribbbleSearchCall);
             }
 
             @Override
             public void onFailure(Call<List<Shot>> call, Throwable t) {
-                loadFinished();
-                inflight.remove(dribbbleSearchCall);
+                failure(dribbbleSearchCall);
             }
         });
         inflight.add(dribbbleSearchCall);
+    }
+
+    private void failure(Call call) {
+        loadFinished();
+        inflight.remove(call);
     }
 
 }

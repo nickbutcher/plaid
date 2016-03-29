@@ -66,19 +66,22 @@ public abstract class PlayerShotsDataManager extends PaginatedDataManager<List<S
         loadShotsCall.enqueue(new Callback<List<Shot>>() {
             @Override
             public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
-                final List<Shot> shots = response.body();
-                setPage(shots, page);
-                setDataSource(shots, SOURCE_PLAYER_SHOTS);
-                onDataLoaded(shots);
-                loadFinished();
-                moreDataAvailable = shots.size() == DribbbleService.PER_PAGE_DEFAULT;
-                loadShotsCall = null;
+                if (response.isSuccessful()) {
+                    final List<Shot> shots = response.body();
+                    setPage(shots, page);
+                    setDataSource(shots, SOURCE_PLAYER_SHOTS);
+                    onDataLoaded(shots);
+                    loadFinished();
+                    moreDataAvailable = shots.size() == DribbbleService.PER_PAGE_DEFAULT;
+                    loadShotsCall = null;
+                } else {
+                    failure();
+                }
             }
 
             @Override
             public void onFailure(Call<List<Shot>> call, Throwable t) {
-                loadFinished();
-                loadShotsCall = null;
+                failure();
             }
         });
     }
@@ -89,21 +92,30 @@ public abstract class PlayerShotsDataManager extends PaginatedDataManager<List<S
         loadShotsCall.enqueue(new Callback<List<Shot>>() {
             @Override
             public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
-                final List<Shot> shots = response.body();
-                setPage(shots, page);
-                setDataSource(shots, SOURCE_TEAM_SHOTS);
-                onDataLoaded(shots);
-                loadFinished();
-                moreDataAvailable = shots.size() == DribbbleService.PER_PAGE_DEFAULT;
-                loadShotsCall = null;
+                if (response.isSuccessful()) {
+                    final List<Shot> shots = response.body();
+                    setPage(shots, page);
+                    setDataSource(shots, SOURCE_TEAM_SHOTS);
+                    onDataLoaded(shots);
+                    loadFinished();
+                    moreDataAvailable = shots.size() == DribbbleService.PER_PAGE_DEFAULT;
+                    loadShotsCall = null;
+                } else {
+                    failure();
+                }
             }
 
             @Override
             public void onFailure(Call<List<Shot>> call, Throwable t) {
-                loadFinished();
-                loadShotsCall = null;
+                failure();
             }
         });
+    }
+
+    private void failure() {
+        loadFinished();
+        loadShotsCall = null;
+        moreDataAvailable = false;
     }
 
 }

@@ -52,14 +52,22 @@ public abstract class FollowersDataManager extends PaginatedDataManager<List<Fol
 
             @Override
             public void onResponse(Call<List<Follow>> call, Response<List<Follow>> response) {
-                loadFinished();
-                moreDataAvailable = response.body().size() == DribbbleService.PER_PAGE_DEFAULT;
-                onDataLoaded(response.body());
-                userFollowersCall = null;
+                if (response.isSuccessful()) {
+                    loadFinished();
+                    moreDataAvailable = response.body().size() == DribbbleService.PER_PAGE_DEFAULT;
+                    onDataLoaded(response.body());
+                    userFollowersCall = null;
+                } else {
+                    failure();
+                }
             }
 
             @Override
             public void onFailure(Call<List<Follow>> call, Throwable t) {
+                failure();
+            }
+
+            private void failure() {
                 loadFinished();
                 moreDataAvailable = false;
                 userFollowersCall = null;

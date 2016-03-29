@@ -179,9 +179,13 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
         topStories.enqueue(new Callback<StoriesResponse>() {
             @Override
             public void onResponse(Call<StoriesResponse> call, Response<StoriesResponse> response) {
-                final List<Story> stories =
-                        response.body() != null ? response.body().stories : null;
-                sourceLoaded(stories, page, SourceManager.SOURCE_DESIGNER_NEWS_POPULAR);
+                if (response.isSuccessful()) {
+                    final List<Story> stories =
+                            response.body() != null ? response.body().stories : null;
+                    sourceLoaded(stories, page, SourceManager.SOURCE_DESIGNER_NEWS_POPULAR);
+                } else {
+                    loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR);
+                }
             }
 
             @Override
@@ -197,9 +201,13 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
         recentStoriesCall.enqueue(new Callback<StoriesResponse>() {
             @Override
             public void onResponse(Call<StoriesResponse> call, Response<StoriesResponse> response) {
-                final List<Story> stories =
-                        response.body() != null ? response.body().stories : null;
-                sourceLoaded(stories, page, SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
+                if (response.isSuccessful()) {
+                    final List<Story> stories =
+                            response.body() != null ? response.body().stories : null;
+                    sourceLoaded(stories, page, SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
+                } else {
+                    loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
+                }
             }
 
             @Override
@@ -216,9 +224,13 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
         searchCall.enqueue(new Callback<StoriesResponse>() {
             @Override
             public void onResponse(Call<StoriesResponse> call, Response<StoriesResponse> response) {
+                if (response.isSuccessful()) {
                 final List<Story> stories =
                         response.body() != null ? response.body().stories : null;
-                sourceLoaded(stories, page, source.key);
+                    sourceLoaded(stories, page, source.key);
+                } else {
+                    loadFailed(source.key);
+                }
             }
 
             @Override
@@ -235,7 +247,11 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
         popularCall.enqueue(new Callback<List<Shot>>() {
             @Override
             public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
-                sourceLoaded(response.body(), page, SourceManager.SOURCE_DRIBBBLE_POPULAR);
+                if (response.isSuccessful()) {
+                    sourceLoaded(response.body(), page, SourceManager.SOURCE_DRIBBBLE_POPULAR);
+                } else {
+                    loadFailed(SourceManager.SOURCE_DRIBBBLE_POPULAR);
+                }
             }
 
             @Override
@@ -252,7 +268,11 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
         debutsCall.enqueue(new Callback<List<Shot>>() {
             @Override
             public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
-                sourceLoaded(response.body(), page, SourceManager.SOURCE_DRIBBBLE_DEBUTS);
+                if (response.isSuccessful()) {
+                    sourceLoaded(response.body(), page, SourceManager.SOURCE_DRIBBBLE_DEBUTS);
+                } else {
+                    loadFailed(SourceManager.SOURCE_DRIBBBLE_DEBUTS);
+                }
             }
 
             @Override
@@ -269,7 +289,11 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
         animatedCall.enqueue(new Callback<List<Shot>>() {
             @Override
             public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
-                sourceLoaded(response.body(), page, SourceManager.SOURCE_DRIBBBLE_ANIMATED);
+                if (response.isSuccessful()) {
+                    sourceLoaded(response.body(), page, SourceManager.SOURCE_DRIBBBLE_ANIMATED);
+                } else {
+                    loadFailed(SourceManager.SOURCE_DRIBBBLE_ANIMATED);
+                }
             }
 
             @Override
@@ -286,7 +310,11 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
         recentCall.enqueue(new Callback<List<Shot>>() {
             @Override
             public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
-                sourceLoaded(response.body(), page, SourceManager.SOURCE_DRIBBBLE_RECENT);
+                if (response.isSuccessful()) {
+                    sourceLoaded(response.body(), page, SourceManager.SOURCE_DRIBBBLE_RECENT);
+                } else {
+                    loadFailed(SourceManager.SOURCE_DRIBBBLE_RECENT);
+                }
             }
 
             @Override
@@ -303,7 +331,11 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
         followingCall.enqueue(new Callback<List<Shot>>() {
             @Override
             public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
-                sourceLoaded(response.body(), page, SourceManager.SOURCE_DRIBBBLE_FOLLOWING);
+                if (response.isSuccessful()) {
+                    sourceLoaded(response.body(), page, SourceManager.SOURCE_DRIBBBLE_FOLLOWING);
+                } else {
+                    loadFailed(SourceManager.SOURCE_DRIBBBLE_FOLLOWING);
+                }
             }
 
             @Override
@@ -321,16 +353,20 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
             userLikesCall.enqueue(new Callback<List<Like>>() {
                 @Override
                 public void onResponse(Call<List<Like>> call, Response<List<Like>> response) {
-                    // API returns Likes but we just want the Shots
-                    final List<Like> likes = response.body();
-                    List<Shot> likedShots = null;
-                    if (likes != null && !likes.isEmpty()) {
-                        likedShots = new ArrayList<>(likes.size());
-                        for (Like like : likes) {
-                            likedShots.add(like.shot);
+                    if (response.isSuccessful()) {
+                        // API returns Likes but we just want the Shots
+                        final List<Like> likes = response.body();
+                        List<Shot> likedShots = null;
+                        if (likes != null && !likes.isEmpty()) {
+                            likedShots = new ArrayList<>(likes.size());
+                            for (Like like : likes) {
+                                likedShots.add(like.shot);
+                            }
                         }
+                        sourceLoaded(likedShots, page, SourceManager.SOURCE_DRIBBBLE_USER_LIKES);
+                    } else {
+                        loadFailed(SourceManager.SOURCE_DRIBBBLE_USER_LIKES);
                     }
-                    sourceLoaded(likedShots, page, SourceManager.SOURCE_DRIBBBLE_USER_LIKES);
                 }
 
                 @Override
@@ -351,16 +387,20 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
             userShotsCall.enqueue(new Callback<List<Shot>>() {
                 @Override
                 public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
-                    loadFinished();
-                    final List<Shot> shots = response.body();
-                    if (shots != null && !shots.isEmpty()) {
-                        // this api call doesn't populate the shot user field but we need it
-                        final User user = getDribbblePrefs().getUser();
-                        for (Shot shot : shots) {
-                            shot.user = user;
+                    if (response.isSuccessful()) {
+                        loadFinished();
+                        final List<Shot> shots = response.body();
+                        if (shots != null && !shots.isEmpty()) {
+                            // this api call doesn't populate the shot user field but we need it
+                            final User user = getDribbblePrefs().getUser();
+                            for (Shot shot : shots) {
+                                shot.user = user;
+                            }
                         }
+                        sourceLoaded(shots, page, SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
+                    } else {
+                        loadFailed(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
                     }
-                    sourceLoaded(shots, page, SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
                 }
 
                 @Override
@@ -381,7 +421,11 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
         searchCall.enqueue(new Callback<List<Shot>>() {
             @Override
             public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
-                sourceLoaded(response.body(), page, source.key);
+                if (response.isSuccessful()) {
+                    sourceLoaded(response.body(), page, source.key);
+                } else {
+                    loadFailed(source.key);
+                }
             }
 
             @Override
@@ -398,8 +442,12 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
         postsCall.enqueue(new Callback<PostsResponse>() {
             @Override
             public void onResponse(Call<PostsResponse> call, Response<PostsResponse> response) {
-                final List<Post> posts = response.body() != null ? response.body().posts : null;
-                sourceLoaded(posts, page, SourceManager.SOURCE_PRODUCT_HUNT);
+                if (response.isSuccessful()) {
+                    final List<Post> posts = response.body() != null ? response.body().posts : null;
+                    sourceLoaded(posts, page, SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
+                } else {
+                    loadFailed(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
+                }
             }
 
             @Override
