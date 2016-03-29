@@ -32,8 +32,8 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.MathUtils;
@@ -98,7 +98,7 @@ public class BottomSheet extends FrameLayout {
 
     public void registerCallback(Callbacks callback) {
         if (callbacks == null) {
-            callbacks = new ArrayList<>();
+            callbacks = new CopyOnWriteArrayList<>();
         }
         callbacks.add(callback);
     }
