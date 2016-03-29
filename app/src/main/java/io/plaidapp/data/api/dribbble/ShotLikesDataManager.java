@@ -52,15 +52,23 @@ public abstract class ShotLikesDataManager extends PaginatedDataManager<List<Lik
 
             @Override
             public void onResponse(Call<List<Like>> call, Response<List<Like>> response) {
-                loadFinished();
-                final List<Like> likes = response.body();
-                moreDataAvailable = likes.size() == DribbbleService.PER_PAGE_DEFAULT;
-                onDataLoaded(likes);
-                shotLikesCall = null;
+                if (response.isSuccessful()) {
+                    loadFinished();
+                    final List<Like> likes = response.body();
+                    moreDataAvailable = likes.size() == DribbbleService.PER_PAGE_DEFAULT;
+                    onDataLoaded(likes);
+                    shotLikesCall = null;
+                } else {
+                    failure();
+                }
             }
 
             @Override
             public void onFailure(Call<List<Like>> call, Throwable t) {
+                failure();
+            }
+
+            private void failure() {
                 loadFinished();
                 moreDataAvailable = false;
                 shotLikesCall = null;
