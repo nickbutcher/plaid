@@ -101,6 +101,7 @@ public class SearchActivity extends Activity {
     private int searchIconCenterX;
     private SearchDataManager dataManager;
     private FeedAdapter adapter;
+    private boolean dismissing;
 
     public static Intent createStartIntent(Context context, int menuIconLeft, int menuIconCenterX) {
         Intent starter = new Intent(context, SearchActivity.class);
@@ -276,6 +277,9 @@ public class SearchActivity extends Activity {
 
     @OnClick({ R.id.scrim, R.id.searchback })
     protected void dismiss() {
+        if (dismissing) return;
+        dismissing = true;
+
         // translate the icon to match position in the launching activity
         searchBackContainer.animate()
                 .translationX(searchBackDistanceX)
@@ -301,7 +305,13 @@ public class SearchActivity extends Activity {
                 .setStartDelay(0L)
                 .setDuration(120L)
                 .setInterpolator(AnimUtils.getFastOutLinearInInterpolator(this))
-                .setListener(null)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        // prevent clicks while other anims are finishing
+                        searchView.setVisibility(View.INVISIBLE);
+                    }
+                })
                 .start();
         searchBackground.animate()
                 .alpha(0f)
