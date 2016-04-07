@@ -36,7 +36,7 @@
             android:background="@color/status_bar_back" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/stories_grid"
+            android:id="@+id/grid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical"
@@ -111,7 +111,6 @@
         android:elevation="@dimen/z_drawer"
         android:background="@color/background_dark"
         android:clipToPadding="false"
-        android:fitsSystemWindows="true"
         android:scrollbars="vertical"
         android:scrollbarStyle="outsideOverlay"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"

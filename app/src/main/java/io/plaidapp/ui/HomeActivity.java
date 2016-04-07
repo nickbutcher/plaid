@@ -108,7 +108,7 @@ public class HomeActivity extends Activity {
 
     @Bind(R.id.drawer) DrawerLayout drawer;
     @Bind(R.id.toolbar) Toolbar toolbar;
-    @Bind(R.id.stories_grid) RecyclerView grid;
+    @Bind(R.id.grid) RecyclerView grid;
     @Bind(R.id.fab) ImageButton fab;
     @Bind(R.id.filters) RecyclerView filtersList;
     @Bind(android.R.id.empty) ProgressBar loading;
