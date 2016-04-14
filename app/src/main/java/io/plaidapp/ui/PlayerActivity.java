@@ -46,7 +46,6 @@ import butterknife.BindInt;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.plaidapp.R;
-import io.plaidapp.data.PlaidItem;
 import io.plaidapp.data.api.dribbble.PlayerShotsDataManager;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.dribbble.model.User;
@@ -154,11 +153,17 @@ public class PlayerActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        dataManager.cancelLoading();
+        if (dataManager != null) {
+            dataManager.cancelLoading();
+        }
         super.onDestroy();
     }
 
     private void bindPlayer() {
+        if (player == null) {
+            return;
+        }
+
         final Resources res = getResources();
         final NumberFormat nf = NumberFormat.getInstance();
 
