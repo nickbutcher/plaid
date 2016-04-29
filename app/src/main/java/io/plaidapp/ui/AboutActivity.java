@@ -42,7 +42,7 @@ import com.bumptech.glide.Glide;
 
 import java.security.InvalidParameterException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import in.uncod.android.bypass.Bypass;
 import io.plaidapp.R;
@@ -59,9 +59,9 @@ import io.plaidapp.util.glide.CircleTransform;
  */
 public class AboutActivity extends Activity {
 
-    @Bind(R.id.draggable_frame) ElasticDragDismissFrameLayout draggableFrame;
-    @Bind(R.id.pager) ViewPager pager;
-    @Bind(R.id.indicator) InkPageIndicator pageIndicator;
+    @BindView(R.id.draggable_frame) ElasticDragDismissFrameLayout draggableFrame;
+    @BindView(R.id.pager) ViewPager pager;
+    @BindView(R.id.indicator) InkPageIndicator pageIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,11 +92,11 @@ public class AboutActivity extends Activity {
     static class AboutPagerAdapter extends PagerAdapter {
 
         private View aboutPlaid;
-        @Nullable @Bind(R.id.about_description) TextView plaidDescription;
+        @Nullable @BindView(R.id.about_description) TextView plaidDescription;
         private View aboutIcon;
-        @Nullable @Bind(R.id.icon_description) TextView iconDescription;
+        @Nullable @BindView(R.id.icon_description) TextView iconDescription;
         private View aboutLibs;
-        @Nullable @Bind(R.id.libs_list) RecyclerView libsList;
+        @Nullable @BindView(R.id.libs_list) RecyclerView libsList;
 
         private final LayoutInflater layoutInflater;
         private final Bypass markdown;
@@ -262,9 +262,9 @@ public class AboutActivity extends Activity {
 
     static class LibraryHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.library_image) ImageView image;
-        @Bind(R.id.library_name) TextView name;
-        @Bind(R.id.library_link) Button link;
+        @BindView(R.id.library_image) ImageView image;
+        @BindView(R.id.library_name) TextView name;
+        @BindView(R.id.library_link) Button link;
 
         public LibraryHolder(View itemView) {
             super(itemView);

@@ -58,7 +58,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.plaidapp.R;
 import io.plaidapp.data.DataLoadingSubject;
@@ -652,9 +652,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     /* package */ static class DesignerNewsStoryHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.story_title) TextView title;
-        @Bind(R.id.story_comments) TextView comments;
-        @Bind(R.id.pocket) ImageButton pocket;
+        @BindView(R.id.story_title) TextView title;
+        @BindView(R.id.story_comments) TextView comments;
+        @BindView(R.id.pocket) ImageButton pocket;
 
         public DesignerNewsStoryHolder(View itemView, boolean pocketIsInstalled) {
             super(itemView);
@@ -665,9 +665,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     /* package */ static class ProductHuntStoryHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.hunt_title) TextView title;
-        @Bind(R.id.tagline) TextView tagline;
-        @Bind(R.id.story_comments) TextView comments;
+        @BindView(R.id.hunt_title) TextView title;
+        @BindView(R.id.tagline) TextView tagline;
+        @BindView(R.id.story_comments) TextView comments;
 
         public ProductHuntStoryHolder(View itemView) {
             super(itemView);

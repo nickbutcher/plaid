@@ -34,8 +34,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import butterknife.Bind;
 import butterknife.BindDimen;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
@@ -54,16 +54,16 @@ public class PostNewDesignerNewsStory extends Activity {
     public static final int RESULT_DRAG_DISMISSED = 3;
     public static final int RESULT_POSTING = 4;
 
-    @Bind(R.id.bottom_sheet) BottomSheet bottomSheet;
-    @Bind(R.id.bottom_sheet_content) ViewGroup bottomSheetContent;
-    @Bind(R.id.title) TextView sheetTitle;
-    @Bind(R.id.scroll_container) ObservableScrollView scrollContainer;
-    @Bind(R.id.new_story_title) EditText title;
-    @Bind(R.id.new_story_url_label) TextInputLayout urlLabel;
-    @Bind(R.id.new_story_url) EditText url;
-    @Bind(R.id.new_story_comment_label) TextInputLayout commentLabel;
-    @Bind(R.id.new_story_comment) EditText comment;
-    @Bind(R.id.new_story_post) Button post;
+    @BindView(R.id.bottom_sheet) BottomSheet bottomSheet;
+    @BindView(R.id.bottom_sheet_content) ViewGroup bottomSheetContent;
+    @BindView(R.id.title) TextView sheetTitle;
+    @BindView(R.id.scroll_container) ObservableScrollView scrollContainer;
+    @BindView(R.id.new_story_title) EditText title;
+    @BindView(R.id.new_story_url_label) TextInputLayout urlLabel;
+    @BindView(R.id.new_story_url) EditText url;
+    @BindView(R.id.new_story_comment_label) TextInputLayout commentLabel;
+    @BindView(R.id.new_story_comment) EditText comment;
+    @BindView(R.id.new_story_post) Button post;
     @BindDimen(R.dimen.z_app_bar) float appBarElevation;
 
     @Override

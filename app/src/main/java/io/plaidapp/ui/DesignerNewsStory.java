@@ -70,9 +70,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.Bind;
 import butterknife.BindDimen;
 import butterknife.BindInt;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import in.uncod.android.bypass.Bypass;
 import in.uncod.android.bypass.style.ImageLoadingSpan;
@@ -110,15 +110,15 @@ public class DesignerNewsStory extends Activity {
     private static final int RC_LOGIN_UPVOTE = 7;
 
     private View header;
-    @Bind(R.id.comments_list) RecyclerView commentsList;
+    @BindView(R.id.comments_list) RecyclerView commentsList;
     private LinearLayoutManager layoutManager;
     private DesignerNewsCommentsAdapter commentsAdapter;
-    @Bind(R.id.fab) ImageButton fab;
-    @Bind(R.id.fab_expand) View fabExpand;
-    @Bind(R.id.comments_container) ElasticDragDismissFrameLayout draggableFrame;
+    @BindView(R.id.fab) ImageButton fab;
+    @BindView(R.id.fab_expand) View fabExpand;
+    @BindView(R.id.comments_container) ElasticDragDismissFrameLayout draggableFrame;
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
-    @Nullable @Bind(R.id.backdrop_toolbar) CollapsingTitleLayout collapsingToolbar;
-    @Nullable @Bind(R.id.story_title_background) PinnedOffsetView toolbarBackground;
+    @Nullable @BindView(R.id.backdrop_toolbar) CollapsingTitleLayout collapsingToolbar;
+    @Nullable @BindView(R.id.story_title_background) PinnedOffsetView toolbarBackground;
     private Button upvoteStory;
     private EditText enterComment;
     private ImageButton postComment;
@@ -1011,10 +1011,10 @@ public class DesignerNewsStory extends Activity {
 
     /* package */ static class CommentHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.depth) ImageView threadDepth;
-        @Bind(R.id.comment_author) AuthorTextView author;
-        @Bind(R.id.comment_time_ago) TextView timeAgo;
-        @Bind(R.id.comment_text) TextView comment;
+        @BindView(R.id.depth) ImageView threadDepth;
+        @BindView(R.id.comment_author) AuthorTextView author;
+        @BindView(R.id.comment_time_ago) TextView timeAgo;
+        @BindView(R.id.comment_text) TextView comment;
 
         public CommentHolder(View itemView) {
             super(itemView);
@@ -1024,10 +1024,10 @@ public class DesignerNewsStory extends Activity {
 
     /* package */ static class CommentReplyHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.comment_votes) Button commentVotes;
-        @Bind(R.id.comment_reply_label) TextInputLayout replyLabel;
-        @Bind(R.id.comment_reply) EditText commentReply;
-        @Bind(R.id.post_reply) ImageButton postReply;
+        @BindView(R.id.comment_votes) Button commentVotes;
+        @BindView(R.id.comment_reply_label) TextInputLayout replyLabel;
+        @BindView(R.id.comment_reply) EditText commentReply;
+        @BindView(R.id.post_reply) ImageButton postReply;
 
         public CommentReplyHolder(View itemView) {
             super(itemView);

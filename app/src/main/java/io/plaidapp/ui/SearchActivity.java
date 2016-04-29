@@ -53,9 +53,9 @@ import android.widget.SearchView;
 
 import java.util.List;
 
-import butterknife.Bind;
 import butterknife.BindDimen;
 import butterknife.BindInt;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.plaidapp.R;
@@ -77,21 +77,21 @@ public class SearchActivity extends Activity {
     public static final String EXTRA_SAVE_DESIGNER_NEWS = "EXTRA_SAVE_DESIGNER_NEWS";
     public static final int RESULT_CODE_SAVE = 7;
 
-    @Bind(R.id.searchback) ImageButton searchBack;
-    @Bind(R.id.searchback_container) ViewGroup searchBackContainer;
-    @Bind(R.id.search_view) SearchView searchView;
-    @Bind(R.id.search_background) View searchBackground;
-    @Bind(android.R.id.empty) ProgressBar progress;
-    @Bind(R.id.search_results) RecyclerView results;
-    @Bind(R.id.container) ViewGroup container;
-    @Bind(R.id.search_toolbar) ViewGroup searchToolbar;
-    @Bind(R.id.results_container) ViewGroup resultsContainer;
-    @Bind(R.id.fab) ImageButton fab;
-    @Bind(R.id.confirm_save_container) ViewGroup confirmSaveContainer;
-    @Bind(R.id.save_dribbble) CheckBox saveDribbble;
-    @Bind(R.id.save_designer_news) CheckBox saveDesignerNews;
-    @Bind(R.id.scrim) View scrim;
-    @Bind(R.id.results_scrim) View resultsScrim;
+    @BindView(R.id.searchback) ImageButton searchBack;
+    @BindView(R.id.searchback_container) ViewGroup searchBackContainer;
+    @BindView(R.id.search_view) SearchView searchView;
+    @BindView(R.id.search_background) View searchBackground;
+    @BindView(android.R.id.empty) ProgressBar progress;
+    @BindView(R.id.search_results) RecyclerView results;
+    @BindView(R.id.container) ViewGroup container;
+    @BindView(R.id.search_toolbar) ViewGroup searchToolbar;
+    @BindView(R.id.results_container) ViewGroup resultsContainer;
+    @BindView(R.id.fab) ImageButton fab;
+    @BindView(R.id.confirm_save_container) ViewGroup confirmSaveContainer;
+    @BindView(R.id.save_dribbble) CheckBox saveDribbble;
+    @BindView(R.id.save_designer_news) CheckBox saveDesignerNews;
+    @BindView(R.id.scrim) View scrim;
+    @BindView(R.id.results_scrim) View resultsScrim;
     private BaselineGridTextView noResults;
     @BindInt(R.integer.num_columns) int columns;
     @BindDimen(R.dimen.z_app_bar) float appBarElevation;

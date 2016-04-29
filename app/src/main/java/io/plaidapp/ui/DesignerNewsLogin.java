@@ -60,7 +60,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.plaidapp.BuildConfig;
 import io.plaidapp.R;
@@ -81,17 +81,17 @@ public class DesignerNewsLogin extends Activity {
     private static final int PERMISSIONS_REQUEST_GET_ACCOUNTS = 0;
 
     boolean isDismissing = false;
-    @Bind(R.id.container) ViewGroup container;
-    @Bind(R.id.dialog_title) TextView title;
-    @Bind(R.id.username_float_label) TextInputLayout usernameLabel;
-    @Bind(R.id.username) AutoCompleteTextView username;
-    @Bind(R.id.permission_primer) CheckBox permissionPrimer;
-    @Bind(R.id.password_float_label) TextInputLayout passwordLabel;
-    @Bind(R.id.password) EditText password;
-    @Bind(R.id.actions_container) FrameLayout actionsContainer;
-    @Bind(R.id.signup) Button signup;
-    @Bind(R.id.login) Button login;
-    @Bind(R.id.loading) ProgressBar loading;
+    @BindView(R.id.container) ViewGroup container;
+    @BindView(R.id.dialog_title) TextView title;
+    @BindView(R.id.username_float_label) TextInputLayout usernameLabel;
+    @BindView(R.id.username) AutoCompleteTextView username;
+    @BindView(R.id.permission_primer) CheckBox permissionPrimer;
+    @BindView(R.id.password_float_label) TextInputLayout passwordLabel;
+    @BindView(R.id.password) EditText password;
+    @BindView(R.id.actions_container) FrameLayout actionsContainer;
+    @BindView(R.id.signup) Button signup;
+    @BindView(R.id.login) Button login;
+    @BindView(R.id.loading) ProgressBar loading;
     private DesignerNewsPrefs designerNewsPrefs;
     private boolean shouldPromptForPermission = false;
 
