@@ -52,6 +52,7 @@ import io.plaidapp.data.api.dribbble.model.User;
 import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.data.prefs.DribbblePrefs;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
+import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.util.DribbbleUtils;
@@ -198,6 +199,7 @@ public class PlayerActivity extends Activity {
         };
         adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this));
         shots.setAdapter(adapter);
+        shots.setItemAnimator(new SlideInItemAnimator());
         shots.setVisibility(View.VISIBLE);
         layoutManager = new GridLayoutManager(this, columns);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
