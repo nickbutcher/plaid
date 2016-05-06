@@ -17,23 +17,22 @@
 package io.plaidapp.ui.transitions;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.transition.Transition;
 import android.transition.TransitionValues;
-import android.transition.Visibility;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
 import io.plaidapp.R;
-import io.plaidapp.util.AnimUtils;
 
 /**
- * A transition that
+ * A transition that animates the elevation of a View from a given value down to zero.
+ * <p>
+ * Useful for creating parent↔child navigation transitions (https://www.google.com/design/spec/patterns/navigational-transitions.html#navigational-transitions-parent-to-child)
+ * when combined with a {@link android.transition.ChangeBounds} on a shared element.
  */
 public class LiftOff extends Transition {
 
