@@ -46,7 +46,6 @@ import butterknife.BindInt;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.plaidapp.R;
-import io.plaidapp.data.PlaidItem;
 import io.plaidapp.data.api.dribbble.PlayerShotsDataManager;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.dribbble.model.User;

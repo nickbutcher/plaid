@@ -21,11 +21,15 @@
     android:transitionOrdering="together"
     android:duration="300">
 
-    <changeBounds>
+    <transitionSet>
+        <changeBounds />
+        <transition
+            class="io.plaidapp.ui.transitions.LiftOff"
+            android:elevation="@dimen/touch_raise" />
         <targets>
             <target android:targetId="@id/comments_container" />
         </targets>
-    </changeBounds>
+    </transitionSet>
 
     <transition class="io.plaidapp.ui.transitions.StoryTitleSharedEnter">
         <targets>
