@@ -33,6 +33,8 @@
         android:startDelay="200"
         android:duration="200">
         <targets>
+            <target android:targetId="@id/indicator" />
+            <target android:targetId="@id/libraries_intro" />
             <target android:targetId="@id/libs_list_background" />
         </targets>
     </fade>
