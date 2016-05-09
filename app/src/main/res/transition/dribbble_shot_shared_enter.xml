@@ -17,25 +17,19 @@
 
 <transitionSet
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:duration="350"
     android:transitionOrdering="together">
 
-    <transitionSet>
+    <!-- can't use a pathMotion here as it causes the frame and the shot
+         to separate while moving which looks bad :( -->
+    <changeBounds android:interpolator="@android:interpolator/fast_out_slow_in">
         <targets>
-            <target android:targetId="@id/container" />
+            <target android:targetId="@id/draggable_frame" />
         </targets>
-        <changeBounds
-            android:duration="300"
-            android:interpolator="@android:interpolator/fast_out_slow_in"/>
-        <transition
-            class="io.plaidapp.ui.transitions.LiftOff"
-            android:duration="400"
-            app:initialElevation="@dimen/touch_raise" />
-    </transitionSet>
+    </changeBounds>
 
     <transition
         class="io.plaidapp.ui.transitions.ShotSharedEnter"
-        android:duration="300"
         android:interpolator="@android:interpolator/fast_out_slow_in">
         <targets>
             <target android:targetId="@id/shot" />

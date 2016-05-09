@@ -18,7 +18,7 @@
 <fade
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:interpolator="@android:interpolator/fast_out_slow_in"
-    android:duration="@android:integer/config_mediumAnimTime">
+    android:duration="300">
     <targets>
         <target android:targetId="@android:id/navigationBarBackground" />
         <target android:targetId="@android:id/statusBarBackground" />
