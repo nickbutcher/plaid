@@ -154,11 +154,17 @@ public class PlayerActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        dataManager.cancelLoading();
+        if (dataManager != null) {
+            dataManager.cancelLoading();
+        }
         super.onDestroy();
     }
 
     private void bindPlayer() {
+        if (player == null) {
+            return;
+        }
+
         final Resources res = getResources();
         final NumberFormat nf = NumberFormat.getInstance();
 
