@@ -32,9 +32,8 @@ import io.plaidapp.util.AnimUtils;
  */
 public class MorphDrawable extends Drawable {
 
-    private float cornerRadius;
-    public static final Property<MorphDrawable, Float> CORNER_RADIUS = new AnimUtils
-            .FloatProperty<MorphDrawable>("cornerRadius") {
+    public static final Property<MorphDrawable, Float> CORNER_RADIUS =
+            new AnimUtils.FloatProperty<MorphDrawable>("cornerRadius") {
 
         @Override
         public void setValue(MorphDrawable morphDrawable, float value) {
@@ -45,10 +44,11 @@ public class MorphDrawable extends Drawable {
         public Float get(MorphDrawable morphDrawable) {
             return morphDrawable.getCornerRadius();
         }
+
     };
-    private Paint paint;
-    public static final Property<MorphDrawable, Integer> COLOR = new AnimUtils
-            .IntProperty<MorphDrawable>("color") {
+
+    public static final Property<MorphDrawable, Integer> COLOR =
+            new AnimUtils.IntProperty<MorphDrawable>("color") {
 
         @Override
         public void setValue(MorphDrawable morphDrawable, int value) {
@@ -59,7 +59,11 @@ public class MorphDrawable extends Drawable {
         public Integer get(MorphDrawable morphDrawable) {
             return morphDrawable.getColor();
         }
+
     };
+
+    private Paint paint;
+    private float cornerRadius;
 
     public MorphDrawable(@ColorInt int color, float cornerRadius) {
         this.cornerRadius = cornerRadius;
@@ -80,15 +84,21 @@ public class MorphDrawable extends Drawable {
         return paint.getColor();
     }
 
-    public void setColor(int color) {
+    public void setColor(@ColorInt int color) {
         paint.setColor(color);
         invalidateSelf();
     }
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawRoundRect(getBounds().left, getBounds().top, getBounds().right, getBounds()
-                .bottom, cornerRadius, cornerRadius, paint);
+        canvas.drawRoundRect(
+                getBounds().left,
+                getBounds().top,
+                getBounds().right,
+                getBounds().bottom,
+                cornerRadius,
+                cornerRadius,
+                paint);
     }
 
     @Override

@@ -29,13 +29,17 @@ import java.util.List;
 import io.plaidapp.util.AnimUtils;
 
 /**
- * A RecyclerView Item animator that slides new items in upward
+ * A {@link RecyclerView.ItemAnimator} that fades & slides newly added items in from a given
+ * direction.
  */
 public class SlideInItemAnimator extends DefaultItemAnimator {
 
     private final List<RecyclerView.ViewHolder> pendingAdds = new ArrayList<>();
     private final int slideFromEdge;
 
+    /**
+     * Default to sliding in upward.
+     */
     public SlideInItemAnimator() {
         this(Gravity.BOTTOM, -1); // undefined layout dir; bottom isn't relative
     }
