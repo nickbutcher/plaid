@@ -63,6 +63,7 @@ import io.plaidapp.data.PlaidItem;
 import io.plaidapp.data.SearchDataManager;
 import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
+import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
 import io.plaidapp.ui.widget.BaselineGridTextView;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ImeUtils;
@@ -150,6 +151,7 @@ public class SearchActivity extends Activity {
         };
         adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this));
         results.setAdapter(adapter);
+        results.setItemAnimator(new SlideInItemAnimator());
         GridLayoutManager layoutManager = new GridLayoutManager(this, columns);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override

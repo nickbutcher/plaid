@@ -30,13 +30,14 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ViewUtils;
 
 /**
  * An extension to {@link DefaultItemAnimator} for running animations specific to our home grid.
  */
-public class HomeGridItemAnimator extends DefaultItemAnimator {
+public class HomeGridItemAnimator extends SlideInItemAnimator {
 
     public static final int ANIMATE_ADD_POCKET = 7;
 

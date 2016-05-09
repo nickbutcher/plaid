@@ -20,6 +20,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,15 +34,33 @@ import io.plaidapp.util.AnimUtils;
 public class SlideInItemAnimator extends DefaultItemAnimator {
 
     private final List<RecyclerView.ViewHolder> pendingAdds = new ArrayList<>();
+    private final int slideFromEdge;
 
     public SlideInItemAnimator() {
+        this(Gravity.BOTTOM, -1); // undefined layout dir; bottom isn't relative
+    }
+
+    public SlideInItemAnimator(int slideFromEdge, int layoutDirection) {
+        this.slideFromEdge = Gravity.getAbsoluteGravity(slideFromEdge, layoutDirection);
         setAddDuration(160L);
     }
 
     @Override
     public boolean animateAdd(RecyclerView.ViewHolder holder) {
         holder.itemView.setAlpha(0f);
-        holder.itemView.setTranslationY(holder.itemView.getHeight() / 3);
+        switch (slideFromEdge) {
+            case Gravity.LEFT:
+                holder.itemView.setTranslationX(-holder.itemView.getWidth() / 3);
+                break;
+            case Gravity.TOP:
+                holder.itemView.setTranslationY(-holder.itemView.getHeight() / 3);
+                break;
+            case Gravity.RIGHT:
+                holder.itemView.setTranslationX(holder.itemView.getWidth() / 3);
+                break;
+            default: // Gravity.BOTTOM
+                holder.itemView.setTranslationY(holder.itemView.getHeight() / 3);
+        }
         pendingAdds.add(holder);
         return true;
     }
@@ -52,6 +72,7 @@ public class SlideInItemAnimator extends DefaultItemAnimator {
             for (final RecyclerView.ViewHolder holder : pendingAdds) {
                 holder.itemView.animate()
                         .alpha(1f)
+                        .translationX(0f)
                         .translationY(0f)
                         .setDuration(getAddDuration())
                         .setListener(new AnimatorListenerAdapter() {
@@ -65,24 +86,55 @@ public class SlideInItemAnimator extends DefaultItemAnimator {
                                 animation.getListeners().remove(this);
                                 dispatchAddFinished(holder);
                                 pendingAdds.remove(holder);
-                                if (!isRunning()) dispatchAnimationsFinished();
+                                dispatchFinishedWhenDone();
                             }
 
                             @Override
                             public void onAnimationCancel(Animator animation) {
-                                holder.itemView.setAlpha(1f);
-                                holder.itemView.setTranslationY(0f);
+                                endViewAnimation(holder.itemView);
                             }
                         })
-                        .setInterpolator(
-                                AnimUtils.getLinearOutSlowInInterpolator(holder.itemView.getContext()));
+                        .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(
+                                holder.itemView.getContext()));
             }
         }
     }
 
     @Override
+    public void endAnimation(RecyclerView.ViewHolder holder) {
+        holder.itemView.animate().cancel();
+        if (pendingAdds.remove(holder)) {
+            endViewAnimation(holder.itemView);
+        }
+        super.endAnimation(holder);
+    }
+
+    @Override
+    public void endAnimations() {
+        for (int i = pendingAdds.size() - 1; i >= 0; i--) {
+            final RecyclerView.ViewHolder holder = pendingAdds.get(i);
+            endViewAnimation(holder.itemView);
+            dispatchAddFinished(holder);
+            pendingAdds.remove(i);
+        }
+        super.endAnimations();
+    }
+
+    @Override
     public boolean isRunning() {
-        return super.isRunning() || !pendingAdds.isEmpty();
+        return !pendingAdds.isEmpty() || super.isRunning();
+    }
+
+    private void dispatchFinishedWhenDone() {
+        if (!isRunning()) {
+            dispatchAnimationsFinished();
+        }
+    }
+
+    private void endViewAnimation(final View view) {
+        view.setAlpha(1f);
+        view.setTranslationX(0f);
+        view.setTranslationY(0f);
     }
 
 }

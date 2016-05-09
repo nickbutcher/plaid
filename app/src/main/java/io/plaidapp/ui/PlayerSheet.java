@@ -64,6 +64,7 @@ import io.plaidapp.data.api.dribbble.model.PlayerListable;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.dribbble.model.User;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
+import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
 import io.plaidapp.ui.widget.BottomSheet;
 import io.plaidapp.util.DribbbleUtils;
 import io.plaidapp.util.glide.CircleTransform;
@@ -185,6 +186,7 @@ public class PlayerSheet extends Activity {
 
         layoutManager = new LinearLayoutManager(this);
         playerList.setLayoutManager(layoutManager);
+        playerList.setItemAnimator(new SlideInItemAnimator());
         adapter = new PlayerAdapter(this);
         dataManager.registerCallback(adapter);
         playerList.setAdapter(adapter);
