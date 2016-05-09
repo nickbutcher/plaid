@@ -300,7 +300,7 @@ public class DesignerNewsLogin extends Activity {
                 final Toast confirmLogin = new Toast(getApplicationContext());
                 final View v = LayoutInflater.from(DesignerNewsLogin.this).inflate(R.layout
                         .toast_logged_in_confirmation, null, false);
-                ((TextView) v.findViewById(R.id.name)).setText(user.display_name);
+                ((TextView) v.findViewById(R.id.name)).setText(user.display_name.toLowerCase());
                 // need to use app context here as the activity will be destroyed shortly
                 Glide.with(getApplicationContext())
                         .load(user.portrait_url)

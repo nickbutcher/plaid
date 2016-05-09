@@ -353,7 +353,7 @@ public class DribbbleShot extends Activity {
             }
         });
         if (shot.user != null) {
-            playerName.setText("–" + shot.user.name);
+            playerName.setText(shot.user.name.toLowerCase());
             Glide.with(this)
                     .load(shot.user.getHighQualityAvatarUrl())
                     .transform(circleTransform)
@@ -928,7 +928,7 @@ public class DribbbleShot extends Activity {
                     startActivity(player, options.toBundle());
                 }
             });
-            author.setText(comment.user.name);
+            author.setText(comment.user.name.toLowerCase());
             author.setOriginalPoster(isOP(comment.user.id));
             timeAgo.setText(comment.created_at == null ? "" :
                     DateUtils.getRelativeTimeSpanString(comment.created_at.getTime(),

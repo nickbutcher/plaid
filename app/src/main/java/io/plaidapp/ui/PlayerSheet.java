@@ -297,7 +297,7 @@ public class PlayerSheet extends Activity {
                     .placeholder(R.drawable.avatar_placeholder)
                     .override(largeAvatarSize, largeAvatarSize)
                     .into(holder.playerAvatar);
-            holder.playerName.setText(player.getPlayer().name);
+            holder.playerName.setText(player.getPlayer().name.toLowerCase());
             if (!TextUtils.isEmpty(player.getPlayer().bio)) {
                 DribbbleUtils.parseAndSetText(holder.playerBio, player.getPlayer().bio);
             } else if (!TextUtils.isEmpty(player.getPlayer().location)) {

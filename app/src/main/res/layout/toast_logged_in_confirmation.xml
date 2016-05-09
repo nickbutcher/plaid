@@ -50,8 +50,11 @@
 
         <io.plaidapp.ui.widget.BaselineGridTextView
             android:id="@+id/name"
+            android:layout_marginEnd="@dimen/padding_normal"
+            android:paddingTop="@dimen/spacing_micro"
             android:textAppearance="@style/TextAppearance.CommentAuthor"
             tools:text="Nick B" />
 
     </GridLayout>
+
 </FrameLayout>

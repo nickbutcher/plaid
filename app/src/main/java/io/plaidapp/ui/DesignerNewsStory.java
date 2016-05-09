@@ -486,7 +486,7 @@ public class DesignerNewsStory extends Activity {
         });
 
         TextView storyPosterTime = (TextView) header.findViewById(R.id.story_poster_time);
-        SpannableString poster = new SpannableString("–" + story.user_display_name);
+        SpannableString poster = new SpannableString(story.user_display_name.toLowerCase());
         poster.setSpan(new TextAppearanceSpan(this, R.style.TextAppearance_CommentAuthor),
                 0, poster.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         CharSequence job = !TextUtils.isEmpty(story.user_job) ? "\n" + story.user_job : "";
@@ -813,7 +813,7 @@ public class DesignerNewsStory extends Activity {
                                 .into(new ImageSpanTarget(holder.comment, loadingSpan));
                     }
                 });
-                holder.author.setText(comment.user_display_name);
+                holder.author.setText(comment.user_display_name.toLowerCase());
                 holder.author.setOriginalPoster(isOP(comment.user_id));
                 if (comment.created_at != null) {
                     holder.timeAgo.setText(

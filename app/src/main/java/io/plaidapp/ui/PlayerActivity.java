@@ -173,7 +173,7 @@ public class PlayerActivity extends Activity {
                 .placeholder(R.drawable.avatar_placeholder)
                 .transform(circleTransform)
                 .into(avatar);
-        playerName.setText(player.name);
+        playerName.setText(player.name.toLowerCase());
         if (!TextUtils.isEmpty(player.bio)) {
             DribbbleUtils.parseAndSetText(bio, player.bio);
         } else {
