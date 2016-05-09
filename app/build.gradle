@@ -73,7 +73,7 @@ repositories {
 }
 
 ext {
-    supportLibVersion = '23.2.1'
+    supportLibVersion = '23.3.0'
 }
 
 dependencies {
