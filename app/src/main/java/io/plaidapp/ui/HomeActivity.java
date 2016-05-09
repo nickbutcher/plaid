@@ -75,8 +75,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import butterknife.Bind;
 import butterknife.BindInt;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.plaidapp.R;
@@ -106,13 +106,13 @@ public class HomeActivity extends Activity {
     private static final int RC_NEW_DESIGNER_NEWS_STORY = 4;
     private static final int RC_NEW_DESIGNER_NEWS_LOGIN = 5;
 
-    @Bind(R.id.drawer) DrawerLayout drawer;
-    @Bind(R.id.toolbar) Toolbar toolbar;
-    @Bind(R.id.grid) RecyclerView grid;
-    @Bind(R.id.fab) ImageButton fab;
-    @Bind(R.id.filters) RecyclerView filtersList;
-    @Bind(android.R.id.empty) ProgressBar loading;
-    @Nullable @Bind(R.id.no_connection) ImageView noConnection;
+    @BindView(R.id.drawer) DrawerLayout drawer;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.grid) RecyclerView grid;
+    @BindView(R.id.fab) ImageButton fab;
+    @BindView(R.id.filters) RecyclerView filtersList;
+    @BindView(android.R.id.empty) ProgressBar loading;
+    @Nullable @BindView(R.id.no_connection) ImageView noConnection;
     private TextView noFiltersEmptyText;
     private ImageButton fabPosting;
     private GridLayoutManager layoutManager;

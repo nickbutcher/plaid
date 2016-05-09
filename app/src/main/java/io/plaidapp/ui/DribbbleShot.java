@@ -79,8 +79,8 @@ import com.bumptech.glide.request.target.Target;
 import java.text.NumberFormat;
 import java.util.List;
 
-import butterknife.Bind;
 import butterknife.BindDimen;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.plaidapp.R;
 import io.plaidapp.data.api.dribbble.DribbbleService;
@@ -119,10 +119,10 @@ public class DribbbleShot extends Activity {
     private static final int RC_LOGIN_COMMENT = 1;
     private static final float SCRIM_ADJUSTMENT = 0.075f;
 
-    @Bind(R.id.draggable_frame) ElasticDragDismissFrameLayout draggableFrame;
-    @Bind(R.id.back) ImageButton back;
-    @Bind(R.id.shot) ParallaxScrimageView imageView;
-    @Bind(R.id.fab_heart) FABToggle fab;
+    @BindView(R.id.draggable_frame) ElasticDragDismissFrameLayout draggableFrame;
+    @BindView(R.id.back) ImageButton back;
+    @BindView(R.id.shot) ParallaxScrimageView imageView;
+    @BindView(R.id.fab_heart) FABToggle fab;
     private View shotSpacer;
     private View title;
     private View description;

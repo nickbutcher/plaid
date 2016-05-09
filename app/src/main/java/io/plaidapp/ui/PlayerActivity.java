@@ -41,8 +41,8 @@ import com.bumptech.glide.Glide;
 import java.text.NumberFormat;
 import java.util.List;
 
-import butterknife.Bind;
 import butterknife.BindInt;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.plaidapp.R;
@@ -81,17 +81,17 @@ public class PlayerActivity extends Activity {
     private Boolean following;
     private int followerCount;
 
-    @Bind(R.id.draggable_frame) ElasticDragDismissFrameLayout draggableFrame;
-    @Bind(R.id.player_description) ViewGroup playerDescription;
-    @Bind(R.id.avatar) ImageView avatar;
-    @Bind(R.id.player_name) TextView playerName;
-    @Bind(R.id.follow) Button follow;
-    @Bind(R.id.player_bio) TextView bio;
-    @Bind(R.id.shot_count) TextView shotCount;
-    @Bind(R.id.followers_count) TextView followersCount;
-    @Bind(R.id.likes_count) TextView likesCount;
-    @Bind(R.id.loading) ProgressBar loading;
-    @Bind(R.id.player_shots) RecyclerView shots;
+    @BindView(R.id.draggable_frame) ElasticDragDismissFrameLayout draggableFrame;
+    @BindView(R.id.player_description) ViewGroup playerDescription;
+    @BindView(R.id.avatar) ImageView avatar;
+    @BindView(R.id.player_name) TextView playerName;
+    @BindView(R.id.follow) Button follow;
+    @BindView(R.id.player_bio) TextView bio;
+    @BindView(R.id.shot_count) TextView shotCount;
+    @BindView(R.id.followers_count) TextView followersCount;
+    @BindView(R.id.likes_count) TextView likesCount;
+    @BindView(R.id.loading) ProgressBar loading;
+    @BindView(R.id.player_shots) RecyclerView shots;
     @BindInt(R.integer.num_columns) int columns;
 
     @Override
