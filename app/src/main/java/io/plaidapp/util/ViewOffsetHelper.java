@@ -16,23 +16,39 @@
 
 package io.plaidapp.util;
 
-import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.util.Property;
 import android.view.View;
-import android.view.ViewParent;
 
 /**
  * Utility helper for moving a {@link android.view.View} around using
  * {@link android.view.View#offsetLeftAndRight(int)} and
  * {@link android.view.View#offsetTopAndBottom(int)}.
- *
- * <p>Allows the setting of absolute offsets (similar to translationX/Y), in addition to relative
+ * <p>
+ *  Allows the setting of absolute offsets (similar to translationX/Y), in addition to relative
  * offsets. Reapplies offsets after a layout pass (as long as you call {@link #onViewLayout()}).
- *
- * <p>Adapted from the mDesign support library.
+ * <p>
+ * Adapted from the mDesign support library.
  */
 public class ViewOffsetHelper {
+
+    /**
+     * Animatable property
+     */
+    public static final Property<ViewOffsetHelper, Integer> OFFSET_Y = new AnimUtils
+            .IntProperty<ViewOffsetHelper>("topAndBottomOffset") {
+
+        @Override
+        public void setValue(ViewOffsetHelper viewOffsetHelper, int offset) {
+            viewOffsetHelper.setTopAndBottomOffset(offset);
+        }
+
+        @Override
+        public Integer get(ViewOffsetHelper viewOffsetHelper) {
+            return viewOffsetHelper.getTopAndBottomOffset();
+        }
+
+    };
 
     private final View mView;
 
@@ -46,7 +62,7 @@ public class ViewOffsetHelper {
     }
 
     public void onViewLayout() {
-        // Now grab the intended top
+        // Grab the intended top & left
         mLayoutTop = mView.getTop();
         mLayoutLeft = mView.getLeft();
 
@@ -124,40 +140,9 @@ public class ViewOffsetHelper {
         mOffsetLeft = mView.getLeft() - mLayoutLeft;
     }
 
-    /**
-     * Animatable property
-     */
-    public static final Property<ViewOffsetHelper, Integer> OFFSET_Y = new AnimUtils
-            .IntProperty<ViewOffsetHelper>("topAndBottomOffset") {
-
-        @Override
-        public void setValue(ViewOffsetHelper viewOffsetHelper, int offset) {
-            viewOffsetHelper.setTopAndBottomOffset(offset);
-        }
-
-        @Override
-        public Integer get(ViewOffsetHelper viewOffsetHelper) {
-            return viewOffsetHelper.getTopAndBottomOffset();
-        }
-    };
-
     private void updateOffsets() {
         ViewCompat.offsetTopAndBottom(mView, mOffsetTop - (mView.getTop() - mLayoutTop));
         ViewCompat.offsetLeftAndRight(mView, mOffsetLeft - (mView.getLeft() - mLayoutLeft));
-
-        // Manually invalidate the view and parent to make sure we get drawn pre-M
-        if (Build.VERSION.SDK_INT < 23) {
-            tickleInvalidationFlag(mView);
-            final ViewParent vp = mView.getParent();
-            if (vp instanceof View) {
-                tickleInvalidationFlag((View) vp);
-            }
-        }
     }
 
-    private static void tickleInvalidationFlag(View view) {
-        final float x = ViewCompat.getTranslationX(view);
-        ViewCompat.setTranslationY(view, x + 1);
-        ViewCompat.setTranslationY(view, x);
-    }
 }
