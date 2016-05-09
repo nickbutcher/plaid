@@ -81,7 +81,7 @@
         android:layout_width="wrap_content"
         android:gravity="end"
         android:layout_marginTop="@dimen/padding_normal"
-        android:paddingTop="@dimen/avatar_padding"
+        android:paddingTop="@dimen/spacing_normal"
         android:textAppearance="@style/TextAppearance.CommentAuthor"
         android:clickable="false"
         tools:text="—Nick B" />

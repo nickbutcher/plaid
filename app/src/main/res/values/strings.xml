@@ -91,14 +91,14 @@
     <!-- dribbble shot screen -->
     <!-- using strings for the number of views/likes as we run them through NumberFormat -->
     <plurals name="likes">
-        <item quantity="zero">no Likes</item>
-        <item quantity="one">%s Like</item>
-        <item quantity="other">%s Likes</item>
+        <item quantity="zero">no likes</item>
+        <item quantity="one">%s like</item>
+        <item quantity="other">%s likes</item>
     </plurals>
     <plurals name="views">
-        <item quantity="zero">no Views</item>
-        <item quantity="one">%s View</item>
-        <item quantity="other">%s Views</item>
+        <item quantity="zero">no views</item>
+        <item quantity="one">%s view</item>
+        <item quantity="other">%s views</item>
     </plurals>
     <string name="share">share</string>
     <string name="prospects_cant_post">Sorry but prospects cannot comment :(</string>
@@ -108,19 +108,19 @@
     <string name="follow">Follow</string>
     <string name="following">Following</string>
     <plurals name="shots">
-        <item quantity="zero">no Shots</item>
-        <item quantity="one">%s Shot</item>
-        <item quantity="other">%s Shots</item>
+        <item quantity="zero">no shots</item>
+        <item quantity="one">%s shot</item>
+        <item quantity="other">%s shots</item>
     </plurals>
     <plurals name="follower_count">
-        <item quantity="zero">no Followers</item>
-        <item quantity="one">%s Follower</item>
-        <item quantity="other">%s Followers</item>
+        <item quantity="zero">no followers</item>
+        <item quantity="one">%s follower</item>
+        <item quantity="other">%s followers</item>
     </plurals>
 
     <!-- dribbble player sheet -->
     <plurals name="fans">
-        <item quantity="zero">no Fans</item>
+        <item quantity="zero">No Fans</item>
         <item quantity="one">%s Fan</item>
         <item quantity="other">%s Fans</item>
     </plurals>

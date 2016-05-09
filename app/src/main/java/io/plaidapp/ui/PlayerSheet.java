@@ -306,7 +306,8 @@ public class PlayerSheet extends Activity {
             holder.timeAgo.setText(
                     DateUtils.getRelativeTimeSpanString(player.getDateCreated().getTime(),
                             System.currentTimeMillis(),
-                            DateUtils.SECOND_IN_MILLIS));
+                            DateUtils.SECOND_IN_MILLIS)
+                            .toString().toLowerCase());
         }
 
         @Override

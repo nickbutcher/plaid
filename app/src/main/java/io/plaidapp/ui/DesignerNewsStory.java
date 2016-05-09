@@ -492,7 +492,8 @@ public class DesignerNewsStory extends Activity {
         CharSequence job = !TextUtils.isEmpty(story.user_job) ? "\n" + story.user_job : "";
         CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(story.created_at.getTime(),
                 System.currentTimeMillis(),
-                DateUtils.SECOND_IN_MILLIS);
+                DateUtils.SECOND_IN_MILLIS)
+                .toString().toLowerCase();
         storyPosterTime.setText(TextUtils.concat(poster, job, "\n", timeAgo));
         ImageView avatar = (ImageView) header.findViewById(R.id.story_poster_avatar);
         if (!TextUtils.isEmpty(story.user_portrait_url)) {
@@ -819,7 +820,8 @@ public class DesignerNewsStory extends Activity {
                     holder.timeAgo.setText(
                             DateUtils.getRelativeTimeSpanString(comment.created_at.getTime(),
                                     System.currentTimeMillis(),
-                                    DateUtils.SECOND_IN_MILLIS));
+                                    DateUtils.SECOND_IN_MILLIS)
+                                    .toString().toLowerCase());
                 }
                 // FIXME updating drawable doesn't seem to be working, just create a new one
                 //((ThreadedCommentDrawable) holder.threadDepth.getDrawable())

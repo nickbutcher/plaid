@@ -383,7 +383,8 @@ public class DribbbleShot extends Activity {
             if (shot.created_at != null) {
                 shotTimeAgo.setText(DateUtils.getRelativeTimeSpanString(shot.created_at.getTime(),
                         System.currentTimeMillis(),
-                        DateUtils.SECOND_IN_MILLIS));
+                        DateUtils.SECOND_IN_MILLIS)
+                        .toString().toLowerCase());
             }
         } else {
             playerName.setVisibility(View.GONE);
@@ -933,7 +934,8 @@ public class DribbbleShot extends Activity {
             timeAgo.setText(comment.created_at == null ? "" :
                     DateUtils.getRelativeTimeSpanString(comment.created_at.getTime(),
                             System.currentTimeMillis(),
-                            DateUtils.SECOND_IN_MILLIS));
+                            DateUtils.SECOND_IN_MILLIS)
+                            .toString().toLowerCase());
             HtmlUtils.setTextWithNiceLinks(commentBody, comment.getParsedBody(commentBody));
 
             view.setActivated(position == expandedCommentPosition);
