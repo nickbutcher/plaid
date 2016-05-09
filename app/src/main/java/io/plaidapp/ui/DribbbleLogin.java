@@ -59,13 +59,16 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DribbbleLogin extends Activity {
+    private static final String STATE_LOGIN_FAILED = "loginFailed";
 
     boolean isDismissing = false;
+    boolean isLoginFailed = false;
     private ViewGroup container;
     private TextView message;
     private Button login;
     private ProgressBar loading;
     private DribbblePrefs dribbblePrefs;
+    private TextView loginFailed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +81,14 @@ public class DribbbleLogin extends Activity {
         message = (TextView) findViewById(R.id.login_message);
         login = (Button) findViewById(R.id.login);
         loading = (ProgressBar) findViewById(R.id.loading);
+        loginFailed = (TextView) container.findViewById(R.id.login_failed_message);
         loading.setVisibility(View.GONE);
         dribbblePrefs = DribbblePrefs.get(this);
+
+        if (savedInstanceState != null) {
+            isLoginFailed = savedInstanceState.getBoolean(STATE_LOGIN_FAILED, false);
+            loginFailed.setVisibility(isLoginFailed ? View.VISIBLE : View.GONE);
+        }
 
         checkAuthCallback(getIntent());
     }
@@ -106,10 +115,17 @@ public class DribbbleLogin extends Activity {
         dismiss(null);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putBoolean(STATE_LOGIN_FAILED, isLoginFailed);
+    }
+
     private void showLoading() {
         TransitionManager.beginDelayedTransition(container);
         message.setVisibility(View.GONE);
         login.setVisibility(View.GONE);
+        loginFailed.setVisibility(View.GONE);
         loading.setVisibility(View.VISIBLE);
     }
 
@@ -144,6 +160,11 @@ public class DribbbleLogin extends Activity {
         accessTokenCall.enqueue(new Callback<AccessToken>() {
             @Override
             public void onResponse(Call<AccessToken> call, Response<AccessToken> response) {
+                if (response.body() == null) {
+                    showLoginFailed();
+                    return;
+                }
+                isLoginFailed = false;
                 dribbblePrefs.setAccessToken(response.body().access_token);
                 showLoggedInUser();
                 setResult(Activity.RESULT_OK);
@@ -153,11 +174,15 @@ public class DribbbleLogin extends Activity {
             @Override
             public void onFailure(Call<AccessToken> call, Throwable t) {
                 Log.e(getClass().getCanonicalName(), t.getMessage(), t);
-                // TODO snackbar?
-                Toast.makeText(getApplicationContext(), "Login failed", Toast.LENGTH_LONG).show();
-                showLogin();
+                showLoginFailed();
             }
         });
+    }
+
+    private void showLoginFailed() {
+        isLoginFailed = true;
+        showLogin();
+        loginFailed.setVisibility(View.VISIBLE);
     }
 
     private void showLoggedInUser() {

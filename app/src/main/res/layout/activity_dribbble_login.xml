@@ -58,6 +58,15 @@
             android:drawablePadding="@dimen/spacing_micro"
             android:onClick="doLogin" />
 
+        <TextView
+            android:id="@+id/login_failed_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/error"
+            android:visibility="gone"
+            android:text="@string/dribbble_login_failed" />
+
         <include layout="@layout/loading" />
 
     </LinearLayout>
