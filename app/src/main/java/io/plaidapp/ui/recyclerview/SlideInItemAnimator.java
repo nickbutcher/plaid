@@ -73,7 +73,8 @@ public class SlideInItemAnimator extends DefaultItemAnimator {
     public void runPendingAnimations() {
         super.runPendingAnimations();
         if (!pendingAdds.isEmpty()) {
-            for (final RecyclerView.ViewHolder holder : pendingAdds) {
+            for (int i = pendingAdds.size() - 1; i >= 0; i--) {
+                final RecyclerView.ViewHolder holder = pendingAdds.get(i);
                 holder.itemView.animate()
                         .alpha(1f)
                         .translationX(0f)
@@ -89,17 +90,17 @@ public class SlideInItemAnimator extends DefaultItemAnimator {
                             public void onAnimationEnd(Animator animation) {
                                 animation.getListeners().remove(this);
                                 dispatchAddFinished(holder);
-                                pendingAdds.remove(holder);
                                 dispatchFinishedWhenDone();
                             }
 
                             @Override
                             public void onAnimationCancel(Animator animation) {
-                                endViewAnimation(holder.itemView);
+                                clearAnimatedValues(holder.itemView);
                             }
                         })
                         .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(
                                 holder.itemView.getContext()));
+                pendingAdds.remove(i);
             }
         }
     }
@@ -108,7 +109,8 @@ public class SlideInItemAnimator extends DefaultItemAnimator {
     public void endAnimation(RecyclerView.ViewHolder holder) {
         holder.itemView.animate().cancel();
         if (pendingAdds.remove(holder)) {
-            endViewAnimation(holder.itemView);
+            dispatchAddFinished(holder);
+            clearAnimatedValues(holder.itemView);
         }
         super.endAnimation(holder);
     }
@@ -117,7 +119,7 @@ public class SlideInItemAnimator extends DefaultItemAnimator {
     public void endAnimations() {
         for (int i = pendingAdds.size() - 1; i >= 0; i--) {
             final RecyclerView.ViewHolder holder = pendingAdds.get(i);
-            endViewAnimation(holder.itemView);
+            clearAnimatedValues(holder.itemView);
             dispatchAddFinished(holder);
             pendingAdds.remove(i);
         }
@@ -135,7 +137,7 @@ public class SlideInItemAnimator extends DefaultItemAnimator {
         }
     }
 
-    private void endViewAnimation(final View view) {
+    private void clearAnimatedValues(final View view) {
         view.setAlpha(1f);
         view.setTranslationX(0f);
         view.setTranslationY(0f);
