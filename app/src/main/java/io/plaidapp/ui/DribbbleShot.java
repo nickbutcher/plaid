@@ -34,6 +34,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.customtabs.CustomTabsIntent;
+import android.support.customtabs.CustomTabsService;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
@@ -72,6 +73,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindDimen;
@@ -83,6 +85,7 @@ import io.plaidapp.data.api.dribbble.model.Comment;
 import io.plaidapp.data.api.dribbble.model.Like;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.prefs.DribbblePrefs;
+import io.plaidapp.ui.span.CustomClickUrlSpan;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.widget.AuthorTextView;
 import io.plaidapp.ui.widget.CheckableImageButton;
@@ -142,7 +145,9 @@ public class DribbbleShot extends Activity {
     private boolean performingLike;
     private boolean allowComment;
     private CircleTransform circleTransform;
+    private CustomTabActivityHelper customTab;
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
+    private String[] possibleUrls;
     @BindDimen(R.dimen.large_avatar_size) int largeAvatarSize;
     @BindDimen(R.dimen.z_card) int cardElevation;
 
@@ -216,6 +221,26 @@ public class DribbbleShot extends Activity {
                 reportUrlError();
             }
         }
+        customTab = new CustomTabActivityHelper();
+        customTab.setConnectionCallback(customTabConnect);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        customTab.setConnectionCallback(null);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        customTab.bindCustomTabsService(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        customTab.unbindCustomTabsService(this);
     }
 
     @Override
@@ -305,6 +330,7 @@ public class DribbbleShot extends Activity {
             final Spanned descText = shot.getParsedDescription(
                     ContextCompat.getColorStateList(this, R.color.dribbble_links),
                     ContextCompat.getColor(this, R.color.dribbble_link_highlight));
+            setupClickListeners(descText);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 ((FabOverlapTextView) description).setText(descText);
             } else {
@@ -395,6 +421,18 @@ public class DribbbleShot extends Activity {
         checkLiked();
     }
 
+    private void setupClickListeners(Spanned descText) {
+        CustomClickUrlSpan[] urlSpans =
+                descText.getSpans(0, descText.length(), CustomClickUrlSpan.class);
+        possibleUrls = new String[urlSpans.length];
+
+        for (int i = 0; i < urlSpans.length; i++) {
+            CustomClickUrlSpan urlSpan = urlSpans[i];
+            urlSpan.setOnClickListener(urlSpanClick);
+            possibleUrls[i] = urlSpan.getURL();
+        }
+    }
+
     private void reportUrlError() {
         Snackbar.make(draggableFrame, R.string.bad_dribbble_shot_url, Snackbar.LENGTH_SHORT).show();
         draggableFrame.postDelayed(new Runnable() {
@@ -441,10 +479,18 @@ public class DribbbleShot extends Activity {
         }
     };
 
+    private CustomClickUrlSpan.OnClickListener urlSpanClick =
+            new CustomClickUrlSpan.OnClickListener() {
+        @Override
+        public void onClick(View view, String url) {
+            openLink(url);
+        }
+    };
+
     private void openLink(String url) {
         CustomTabActivityHelper.openCustomTab(
                 DribbbleShot.this,
-                new CustomTabsIntent.Builder()
+                new CustomTabsIntent.Builder(customTab.getSession())
                     .setToolbarColor(ContextCompat.getColor(DribbbleShot.this, R.color.dribbble))
                     .addDefaultShareMenuItem()
                     .build(),
@@ -613,6 +659,33 @@ public class DribbbleShot extends Activity {
                     .setDuration(50)
                     .setInterpolator(getLinearOutSlowInInterpolator(DribbbleShot.this));
         }
+    };
+
+    private final CustomTabActivityHelper.ConnectionCallback customTabConnect
+            = new CustomTabActivityHelper.ConnectionCallback() {
+
+        @Override
+        public void onCustomTabsConnected() {
+            List<Bundle> likelyUrlsBundle = new ArrayList<>();
+
+            //Add Main Url to Bundle list
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(CustomTabsService.KEY_URL, Uri.parse(shot.url));
+            likelyUrlsBundle.add(bundle);
+
+            //Add Urls in description to Bundle list.
+            if (possibleUrls != null) {
+                for (String url : possibleUrls) {
+                    bundle = new Bundle();
+                    bundle.putParcelable(CustomTabsService.KEY_URL, Uri.parse(url));
+                }
+            }
+
+            //Use low-confidence mayLaunchUrl
+            customTab.mayLaunchUrl(null, null, likelyUrlsBundle);
+        }
+
+        @Override public void onCustomTabsDisconnected() { }
     };
 
     private void loadComments() {
