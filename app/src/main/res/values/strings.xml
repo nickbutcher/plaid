@@ -78,6 +78,9 @@
     <string name="sign_up">Sign up</string>
     <string name="dn_login_action">Log in</string>
 
+    <!-- dribble login -->
+    <string name="dribbble_login_failed">Login failed</string>
+
     <!-- designer news story -->
     <string name="upvote_story">Upvote story</string>
     <!-- using strings for the number of views/likes as we run them through NumberFormat -->
