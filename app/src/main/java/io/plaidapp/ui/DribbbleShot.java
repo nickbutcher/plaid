@@ -39,6 +39,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.customtabs.CustomTabsIntent;
+import android.support.customtabs.CustomTabsService;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
@@ -77,6 +78,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 import java.text.NumberFormat;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindDimen;
@@ -147,6 +149,7 @@ public class DribbbleShot extends Activity {
     private boolean allowComment;
     private CircleTransform circleTransform;
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
+    private CustomTabActivityHelper customTab;
     @BindDimen(R.dimen.large_avatar_size) int largeAvatarSize;
     @BindDimen(R.dimen.z_card) int cardElevation;
 
@@ -221,6 +224,26 @@ public class DribbbleShot extends Activity {
                 reportUrlError();
             }
         }
+        customTab = new CustomTabActivityHelper();
+        customTab.setConnectionCallback(customTabConnect);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        customTab.setConnectionCallback(null);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        customTab.bindCustomTabsService(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        customTab.unbindCustomTabsService(this);
     }
 
     @Override
@@ -446,10 +469,23 @@ public class DribbbleShot extends Activity {
         }
     };
 
+    private final CustomTabActivityHelper.ConnectionCallback customTabConnect
+            = new CustomTabActivityHelper.ConnectionCallback() {
+
+        @Override
+        public void onCustomTabsConnected() {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(CustomTabsService.KEY_URL, Uri.parse(shot.url));
+            customTab.mayLaunchUrl(null, null, Collections.singletonList(bundle));
+        }
+
+        @Override public void onCustomTabsDisconnected() { }
+    };
+
     private void openLink(String url) {
         CustomTabActivityHelper.openCustomTab(
                 DribbbleShot.this,
-                new CustomTabsIntent.Builder()
+                new CustomTabsIntent.Builder(customTab.getSession())
                     .setToolbarColor(ContextCompat.getColor(DribbbleShot.this, R.color.dribbble))
                     .addDefaultShareMenuItem()
                     .build(),
