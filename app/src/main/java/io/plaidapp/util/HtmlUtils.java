@@ -67,15 +67,7 @@ public class HtmlUtils {
             spanned = spanned.delete(spanned.length() - 1, spanned.length());
         }
 
-        URLSpan[] urlSpans = spanned.getSpans(0, spanned.length(), URLSpan.class);
-        for (URLSpan urlSpan : urlSpans) {
-            int start = spanned.getSpanStart(urlSpan);
-            int end = spanned.getSpanEnd(urlSpan);
-            spanned.removeSpan(urlSpan);
-            spanned.setSpan(new TouchableUrlSpan(urlSpan.getURL(), linkTextColor,
-                    linkHighlightColor), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        return spanned;
+        return linkifyPlainLinks(spanned, linkTextColor, linkHighlightColor);
     }
 
     public static void parseAndSetText(TextView textView, String input) {
@@ -84,6 +76,25 @@ public class HtmlUtils {
                 textView.getHighlightColor()));
     }
 
+    private static SpannableStringBuilder linkifyPlainLinks(CharSequence input,
+                                                   ColorStateList linkTextColor,
+                                           @ColorInt int linkHighlightColor) {
+        final SpannableString plainLinks = new SpannableString(input); // copy of input
+        Linkify.addLinks(plainLinks, Linkify.WEB_URLS);
+
+        final URLSpan[] urlSpans = plainLinks.getSpans(0, plainLinks.length(), URLSpan.class);
+
+        // add any plain links to the output
+        final SpannableStringBuilder ssb = new SpannableStringBuilder(input);
+        for (URLSpan urlSpan : urlSpans) {
+            ssb.setSpan(new TouchableUrlSpan(urlSpan.getURL(), linkTextColor, linkHighlightColor),
+                    plainLinks.getSpanStart(urlSpan),
+                    plainLinks.getSpanEnd(urlSpan),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        return ssb;
+    }
     /**
      * Parse Markdown and plain-text links.
      * <p/>
@@ -101,23 +112,8 @@ public class HtmlUtils {
                                                        Bypass markdown,
                                                        Bypass.LoadImageCallback loadImageCallback) {
         CharSequence markedUp = markdown.markdownToSpannable(input, textView, loadImageCallback);
-        final SpannableString plainLinks = new SpannableString(markedUp); // copy of the md output
-        Linkify.addLinks(plainLinks, Linkify.WEB_URLS);
-        final URLSpan[] urlSpans = plainLinks.getSpans(0, plainLinks.length(), URLSpan.class);
-        if (urlSpans != null && urlSpans.length > 0) {
-            // add any plain links to the markdown output
-            final SpannableStringBuilder ssb = new SpannableStringBuilder(markedUp);
-            for (URLSpan urlSpan : urlSpans) {
-                ssb.setSpan(new TouchableUrlSpan(urlSpan.getURL(),
-                                textView.getLinkTextColors(),
-                                textView.getHighlightColor()),
-                        plainLinks.getSpanStart(urlSpan),
-                        plainLinks.getSpanEnd(urlSpan),
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            markedUp = ssb;
-        }
-        return markedUp;
+        return linkifyPlainLinks(
+                markedUp, textView.getLinkTextColors(), textView.getHighlightColor());
     }
 
     /**
