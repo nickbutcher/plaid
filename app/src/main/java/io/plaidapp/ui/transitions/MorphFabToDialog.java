@@ -21,13 +21,18 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
-import android.transition.ChangeBounds;
+import android.transition.ArcMotion;
+import android.transition.Transition;
 import android.transition.TransitionValues;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
 
 import io.plaidapp.R;
 import io.plaidapp.ui.drawable.MorphDrawable;
@@ -36,13 +41,15 @@ import io.plaidapp.util.AnimUtils;
 /**
  * A transition that morphs a circle into a rectangle, changing it's background color.
  */
-public class MorphFabToDialog extends ChangeBounds {
+public class MorphFabToDialog extends Transition {
 
-    private static final String PROPERTY_COLOR = "plaid:circleMorph:color";
-    private static final String PROPERTY_CORNER_RADIUS = "plaid:circleMorph:cornerRadius";
+    private static final String PROPNAME_COLOR = "plaid:fabMorph:color";
+    private static final String PROPNAME_BOUNDS = "plaid:fabMorph:bounds";
+    private static final String PROBNAME_CORNER_RADIUS = "plaid:fabMorph:cornerRadius";
     private static final String[] TRANSITION_PROPERTIES = {
-            PROPERTY_COLOR,
-            PROPERTY_CORNER_RADIUS
+            PROPNAME_COLOR,
+            PROPNAME_BOUNDS,
+            PROBNAME_CORNER_RADIUS
     };
     private @ColorInt int startColor = Color.TRANSPARENT;
     private int endCornerRadius;
@@ -82,48 +89,51 @@ public class MorphFabToDialog extends ChangeBounds {
 
     @Override
     public void captureStartValues(TransitionValues transitionValues) {
-        super.captureStartValues(transitionValues);
         final View view = transitionValues.view;
         if (view.getWidth() <= 0 || view.getHeight() <= 0) {
             return;
         }
-        transitionValues.values.put(PROPERTY_COLOR, startColor);
-        transitionValues.values.put(PROPERTY_CORNER_RADIUS,
+        transitionValues.values.put(PROPNAME_COLOR, startColor);
+        transitionValues.values.put(PROPNAME_BOUNDS, new Rect(view.getLeft(), view.getTop(),
+                view.getRight(), view.getBottom()));
+        transitionValues.values.put(PROBNAME_CORNER_RADIUS,
                 startCornerRadius >= 0 ? startCornerRadius : view.getHeight() / 2);
     }
 
     @Override
     public void captureEndValues(TransitionValues transitionValues) {
-        super.captureEndValues(transitionValues);
         final View view = transitionValues.view;
         if (view.getWidth() <= 0 || view.getHeight() <= 0) {
             return;
         }
-        transitionValues.values.put(PROPERTY_COLOR,
+        transitionValues.values.put(PROPNAME_COLOR,
                 ContextCompat.getColor(view.getContext(), R.color.background_light));
-        transitionValues.values.put(PROPERTY_CORNER_RADIUS, endCornerRadius);
+        transitionValues.values.put(PROPNAME_BOUNDS, new Rect(view.getLeft(), view.getTop(),
+                view.getRight(), view.getBottom()));
+        transitionValues.values.put(PROBNAME_CORNER_RADIUS, endCornerRadius);
     }
 
     @Override
     public Animator createAnimator(final ViewGroup sceneRoot,
                                    TransitionValues startValues,
                                    final TransitionValues endValues) {
-        Animator changeBounds = super.createAnimator(sceneRoot, startValues, endValues);
-        if (startValues == null || endValues == null || changeBounds == null) {
+        if (startValues == null || endValues == null) {
             return null;
         }
 
-        Integer startColor = (Integer) startValues.values.get(PROPERTY_COLOR);
-        Integer startCornerRadius = (Integer) startValues.values.get(PROPERTY_CORNER_RADIUS);
-        Integer endColor = (Integer) endValues.values.get(PROPERTY_COLOR);
-        Integer endCornerRadius = (Integer) endValues.values.get(PROPERTY_CORNER_RADIUS);
+
+
+        Integer startColor = (Integer) startValues.values.get(PROPNAME_COLOR);
+        Integer startCornerRadius = (Integer) startValues.values.get(PROBNAME_CORNER_RADIUS);
+        Integer endColor = (Integer) endValues.values.get(PROPNAME_COLOR);
+        Integer endCornerRadius = (Integer) endValues.values.get(PROBNAME_CORNER_RADIUS);
 
         if (startColor == null || startCornerRadius == null || endColor == null ||
                 endCornerRadius == null) {
             return null;
         }
 
-        MorphDrawable background = new MorphDrawable(startColor, startCornerRadius);
+        /*MorphDrawable background = new MorphDrawable(startColor, startCornerRadius);
         endValues.view.setBackground(background);
 
         Animator color = ObjectAnimator.ofArgb(background, background.COLOR, endColor);
@@ -152,7 +162,40 @@ public class MorphFabToDialog extends ChangeBounds {
         transition.playTogether(changeBounds, corners, color);
         transition.setDuration(300);
         transition.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(sceneRoot.getContext()));
-        return transition;
+        return transition;*/
+
+        Rect startBounds = (Rect) startValues.values.get(PROPNAME_BOUNDS);
+        Rect endBounds = (Rect) endValues.values.get(PROPNAME_BOUNDS);
+
+        final int translationX = startBounds.centerX() - endBounds.centerX();
+        final int translationY = startBounds.centerY() - endBounds.centerY();
+        endValues.view.setTranslationX(translationX);
+        endValues.view.setTranslationY(translationY);
+        ColorDrawable colorOverlay = new ColorDrawable(startColor);
+        colorOverlay.setBounds(0, 0, endBounds.width(), endBounds.height());
+        endValues.view.getOverlay().add(colorOverlay);
+
+        final Animator circularReveal = ViewAnimationUtils.createCircularReveal(endValues.view,
+                (endValues.view.getRight() - endValues.view.getLeft()) / 2,
+                (endValues.view.getBottom() - endValues.view.getTop()) / 2,
+                startBounds.width() / 2,
+                (float) Math.hypot(endBounds.width() / 2, endBounds.width() / 2));
+
+        ArcMotion arc = new ArcMotion();
+        arc.setMaximumAngle(50f);
+        final Animator translate = ObjectAnimator.ofFloat(
+                endValues.view,
+                View.TRANSLATION_X,
+                View.TRANSLATION_Y,
+                arc.getPath(translationX, translationY, 0, 0));
+
+        final Animator color = ObjectAnimator.ofArgb(colorOverlay, "color", Color.TRANSPARENT);
+
+        AnimatorSet transition = new AnimatorSet();
+        transition.playTogether(circularReveal, translate, color);
+        transition.setDuration(600L);
+        transition.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(sceneRoot.getContext()));
+        return new AnimUtils.NoPauseAnimator(transition);
     }
 
 }

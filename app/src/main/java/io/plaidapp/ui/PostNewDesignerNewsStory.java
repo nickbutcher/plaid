@@ -44,6 +44,7 @@ import io.plaidapp.R;
 import io.plaidapp.data.api.designernews.PostStoryService;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
+import io.plaidapp.ui.transitions.FabDialogReveal;
 import io.plaidapp.ui.widget.BottomSheet;
 import io.plaidapp.ui.widget.ObservableScrollView;
 import io.plaidapp.util.AnimUtils;
@@ -71,7 +72,7 @@ public class PostNewDesignerNewsStory extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_new_designer_news_story);
         ButterKnife.bind(this);
-        FabDialogMorphSetup.setupSharedEelementTransitions(this, bottomSheetContent, 0);
+        FabDialogReveal.setup(this, bottomSheetContent);
 
         bottomSheet.registerCallback(new BottomSheet.Callbacks() {
             @Override

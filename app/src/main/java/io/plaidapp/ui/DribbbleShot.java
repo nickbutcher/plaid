@@ -88,7 +88,7 @@ import io.plaidapp.data.api.dribbble.model.Comment;
 import io.plaidapp.data.api.dribbble.model.Like;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.prefs.DribbblePrefs;
-import io.plaidapp.ui.transitions.FabDialogMorphSetup;
+import io.plaidapp.ui.transitions.FabDialogReveal;
 import io.plaidapp.ui.widget.AuthorTextView;
 import io.plaidapp.ui.widget.CheckableImageButton;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
@@ -589,8 +589,8 @@ public class DribbbleShot extends Activity {
                 doLike();
             } else {
                 final Intent login = new Intent(DribbbleShot.this, DribbbleLogin.class);
-                login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR,
-                        ContextCompat.getColor(DribbbleShot.this, R.color.dribbble));
+                FabDialogReveal.addExtras(login, ContextCompat.getColor(DribbbleShot.this, R
+                        .color.dribbble), R.drawable.ic_heart_empty_56dp);
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation
                         (DribbbleShot.this, fab, getString(R.string.transition_dribbble_login));
                 startActivityForResult(login, RC_LOGIN_LIKE, options.toBundle());
@@ -821,8 +821,8 @@ public class DribbbleShot extends Activity {
             });
         } else {
             Intent login = new Intent(DribbbleShot.this, DribbbleLogin.class);
-            login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR, ContextCompat.getColor
-                    (this, R.color.background_light));
+            FabDialogReveal.addExtras(login, ContextCompat.getColor(DribbbleShot.this, R
+                    .color.background_light), R.drawable.ic_comment_add);
             ActivityOptions options =
                     ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this, postComment,
                             getString(R.string.transition_dribbble_login));

@@ -31,9 +31,9 @@ import io.plaidapp.util.AnimUtils;
 public class FabDialogMorphSetup {
 
     public static final String EXTRA_SHARED_ELEMENT_START_COLOR =
-            "EXTRA_SHARED_ELEMENT_START_COLOR";
+            "EXTRA_FAB_COLOR";
     public static final String EXTRA_SHARED_ELEMENT_START_CORNER_RADIUS =
-            "EXTRA_SHARED_ELEMENT_START_CORNER_RADIUS";
+            "EXTRA_FAB_ICON_RES_ID";
 
     private FabDialogMorphSetup() { }
 

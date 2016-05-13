@@ -49,7 +49,7 @@ import io.plaidapp.data.api.dribbble.DribbbleAuthService;
 import io.plaidapp.data.api.dribbble.model.AccessToken;
 import io.plaidapp.data.api.dribbble.model.User;
 import io.plaidapp.data.prefs.DribbblePrefs;
-import io.plaidapp.ui.transitions.FabDialogMorphSetup;
+import io.plaidapp.ui.transitions.FabDialogReveal;
 import io.plaidapp.util.ScrimUtil;
 import io.plaidapp.util.glide.CircleTransform;
 import retrofit2.Call;
@@ -74,8 +74,7 @@ public class DribbbleLogin extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_login);
-        FabDialogMorphSetup.setupSharedEelementTransitions(this, container,
-                getResources().getDimensionPixelSize(R.dimen.dialog_corners));
+        FabDialogReveal.setup(this, container);
 
         container = (ViewGroup) findViewById(R.id.container);
         message = (TextView) findViewById(R.id.login_message);
