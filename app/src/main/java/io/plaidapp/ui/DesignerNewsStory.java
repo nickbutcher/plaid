@@ -489,7 +489,8 @@ public class DesignerNewsStory extends Activity {
         SpannableString poster = new SpannableString(story.user_display_name.toLowerCase());
         poster.setSpan(new TextAppearanceSpan(this, R.style.TextAppearance_CommentAuthor),
                 0, poster.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        CharSequence job = !TextUtils.isEmpty(story.user_job) ? "\n" + story.user_job : "";
+        CharSequence job =
+                !TextUtils.isEmpty(story.user_job) ? "\n" + story.user_job.toLowerCase() : "";
         CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(story.created_at.getTime(),
                 System.currentTimeMillis(),
                 DateUtils.SECOND_IN_MILLIS)
