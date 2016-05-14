@@ -47,7 +47,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.style.TextAppearanceSpan;
-import android.transition.ArcMotion;
 import android.transition.Transition;
 import android.util.TypedValue;
 import android.view.View;
@@ -84,6 +83,7 @@ import io.plaidapp.data.api.designernews.model.StoryResponse;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.ui.drawable.ThreadedCommentDrawable;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
+import io.plaidapp.ui.transitions.GravityArcMotion;
 import io.plaidapp.ui.widget.AuthorTextView;
 import io.plaidapp.ui.widget.CollapsingTitleLayout;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
@@ -419,7 +419,7 @@ public class DesignerNewsStory extends Activity {
                 .setDuration(fabExpandDuration);
 
         // translate the placeholder ui back into position along an arc
-        ArcMotion arcMotion = new ArcMotion();
+        GravityArcMotion arcMotion = new GravityArcMotion();
         arcMotion.setMinimumVerticalAngle(70f);
         Path motionPath = arcMotion.getPath(translateX, translateY, 0, 0);
         Animator position = ObjectAnimator.ofFloat(fabExpand, View.TRANSLATION_X, View

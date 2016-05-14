@@ -22,7 +22,9 @@
     android:transitionOrdering="together">
 
     <changeBounds />
-    <arcMotion android:maximumAngle="50" />
+    <pathMotion
+        class="io.plaidapp.ui.transitions.GravityArcMotion"
+        android:maximumAngle="50" />
     <transition
         class="io.plaidapp.ui.transitions.LiftOff"
         android:elevation="@dimen/touch_raise" />

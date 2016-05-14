@@ -35,7 +35,7 @@
         <targets>
             <target android:targetId="@id/story_title_background" />
         </targets>
-        <arcMotion />
+        <pathMotion class="io.plaidapp.ui.transitions.GravityArcMotion" />
     </changeBounds>
 
 </transitionSet>
