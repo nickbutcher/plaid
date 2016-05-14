@@ -17,16 +17,16 @@
 
 <transitionSet
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="300"
     android:interpolator="@android:interpolator/fast_out_slow_in"
     android:transitionOrdering="together">
 
-    <changeBounds />
+    <changeBounds android:duration="300" />
     <pathMotion
         class="io.plaidapp.ui.transitions.GravityArcMotion"
         android:maximumAngle="50" />
     <transition
         class="io.plaidapp.ui.transitions.LiftOff"
+        android:duration="400"
         android:elevation="@dimen/touch_raise" />
 
 </transitionSet>
