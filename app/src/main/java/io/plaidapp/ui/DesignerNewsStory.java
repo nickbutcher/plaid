@@ -119,7 +119,7 @@ public class DesignerNewsStory extends Activity {
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
     @Nullable @BindView(R.id.backdrop_toolbar) CollapsingTitleLayout collapsingToolbar;
     @Nullable @BindView(R.id.story_title_background) PinnedOffsetView toolbarBackground;
-    private Button upvoteStory;
+    private TextView upvoteStory;
     private EditText enterComment;
     private ImageButton postComment;
     @BindInt(R.integer.fab_expand_duration) int fabExpandDuration;
@@ -462,7 +462,7 @@ public class DesignerNewsStory extends Activity {
             storyComment.setVisibility(View.GONE);
         }
 
-        upvoteStory = (Button) header.findViewById(R.id.story_vote_action);
+        upvoteStory = (TextView) header.findViewById(R.id.story_vote_action);
         upvoteStory.setText(getResources().getQuantityString(R.plurals.upvotes, story.vote_count,
                 NumberFormat.getInstance().format(story.vote_count)));
         upvoteStory.setOnClickListener(new View.OnClickListener() {
@@ -472,7 +472,7 @@ public class DesignerNewsStory extends Activity {
             }
         });
 
-        final Button share = (Button) header.findViewById(R.id.story_share_action);
+        final TextView share = (TextView) header.findViewById(R.id.story_share_action);
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
