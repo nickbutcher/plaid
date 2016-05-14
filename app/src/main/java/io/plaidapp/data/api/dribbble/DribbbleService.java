@@ -188,6 +188,21 @@ public interface DribbbleService {
                                   @Query("page") Integer page,
                                   @Query("per_page") Integer pageSize);
 
+    @GET("v1/teams/{team}/shots")
+    Call<List<Shot>> getTeamShots(@Path("team") String teamName,
+                                  @Query("page") Integer page,
+                                  @Query("per_page") Integer pageSize);
+
+    @GET("v1/teams/{team}/members")
+    Call<List<User>> getTeamMembers(@Path("team") long teamId,
+                                    @Query("page") Integer page,
+                                    @Query("per_page") Integer pageSize);
+
+    @GET("v1/teams/{team}/members")
+    Call<List<User>> getTeamMembers(@Path("team") String teamName,
+                                    @Query("page") Integer page,
+                                    @Query("per_page") Integer pageSize);
+
 
     /* Magic Constants */
 
