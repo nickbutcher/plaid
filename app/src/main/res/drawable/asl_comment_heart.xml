@@ -24,7 +24,7 @@
 
     <item
         android:id="@+id/not_liked"
-        android:drawable="@drawable/ic_heart_empty_24dp"/>
+        android:drawable="@drawable/ic_heart_empty_24dp" />
 
     <transition
         android:fromId="@id/not_liked"
@@ -42,6 +42,7 @@
                 android:animation="@animator/comment_fade_empty_heart" />
 
         </animated-vector>
+
     </transition>
 
 </animated-selector>

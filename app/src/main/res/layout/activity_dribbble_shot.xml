@@ -66,20 +66,16 @@
 
     </FrameLayout>
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/dribbble_comments"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/padding_normal"
         android:clipToPadding="false"
-        android:listSelector="@android:color/transparent"
-        android:divider="@null"
-        android:dividerHeight="@dimen/divider_height"
-        android:headerDividersEnabled="false"
-        android:footerDividersEnabled="true"
-        android:nestedScrollingEnabled="true"
-        android:overScrollMode="never"
-        android:overScrollFooter="@android:color/transparent" /> <!-- http://stackoverflow.com/a/24394230 -->
+        android:orientation="vertical"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="insideOverlay"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
     <io.plaidapp.ui.widget.FABToggle
         android:id="@+id/fab_heart"

@@ -34,11 +34,11 @@ import android.view.View;
 public class GridItemDividerDecoration extends RecyclerView.ItemDecoration {
 
     private final Class[] dividedClasses;
-    private final float dividerSize;
+    private final int dividerSize;
     private final Paint paint;
 
     public GridItemDividerDecoration(Class[] dividedClasses,
-                                     float dividerSize,
+                                     int dividerSize,
                                      @ColorInt int dividerColor) {
         this.dividedClasses = dividedClasses;
         this.dividerSize = dividerSize;
@@ -82,7 +82,6 @@ public class GridItemDividerDecoration extends RecyclerView.ItemDecoration {
                         bottom - dividerSize,
                         paint);
             }
-
         }
     }
 

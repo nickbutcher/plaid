@@ -112,7 +112,6 @@
         android:layout_below="@id/comment_text"
         android:src="@drawable/ic_reply"
         android:background="?android:selectableItemBackgroundBorderless"
-        android:stateListAnimator="@animator/reply"
         android:visibility="gone" />
 
 </io.plaidapp.ui.widget.ForegroundRelativeLayout>

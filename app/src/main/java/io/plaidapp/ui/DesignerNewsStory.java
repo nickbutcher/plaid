@@ -154,7 +154,8 @@ public class DesignerNewsStory extends Activity {
         designerNewsPrefs = DesignerNewsPrefs.get(this);
         layoutManager = new LinearLayoutManager(this);
         commentsList.setLayoutManager(layoutManager);
-        commentsList.setItemAnimator(new CommentAnimator());
+        commentsList.setItemAnimator(new CommentAnimator(
+                getResources().getInteger(R.integer.comment_expand_collapse_duration)));
         header = getLayoutInflater().inflate(
                 R.layout.designer_news_story_description, commentsList, false);
         bindDescription();
@@ -1062,6 +1063,12 @@ public class DesignerNewsStory extends Activity {
     }
 
     private static class CommentAnimator extends SlideInItemAnimator {
+
+        CommentAnimator(long addRemoveDuration) {
+            super();
+            setAddDuration(addRemoveDuration);
+            setRemoveDuration(addRemoveDuration);
+        }
 
         public static final int EXPAND_COMMENT = 1;
         public static final int COLLAPSE_COMMENT = 2;
