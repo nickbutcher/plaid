@@ -93,7 +93,7 @@ import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.transitions.FabDialogMorphSetup;
-import io.plaidapp.ui.transitions.FabDialogReveal;
+import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ViewUtils;
 
@@ -457,7 +457,7 @@ public class HomeActivity extends Activity {
     protected void fabClick() {
         if (designerNewsPrefs.isLoggedIn()) {
             Intent intent = new Intent(this, PostNewDesignerNewsStory.class);
-            FabDialogReveal.addExtras(intent,
+            FabTransform.addExtras(intent,
                     ContextCompat.getColor(this, R.color.accent), R.drawable.ic_add_dark);
             intent.putExtra(PostStoryService.EXTRA_BROADCAST_RESULT, true);
             registerPostStoryResultListener();

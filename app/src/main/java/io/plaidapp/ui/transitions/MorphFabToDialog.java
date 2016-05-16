@@ -22,17 +22,13 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
-import android.transition.ArcMotion;
-import android.transition.Transition;
+import android.transition.ChangeBounds;
 import android.transition.TransitionValues;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.view.animation.Interpolator;
 
 import io.plaidapp.R;
 import io.plaidapp.ui.drawable.MorphDrawable;
@@ -41,7 +37,7 @@ import io.plaidapp.util.AnimUtils;
 /**
  * A transition that morphs a circle into a rectangle, changing it's background color.
  */
-public class MorphFabToDialog extends Transition {
+public class MorphFabToDialog extends ChangeBounds {
 
     private static final String PROPNAME_COLOR = "plaid:fabMorph:color";
     private static final String PROPNAME_BOUNDS = "plaid:fabMorph:bounds";
@@ -89,6 +85,7 @@ public class MorphFabToDialog extends Transition {
 
     @Override
     public void captureStartValues(TransitionValues transitionValues) {
+        super.captureStartValues(transitionValues);
         final View view = transitionValues.view;
         if (view.getWidth() <= 0 || view.getHeight() <= 0) {
             return;
@@ -102,6 +99,7 @@ public class MorphFabToDialog extends Transition {
 
     @Override
     public void captureEndValues(TransitionValues transitionValues) {
+        super.captureEndValues(transitionValues);
         final View view = transitionValues.view;
         if (view.getWidth() <= 0 || view.getHeight() <= 0) {
             return;
@@ -115,34 +113,33 @@ public class MorphFabToDialog extends Transition {
 
     @Override
     public Animator createAnimator(final ViewGroup sceneRoot,
-                                   TransitionValues startValues,
+                                   final TransitionValues startValues,
                                    final TransitionValues endValues) {
-        if (startValues == null || endValues == null) {
+        final Animator changeBounds = super.createAnimator(sceneRoot, startValues, endValues);
+        if (startValues == null || endValues == null || changeBounds == null) {
             return null;
         }
 
-
-
-        Integer startColor = (Integer) startValues.values.get(PROPNAME_COLOR);
-        Integer startCornerRadius = (Integer) startValues.values.get(PROBNAME_CORNER_RADIUS);
-        Integer endColor = (Integer) endValues.values.get(PROPNAME_COLOR);
-        Integer endCornerRadius = (Integer) endValues.values.get(PROBNAME_CORNER_RADIUS);
+        final Integer startColor = (Integer) startValues.values.get(PROPNAME_COLOR);
+        final Integer startCornerRadius = (Integer) startValues.values.get(PROBNAME_CORNER_RADIUS);
+        final Integer endColor = (Integer) endValues.values.get(PROPNAME_COLOR);
+        final Integer endCornerRadius = (Integer) endValues.values.get(PROBNAME_CORNER_RADIUS);
 
         if (startColor == null || startCornerRadius == null || endColor == null ||
                 endCornerRadius == null) {
             return null;
         }
 
-        /*MorphDrawable background = new MorphDrawable(startColor, startCornerRadius);
+        final MorphDrawable background = new MorphDrawable(startColor, startCornerRadius);
         endValues.view.setBackground(background);
 
-        Animator color = ObjectAnimator.ofArgb(background, background.COLOR, endColor);
-        Animator corners = ObjectAnimator.ofFloat(background, background.CORNER_RADIUS,
+        final Animator color = ObjectAnimator.ofArgb(background, background.COLOR, endColor);
+        final Animator corners = ObjectAnimator.ofFloat(background, background.CORNER_RADIUS,
                 endCornerRadius);
 
         // ease in the dialog's child views (slide up & fade in)
         if (endValues.view instanceof ViewGroup) {
-            ViewGroup vg = (ViewGroup) endValues.view;
+            final ViewGroup vg = (ViewGroup) endValues.view;
             float offset = vg.getHeight() / 3;
             for (int i = 0; i < vg.getChildCount(); i++) {
                 View v = vg.getChildAt(i);
@@ -158,44 +155,11 @@ public class MorphFabToDialog extends Transition {
             }
         }
 
-        AnimatorSet transition = new AnimatorSet();
+        final AnimatorSet transition = new AnimatorSet();
         transition.playTogether(changeBounds, corners, color);
         transition.setDuration(300);
         transition.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(sceneRoot.getContext()));
-        return transition;*/
-
-        Rect startBounds = (Rect) startValues.values.get(PROPNAME_BOUNDS);
-        Rect endBounds = (Rect) endValues.values.get(PROPNAME_BOUNDS);
-
-        final int translationX = startBounds.centerX() - endBounds.centerX();
-        final int translationY = startBounds.centerY() - endBounds.centerY();
-        endValues.view.setTranslationX(translationX);
-        endValues.view.setTranslationY(translationY);
-        ColorDrawable colorOverlay = new ColorDrawable(startColor);
-        colorOverlay.setBounds(0, 0, endBounds.width(), endBounds.height());
-        endValues.view.getOverlay().add(colorOverlay);
-
-        final Animator circularReveal = ViewAnimationUtils.createCircularReveal(endValues.view,
-                (endValues.view.getRight() - endValues.view.getLeft()) / 2,
-                (endValues.view.getBottom() - endValues.view.getTop()) / 2,
-                startBounds.width() / 2,
-                (float) Math.hypot(endBounds.width() / 2, endBounds.width() / 2));
-
-        ArcMotion arc = new ArcMotion();
-        arc.setMaximumAngle(50f);
-        final Animator translate = ObjectAnimator.ofFloat(
-                endValues.view,
-                View.TRANSLATION_X,
-                View.TRANSLATION_Y,
-                arc.getPath(translationX, translationY, 0, 0));
-
-        final Animator color = ObjectAnimator.ofArgb(colorOverlay, "color", Color.TRANSPARENT);
-
-        AnimatorSet transition = new AnimatorSet();
-        transition.playTogether(circularReveal, translate, color);
-        transition.setDuration(600L);
-        transition.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(sceneRoot.getContext()));
-        return new AnimUtils.NoPauseAnimator(transition);
+        return transition;
     }
 
 }

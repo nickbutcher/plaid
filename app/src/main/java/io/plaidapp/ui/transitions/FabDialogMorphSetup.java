@@ -31,14 +31,14 @@ import io.plaidapp.util.AnimUtils;
 public class FabDialogMorphSetup {
 
     public static final String EXTRA_SHARED_ELEMENT_START_COLOR =
-            "EXTRA_FAB_COLOR";
+            "EXTRA_SHARED_ELEMENT_START_COLOR";
     public static final String EXTRA_SHARED_ELEMENT_START_CORNER_RADIUS =
-            "EXTRA_FAB_ICON_RES_ID";
+            "EXTRA_SHARED_ELEMENT_START_CORNER_RADIUS";
 
     private FabDialogMorphSetup() { }
 
     /**
-     * Configure the shared element transitions for morphin from a fab <-> dialog. We need to do
+     * Configure the shared element transitions for morphing from a fab <-> dialog. We need to do
      * this in code rather than declaratively as we need to supply the color to transition from/to
      * and the dialog corner radius which is dynamically supplied depending upon where this screen
      * is launched from.

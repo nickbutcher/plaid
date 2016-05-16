@@ -17,9 +17,9 @@
 
 <resources>
 
-    <declare-styleable name="FabDialogReveal">
-        <attr name="android:color" />
-        <attr name="android:icon" />
+    <declare-styleable name="FabTransform">
+        <attr name="fabColor" format="color" />
+        <attr name="fabIcon" format="reference" />
     </declare-styleable>
 
 </resources>

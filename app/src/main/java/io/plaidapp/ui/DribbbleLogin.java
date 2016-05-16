@@ -49,7 +49,8 @@ import io.plaidapp.data.api.dribbble.DribbbleAuthService;
 import io.plaidapp.data.api.dribbble.model.AccessToken;
 import io.plaidapp.data.api.dribbble.model.User;
 import io.plaidapp.data.prefs.DribbblePrefs;
-import io.plaidapp.ui.transitions.FabDialogReveal;
+import io.plaidapp.ui.transitions.FabDialogMorphSetup;
+import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.util.ScrimUtil;
 import io.plaidapp.util.glide.CircleTransform;
 import retrofit2.Call;
@@ -74,7 +75,6 @@ public class DribbbleLogin extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_login);
-        FabDialogReveal.setup(this, container);
 
         container = (ViewGroup) findViewById(R.id.container);
         message = (TextView) findViewById(R.id.login_message);
@@ -83,6 +83,11 @@ public class DribbbleLogin extends Activity {
         loginFailed = (TextView) container.findViewById(R.id.login_failed_message);
         loading.setVisibility(View.GONE);
         dribbblePrefs = DribbblePrefs.get(this);
+
+        if (!FabTransform.setup(this, container)) {
+            FabDialogMorphSetup.setupSharedEelementTransitions(this, container,
+                    getResources().getDimensionPixelSize(R.dimen.dialog_corners));
+        }
 
         if (savedInstanceState != null) {
             isLoginFailed = savedInstanceState.getBoolean(STATE_LOGIN_FAILED, false);

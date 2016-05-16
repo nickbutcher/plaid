@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,13 +52,15 @@ import io.plaidapp.util.AnimUtils;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
 /**
- * A transition between a FAB & a dialog using a circular reveal and following an arced path.
+ * A transition between a FAB & another surface using a circular reveal moving along an arc.
+ * <p>
+ * See: https://www.google.com/design/spec/motion/transforming-material.html#transforming-material-radial-transformation
  */
-public class FabDialogReveal extends Transition {
+public class FabTransform extends Transition {
 
     private static final String EXTRA_FAB_COLOR = "EXTRA_FAB_COLOR";
     private static final String EXTRA_FAB_ICON_RES_ID = "EXTRA_FAB_ICON_RES_ID";
-    private static final String PROP_BOUNDS = "plaid:fabDialogReveal:bounds";
+    private static final String PROP_BOUNDS = "plaid:fabTransform:bounds";
     private static final String[] TRANSITION_PROPERTIES = {
             PROP_BOUNDS
     };
@@ -66,45 +68,55 @@ public class FabDialogReveal extends Transition {
     private final int color;
     private final int icon;
 
-    public FabDialogReveal(@ColorInt int fabColor, @DrawableRes int iconResId) {
+    public FabTransform(@ColorInt int fabColor, @DrawableRes int fabIconResId) {
         color = fabColor;
-        icon = iconResId;
+        icon = fabIconResId;
         setPathMotion(new GravityArcMotion());
     }
 
-    public FabDialogReveal(Context context, AttributeSet attrs) {
+    public FabTransform(Context context, AttributeSet attrs) {
         TypedArray a = null;
         try {
-            a = context.obtainStyledAttributes(attrs, R.styleable.FabDialogReveal);
-            if (!a.hasValue(R.styleable.FabDialogReveal_android_color)
-                    || !a.hasValue(R.styleable.FabDialogReveal_android_icon)) {
+            a = context.obtainStyledAttributes(attrs, R.styleable.FabTransform);
+            if (!a.hasValue(R.styleable.FabTransform_fabColor)
+                    || !a.hasValue(R.styleable.FabTransform_fabIcon)) {
                 throw new IllegalArgumentException("Must provide both color & icon.");
             }
-            color = a.getColor(R.styleable.FabDialogReveal_android_color, Color.TRANSPARENT);
-            icon = a.getResourceId(R.styleable.FabDialogReveal_android_icon, 0);
+            color = a.getColor(R.styleable.FabTransform_fabColor, Color.TRANSPARENT);
+            icon = a.getResourceId(R.styleable.FabTransform_fabIcon, 0);
             setPathMotion(new GravityArcMotion());
         } finally {
             a.recycle();
         }
     }
 
+    /**
+     * Configure {@code intent} with the extras needed to initialize this transition.
+     */
     public static void addExtras(@NonNull Intent intent, @ColorInt int fabColor,
-                                 @DrawableRes int iconResId) {
-        intent.putExtra(FabDialogReveal.EXTRA_FAB_COLOR, fabColor);
-        intent.putExtra(FabDialogReveal.EXTRA_FAB_ICON_RES_ID, iconResId);
+                                 @DrawableRes int fabIconResId) {
+        intent.putExtra(EXTRA_FAB_COLOR, fabColor);
+        intent.putExtra(EXTRA_FAB_ICON_RES_ID, fabIconResId);
     }
 
-    public static void setup(@NonNull Activity activity, @Nullable View target) {
+    /**
+     * Create a {@link FabTransform} from the supplied {@code activity} extras and set as its
+     * shared element enter/return transition.
+     */
+    public static boolean setup(@NonNull Activity activity, @Nullable View target) {
         final Intent intent = activity.getIntent();
-        if (!intent.hasExtra(EXTRA_FAB_COLOR) || !intent.hasExtra(EXTRA_FAB_ICON_RES_ID)) return;
-        final int color = intent.
-                getIntExtra(EXTRA_FAB_COLOR, Color.TRANSPARENT);
+        if (!intent.hasExtra(EXTRA_FAB_COLOR) || !intent.hasExtra(EXTRA_FAB_ICON_RES_ID)) {
+            return false;
+        }
+
+        final int color = intent.getIntExtra(EXTRA_FAB_COLOR, Color.TRANSPARENT);
         final int icon = intent.getIntExtra(EXTRA_FAB_ICON_RES_ID, -1);
-        final FabDialogReveal sharedEnter = new FabDialogReveal(color, icon);
+        final FabTransform sharedEnter = new FabTransform(color, icon);
         if (target != null) {
             sharedEnter.addTarget(target);
         }
         activity.getWindow().setSharedElementEnterTransition(sharedEnter);
+        return true;
     }
 
     @Override
@@ -124,22 +136,22 @@ public class FabDialogReveal extends Transition {
 
     @Override
     public Animator createAnimator(final ViewGroup sceneRoot,
-                                   TransitionValues startValues,
+                                   final TransitionValues startValues,
                                    final TransitionValues endValues) {
         if (startValues == null || endValues == null)  return null;
 
         final Rect startBounds = (Rect) startValues.values.get(PROP_BOUNDS);
         final Rect endBounds = (Rect) endValues.values.get(PROP_BOUNDS);
 
-        final boolean fabToDialog = endBounds.width() > startBounds.width();
+        final boolean fromFab = endBounds.width() > startBounds.width();
         final View view = endValues.view;
-        final Rect dialogBounds = fabToDialog ? endBounds : startBounds;
-        final Rect fabBounds = fabToDialog ? startBounds : endBounds;
+        final Rect dialogBounds = fromFab ? endBounds : startBounds;
+        final Rect fabBounds = fromFab ? startBounds : endBounds;
         final Interpolator fastOutSlowInInterpolator =
                 AnimUtils.getFastOutSlowInInterpolator(sceneRoot.getContext());
 
-        if (!fabToDialog) {
-            // force measure / layout the dialog back to it's orig bounds
+        if (!fromFab) {
+            // Force measure / layout the dialog back to it's orig bounds
             view.measure(
                     makeMeasureSpec(startBounds.width(), View.MeasureSpec.EXACTLY),
                     makeMeasureSpec(startBounds.height(), View.MeasureSpec.EXACTLY));
@@ -148,16 +160,18 @@ public class FabDialogReveal extends Transition {
 
         final int translationX = startBounds.centerX() - endBounds.centerX();
         final int translationY = startBounds.centerY() - endBounds.centerY();
-        if (fabToDialog) {
+        if (fromFab) {
             view.setTranslationX(translationX);
             view.setTranslationY(translationY);
         }
 
+        // Add a color overlay to fake appearance of the FAB
         final ColorDrawable fabColor = new ColorDrawable(color);
         fabColor.setBounds(0, 0, dialogBounds.width(), dialogBounds.height());
-        if (!fabToDialog) fabColor.setAlpha(0);
+        if (!fromFab) fabColor.setAlpha(0);
         view.getOverlay().add(fabColor);
 
+        // Add an icon overlay again to fake the appearance of the FAB
         final Drawable fabIcon =
                 ContextCompat.getDrawable(sceneRoot.getContext(), icon).mutate();
         final int iconLeft = (dialogBounds.width() - fabIcon.getIntrinsicWidth()) / 2;
@@ -165,11 +179,12 @@ public class FabDialogReveal extends Transition {
         fabIcon.setBounds(iconLeft, iconTop,
                 iconLeft + fabIcon.getIntrinsicWidth(),
                 iconTop + fabIcon.getIntrinsicHeight());
-        if (!fabToDialog) fabIcon.setAlpha(0);
+        if (!fromFab) fabIcon.setAlpha(0);
         view.getOverlay().add(fabIcon);
 
+        // Circular clip from/to the FAB size
         final Animator circularReveal;
-        if (fabToDialog) {
+        if (fromFab) {
             circularReveal = ViewAnimationUtils.createCircularReveal(view,
                     (view.getRight() - view.getLeft()) / 2,
                     (view.getBottom() - view.getTop()) / 2,
@@ -183,6 +198,8 @@ public class FabDialogReveal extends Transition {
                     (view.getBottom() - view.getTop()) / 2,
                     (float) Math.hypot(startBounds.width() / 2, startBounds.width() / 2),
                     endBounds.width() / 2);
+
+            // Persist the end clip i.e. stay at FAB size after the reveal has run
             circularReveal.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -203,15 +220,17 @@ public class FabDialogReveal extends Transition {
         }
         circularReveal.setDuration(240L);
 
+        // Translate to end position along an arc
         final Animator translate = ObjectAnimator.ofFloat(
                 view,
                 View.TRANSLATION_X,
                 View.TRANSLATION_Y,
-                fabToDialog ? getPathMotion().getPath(translationX, translationY, 0, 0)
+                fromFab ? getPathMotion().getPath(translationX, translationY, 0, 0)
                         : getPathMotion().getPath(0, 0, -translationX, -translationY));
         translate.setDuration(240L);
         translate.setInterpolator(fastOutSlowInInterpolator);
 
+        // Fade contents of non-FAB view in/out
         List<Animator> fadeContents = null;
         if (view instanceof ViewGroup) {
             final ViewGroup vg = ((ViewGroup) view);
@@ -219,8 +238,8 @@ public class FabDialogReveal extends Transition {
             for (int i = vg.getChildCount() - 1; i >= 0; i--) {
                 final View child = vg.getChildAt(i);
                 final Animator fade =
-                        ObjectAnimator.ofFloat(child, View.ALPHA, fabToDialog ? 1f : 0f);
-                if (fabToDialog) {
+                        ObjectAnimator.ofFloat(child, View.ALPHA, fromFab ? 1f : 0f);
+                if (fromFab) {
                     child.setAlpha(0f);
                 }
                 fade.setDuration(160L);
@@ -229,9 +248,10 @@ public class FabDialogReveal extends Transition {
             }
         }
 
-        final Animator colorFade = ObjectAnimator.ofArgb(fabColor, "alpha", fabToDialog ? 0 : 255);
-        final Animator iconFade = ObjectAnimator.ofInt(fabIcon, "alpha", fabToDialog ? 0 : 255);
-        if (!fabToDialog) {
+        // Fade in/out the fab color & icon overlays
+        final Animator colorFade = ObjectAnimator.ofArgb(fabColor, "alpha", fromFab ? 0 : 255);
+        final Animator iconFade = ObjectAnimator.ofInt(fabIcon, "alpha", fromFab ? 0 : 255);
+        if (!fromFab) {
             colorFade.setStartDelay(120L);
             iconFade.setStartDelay(120L);
         }
@@ -240,13 +260,15 @@ public class FabDialogReveal extends Transition {
         colorFade.setInterpolator(fastOutSlowInInterpolator);
         iconFade.setInterpolator(fastOutSlowInInterpolator);
 
+        // Run all animations together
         final AnimatorSet transition = new AnimatorSet();
         transition.playTogether(circularReveal, translate, colorFade, iconFade);
         transition.playTogether(fadeContents);
-        if (fabToDialog) {
+        if (fromFab) {
             transition.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
+                    // Clean up
                     view.getOverlay().clear();
                 }
             });
