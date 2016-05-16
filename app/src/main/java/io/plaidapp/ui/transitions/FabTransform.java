@@ -60,6 +60,7 @@ public class FabTransform extends Transition {
 
     private static final String EXTRA_FAB_COLOR = "EXTRA_FAB_COLOR";
     private static final String EXTRA_FAB_ICON_RES_ID = "EXTRA_FAB_ICON_RES_ID";
+    private static final long DEFAULT_DURATION = 240L;
     private static final String PROP_BOUNDS = "plaid:fabTransform:bounds";
     private static final String[] TRANSITION_PROPERTIES = {
             PROP_BOUNDS
@@ -72,9 +73,11 @@ public class FabTransform extends Transition {
         color = fabColor;
         icon = fabIconResId;
         setPathMotion(new GravityArcMotion());
+        setDuration(DEFAULT_DURATION);
     }
 
     public FabTransform(Context context, AttributeSet attrs) {
+        super(context, attrs);
         TypedArray a = null;
         try {
             a = context.obtainStyledAttributes(attrs, R.styleable.FabTransform);
@@ -85,6 +88,9 @@ public class FabTransform extends Transition {
             color = a.getColor(R.styleable.FabTransform_fabColor, Color.TRANSPARENT);
             icon = a.getResourceId(R.styleable.FabTransform_fabIcon, 0);
             setPathMotion(new GravityArcMotion());
+            if (getDuration() < 0) {
+                setDuration(DEFAULT_DURATION);
+            }
         } finally {
             a.recycle();
         }
@@ -149,6 +155,9 @@ public class FabTransform extends Transition {
         final Rect fabBounds = fromFab ? startBounds : endBounds;
         final Interpolator fastOutSlowInInterpolator =
                 AnimUtils.getFastOutSlowInInterpolator(sceneRoot.getContext());
+        final long duration = getDuration();
+        final long halfDuration = duration / 2;
+        final long twoThirdsDuration = 2 / 3 * duration;
 
         if (!fromFab) {
             // Force measure / layout the dialog back to it's orig bounds
@@ -218,7 +227,7 @@ public class FabTransform extends Transition {
             circularReveal.setInterpolator(
                     AnimUtils.getLinearOutSlowInInterpolator(sceneRoot.getContext()));
         }
-        circularReveal.setDuration(240L);
+        circularReveal.setDuration(duration);
 
         // Translate to end position along an arc
         final Animator translate = ObjectAnimator.ofFloat(
@@ -227,7 +236,7 @@ public class FabTransform extends Transition {
                 View.TRANSLATION_Y,
                 fromFab ? getPathMotion().getPath(translationX, translationY, 0, 0)
                         : getPathMotion().getPath(0, 0, -translationX, -translationY));
-        translate.setDuration(240L);
+        translate.setDuration(duration);
         translate.setInterpolator(fastOutSlowInInterpolator);
 
         // Fade contents of non-FAB view in/out
@@ -242,7 +251,7 @@ public class FabTransform extends Transition {
                 if (fromFab) {
                     child.setAlpha(0f);
                 }
-                fade.setDuration(160L);
+                fade.setDuration(twoThirdsDuration);
                 fade.setInterpolator(fastOutSlowInInterpolator);
                 fadeContents.add(fade);
             }
@@ -252,11 +261,11 @@ public class FabTransform extends Transition {
         final Animator colorFade = ObjectAnimator.ofArgb(fabColor, "alpha", fromFab ? 0 : 255);
         final Animator iconFade = ObjectAnimator.ofInt(fabIcon, "alpha", fromFab ? 0 : 255);
         if (!fromFab) {
-            colorFade.setStartDelay(120L);
-            iconFade.setStartDelay(120L);
+            colorFade.setStartDelay(halfDuration);
+            iconFade.setStartDelay(halfDuration);
         }
-        colorFade.setDuration(120L);
-        iconFade.setDuration(120L);
+        colorFade.setDuration(halfDuration);
+        iconFade.setDuration(halfDuration);
         colorFade.setInterpolator(fastOutSlowInInterpolator);
         iconFade.setInterpolator(fastOutSlowInInterpolator);
 

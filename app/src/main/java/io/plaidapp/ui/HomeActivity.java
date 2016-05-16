@@ -92,8 +92,8 @@ import io.plaidapp.data.prefs.SourceManager;
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
-import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.transitions.FabTransform;
+import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ViewUtils;
 
@@ -149,13 +149,14 @@ public class HomeActivity extends Activity {
         filtersAdapter = new FilterAdapter(this, SourceManager.getSources(this),
                 new FilterAdapter.FilterAuthoriser() {
             @Override
-            public void requestDribbbleAuthorisation(View sharedElemeent, Source forSource) {
+            public void requestDribbbleAuthorisation(View sharedElement, Source forSource) {
                 Intent login = new Intent(HomeActivity.this, DribbbleLogin.class);
-                login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR,
-                        ContextCompat.getColor(HomeActivity.this, R.color.background_dark));
+                MorphTransform.addExtras(login,
+                        ContextCompat.getColor(HomeActivity.this, R.color.background_dark),
+                        sharedElement.getHeight() / 2);
                 ActivityOptions options =
                         ActivityOptions.makeSceneTransitionAnimation(HomeActivity.this,
-                                sharedElemeent, getString(R.string.transition_dribbble_login));
+                                sharedElement, getString(R.string.transition_dribbble_login));
                 startActivityForResult(login,
                         getAuthSourceRequestCode(forSource), options.toBundle());
             }
@@ -466,8 +467,8 @@ public class HomeActivity extends Activity {
             startActivityForResult(intent, RC_NEW_DESIGNER_NEWS_STORY, options.toBundle());
         } else {
             Intent intent = new Intent(this, DesignerNewsLogin.class);
-            intent.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR,
-                    ContextCompat.getColor(this, R.color.accent));
+            FabTransform.addExtras(intent,
+                    ContextCompat.getColor(this, R.color.accent), R.drawable.ic_add_dark);
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, fab,
                     getString(R.string.transition_designer_news_login));
             startActivityForResult(intent, RC_NEW_DESIGNER_NEWS_LOGIN, options.toBundle());

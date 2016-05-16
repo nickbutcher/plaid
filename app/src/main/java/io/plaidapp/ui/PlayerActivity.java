@@ -53,7 +53,7 @@ import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.data.prefs.DribbblePrefs;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
-import io.plaidapp.ui.transitions.FabDialogMorphSetup;
+import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.util.DribbbleUtils;
 import io.plaidapp.util.ViewUtils;
@@ -342,9 +342,8 @@ public class PlayerActivity extends Activity {
             }
         } else {
             Intent login = new Intent(this, DribbbleLogin.class);
-            login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR,
-                    ContextCompat.getColor(this, R.color.dribbble));
-            login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_CORNER_RADIUS,
+            MorphTransform.addExtras(login,
+                    ContextCompat.getColor(this, R.color.dribbble),
                     getResources().getDimensionPixelSize(R.dimen.dialog_corners));
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation
                     (this, follow, getString(R.string.transition_dribbble_login));

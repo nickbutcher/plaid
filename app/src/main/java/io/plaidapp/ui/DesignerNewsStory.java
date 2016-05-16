@@ -82,8 +82,8 @@ import io.plaidapp.data.api.designernews.model.Story;
 import io.plaidapp.data.api.designernews.model.StoryResponse;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.ui.drawable.ThreadedCommentDrawable;
-import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.transitions.GravityArcMotion;
+import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.ui.widget.AuthorTextView;
 import io.plaidapp.ui.widget.CollapsingTitleLayout;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
@@ -584,8 +584,8 @@ public class DesignerNewsStory extends Activity {
     private void needsLogin(View triggeringView, int requestCode) {
         Intent login = new Intent(DesignerNewsStory.this,
                 DesignerNewsLogin.class);
-        login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR,
-                ContextCompat.getColor(DesignerNewsStory.this, R.color.background_light));
+        MorphTransform.addExtras(login, ContextCompat.getColor(this, R.color.background_light),
+                triggeringView.getHeight() / 2);
         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
                 DesignerNewsStory.this,
                 triggeringView, getString(R.string.transition_designer_news_login));

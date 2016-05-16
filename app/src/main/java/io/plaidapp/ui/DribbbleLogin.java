@@ -49,8 +49,8 @@ import io.plaidapp.data.api.dribbble.DribbbleAuthService;
 import io.plaidapp.data.api.dribbble.model.AccessToken;
 import io.plaidapp.data.api.dribbble.model.User;
 import io.plaidapp.data.prefs.DribbblePrefs;
-import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.transitions.FabTransform;
+import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.util.ScrimUtil;
 import io.plaidapp.util.glide.CircleTransform;
 import retrofit2.Call;
@@ -60,6 +60,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DribbbleLogin extends Activity {
+
     private static final String STATE_LOGIN_FAILED = "loginFailed";
 
     boolean isDismissing = false;
@@ -85,7 +86,8 @@ public class DribbbleLogin extends Activity {
         dribbblePrefs = DribbblePrefs.get(this);
 
         if (!FabTransform.setup(this, container)) {
-            FabDialogMorphSetup.setupSharedEelementTransitions(this, container,
+            MorphTransform.setup(this, container,
+                    ContextCompat.getColor(this, R.color.background_light),
                     getResources().getDimensionPixelSize(R.dimen.dialog_corners));
         }
 

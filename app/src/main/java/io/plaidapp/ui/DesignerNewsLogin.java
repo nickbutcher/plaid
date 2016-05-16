@@ -68,7 +68,8 @@ import io.plaidapp.data.api.designernews.model.AccessToken;
 import io.plaidapp.data.api.designernews.model.User;
 import io.plaidapp.data.api.designernews.model.UserResponse;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
-import io.plaidapp.ui.transitions.FabDialogMorphSetup;
+import io.plaidapp.ui.transitions.FabTransform;
+import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ScrimUtil;
 import io.plaidapp.util.glide.CircleTransform;
@@ -100,8 +101,11 @@ public class DesignerNewsLogin extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_login);
         ButterKnife.bind(this);
-        FabDialogMorphSetup.setupSharedEelementTransitions(this, container,
-                getResources().getDimensionPixelSize(R.dimen.dialog_corners));
+        if (!FabTransform.setup(this, container)) {
+            MorphTransform.setup(this, container,
+                    ContextCompat.getColor(this, R.color.background_light),
+                    getResources().getDimensionPixelSize(R.dimen.dialog_corners));
+        }
         if (getWindow().getSharedElementEnterTransition() != null) {
             getWindow().getSharedElementEnterTransition().addListener(new AnimUtils
                     .TransitionListenerAdapter() {

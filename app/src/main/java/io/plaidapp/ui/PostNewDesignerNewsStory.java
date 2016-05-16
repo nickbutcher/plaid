@@ -43,8 +43,8 @@ import butterknife.OnTextChanged;
 import io.plaidapp.R;
 import io.plaidapp.data.api.designernews.PostStoryService;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
-import io.plaidapp.ui.transitions.FabDialogMorphSetup;
 import io.plaidapp.ui.transitions.FabTransform;
+import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.ui.widget.BottomSheet;
 import io.plaidapp.ui.widget.ObservableScrollView;
 import io.plaidapp.util.AnimUtils;
@@ -73,7 +73,8 @@ public class PostNewDesignerNewsStory extends Activity {
         setContentView(R.layout.activity_post_new_designer_news_story);
         ButterKnife.bind(this);
         if (!FabTransform.setup(this, bottomSheetContent)) {
-            FabDialogMorphSetup.setupSharedEelementTransitions(this, bottomSheetContent, 0);
+            MorphTransform.setup(this, bottomSheetContent,
+                    ContextCompat.getColor(this, R.color.background_light), 0);
         }
 
         bottomSheet.registerCallback(new BottomSheet.Callbacks() {
@@ -208,9 +209,7 @@ public class PostNewDesignerNewsStory extends Activity {
             finishAfterTransition();
         } else {
             Intent login = new Intent(this, DesignerNewsLogin.class);
-            login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_COLOR,
-                    ContextCompat.getColor(this, R.color.designer_news));
-            login.putExtra(FabDialogMorphSetup.EXTRA_SHARED_ELEMENT_START_CORNER_RADIUS, 0);
+            MorphTransform.addExtras(login, ContextCompat.getColor(this, R.color.designer_news), 0);
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
                     this, post, getString(R.string.transition_designer_news_login));
             startActivity(login, options.toBundle());
