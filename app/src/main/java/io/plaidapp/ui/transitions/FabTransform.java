@@ -157,7 +157,7 @@ public class FabTransform extends Transition {
                 AnimUtils.getFastOutSlowInInterpolator(sceneRoot.getContext());
         final long duration = getDuration();
         final long halfDuration = duration / 2;
-        final long twoThirdsDuration = 2 / 3 * duration;
+        final long twoThirdsDuration = duration * 2 / 3;
 
         if (!fromFab) {
             // Force measure / layout the dialog back to it's orig bounds
