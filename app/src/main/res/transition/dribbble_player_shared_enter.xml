@@ -20,10 +20,11 @@
     android:interpolator="@android:interpolator/fast_out_slow_in"
     android:transitionOrdering="together">
 
-    <changeBounds android:duration="300" />
-    <pathMotion
-        class="io.plaidapp.ui.transitions.GravityArcMotion"
-        android:maximumAngle="50" />
+    <changeBounds android:duration="300">
+        <pathMotion
+            class="io.plaidapp.ui.transitions.GravityArcMotion"
+            android:maximumAngle="50" />
+    </changeBounds>
     <transition
         class="io.plaidapp.ui.transitions.LiftOff"
         android:duration="400"
