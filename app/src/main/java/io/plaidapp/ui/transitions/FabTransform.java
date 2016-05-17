@@ -160,7 +160,7 @@ public class FabTransform extends Transition {
         final long twoThirdsDuration = duration * 2 / 3;
 
         if (!fromFab) {
-            // Force measure / layout the dialog back to it's orig bounds
+            // Force measure / layout the dialog back to it's original bounds
             view.measure(
                     makeMeasureSpec(startBounds.width(), View.MeasureSpec.EXACTLY),
                     makeMeasureSpec(startBounds.height(), View.MeasureSpec.EXACTLY));
@@ -195,18 +195,20 @@ public class FabTransform extends Transition {
         final Animator circularReveal;
         if (fromFab) {
             circularReveal = ViewAnimationUtils.createCircularReveal(view,
-                    (view.getRight() - view.getLeft()) / 2,
-                    (view.getBottom() - view.getTop()) / 2,
+                    view.getWidth() / 2,
+                    view.getHeight() / 2,
                     startBounds.width() / 2,
                     (float) Math.hypot(endBounds.width() / 2, endBounds.width() / 2));
             circularReveal.setInterpolator(
                     AnimUtils.getFastOutLinearInInterpolator(sceneRoot.getContext()));
         } else {
             circularReveal = ViewAnimationUtils.createCircularReveal(view,
-                    (view.getRight() - view.getLeft()) / 2,
-                    (view.getBottom() - view.getTop()) / 2,
+                    view.getWidth() / 2,
+                    view.getHeight() / 2,
                     (float) Math.hypot(startBounds.width() / 2, startBounds.width() / 2),
                     endBounds.width() / 2);
+            circularReveal.setInterpolator(
+                    AnimUtils.getLinearOutSlowInInterpolator(sceneRoot.getContext()));
 
             // Persist the end clip i.e. stay at FAB size after the reveal has run
             circularReveal.addListener(new AnimatorListenerAdapter() {
@@ -224,8 +226,6 @@ public class FabTransform extends Transition {
                     });
                 }
             });
-            circularReveal.setInterpolator(
-                    AnimUtils.getLinearOutSlowInInterpolator(sceneRoot.getContext()));
         }
         circularReveal.setDuration(duration);
 
@@ -258,7 +258,7 @@ public class FabTransform extends Transition {
         }
 
         // Fade in/out the fab color & icon overlays
-        final Animator colorFade = ObjectAnimator.ofArgb(fabColor, "alpha", fromFab ? 0 : 255);
+        final Animator colorFade = ObjectAnimator.ofInt(fabColor, "alpha", fromFab ? 0 : 255);
         final Animator iconFade = ObjectAnimator.ofInt(fabIcon, "alpha", fromFab ? 0 : 255);
         if (!fromFab) {
             colorFade.setStartDelay(halfDuration);
@@ -269,10 +269,21 @@ public class FabTransform extends Transition {
         colorFade.setInterpolator(fastOutSlowInInterpolator);
         iconFade.setInterpolator(fastOutSlowInInterpolator);
 
+        // Work around issue with elevation shadows. At the end of the return transition the shared
+        // element's shadow is drawn twice (by each activity) which is jarring. This workaround
+        // still causes the shadow to snap, but it's better than seeing it double drawn.
+        Animator elevation = null;
+        if (!fromFab) {
+            elevation = ObjectAnimator.ofFloat(view, View.TRANSLATION_Z, -view.getElevation());
+            elevation.setDuration(duration);
+            elevation.setInterpolator(fastOutSlowInInterpolator);
+        }
+
         // Run all animations together
         final AnimatorSet transition = new AnimatorSet();
         transition.playTogether(circularReveal, translate, colorFade, iconFade);
         transition.playTogether(fadeContents);
+        if (elevation != null) transition.play(elevation);
         if (fromFab) {
             transition.addListener(new AnimatorListenerAdapter() {
                 @Override

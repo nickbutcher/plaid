@@ -24,20 +24,15 @@ import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.app.SharedElementCallback;
 import android.app.assist.AssistContent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.RectF;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -155,7 +150,6 @@ public class DribbbleShot extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_shot);
         dribbblePrefs = DribbblePrefs.get(this);
-        setExitSharedElementCallback(fabLoginSharedElementCallback);
         getWindow().getSharedElementReturnTransition().addListener(shotReturnHomeListener);
         circleTransform = new CircleTransform(this);
 
@@ -598,25 +592,8 @@ public class DribbbleShot extends Activity {
         }
     };
 
-    private SharedElementCallback fabLoginSharedElementCallback = new SharedElementCallback() {
-        @Override
-        public Parcelable onCaptureSharedElementSnapshot(View sharedElement,
-                                                         Matrix viewToGlobalMatrix,
-                                                         RectF screenBounds) {
-            // store a snapshot of the fab to fade out when morphing to the login dialog
-            int bitmapWidth = Math.round(screenBounds.width());
-            int bitmapHeight = Math.round(screenBounds.height());
-            Bitmap bitmap = null;
-            if (bitmapWidth > 0 && bitmapHeight > 0) {
-                bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
-                sharedElement.draw(new Canvas(bitmap));
-            }
-            return bitmap;
-        }
-    };
-
-    private Transition.TransitionListener shotReturnHomeListener = new AnimUtils
-            .TransitionListenerAdapter() {
+    private Transition.TransitionListener shotReturnHomeListener =
+            new AnimUtils.TransitionListenerAdapter() {
         @Override
         public void onTransitionStart(Transition transition) {
             super.onTransitionStart(transition);

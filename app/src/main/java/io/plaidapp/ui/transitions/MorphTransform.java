@@ -144,7 +144,7 @@ public class MorphTransform extends ChangeBounds {
         transition.playTogether(changeBounds, corners, color);
         transition.setDuration(getDuration());
         transition.setInterpolator(interpolator);
-        return new AnimUtils.NoPauseAnimator(transition);
+        return transition;
     }
 
 }
