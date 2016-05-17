@@ -78,7 +78,7 @@
                     android:layout_marginEnd="@dimen/padding_normal"
                     app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
-                    <EditText
+                    <android.support.design.widget.TextInputEditText
                         android:id="@+id/new_story_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
                     android:stateListAnimator="@animator/disable_text_entry"
                     app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
-                    <EditText
+                    <android.support.design.widget.TextInputEditText
                         android:id="@+id/new_story_url"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
                     android:stateListAnimator="@animator/disable_text_entry"
                     app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
-                    <EditText
+                    <android.support.design.widget.TextInputEditText
                         android:id="@+id/new_story_comment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
