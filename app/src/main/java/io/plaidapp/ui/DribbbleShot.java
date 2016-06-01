@@ -110,6 +110,7 @@ import static io.plaidapp.util.AnimUtils.getLinearOutSlowInInterpolator;
 public class DribbbleShot extends Activity {
 
     public final static String EXTRA_SHOT = "EXTRA_SHOT";
+    public final static String RESULT_EXTRA_SHOT_ID = "RESULT_EXTRA_SHOT_ID";
     private static final int RC_LOGIN_LIKE = 0;
     private static final int RC_LOGIN_COMMENT = 1;
     private static final float SCRIM_ADJUSTMENT = 0.075f;
@@ -639,6 +640,9 @@ public class DribbbleShot extends Activity {
     }
 
     private void expandImageAndFinish() {
+        final Intent resultData = new Intent();
+        resultData.putExtra(RESULT_EXTRA_SHOT_ID, shot.id);
+        setResult(RESULT_OK, resultData);
         if (imageView.getOffset() != 0f) {
             Animator expandImage = ObjectAnimator.ofFloat(imageView, ParallaxScrimageView.OFFSET,
                     0f);
