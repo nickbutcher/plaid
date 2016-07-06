@@ -17,7 +17,7 @@
 -dontobfuscate #STOPSHIP remove this
 -dontwarn com.squareup.okhttp.**
 -dontwarn okio.**
--dontwarn retrofit.**
+-dontwarn retrofit2.**
 -dontwarn rx.**
 
 -keep class io.plaidapp.data.api.dribbble.model.**  { *; }
@@ -36,8 +36,7 @@
 -keep class com.squareup.okhttp.** { *; }
 -keep interface com.squareup.okhttp.** { *; }
 -keep class in.uncod.android.bypass.** { *; }
--keep class retrofit.** { *; }
--keep class retrofit.** { *; }
+-keep class retrofit2.** { *; }
 
 -keepattributes *Annotation*,Signature,Exceptions
 
