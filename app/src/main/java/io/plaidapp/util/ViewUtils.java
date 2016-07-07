@@ -38,7 +38,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 /**
  * Utility methods for working with Views.

@@ -18,7 +18,6 @@ package io.plaidapp.ui;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.AnimatedVectorDrawable;
@@ -41,7 +40,6 @@ import com.bumptech.glide.Glide;
 
 import java.text.NumberFormat;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindInt;
 import butterknife.BindView;
