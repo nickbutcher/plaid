@@ -17,13 +17,14 @@
 package io.plaidapp.ui.widget;
 
 import android.content.Context;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.widget.Checkable;
 import android.widget.ImageButton;
 
+import io.plaidapp.util.ViewOffsetHelper;
+
 /**
- * A {@link Checkable} {@link ImageButton} which has a minimum offset i.e. translation Y.
+ * A {@link Checkable} {@link ImageButton} which can be offset vertically.
  */
 public class FABToggle extends ImageButton implements Checkable {
 
@@ -31,16 +32,19 @@ public class FABToggle extends ImageButton implements Checkable {
 
     private boolean isChecked = false;
     private int minOffset;
+    private int offset = 0;
+    private ViewOffsetHelper offsetHelper;
 
     public FABToggle(Context context, AttributeSet attrs) {
         super(context, attrs);
+        offsetHelper = new ViewOffsetHelper(this);
     }
 
-    public void setOffset(int offset) {
-        offset = Math.max(minOffset, offset);
-        if (getTranslationY() != offset) {
-            setTranslationY(offset);
-            ViewCompat.postInvalidateOnAnimation(this);
+    public void setOffset(int newOffset) {
+        if (newOffset != offset) {
+            newOffset = Math.max(minOffset, newOffset);
+            offsetHelper.setTopAndBottomOffset(newOffset);
+            postInvalidateOnAnimation();
         }
     }
 
@@ -72,4 +76,9 @@ public class FABToggle extends ImageButton implements Checkable {
         return drawableState;
     }
 
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        offsetHelper.onViewLayout();
+    }
 }

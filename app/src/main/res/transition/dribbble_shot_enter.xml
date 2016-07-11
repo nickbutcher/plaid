@@ -15,26 +15,12 @@
   limitations under the License.
   -->
 
-<transitionSet
+<fade
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:interpolator="@android:interpolator/fast_out_slow_in"
-    android:transitionOrdering="together">
-
-    <transition
-        class="io.plaidapp.ui.transitions.Pop"
-        android:startDelay="300"
-        android:duration="300"
-        android:interpolator="@android:interpolator/linear_out_slow_in">
-        <targets>
-            <target android:targetId="@id/fab_heart" />
-        </targets>
-    </transition>
-
-    <fade android:duration="@android:integer/config_mediumAnimTime">
-        <targets>
-            <target android:targetId="@android:id/navigationBarBackground" />
-            <target android:targetId="@android:id/statusBarBackground" />
-        </targets>
-    </fade>
-
-</transitionSet>
+    android:duration="@android:integer/config_mediumAnimTime">
+    <targets>
+        <target android:targetId="@android:id/navigationBarBackground" />
+        <target android:targetId="@android:id/statusBarBackground" />
+    </targets>
+</fade>
