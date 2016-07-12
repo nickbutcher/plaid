@@ -71,7 +71,6 @@
         android:layout_toEndOf="@id/player_avatar"
         android:layout_below="@id/comment_author"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/spacing_micro"
         android:textColorLink="@color/dribbble_links"
         android:textColorHighlight="@color/dribbble_link_highlight"
         tools:text="Blah blah blah blah blah blah blah blah blah blah blah blah blah"

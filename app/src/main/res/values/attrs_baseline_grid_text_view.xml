@@ -22,6 +22,7 @@
     <declare-styleable name="BaselineGridTextView">
         <attr name="lineHeightMultiplierHint" format="float" />
         <attr name="lineHeightHint" />
+        <attr name="clipToFullLines" format="boolean" />
     </declare-styleable>
 
 </resources>

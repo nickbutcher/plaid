@@ -17,6 +17,7 @@
 
 <io.plaidapp.ui.widget.FourThreeLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/story_title_background"
     android:layout_width="match_parent"
@@ -32,10 +33,12 @@
         android:id="@+id/story_title"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="@dimen/padding_normal"
+        android:layout_marginStart="@dimen/padding_normal"
+        android:layout_marginTop="@dimen/padding_normal"
+        android:layout_marginEnd="@dimen/padding_normal"
         android:layout_weight="1"
-        android:ellipsize="end"
         android:breakStrategy="simple"
+        app:clipToFullLines="true"
         tools:text="Amazing designer news story"
         style="@style/Widget.Plaid.TilePrimary" />
 

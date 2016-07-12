@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:paddingTop="@dimen/spacing_normal"
+        android:paddingTop="@dimen/spacing_micro"
         android:paddingEnd="@dimen/padding_normal"
         android:textAppearance="@style/TextAppearance.CommentTimestamp"
         tools:text="3 hours ago" />
@@ -55,7 +55,7 @@
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@id/depth"
         android:layout_toStartOf="@id/comment_time_ago"
-        android:paddingTop="@dimen/spacing_normal"
+        android:paddingTop="@dimen/spacing_micro"
         android:ellipsize="end"
         android:textAppearance="@style/TextAppearance.CommentAuthor.DesignerNews"
         tools:text="Nick B" />
@@ -68,7 +68,6 @@
         android:layout_below="@id/comment_author"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/spacing_micro"
         android:paddingEnd="@dimen/padding_normal"
         android:paddingBottom="@dimen/padding_normal"
         android:textColorLink="@color/designer_news_links"
