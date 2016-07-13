@@ -95,6 +95,7 @@ import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ColorUtils;
 import io.plaidapp.util.HtmlUtils;
 import io.plaidapp.util.ImeUtils;
+import io.plaidapp.util.ViewOffsetHelper;
 import io.plaidapp.util.ViewUtils;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.util.glide.CircleTransform;
@@ -682,14 +683,7 @@ public class DribbbleShot extends Activity {
             viewEnterAnimation(description, offset, interp);
         }
         offset *= 1.5f;
-        float fabTransY = fab.getTranslationY();
-        fab.setAlpha(0f);
-        fab.setTranslationY(fabTransY + offset);
-        fab.animate()
-                .translationY(fabTransY)
-                .setDuration(600)
-                .setInterpolator(interp)
-                .start();
+        fabEnterAnimation(interp, offset);
         offset *= 1.5f;
         viewEnterAnimation(shotActions, offset, interp);
         offset *= 1.5f;
@@ -698,18 +692,9 @@ public class DribbbleShot extends Activity {
         viewEnterAnimation(shotTimeAgo, offset, interp);
         back.animate()
                 .alpha(1f)
-                .setDuration(600)
+                .setDuration(600L)
                 .setInterpolator(interp)
                 .start();
-
-        Animator showFab = ObjectAnimator.ofPropertyValuesHolder(fab,
-                PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f),
-                PropertyValuesHolder.ofFloat(View.SCALE_X, 0f, 1f),
-                PropertyValuesHolder.ofFloat(View.SCALE_Y, 0f, 1f));
-        showFab.setStartDelay(300L);
-        showFab.setDuration(300L);
-        showFab.setInterpolator(getLinearOutSlowInInterpolator(this));
-        showFab.start();
     }
 
     private void viewEnterAnimation(View view, float offset, Interpolator interp) {
@@ -718,10 +703,47 @@ public class DribbbleShot extends Activity {
         view.animate()
                 .translationY(0f)
                 .alpha(1f)
-                .setDuration(600)
+                .setDuration(600L)
                 .setInterpolator(interp)
                 .setListener(null)
                 .start();
+    }
+
+    private void fabEnterAnimation(Interpolator interp, int offset) {
+        // FAB should enter upwards with content and also scale/fade. As the FAB uses
+        // translationY to position itself on the title seam, we can animating this property.
+        // Instead animate the view's layout position (which is a bit more involved).
+        final ViewOffsetHelper fabOffset = new ViewOffsetHelper(fab);
+        final View.OnLayoutChangeListener fabLayout = new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int
+                    oldLeft, int oldTop, int oldRight, int oldBottom) {
+                fabOffset.onViewLayout();
+            }
+        };
+
+        fab.addOnLayoutChangeListener(fabLayout);
+        fabOffset.setTopAndBottomOffset(offset);
+        Animator fabMovement = ObjectAnimator.ofInt(fabOffset, ViewOffsetHelper.OFFSET_Y, 0);
+        fabMovement.setDuration(600L);
+        fabMovement.setInterpolator(interp);
+        fabMovement.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                fab.removeOnLayoutChangeListener(fabLayout);
+            }
+        });
+        fabMovement.start();
+
+        fab.setAlpha(0f);
+        Animator showFab = ObjectAnimator.ofPropertyValuesHolder(fab,
+                PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f),
+                PropertyValuesHolder.ofFloat(View.SCALE_X, 0f, 1f),
+                PropertyValuesHolder.ofFloat(View.SCALE_Y, 0f, 1f));
+        showFab.setStartDelay(300L);
+        showFab.setDuration(300L);
+        showFab.setInterpolator(getLinearOutSlowInInterpolator(this));
+        showFab.start();
     }
 
     private void doLike() {
