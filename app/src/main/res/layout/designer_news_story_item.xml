@@ -38,7 +38,8 @@
         android:layout_marginEnd="@dimen/padding_normal"
         android:layout_weight="1"
         android:breakStrategy="simple"
-        app:clipToFullLines="true"
+        android:ellipsize="end"
+        app:maxLinesByHeight="true"
         tools:text="Amazing designer news story"
         style="@style/Widget.Plaid.TilePrimary" />
 

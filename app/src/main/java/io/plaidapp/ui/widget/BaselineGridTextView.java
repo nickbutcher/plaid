@@ -19,8 +19,6 @@ package io.plaidapp.ui.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.text.Layout;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 
@@ -44,7 +42,7 @@ public class BaselineGridTextView extends FontTextView {
 
     private float lineHeightMultiplierHint = 1f;
     private float lineHeightHint = 0f;
-    private boolean clipToFullLines = false;
+    private boolean maxLinesByHeight = false;
     private int extraTopPadding = 0;
     private int extraBottomPadding = 0;
 
@@ -71,7 +69,7 @@ public class BaselineGridTextView extends FontTextView {
                 a.getFloat(R.styleable.BaselineGridTextView_lineHeightMultiplierHint, 1f);
         lineHeightHint =
                 a.getDimensionPixelSize(R.styleable.BaselineGridTextView_lineHeightHint, 0);
-        clipToFullLines = a.getBoolean(R.styleable.BaselineGridTextView_clipToFullLines, false);
+        maxLinesByHeight = a.getBoolean(R.styleable.BaselineGridTextView_maxLinesByHeight, false);
         a.recycle();
 
         FOUR_DIP = TypedValue.applyDimension(
@@ -97,6 +95,15 @@ public class BaselineGridTextView extends FontTextView {
         computeLineHeight();
     }
 
+    public boolean getMaxLinesByHeight() {
+        return maxLinesByHeight;
+    }
+
+    public void setMaxLinesByHeight(boolean maxLinesByHeight) {
+        this.maxLinesByHeight = maxLinesByHeight;
+        requestLayout();
+    }
+
     @Override
     public int getCompoundPaddingTop() {
         // include extra padding to place the first line's baseline on the grid
@@ -118,11 +125,13 @@ public class BaselineGridTextView extends FontTextView {
         height += ensureBaselineOnGrid();
         height += ensureHeightGridAligned(height);
         setMeasuredDimension(getMeasuredWidth(), height);
-        checkLineClipping(height);
+        checkMaxLines(height, MeasureSpec.getMode(heightMeasureSpec));
     }
 
+    /**
+     * Ensures line height is a multiple of 4dp.
+     */
     private void computeLineHeight() {
-        // ensures line height is a multiple of 4dp
         final Paint.FontMetricsInt fm = getPaint().getFontMetricsInt();
         final int fontHeight = Math.abs(fm.ascent - fm.descent) + fm.leading;
         final float desiredLineHeight = (lineHeightHint > 0)
@@ -134,8 +143,10 @@ public class BaselineGridTextView extends FontTextView {
         setLineSpacing(baselineAlignedLineHeight - fontHeight, 1f);
     }
 
+    /**
+     * Ensure that the first line of text sits on the 4dp grid.
+     */
     private int ensureBaselineOnGrid() {
-        // ensure that the first line of text sits on the 4dp grid
         float baseline = getBaseline();
         float gridAlign = baseline % FOUR_DIP;
         if (gridAlign != 0) {
@@ -144,8 +155,10 @@ public class BaselineGridTextView extends FontTextView {
         return extraTopPadding;
     }
 
+    /**
+     * Ensure that height is a multiple of 4dp.
+     */
     private int ensureHeightGridAligned(int height) {
-        // ensure that height is a multiple of 4dp
         float gridOverhang = height % FOUR_DIP;
         if (gridOverhang != 0) {
             extraBottomPadding = (int) (FOUR_DIP - Math.ceil(gridOverhang));
@@ -154,21 +167,14 @@ public class BaselineGridTextView extends FontTextView {
     }
 
     /**
-     * If measuring with an exact height then text can be clipped mid-line. Prevent this by setting
-     * a smaller {@code clipBounds} so that any partial lines are not drawn.
+     * When measured with an exact height, text can be vertically clipped mid-line. Prevent
+     * this by setting the {@code maxLines} property based on the available space.
      */
-    private void checkLineClipping(int height) {
-        if (!clipToFullLines) return;
+    private void checkMaxLines(int height, int heightMode) {
+        if (!maxLinesByHeight || heightMode != MeasureSpec.EXACTLY) return;
 
-        Layout layout = getLayout();
-        if (layout == null) return;
-        final int paddingLeft = getCompoundPaddingLeft();
-        final int paddingTop = getCompoundPaddingTop();
-        int textHeight = height - paddingTop - getCompoundPaddingBottom();
-        int fullLines = (int) Math.floor(textHeight / getLineHeight());
-        Rect clip = new Rect(paddingLeft, paddingTop,
-                paddingLeft + layout.getWidth(),
-                paddingTop + (fullLines * getLineHeight()));
-        setClipBounds(clip);
+        int textHeight = height - getCompoundPaddingTop() - getCompoundPaddingBottom();
+        int completeLines = (int) Math.floor(textHeight / getLineHeight());
+        setMaxLines(completeLines);
     }
 }
