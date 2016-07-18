@@ -235,7 +235,8 @@ public class CollapsingTitleLayout extends FrameLayout {
         int fontHeight = Math.abs(fm.ascent - fm.descent) + fm.leading;
         final int baselineAlignedLineHeight =
                 (int) (fourDip * (float) Math.ceil(lineHeightHint / fourDip));
-        final int lineSpacingAdd = baselineAlignedLineHeight - fontHeight;
+        // Addition line spacing to match desired line height. Should be non-negative.
+        final int lineSpacingAdd = Math.max(0, baselineAlignedLineHeight - fontHeight);
 
         // now create the layout with our desired insets & line height
         createLayout(width, lineSpacingAdd);
