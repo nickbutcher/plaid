@@ -17,6 +17,7 @@
 
 <transitionSet
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:interpolator="@android:interpolator/fast_out_slow_in"
     android:transitionOrdering="together">
 
@@ -28,6 +29,6 @@
     <transition
         class="io.plaidapp.ui.transitions.LiftOff"
         android:duration="400"
-        android:elevation="@dimen/touch_raise" />
+        app:initialElevation="@dimen/touch_raise" />
 
 </transitionSet>

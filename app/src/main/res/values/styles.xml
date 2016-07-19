@@ -71,6 +71,8 @@
         <item name="android:navigationBarColor">@color/designer_news_super_dark</item>
         <item name="android:windowSharedElementEnterTransition">@transition/designer_news_story_shared_enter</item>
         <item name="android:windowSharedElementReturnTransition">@transition/designer_news_story_shared_return</item>
+        <item name="android:windowEnterTransition">@transition/designer_news_story_enter</item>
+        <item name="android:windowReturnTransition">@transition/designer_news_story_return</item>
     </style>
 
     <style name="Plaid.Translucent.Dribbble">

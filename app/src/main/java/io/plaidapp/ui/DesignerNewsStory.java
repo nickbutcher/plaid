@@ -24,6 +24,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.PendingIntent;
+import android.app.SharedElementCallback;
 import android.app.assist.AssistContent;
 import android.content.Context;
 import android.content.Intent;
@@ -39,7 +40,6 @@ import android.support.customtabs.CustomTabsSession;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -47,7 +47,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.style.TextAppearanceSpan;
-import android.transition.Transition;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -82,13 +81,14 @@ import io.plaidapp.data.api.designernews.model.Story;
 import io.plaidapp.data.api.designernews.model.StoryResponse;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.ui.drawable.ThreadedCommentDrawable;
+import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
 import io.plaidapp.ui.transitions.GravityArcMotion;
 import io.plaidapp.ui.transitions.MorphTransform;
+import io.plaidapp.ui.transitions.ReflowText;
 import io.plaidapp.ui.widget.AuthorTextView;
 import io.plaidapp.ui.widget.CollapsingTitleLayout;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.PinnedOffsetView;
-import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.HtmlUtils;
 import io.plaidapp.util.ImageUtils;
 import io.plaidapp.util.ImeUtils;
@@ -119,6 +119,7 @@ public class DesignerNewsStory extends Activity {
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
     @Nullable @BindView(R.id.backdrop_toolbar) CollapsingTitleLayout collapsingToolbar;
     @Nullable @BindView(R.id.story_title_background) PinnedOffsetView toolbarBackground;
+    @Nullable @BindView(R.id.background) View background;
     private TextView upvoteStory;
     private EditText enterComment;
     private ImageButton postComment;
@@ -137,13 +138,10 @@ public class DesignerNewsStory extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_story);
         ButterKnife.bind(this);
-        getWindow().getSharedElementReturnTransition().addListener(returnHomeListener);
 
         story = getIntent().getParcelableExtra(EXTRA_STORY);
         fab.setOnClickListener(fabClick);
-
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this);
-
         markdown = new Bypass(this, new Bypass.Options()
                 .setBlockQuoteLineColor(
                         ContextCompat.getColor(this, R.color.designer_news_quote_line))
@@ -154,11 +152,9 @@ public class DesignerNewsStory extends Activity {
                 .setBlockQuoteTextColor(ContextCompat.getColor(this, R.color.designer_news_quote)));
         circleTransform = new CircleTransform(this);
         designerNewsPrefs = DesignerNewsPrefs.get(this);
-
         layoutManager = new LinearLayoutManager(this);
         commentsList.setLayoutManager(layoutManager);
         commentsList.setItemAnimator(new CommentAnimator());
-
         header = getLayoutInflater().inflate(
                 R.layout.designer_news_story_description, commentsList, false);
         bindDescription();
@@ -170,6 +166,21 @@ public class DesignerNewsStory extends Activity {
             final Toolbar toolbar = (Toolbar) findViewById(R.id.story_toolbar);
             toolbar.setNavigationOnClickListener(backClick);
             commentsList.addOnScrollListener(headerScrollListener);
+
+            setEnterSharedElementCallback(new SharedElementCallback() {
+                @Override
+                public void onSharedElementStart(List<String> sharedElementNames, List<View>
+                        sharedElements, List<View> sharedElementSnapshots) {
+                    ReflowText.setupReflow(getIntent(), collapsingToolbar);
+                }
+
+                @Override
+                public void onSharedElementEnd(List<String> sharedElementNames, List<View>
+                        sharedElements, List<View> sharedElementSnapshots) {
+                    ReflowText.setupReflow(collapsingToolbar);
+                }
+            });
+
         } else { // w600dp configuration: content card scrolls over title bar
             final TextView title = (TextView) findViewById(R.id.story_title);
             title.setText(story.title);
@@ -386,16 +397,6 @@ public class DesignerNewsStory extends Activity {
                                     R.anim.fade_out_rapidly)
                             .build(),
                     Uri.parse(story.url));
-        }
-    };
-
-    private Transition.TransitionListener returnHomeListener = new AnimUtils
-            .TransitionListenerAdapter() {
-        @Override
-        public void onTransitionStart(Transition transition) {
-            super.onTransitionStart(transition);
-            // hide the fab as for some reason it jumps position??  TODO work out why
-            fab.setVisibility(View.INVISIBLE);
         }
     };
 
@@ -1060,7 +1061,7 @@ public class DesignerNewsStory extends Activity {
         }
     }
 
-    private static class CommentAnimator extends DefaultItemAnimator {
+    private static class CommentAnimator extends SlideInItemAnimator {
 
         public static final int EXPAND_COMMENT = 1;
         public static final int COLLAPSE_COMMENT = 2;

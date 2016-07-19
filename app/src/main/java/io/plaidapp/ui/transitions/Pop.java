@@ -38,21 +38,24 @@ public class Pop extends Visibility {
     @Override
     public Animator onAppear(ViewGroup sceneRoot, View view, TransitionValues startValues,
                              TransitionValues endValues) {
+        view.setAlpha(0f);
+        view.setScaleX(0f);
+        view.setScaleY(0f);
         return ObjectAnimator.ofPropertyValuesHolder(
-                endValues.view,
-                PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f),
-                PropertyValuesHolder.ofFloat(View.SCALE_X, 0f, 1f),
-                PropertyValuesHolder.ofFloat(View.SCALE_Y, 0f, 1f));
+                view,
+                PropertyValuesHolder.ofFloat(View.ALPHA, 1f),
+                PropertyValuesHolder.ofFloat(View.SCALE_X, 1f),
+                PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f));
     }
 
     @Override
     public Animator onDisappear(ViewGroup sceneRoot, View view, TransitionValues startValues,
                                 TransitionValues endValues) {
         return ObjectAnimator.ofPropertyValuesHolder(
-                endValues.view,
-                PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f),
-                PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 0f),
-                PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 0f));
+                view,
+                PropertyValuesHolder.ofFloat(View.ALPHA, 0f),
+                PropertyValuesHolder.ofFloat(View.SCALE_X, 0f),
+                PropertyValuesHolder.ofFloat(View.SCALE_Y, 0f));
     }
 
 }

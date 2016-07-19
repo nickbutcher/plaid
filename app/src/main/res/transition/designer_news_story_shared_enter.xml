@@ -17,27 +17,51 @@
 
 <transitionSet
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:interpolator="@android:interpolator/fast_out_slow_in"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:transitionOrdering="together">
 
     <transitionSet>
-        <changeBounds android:duration="300" />
+        <targets>
+            <target android:targetId="@id/background" />
+        </targets>
+        <changeBounds
+            android:duration="300"
+            android:interpolator="@android:interpolator/fast_out_slow_in" />
+        <!-- compensate for the diff in elevation of this element in the two activities -->
         <transition
             class="io.plaidapp.ui.transitions.LiftOff"
-            android:duration="400"
-            android:elevation="@dimen/touch_raise" />
-        <targets>
-            <target android:targetId="@id/comments_container" />
-        </targets>
+            android:duration="300"
+            app:initialElevation="-1dp" />
     </transitionSet>
 
     <transition
-        class="io.plaidapp.ui.transitions.StoryTitleSharedEnter"
-        android:duration="300">
+        class="io.plaidapp.ui.transitions.StretchyChangeBounds"
+        android:color="?android:colorPrimary"
+        app:leadingDuration="300"
+        app:trailingSpeed="0.7"
+        app:minTrailingDuration="300"
+        app:maxTrailingDuration="400">
         <targets>
             <target android:targetId="@id/story_title_background" />
         </targets>
-        <pathMotion class="io.plaidapp.ui.transitions.GravityArcMotion" />
     </transition>
+
+    <transitionSet android:interpolator="@android:interpolator/fast_out_slow_in">
+        <targets>
+            <target android:targetId="@id/backdrop_toolbar" />
+        </targets>
+        <transition
+            class="io.plaidapp.ui.transitions.ReflowText"
+            app:speed="0.7"
+            app:minDuration="200"
+            app:maxDuration="350"
+            app:staggerDelay="30">
+            <pathMotion class="io.plaidapp.ui.transitions.GravityArcMotion" />
+        </transition>
+        <transition
+            class="io.plaidapp.ui.transitions.LiftOff"
+            android:duration="300"
+            app:initialElevation="@dimen/touched_app_bar" />
+    </transitionSet>
 
 </transitionSet>

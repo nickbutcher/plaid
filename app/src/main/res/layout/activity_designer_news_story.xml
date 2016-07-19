@@ -22,14 +22,20 @@
     android:id="@+id/comments_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light"
-    android:transitionName="@string/transition_story_background"
-    android:transitionGroup="false"
     app:dragDismissDistance="@dimen/drag_dismiss_distance"
     app:dragDismissScale="0.95"
     tools:context="io.plaidapp.ui.DesignerNewsStory">
 
-    <!-- description added as header to listview.
+    <!-- separate background view for the shared element transition i.e. it's easier to
+         calculate the title's transition when its parent isn't moving. -->
+    <View
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_light"
+        android:transitionName="@string/transition_story_background" />
+
+    <!-- description added as header to the list.
          see layout/designer_news_story_description -->
 
     <android.support.v7.widget.RecyclerView
@@ -47,7 +53,8 @@
         android:layout_height="wrap_content"
         android:minHeight="@dimen/extended_height_toolbar"
         android:textAppearance="@style/TextAppearance.ToolbarTitle"
-        android:elevation="@dimen/z_app_bar"
+        android:transitionName="@string/transition_story_title"
+        android:transitionGroup="false"
         android:theme="@style/PlaidDarkOverlay"
         style="@style/Widget.Plaid.CollapsingTitle">
 
@@ -56,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:minHeight="?android:actionBarSize"
-            android:background="@drawable/designer_news_app_bar_background"
+            android:background="?android:colorPrimary"
             android:stateListAnimator="@animator/app_bar_pin"
             android:transitionName="@string/transition_story_title_background" />
 
@@ -68,6 +75,7 @@
             android:elevation="@dimen/z_app_bar"
             android:contentInsetStart="@dimen/keyline_1"
             android:contentInsetEnd="@dimen/padding_normal"
+            android:transitionGroup="true"
             android:theme="@style/PlaidDarkOverlay" />
 
     </io.plaidapp.ui.widget.CollapsingTitleLayout>

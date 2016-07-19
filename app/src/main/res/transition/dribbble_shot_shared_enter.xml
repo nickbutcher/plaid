@@ -17,23 +17,26 @@
 
 <transitionSet
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:interpolator="@android:interpolator/fast_out_slow_in"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:transitionOrdering="together">
 
     <transitionSet>
-        <changeBounds android:duration="300" />
-        <transition
-            class="io.plaidapp.ui.transitions.LiftOff"
-            android:duration="400"
-            android:elevation="@dimen/touch_raise" />
         <targets>
             <target android:targetId="@id/container" />
         </targets>
+        <changeBounds
+            android:duration="300"
+            android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        <transition
+            class="io.plaidapp.ui.transitions.LiftOff"
+            android:duration="400"
+            app:initialElevation="@dimen/touch_raise" />
     </transitionSet>
 
     <transition
         class="io.plaidapp.ui.transitions.ShotSharedEnter"
-        android:duration="300">
+        android:duration="300"
+        android:interpolator="@android:interpolator/fast_out_slow_in">
         <targets>
             <target android:targetId="@id/shot" />
         </targets>

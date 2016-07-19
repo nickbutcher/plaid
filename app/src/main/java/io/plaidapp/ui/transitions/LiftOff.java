@@ -31,7 +31,8 @@ import io.plaidapp.R;
 /**
  * A transition that animates the elevation of a View from a given value down to zero.
  * <p>
- * Useful for creating parent↔child navigation transitions (https://www.google.com/design/spec/patterns/navigational-transitions.html#navigational-transitions-parent-to-child)
+ * Useful for creating parent↔child navigation transitions
+ * (https://www.google.com/design/spec/patterns/navigational-transitions.html#navigational-transitions-parent-to-child)
  * when combined with a {@link android.transition.ChangeBounds} on a shared element.
  */
 public class LiftOff extends Transition {
@@ -42,16 +43,14 @@ public class LiftOff extends Transition {
             PROPNAME_ELEVATION
     };
 
-    private final float lift;
-
-    public LiftOff(float lift) {
-        this.lift = lift;
-    }
+    private final float initialElevation;
+    private final float finalElevation;
 
     public LiftOff(Context context, AttributeSet attrs) {
         super(context, attrs);
         final TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.LiftOff);
-        lift = ta.getDimensionPixelSize(R.styleable.LiftOff_android_elevation, 0);
+        initialElevation = ta.getDimension(R.styleable.LiftOff_initialElevation, 0f);
+        finalElevation = ta.getDimension(R.styleable.LiftOff_finalElevation, 0f);
         ta.recycle();
     }
 
@@ -62,18 +61,19 @@ public class LiftOff extends Transition {
 
     @Override
     public void captureStartValues(TransitionValues transitionValues) {
-        transitionValues.values.put(PROPNAME_ELEVATION, 0f);
+        transitionValues.values.put(PROPNAME_ELEVATION, initialElevation);
     }
 
     @Override
     public void captureEndValues(TransitionValues transitionValues) {
-        transitionValues.values.put(PROPNAME_ELEVATION, lift);
+        transitionValues.values.put(PROPNAME_ELEVATION, finalElevation);
     }
 
     @Override
     public Animator createAnimator(ViewGroup sceneRoot, TransitionValues startValues,
                                    TransitionValues endValues) {
-        return ObjectAnimator.ofFloat(endValues.view, View.TRANSLATION_Z, lift, 0f);
+        return ObjectAnimator.ofFloat(endValues.view, View.TRANSLATION_Z,
+                initialElevation, finalElevation);
     }
 
 }

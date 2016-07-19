@@ -76,6 +76,7 @@ import io.plaidapp.data.api.producthunt.PostWeigher;
 import io.plaidapp.data.api.producthunt.model.Post;
 import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.data.prefs.SourceManager;
+import io.plaidapp.ui.transitions.ReflowText;
 import io.plaidapp.ui.widget.BadgedFourThreeImageView;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ObservableColorMatrix;
@@ -210,7 +211,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                 Uri.parse(story.url));
                     }
                 }
-                                          );
+            );
         holder.comments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View commentsView) {
@@ -218,9 +219,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 intent.setClass(host, DesignerNewsStory.class);
                 intent.putExtra(DesignerNewsStory.EXTRA_STORY,
                         (Story) getItem(holder.getAdapterPosition()));
+                ReflowText.addExtras(intent, new ReflowText.ReflowableTextView(holder.title));
                 setGridItemContentTransitions(holder.itemView);
                 final ActivityOptions options =
                         ActivityOptions.makeSceneTransitionAnimation(host,
+                                Pair.create((View) holder.title,
+                                        host.getString(R.string.transition_story_title)),
                                 Pair.create(holder.itemView,
                                         host.getString(R.string.transition_story_title_background)),
                                 Pair.create(holder.itemView,
@@ -247,6 +251,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void bindDesignerNewsStory(final Story story, final DesignerNewsStoryHolder holder) {
         holder.title.setText(story.title);
         holder.comments.setText(String.valueOf(story.comment_count));
+        holder.itemView.setTransitionName(story.url);
     }
 
     @NonNull

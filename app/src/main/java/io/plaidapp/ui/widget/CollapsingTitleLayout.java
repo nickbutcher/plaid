@@ -22,7 +22,9 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
 import android.text.Layout;
@@ -34,10 +36,12 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import io.plaidapp.R;
 import io.plaidapp.ui.span.TextColorSpan;
+import io.plaidapp.ui.transitions.ReflowText;
 import io.plaidapp.util.CollapsingTextHelper;
 import io.plaidapp.util.FontUtil;
 import io.plaidapp.util.ViewUtils;
@@ -48,7 +52,10 @@ import io.plaidapp.util.ViewUtils;
  * line then text is initially displayed as large as possible and then scaled down to fit the within
  * the collapsed size.
  */
-public class CollapsingTitleLayout extends FrameLayout {
+public class CollapsingTitleLayout extends FrameLayout implements ReflowText.Reflowable {
+
+    // constants
+    private static final int BREAK_STRATEGY = Layout.BREAK_STRATEGY_HIGH_QUALITY;
 
     // configurable attributes
     private int titleInsetStart;
@@ -73,6 +80,7 @@ public class CollapsingTitleLayout extends FrameLayout {
     private Line[] lines;
     private int calculatedWithWidth;
     private int lineCount;
+    private float lineSpacingAdd;
 
     public CollapsingTitleLayout(Context context) {
         this(context, null, 0, 0);
@@ -235,8 +243,7 @@ public class CollapsingTitleLayout extends FrameLayout {
         int fontHeight = Math.abs(fm.ascent - fm.descent) + fm.leading;
         final int baselineAlignedLineHeight =
                 (int) (fourDip * (float) Math.ceil(lineHeightHint / fourDip));
-        // Addition line spacing to match desired line height. Should be non-negative.
-        final int lineSpacingAdd = Math.max(0, baselineAlignedLineHeight - fontHeight);
+        lineSpacingAdd = Math.max(0, baselineAlignedLineHeight - fontHeight);
 
         // now create the layout with our desired insets & line height
         createLayout(width, lineSpacingAdd);
@@ -299,7 +306,7 @@ public class CollapsingTitleLayout extends FrameLayout {
         calculatedWithWidth = width;
     }
 
-    private void createLayout(int width, int lineSpacingAdd) {
+    private void createLayout(int width, float lineSpacingAdd) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             createLayoutM(width, lineSpacingAdd);
         } else {
@@ -308,17 +315,18 @@ public class CollapsingTitleLayout extends FrameLayout {
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    private void createLayoutM(int width, int lineSpacingAdd) {
+    private void createLayoutM(int width, float lineSpacingAdd) {
         layout = StaticLayout.Builder.obtain(displayText, 0, displayText.length(), paint,
                 width - titleInsetStart - titleInsetEnd)
                 .setLineSpacing(lineSpacingAdd, 1f)
                 .setMaxLines(maxLines)
                 .setEllipsize(TextUtils.TruncateAt.END)
+                .setBreakStrategy(BREAK_STRATEGY)
                 .build();
         lineCount = layout.getLineCount();
     }
 
-    private void createLayoutPreM(int width, int lineSpacingAdd) {
+    private void createLayoutPreM(int width, float lineSpacingAdd) {
         layout = new StaticLayout(displayText,
                 paint,
                 width - titleInsetStart - titleInsetEnd,
@@ -371,6 +379,77 @@ public class CollapsingTitleLayout extends FrameLayout {
                 line.currentAlpha = lineAlpha;
             }
         }
+    }
+
+    @Override
+    public View getView() {
+        return this;
+    }
+
+    @Override
+    public String getText() {
+        return title.toString();
+    }
+
+    @Override
+    public Point getTextPosition() {
+        if (lineCount == 1) {
+            return collapsingText.getTextTopLeft();
+        } else {
+            return new Point(titleInsetStart, (int) Math.max(textTop - scrollOffset, titleInsetTop));
+        }
+    }
+
+    @Override
+    public int getTextWidth() {
+        return calculatedWithWidth - titleInsetStart - titleInsetEnd;
+    }
+
+    @Override
+    public int getTextHeight() {
+        return (int) (lineCount == 1 ? collapsingText.getExpandedBounds().height()
+                : Math.max(getHeight() - scrollOffset, collapsedHeight));
+    }
+
+    @Override
+    public float getLineSpacingAdd() {
+        return lineSpacingAdd;
+    }
+
+    @Override
+    public float getLineSpacingMult() {
+        return 1f;
+    }
+
+    @Override
+    public int getBreakStrategy() {
+        return BREAK_STRATEGY;
+    }
+
+    @Override
+    public float getLetterSpacing() {
+        return paint.getLetterSpacing();
+    }
+
+    @Override
+    public float getTextSize() {
+        return lineCount == 1 ? collapsingText.getCurrentTextSize() : paint.getTextSize();
+    }
+
+    @Override
+    public int getTextColor() {
+        return paint.getColor();
+    }
+
+    @Nullable
+    @Override
+    public String getFontName() {
+        return FontUtil.getName(paint.getTypeface());
+    }
+
+    @Override
+    public int getMaxLines() {
+        return maxLines;
     }
 
     private class Line {

@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
@@ -189,6 +190,15 @@ public final class CollapsingTextHelper {
         }
     }
 
+    public Rect getExpandedBounds() {
+        return mExpandedBounds;
+    }
+
+    public Point getTextTopLeft() {
+        return new Point((int) mCurrentBounds.left,
+                (int) (mCurrentBounds.bottom + mTextPaint.ascent()));
+    }
+
     public void setCollapsedBounds(int left, int top, int right, int bottom) {
         if (!rectEquals(mCollapsedBounds, left, top, right, bottom)) {
             mCollapsedBounds.set(left, top, right, bottom);
@@ -303,6 +313,10 @@ public final class CollapsingTextHelper {
             mCollapsedTextColor = textColor;
             recalculate();
         }
+    }
+
+    public float getCurrentTextSize() {
+        return mCurrentTextSize;
     }
 
     private static float lerp(float startValue, float endValue, float fraction,

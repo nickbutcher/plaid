@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
-  Copyright 2015 Google Inc.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,23 +15,14 @@
   limitations under the License.
   -->
 
-<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="220"
-    android:interpolator="@android:interpolator/fast_out_slow_in"
-    android:transitionOrdering="together">
+<resources>
 
-    <changeBounds>
-        <targets>
-            <target android:targetId="@id/container" />
-        </targets>
-    </changeBounds>
+    <declare-styleable name="ReflowText">
+        <attr name="speed" />
+        <attr name="minDuration" />
+        <attr name="maxDuration" />
+        <attr name="staggerDelay" format="integer" />
+        <attr name="freezeFrame" format="boolean" />
+    </declare-styleable>
 
-    <transitionSet>
-        <targets>
-            <target android:targetId="@id/shot" />
-        </targets>
-        <changeBounds/>
-        <changeTransform/>
-    </transitionSet>
-
-</transitionSet>
+</resources>
