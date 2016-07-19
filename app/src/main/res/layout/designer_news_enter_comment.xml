@@ -36,7 +36,7 @@
         android:layout_weight="1"
         app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/comment"
             android:hint="@string/comment"
             android:layout_width="match_parent"

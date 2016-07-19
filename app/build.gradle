@@ -32,8 +32,8 @@ def gitCommitCount = 100 +
         Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    compileSdkVersion 24
+    buildToolsVersion '24.0.1'
 
     defaultConfig {
         applicationId "io.plaidapp"
@@ -73,7 +73,7 @@ repositories {
 }
 
 ext {
-    supportLibVersion = '23.4.0'
+    supportLibVersion = '24.1.0'
 }
 
 dependencies {

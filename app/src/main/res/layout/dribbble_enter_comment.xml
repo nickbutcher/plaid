@@ -43,7 +43,7 @@
         android:layout_marginStart="@dimen/til_margin_fix"
         app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/comment"
             android:hint="@string/hint_reply"
             android:layout_width="match_parent"
