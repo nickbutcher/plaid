@@ -127,8 +127,10 @@ public class PlayerActivity extends Activity {
         draggableFrame.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
             @Override
             public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
-                ((ViewGroup.MarginLayoutParams) draggableFrame.getLayoutParams()).rightMargin
-                        += insets.getSystemWindowInsetRight(); // landscape
+                final ViewGroup.MarginLayoutParams lpFrame = (ViewGroup.MarginLayoutParams)
+                        draggableFrame.getLayoutParams();
+                lpFrame.leftMargin += insets.getSystemWindowInsetLeft();    // landscape
+                lpFrame.rightMargin += insets.getSystemWindowInsetRight();  // landscape
                 ((ViewGroup.MarginLayoutParams) avatar.getLayoutParams()).topMargin
                     += insets.getSystemWindowInsetTop();
                 ViewUtils.setPaddingTop(playerDescription, insets.getSystemWindowInsetTop());
