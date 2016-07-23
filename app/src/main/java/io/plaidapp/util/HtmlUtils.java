@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import in.uncod.android.bypass.Bypass;
 import in.uncod.android.bypass.style.TouchableUrlSpan;
+import io.plaidapp.ui.span.CustomClickUrlSpan;
 
 /**
  * Utility methods for working with HTML.
@@ -87,7 +88,7 @@ public class HtmlUtils {
         // add any plain links to the output
         final SpannableStringBuilder ssb = new SpannableStringBuilder(input);
         for (URLSpan urlSpan : urlSpans) {
-            ssb.setSpan(new TouchableUrlSpan(urlSpan.getURL(), linkTextColor, linkHighlightColor),
+            ssb.setSpan(new CustomClickUrlSpan(urlSpan.getURL(), linkTextColor, linkHighlightColor),
                     plainLinks.getSpanStart(urlSpan),
                     plainLinks.getSpanEnd(urlSpan),
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.widget.TextView;
 
 import in.uncod.android.bypass.style.TouchableUrlSpan;
+import io.plaidapp.ui.span.CustomClickUrlSpan;
 import io.plaidapp.ui.span.PlayerSpan;
 import okhttp3.HttpUrl;
 
@@ -24,8 +25,8 @@ public class DribbbleUtils {
                                                    @ColorInt int linkHighlightColor) {
         SpannableStringBuilder ssb = HtmlUtils.parseHtml(input, linkTextColor, linkHighlightColor);
 
-        TouchableUrlSpan[] urlSpans = ssb.getSpans(0, ssb.length(), TouchableUrlSpan.class);
-        for (TouchableUrlSpan urlSpan : urlSpans) {
+        CustomClickUrlSpan[] urlSpans = ssb.getSpans(0, ssb.length(), CustomClickUrlSpan.class);
+        for (CustomClickUrlSpan urlSpan : urlSpans) {
             int start = ssb.getSpanStart(urlSpan);
             if (ssb.subSequence(start, start + 1).toString().equals("@")) {
                 int end = ssb.getSpanEnd(urlSpan);
