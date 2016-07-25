@@ -19,9 +19,10 @@ public class DribbbleUtils {
      * An extension to {@link HtmlUtils#parseHtml(String, ColorStateList, int)} which adds Dribbble
      * specific behaviour.
      */
-    public static Spanned parseDribbbleHtml(String input,
-                                                   ColorStateList linkTextColor,
-                                                   @ColorInt int linkHighlightColor) {
+    public static Spanned parseDribbbleHtml(
+            String input,
+            ColorStateList linkTextColor,
+            @ColorInt int linkHighlightColor) {
         SpannableStringBuilder ssb = HtmlUtils.parseHtml(input, linkTextColor, linkHighlightColor);
 
         TouchableUrlSpan[] urlSpans = ssb.getSpans(0, ssb.length(), TouchableUrlSpan.class);

@@ -17,6 +17,7 @@
 package io.plaidapp.util;
 
 import android.content.res.ColorStateList;
+import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.text.Html;
 import android.text.SpannableString;
@@ -57,10 +58,11 @@ public class HtmlUtils {
      * Parse the given input using {@link TouchableUrlSpan}s rather than vanilla {@link URLSpan}s
      * so that they respond to touch.
      */
-    public static SpannableStringBuilder parseHtml(String input,
-                                    ColorStateList linkTextColor,
-                                    @ColorInt int linkHighlightColor) {
-        SpannableStringBuilder spanned = (SpannableStringBuilder) Html.fromHtml(input);
+    public static SpannableStringBuilder parseHtml(
+            String input,
+            ColorStateList linkTextColor,
+            @ColorInt int linkHighlightColor) {
+        SpannableStringBuilder spanned = fromHtml(input);
 
         // strip any trailing newlines
         while (spanned.charAt(spanned.length() - 1) == '\n') {
@@ -76,17 +78,22 @@ public class HtmlUtils {
                 textView.getHighlightColor()));
     }
 
-    private static SpannableStringBuilder linkifyPlainLinks(CharSequence input,
-                                                   ColorStateList linkTextColor,
-                                           @ColorInt int linkHighlightColor) {
+    private static SpannableStringBuilder linkifyPlainLinks(
+            CharSequence input,
+            ColorStateList linkTextColor,
+            @ColorInt int linkHighlightColor) {
         final SpannableString plainLinks = new SpannableString(input); // copy of input
-        Linkify.addLinks(plainLinks, Linkify.WEB_URLS);
+
+        // Linkify doesn't seem to work as expected on M+
+        // TODO: figure out why
+        //Linkify.addLinks(plainLinks, Linkify.WEB_URLS);
 
         final URLSpan[] urlSpans = plainLinks.getSpans(0, plainLinks.length(), URLSpan.class);
 
         // add any plain links to the output
         final SpannableStringBuilder ssb = new SpannableStringBuilder(input);
         for (URLSpan urlSpan : urlSpans) {
+            ssb.removeSpan(urlSpan);
             ssb.setSpan(new TouchableUrlSpan(urlSpan.getURL(), linkTextColor, linkHighlightColor),
                     plainLinks.getSpanStart(urlSpan),
                     plainLinks.getSpanEnd(urlSpan),
@@ -95,6 +102,15 @@ public class HtmlUtils {
 
         return ssb;
     }
+
+    private static SpannableStringBuilder fromHtml(String input) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return (SpannableStringBuilder) Html.fromHtml(input, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            return (SpannableStringBuilder) Html.fromHtml(input);
+        }
+    }
+
     /**
      * Parse Markdown and plain-text links.
      * <p/>
@@ -107,10 +123,10 @@ public class HtmlUtils {
      * Best of both worlds.
      */
     public static CharSequence parseMarkdownAndPlainLinks(
-                                                       TextView textView,
-                                                       String input,
-                                                       Bypass markdown,
-                                                       Bypass.LoadImageCallback loadImageCallback) {
+            TextView textView,
+            String input,
+            Bypass markdown,
+            Bypass.LoadImageCallback loadImageCallback) {
         CharSequence markedUp = markdown.markdownToSpannable(input, textView, loadImageCallback);
         return linkifyPlainLinks(
                 markedUp, textView.getLinkTextColors(), textView.getHighlightColor());
@@ -120,10 +136,11 @@ public class HtmlUtils {
      * Parse Markdown and plain-text links and set on the {@link TextView} with proper clickable
      * spans.
      */
-    public static void parseMarkdownAndSetText(TextView textView,
-                                               String input,
-                                               Bypass markdown,
-                                               Bypass.LoadImageCallback loadImageCallback) {
+    public static void parseMarkdownAndSetText(
+            TextView textView,
+            String input,
+            Bypass markdown,
+            Bypass.LoadImageCallback loadImageCallback) {
         if (TextUtils.isEmpty(input)) return;
         setTextWithNiceLinks(textView,
                 parseMarkdownAndPlainLinks(textView, input, markdown, loadImageCallback));
