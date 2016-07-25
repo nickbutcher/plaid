@@ -359,7 +359,7 @@ public class CollapsingTitleLayout extends FrameLayout {
                 lineAlpha = 1f;
             } else if (scrollOffset > line.fullAlphaScrollOffset
                     && scrollOffset < line.zeroAlphaScrollOffset) {
-                lineAlpha = 1f - (scrollOffset - line.zeroAlphaScrollOffset)
+                lineAlpha = 1f - (scrollOffset - line.fullAlphaScrollOffset)
                         / (line.zeroAlphaScrollOffset - line.fullAlphaScrollOffset);
             }
             if (line.currentAlpha != lineAlpha) {
