@@ -31,22 +31,22 @@ import android.text.Spanned;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 
 import io.plaidapp.R;
+import io.plaidapp.ui.span.TextColorSpan;
 import io.plaidapp.util.CollapsingTextHelper;
-import io.plaidapp.util.ColorUtils;
 import io.plaidapp.util.FontUtil;
 import io.plaidapp.util.ViewUtils;
 
 /**
- * A layout that draws a displayText and can collapse down to a condensed size.  If the displayText shows over
- * multiple lines then it will fade out line by line as it collapses. It displayText is a single line then
- * text is displayed as large as possible initially and scaled down to fit the collapsed state.
+ * A layout that draws a title and can collapse down to a condensed size.  If the title shows over
+ * multiple lines then it will fade out line by line as it collapses. If the title is a single
+ * line then text is initially displayed as large as possible and then scaled down to fit the within
+ * the collapsed size.
  */
 public class CollapsingTitleLayout extends FrameLayout {
 
@@ -241,7 +241,7 @@ public class CollapsingTitleLayout extends FrameLayout {
         // now create the layout with our desired insets & line height
         createLayout(width, lineSpacingAdd);
 
-        // adjust the displayText top inset to vertically center text with the toolbar
+        // adjust the title top inset to vertically center text with the toolbar
         collapsedHeight = (int) Math.max(ViewUtils.getActionBarSize(getContext()),
                 (fourDip + baselineAlignedLineHeight + fourDip));
         titleInsetTop = (collapsedHeight - baselineAlignedLineHeight) / 2f;
@@ -275,8 +275,6 @@ public class CollapsingTitleLayout extends FrameLayout {
             collapsingText.setCollapsedTextGravity(GravityCompat.START | Gravity.CENTER_VERTICAL);
             collapsingText.setTypeface(paint.getTypeface());
 
-            fm = paint.getFontMetricsInt();
-            fontHeight = Math.abs(fm.ascent - fm.descent) + fm.leading;
             textTop = getHeight() - titleInsetBottom - fontHeight;
             scrollRange = getMinimumHeight() - (int) collapsedHeight;
         } else { // multi-line mode
@@ -285,7 +283,7 @@ public class CollapsingTitleLayout extends FrameLayout {
 
             // pre-calculate at what scroll offsets lines should disappear
             scrollRange = (int) (textTop - titleInsetTop);
-            final int fadeDistance = lineSpacingAdd + fm.descent; // line bottom to baseline
+            final int fadeDistance = layout.getLineBottom(0) - layout.getLineBaseline(0);
             lines = new Line[lineCount];
             for (int i = 1; i < lineCount; i++) {
                 int lineBottomScrollOffset =
@@ -293,7 +291,7 @@ public class CollapsingTitleLayout extends FrameLayout {
                 lines[i] = new Line(
                         layout.getLineStart(i),
                         layout.getLineEnd(i),
-                        new ForegroundColorSpan(paint.getColor()),
+                        new TextColorSpan(paint.getColor()),
                         lineBottomScrollOffset,
                         lineBottomScrollOffset + fadeDistance);
             }
@@ -331,7 +329,7 @@ public class CollapsingTitleLayout extends FrameLayout {
         lineCount = layout.getLineCount();
 
         if (lineCount > maxLines) {
-            // if it exceeds our max number of lines then truncate the displayText & recreate the layout
+            // if it exceeds our max number of lines then truncate the text & recreate the layout
             int endIndex = layout.getLineEnd(maxLines - 1) - 2; // minus 2 chars for the ellipse
             displayText = new SpannableStringBuilder(title.subSequence(0, endIndex) + "…");
             layout = new StaticLayout(displayText,
@@ -359,13 +357,15 @@ public class CollapsingTitleLayout extends FrameLayout {
                 lineAlpha = 0f;
             } else if (scrollOffset <= line.fullAlphaScrollOffset) {
                 lineAlpha = 1f;
-            } else if (scrollOffset > line.fullAlphaScrollOffset && scrollOffset < line.zeroAlphaScrollOffset) {
+            } else if (scrollOffset > line.fullAlphaScrollOffset
+                    && scrollOffset < line.zeroAlphaScrollOffset) {
                 lineAlpha = 1f - (scrollOffset - line.zeroAlphaScrollOffset)
                         / (line.zeroAlphaScrollOffset - line.fullAlphaScrollOffset);
             }
             if (line.currentAlpha != lineAlpha) {
+                // mutating a span does not re-draw, need to remove and re-set it
                 displayText.removeSpan(line.span);
-                line.span = new ForegroundColorSpan(ColorUtils.modifyAlpha(paint.getColor(), lineAlpha));
+                line.span.setAlpha(lineAlpha);
                 displayText.setSpan(line.span, line.startIndex, line.endIndex,
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 line.currentAlpha = lineAlpha;
@@ -376,12 +376,12 @@ public class CollapsingTitleLayout extends FrameLayout {
     private class Line {
         public int startIndex;
         public int endIndex;
-        public ForegroundColorSpan span;
+        public TextColorSpan span;
         public int fullAlphaScrollOffset;
         public int zeroAlphaScrollOffset;
         public float currentAlpha = 1f;
 
-        public Line(int startIndex, int endIndex, ForegroundColorSpan span,
+        public Line(int startIndex, int endIndex, TextColorSpan span,
                     int fullAlphaScrollOffset, int zeroAlphaScrollOffset) {
             this.startIndex = startIndex;
             this.endIndex = endIndex;
