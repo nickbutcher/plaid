@@ -31,10 +31,10 @@
         <slide
             android:slideEdge="bottom"
             android:startDelay="150"
-            android:duration="250" />
+            android:duration="200" />
         <fade
             android:fadingMode="fade_in"
-            android:startDelay="150"
+            android:startDelay="250"
             android:duration="200" />
     </transitionSet>
 
@@ -65,12 +65,12 @@
         </targets>
         <transition
             class="io.plaidapp.ui.transitions.Pop"
-            android:startDelay="400"
+            android:startDelay="350"
             android:duration="300"
             android:interpolator="@android:interpolator/linear_out_slow_in" />
         <slide
             android:slideEdge="bottom"
-            android:startDelay="150"
+            android:startDelay="100"
             android:duration="360" />
     </transitionSet>
 
