@@ -17,6 +17,7 @@
 
 <io.plaidapp.ui.widget.FourThreeLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/product_hunt"
@@ -35,6 +36,7 @@
         android:paddingBottom="@dimen/spacing_micro"
         android:ellipsize="end"
         android:breakStrategy="simple"
+        app:maxLinesByHeight="true"
         style="@style/Widget.Plaid.TilePrimary" />
 
     <io.plaidapp.ui.widget.BaselineGridTextView
@@ -47,6 +49,7 @@
         android:paddingBottom="@dimen/spacing_micro"
         android:ellipsize="end"
         android:breakStrategy="simple"
+        app:maxLinesByHeight="true"
         style="@style/Widget.Plaid.TileSecondary" />
 
     <io.plaidapp.ui.widget.BaselineGridTextView

@@ -444,9 +444,9 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
             public void onResponse(Call<PostsResponse> call, Response<PostsResponse> response) {
                 if (response.isSuccessful()) {
                     final List<Post> posts = response.body() != null ? response.body().posts : null;
-                    sourceLoaded(posts, page, SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
+                    sourceLoaded(posts, page, SourceManager.SOURCE_PRODUCT_HUNT);
                 } else {
-                    loadFailed(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
+                    loadFailed(SourceManager.SOURCE_PRODUCT_HUNT);
                 }
             }
 
