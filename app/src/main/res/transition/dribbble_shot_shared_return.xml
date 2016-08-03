@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -29,10 +28,12 @@
         <changeTransform />
     </transitionSet>
 
-    <changeBounds android:interpolator="@android:interpolator/fast_out_slow_in">
+    <transition
+        class="io.plaidapp.ui.transitions.DeparallaxingChangeBounds"
+        android:interpolator="@android:interpolator/fast_out_slow_in">
         <targets>
             <target android:targetId="@id/shot" />
         </targets>
-    </changeBounds>
+    </transition>
 
 </transitionSet>

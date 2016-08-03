@@ -174,14 +174,14 @@ public class DribbbleShot extends Activity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                expandImageAndFinish();
+                setResultAndFinish();
             }
         });
         fab.setOnClickListener(fabClick);
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this) {
             @Override
             public void onDragDismissed() {
-                expandImageAndFinish();
+                setResultAndFinish();
             }
         };
 
@@ -254,12 +254,12 @@ public class DribbbleShot extends Activity {
 
     @Override
     public void onBackPressed() {
-        expandImageAndFinish();
+        setResultAndFinish();
     }
 
     @Override
     public boolean onNavigateUp() {
-        expandImageAndFinish();
+        setResultAndFinish();
         return true;
     }
 
@@ -639,25 +639,11 @@ public class DribbbleShot extends Activity {
         });
     }
 
-    private void expandImageAndFinish() {
+    private void setResultAndFinish() {
         final Intent resultData = new Intent();
         resultData.putExtra(RESULT_EXTRA_SHOT_ID, shot.id);
         setResult(RESULT_OK, resultData);
-        if (imageView.getOffset() != 0f) {
-            Animator expandImage = ObjectAnimator.ofFloat(imageView, ParallaxScrimageView.OFFSET,
-                    0f);
-            expandImage.setDuration(80);
-            expandImage.setInterpolator(getFastOutSlowInInterpolator(this));
-            expandImage.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    finishAfterTransition();
-                }
-            });
-            expandImage.start();
-        } else {
-            finishAfterTransition();
-        }
+        finishAfterTransition();
     }
 
     private void calculateFabPosition() {
