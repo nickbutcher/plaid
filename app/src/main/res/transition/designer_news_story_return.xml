@@ -17,19 +17,22 @@
 
 <transitionSet
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:transitionOrdering="together"
     android:interpolator="@android:interpolator/fast_out_linear_in">
 
-    <slide
-        android:slideEdge="bottom"
-        android:duration="200">
+    <transition
+        class="io.plaidapp.ui.transitions.StaggeredDistanceSlide"
+        app:spread="3"
+        android:duration="200"
+        android:interpolator="@android:interpolator/fast_out_linear_in">
         <targets>
             <target android:excludeId="@android:id/navigationBarBackground" />
             <target android:excludeId="@android:id/statusBarBackground" />
             <target android:excludeId="@id/background" />
             <target android:excludeId="@id/story_toolbar" />
         </targets>
-    </slide>
+    </transition>
 
     <fade android:duration="120">
         <targets>
