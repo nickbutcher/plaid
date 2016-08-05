@@ -613,20 +613,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final View fab = host.findViewById(R.id.fab);
         if (!ViewUtils.viewsIntersect(gridItem, fab)) return;
 
-        final Transition reenter = TransitionInflater.from(host)
-                .inflateTransition(R.transition.home_content_item_reenter);
-        // we only want these content transitions in certain cases so clear out when done.
+        Transition reenter = TransitionInflater.from(host)
+                .inflateTransition(R.transition.grid_overlap_fab_reenter);
         reenter.addListener(new AnimUtils.TransitionListenerAdapter() {
 
             @Override
-            public void onTransitionStart(Transition transition) {
-                fab.setAlpha(0f);
-                fab.setScaleX(0f);
-                fab.setScaleY(0f);
-            }
-
-            @Override
             public void onTransitionEnd(Transition transition) {
+                // we only want these content transitions in certain cases so clear out when done.
                 host.getWindow().setReenterTransition(null);
             }
         });

@@ -150,6 +150,7 @@ public class SearchActivity extends Activity {
             }
         };
         adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this));
+        setExitSharedElementCallback(FeedAdapter.createSharedElementReenterCallback(this));
         results.setAdapter(adapter);
         results.setItemAnimator(new SlideInItemAnimator());
         GridLayoutManager layoutManager = new GridLayoutManager(this, columns);
