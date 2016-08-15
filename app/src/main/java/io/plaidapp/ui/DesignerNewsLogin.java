@@ -70,8 +70,8 @@ import io.plaidapp.data.api.designernews.model.UserResponse;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
-import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ScrimUtil;
+import io.plaidapp.util.TransitionUtils;
 import io.plaidapp.util.glide.CircleTransform;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -107,8 +107,7 @@ public class DesignerNewsLogin extends Activity {
                     getResources().getDimensionPixelSize(R.dimen.dialog_corners));
         }
         if (getWindow().getSharedElementEnterTransition() != null) {
-            getWindow().getSharedElementEnterTransition().addListener(new AnimUtils
-                    .TransitionListenerAdapter() {
+            getWindow().getSharedElementEnterTransition().addListener(new TransitionUtils.TransitionListenerAdapter() {
                 @Override
                 public void onTransitionEnd(Transition transition) {
                     finishSetup();

@@ -16,19 +16,14 @@
 
 package io.plaidapp.ui;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.SearchManager;
-import android.content.Context;
+import android.app.SharedElementCallback;
 import android.content.Intent;
-import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Typeface;
-import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import android.support.annotation.TransitionRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -39,17 +34,17 @@ import android.text.style.StyleSpan;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.transition.TransitionManager;
-import android.util.TypedValue;
+import android.transition.TransitionSet;
+import android.util.SparseArray;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -64,15 +59,12 @@ import io.plaidapp.data.SearchDataManager;
 import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
-import io.plaidapp.ui.widget.BaselineGridTextView;
-import io.plaidapp.util.AnimUtils;
+import io.plaidapp.ui.transitions.CircularReveal;
 import io.plaidapp.util.ImeUtils;
-import io.plaidapp.util.ViewUtils;
+import io.plaidapp.util.TransitionUtils;
 
 public class SearchActivity extends Activity {
 
-    public static final String EXTRA_MENU_LEFT = "EXTRA_MENU_LEFT";
-    public static final String EXTRA_MENU_CENTER_X = "EXTRA_MENU_CENTER_X";
     public static final String EXTRA_QUERY = "EXTRA_QUERY";
     public static final String EXTRA_SAVE_DRIBBBLE = "EXTRA_SAVE_DRIBBBLE";
     public static final String EXTRA_SAVE_DESIGNER_NEWS = "EXTRA_SAVE_DESIGNER_NEWS";
@@ -93,23 +85,12 @@ public class SearchActivity extends Activity {
     @BindView(R.id.save_designer_news) CheckBox saveDesignerNews;
     @BindView(R.id.scrim) View scrim;
     @BindView(R.id.results_scrim) View resultsScrim;
-    private BaselineGridTextView noResults;
+    private TextView noResults;
     @BindInt(R.integer.num_columns) int columns;
     @BindDimen(R.dimen.z_app_bar) float appBarElevation;
-    private Transition auto;
-
-    private int searchBackDistanceX;
-    private int searchIconCenterX;
+    private SparseArray<Transition> transitions = new SparseArray<>();
     private SearchDataManager dataManager;
     private FeedAdapter adapter;
-    private boolean dismissing;
-
-    public static Intent createStartIntent(Context context, int menuIconLeft, int menuIconCenterX) {
-        Intent starter = new Intent(context, SearchActivity.class);
-        starter.putExtra(EXTRA_MENU_LEFT, menuIconLeft);
-        starter.putExtra(EXTRA_MENU_CENTER_X, menuIconCenterX);
-        return starter;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,33 +98,22 @@ public class SearchActivity extends Activity {
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
         setupSearchView();
-        auto = TransitionInflater.from(this).inflateTransition(R.transition.auto);
 
         dataManager = new SearchDataManager(this) {
             @Override
             public void onDataLoaded(List<? extends PlaidItem> data) {
                 if (data != null && data.size() > 0) {
                     if (results.getVisibility() != View.VISIBLE) {
-                        TransitionManager.beginDelayedTransition(container, auto);
+                        TransitionManager.beginDelayedTransition(container,
+                                getTransition(R.transition.search_show_results));
                         progress.setVisibility(View.GONE);
                         results.setVisibility(View.VISIBLE);
                         fab.setVisibility(View.VISIBLE);
-                        fab.setAlpha(0.6f);
-                        fab.setScaleX(0f);
-                        fab.setScaleY(0f);
-                        fab.animate()
-                                .alpha(1f)
-                                .scaleX(1f)
-                                .scaleY(1f)
-                                .setStartDelay(800L)
-                                .setDuration(300L)
-                                .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator
-                                        (SearchActivity
-                                        .this));
                     }
                     adapter.addAndResort(data);
                 } else {
-                    TransitionManager.beginDelayedTransition(container, auto);
+                    TransitionManager.beginDelayedTransition(
+                            container, getTransition(R.transition.auto));
                     progress.setVisibility(View.GONE);
                     setNoResultsVisibility(View.VISIBLE);
                 }
@@ -169,79 +139,7 @@ public class SearchActivity extends Activity {
         });
         results.setHasFixedSize(true);
 
-        // extract the search icon's location passed from the launching activity, minus 4dp to
-        // compensate for different paddings in the views
-        searchBackDistanceX = getIntent().getIntExtra(EXTRA_MENU_LEFT, 0) - (int) TypedValue
-                .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics());
-        searchIconCenterX = getIntent().getIntExtra(EXTRA_MENU_CENTER_X, 0);
-
-        // translate icon to match the launching screen then animate back into position
-        searchBackContainer.setTranslationX(searchBackDistanceX);
-        searchBackContainer.animate()
-                .translationX(0f)
-                .setDuration(650L)
-                .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(this));
-        // transform from search icon to back icon
-        AnimatedVectorDrawable searchToBack = (AnimatedVectorDrawable) ContextCompat
-                .getDrawable(this, R.drawable.avd_search_to_back);
-        searchBack.setImageDrawable(searchToBack);
-        searchToBack.start();
-        // for some reason the animation doesn't always finish (leaving a part arrow!?) so after
-        // the animation set a static drawable. Also animation callbacks weren't added until API23
-        // so using post delayed :(
-        // TODO fix properly!!
-        searchBack.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                searchBack.setImageDrawable(ContextCompat.getDrawable(SearchActivity.this,
-                        R.drawable.ic_arrow_back_padded));
-            }
-        }, 600L);
-
-        // fade in the other search chrome
-        searchBackground.animate()
-                .alpha(1f)
-                .setDuration(300L)
-                .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(this));
-        searchView.animate()
-                .alpha(1f)
-                .setStartDelay(400L)
-                .setDuration(400L)
-                .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(this))
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        searchView.requestFocus();
-                        ImeUtils.showIme(searchView);
-                    }
-                });
-
-        // animate in a scrim over the content behind
-        scrim.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                scrim.getViewTreeObserver().removeOnPreDrawListener(this);
-                AnimatorSet showScrim = new AnimatorSet();
-                showScrim.playTogether(
-                        ViewAnimationUtils.createCircularReveal(
-                                scrim,
-                                searchIconCenterX,
-                                searchBackground.getBottom(),
-                                0,
-                                (float) Math.hypot(searchBackDistanceX, scrim.getHeight()
-                                        - searchBackground.getBottom())),
-                        ObjectAnimator.ofArgb(
-                                scrim,
-                                ViewUtils.BACKGROUND_COLOR,
-                                Color.TRANSPARENT,
-                                ContextCompat.getColor(SearchActivity.this, R.color.scrim)));
-                showScrim.setDuration(400L);
-                showScrim.setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(SearchActivity
-                        .this));
-                showScrim.start();
-                return false;
-            }
-        });
+        setupTransitions();
         onNewIntent(getIntent());
     }
 
@@ -280,151 +178,19 @@ public class SearchActivity extends Activity {
 
     @OnClick({ R.id.scrim, R.id.searchback })
     protected void dismiss() {
-        if (dismissing) return;
-        dismissing = true;
-
-        // translate the icon to match position in the launching activity
-        searchBackContainer.animate()
-                .translationX(searchBackDistanceX)
-                .setDuration(600L)
-                .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(this))
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        finishAfterTransition();
-                    }
-                })
-                .start();
-        // transform from back icon to search icon
-        AnimatedVectorDrawable backToSearch = (AnimatedVectorDrawable) ContextCompat
-                .getDrawable(this, R.drawable.avd_back_to_search);
-        searchBack.setImageDrawable(backToSearch);
         // clear the background else the touch ripple moves with the translation which looks bad
         searchBack.setBackground(null);
-        backToSearch.start();
-        // fade out the other search chrome
-        searchView.animate()
-                .alpha(0f)
-                .setStartDelay(0L)
-                .setDuration(120L)
-                .setInterpolator(AnimUtils.getFastOutLinearInInterpolator(this))
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        // prevent clicks while other anims are finishing
-                        searchView.setVisibility(View.INVISIBLE);
-                    }
-                })
-                .start();
-        searchBackground.animate()
-                .alpha(0f)
-                .setStartDelay(300L)
-                .setDuration(160L)
-                .setInterpolator(AnimUtils.getFastOutLinearInInterpolator(this))
-                .setListener(null)
-                .start();
-        if (searchToolbar.getZ() != 0f) {
-            searchToolbar.animate()
-                    .z(0f)
-                    .setDuration(600L)
-                    .setInterpolator(AnimUtils.getFastOutLinearInInterpolator(this))
-                    .start();
-        }
-
-        // if we're showing search results, circular hide them
-        if (resultsContainer.getHeight() > 0) {
-            Animator closeResults = ViewAnimationUtils.createCircularReveal(
-                    resultsContainer,
-                    searchIconCenterX,
-                    0,
-                    (float) Math.hypot(searchIconCenterX, resultsContainer.getHeight()),
-                    0f);
-            closeResults.setDuration(500L);
-            closeResults.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(SearchActivity
-                    .this));
-            closeResults.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    resultsContainer.setVisibility(View.INVISIBLE);
-                }
-            });
-            closeResults.start();
-        }
-
-        // fade out the scrim
-        scrim.animate()
-                .alpha(0f)
-                .setDuration(400L)
-                .setInterpolator(AnimUtils.getFastOutLinearInInterpolator(this))
-                .setListener(null)
-                .start();
+        finishAfterTransition();
     }
 
     @OnClick(R.id.fab)
     protected void save() {
         // show the save confirmation bubble
+        TransitionManager.beginDelayedTransition(
+                resultsContainer, getTransition(R.transition.search_show_confirm));
         fab.setVisibility(View.INVISIBLE);
         confirmSaveContainer.setVisibility(View.VISIBLE);
         resultsScrim.setVisibility(View.VISIBLE);
-
-        // expand it once it's been measured and show a scrim over the search results
-        confirmSaveContainer.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver
-                .OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                // expand the confirmation
-                confirmSaveContainer.getViewTreeObserver().removeOnPreDrawListener(this);
-                Animator reveal = ViewAnimationUtils.createCircularReveal(confirmSaveContainer,
-                        confirmSaveContainer.getWidth() / 2,
-                        confirmSaveContainer.getHeight() / 2,
-                        fab.getWidth() / 2,
-                        confirmSaveContainer.getWidth() / 2);
-                reveal.setDuration(250L);
-                reveal.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(SearchActivity.this));
-                reveal.start();
-
-                // show the scrim
-                int centerX = (fab.getLeft() + fab.getRight()) / 2;
-                int centerY = (fab.getTop() + fab.getBottom()) / 2;
-                Animator revealScrim = ViewAnimationUtils.createCircularReveal(
-                        resultsScrim,
-                        centerX,
-                        centerY,
-                        0,
-                        (float) Math.hypot(centerX, centerY));
-                revealScrim.setDuration(400L);
-                revealScrim.setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(SearchActivity
-                        .this));
-                revealScrim.start();
-                ObjectAnimator fadeInScrim = ObjectAnimator.ofArgb(resultsScrim,
-                        ViewUtils.BACKGROUND_COLOR,
-                        Color.TRANSPARENT,
-                        ContextCompat.getColor(SearchActivity.this, R.color.scrim));
-                fadeInScrim.setDuration(800L);
-                fadeInScrim.setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(SearchActivity
-                        .this));
-                fadeInScrim.start();
-
-                // ease in the checkboxes
-                saveDribbble.setAlpha(0.6f);
-                saveDribbble.setTranslationY(saveDribbble.getHeight() * 0.4f);
-                saveDribbble.animate()
-                        .alpha(1f)
-                        .translationY(0f)
-                        .setDuration(200L)
-                        .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(SearchActivity
-                                .this));
-                saveDesignerNews.setAlpha(0.6f);
-                saveDesignerNews.setTranslationY(saveDesignerNews.getHeight() * 0.5f);
-                saveDesignerNews.animate()
-                        .alpha(1f)
-                        .translationY(0f)
-                        .setDuration(200L)
-                        .setInterpolator(AnimUtils.getLinearOutSlowInInterpolator(SearchActivity
-                                .this));
-                return false;
-            }
-        });
     }
 
     @OnClick(R.id.save_confirmed)
@@ -440,29 +206,11 @@ public class SearchActivity extends Activity {
     @OnClick(R.id.results_scrim)
     protected void hideSaveConfimation() {
         if (confirmSaveContainer.getVisibility() == View.VISIBLE) {
-            // contract the bubble & hide the scrim
-            AnimatorSet hideConfirmation = new AnimatorSet();
-            hideConfirmation.playTogether(
-                    ViewAnimationUtils.createCircularReveal(confirmSaveContainer,
-                            confirmSaveContainer.getWidth() / 2,
-                            confirmSaveContainer.getHeight() / 2,
-                            confirmSaveContainer.getWidth() / 2,
-                            fab.getWidth() / 2),
-                    ObjectAnimator.ofArgb(resultsScrim,
-                            ViewUtils.BACKGROUND_COLOR,
-                            Color.TRANSPARENT));
-            hideConfirmation.setDuration(150L);
-            hideConfirmation.setInterpolator(AnimUtils.getFastOutSlowInInterpolator
-                    (SearchActivity.this));
-            hideConfirmation.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    confirmSaveContainer.setVisibility(View.GONE);
-                    resultsScrim.setVisibility(View.GONE);
-                    fab.setVisibility(results.getVisibility());
-                }
-            });
-            hideConfirmation.start();
+            TransitionManager.beginDelayedTransition(
+                    resultsContainer, getTransition(R.transition.search_hide_confirm));
+            confirmSaveContainer.setVisibility(View.GONE);
+            resultsScrim.setVisibility(View.GONE);
+            fab.setVisibility(results.getVisibility());
         }
     }
 
@@ -499,10 +247,43 @@ public class SearchActivity extends Activity {
         });
     }
 
+    private void setupTransitions() {
+        // grab the position that the search icon transitions in *from*
+        // & use it to configure the return transition
+        setEnterSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onSharedElementStart(
+                    List<String> sharedElementNames,
+                    List<View> sharedElements,
+                    List<View> sharedElementSnapshots) {
+                if (sharedElements != null && !sharedElements.isEmpty()) {
+                    View searchIcon = sharedElements.get(0);
+                    if (searchIcon.getId() != R.id.searchback) return;
+                    int centerX = (searchIcon.getLeft() + searchIcon.getRight()) / 2;
+                    CircularReveal hideResults = (CircularReveal) TransitionUtils.findTransition(
+                            (TransitionSet) getWindow().getReturnTransition(),
+                            CircularReveal.class, R.id.results_container);
+                    if (hideResults != null) {
+                        hideResults.setCenter(new Point(centerX, 0));
+                    }
+                }
+            }
+        });
+        // focus the search view once the transition finishes
+        getWindow().getEnterTransition().addListener(
+                new TransitionUtils.TransitionListenerAdapter() {
+                    @Override
+                    public void onTransitionEnd(Transition transition) {
+                        searchView.requestFocus();
+                        ImeUtils.showIme(searchView);
+                    }
+                });
+    }
+
     private void clearResults() {
+        TransitionManager.beginDelayedTransition(container, getTransition(R.transition.auto));
         adapter.clear();
         dataManager.clear();
-        TransitionManager.beginDelayedTransition(container, auto);
         results.setVisibility(View.GONE);
         progress.setVisibility(View.GONE);
         fab.setVisibility(View.GONE);
@@ -514,7 +295,7 @@ public class SearchActivity extends Activity {
     private void setNoResultsVisibility(int visibility) {
         if (visibility == View.VISIBLE) {
             if (noResults == null) {
-                noResults = (BaselineGridTextView) ((ViewStub)
+                noResults = (TextView) ((ViewStub)
                         findViewById(R.id.stub_no_search_results)).inflate();
                 noResults.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -525,8 +306,8 @@ public class SearchActivity extends Activity {
                     }
                 });
             }
-            String message = String.format(getString(R
-                    .string.no_search_results), searchView.getQuery().toString());
+            String message = String.format(
+                    getString(R.string.no_search_results), searchView.getQuery().toString());
             SpannableStringBuilder ssb = new SpannableStringBuilder(message);
             ssb.setSpan(new StyleSpan(Typeface.ITALIC),
                     message.indexOf('“') + 1,
@@ -545,5 +326,14 @@ public class SearchActivity extends Activity {
         ImeUtils.hideIme(searchView);
         searchView.clearFocus();
         dataManager.searchFor(query);
+    }
+
+    private Transition getTransition(@TransitionRes int transitionId) {
+        Transition transition = transitions.get(transitionId);
+        if (transition == null) {
+            transition = TransitionInflater.from(this).inflateTransition(transitionId);
+            transitions.put(transitionId, transition);
+        }
+        return transition;
     }
 }

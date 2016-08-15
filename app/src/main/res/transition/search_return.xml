@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2015 Google Inc.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,35 +15,39 @@
   limitations under the License.
   -->
 
-<transitionSet
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <transitionSet android:duration="400">
+    <transition
+        class="io.plaidapp.ui.transitions.CircularReveal"
+        android:duration="600"
+        android:interpolator="@android:interpolator/fast_out_linear_in">
         <targets>
-            <target android:targetId="@id/scrim" />
+            <target android:targetId="@id/results_container" />
         </targets>
-        <fade />
-        <transition
-            class="io.plaidapp.ui.transitions.CircularReveal"
-            app:centerOn="@id/searchback"
-            android:interpolator="@android:interpolator/linear_out_slow_in" />
-    </transitionSet>
+    </transition>
 
     <fade
-        android:duration="300"
-        android:interpolator="@android:interpolator/linear_out_slow_in">
+        android:duration="120"
+        android:interpolator="@android:interpolator/fast_out_linear_in">
+        <targets>
+            <target android:targetId="@id/search_view" />
+        </targets>
+    </fade>
+
+    <fade
+        android:startDelay="300"
+        android:duration="160"
+        android:interpolator="@android:interpolator/fast_out_linear_in">
         <targets>
             <target android:targetId="@id/search_background" />
         </targets>
     </fade>
 
     <fade
-        android:startDelay="400"
         android:duration="400"
-        android:interpolator="@android:interpolator/linear_out_slow_in">
+        android:interpolator="@android:interpolator/fast_out_linear_in">
         <targets>
-            <target android:targetId="@id/search_view" />
+            <target android:targetId="@id/scrim"/>
         </targets>
     </fade>
 
@@ -51,9 +55,8 @@
         android:duration="400"
         android:interpolator="@android:interpolator/fast_out_slow_in">
         <targets>
-            <target android:targetId="@android:id/navigationBarBackground" />
+            <target android:targetId="@android:id/navigationBarBackground"/>
         </targets>
     </fade>
 
 </transitionSet>
-

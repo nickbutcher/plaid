@@ -25,6 +25,7 @@
     <dimen name="spacing_xlarge">48dp</dimen>
     <dimen name="spacing_huge">64dp</dimen>
     <dimen name="fab_size">56dp</dimen>
+    <dimen name="fab_radius">28dp</dimen>
     <dimen name="keyline_1">72dp</dimen>
     <dimen name="display_4_text_size">112sp</dimen>
     <dimen name="divider_height">1px</dimen>

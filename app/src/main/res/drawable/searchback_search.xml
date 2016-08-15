@@ -15,11 +15,12 @@
   limitations under the License.
   -->
 
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-        android:width="@dimen/searchback_image_width"
-        android:height="@dimen/searchback_image_height"
-        android:viewportWidth="@integer/searchback_viewport_width"
-        android:viewportHeight="@integer/searchback_viewport_height">
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/searchback_image_width"
+    android:height="@dimen/searchback_image_height"
+    android:viewportWidth="@integer/searchback_viewport_width"
+    android:viewportHeight="@integer/searchback_viewport_height">
 
     <path
         android:name="stem"

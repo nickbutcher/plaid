@@ -25,7 +25,7 @@
         android:id="@+id/scrim"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/scrim"  />
+        android:background="@color/scrim" />
 
     <FrameLayout
         android:id="@+id/search_toolbar"
@@ -33,13 +33,14 @@
         android:layout_height="?android:actionBarSize"
         android:outlineProvider="bounds"
         android:elevation="@dimen/z_app_bar"
+        android:transitionGroup="false"
         android:theme="@style/SearchViewTheme">
 
         <View
             android:id="@+id/search_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:alpha="0"
+            android:transitionName="foo"
             android:background="@color/background_dark" />
 
         <SearchView
@@ -47,8 +48,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/padding_normal"
-            android:alpha="0"
-            android:iconifiedByDefault="false" />
+            android:iconifiedByDefault="false"
+            android:transitionGroup="true" />
 
         <!-- wrapping layout needed for the touch ripple -->
         <FrameLayout
@@ -62,9 +63,9 @@
                 android:id="@+id/searchback"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="start|center_vertical"
                 android:background="?android:selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_search_24dp" />
+                android:src="@drawable/ic_arrow_back_padded"
+                android:transitionName="@string/transition_search_back" />
 
         </FrameLayout>
 
@@ -154,7 +155,7 @@
                     android:paddingBottom="@dimen/padding_normal"
                     android:checked="true"
                     android:text="@string/confirm_save_dribbble_search"
-                    android:textAppearance="@android:style/TextAppearance.Material.Body2"  />
+                    android:textAppearance="@android:style/TextAppearance.Material.Body2" />
 
                 <CheckBox
                     android:id="@+id/save_designer_news"

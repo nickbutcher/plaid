@@ -59,6 +59,10 @@
         <item name="android:statusBarColor">@color/background_super_dark</item>
         <item name="android:navigationBarColor">@color/background_super_dark</item>
         <item name="android:windowEnterTransition">@transition/search_enter</item>
+        <item name="android:windowReturnTransition">@transition/search_return</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/search_shared_enter</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/search_shared_return</item>
+        <item name="android:windowSharedElementsUseOverlay">true</item>
         <item name="shotLoadingPlaceholderColors">@array/loading_placeholders_dark</item>
         <item name="initialBadgeColor">@color/gif_badge_dark_image</item>
     </style>

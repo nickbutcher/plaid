@@ -78,8 +78,8 @@ import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.data.prefs.SourceManager;
 import io.plaidapp.ui.transitions.ReflowText;
 import io.plaidapp.ui.widget.BadgedFourThreeImageView;
-import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ObservableColorMatrix;
+import io.plaidapp.util.TransitionUtils;
 import io.plaidapp.util.ViewUtils;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.util.glide.DribbbleTarget;
@@ -615,7 +615,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         Transition reenter = TransitionInflater.from(host)
                 .inflateTransition(R.transition.grid_overlap_fab_reenter);
-        reenter.addListener(new AnimUtils.TransitionListenerAdapter() {
+        reenter.addListener(new TransitionUtils.TransitionListenerAdapter() {
 
             @Override
             public void onTransitionEnd(Transition transition) {

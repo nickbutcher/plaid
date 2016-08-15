@@ -337,14 +337,10 @@ public class HomeActivity extends Activity {
                 drawer.openDrawer(GravityCompat.END);
                 return true;
             case R.id.menu_search:
-                // get the icon's location on screen to pass through to the search screen
                 View searchMenuView = toolbar.findViewById(R.id.menu_search);
-                int[] loc = new int[2];
-                searchMenuView.getLocationOnScreen(loc);
-                startActivityForResult(SearchActivity.createStartIntent(this, loc[0], loc[0] +
-                        (searchMenuView.getWidth() / 2)), RC_SEARCH, ActivityOptions
-                        .makeSceneTransitionAnimation(this).toBundle());
-                searchMenuView.setAlpha(0f);
+                Bundle options = ActivityOptions.makeSceneTransitionAnimation(this, searchMenuView,
+                        getString(R.string.transition_search_back)).toBundle();
+                startActivityForResult(new Intent(this, SearchActivity.class), RC_SEARCH, options);
                 return true;
             case R.id.menu_dribbble_login:
                 if (!dribbblePrefs.isLoggedIn()) {

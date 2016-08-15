@@ -91,10 +91,10 @@ import io.plaidapp.ui.widget.FABToggle;
 import io.plaidapp.ui.widget.FabOverlapTextView;
 import io.plaidapp.ui.widget.ForegroundImageView;
 import io.plaidapp.ui.widget.ParallaxScrimageView;
-import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ColorUtils;
 import io.plaidapp.util.HtmlUtils;
 import io.plaidapp.util.ImeUtils;
+import io.plaidapp.util.TransitionUtils;
 import io.plaidapp.util.ViewOffsetHelper;
 import io.plaidapp.util.ViewUtils;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
@@ -594,7 +594,7 @@ public class DribbbleShot extends Activity {
     };
 
     private Transition.TransitionListener shotReturnHomeListener =
-            new AnimUtils.TransitionListenerAdapter() {
+            new TransitionUtils.TransitionListenerAdapter() {
         @Override
         public void onTransitionStart(Transition transition) {
             super.onTransitionStart(transition);
