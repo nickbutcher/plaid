@@ -53,7 +53,7 @@ public class StartAnimatable extends Transition {
         Drawable drawable = a.getDrawable(R.styleable.StartAnimatable_android_src);
         a.recycle();
         if (drawable instanceof Animatable) {
-            animatable = ((Animatable) drawable);
+            animatable = (Animatable) drawable;
         } else {
             throw new IllegalArgumentException("Non-Animatable resource provided.");
         }
@@ -76,7 +76,7 @@ public class StartAnimatable extends Transition {
         if (animatable == null || endValues == null
                 || !(endValues.view instanceof ImageView)) return null;
 
-        ImageView iv = ((ImageView) endValues.view);
+        ImageView iv = (ImageView) endValues.view;
         iv.setImageDrawable((Drawable) animatable);
 
         // need to return a non-null Animator even though we just want to listen for the start
