@@ -165,9 +165,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="@dimen/z_card"
+        android:orientation="vertical"
         android:scrollbars="vertical"
-        android:scrollbarStyle="outsideOverlay"
+        android:scrollbarStyle="insideOverlay"
         android:clipToPadding="false"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layoutManager="io.plaidapp.ui.recyclerview.SpannedGridLayoutManager"
+        app:spanCount="@integer/num_columns"
+        app:aspectRatio="4:3"/>
 
 </io.plaidapp.ui.widget.ElasticDragDismissFrameLayout>

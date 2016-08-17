@@ -247,7 +247,8 @@ public class PlayerActivity extends Activity {
         shots.setAdapter(adapter);
         shots.setItemAnimator(new SlideInItemAnimator());
         shots.setVisibility(View.VISIBLE);
-        layoutManager = new SpannedGridLayoutManager(adapter, columns,  4f / 3f);
+        layoutManager = (SpannedGridLayoutManager) shots.getLayoutManager();
+        layoutManager.setSpanLookup(adapter);
         shots.setLayoutManager(layoutManager);
         shots.addOnScrollListener(new InfiniteScrollListener(layoutManager, dataManager) {
             @Override

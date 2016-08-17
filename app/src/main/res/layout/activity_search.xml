@@ -17,6 +17,7 @@
 
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -99,10 +100,14 @@
             android:id="@+id/search_results"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             android:scrollbars="vertical"
-            android:scrollbarStyle="outsideOverlay"
+            android:scrollbarStyle="insideOverlay"
             android:clipToPadding="false"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:layoutManager="io.plaidapp.ui.recyclerview.SpannedGridLayoutManager"
+            app:spanCount="@integer/num_columns"
+            app:aspectRatio="4:3" />
 
         <ImageButton
             android:id="@+id/fab"
