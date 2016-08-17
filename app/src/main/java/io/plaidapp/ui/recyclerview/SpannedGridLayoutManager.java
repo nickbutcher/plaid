@@ -284,7 +284,7 @@ public class SpannedGridLayoutManager extends RecyclerView.LayoutManager {
     @Override
     public int computeVerticalScrollRange(RecyclerView.State state) {
         // TODO update this to incrementally calculate
-        return getSpannedRowCount() * cellHeight;
+        return getSpannedRowCount() * cellHeight + getPaddingTop() + getPaddingBottom();
     }
 
     @Override
@@ -295,7 +295,7 @@ public class SpannedGridLayoutManager extends RecyclerView.LayoutManager {
     @Override
     public int computeVerticalScrollOffset(RecyclerView.State state) {
         if (getChildCount() == 0) return 0;
-        return (firstVisibleRow * cellHeight) + Math.abs(getDecoratedTop(getChildAt(0)));
+        return getPaddingTop() + (firstVisibleRow * cellHeight) - getDecoratedTop(getChildAt(0));
     }
 
     @Override
