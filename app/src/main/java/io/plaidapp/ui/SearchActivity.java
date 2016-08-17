@@ -126,8 +126,8 @@ public class SearchActivity extends Activity {
         results.setAdapter(adapter);
         results.setItemAnimator(new SlideInItemAnimator());
         SpannedGridLayoutManager layoutManager =
-                new SpannedGridLayoutManager(adapter, columns,  4f / 3f);
-        results.setLayoutManager(layoutManager);
+                (SpannedGridLayoutManager) results.getLayoutManager();
+        layoutManager.setSpanLookup(adapter);
         results.addOnScrollListener(new InfiniteScrollListener(layoutManager, dataManager) {
             @Override
             public void onLoadMore() {

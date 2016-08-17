@@ -173,8 +173,8 @@ public class HomeActivity extends Activity {
         adapter = new FeedAdapter(this, dataManager, columns, expandedItemColSpan,
                 PocketUtils.isPocketInstalled(this));
         grid.setAdapter(adapter);
-        layoutManager = new SpannedGridLayoutManager(adapter, columns, 4f / 3f);
-        grid.setLayoutManager(layoutManager);
+        layoutManager = (SpannedGridLayoutManager) grid.getLayoutManager();
+        layoutManager.setSpanLookup(adapter);
         grid.addOnScrollListener(toolbarElevation);
         grid.addOnScrollListener(new InfiniteScrollListener(layoutManager, dataManager) {
             @Override

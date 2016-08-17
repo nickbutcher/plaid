@@ -17,8 +17,11 @@
 package io.plaidapp.ui.recyclerview;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.support.annotation.Keep;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -29,15 +32,17 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.plaidapp.R;
+
 /**
  * A {@link RecyclerView.LayoutManager} which displays a regular grid (i.e. all cells are the same
  * size) and allows simultaneous row & column spanning.
  */
 public class SpannedGridLayoutManager extends RecyclerView.LayoutManager {
 
-    private final GridSpanLookup spanLookup;
-    private final int columns;
-    private final float cellAspectRatio;
+    private GridSpanLookup spanLookup;
+    private int columns = 1;
+    private float cellAspectRatio = 1f;
 
     private int cellHeight;
     private int[] cellBorders;
@@ -58,8 +63,26 @@ public class SpannedGridLayoutManager extends RecyclerView.LayoutManager {
         setAutoMeasureEnabled(true);
     }
 
+    @Keep /* XML constructor, see RecyclerView#createLayoutManager */
+    public SpannedGridLayoutManager(
+            Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        TypedArray a = context.obtainStyledAttributes(
+                attrs, R.styleable.SpannedGridLayoutManager, defStyleAttr, defStyleRes);
+        columns = a.getInt(R.styleable.SpannedGridLayoutManager_spanCount, 1);
+        parseAspectRatio(a.getString(R.styleable.SpannedGridLayoutManager_aspectRatio));
+        // TODO use this!
+        int orientation = a.getInt(
+                R.styleable.SpannedGridLayoutManager_android_orientation, RecyclerView.VERTICAL);
+        a.recycle();
+        setAutoMeasureEnabled(true);
+    }
+
     public interface GridSpanLookup {
         SpanInfo getSpanInfo(int position);
+    }
+
+    public void setSpanLookup(@NonNull GridSpanLookup spanLookup) {
+        this.spanLookup = spanLookup;
     }
 
     public static class SpanInfo {
@@ -594,6 +617,31 @@ public class SpannedGridLayoutManager extends RecyclerView.LayoutManager {
                     View.MeasureSpec.getSize(spec) - startInset - endInset, mode);
         }
         return spec;
+    }
+
+    /* Adapted from ConstraintLayout */
+
+    private void parseAspectRatio(String aspect) {
+        if (aspect != null) {
+            int colonIndex = aspect.indexOf(':');
+            if (colonIndex >= 0 && colonIndex < aspect.length() - 1) {
+                String nominator = aspect.substring(0, colonIndex);
+                String denominator = aspect.substring(colonIndex + 1);
+                if (nominator.length() > 0 && denominator.length() > 0) {
+                    try {
+                        float nominatorValue = Float.parseFloat(nominator);
+                        float denominatorValue = Float.parseFloat(denominator);
+                        if (nominatorValue > 0 && denominatorValue > 0) {
+                            cellAspectRatio = Math.abs(nominatorValue / denominatorValue);
+                            return;
+                        }
+                    } catch (NumberFormatException e) {
+                        // Ignore
+                    }
+                }
+            }
+        }
+        throw new IllegalArgumentException("Could not parse aspect ratio: '" + aspect + "'");
     }
 
 }
