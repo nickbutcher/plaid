@@ -73,11 +73,10 @@ repositories {
 }
 
 ext {
-    supportLibVersion = '24.1.1'
+    supportLibVersion = '24.2.0'
 }
 
 dependencies {
-    compile "com.android.support:support-v4:${supportLibVersion}"
     compile "com.android.support:palette-v7:${supportLibVersion}"
     compile "com.android.support:recyclerview-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
