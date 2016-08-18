@@ -86,7 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/padding_normal"
-            android:drawableStart="@drawable/ic_follow"
+            android:drawableStart="@drawable/asl_follow"
             android:drawablePadding="@dimen/spacing_normal"
             android:paddingStart="@dimen/padding_normal"
             android:paddingTop="@dimen/spacing_normal"

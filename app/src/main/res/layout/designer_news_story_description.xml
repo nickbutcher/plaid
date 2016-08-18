@@ -57,7 +57,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:drawableTop="@drawable/ic_upvote"
+            android:drawableTop="@drawable/asl_upvote"
             tools:text="33 likes"
             style="@style/Widget.Plaid.InlineActionButton" />
 

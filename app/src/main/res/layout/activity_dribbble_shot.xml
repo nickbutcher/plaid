@@ -90,6 +90,6 @@
         android:layout_gravity="end"
         android:layout_marginEnd="@dimen/padding_normal"
         android:stateListAnimator="@animator/raise"
-        android:src="@drawable/fab_heart" />
+        android:src="@drawable/asl_fab_heart" />
 
 </io.plaidapp.ui.widget.ElasticDragDismissFrameLayout>

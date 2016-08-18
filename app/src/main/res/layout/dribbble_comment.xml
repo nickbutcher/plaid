@@ -99,7 +99,7 @@
         android:layout_marginEnd="@dimen/comment_like_margin_adjustment"
         android:layout_toStartOf="@id/comment_likes_count"
         android:layout_below="@id/comment_text"
-        android:src="@drawable/comment_heart"
+        android:src="@drawable/asl_comment_heart"
         android:background="?android:selectableItemBackgroundBorderless"
         android:visibility="gone" />
 

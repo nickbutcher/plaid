@@ -15,31 +15,25 @@
   limitations under the License.
   -->
 
-<animated-selector
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:constantSize="true">
+<animated-selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/upvoted"
+        android:id="@+id/focused"
         android:state_activated="true"
-        android:drawable="@drawable/ic_upvote_filled_24dp_blue" />
+        android:drawable="@drawable/ic_comment_add" />
 
     <item
-        android:id="@+id/not_upvoted"
-        android:drawable="@drawable/ic_upvote_empty_24dp_grey" />
+        android:id="@+id/not_focused"
+        android:drawable="@drawable/ic_comment_lines" />
 
     <transition
-        android:fromId="@id/not_upvoted"
-        android:toId="@id/upvoted">
+        android:fromId="@id/not_focused"
+        android:toId="@id/focused"
+        android:drawable="@drawable/avd_comment_to_add" />
 
-        <animated-vector android:drawable="@drawable/ic_upvote_anim">
-
-            <target
-                android:name="filled"
-                android:animation="@animator/upvote" />
-
-        </animated-vector>
-
-    </transition>
+    <transition
+        android:fromId="@id/focused"
+        android:toId="@id/not_focused"
+        android:drawable="@drawable/avd_add_to_comment" />
 
 </animated-selector>

@@ -15,27 +15,25 @@
   limitations under the License.
   -->
 
-<animated-selector
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:constantSize="true">
+<animated-selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/following"
-        android:state_activated="true"
-        android:drawable="@drawable/ic_unfollow_24dp" />
+        android:id="@+id/liked"
+        android:state_checked="true"
+        android:drawable="@drawable/ic_heart_full_56dp" />
 
     <item
-        android:id="@+id/not_following"
-        android:drawable="@drawable/ic_follow_24dp" />
+        android:id="@+id/not_liked"
+        android:drawable="@drawable/ic_heart_empty_56dp" />
 
     <transition
-        android:fromId="@id/following"
-        android:toId="@id/not_following"
-        android:drawable="@drawable/avd_unfollow" />
+        android:fromId="@id/not_liked"
+        android:toId="@id/liked"
+        android:drawable="@drawable/avd_heart_fill" />
 
     <transition
-        android:fromId="@id/not_following"
-        android:toId="@id/following"
-        android:drawable="@drawable/avd_follow" />
+        android:fromId="@id/liked"
+        android:toId="@id/not_liked"
+        android:drawable="@drawable/avd_heart_empty" />
 
 </animated-selector>

@@ -61,7 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:padding="@dimen/spacing_normal"
-        android:src="@drawable/ic_add_comment"
+        android:src="@drawable/asl_add_comment"
         android:background="?android:selectableItemBackgroundBorderless"
         android:onClick="postComment" />
 

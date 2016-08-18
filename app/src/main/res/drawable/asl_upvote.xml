@@ -15,27 +15,29 @@
   limitations under the License.
   -->
 
-<animated-selector
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:constantSize="true">
+<animated-selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/liked"
-        android:state_checked="true"
-        android:drawable="@drawable/ic_heart_full_56dp" />
+        android:id="@+id/upvoted"
+        android:state_activated="true"
+        android:drawable="@drawable/ic_upvote_filled_24dp_blue" />
 
     <item
-        android:id="@+id/not_liked"
-        android:drawable="@drawable/ic_heart_empty_56dp" />
+        android:id="@+id/not_upvoted"
+        android:drawable="@drawable/ic_upvote_empty_24dp_grey" />
 
     <transition
-        android:fromId="@id/not_liked"
-        android:toId="@id/liked"
-        android:drawable="@drawable/avd_heart_fill" />
+        android:fromId="@id/not_upvoted"
+        android:toId="@id/upvoted">
 
-    <transition
-        android:fromId="@id/liked"
-        android:toId="@id/not_liked"
-        android:drawable="@drawable/avd_heart_empty" />
+        <animated-vector android:drawable="@drawable/ic_upvote_anim">
+
+            <target
+                android:name="filled"
+                android:animation="@animator/upvote" />
+
+        </animated-vector>
+
+    </transition>
 
 </animated-selector>
