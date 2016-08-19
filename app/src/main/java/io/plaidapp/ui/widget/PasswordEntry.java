@@ -132,6 +132,9 @@ public class PasswordEntry extends TextInputEditText {
         return insetStart;
     }
 
+    /**
+     * A drawable for animating the switch between a masked and visible password field.
+     */
     static class MaskMorphDrawable extends Drawable {
 
         private static final char[] PASSWORD_MASK = { '•' };
@@ -261,7 +264,7 @@ public class PasswordEntry extends TextInputEditText {
             return anim;
         }
 
-        public static final Property<MaskMorphDrawable, Float> RADIUS
+        static final Property<MaskMorphDrawable, Float> RADIUS
                 = new AnimUtils.FloatProperty<MaskMorphDrawable>("dotRadius") {
 
             @Override
@@ -275,7 +278,7 @@ public class PasswordEntry extends TextInputEditText {
             }
         };
 
-        public static final Property<MaskMorphDrawable, Float> OFFSET_Y
+        static final Property<MaskMorphDrawable, Float> OFFSET_Y
                 = new AnimUtils.FloatProperty<MaskMorphDrawable>("dotOffsetY") {
 
             @Override
