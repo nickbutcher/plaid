@@ -85,7 +85,7 @@
             app:passwordToggleDrawable="@drawable/asl_password_visibility"
             app:passwordToggleTint="?colorControlNormal">
 
-            <android.support.design.widget.TextInputEditText
+            <io.plaidapp.ui.widget.PasswordEntry
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
