@@ -273,38 +273,36 @@ public class PasswordEntry extends TextInputEditText {
             maskToTextScale = Math.max(1f, bounds.width() / maskCharDiameter);
             // scale text from it's height down to the mask character height
             textToMaskScale = Math.min(0f, 1f / (bounds.height() / maskCharDiameter));
-            // offset the mask center from the character center
+            // difference between mask & character center
             textOffsetY = maskCenterY - bounds.exactCenterY();
         }
 
 
         /**
-         * Progress through the morph:  0 = character, 1 = •.
+         * Progress through the morph:  0 = character, 1 = •
          */
         void draw(Canvas canvas, TextPaint paint, CharSequence password,
                   int index, float charWidth, float progress) {
-            final int alpha = paint.getAlpha();
+            int alpha = paint.getAlpha();
+            float x = charWidth * index;
 
             // draw the character
             canvas.save();
-            canvas.translate(charWidth * index, 0);
             float textScale = lerp(1f, textToMaskScale, progress);
             // scale character: shrinks to/grows from the mask's height, remaining centered
-            canvas.scale(textScale, textScale, bounds.exactCenterX(), bounds.exactCenterY());
+            canvas.scale(textScale, textScale, x + bounds.exactCenterX(), bounds.exactCenterY());
             paint.setAlpha((int) lerp(alpha, 0, progress));
-            canvas.drawText(password, index, index + 1, 0, 0, paint);
+            canvas.drawText(password, index, index + 1, x, 0, paint);
             canvas.restore();
 
             // draw the mask
             canvas.save();
-            float dy = lerp(textOffsetY, 0f, progress);
-            // move the mask: character center ↔ mask center
-            canvas.translate(charWidth * index, -dy);
             float maskScale = lerp(maskToTextScale, 1f, progress);
-            // scale the mask down from/up to the character size
-            canvas.scale(maskScale, maskScale, bounds.exactCenterX(), bounds.exactCenterY() + dy);
+            // scale the mask: down from/up to the character width
+            canvas.scale(maskScale, maskScale, x + bounds.exactCenterX(), bounds.exactCenterY());
             paint.setAlpha((int) AnimUtils.lerp(0, alpha, progress));
-            canvas.drawText(PASSWORD_MASK, 0, 1, 0, 0, paint);
+            // vertically move the mask: character center ↔ mask center
+            canvas.drawText(PASSWORD_MASK, 0, 1, x, -lerp(textOffsetY, 0f, progress), paint);
             canvas.restore();
             paint.setAlpha(alpha);
         }
