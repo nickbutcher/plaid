@@ -1212,9 +1212,12 @@ public class DribbbleShot extends Activity {
         }
 
         @Override
-        public boolean animateMove(RecyclerView.ViewHolder holder, int fromX, int fromY, int toX,
-                                   int toY) {
-            if (!animateMoves) return false;
+        public boolean animateMove(
+                RecyclerView.ViewHolder holder, int fromX, int fromY, int toX, int toY) {
+            if (!animateMoves) {
+                dispatchMoveFinished(holder);
+                return false;
+            }
             return super.animateMove(holder, fromX, fromY, toX, toY);
         }
     }
