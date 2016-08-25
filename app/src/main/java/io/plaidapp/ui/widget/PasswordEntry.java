@@ -18,7 +18,7 @@ package io.plaidapp.ui.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Canvas;
@@ -32,7 +32,6 @@ import android.support.design.widget.TextInputEditText;
 import android.text.TextPaint;
 import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
-import android.util.Property;
 import android.view.animation.Interpolator;
 
 import io.plaidapp.R;
@@ -45,10 +44,11 @@ import static io.plaidapp.util.AnimUtils.lerp;
  */
 public class PasswordEntry extends TextInputEditText {
 
-    static final char[] PASSWORD_MASK = { '•' };
+    static final char[] PASSWORD_MASK = { '\u2022' }; // PasswordTransformationMethod#DOT
 
     private boolean passwordMasked = false;
     private MaskMorphDrawable maskDrawable;
+    private ColorStateList textColor;
 
     public PasswordEntry(Context context) {
         super(context);
@@ -79,30 +79,35 @@ public class PasswordEntry extends TextInputEditText {
         }
     }
 
+    @Override
+    public void setTextColor(ColorStateList colors) {
+        super.setTextColor(colors);
+        textColor = colors;
+    }
+
     private void passwordVisibilityToggled(boolean isMasked, CharSequence password) {
         if (maskDrawable == null) {
             // lazily create the drawable that morphs the dots
             if (!isLaidOut() || getText().length() < 1) return;
             maskDrawable = new MaskMorphDrawable(getContext(), getPaint(), getBaseline(),
                     getLayout().getPrimaryHorizontal(1), getTextLeft());
-            maskDrawable.setBounds(getPaddingLeft(), getPaddingTop(), 0,
+            maskDrawable.setBounds(getPaddingLeft(), getPaddingTop(), getPaddingLeft(),
                     getHeight() - getPaddingBottom());
             getOverlay().add(maskDrawable);
         }
 
         // hide the text during the animation
-        final ColorStateList textColors = getTextColors();
         setTextColor(Color.TRANSPARENT);
-        Animator morph =  isMasked ?
+        Animator maskMorph = isMasked ?
                 maskDrawable.createShowMaskAnimator(password)
                 : maskDrawable.createHideMaskAnimator(password);
-        morph.addListener(new AnimatorListenerAdapter() {
+        maskMorph.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                setTextColor(textColors); // restore the proper text color
+                setTextColor(textColor); // restore the proper text color
             }
         });
-        morph.start();
+        maskMorph.start();
     }
 
     private int getTextLeft() {
@@ -122,6 +127,8 @@ public class PasswordEntry extends TextInputEditText {
     static class MaskMorphDrawable extends Drawable {
 
         private static final float NO_PROGRESS = -1f;
+        private static final float PROGRESS_CHARACTER = 0f;
+        private static final float PROGRESS_MASK = 1f;
 
         private final TextPaint paint;
         private final float charWidth;
@@ -154,23 +161,12 @@ public class PasswordEntry extends TextInputEditText {
             fastOutSlowIn = AnimUtils.getFastOutSlowInInterpolator(context);
         }
 
-        public float getMorphProgress() {
-            return morphProgress;
-        }
-
-        public void setMorphProgress(float morphProgress) {
-            if (this.morphProgress != morphProgress) {
-                this.morphProgress = morphProgress;
-                invalidateSelf();
-            }
-        }
-
         Animator createShowMaskAnimator(CharSequence password) {
-            return morphPassword(password, 0f, 1f, hidePasswordDuration);
+            return morphPassword(password, PROGRESS_CHARACTER, PROGRESS_MASK, hidePasswordDuration);
         }
 
         Animator createHideMaskAnimator(CharSequence password) {
-            return morphPassword(password, 1f, 0f, showPasswordDuration);
+            return morphPassword(password, PROGRESS_MASK, PROGRESS_CHARACTER, showPasswordDuration);
         }
 
         @Override
@@ -187,7 +183,7 @@ public class PasswordEntry extends TextInputEditText {
 
         @Override
         public void setAlpha(int alpha) {
-            if (alpha != getAlpha()) {
+            if (alpha != paint.getAlpha()) {
                 paint.setAlpha(alpha);
                 invalidateSelf();
             }
@@ -213,7 +209,15 @@ public class PasswordEntry extends TextInputEditText {
                 characters[i] = new PasswordCharacter(passStr, i, paint, maskDiameter, maskCenterY);
             }
 
-            Animator anim = ObjectAnimator.ofFloat(this, MORPH, fromProgress, toProgress);
+            ValueAnimator anim = ValueAnimator.ofFloat(fromProgress, toProgress);
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    morphProgress = (float) valueAnimator.getAnimatedValue();
+                    invalidateSelf();
+                }
+            });
+
             anim.setDuration(duration);
             anim.setInterpolator(fastOutSlowIn);
             anim.addListener(new AnimatorListenerAdapter() {
@@ -223,6 +227,7 @@ public class PasswordEntry extends TextInputEditText {
                     morphProgress = NO_PROGRESS;
                     password = null;
                     updateBounds();
+                    invalidateSelf();
                 }
             });
             return anim;
@@ -231,27 +236,15 @@ public class PasswordEntry extends TextInputEditText {
         private void updateBounds() {
             Rect oldBounds = getBounds();
             if (password != null) {
-                setBounds(oldBounds.left, oldBounds.top,
+                setBounds(
+                        oldBounds.left,
+                        oldBounds.top,
                         oldBounds.left + (int) Math.ceil(password.length() * charWidth),
                         oldBounds.bottom);
             } else {
                 setBounds(oldBounds.left, oldBounds.top, oldBounds.left, oldBounds.bottom);
             }
         }
-
-        static final Property<MaskMorphDrawable, Float> MORPH
-                = new AnimUtils.FloatProperty<MaskMorphDrawable>("morphProgress") {
-
-            @Override
-            public void setValue(MaskMorphDrawable drawable, float progress) {
-                drawable.setMorphProgress(progress);
-            }
-
-            @Override
-            public Float get(MaskMorphDrawable drawable) {
-                return drawable.getMorphProgress();
-            }
-        };
 
     }
 
@@ -289,10 +282,13 @@ public class PasswordEntry extends TextInputEditText {
             // draw the character
             canvas.save();
             float textScale = lerp(1f, textToMaskScale, progress);
-            // scale character: shrinks to/grows from the mask's height, remaining centered
+            // scale character: shrinks to/grows from the mask's height
             canvas.scale(textScale, textScale, x + bounds.exactCenterX(), bounds.exactCenterY());
+            // cross fade between the character/mask
             paint.setAlpha((int) lerp(alpha, 0, progress));
-            canvas.drawText(password, index, index + 1, x, 0, paint);
+            // vertically move the character center toward/from the mask center
+            canvas.drawText(password, index, index + 1,
+                    x, lerp(0f, textOffsetY, progress) / textScale, paint);
             canvas.restore();
 
             // draw the mask
@@ -300,10 +296,13 @@ public class PasswordEntry extends TextInputEditText {
             float maskScale = lerp(maskToTextScale, 1f, progress);
             // scale the mask: down from/up to the character width
             canvas.scale(maskScale, maskScale, x + bounds.exactCenterX(), bounds.exactCenterY());
+            // cross fade between the mask/character
             paint.setAlpha((int) AnimUtils.lerp(0, alpha, progress));
-            // vertically move the mask: character center ↔ mask center
+            // vertically move the mask center from/toward the character center
             canvas.drawText(PASSWORD_MASK, 0, 1, x, -lerp(textOffsetY, 0f, progress), paint);
             canvas.restore();
+
+            // restore the paint to how we found it
             paint.setAlpha(alpha);
         }
 
