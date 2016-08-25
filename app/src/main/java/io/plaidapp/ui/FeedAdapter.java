@@ -221,6 +221,18 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         (Story) getItem(holder.getAdapterPosition()));
                 ReflowText.addExtras(intent, new ReflowText.ReflowableTextView(holder.title));
                 setGridItemContentTransitions(holder.itemView);
+
+                // on return, fade the pocket & comments buttons in
+                host.setExitSharedElementCallback(new SharedElementCallback() {
+                    @Override
+                    public void onSharedElementStart(List<String> sharedElementNames, List<View>
+                            sharedElements, List<View> sharedElementSnapshots) {
+                        host.setExitSharedElementCallback(null);
+                        notifyItemChanged(holder.getAdapterPosition(),
+                                HomeGridItemAnimator.STORY_COMMENTS_RETURN);
+                    }
+                });
+
                 final ActivityOptions options =
                         ActivityOptions.makeSceneTransitionAnimation(host,
                                 Pair.create((View) holder.title,
@@ -241,7 +253,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             ((Story) getItem(holder.getAdapterPosition())).url);
                     // notify changed with a payload asking RV to run the anim
                     notifyItemChanged(holder.getAdapterPosition(),
-                            HomeGridItemAnimator.ANIMATE_ADD_POCKET);
+                            HomeGridItemAnimator.ADD_TO_POCKET);
                 }
             });
         }
@@ -689,7 +701,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         BadgedFourThreeImageView image;
 
-        public DribbbleShotHolder(View itemView) {
+        DribbbleShotHolder(View itemView) {
             super(itemView);
             image = (BadgedFourThreeImageView) itemView;
         }
@@ -702,7 +714,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         @BindView(R.id.story_comments) TextView comments;
         @BindView(R.id.pocket) ImageButton pocket;
 
-        public DesignerNewsStoryHolder(View itemView, boolean pocketIsInstalled) {
+        DesignerNewsStoryHolder(View itemView, boolean pocketIsInstalled) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             pocket.setVisibility(pocketIsInstalled ? View.VISIBLE : View.GONE);
@@ -715,7 +727,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         @BindView(R.id.tagline) TextView tagline;
         @BindView(R.id.story_comments) TextView comments;
 
-        public ProductHuntStoryHolder(View itemView) {
+        ProductHuntStoryHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
@@ -725,7 +737,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         ProgressBar progress;
 
-        public LoadingMoreHolder(View itemView) {
+        LoadingMoreHolder(View itemView) {
             super(itemView);
             progress = (ProgressBar) itemView;
         }
