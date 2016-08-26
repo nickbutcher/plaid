@@ -40,8 +40,8 @@ import io.plaidapp.util.ViewUtils;
 public class HomeGridItemAnimator extends SlideInItemAnimator {
 
     // Constant payloads, for use with Adapter#notifyItemChanged
-    public static final int ADD_TO_POCKET = 0x1;
-    public static final int STORY_COMMENTS_RETURN = 0x2;
+    public static final int ADD_TO_POCKET = 1;
+    public static final int STORY_COMMENTS_RETURN = 2;
 
     // Pending animations
     private FeedAdapter.DesignerNewsStoryHolder pendingAddToPocket;
@@ -115,6 +115,14 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
     @Override
     public void endAnimation(RecyclerView.ViewHolder holder) {
         super.endAnimation(holder);
+        if (holder == pendingAddToPocket) {
+            dispatchChangeFinished(pendingAddToPocket, false);
+            pendingAddToPocket = null;
+        }
+        if (holder == pendingStoryCommentsReturn) {
+            dispatchChangeFinished(pendingStoryCommentsReturn, false);
+            pendingStoryCommentsReturn = null;
+        }
         if (runningAddToPocket != null && runningAddToPocket.first == holder) {
             runningAddToPocket.second.cancel();
         }
@@ -126,6 +134,14 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
     @Override
     public void endAnimations() {
         super.endAnimations();
+        if (pendingAddToPocket != null) {
+            dispatchChangeFinished(pendingAddToPocket, false);
+            pendingAddToPocket = null;
+        }
+        if (pendingStoryCommentsReturn != null) {
+            dispatchChangeFinished(pendingStoryCommentsReturn, false);
+            pendingStoryCommentsReturn = null;
+        }
         if (runningAddToPocket != null) {
             runningAddToPocket.second.cancel();
         }
@@ -220,6 +236,7 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
                 holder.pocket.setScaleY(1f);
                 holder.pocket.setImageAlpha(178);
                 runningAddToPocket = null;
+                dispatchChangeFinished(holder, false);
             }
         });
         runningAddToPocket = Pair.create(holder, addToPocketAnim);
@@ -253,6 +270,7 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
                 holder.pocket.setAlpha(1f);
                 holder.comments.setAlpha(1f);
                 runningStoryCommentsReturn = null;
+                dispatchChangeFinished(holder, false);
             }
         });
         runningStoryCommentsReturn = Pair.create(holder, commentsReturnAnim);

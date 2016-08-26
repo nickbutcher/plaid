@@ -262,6 +262,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private void bindDesignerNewsStory(final Story story, final DesignerNewsStoryHolder holder) {
         holder.title.setText(story.title);
+        holder.title.setAlpha(1f); // interrupted add to pocket anim can mangle
         holder.comments.setText(String.valueOf(story.comment_count));
         holder.itemView.setTransitionName(story.url);
     }
