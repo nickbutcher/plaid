@@ -737,7 +737,6 @@ public class DribbbleShot extends Activity {
         });
         fabMovement.start();
 
-        fab.setAlpha(0f);
         Animator showFab = ObjectAnimator.ofPropertyValuesHolder(fab,
                 PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f),
                 PropertyValuesHolder.ofFloat(View.SCALE_X, 0f, 1f),
@@ -787,7 +786,6 @@ public class DribbbleShot extends Activity {
                 public void onResponse(Call<Like> call, Response<Like> response) {
                     // note that like.user will be null here
                     fab.setChecked(response.body() != null);
-                    fab.jumpDrawablesToCurrentState();
                 }
 
                 @Override
