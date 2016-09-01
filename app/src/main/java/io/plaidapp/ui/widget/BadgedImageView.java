@@ -33,13 +33,14 @@ import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.widget.ImageView;
 
 import io.plaidapp.R;
 
 /**
- * A view group that draws a badge drawable on top of it's contents.
+ * An {@link ImageView} that draws a badge drawable on top of it's contents.
  */
-public class BadgedFourThreeImageView extends FourThreeImageView {
+public class BadgedImageView extends ForegroundImageView {
 
     private Drawable badge;
     private boolean drawBadge;
@@ -47,7 +48,7 @@ public class BadgedFourThreeImageView extends FourThreeImageView {
     private int badgeGravity;
     private int badgePadding;
 
-    public BadgedFourThreeImageView(Context context, AttributeSet attrs) {
+    public BadgedImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         badge = new GifBadge(context);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BadgedImageView, 0, 0);

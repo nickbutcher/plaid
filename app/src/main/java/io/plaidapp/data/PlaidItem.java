@@ -27,7 +27,7 @@ public abstract class PlaidItem {
     public String dataSource;
     public int page;
     public float weight; // used for sorting
-    public int colspan;
+    public int gridSpan;
 
     public PlaidItem(long id,
                      String title,

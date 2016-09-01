@@ -39,10 +39,14 @@
             android:id="@+id/grid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             android:scrollbars="vertical"
-            android:scrollbarStyle="outsideOverlay"
+            android:scrollbarStyle="insideOverlay"
             android:clipToPadding="false"
-            android:elevation="1dp" />
+            android:elevation="1dp"
+            app:layoutManager="io.plaidapp.ui.recyclerview.SpannedGridLayoutManager"
+            app:spanCount="@integer/num_columns"
+            app:aspectRatio="4:3" />
 
         <Toolbar
             android:id="@+id/toolbar"

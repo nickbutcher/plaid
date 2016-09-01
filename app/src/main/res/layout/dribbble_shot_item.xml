@@ -15,12 +15,13 @@
   limitations under the License.
   -->
 
-<io.plaidapp.ui.widget.BadgedFourThreeImageView
+<io.plaidapp.ui.widget.BadgedImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/shot"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_height="match_parent"
+    android:scaleType="centerCrop"
     android:elevation="@dimen/z_card"
     android:stateListAnimator="@animator/raise"
     android:foreground="@drawable/mid_grey_ripple"

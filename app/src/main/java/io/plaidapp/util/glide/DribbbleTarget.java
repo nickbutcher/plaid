@@ -27,12 +27,12 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 
 import io.plaidapp.R;
-import io.plaidapp.ui.widget.BadgedFourThreeImageView;
+import io.plaidapp.ui.widget.BadgedImageView;
 import io.plaidapp.util.ColorUtils;
 import io.plaidapp.util.ViewUtils;
 
 /**
- * A Glide {@see ViewTarget} for {@link BadgedFourThreeImageView}s. It applies a badge for animated
+ * A Glide {@see ViewTarget} for {@link BadgedImageView}s. It applies a badge for animated
  * images, can prevent GIFs from auto-playing & applies a palette generated ripple.
  */
 public class DribbbleTarget extends GlideDrawableImageViewTarget implements
@@ -40,7 +40,7 @@ public class DribbbleTarget extends GlideDrawableImageViewTarget implements
 
     private final boolean autoplayGifs;
 
-    public DribbbleTarget(BadgedFourThreeImageView view, boolean autoplayGifs) {
+    public DribbbleTarget(BadgedImageView view, boolean autoplayGifs) {
         super(view);
         this.autoplayGifs = autoplayGifs;
     }
@@ -53,7 +53,7 @@ public class DribbbleTarget extends GlideDrawableImageViewTarget implements
             resource.stop();
         }
 
-        BadgedFourThreeImageView badgedImageView = (BadgedFourThreeImageView) getView();
+        BadgedImageView badgedImageView = (BadgedImageView) getView();
         if (resource instanceof GlideBitmapDrawable) {
             Palette.from(((GlideBitmapDrawable) resource).getBitmap())
                     .clearFilters()
@@ -92,7 +92,7 @@ public class DribbbleTarget extends GlideDrawableImageViewTarget implements
 
     @Override
     public void onGenerated(Palette palette) {
-        ((BadgedFourThreeImageView) getView()).setForeground(
+        ((BadgedImageView) getView()).setForeground(
                 ViewUtils.createRipple(palette, 0.25f, 0.5f,
                         ContextCompat.getColor(getView().getContext(), R.color.mid_grey), true));
     }

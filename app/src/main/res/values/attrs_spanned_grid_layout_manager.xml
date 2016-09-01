@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2015 Google Inc.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,14 +15,12 @@
   limitations under the License.
   -->
 
-<ProgressBar
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/loading"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/spacing_large"
-    android:paddingBottom="@dimen/spacing_huge"
-    android:gravity="center"
-    android:indeterminate="true"
-    android:indeterminateTint="@color/mid_grey"
-    android:indeterminateTintMode="src_in" />
+<resources>
+
+    <declare-styleable name="SpannedGridLayoutManager">
+        <attr name="android:orientation" />
+        <attr name="spanCount" />
+        <attr name="aspectRatio" format="string" />
+    </declare-styleable>
+
+</resources>
