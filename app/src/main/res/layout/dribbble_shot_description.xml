@@ -24,6 +24,8 @@
     android:columnCount="3"
     android:rowCount="7"
     android:useDefaultMargins="false"
+    android:transitionGroup="false"
+    android:clipToPadding="false"
     android:background="@android:color/transparent">
     <!-- transparent background needed for the ripple on the spacer -->
 
@@ -33,8 +35,7 @@
         android:layout_columnSpan="3"
         android:background="@drawable/mid_grey_bounded_ripple" />
 
-    <include
-        layout="@layout/dribbble_shot_title" />
+    <include layout="@layout/dribbble_shot_title" />
 
     <LinearLayout
         android:id="@+id/shot_actions"
@@ -42,7 +43,8 @@
         android:layout_width="match_parent"
         android:paddingStart="@dimen/padding_normal"
         android:paddingTop="@dimen/spacing_large"
-        android:paddingEnd="@dimen/padding_normal">
+        android:paddingEnd="@dimen/padding_normal"
+        android:clipToPadding="false">
 
         <Button
             android:id="@+id/shot_like_count"

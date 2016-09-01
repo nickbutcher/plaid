@@ -17,17 +17,26 @@
 
 <io.plaidapp.ui.widget.ElasticDragDismissFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/draggable_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light"
-    android:transitionName="@string/transition_shot_background"
     android:transitionGroup="false"
     app:dragDismissDistance="@dimen/drag_dismiss_distance"
     app:dragDismissScale="0.95"
     tools:context=".ui.DribbbleShot">
+
+    <!-- Use a separate view for the background, rather than on the root view because it is a
+         shared element. Otherwise it interferes with the window enter transition i.e. as it is
+         resized for the shared element transition, many views are considered 'off-screen' so
+         visibility transitions are not run. -->
+    <View
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_light"
+        android:transitionName="@string/transition_shot_background" />
 
     <io.plaidapp.ui.widget.ParallaxScrimageView
         android:id="@+id/shot"
@@ -41,12 +50,13 @@
         app:scrimColor="@color/scrim"
         app:scrimAlpha="0"
         app:maxScrimAlpha="0.4"
-        app:parallaxFactor="-0.5"/>
+        app:parallaxFactor="-0.5" />
 
     <!-- We're 'faking' a toolbar here as we just want a back button.
          This approach lets the borderless ripple extend beyond the back button's bounds,
          toolbar clips it. Wrapping layout needed for the ripple. -->
     <FrameLayout
+        android:id="@+id/back_wrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
@@ -61,7 +71,6 @@
             android:layout_marginEnd="@dimen/padding_normal"
             android:layout_marginBottom="@dimen/padding_normal"
             android:src="@drawable/ic_arrow_back"
-            android:alpha="0"
             android:background="@drawable/mid_grey_ripple" />
 
     </FrameLayout>
@@ -86,7 +95,6 @@
         android:layout_gravity="end"
         android:layout_marginEnd="@dimen/padding_normal"
         android:stateListAnimator="@animator/raise"
-        android:src="@drawable/asl_fab_heart"
-        android:alpha="0" />
+        android:src="@drawable/asl_fab_heart" />
 
 </io.plaidapp.ui.widget.ElasticDragDismissFrameLayout>

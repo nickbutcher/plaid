@@ -15,12 +15,75 @@
   limitations under the License.
   -->
 
-<fade
+<transitionSet
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:interpolator="@android:interpolator/fast_out_slow_in"
-    android:duration="@android:integer/config_mediumAnimTime">
-    <targets>
-        <target android:targetId="@android:id/navigationBarBackground" />
-        <target android:targetId="@android:id/statusBarBackground" />
-    </targets>
-</fade>
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <transitionSet>
+        <targets>
+            <target android:excludeId="@android:id/navigationBarBackground" />
+            <target android:excludeId="@android:id/statusBarBackground" />
+            <target android:excludeId="@id/shot" />
+            <target android:excludeId="@id/back_wrapper" />
+            <target android:excludeId="@id/fab_heart" />
+        </targets>
+        <transition
+            class="io.plaidapp.ui.transitions.StaggeredDistanceSlide"
+            app:spread="5"
+            android:duration="350"
+            android:interpolator="@android:interpolator/linear_out_slow_in" />
+        <!-- Delay fading in so that the shared element transition on the background
+             has time to run -->
+        <fade
+            android:startDelay="250"
+            android:duration="100"
+            android:interpolator="@android:interpolator/linear" />
+    </transitionSet>
+
+    <!-- As this overlaps the shared element transition, content can be outside of the
+         growing background, fade in the title background to make this less noticeable. -->
+    <transition
+        class="io.plaidapp.ui.transitions.BackgroundFade"
+        android:startDelay="300"
+        android:duration="150"
+        android:interpolator="@android:interpolator/linear">
+        <targets>
+            <target android:targetId="@id/shot_title" />
+        </targets>
+    </transition>
+
+    <transitionSet android:transitionOrdering="together">
+        <targets>
+            <target android:targetId="@id/fab_heart" />
+        </targets>
+        <transition
+            class="io.plaidapp.ui.transitions.Pop"
+            android:startDelay="350"
+            android:duration="350"
+            android:interpolator="@android:interpolator/linear_out_slow_in" />
+        <slide
+            android:slideEdge="bottom"
+            android:startDelay="100"
+            android:duration="360"
+            android:interpolator="@android:interpolator/linear_out_slow_in" />
+    </transitionSet>
+
+    <fade
+        android:startDelay="300"
+        android:duration="100"
+        android:interpolator="@android:interpolator/linear">
+        <targets>
+            <target android:targetId="@id/back_wrapper" />
+        </targets>
+    </fade>
+
+    <fade
+        android:duration="350"
+        android:interpolator="@android:interpolator/linear">
+        <targets>
+            <target android:targetId="@android:id/statusBarBackground" />
+            <target android:targetId="@android:id/navigationBarBackground" />
+        </targets>
+    </fade>
+
+</transitionSet>

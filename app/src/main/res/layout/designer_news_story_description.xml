@@ -23,7 +23,9 @@
     android:paddingTop="@dimen/designer_news_story_comments_vertical_padding"
     android:elevation="@dimen/designer_news_story_comment_elevation"
     android:background="@color/designer_news_story_comment_background"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:transitionGroup="false"
+    android:clipToPadding="false">
 
     <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/story_comment"
@@ -45,7 +47,8 @@
         android:paddingTop="@dimen/spacing_large"
         android:paddingEnd="@dimen/padding_normal"
         android:paddingBottom="@dimen/padding_normal"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:clipToPadding="false">
 
         <Space
             android:layout_width="0dp"
@@ -87,7 +90,8 @@
         android:layout_height="wrap_content"
         android:paddingEnd="@dimen/padding_normal"
         android:paddingBottom="@dimen/padding_normal"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:clipToPadding="false">
 
         <io.plaidapp.ui.widget.BaselineGridTextView
             android:id="@+id/story_poster_time"

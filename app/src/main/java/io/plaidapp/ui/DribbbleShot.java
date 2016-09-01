@@ -16,10 +16,6 @@
 
 package io.plaidapp.ui;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -51,7 +47,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -94,7 +89,6 @@ import io.plaidapp.util.ColorUtils;
 import io.plaidapp.util.HtmlUtils;
 import io.plaidapp.util.ImeUtils;
 import io.plaidapp.util.TransitionUtils;
-import io.plaidapp.util.ViewOffsetHelper;
 import io.plaidapp.util.ViewUtils;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.util.glide.CircleTransform;
@@ -105,7 +99,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
-import static io.plaidapp.util.AnimUtils.getLinearOutSlowInInterpolator;
 
 public class DribbbleShot extends Activity {
 
@@ -153,7 +146,6 @@ public class DribbbleShot extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_shot);
         dribbblePrefs = DribbblePrefs.get(this);
-        getWindow().getSharedElementReturnTransition().addListener(shotReturnHomeListener);
         circleTransform = new CircleTransform(this);
         ButterKnife.bind(this);
         shotDescription = getLayoutInflater().inflate(R.layout.dribbble_shot_description,
@@ -285,13 +277,12 @@ public class DribbbleShot extends Activity {
         shotSpacer.setOnClickListener(shotClick);
 
         if (postponeEnterTransition) postponeEnterTransition();
-        imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver
-                .OnPreDrawListener() {
+        imageView.getViewTreeObserver().addOnPreDrawListener(
+                new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
                 imageView.getViewTreeObserver().removeOnPreDrawListener(this);
                 calculateFabPosition();
-                enterAnimation();
                 if (postponeEnterTransition) startPostponedEnterTransition();
                 return true;
             }
@@ -387,6 +378,8 @@ public class DribbbleShot extends Activity {
             shotTimeAgo.setVisibility(View.GONE);
         }
 
+        commentAnimator = new CommentAnimator();
+        commentsList.setItemAnimator(commentAnimator);
         adapter = new CommentsAdapter(shotDescription, commentFooter, shot.comments_count,
                 getResources().getInteger(R.integer.comment_expand_collapse_duration));
         commentsList.setAdapter(adapter);
@@ -395,8 +388,6 @@ public class DribbbleShot extends Activity {
                 res.getDimensionPixelSize(R.dimen.divider_height),
                 res.getDimensionPixelSize(R.dimen.keyline_1),
                 ContextCompat.getColor(this, R.color.divider)));
-        commentAnimator = new CommentAnimator();
-        commentsList.setItemAnimator(commentAnimator);
         if (shot.comments_count != 0) {
             loadComments();
         }
@@ -617,28 +608,6 @@ public class DribbbleShot extends Activity {
         }
     };
 
-    private Transition.TransitionListener shotReturnHomeListener =
-            new TransitionUtils.TransitionListenerAdapter() {
-        @Override
-        public void onTransitionStart(Transition transition) {
-            super.onTransitionStart(transition);
-            // hide the fab as for some reason it jumps position??  TODO work out why
-            fab.setVisibility(View.INVISIBLE);
-            // fade out the "toolbar" & list as we don't want them to be visible during return
-            // animation
-            back.animate()
-                    .alpha(0f)
-                    .setDuration(100)
-                    .setInterpolator(getLinearOutSlowInInterpolator(DribbbleShot.this));
-            imageView.setElevation(1f);
-            back.setElevation(0f);
-            commentsList.animate()
-                    .alpha(0f)
-                    .setDuration(50)
-                    .setInterpolator(getLinearOutSlowInInterpolator(DribbbleShot.this));
-        }
-    };
-
     private void loadComments() {
         final Call<List<Comment>> commentsCall =
                 dribbblePrefs.getApi().getComments(shot.id, 0, DribbbleService.PER_PAGE_MAX);
@@ -669,82 +638,6 @@ public class DribbbleShot extends Activity {
 
         // calculate min position i.e. pinned to the collapsed image when scrolled
         fab.setMinOffset(imageView.getMinimumHeight() - (fab.getHeight() / 2));
-    }
-
-    /**
-     * Animate in the title, description and author – can't do this in the window enter transition
-     * as they get added to the RecyclerView later so do it manually.  Also animate the FAB
-     * translation here so that it plays nicely with #calculateFabPosition
-     **/
-    private void enterAnimation() {
-        Interpolator interp = getFastOutSlowInInterpolator(this);
-        int offset = title.getHeight();
-        viewEnterAnimation(title, offset, interp);
-        if (description.getVisibility() == View.VISIBLE) {
-            offset *= 1.5f;
-            viewEnterAnimation(description, offset, interp);
-        }
-        offset *= 1.5f;
-        fabEnterAnimation(interp, offset);
-        offset *= 1.5f;
-        viewEnterAnimation(shotActions, offset, interp);
-        offset *= 1.5f;
-        viewEnterAnimation(playerName, offset, interp);
-        viewEnterAnimation(playerAvatar, offset, interp);
-        viewEnterAnimation(shotTimeAgo, offset, interp);
-        back.animate()
-                .alpha(1f)
-                .setDuration(600L)
-                .setInterpolator(interp)
-                .start();
-    }
-
-    private void viewEnterAnimation(View view, float offset, Interpolator interp) {
-        view.setTranslationY(offset);
-        view.setAlpha(0.6f);
-        view.animate()
-                .translationY(0f)
-                .alpha(1f)
-                .setDuration(600L)
-                .setInterpolator(interp)
-                .setListener(null)
-                .start();
-    }
-
-    private void fabEnterAnimation(Interpolator interp, int offset) {
-        // FAB should enter upwards with content and also scale/fade. As the FAB uses
-        // translationY to position itself on the title seam, we can animating this property.
-        // Instead animate the view's layout position (which is a bit more involved).
-        final ViewOffsetHelper fabOffset = new ViewOffsetHelper(fab);
-        final View.OnLayoutChangeListener fabLayout = new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int
-                    oldLeft, int oldTop, int oldRight, int oldBottom) {
-                fabOffset.onViewLayout();
-            }
-        };
-
-        fab.addOnLayoutChangeListener(fabLayout);
-        fabOffset.setTopAndBottomOffset(offset);
-        Animator fabMovement = ObjectAnimator.ofInt(fabOffset, ViewOffsetHelper.OFFSET_Y, 0);
-        fabMovement.setDuration(600L);
-        fabMovement.setInterpolator(interp);
-        fabMovement.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                fab.removeOnLayoutChangeListener(fabLayout);
-            }
-        });
-        fabMovement.start();
-
-        Animator showFab = ObjectAnimator.ofPropertyValuesHolder(fab,
-                PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f),
-                PropertyValuesHolder.ofFloat(View.SCALE_X, 0f, 1f),
-                PropertyValuesHolder.ofFloat(View.SCALE_Y, 0f, 1f));
-        showFab.setStartDelay(300L);
-        showFab.setDuration(300L);
-        showFab.setInterpolator(getLinearOutSlowInInterpolator(this));
-        showFab.start();
     }
 
     private void doLike() {
@@ -874,10 +767,10 @@ public class DribbbleShot extends Activity {
         }
 
         void addComments(List<Comment> newComments) {
-            comments.addAll(newComments);
-            loading = false;
+            hideLoadingIndicator();
             noComments = false;
-            notifyDataSetChanged();
+            comments.addAll(newComments);
+            notifyItemRangeInserted(1, newComments.size());
         }
 
         void removeCommentingFooter() {
@@ -1163,6 +1056,12 @@ public class DribbbleShot extends Activity {
 
         private Comment getComment(int adapterPosition) {
             return comments.get(adapterPosition - 1); // description
+        }
+
+        private void hideLoadingIndicator() {
+            if (!loading) return;
+            loading = false;
+            notifyItemRemoved(1);
         }
     }
 

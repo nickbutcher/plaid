@@ -22,36 +22,25 @@
     <!-- make the 'raise' anims v quick to avoid any items passing 'in front of' the raising item
          while it runs, which causes a flash as they pass from in-front to behind. -->
 
-    <item android:state_pressed="true" app:state_pinned="true">
-        <objectAnimator
-            android:duration="@integer/rapid_animation"
-            android:propertyName="translationZ"
-            android:valueTo="@dimen/touched_app_bar"
-            android:valueType="floatType" />
-    </item>
-
     <item android:state_pressed="false" app:state_pinned="true">
         <objectAnimator
             android:duration="@integer/rapid_animation"
             android:propertyName="translationZ"
-            android:valueTo="@dimen/z_app_bar"
-            android:valueType="floatType" />
+            android:valueTo="@dimen/z_app_bar" />
     </item>
 
     <item android:state_pressed="true" app:state_pinned="false">
         <objectAnimator
             android:duration="@integer/rapid_animation"
             android:propertyName="translationZ"
-            android:valueTo="@dimen/touch_raise"
-            android:valueType="floatType" />
+            android:valueTo="@dimen/touch_raise" />
     </item>
 
     <item android:state_pressed="false" app:state_pinned="false">
         <objectAnimator
             android:duration="@android:integer/config_shortAnimTime"
             android:propertyName="translationZ"
-            android:valueTo="0dp"
-            android:valueType="floatType" />
+            android:valueTo="0dp" />
     </item>
 
 </selector>

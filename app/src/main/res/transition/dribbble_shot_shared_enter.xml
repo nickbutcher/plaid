@@ -24,7 +24,7 @@
          to separate while moving which looks bad :( -->
     <changeBounds android:interpolator="@android:interpolator/fast_out_slow_in">
         <targets>
-            <target android:targetId="@id/draggable_frame" />
+            <target android:targetId="@id/background" />
         </targets>
     </changeBounds>
 
