@@ -43,6 +43,8 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.plaidapp.BuildConfig;
 import io.plaidapp.R;
 import io.plaidapp.data.api.dribbble.DribbbleAuthService;
@@ -65,23 +67,18 @@ public class DribbbleLogin extends Activity {
 
     boolean isDismissing = false;
     boolean isLoginFailed = false;
-    private ViewGroup container;
-    private TextView message;
-    private Button login;
-    private ProgressBar loading;
+    @BindView(R.id.container) ViewGroup container;
+    @BindView(R.id.login_message) TextView message;
+    @BindView(R.id.login) Button login;
+    @BindView(R.id.loading) ProgressBar loading;
+    @BindView(R.id.login_failed_message) TextView loginFailed;
     private DribbblePrefs dribbblePrefs;
-    private TextView loginFailed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_login);
-
-        container = (ViewGroup) findViewById(R.id.container);
-        message = (TextView) findViewById(R.id.login_message);
-        login = (Button) findViewById(R.id.login);
-        loading = (ProgressBar) findViewById(R.id.loading);
-        loginFailed = (TextView) container.findViewById(R.id.login_failed_message);
+        ButterKnife.bind(this);
         loading.setVisibility(View.GONE);
         dribbblePrefs = DribbblePrefs.get(this);
 

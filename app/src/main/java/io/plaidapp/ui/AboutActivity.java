@@ -246,6 +246,7 @@ public class AboutActivity extends Activity {
             holder.name.setText(lib.name);
             Glide.with(holder.image.getContext())
                     .load(lib.imageUrl)
+                    .placeholder(R.drawable.avatar_placeholder)
                     .transform(circleCrop)
                     .into(holder.image);
             final View.OnClickListener clickListener = new View.OnClickListener() {
