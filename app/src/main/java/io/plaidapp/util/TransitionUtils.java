@@ -21,6 +21,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.transition.Transition;
 import android.transition.TransitionSet;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Utility methods for working with transitions
@@ -63,31 +69,45 @@ public class TransitionUtils {
         return null;
     }
 
+    public static List<Boolean> setAncestralClipping(@NonNull View view, boolean clipChildren) {
+        return setAncestralClipping(view, clipChildren, new ArrayList<Boolean>());
+    }
+
+    private static List<Boolean> setAncestralClipping(
+            @NonNull View view, boolean clipChildren, List<Boolean> was) {
+        if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
+            was.add(group.getClipChildren());
+            group.setClipChildren(clipChildren);
+        }
+        ViewParent parent = view.getParent();
+        if (parent != null && parent instanceof ViewGroup) {
+            setAncestralClipping((ViewGroup) parent, clipChildren, was);
+        }
+        return was;
+    }
+
+    public static void restoreAncestralClipping(@NonNull View view, List<Boolean> was) {
+        if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
+            group.setClipChildren(was.remove(0));
+        }
+        ViewParent parent = view.getParent();
+        if (parent != null && parent instanceof ViewGroup) {
+            restoreAncestralClipping((ViewGroup) parent, was);
+        }
+    }
+
     public static class TransitionListenerAdapter implements Transition.TransitionListener {
 
-        @Override
-        public void onTransitionStart(Transition transition) {
+        @Override public void onTransitionStart(Transition transition) { }
 
-        }
+        @Override public void onTransitionEnd(Transition transition) { }
 
-        @Override
-        public void onTransitionEnd(Transition transition) {
+        @Override public void onTransitionCancel(Transition transition) { }
 
-        }
+        @Override public void onTransitionPause(Transition transition) { }
 
-        @Override
-        public void onTransitionCancel(Transition transition) {
-
-        }
-
-        @Override
-        public void onTransitionPause(Transition transition) {
-
-        }
-
-        @Override
-        public void onTransitionResume(Transition transition) {
-
-        }
+        @Override public void onTransitionResume(Transition transition) { }
     }
 }

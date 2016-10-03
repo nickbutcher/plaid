@@ -17,15 +17,20 @@
 
 <transitionSet
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="300"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:duration="250"
     android:transitionOrdering="together">
 
     <transitionSet>
         <targets>
-            <target android:targetId="@id/draggable_frame" />
+            <target android:targetId="@id/background" />
         </targets>
         <changeBounds android:interpolator="@android:interpolator/fast_out_slow_in" />
-        <changeTransform />
+        <!-- compensate for the diff in elevation of this element in the two activities -->
+        <transition
+            class="io.plaidapp.ui.transitions.LiftOff"
+            app:initialElevation="-4dp"
+            app:finalElevation="-2dp" />
     </transitionSet>
 
     <transition

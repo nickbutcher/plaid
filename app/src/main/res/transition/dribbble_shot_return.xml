@@ -14,13 +14,31 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android">
 
-<fade
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:interpolator="@android:interpolator/fast_out_slow_in"
-    android:duration="300">
-    <targets>
-        <target android:targetId="@android:id/navigationBarBackground" />
-        <target android:targetId="@android:id/statusBarBackground" />
-    </targets>
-</fade>
+    <!-- Rapidly fade out all non-shared-element content with a slight downward shift. -->
+    <transitionSet>
+        <targets>
+            <target android:excludeId="@android:id/navigationBarBackground" />
+            <target android:excludeId="@android:id/statusBarBackground" />
+        </targets>
+        <fade
+            android:duration="48"
+            android:interpolator="@android:interpolator/fast_out_linear_in" />
+        <slide
+            android:slideEdge="bottom"
+            android:duration="250"
+            android:interpolator="@android:interpolator/fast_out_linear_in" />
+    </transitionSet>
+
+    <!-- Except the system chrome, same duration as shared elements. -->
+    <fade
+        android:duration="250"
+        android:interpolator="@android:interpolator/linear">
+        <targets>
+            <target android:targetId="@android:id/navigationBarBackground" />
+            <target android:targetId="@android:id/statusBarBackground" />
+        </targets>
+    </fade>
+
+</transitionSet>

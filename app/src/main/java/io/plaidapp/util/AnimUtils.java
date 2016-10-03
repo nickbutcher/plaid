@@ -24,6 +24,7 @@ import android.util.ArrayMap;
 import android.util.Property;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 
 import java.util.ArrayList;
 
@@ -37,6 +38,7 @@ public class AnimUtils {
     private static Interpolator fastOutSlowIn;
     private static Interpolator fastOutLinearIn;
     private static Interpolator linearOutSlowIn;
+    private static Interpolator linear;
 
     public static Interpolator getFastOutSlowInInterpolator(Context context) {
         if (fastOutSlowIn == null) {
@@ -60,6 +62,13 @@ public class AnimUtils {
                     android.R.interpolator.linear_out_slow_in);
         }
         return linearOutSlowIn;
+    }
+
+    public static Interpolator getLinearInterpolator() {
+        if (linear == null) {
+            linear = new LinearInterpolator();
+        }
+        return linear;
     }
 
     /**

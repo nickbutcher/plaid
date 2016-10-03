@@ -17,16 +17,21 @@
 package io.plaidapp.ui.transitions;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.Keep;
 import android.transition.TransitionValues;
 import android.transition.Visibility;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import io.plaidapp.R;
+import io.plaidapp.util.TransitionUtils;
 
 /**
  * An alternative to {@link android.transition.Slide} which staggers elements by <b>distance</b>
@@ -43,8 +48,11 @@ public class StaggeredDistanceSlide extends Visibility {
 
     private int spread = 1;
 
-    public StaggeredDistanceSlide() { }
+    public StaggeredDistanceSlide() {
+        super();
+    }
 
+    @Keep
     public StaggeredDistanceSlide(Context context, AttributeSet attrs) {
         super(context, attrs);
         final TypedArray a =
@@ -65,15 +73,27 @@ public class StaggeredDistanceSlide extends Visibility {
     public Animator onAppear(ViewGroup sceneRoot, View view,
                              TransitionValues startValues, TransitionValues endValues) {
         int[] position = (int[]) endValues.values.get(PROPNAME_SCREEN_LOCATION);
-        view.setTranslationY(sceneRoot.getHeight() + (position[1] * spread));
-        return ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, 0f);
+        return createAnimator(view, sceneRoot.getHeight() + (position[1] * spread), 0f);
     }
 
     @Override
     public Animator onDisappear(ViewGroup sceneRoot, View view,
                                 TransitionValues startValues, TransitionValues endValues) {
         int[] position = (int[]) endValues.values.get(PROPNAME_SCREEN_LOCATION);
-        return ObjectAnimator.ofFloat(view, View.TRANSLATION_Y,
-                sceneRoot.getHeight() + (position[1] * spread));
+        return createAnimator(view, 0f, sceneRoot.getHeight() + (position[1] * spread));
+    }
+
+    private Animator createAnimator(
+            final View view, float startTranslationY, float endTranslationY) {
+        view.setTranslationY(startTranslationY);
+        final List<Boolean> ancestralClipping = TransitionUtils.setAncestralClipping(view, false);
+        Animator transition = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, endTranslationY);
+        transition.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                TransitionUtils.restoreAncestralClipping(view, ancestralClipping);
+            }
+        });
+        return transition;
     }
 }

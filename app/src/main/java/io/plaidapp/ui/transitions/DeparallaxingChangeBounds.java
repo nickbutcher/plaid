@@ -50,7 +50,7 @@ public class DeparallaxingChangeBounds extends ChangeBounds {
         // as we're going to remove the offset (which drives the parallax) we need to
         // compensate for this by adjusting the target bounds.
         Rect bounds = (Rect) transitionValues.values.get(PROPNAME_BOUNDS);
-        bounds.offset(0, -psv.getOffset());
+        bounds.offset(0, psv.getOffset());
         transitionValues.values.put(PROPNAME_BOUNDS, bounds);
     }
 
@@ -58,9 +58,9 @@ public class DeparallaxingChangeBounds extends ChangeBounds {
     public Animator createAnimator(ViewGroup sceneRoot,
                                    TransitionValues startValues,
                                    TransitionValues endValues) {
-        if (startValues == null || endValues == null
-                || !(endValues.view instanceof ParallaxScrimageView)) return null;
         Animator changeBounds = super.createAnimator(sceneRoot, startValues, endValues);
+        if (startValues == null || endValues == null
+                || !(endValues.view instanceof ParallaxScrimageView)) return changeBounds;
         ParallaxScrimageView psv = ((ParallaxScrimageView) endValues.view);
         if (psv.getOffset() == 0) return changeBounds;
 

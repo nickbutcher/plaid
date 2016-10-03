@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -16,26 +15,28 @@
   limitations under the License.
   -->
 
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:viewportHeight="24"
-    android:viewportWidth="24">
+    android:viewportWidth="24"
+    android:viewportHeight="24">
 
     <path
         android:name="empty"
         android:fillColor="@color/dark_icon"
         android:pathData="@string/heart_empty_path_24dp" />
 
-    <group android:name="filled"
+    <group
+        android:name="filled"
         android:pivotX="12"
         android:pivotY="12"
-        android:scaleX="0.0"
-        android:scaleY="0.0">
+        android:scaleX="0"
+        android:scaleY="0">
 
         <path
-            android:fillColor="@color/dribbble"
-            android:pathData="@string/heart_full_path_24dp" />
+            android:pathData="@string/heart_full_path_24dp"
+            android:fillColor="@color/dribbble" />
 
     </group>
 

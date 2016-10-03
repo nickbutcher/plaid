@@ -17,8 +17,9 @@
 
 <io.plaidapp.ui.widget.BaselineGridTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/spacing_large"
     android:paddingStart="@dimen/padding_normal"
+    android:text="@string/no_comments"
     android:textAppearance="@style/TextAppearance.Comment.None" />

@@ -18,8 +18,8 @@
 <selector
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:constantSize="true"
-    android:enterFadeDuration="@android:integer/config_shortAnimTime"
-    android:exitFadeDuration="@android:integer/config_shortAnimTime">
+    android:enterFadeDuration="@integer/comment_expand_collapse_duration"
+    android:exitFadeDuration="@integer/comment_expand_collapse_duration">
 
     <item android:state_activated="true" android:drawable="@color/selected_comment_background" />
     <item android:drawable="@color/designer_news_story_comment_background" />

@@ -19,6 +19,7 @@ package io.plaidapp.ui.widget;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
@@ -36,7 +37,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import io.plaidapp.util.AnimUtils;
-import io.plaidapp.util.MathUtils;
 import io.plaidapp.util.ViewOffsetHelper;
 
 /**
@@ -50,12 +50,8 @@ import io.plaidapp.util.ViewOffsetHelper;
 public class BottomSheet extends FrameLayout {
 
     // constants
-    private static final long DEFAULT_SETTLE_DURATION = 300L;   // ms
-    private static final long MIN_SETTLE_DURATION = 50L;        // ms
-
-    // config
+    private static final int MIN_SETTLE_VELOCITY = 6000; // px/s
     private final int MIN_FLING_VELOCITY;
-    private final int MAX_FLING_VELOCITY;
 
     // child views & helpers
     private View sheet;
@@ -85,7 +81,6 @@ public class BottomSheet extends FrameLayout {
         super(context, attrs, defStyle);
         final ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
         MIN_FLING_VELOCITY = viewConfiguration.getScaledMinimumFlingVelocity();
-        MAX_FLING_VELOCITY = viewConfiguration.getScaledMaximumFlingVelocity();
     }
 
     /**
@@ -110,11 +105,11 @@ public class BottomSheet extends FrameLayout {
     }
 
     public void dismiss() {
-        animateSettle(dismissOffset);
+        animateSettle(dismissOffset, 0);
     }
 
     public void expand() {
-        animateSettle(0);
+        animateSettle(0, 0);
     }
 
     public boolean isExpanded() {
@@ -213,10 +208,10 @@ public class BottomSheet extends FrameLayout {
     public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed) {
         if (velocityY <= -MIN_FLING_VELOCITY           /* flinging downward */
                 && !target.canScrollVertically(-1)) {  /* nested scrolling child can't scroll up */
-            animateSettle(dismissOffset, computeSettleDuration(velocityY, true));
+            animateSettle(dismissOffset, velocityY);
             return true;
         } else if (velocityY > 0 && !isExpanded()) {
-            animateSettle(0, computeSettleDuration(velocityY, false));
+            animateSettle(0, velocityY);
         }
         return false;
     }
@@ -231,15 +226,11 @@ public class BottomSheet extends FrameLayout {
         return getVisibility() == VISIBLE && sheetDragHelper.isViewUnder(this, x, y);
     }
 
-    private void animateSettle(int targetOffset) {
-        animateSettle(targetOffset, DEFAULT_SETTLE_DURATION);
+    private void animateSettle(int targetOffset, float initialVelocity) {
+        animateSettle(sheetOffsetHelper.getTopAndBottomOffset(), targetOffset, initialVelocity);
     }
 
-    private void animateSettle(int targetOffset, long duration) {
-        animateSettle(sheetOffsetHelper.getTopAndBottomOffset(), targetOffset, duration);
-    }
-
-    private void animateSettle(int initialOffset, final int targetOffset, long duration) {
+    private void animateSettle(int initialOffset, final int targetOffset, float initialVelocity) {
         if (settling) return;
         if (sheetOffsetHelper.getTopAndBottomOffset() == targetOffset) {
           if (targetOffset >= dismissOffset) {
@@ -249,17 +240,19 @@ public class BottomSheet extends FrameLayout {
         }
 
         settling = true;
+        final boolean dismissing = targetOffset == dismissOffset;
+        final long duration = computeSettleDuration(initialVelocity, dismissing);
         final ObjectAnimator settleAnim = ObjectAnimator.ofInt(sheetOffsetHelper,
                 ViewOffsetHelper.OFFSET_Y,
                 initialOffset,
                 targetOffset);
         settleAnim.setDuration(duration);
-        settleAnim.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(getContext()));
+        settleAnim.setInterpolator(getSettleInterpolator(dismissing, initialVelocity));
         settleAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 dispatchPositionChangedCallback();
-                if (targetOffset == dismissOffset) {
+                if (dismissing) {
                     dispatchDismissCallback();
                 }
                 settling = false;
@@ -279,19 +272,35 @@ public class BottomSheet extends FrameLayout {
     }
 
     /**
+     * Provides the appropriate interpolator for the settle animation depending upon:
+     * – If dismissing then exit at full speed i.e. linearly
+     * – If have initial velocity then respect it (i.e. start linearly) otherwise accelerate into
+     *   the animation.
+     */
+    private TimeInterpolator getSettleInterpolator(boolean dismissing, float initialVelocity) {
+        if (initialVelocity == 0 && dismissing) {
+            return AnimUtils.getFastOutLinearInInterpolator(getContext());
+        } else if (initialVelocity == 0 && !dismissing) {
+            return AnimUtils.getFastOutSlowInInterpolator(getContext());
+        } else if (dismissing) {
+            return AnimUtils.getLinearInterpolator();
+        } else {
+            return AnimUtils.getLinearOutSlowInInterpolator(getContext());
+        }
+    }
+
+    /**
      * Calculate the duration of the settle animation based on the gesture velocity
      * and how far it has to go.
      */
     private long computeSettleDuration(final float velocity, final boolean dismissing) {
-        final float settleDistance = dismissing ?
-                sheetBottom - sheet.getTop() : sheet.getTop() - sheetExpandedTop;
-        final float clampedVelocity =
-                MathUtils.constrain(MIN_FLING_VELOCITY, MAX_FLING_VELOCITY, Math.abs(velocity));
-        final float distanceFraction = settleDistance / (sheetBottom - sheetExpandedTop);
-        final float velocityFraction = clampedVelocity / MAX_FLING_VELOCITY;
-        final long duration = MIN_SETTLE_DURATION +
-                (long) (distanceFraction * (1f - velocityFraction) * DEFAULT_SETTLE_DURATION);
-        return duration;
+        // enforce a min velocity to prevent too slow settling
+        final float clampedVelocity = Math.max(MIN_SETTLE_VELOCITY, Math.abs(velocity));
+        final int settleDistance = dismissing
+                ? sheetBottom - sheet.getTop()
+                : sheet.getTop() - sheetExpandedTop;
+        // velocity is in px/s but we want duration in ms thus * 1000
+        return (long) (settleDistance * 1000 / clampedVelocity);
     }
 
     private final ViewDragHelper.Callback dragHelperCallbacks = new ViewDragHelper.Callback() {
@@ -327,7 +336,7 @@ public class BottomSheet extends FrameLayout {
         public void onViewReleased(View releasedChild, float velocityX, float velocityY) {
             // dismiss on downward fling, otherwise settle back to expanded position
             final boolean dismiss = velocityY >= MIN_FLING_VELOCITY;
-            animateSettle(dismiss ? dismissOffset : 0, computeSettleDuration(velocityY, dismiss));
+            animateSettle(dismiss ? dismissOffset : 0, velocityY);
         }
 
     };
@@ -360,7 +369,7 @@ public class BottomSheet extends FrameLayout {
         if (sheet.getTop() < minimumGap) {
             final int offset = minimumGap - sheet.getTop();
             if (animateChange) {
-                animateSettle(previousOffset, offset, DEFAULT_SETTLE_DURATION);
+                animateSettle(previousOffset, offset, 0);
             } else {
                 sheetOffsetHelper.setTopAndBottomOffset(offset);
             }

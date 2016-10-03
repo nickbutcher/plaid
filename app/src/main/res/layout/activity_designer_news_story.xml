@@ -26,8 +26,10 @@
     app:dragDismissScale="0.95"
     tools:context="io.plaidapp.ui.DesignerNewsStory">
 
-    <!-- separate background view for the shared element transition i.e. it's easier to
-         calculate the title's transition when its parent isn't moving. -->
+    <!-- Use a separate view for the background, rather than on the root view because it is a
+         shared element. Otherwise it interferes with the window enter transition i.e. as it is
+         resized for the shared element transition, many views are considered 'off-screen' so
+         visibility transitions are not run. -->
     <View
         android:id="@+id/background"
         android:layout_width="match_parent"
@@ -35,7 +37,7 @@
         android:background="@color/background_light"
         android:transitionName="@string/transition_story_background" />
 
-    <!-- description added as header to the list.
+    <!-- Description added as header to the list.
          see layout/designer_news_story_description -->
 
     <android.support.v7.widget.RecyclerView

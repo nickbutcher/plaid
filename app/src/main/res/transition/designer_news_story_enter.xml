@@ -31,12 +31,11 @@
         </targets>
         <transition
             class="io.plaidapp.ui.transitions.StaggeredDistanceSlide"
-            app:spread="5"
+            app:spread="3"
             android:startDelay="100"
             android:duration="300"
             android:interpolator="@android:interpolator/linear_out_slow_in" />
         <fade
-            android:fadingMode="fade_in"
             android:startDelay="250"
             android:duration="200" />
     </transitionSet>

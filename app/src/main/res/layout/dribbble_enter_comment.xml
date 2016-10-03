@@ -41,6 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginStart="@dimen/til_margin_fix"
+        android:transitionGroup="true"
         app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
         <android.support.design.widget.TextInputEditText
