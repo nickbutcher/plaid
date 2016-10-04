@@ -110,6 +110,7 @@ public class DesignerNewsLogin extends Activity {
             getWindow().getSharedElementEnterTransition().addListener(new TransitionUtils.TransitionListenerAdapter() {
                 @Override
                 public void onTransitionEnd(Transition transition) {
+                    getWindow().getSharedElementEnterTransition().removeListener(this);
                     finishSetup();
                 }
             });
