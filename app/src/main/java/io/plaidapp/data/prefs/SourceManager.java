@@ -44,6 +44,7 @@ public class SourceManager {
     public static final String SOURCE_DRIBBBLE_DEBUTS = "SOURCE_DRIBBBLE_DEBUTS";
     public static final String SOURCE_DRIBBBLE_ANIMATED = "SOURCE_DRIBBBLE_ANIMATED";
     public static final String SOURCE_PRODUCT_HUNT = "SOURCE_PRODUCT_HUNT";
+    public static final String SOURCE_MATERIAL_UP_RECENT = "SOURCE_MATERIAL_UP_RECENT";
     private static final String SOURCES_PREF = "SOURCES_PREF";
     private static final String KEY_SOURCES = "KEY_SOURCES";
 
@@ -125,7 +126,7 @@ public class SourceManager {
     }
 
     private static ArrayList<Source> getDefaultSources(Context context) {
-        ArrayList<Source> defaultSources = new ArrayList<>(11);
+        ArrayList<Source> defaultSources = new ArrayList<>(12);
         defaultSources.add(new Source.DesignerNewsSource(SOURCE_DESIGNER_NEWS_POPULAR, 100,
                 context.getString(R.string.source_designer_news_popular), true));
         defaultSources.add(new Source.DesignerNewsSource(SOURCE_DESIGNER_NEWS_RECENT, 101,
@@ -147,6 +148,11 @@ public class SourceManager {
                 context.getString(R.string.source_dribbble_animated), false));
         defaultSources.add(new Source.DribbbleSearchSource(context.getString(R.string
                 .source_dribbble_search_material_design), true));
+
+        defaultSources.add(new Source(SOURCE_MATERIAL_UP_RECENT, 307,
+                context.getString(R.string.source_material_up),
+                R.drawable.ic_material_up, true));
+
         // 400 sort order range left for dribbble searches
         defaultSources.add(new Source(SOURCE_PRODUCT_HUNT, 500,
                 context.getString(R.string.source_product_hunt),

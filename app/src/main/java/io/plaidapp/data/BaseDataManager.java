@@ -25,10 +25,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import io.plaidapp.BuildConfig;
 import io.plaidapp.data.api.AuthInterceptor;
+import io.plaidapp.data.api.MaterialUpAuthInterceptor;
 import io.plaidapp.data.api.designernews.DesignerNewsService;
 import io.plaidapp.data.api.dribbble.DribbbleSearchConverter;
 import io.plaidapp.data.api.dribbble.DribbbleSearchService;
 import io.plaidapp.data.api.dribbble.DribbbleService;
+import io.plaidapp.data.api.materialup.MaterialUpService;
 import io.plaidapp.data.api.producthunt.ProductHuntService;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.data.prefs.DribbblePrefs;
@@ -48,6 +50,7 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
     private final DribbblePrefs dribbblePrefs;
     private DribbbleSearchService dribbbleSearchApi;
     private ProductHuntService productHuntApi;
+    private MaterialUpService materialUpApi;
     private List<DataLoadingSubject.DataLoadingCallbacks> loadingCallbacks;
 
     public BaseDataManager(@NonNull Context context) {
@@ -84,6 +87,11 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
     public ProductHuntService getProductHuntApi() {
         if (productHuntApi == null) createProductHuntApi();
         return productHuntApi;
+    }
+
+    public MaterialUpService getMaterialUpApi() {
+        if (materialUpApi == null) createMaterialUpApi();
+        return materialUpApi;
     }
 
     public DribbbleSearchService getDribbbleSearchApi() {
@@ -166,6 +174,18 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(ProductHuntService.class);
+    }
+
+    private void createMaterialUpApi() {
+        final OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new MaterialUpAuthInterceptor(BuildConfig.MATERIALUP_CLIENT_ACCESS_TOKEN))
+                .build();
+        materialUpApi = new Retrofit.Builder()
+                .baseUrl(MaterialUpService.ENDPOINT)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(MaterialUpService.class);
     }
 
 }

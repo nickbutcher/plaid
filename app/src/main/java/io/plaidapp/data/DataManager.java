@@ -75,22 +75,22 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
 
     private final FilterAdapter.FiltersChangedCallbacks filterListener =
             new FilterAdapter.FiltersChangedCallbacks() {
-        @Override
-        public void onFiltersChanged(Source changedFilter) {
-            if (changedFilter.active) {
-                loadSource(changedFilter);
-            } else { // filter deactivated
-                final String key = changedFilter.key;
-                if (inflight.containsKey(key)) {
-                    final Call call = inflight.get(key);
-                    if (call != null) call.cancel();
-                    inflight.remove(key);
+                @Override
+                public void onFiltersChanged(Source changedFilter) {
+                    if (changedFilter.active) {
+                        loadSource(changedFilter);
+                    } else { // filter deactivated
+                        final String key = changedFilter.key;
+                        if (inflight.containsKey(key)) {
+                            final Call call = inflight.get(key);
+                            if (call != null) call.cancel();
+                            inflight.remove(key);
+                        }
+                        // clear the page index for the source
+                        pageIndexes.put(key, 0);
+                    }
                 }
-                // clear the page index for the source
-                pageIndexes.put(key, 0);
-            }
-        }
-    };
+            };
 
     private void loadSource(Source source) {
         if (source.active) {
@@ -126,6 +126,9 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
                     break;
                 case SourceManager.SOURCE_PRODUCT_HUNT:
                     loadProductHunt(page);
+                    break;
+                case SourceManager.SOURCE_MATERIAL_UP_RECENT:
+                    loadMaterialUp(page);
                     break;
                 default:
                     if (source instanceof Source.DribbbleSearchSource) {
@@ -225,8 +228,8 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
             @Override
             public void onResponse(Call<StoriesResponse> call, Response<StoriesResponse> response) {
                 if (response.isSuccessful()) {
-                final List<Story> stories =
-                        response.body() != null ? response.body().stories : null;
+                    final List<Story> stories =
+                            response.body() != null ? response.body().stories : null;
                     sourceLoaded(stories, page, source.key);
                 } else {
                     loadFailed(source.key);
@@ -456,5 +459,28 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
             }
         });
         inflight.put(SourceManager.SOURCE_PRODUCT_HUNT, postsCall);
+    }
+
+    private void loadMaterialUp(final int page) {
+        // this API's paging is 0 based but this class (& sorting) is 1 based so adjust locally
+        final Call<List<io.plaidapp.data.api.materialup.model.Post>> postsCall = getMaterialUpApi().getPosts(page - 1);
+
+        postsCall.enqueue(new Callback<List<io.plaidapp.data.api.materialup.model.Post>>() {
+            @Override
+            public void onResponse(Call<List<io.plaidapp.data.api.materialup.model.Post>> call, Response<List<io.plaidapp.data.api.materialup.model.Post>> response) {
+                if (response.isSuccessful()) {
+                    final List<io.plaidapp.data.api.materialup.model.Post> posts = response.body() != null ? response.body() : null;
+                    sourceLoaded(posts, page, SourceManager.SOURCE_MATERIAL_UP_RECENT);
+                } else {
+                    loadFailed(SourceManager.SOURCE_MATERIAL_UP_RECENT);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<io.plaidapp.data.api.materialup.model.Post>> call, Throwable t) {
+                loadFailed(SourceManager.SOURCE_MATERIAL_UP_RECENT);
+            }
+        });
+        inflight.put(SourceManager.SOURCE_MATERIAL_UP_RECENT, postsCall);
     }
 }

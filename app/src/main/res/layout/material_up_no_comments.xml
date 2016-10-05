@@ -15,12 +15,11 @@
   limitations under the License.
   -->
 
-<paths
-    xmlns:tools="http://schemas.android.com/tools">
-    <!-- Based on default Glide operation, see InternalCacheDiskCacheFactory instantiated
-                     from GlideBuilder.createGlide() -->
-    <cache-path
-        name="share"
-        path="image_manager_disk_cache"
-        tools:path="DiskCache.Factory.DEFAULT_DISK_CACHE_DIR" />
-</paths>
+<io.plaidapp.ui.widget.BaselineGridTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/spacing_large"
+    android:paddingStart="@dimen/padding_normal"
+    android:text="@string/no_comments"
+    android:textAppearance="@style/TextAppearance.Comment.None" />

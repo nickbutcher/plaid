@@ -92,6 +92,9 @@
         <item>#ffe0e0e0</item>
     </array>
 
+    <!-- material up-->
+    <color name="material_up">#2856B6</color>
+    <color name="material_up_link_highlight">#b32856B6</color>
 
     <!-- product hunt-->
     <color name="product_hunt">#ffff9800</color>

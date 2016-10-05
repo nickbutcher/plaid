@@ -74,6 +74,9 @@
         <activity
             android:name=".ui.PlayerActivity"
             android:theme="@style/Plaid.Translucent.Dribbble.Player" />
+        <activity
+            android:name=".ui.MaterialUpPost"
+            android:theme="@style/Plaid.Translucent.Dribbble.Shot"/>
 
         <activity
             android:name=".ui.PlayerSheet"

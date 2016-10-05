@@ -51,6 +51,7 @@
     <string name="source_dribbble_debuts">Dribbble Debuts</string>
     <string name="source_dribbble_animated">Dribbble Animated</string>
     <string name="source_dribbble_search_material_design">Material Design</string>
+    <string name="source_material_up">Material Up</string>
     <string name="source_product_hunt">Product Hunt</string>
 
     <!-- Search -->
@@ -89,7 +90,6 @@
         <item quantity="one">%s upvote</item>
         <item quantity="other">%s upvotes</item>
     </plurals>
-
 
     <!-- dribbble shot screen -->
     <!-- using strings for the number of views/likes as we run them through NumberFormat -->
@@ -140,8 +140,10 @@
 
     <!-- transition shared elements -->
     <string name="transition_shot" translatable="false">shot</string>
+    <string name="transition_material_up_post" translatable="false">material_up_post</string>
     <string name="transition_shot_title" translatable="false">shot_title</string>
     <string name="transition_shot_background" translatable="false">shot_background</string>
+    <string name="transition_material_up_post_background" translatable="false">material_up_post_background</string>
     <string name="transition_story_title" translatable="false">story_title</string>
     <string name="transition_story_title_background" translatable="false">story_title_background</string>
     <string name="transition_story_background" translatable="false">transition_story_background</string>
