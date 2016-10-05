@@ -53,6 +53,8 @@ android {
                 "DESIGNER_NEWS_CLIENT_SECRET", "\"${designer_news_client_secret}\""
         buildConfigField "String",
                 "PROCUCT_HUNT_DEVELOPER_TOKEN", "\"${product_hunt_developer_token}\""
+        buildConfigField "String", "MATERIALUP_CLIENT_ACCESS_TOKEN", "\"${materialup_client_access_token}\""
+
     }
     buildTypes {
         release {

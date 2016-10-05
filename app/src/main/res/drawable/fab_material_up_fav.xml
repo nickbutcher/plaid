@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
   Copyright 2015 Google Inc.
 
@@ -15,12 +16,13 @@
   limitations under the License.
   -->
 
-<paths
-    xmlns:tools="http://schemas.android.com/tools">
-    <!-- Based on default Glide operation, see InternalCacheDiskCacheFactory instantiated
-                     from GlideBuilder.createGlide() -->
-    <cache-path
-        name="share"
-        path="image_manager_disk_cache"
-        tools:path="DiskCache.Factory.DEFAULT_DISK_CACHE_DIR" />
-</paths>
+<ripple
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/ripple_light">
+    <item>
+        <shape
+            android:shape="oval">
+            <solid android:color="@color/material_up" />
+        </shape>
+    </item>
+</ripple>

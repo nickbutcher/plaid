@@ -94,9 +94,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public static final int REQUEST_CODE_VIEW_SHOT = 5407;
 
+    public static final int REQUEST_CODE_VIEW_MATERIAL_UP_POST = 7678;
+
     private static final int TYPE_DESIGNER_NEWS_STORY = 0;
     private static final int TYPE_DRIBBBLE_SHOT = 1;
     private static final int TYPE_PRODUCT_HUNT_POST = 2;
+    private static final int TYPE_MATERIAL_UP_POST = 3;
     private static final int TYPE_LOADING_MORE = -1;
 
     // we need to hold on to an activity ref for the shared element transitions :/
@@ -157,6 +160,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 return createDesignerNewsStoryHolder(parent);
             case TYPE_DRIBBBLE_SHOT:
                 return createDribbbleShotHolder(parent);
+            case TYPE_MATERIAL_UP_POST:
+                return createMaterialUpPostHolder(parent);
             case TYPE_PRODUCT_HUNT_POST:
                 return createProductHuntStoryHolder(parent);
             case TYPE_LOADING_MORE:
@@ -175,6 +180,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             case TYPE_DRIBBBLE_SHOT:
                 bindDribbbleShotHolder(
                         (Shot) getItem(position), (DribbbleShotHolder) holder, position);
+                break;
+            case TYPE_MATERIAL_UP_POST:
+                bindMaterialUpPostHolder(
+                        (io.plaidapp.data.api.materialup.model.Post) getItem(position), (MaterialUpPostHolder) holder, position);
                 break;
             case TYPE_PRODUCT_HUNT_POST:
                 bindProductHuntPostView((Post) getItem(position), (ProductHuntStoryHolder) holder);
@@ -268,6 +277,70 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     @NonNull
+    private MaterialUpPostHolder createMaterialUpPostHolder(ViewGroup parent) {
+        final MaterialUpPostHolder holder = new MaterialUpPostHolder(
+                layoutInflater.inflate(R.layout.material_up_post_item, parent, false));
+        holder.image.setBadgeColor(initialGifBadgeColor);
+        holder.image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setClass(host, MaterialUpPost.class);
+                intent.putExtra(MaterialUpPost.EXTRA_POST,
+                        (io.plaidapp.data.api.materialup.model.Post) getItem(holder.getAdapterPosition()));
+                setGridItemContentTransitions(holder.image);
+                ActivityOptions options =
+                        ActivityOptions.makeSceneTransitionAnimation(host,
+                                Pair.create(view, host.getString(R.string.transition_material_up_post)),
+                                Pair.create(view, host.getString(R.string
+                                        .transition_material_up_post_background)));
+                host.startActivityForResult(intent, REQUEST_CODE_VIEW_MATERIAL_UP_POST, options.toBundle());
+            }
+        });
+        // play animated GIFs whilst touched
+        holder.image.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // check if it's an event we care about, else bail fast
+                final int action = event.getAction();
+                if (!(action == MotionEvent.ACTION_DOWN
+                        || action == MotionEvent.ACTION_UP
+                        || action == MotionEvent.ACTION_CANCEL)) return false;
+
+                // get the image and check if it's an animated GIF
+                final Drawable drawable = holder.image.getDrawable();
+                if (drawable == null) return false;
+                GifDrawable gif = null;
+                if (drawable instanceof GifDrawable) {
+                    gif = (GifDrawable) drawable;
+                } else if (drawable instanceof TransitionDrawable) {
+                    // we fade in images on load which uses a TransitionDrawable; check its layers
+                    TransitionDrawable fadingIn = (TransitionDrawable) drawable;
+                    for (int i = 0; i < fadingIn.getNumberOfLayers(); i++) {
+                        if (fadingIn.getDrawable(i) instanceof GifDrawable) {
+                            gif = (GifDrawable) fadingIn.getDrawable(i);
+                            break;
+                        }
+                    }
+                }
+                if (gif == null) return false;
+                // GIF found, start/stop it on press/lift
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        gif.start();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        gif.stop();
+                        break;
+                }
+                return false;
+            }
+        });
+        return holder;
+    }
+
+    @NonNull
     private DribbbleShotHolder createDribbbleShotHolder(ViewGroup parent) {
         final DribbbleShotHolder holder = new DribbbleShotHolder(
                 layoutInflater.inflate(R.layout.dribbble_shot_item, parent, false));
@@ -329,6 +402,68 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
         });
         return holder;
+    }
+
+    private void bindMaterialUpPostHolder(final io.plaidapp.data.api.materialup.model.Post post,
+                                        final MaterialUpPostHolder holder,
+                                        int position) {
+        Glide.with(host)
+                .load(post.getThumbnails().getPreviewUrl())
+                .listener(new RequestListener<String, GlideDrawable>() {
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource,
+                                                   String model,
+                                                   Target<GlideDrawable> target,
+                                                   boolean isFromMemoryCache,
+                                                   boolean isFirstResource) {
+                        if (!post.hasFadedIn) {
+                            holder.image.setHasTransientState(true);
+                            final ObservableColorMatrix cm = new ObservableColorMatrix();
+                            final ObjectAnimator saturation = ObjectAnimator.ofFloat(
+                                    cm, ObservableColorMatrix.SATURATION, 0f, 1f);
+                            saturation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener
+                                    () {
+                                @Override
+                                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                                    // just animating the color matrix does not invalidate the
+                                    // drawable so need this update listener.  Also have to create a
+                                    // new CMCF as the matrix is immutable :(
+                                    holder.image.setColorFilter(new ColorMatrixColorFilter(cm));
+                                }
+                            });
+                            saturation.setDuration(2000L);
+                            saturation.setInterpolator(getFastOutSlowInInterpolator(host));
+                            saturation.addListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    holder.image.clearColorFilter();
+                                    holder.image.setHasTransientState(false);
+                                }
+                            });
+                            saturation.start();
+                            post.hasFadedIn = true;
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable>
+                            target, boolean isFirstResource) {
+                        return false;
+                    }
+                })
+                .placeholder(shotLoadingPlaceholders[position % shotLoadingPlaceholders.length])
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .fitCenter()
+                .into(new DribbbleTarget(holder.image, false));
+        // need both placeholder & background to prevent seeing through shot as it fades in
+        holder.image.setBackground(
+                shotLoadingPlaceholders[position % shotLoadingPlaceholders.length]);
+
+        holder.image.showBadge(post.getThumbnails().getPreviewUrl().endsWith(".gif"));
+        // need a unique transition name per shot, let's use it's url
+        holder.image.setTransitionName(post.redirectUrl);
     }
 
     private void bindDribbbleShotHolder(final Shot shot,
@@ -449,6 +584,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 return TYPE_DRIBBBLE_SHOT;
             } else if (item instanceof Post) {
                 return TYPE_PRODUCT_HUNT_POST;
+            }else if (item instanceof io.plaidapp.data.api.materialup.model.Post) {
+                return TYPE_MATERIAL_UP_POST;
             }
         }
         return TYPE_LOADING_MORE;
@@ -502,6 +639,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             case SourceManager.SOURCE_DRIBBBLE_USER_LIKES:
             case SourceManager.SOURCE_PRODUCT_HUNT:
             case PlayerShotsDataManager.SOURCE_PLAYER_SHOTS:
+            case SourceManager.SOURCE_MATERIAL_UP_RECENT:
             case PlayerShotsDataManager.SOURCE_TEAM_SHOTS:
                 if (naturalOrderWeigher == null) {
                     naturalOrderWeigher = new PlaidItemSorting.NaturalOrderWeigher();
@@ -562,6 +700,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         for (int i = 0; i < count; i++) {
             PlaidItem item = getItem(i);
             if (item instanceof Shot && item.page > page) {
+                item.colspan = columns;
+                page = item.page;
+                expandedPositions.add(i);
+            } else if (item instanceof io.plaidapp.data.api.materialup.model.Post && item.page > page) {
                 item.colspan = columns;
                 page = item.page;
                 expandedPositions.add(i);
@@ -698,11 +840,21 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         };
     }
 
-    /* package */ static class DribbbleShotHolder extends RecyclerView.ViewHolder {
+    /* package */ private static class DribbbleShotHolder extends RecyclerView.ViewHolder {
 
         BadgedFourThreeImageView image;
 
         DribbbleShotHolder(View itemView) {
+            super(itemView);
+            image = (BadgedFourThreeImageView) itemView;
+        }
+
+    }
+   private static class MaterialUpPostHolder extends RecyclerView.ViewHolder {
+
+        BadgedFourThreeImageView image;
+
+        MaterialUpPostHolder(View itemView) {
             super(itemView);
             image = (BadgedFourThreeImageView) itemView;
         }
