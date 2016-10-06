@@ -370,6 +370,15 @@
         <item name="android:letterSpacing">0.01</item>
     </style>
 
+    <style name="Widget.Plaid.SecondaryText">
+        <item name="android:textAppearance">@style/TextAppearance.SecondaryText</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <style name="TextAppearance.SecondaryText" parent="@android:style/TextAppearance.Material.Body1">
+        <item name="android:textColor">@color/text_tertiary_dark</item>
+    </style>
+
     <style name="Widget.Plaid.PlayerTitle">
         <item name="android:textAppearance">@style/TextAppearance.Author.Title</item>
         <item name="lineHeightHint">28sp</item>
