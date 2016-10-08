@@ -28,7 +28,7 @@ import com.bumptech.glide.Glide;
 
 import java.io.File;
 
-import io.plaidapp.R;
+import io.plaidapp.BuildConfig;
 import io.plaidapp.data.api.dribbble.model.Shot;
 
 /**
@@ -68,8 +68,7 @@ class ShareDribbbleImageTask extends AsyncTask<Void, Void, File> {
         fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
         File renamed = new File(result.getParent(), fileName);
         result.renameTo(renamed);
-        Uri uri = FileProvider.getUriForFile(activity,
-                activity.getString(R.string.share_authority), renamed);
+        Uri uri = FileProvider.getUriForFile(activity, BuildConfig.FILES_AUTHORITY, renamed);
         ShareCompat.IntentBuilder.from(activity)
                 .setText(getShareText())
                 .setType(getImageMimeType(fileName))

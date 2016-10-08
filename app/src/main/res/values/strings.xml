@@ -152,7 +152,4 @@
     <string name="transition_player_background" translatable="false">transition_player_background</string>
     <string name="transition_search_back" translatable="false">transition_search_back</string>
 
-    <!-- content authorities -->
-    <string name="share_authority" translatable="false">io.plaidapp.shareprovider</string>
-
 </resources>
