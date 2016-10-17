@@ -273,19 +273,23 @@ public class BottomSheet extends FrameLayout {
 
     /**
      * Provides the appropriate interpolator for the settle animation depending upon:
-     * – If dismissing then exit at full speed i.e. linearly
+     * – If dismissing then exit at full speed i.e. linearly otherwise decelerate
      * – If have initial velocity then respect it (i.e. start linearly) otherwise accelerate into
      *   the animation.
      */
     private TimeInterpolator getSettleInterpolator(boolean dismissing, float initialVelocity) {
-        if (initialVelocity == 0 && dismissing) {
-            return AnimUtils.getFastOutLinearInInterpolator(getContext());
-        } else if (initialVelocity == 0 && !dismissing) {
-            return AnimUtils.getFastOutSlowInInterpolator(getContext());
-        } else if (dismissing) {
-            return AnimUtils.getLinearInterpolator();
+        if (initialVelocity != 0) {
+            if (dismissing) {
+                return AnimUtils.getLinearInterpolator();
+            } else {
+                return AnimUtils.getLinearOutSlowInInterpolator(getContext());
+            }
         } else {
-            return AnimUtils.getLinearOutSlowInInterpolator(getContext());
+            if (dismissing) {
+                return AnimUtils.getFastOutLinearInInterpolator(getContext());
+            } else {
+                return AnimUtils.getFastOutSlowInInterpolator(getContext());
+            }
         }
     }
 
