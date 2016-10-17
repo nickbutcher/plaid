@@ -817,7 +817,9 @@ public class DesignerNewsStory extends Activity {
                                 .into(new ImageSpanTarget(holder.comment, loadingSpan));
                     }
                 });
-                holder.author.setText(comment.user_display_name.toLowerCase());
+                if (comment.user_display_name != null) {
+                    holder.author.setText(comment.user_display_name.toLowerCase());
+                }
                 holder.author.setOriginalPoster(isOP(comment.user_id));
                 if (comment.created_at != null) {
                     holder.timeAgo.setText(
