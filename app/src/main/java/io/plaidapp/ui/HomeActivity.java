@@ -207,8 +207,8 @@ public class HomeActivity extends Activity {
                 // inset the grid top by statusbar+toolbar & the bottom by the navbar (don't clip)
                 grid.setPadding(
                         grid.getPaddingLeft() + insets.getSystemWindowInsetLeft(), // landscape
-                        insets.getSystemWindowInsetTop() + ViewUtils.getActionBarSize
-                                (HomeActivity.this),
+                        insets.getSystemWindowInsetTop()
+                                + ViewUtils.getActionBarSize(HomeActivity.this),
                         grid.getPaddingRight() + insets.getSystemWindowInsetRight(), // landscape
                         grid.getPaddingBottom() + insets.getSystemWindowInsetBottom());
 
