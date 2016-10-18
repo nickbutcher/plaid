@@ -156,7 +156,7 @@
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="@string/share_authority"
+            android:authorities="${filesAuthority}"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
