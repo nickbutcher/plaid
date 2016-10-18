@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -39,6 +40,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 
 import java.security.InvalidParameterException;
@@ -102,7 +104,7 @@ public class AboutActivity extends Activity {
         private final LayoutInflater layoutInflater;
         private final Bypass markdown;
 
-        /* package */ AboutPagerAdapter(Context context) {
+        AboutPagerAdapter(Context context) {
             layoutInflater = LayoutInflater.from(context);
             markdown = new Bypass(context, new Bypass.Options());
         }
@@ -186,38 +188,45 @@ public class AboutActivity extends Activity {
         private static final int VIEW_TYPE_INTRO = 0;
         private static final int VIEW_TYPE_LIBRARY = 1;
         private static final Library[] libs = {
-                new Library("Android support libs",
-                        "The Android Support Library offers a number of features that are not built into the framework",
-                        "https://android.googlesource.com/platform/frameworks/support/",
-                        "http://developer.android.com/assets/images/android_logo@2x.png"),
+                new Library("Android support libraries",
+                        "The Android support libraries offer a number of features that are not built into the framework.",
+                        "https://developer.android.com/topic/libraries/support-library",
+                        "https://developer.android.com/images/android_icon_125.png",
+                        false),
                 new Library("ButterKnife",
-                        "Bind Android views and callbacks to fields and methods",
+                        "Bind Android views and callbacks to fields and methods.",
                         "http://jakewharton.github.io/butterknife/",
-                        "https://avatars.githubusercontent.com/u/66577"),
+                        "https://avatars.githubusercontent.com/u/66577",
+                        true),
                 new Library("Bypass",
-                        "Skip the HTML, Bypass takes markdown and renders it directly on Android and iOS",
+                        "Skip the HTML, Bypass takes markdown and renders it directly.",
                         "https://github.com/Uncodin/bypass",
-                        "https://avatars.githubusercontent.com/u/1072254"),
+                        "https://avatars.githubusercontent.com/u/1072254",
+                        true),
                 new Library("Glide",
-                        "An image loading and caching library for Android focused on smooth scrolling",
+                        "An image loading and caching library for Android focused on smooth scrolling.",
                         "https://github.com/bumptech/glide",
-                        "https://avatars.githubusercontent.com/u/423539"),
+                        "https://avatars.githubusercontent.com/u/423539",
+                        false),
                 new Library("JSoup",
-                        "Java HTML Parser, with best of DOM, CSS, and jquery ",
+                        "Java HTML Parser, with best of DOM, CSS, and jquery.",
                         "https://github.com/jhy/jsoup/",
-                        "https://avatars.githubusercontent.com/u/76934"),
+                        "https://avatars.githubusercontent.com/u/76934",
+                        true),
                 new Library("OkHttp",
-                        "An HTTP & HTTP/2 client for Android and Java applications",
+                        "An HTTP & HTTP/2 client for Android and Java applications.",
                         "http://square.github.io/okhttp/",
-                        "https://avatars.githubusercontent.com/u/82592"),
+                        "https://avatars.githubusercontent.com/u/82592",
+                        false),
                 new Library("Retrofit",
-                        "A type-safe HTTP client for Android and Java",
+                        "A type-safe HTTP client for Android and Java.",
                         "http://square.github.io/retrofit/",
-                        "https://avatars.githubusercontent.com/u/82592") };
+                        "https://avatars.githubusercontent.com/u/82592",
+                        false) };
 
         private final CircleTransform circleCrop;
 
-        /* package */ LibraryAdapter(Context context) {
+        LibraryAdapter(Context context) {
             circleCrop = new CircleTransform(context);
         }
 
@@ -228,10 +237,26 @@ public class AboutActivity extends Activity {
                     return new LibraryIntroHolder(LayoutInflater.from(parent.getContext())
                             .inflate(R.layout.about_lib_intro, parent, false));
                 case VIEW_TYPE_LIBRARY:
-                    return new LibraryHolder(LayoutInflater.from(parent.getContext()).inflate(
-                            R.layout.library, parent, false));
+                    return createLibraryHolder(parent);
             }
             throw new InvalidParameterException();
+        }
+
+        private @NonNull LibraryHolder createLibraryHolder(ViewGroup parent) {
+            final LibraryHolder holder = new LibraryHolder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.library, parent, false));
+            View.OnClickListener clickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = holder.getAdapterPosition();
+                    if (position == RecyclerView.NO_POSITION) return;
+                    holder.itemView.getContext().startActivity(
+                            new Intent(Intent.ACTION_VIEW, Uri.parse(libs[position - 1].link)));
+                }
+            };
+            holder.itemView.setOnClickListener(clickListener);
+            holder.link.setOnClickListener(clickListener);
+            return holder;
         }
 
         @Override
@@ -254,20 +279,13 @@ public class AboutActivity extends Activity {
         private void bindLibrary(final LibraryHolder holder, final Library lib) {
             holder.name.setText(lib.name);
             holder.description.setText(lib.description);
-            Glide.with(holder.image.getContext())
+            DrawableRequestBuilder<String> request = Glide.with(holder.image.getContext())
                     .load(lib.imageUrl)
-                    .placeholder(R.drawable.avatar_placeholder)
-                    .transform(circleCrop)
-                    .into(holder.image);
-            final View.OnClickListener clickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    holder.link.getContext().startActivity(
-                            new Intent(Intent.ACTION_VIEW, Uri.parse(lib.link)));
-                }
-            };
-            holder.itemView.setOnClickListener(clickListener);
-            holder.link.setOnClickListener(clickListener);
+                    .placeholder(R.drawable.avatar_placeholder);
+            if (lib.circleCrop) {
+                request.transform(circleCrop);
+            }
+            request.into(holder.image);
         }
     }
 
@@ -278,7 +296,7 @@ public class AboutActivity extends Activity {
         @BindView(R.id.library_description) TextView description;
         @BindView(R.id.library_link) Button link;
 
-        /* package */ LibraryHolder(View itemView) {
+        LibraryHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
@@ -288,7 +306,7 @@ public class AboutActivity extends Activity {
 
         TextView intro;
 
-        /* package */ LibraryIntroHolder(View itemView) {
+        LibraryIntroHolder(View itemView) {
             super(itemView);
             intro = (TextView) itemView;
         }
@@ -298,16 +316,18 @@ public class AboutActivity extends Activity {
      * Models an open source library we want to credit
      */
     private static class Library {
-        public final String name;
-        public final String link;
-        /* package */ final String description;
-        /* package */ final String imageUrl;
+        final String name;
+        final String link;
+        final String description;
+        final String imageUrl;
+        final boolean circleCrop;
 
-        /* package */ Library(String name, String description, String link, String imageUrl) {
+        Library(String name, String description, String link, String imageUrl, boolean circleCrop) {
             this.name = name;
             this.description = description;
             this.link = link;
             this.imageUrl = imageUrl;
+            this.circleCrop = circleCrop;
         }
     }
 
