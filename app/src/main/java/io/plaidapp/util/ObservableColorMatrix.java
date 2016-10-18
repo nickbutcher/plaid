@@ -30,7 +30,7 @@ public class ObservableColorMatrix extends ColorMatrix {
         super();
     }
 
-    public float getSaturation() {
+    float getSaturation() {
         return saturation;
     }
 
@@ -40,18 +40,18 @@ public class ObservableColorMatrix extends ColorMatrix {
         super.setSaturation(saturation);
     }
 
-    public static final Property<ObservableColorMatrix, Float> SATURATION
-            = new AnimUtils.FloatProperty<ObservableColorMatrix>("saturation") {
+    public static final Property<ObservableColorMatrix, Float> SATURATION =
+            AnimUtils.createFloatProperty(
+                    new AnimUtils.FloatProp<ObservableColorMatrix>("saturation") {
+                        @Override
+                        public float get(ObservableColorMatrix ocm) {
+                            return ocm.getSaturation();
+                        }
 
-        @Override
-        public void setValue(ObservableColorMatrix cm, float value) {
-            cm.setSaturation(value);
-        }
-
-        @Override
-        public Float get(ObservableColorMatrix cm) {
-            return cm.getSaturation();
-        }
-    };
+                        @Override
+                        public void set(ObservableColorMatrix ocm, float saturation) {
+                            ocm.setSaturation(saturation);
+                        }
+                    });
 
 }

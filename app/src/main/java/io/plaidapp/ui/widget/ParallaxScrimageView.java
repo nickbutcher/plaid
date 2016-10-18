@@ -51,24 +51,23 @@ public class ParallaxScrimageView extends FourThreeImageView {
     private boolean immediatePin = false;
 
     public static final Property<ParallaxScrimageView, Integer> OFFSET =
-            new AnimUtils.IntProperty<ParallaxScrimageView>("offset") {
-
+            AnimUtils.createIntProperty(new AnimUtils.IntProp<ParallaxScrimageView>("offset") {
                 @Override
-                public void setValue(ParallaxScrimageView parallaxScrimageView, int value) {
-                    parallaxScrimageView.setOffset(value);
+                public void set(ParallaxScrimageView parallaxScrimageView, int offset) {
+                    parallaxScrimageView.setOffset(offset);
                 }
 
                 @Override
-                public Integer get(ParallaxScrimageView parallaxScrimageView) {
+                public int get(ParallaxScrimageView parallaxScrimageView) {
                     return parallaxScrimageView.getOffset();
                 }
-            };
+            });
 
     public ParallaxScrimageView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        final TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable
-                .ParallaxScrimageView);
+        final TypedArray a = getContext().obtainStyledAttributes(
+                attrs, R.styleable.ParallaxScrimageView);
         if (a.hasValue(R.styleable.ParallaxScrimageView_scrimColor)) {
             scrimColor = a.getColor(R.styleable.ParallaxScrimageView_scrimColor, scrimColor);
         }

@@ -22,6 +22,7 @@ import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.util.Property;
 
 import io.plaidapp.util.AnimUtils;
@@ -32,35 +33,31 @@ import io.plaidapp.util.AnimUtils;
  */
 public class MorphDrawable extends Drawable {
 
-    public static final Property<MorphDrawable, Float> CORNER_RADIUS =
-            new AnimUtils.FloatProperty<MorphDrawable>("cornerRadius") {
+    public static final Property CORNER_RADIUS
+            = AnimUtils.createFloatProperty(new AnimUtils.FloatProp<MorphDrawable>("cornerRadius") {
+                @Override
+                public void set(MorphDrawable morphDrawable, float value) {
+                    morphDrawable.setCornerRadius(value);
+                }
 
-        @Override
-        public void setValue(MorphDrawable morphDrawable, float value) {
-            morphDrawable.setCornerRadius(value);
-        }
+                @Override
+                public float get(MorphDrawable morphDrawable) {
+                    return morphDrawable.getCornerRadius();
+                }
+            });
 
-        @Override
-        public Float get(MorphDrawable morphDrawable) {
-            return morphDrawable.getCornerRadius();
-        }
+    public static final Property<MorphDrawable, Integer> COLOR
+            = AnimUtils.createIntProperty(new AnimUtils.IntProp<MorphDrawable>("color") {
+                @Override
+                public void set(MorphDrawable morphDrawable, int color) {
+                    morphDrawable.setColor(color);
+                }
 
-    };
-
-    public static final Property<MorphDrawable, Integer> COLOR =
-            new AnimUtils.IntProperty<MorphDrawable>("color") {
-
-        @Override
-        public void setValue(MorphDrawable morphDrawable, int value) {
-            morphDrawable.setColor(value);
-        }
-
-        @Override
-        public Integer get(MorphDrawable morphDrawable) {
-            return morphDrawable.getColor();
-        }
-
-    };
+                @Override
+                public int get(MorphDrawable morphDrawable) {
+                    return morphDrawable.getColor();
+                }
+            });
 
     private Paint paint;
     private float cornerRadius;
@@ -71,11 +68,11 @@ public class MorphDrawable extends Drawable {
         paint.setColor(color);
     }
 
-    public float getCornerRadius() {
+    float getCornerRadius() {
         return cornerRadius;
     }
 
-    public void setCornerRadius(float cornerRadius) {
+    void setCornerRadius(float cornerRadius) {
         this.cornerRadius = cornerRadius;
         invalidateSelf();
     }
@@ -90,7 +87,7 @@ public class MorphDrawable extends Drawable {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         canvas.drawRoundRect(
                 getBounds().left,
                 getBounds().top,
@@ -102,7 +99,7 @@ public class MorphDrawable extends Drawable {
     }
 
     @Override
-    public void getOutline(Outline outline) {
+    public void getOutline(@NonNull Outline outline) {
         outline.setRoundRect(getBounds(), cornerRadius);
     }
 
