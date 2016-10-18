@@ -19,6 +19,7 @@ package io.plaidapp.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -101,7 +102,7 @@ public class AboutActivity extends Activity {
         private final LayoutInflater layoutInflater;
         private final Bypass markdown;
 
-        public AboutPagerAdapter(Context context) {
+        /* package */ AboutPagerAdapter(Context context) {
             layoutInflater = LayoutInflater.from(context);
             markdown = new Bypass(context, new Bypass.Options());
         }
@@ -129,25 +130,26 @@ public class AboutActivity extends Activity {
         }
 
         private View getPage(int position, ViewGroup parent) {
+            final Resources resources = parent.getResources();
             switch (position) {
                 case 0:
                     if (aboutPlaid == null) {
                         aboutPlaid = layoutInflater.inflate(R.layout.about_plaid, parent, false);
                         ButterKnife.bind(this, aboutPlaid);
                         // fun with spans & markdown
-                        CharSequence about0 = markdown.markdownToSpannable(parent.getResources()
+                        CharSequence about0 = markdown.markdownToSpannable(resources
                                 .getString(R.string.about_plaid_0), plaidDescription, null);
                         SpannableString about1 = new SpannableString(
-                                parent.getResources().getString(R.string.about_plaid_1));
+                                resources.getString(R.string.about_plaid_1));
                         about1.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
                                 0, about1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         SpannableString about2 = new SpannableString(markdown.markdownToSpannable
-                                (parent.getResources().getString(R.string.about_plaid_2),
+                                (resources.getString(R.string.about_plaid_2),
                                         plaidDescription, null));
                         about2.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
                                 0, about2.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         SpannableString about3 = new SpannableString(markdown.markdownToSpannable
-                                (parent.getResources().getString(R.string.about_plaid_3),
+                                (resources.getString(R.string.about_plaid_3),
                                         plaidDescription, null));
                         about3.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
                                 0, about3.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -160,8 +162,8 @@ public class AboutActivity extends Activity {
                     if (aboutIcon == null) {
                         aboutIcon = layoutInflater.inflate(R.layout.about_icon, parent, false);
                         ButterKnife.bind(this, aboutIcon);
-                        CharSequence icon0 = parent.getResources().getString(R.string.about_icon_0);
-                        CharSequence icon1 = markdown.markdownToSpannable(parent.getResources()
+                        CharSequence icon0 = resources.getString(R.string.about_icon_0);
+                        CharSequence icon1 = markdown.markdownToSpannable(resources
                                 .getString(R.string.about_icon_1), iconDescription, null);
                         CharSequence iconDesc = TextUtils.concat(icon0, "\n", icon1);
                         HtmlUtils.setTextWithNiceLinks(iconDescription, iconDesc);
@@ -185,30 +187,37 @@ public class AboutActivity extends Activity {
         private static final int VIEW_TYPE_LIBRARY = 1;
         private static final Library[] libs = {
                 new Library("Android support libs",
+                        "The Android Support Library offers a number of features that are not built into the framework",
                         "https://android.googlesource.com/platform/frameworks/support/",
                         "http://developer.android.com/assets/images/android_logo@2x.png"),
                 new Library("ButterKnife",
+                        "Bind Android views and callbacks to fields and methods",
                         "http://jakewharton.github.io/butterknife/",
                         "https://avatars.githubusercontent.com/u/66577"),
                 new Library("Bypass",
+                        "Skip the HTML, Bypass takes markdown and renders it directly on Android and iOS",
                         "https://github.com/Uncodin/bypass",
                         "https://avatars.githubusercontent.com/u/1072254"),
                 new Library("Glide",
+                        "An image loading and caching library for Android focused on smooth scrolling",
                         "https://github.com/bumptech/glide",
                         "https://avatars.githubusercontent.com/u/423539"),
                 new Library("JSoup",
+                        "Java HTML Parser, with best of DOM, CSS, and jquery ",
                         "https://github.com/jhy/jsoup/",
                         "https://avatars.githubusercontent.com/u/76934"),
                 new Library("OkHttp",
+                        "An HTTP & HTTP/2 client for Android and Java applications",
                         "http://square.github.io/okhttp/",
                         "https://avatars.githubusercontent.com/u/82592"),
                 new Library("Retrofit",
+                        "A type-safe HTTP client for Android and Java",
                         "http://square.github.io/retrofit/",
                         "https://avatars.githubusercontent.com/u/82592") };
 
         private final CircleTransform circleCrop;
 
-        public LibraryAdapter(Context context) {
+        /* package */ LibraryAdapter(Context context) {
             circleCrop = new CircleTransform(context);
         }
 
@@ -244,6 +253,7 @@ public class AboutActivity extends Activity {
 
         private void bindLibrary(final LibraryHolder holder, final Library lib) {
             holder.name.setText(lib.name);
+            holder.description.setText(lib.description);
             Glide.with(holder.image.getContext())
                     .load(lib.imageUrl)
                     .placeholder(R.drawable.avatar_placeholder)
@@ -265,9 +275,10 @@ public class AboutActivity extends Activity {
 
         @BindView(R.id.library_image) ImageView image;
         @BindView(R.id.library_name) TextView name;
+        @BindView(R.id.library_description) TextView description;
         @BindView(R.id.library_link) Button link;
 
-        public LibraryHolder(View itemView) {
+        /* package */ LibraryHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
@@ -277,7 +288,7 @@ public class AboutActivity extends Activity {
 
         TextView intro;
 
-        public LibraryIntroHolder(View itemView) {
+        /* package */ LibraryIntroHolder(View itemView) {
             super(itemView);
             intro = (TextView) itemView;
         }
@@ -289,10 +300,12 @@ public class AboutActivity extends Activity {
     private static class Library {
         public final String name;
         public final String link;
-        public final String imageUrl;
+        /* package */ final String description;
+        /* package */ final String imageUrl;
 
-        public Library(String name, String link, String imageUrl) {
+        /* package */ Library(String name, String description, String link, String imageUrl) {
             this.name = name;
+            this.description = description;
             this.link = link;
             this.imageUrl = imageUrl;
         }
