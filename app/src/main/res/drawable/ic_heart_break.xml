@@ -19,8 +19,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="56dp"
     android:height="56dp"
-    android:viewportHeight="56"
-    android:viewportWidth="56">
+    android:viewportWidth="56"
+    android:viewportHeight="56">
 
     <!-- Stroked heart, 2 paths so can 'draw' them concurrently by animating trim.
          Initially hidden -->
