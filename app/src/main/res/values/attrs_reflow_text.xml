@@ -18,7 +18,7 @@
 <resources>
 
     <declare-styleable name="ReflowText">
-        <attr name="speed" />
+        <attr name="velocity" />
         <attr name="minDuration" />
         <attr name="maxDuration" />
         <attr name="staggerDelay" format="integer" />
