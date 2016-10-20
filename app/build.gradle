@@ -32,8 +32,8 @@ def gitCommitCount = 100 +
         Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '24.0.3'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "io.plaidapp"
@@ -77,7 +77,7 @@ repositories {
     jcenter()
 }
 
-ext.supportLibVersion = '24.2.0'
+ext.supportLibVersion = '25.0.0'
 
 dependencies {
     compile "com.android.support:palette-v7:${supportLibVersion}"
