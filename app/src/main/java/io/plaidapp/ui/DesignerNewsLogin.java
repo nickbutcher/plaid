@@ -261,7 +261,7 @@ public class DesignerNewsLogin extends Activity {
             @Override
             public void onResponse(Call<AccessToken> call, Response<AccessToken> response) {
                 if (response.isSuccessful()) {
-                    designerNewsPrefs.setAccessToken(response.body().access_token);
+                    designerNewsPrefs.setAccessToken(DesignerNewsLogin.this, response.body().access_token);
                     showLoggedInUser();
                     setResult(Activity.RESULT_OK);
                     finish();

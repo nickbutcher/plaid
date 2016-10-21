@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2015 Google Inc.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 
 <alpha
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fromAlpha="0.0"
-    android:toAlpha="1.0"
-    android:duration="300"
-    android:interpolator="@android:interpolator/linear_out_slow_in" />
+    android:fromAlpha="1.0"
+    android:toAlpha="0.0"
+    android:duration="200"
+    android:interpolator="@android:interpolator/fast_out_linear_in" />

@@ -356,7 +356,7 @@ public class HomeActivity extends Activity {
                 if (!designerNewsPrefs.isLoggedIn()) {
                     startActivity(new Intent(this, DesignerNewsLogin.class));
                 } else {
-                    designerNewsPrefs.logout();
+                    designerNewsPrefs.logout(HomeActivity.this);
                     // TODO something better than a toast!!
                     Toast.makeText(getApplicationContext(), R.string.designer_news_logged_out,
                             Toast.LENGTH_SHORT).show();

@@ -176,6 +176,13 @@ public class SearchActivity extends Activity {
         super.onDestroy();
     }
 
+    @Override
+    public void onEnterAnimationComplete() {
+        // focus the search view once the enter transition finishes
+        searchView.requestFocus();
+        ImeUtils.showIme(searchView);
+    }
+
     @OnClick({ R.id.scrim, R.id.searchback })
     protected void dismiss() {
         // clear the background else the touch ripple moves with the translation which looks bad
@@ -269,15 +276,6 @@ public class SearchActivity extends Activity {
                 }
             }
         });
-        // focus the search view once the transition finishes
-        getWindow().getEnterTransition().addListener(
-                new TransitionUtils.TransitionListenerAdapter() {
-                    @Override
-                    public void onTransitionEnd(Transition transition) {
-                        searchView.requestFocus();
-                        ImeUtils.showIme(searchView);
-                    }
-                });
     }
 
     private void clearResults() {

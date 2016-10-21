@@ -18,6 +18,7 @@ package io.plaidapp.data.prefs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import io.plaidapp.BuildConfig;
@@ -74,12 +75,13 @@ public class DesignerNewsPrefs {
         return isLoggedIn;
     }
 
-    public void setAccessToken(String accessToken) {
+    public void setAccessToken(@NonNull Context context, String accessToken) {
         if (!TextUtils.isEmpty(accessToken)) {
             this.accessToken = accessToken;
             isLoggedIn = true;
             prefs.edit().putString(KEY_ACCESS_TOKEN, accessToken).apply();
             createApi();
+            PostShortcutManager.enablePostShortcut(context);
         }
     }
 
@@ -116,7 +118,7 @@ public class DesignerNewsPrefs {
                 .build();
     }
 
-    public void logout() {
+    public void logout(@NonNull Context context) {
         isLoggedIn = false;
         accessToken = null;
         username = null;
@@ -128,6 +130,7 @@ public class DesignerNewsPrefs {
         editor.putString(KEY_USER_AVATAR, null);
         editor.apply();
         createApi();
+        PostShortcutManager.disablePostShortcut(context);
     }
 
     public DesignerNewsService getApi() {
