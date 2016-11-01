@@ -69,7 +69,6 @@ import android.widget.Toolbar;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -822,7 +821,8 @@ public class HomeActivity extends Activity {
         }
     }
 
-    private ConnectivityManager.NetworkCallback connectivityCallback = new ConnectivityManager.NetworkCallback() {
+    private ConnectivityManager.NetworkCallback connectivityCallback
+            = new ConnectivityManager.NetworkCallback() {
         @Override
         public void onAvailable(Network network) {
             connected = true;
