@@ -58,6 +58,7 @@
         android:layout_toEndOf="@id/library_image"
         android:layout_alignParentEnd="true"
         android:maxLines="2"
+        android:ellipsize="end"
         style="@style/Widget.Plaid.SecondaryText" />
 
     <Button

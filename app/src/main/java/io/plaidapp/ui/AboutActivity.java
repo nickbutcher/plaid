@@ -17,13 +17,13 @@
 package io.plaidapp.ui;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsIntent;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
@@ -52,6 +52,7 @@ import io.plaidapp.R;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.InkPageIndicator;
 import io.plaidapp.util.HtmlUtils;
+import io.plaidapp.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.util.glide.CircleTransform;
 
 /**
@@ -72,7 +73,7 @@ public class AboutActivity extends Activity {
         setContentView(R.layout.activity_about);
         ButterKnife.bind(this);
 
-        pager.setAdapter(new AboutPagerAdapter(this));
+        pager.setAdapter(new AboutPagerAdapter(AboutActivity.this));
         pager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.spacing_normal));
         pageIndicator.setViewPager(pager);
 
@@ -103,10 +104,14 @@ public class AboutActivity extends Activity {
 
         private final LayoutInflater layoutInflater;
         private final Bypass markdown;
+        private final Activity host;
+        private final Resources resources;
 
-        AboutPagerAdapter(Context context) {
-            layoutInflater = LayoutInflater.from(context);
-            markdown = new Bypass(context, new Bypass.Options());
+        AboutPagerAdapter(@NonNull Activity host) {
+            this.host = host;
+            resources = host.getResources();
+            layoutInflater = LayoutInflater.from(host);
+            markdown = new Bypass(host, new Bypass.Options());
         }
 
         @Override
@@ -132,7 +137,6 @@ public class AboutActivity extends Activity {
         }
 
         private View getPage(int position, ViewGroup parent) {
-            final Resources resources = parent.getResources();
             switch (position) {
                 case 0:
                     if (aboutPlaid == null) {
@@ -175,7 +179,7 @@ public class AboutActivity extends Activity {
                     if (aboutLibs == null) {
                         aboutLibs = layoutInflater.inflate(R.layout.about_libs, parent, false);
                         ButterKnife.bind(this, aboutLibs);
-                        libsList.setAdapter(new LibraryAdapter(parent.getContext()));
+                        libsList.setAdapter(new LibraryAdapter(host));
                     }
                     return aboutLibs;
             }
@@ -225,9 +229,11 @@ public class AboutActivity extends Activity {
                         false) };
 
         private final CircleTransform circleCrop;
+        private final Activity host;
 
-        LibraryAdapter(Context context) {
-            circleCrop = new CircleTransform(context);
+        LibraryAdapter(Activity host) {
+            this.host = host;
+            circleCrop = new CircleTransform(host);
         }
 
         @Override
@@ -250,8 +256,13 @@ public class AboutActivity extends Activity {
                 public void onClick(View v) {
                     int position = holder.getAdapterPosition();
                     if (position == RecyclerView.NO_POSITION) return;
-                    holder.itemView.getContext().startActivity(
-                            new Intent(Intent.ACTION_VIEW, Uri.parse(libs[position - 1].link)));
+                    CustomTabActivityHelper.openCustomTab(
+                            host,
+                            new CustomTabsIntent.Builder()
+                                    .setToolbarColor(ContextCompat.getColor(host, R.color.primary))
+                                    .addDefaultShareMenuItem()
+                                    .build(), Uri.parse(libs[position - 1].link));
+
                 }
             };
             holder.itemView.setOnClickListener(clickListener);
