@@ -50,24 +50,24 @@ import io.plaidapp.util.ViewOffsetHelper;
 public class BottomSheet extends FrameLayout {
 
     // constants
+    final int MIN_FLING_VELOCITY;
     private static final int MIN_SETTLE_VELOCITY = 6000; // px/s
-    private final int MIN_FLING_VELOCITY;
 
     // child views & helpers
-    private View sheet;
+    View sheet;
+    ViewOffsetHelper sheetOffsetHelper;
     private ViewDragHelper sheetDragHelper;
-    private ViewOffsetHelper sheetOffsetHelper;
 
     // state
-    private List<Callbacks> callbacks;
-    private int sheetExpandedTop;
-    private int sheetBottom;
-    private int dismissOffset;
+    int sheetExpandedTop;
+    int sheetBottom;
+    int dismissOffset;
+    boolean settling = false;
+    boolean initialHeightChecked = false;
+    boolean hasInteractedWithSheet = false;
     private int nestedScrollInitialTop;
-    private boolean settling = false;
     private boolean isNestedScrolling = false;
-    private boolean initialHeightChecked = false;
-    private boolean hasInteractedWithSheet = false;
+    private List<Callbacks> callbacks;
 
     public BottomSheet(Context context) {
         this(context, null, 0);
@@ -146,10 +146,7 @@ public class BottomSheet extends FrameLayout {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         sheetDragHelper.processTouchEvent(ev);
-        if (sheetDragHelper.getCapturedView() != null) {
-            return true;
-        }
-        return super.onTouchEvent(ev);
+        return sheetDragHelper.getCapturedView() != null || super.onTouchEvent(ev);
     }
 
     @Override
@@ -226,7 +223,7 @@ public class BottomSheet extends FrameLayout {
         return getVisibility() == VISIBLE && sheetDragHelper.isViewUnder(this, x, y);
     }
 
-    private void animateSettle(int targetOffset, float initialVelocity) {
+    void animateSettle(int targetOffset, float initialVelocity) {
         animateSettle(sheetOffsetHelper.getTopAndBottomOffset(), targetOffset, initialVelocity);
     }
 
@@ -368,7 +365,7 @@ public class BottomSheet extends FrameLayout {
         }
     };
 
-    private void applySheetInitialHeightOffset(boolean animateChange, int previousOffset) {
+    void applySheetInitialHeightOffset(boolean animateChange, int previousOffset) {
         final int minimumGap = sheet.getMeasuredWidth() / 16 * 9;
         if (sheet.getTop() < minimumGap) {
             final int offset = minimumGap - sheet.getTop();
@@ -380,7 +377,7 @@ public class BottomSheet extends FrameLayout {
         }
     }
 
-    private void dispatchDismissCallback() {
+    void dispatchDismissCallback() {
         if (callbacks != null && !callbacks.isEmpty()) {
             for (Callbacks callback : callbacks) {
                 callback.onSheetDismissed();
@@ -388,7 +385,7 @@ public class BottomSheet extends FrameLayout {
         }
     }
 
-    private void dispatchPositionChangedCallback() {
+    void dispatchPositionChangedCallback() {
         if (callbacks != null && !callbacks.isEmpty()) {
             for (Callbacks callback : callbacks) {
                 callback.onSheetPositionChanged(sheet.getTop(), hasInteractedWithSheet);
