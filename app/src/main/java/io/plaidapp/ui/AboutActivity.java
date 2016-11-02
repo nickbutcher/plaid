@@ -191,7 +191,7 @@ public class AboutActivity extends Activity {
 
         private static final int VIEW_TYPE_INTRO = 0;
         private static final int VIEW_TYPE_LIBRARY = 1;
-        private static final Library[] libs = {
+        static final Library[] libs = {
                 new Library("Android support libraries",
                         "The Android support libraries offer a number of features that are not built into the framework.",
                         "https://developer.android.com/topic/libraries/support-library",
@@ -229,7 +229,7 @@ public class AboutActivity extends Activity {
                         false) };
 
         private final CircleTransform circleCrop;
-        private final Activity host;
+        final Activity host;
 
         LibraryAdapter(Activity host) {
             this.host = host;
