@@ -226,7 +226,7 @@ public class PlayerActivity extends Activity {
                 if (data != null && data.size() > 0) {
                     if (adapter.getDataItemCount() == 0) {
                         loading.setVisibility(View.GONE);
-                        ViewUtils.setPaddingTop(shots, likesCount.getBottom());
+                        ViewUtils.setPaddingTop(shots, Math.max(follow.getBottom(), likesCount.getBottom()));
                     }
                     adapter.addAndResort(data);
                 }
