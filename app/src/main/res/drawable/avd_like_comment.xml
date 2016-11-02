@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2015 Google Inc.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,21 +15,16 @@
   limitations under the License.
   -->
 
-<animated-selector xmlns:android="http://schemas.android.com/apk/res/android">
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/heart_comment_anim">
 
-    <item
-        android:id="@+id/liked"
-        android:state_checked="true"
-        android:drawable="@drawable/ic_heart_full_24dp_pink" />
+    <target
+        android:name="filled"
+        android:animation="@animator/comment_expand_full_heart" />
 
-    <item
-        android:id="@+id/not_liked"
-        android:drawable="@drawable/ic_heart_empty_24dp" />
+    <target
+        android:name="empty"
+        android:animation="@animator/comment_fade_empty_heart" />
 
-    <transition
-        android:fromId="@id/not_liked"
-        android:toId="@id/liked"
-        android:drawable="@drawable/avd_like_comment"
-        android:reversible="false" />
-
-</animated-selector>
+</animated-vector>

@@ -35,4 +35,8 @@
         android:name="arrow_head_bottom"
         android:animation="@animator/searchback_show_arrow_head" />
 
+    <target
+        android:name="arrow_head"
+        android:animation="@animator/searchback_show_arrow_head_move" />
+
 </animated-vector>
