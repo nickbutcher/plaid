@@ -21,17 +21,21 @@
     android:transitionOrdering="together"
     android:interpolator="@android:interpolator/fast_out_linear_in">
 
-    <transition
-        class="io.plaidapp.ui.transitions.StaggeredDistanceSlide"
-        app:spread="3"
-        android:duration="200"
-        android:interpolator="@android:interpolator/fast_out_linear_in">
+    <transitionSet>
         <targets>
             <target android:excludeId="@android:id/navigationBarBackground" />
             <target android:excludeId="@android:id/statusBarBackground" />
             <target android:excludeId="@id/background" />
         </targets>
-    </transition>
+        <transition
+            class="io.plaidapp.ui.transitions.StaggeredDistanceSlide"
+            app:spread="3"
+            android:duration="200"
+            android:interpolator="@android:interpolator/fast_out_linear_in"/>
+        <fade
+            android:duration="100"
+            android:interpolator="@android:interpolator/fast_out_linear_in" />
+    </transitionSet>
 
     <fade android:duration="200">
         <targets>
