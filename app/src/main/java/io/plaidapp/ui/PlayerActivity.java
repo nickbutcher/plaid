@@ -72,17 +72,17 @@ public class PlayerActivity extends Activity {
     public static final String EXTRA_PLAYER_ID = "EXTRA_PLAYER_ID";
     public static final String EXTRA_PLAYER_USERNAME = "EXTRA_PLAYER_USERNAME";
 
-    private User player;
-    private CircleTransform circleTransform;
-    private PlayerShotsDataManager dataManager;
-    private FeedAdapter adapter;
-    private GridLayoutManager layoutManager;
+    User player;
+    PlayerShotsDataManager dataManager;
+    FeedAdapter adapter;
+    GridLayoutManager layoutManager;
+    Boolean following;
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
-    private Boolean following;
+    private CircleTransform circleTransform;
     private int followerCount;
 
     @BindView(R.id.draggable_frame) ElasticDragDismissFrameLayout draggableFrame;
-    @BindView(R.id.player_description) ViewGroup playerDescription;
+    @BindView(R.id.container) ViewGroup container;
     @BindView(R.id.avatar) ImageView avatar;
     @BindView(R.id.player_name) TextView playerName;
     @BindView(R.id.follow) Button follow;
@@ -110,7 +110,7 @@ public class PlayerActivity extends Activity {
             String name = intent.getStringExtra(EXTRA_PLAYER_NAME);
             playerName.setText(name);
             if (intent.hasExtra(EXTRA_PLAYER_ID)) {
-                long userId = intent.getLongExtra(EXTRA_PLAYER_ID, 0l);
+                long userId = intent.getLongExtra(EXTRA_PLAYER_ID, 0L);
                 loadPlayer(userId);
             } else if (intent.hasExtra(EXTRA_PLAYER_USERNAME)) {
                 String username = intent.getStringExtra(EXTRA_PLAYER_USERNAME);
@@ -133,7 +133,7 @@ public class PlayerActivity extends Activity {
                 lpFrame.rightMargin += insets.getSystemWindowInsetRight();  // landscape
                 ((ViewGroup.MarginLayoutParams) avatar.getLayoutParams()).topMargin
                     += insets.getSystemWindowInsetTop();
-                ViewUtils.setPaddingTop(playerDescription, insets.getSystemWindowInsetTop());
+                ViewUtils.setPaddingTop(container, insets.getSystemWindowInsetTop());
                 ViewUtils.setPaddingBottom(shots, insets.getSystemWindowInsetBottom());
                 // clear this listener so insets aren't re-applied
                 draggableFrame.setOnApplyWindowInsetsListener(null);
@@ -170,8 +170,8 @@ public class PlayerActivity extends Activity {
 
         // When reentering, if the shared element is no longer on screen (e.g. after an
         // orientation change) then scroll it into view.
-        final long sharedShotId = data.getLongExtra(DribbbleShot.RESULT_EXTRA_SHOT_ID, -1l);
-        if (sharedShotId != -1l                                             // returning from a shot
+        final long sharedShotId = data.getLongExtra(DribbbleShot.RESULT_EXTRA_SHOT_ID, -1L);
+        if (sharedShotId != -1L                                             // returning from a shot
                 && adapter.getDataItemCount() > 0                           // grid populated
                 && shots.findViewHolderForItemId(sharedShotId) == null) {   // view not attached
             final int position = adapter.getItemPosition(sharedShotId);
@@ -191,10 +191,8 @@ public class PlayerActivity extends Activity {
         }
     }
 
-    private void bindPlayer() {
-        if (player == null) {
-            return;
-        }
+    void bindPlayer() {
+        if (player == null) return;
 
         final Resources res = getResources();
         final NumberFormat nf = NumberFormat.getInstance();
@@ -228,7 +226,7 @@ public class PlayerActivity extends Activity {
                 if (data != null && data.size() > 0) {
                     if (adapter.getDataItemCount() == 0) {
                         loading.setVisibility(View.GONE);
-                        ViewUtils.setPaddingTop(shots, playerDescription.getHeight());
+                        ViewUtils.setPaddingTop(shots, likesCount.getBottom());
                     }
                     adapter.addAndResort(data);
                 }
@@ -264,14 +262,14 @@ public class PlayerActivity extends Activity {
 
                 // if no data loaded then pass through
                 if (adapter.getDataItemCount() == 0) {
-                    return playerDescription.dispatchTouchEvent(event);
+                    return container.dispatchTouchEvent(event);
                 }
 
                 final RecyclerView.ViewHolder vh = shots.findViewHolderForAdapterPosition(0);
                 if (vh == null) return false;
                 final int firstTop = vh.itemView.getTop();
                 if (event.getY() < firstTop) {
-                     return playerDescription.dispatchTouchEvent(event);
+                     return container.dispatchTouchEvent(event);
                 }
                 return false;
             }
@@ -280,9 +278,9 @@ public class PlayerActivity extends Activity {
         // check if following
         if (dataManager.getDribbblePrefs().isLoggedIn()) {
             if (player.id == dataManager.getDribbblePrefs().getUserId()) {
-                TransitionManager.beginDelayedTransition(playerDescription);
+                TransitionManager.beginDelayedTransition(container);
                 follow.setVisibility(View.GONE);
-                ViewUtils.setPaddingTop(shots, playerDescription.getHeight() - follow.getHeight()
+                ViewUtils.setPaddingTop(shots, container.getHeight() - follow.getHeight()
                         - ((ViewGroup.MarginLayoutParams) follow.getLayoutParams()).bottomMargin);
             } else {
                 final Call<Void> followingCall = dataManager.getDribbbleApi().following(player.id);
@@ -291,7 +289,7 @@ public class PlayerActivity extends Activity {
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         following = response.isSuccessful();
                         if (!following) return;
-                        TransitionManager.beginDelayedTransition(playerDescription);
+                        TransitionManager.beginDelayedTransition(container);
                         follow.setText(R.string.following);
                         follow.setActivated(true);
                     }
@@ -305,6 +303,55 @@ public class PlayerActivity extends Activity {
             dataManager.loadData(); // kick off initial load
         } else {
             loading.setVisibility(View.GONE);
+        }
+    }
+
+    @OnClick(R.id.follow)
+    void follow() {
+        if (DribbblePrefs.get(this).isLoggedIn()) {
+            if (following != null && following) {
+                final Call<Void> unfollowCall = dataManager.getDribbbleApi().unfollow(player.id);
+                unfollowCall.enqueue(new Callback<Void>() {
+                    @Override public void onResponse(Call<Void> call, Response<Void> response) { }
+
+                    @Override public void onFailure(Call<Void> call, Throwable t) { }
+                });
+                following = false;
+                TransitionManager.beginDelayedTransition(container);
+                follow.setText(R.string.follow);
+                follow.setActivated(false);
+                setFollowerCount(followerCount - 1);
+            } else {
+                final Call<Void> followCall = dataManager.getDribbbleApi().follow(player.id);
+                followCall.enqueue(new Callback<Void>() {
+                    @Override public void onResponse(Call<Void> call, Response<Void> response) { }
+
+                    @Override public void onFailure(Call<Void> call, Throwable t) { }
+                });
+                following = true;
+                TransitionManager.beginDelayedTransition(container);
+                follow.setText(R.string.following);
+                follow.setActivated(true);
+                setFollowerCount(followerCount + 1);
+            }
+        } else {
+            Intent login = new Intent(this, DribbbleLogin.class);
+            MorphTransform.addExtras(login,
+                    ContextCompat.getColor(this, R.color.dribbble),
+                    getResources().getDimensionPixelSize(R.dimen.dialog_corners));
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation
+                    (this, follow, getString(R.string.transition_dribbble_login));
+            startActivity(login, options.toBundle());
+        }
+    }
+
+    @OnClick({R.id.shot_count, R.id.followers_count, R.id.likes_count})
+    void playerActionClick(TextView view) {
+        ((AnimatedVectorDrawable) view.getCompoundDrawables()[1]).start();
+        switch (view.getId()) {
+            case R.id.followers_count:
+                PlayerSheet.start(PlayerActivity.this, player);
+                break;
         }
     }
 
@@ -340,55 +387,6 @@ public class PlayerActivity extends Activity {
                 followerCount, NumberFormat.getInstance().format(followerCount)));
         if (followerCount == 0) {
             followersCount.setBackground(null);
-        }
-    }
-
-    @OnClick(R.id.follow)
-    /* package */ void follow() {
-        if (DribbblePrefs.get(this).isLoggedIn()) {
-            if (following != null && following) {
-                final Call<Void> unfollowCall = dataManager.getDribbbleApi().unfollow(player.id);
-                unfollowCall.enqueue(new Callback<Void>() {
-                    @Override public void onResponse(Call<Void> call, Response<Void> response) { }
-
-                    @Override public void onFailure(Call<Void> call, Throwable t) { }
-                });
-                following = false;
-                TransitionManager.beginDelayedTransition(playerDescription);
-                follow.setText(R.string.follow);
-                follow.setActivated(false);
-                setFollowerCount(followerCount - 1);
-            } else {
-                final Call<Void> followCall = dataManager.getDribbbleApi().follow(player.id);
-                followCall.enqueue(new Callback<Void>() {
-                    @Override public void onResponse(Call<Void> call, Response<Void> response) { }
-
-                    @Override public void onFailure(Call<Void> call, Throwable t) { }
-                });
-                following = true;
-                TransitionManager.beginDelayedTransition(playerDescription);
-                follow.setText(R.string.following);
-                follow.setActivated(true);
-                setFollowerCount(followerCount + 1);
-            }
-        } else {
-            Intent login = new Intent(this, DribbbleLogin.class);
-            MorphTransform.addExtras(login,
-                    ContextCompat.getColor(this, R.color.dribbble),
-                    getResources().getDimensionPixelSize(R.dimen.dialog_corners));
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation
-                    (this, follow, getString(R.string.transition_dribbble_login));
-            startActivity(login, options.toBundle());
-        }
-    }
-
-    @OnClick({R.id.shot_count, R.id.followers_count, R.id.likes_count })
-    /* package */ void playerActionClick(TextView view) {
-        ((AnimatedVectorDrawable) view.getCompoundDrawables()[1]).start();
-        switch (view.getId()) {
-            case R.id.followers_count:
-                PlayerSheet.start(PlayerActivity.this, player);
-                break;
         }
     }
 
