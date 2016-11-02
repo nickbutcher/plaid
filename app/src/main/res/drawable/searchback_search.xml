@@ -37,18 +37,22 @@
         android:strokeColor="@color/searchback_stroke_color"
         android:trimPathEnd="@fraction/searchback_circle_search_trim_end" />
 
-    <path
-        android:name="arrow_head_top"
-        android:pathData="@string/searchback_path_arrow_head_top"
-        android:strokeWidth="@integer/searchback_stroke_width"
-        android:strokeColor="@color/searchback_stroke_color"
-        android:trimPathEnd="@fraction/searchback_arrow_head_search_trim_end" />
+    <group android:name="arrow_head">
 
-    <path
-        android:name="arrow_head_bottom"
-        android:pathData="@string/searchback_path_arrow_head_bottom"
-        android:strokeWidth="@integer/searchback_stroke_width"
-        android:strokeColor="@color/searchback_stroke_color"
-        android:trimPathEnd="@fraction/searchback_arrow_head_search_trim_end" />
+        <path
+            android:name="arrow_head_top"
+            android:pathData="@string/searchback_path_arrow_head_top"
+            android:strokeWidth="@integer/searchback_stroke_width"
+            android:strokeColor="@color/searchback_stroke_color"
+            android:trimPathEnd="@fraction/searchback_arrow_head_search_trim_end" />
+
+        <path
+            android:name="arrow_head_bottom"
+            android:pathData="@string/searchback_path_arrow_head_bottom"
+            android:strokeWidth="@integer/searchback_stroke_width"
+            android:strokeColor="@color/searchback_stroke_color"
+            android:trimPathEnd="@fraction/searchback_arrow_head_search_trim_end" />
+
+    </group>
 
 </vector>

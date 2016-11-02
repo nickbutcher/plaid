@@ -34,7 +34,7 @@ android {
     defaultConfig {
         applicationId "io.plaidapp"
         minSdkVersion 21
-        targetSdkVersion 23
+        targetSdkVersion 25
         versionCode gitCommitCount
         versionName gitTag
         archivesBaseName = "plaid-${versionName}"

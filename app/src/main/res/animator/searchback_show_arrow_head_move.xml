@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2015 Google Inc.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -21,18 +21,18 @@
 
     <!-- first we need to immediately reset state -->
     <objectAnimator
-        android:propertyName="trimPathEnd"
+        android:propertyName="translateX"
         android:duration="0"
-        android:valueFrom="@fraction/searchback_arrow_head_search_trim_end"
-        android:valueTo="@fraction/searchback_arrow_head_search_trim_end" />
+        android:valueFrom="8"
+        android:valueTo="8" />
 
     <!-- then run the animation after a delay -->
     <objectAnimator
-        android:propertyName="trimPathEnd"
-        android:valueFrom="@fraction/searchback_arrow_head_search_trim_end"
-        android:valueTo="@fraction/searchback_arrow_head_back_trim_end"
+        android:propertyName="translateX"
+        android:valueFrom="8"
+        android:valueTo="0"
         android:startOffset="@integer/searchback_show_arrow_head_delay"
         android:duration="@integer/searchback_show_hide_arrow_head_duration"
-        android:interpolator="@android:interpolator/fast_out_slow_in" />
+        android:interpolator="@android:interpolator/linear_out_slow_in" />
 
 </set>
