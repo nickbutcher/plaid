@@ -34,7 +34,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Plaid">
+        android:theme="@style/Plaid"
+        android:largeHeap="true">
 
         <activity
             android:name=".ui.HomeActivity"
