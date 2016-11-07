@@ -20,10 +20,6 @@
     android:installLocation="auto"
     package="io.plaidapp">
 
-    <uses-sdk
-        android:minSdkVersion="21"
-        android:targetSdkVersion="23" />
-
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -34,6 +30,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:extractNativeLibs="false"
         android:theme="@style/Plaid">
 
         <activity
@@ -42,8 +39,8 @@
             android:theme="@style/Plaid.Home"
             android:exported="true" />
 
-        <!-- use an alias in case we want to change the launch activity later without breaking
-             homescreen shortcuts.  Note must be defined after the targetActivity -->
+        <!-- Use an alias in case we want to change the launch activity later without breaking
+             homescreen shortcuts. Note must be defined after the targetActivity -->
         <activity-alias
             android:name=".Launcher"
             android:label="@string/app_name"
