@@ -49,10 +49,8 @@ android {
                 "DESIGNER_NEWS_CLIENT_SECRET", "\"${designer_news_client_secret}\""
         buildConfigField "String",
                 "PROCUCT_HUNT_DEVELOPER_TOKEN", "\"${product_hunt_developer_token}\""
-
         def filesAuthorityValue = applicationId + ".shareprovider";
         buildConfigField "String", "FILES_AUTHORITY", "\"${filesAuthorityValue}\""
-
         manifestPlaceholders = [filesAuthority: filesAuthorityValue]
     }
     buildTypes {
@@ -60,7 +58,6 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
         }
     }
     compileOptions {
@@ -76,7 +73,7 @@ repositories {
 ext.supportLibVersion = '25.0.0'
 
 dependencies {
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta2'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta3'
     compile "com.android.support:customtabs:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:palette-v7:${supportLibVersion}"
