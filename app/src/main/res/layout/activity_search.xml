@@ -145,27 +145,35 @@
                 android:gravity="bottom|end"
                 android:orientation="vertical">
 
-                <CheckBox
+                <CheckedTextView
                     android:id="@+id/save_dribbble"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/padding_normal"
-                    android:paddingEnd="@dimen/padding_normal"
-                    android:paddingBottom="@dimen/padding_normal"
+                    android:paddingTop="@dimen/spacing_normal"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="@dimen/spacing_normal"
+                    android:gravity="center_vertical"
                     android:checked="true"
+                    android:drawableEnd="?android:listChoiceIndicatorMultiple"
+                    android:drawablePadding="@dimen/spacing_normal"
                     android:text="@string/confirm_save_dribbble_search"
-                    android:textAppearance="@android:style/TextAppearance.Material.Body2" />
+                    android:textAppearance="@android:style/TextAppearance.Material.Body2"
+                    style="?android:borderlessButtonStyle" />
 
-                <CheckBox
+                <CheckedTextView
                     android:id="@+id/save_designer_news"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/padding_normal"
-                    android:paddingEnd="@dimen/padding_normal"
-                    android:paddingBottom="@dimen/padding_normal"
+                    android:paddingTop="@dimen/spacing_normal"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="@dimen/spacing_normal"
+                    android:gravity="center_vertical"
                     android:checked="true"
+                    android:drawableEnd="?android:listChoiceIndicatorMultiple"
+                    android:drawablePadding="@dimen/spacing_normal"
                     android:text="@string/confirm_save_designer_news_search"
-                    android:textAppearance="@android:style/TextAppearance.Material.Body2" />
+                    android:textAppearance="@android:style/TextAppearance.Material.Body2"
+                    style="?android:borderlessButtonStyle" />
 
                 <Button
                     android:id="@+id/save_confirmed"
