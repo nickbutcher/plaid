@@ -40,7 +40,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.inputmethod.EditorInfo;
-import android.widget.CheckBox;
+import android.widget.CheckedTextView;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -81,16 +81,16 @@ public class SearchActivity extends Activity {
     @BindView(R.id.results_container) ViewGroup resultsContainer;
     @BindView(R.id.fab) ImageButton fab;
     @BindView(R.id.confirm_save_container) ViewGroup confirmSaveContainer;
-    @BindView(R.id.save_dribbble) CheckBox saveDribbble;
-    @BindView(R.id.save_designer_news) CheckBox saveDesignerNews;
+    @BindView(R.id.save_dribbble) CheckedTextView saveDribbble;
+    @BindView(R.id.save_designer_news) CheckedTextView saveDesignerNews;
     @BindView(R.id.scrim) View scrim;
     @BindView(R.id.results_scrim) View resultsScrim;
-    private TextView noResults;
     @BindInt(R.integer.num_columns) int columns;
     @BindDimen(R.dimen.z_app_bar) float appBarElevation;
+    SearchDataManager dataManager;
+    FeedAdapter adapter;
+    private TextView noResults;
     private SparseArray<Transition> transitions = new SparseArray<>();
-    private SearchDataManager dataManager;
-    private FeedAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,7 +157,7 @@ public class SearchActivity extends Activity {
     @Override
     public void onBackPressed() {
         if (confirmSaveContainer.getVisibility() == View.VISIBLE) {
-            hideSaveConfimation();
+            hideSaveConfirmation();
         } else {
             dismiss();
         }
@@ -211,7 +211,7 @@ public class SearchActivity extends Activity {
     }
 
     @OnClick(R.id.results_scrim)
-    protected void hideSaveConfimation() {
+    protected void hideSaveConfirmation() {
         if (confirmSaveContainer.getVisibility() == View.VISIBLE) {
             TransitionManager.beginDelayedTransition(
                     resultsContainer, getTransition(R.transition.search_hide_confirm));
@@ -219,6 +219,68 @@ public class SearchActivity extends Activity {
             resultsScrim.setVisibility(View.GONE);
             fab.setVisibility(results.getVisibility());
         }
+    }
+
+    @OnClick({ R.id.save_dribbble, R.id.save_designer_news })
+    protected void toggleSaveCheck(CheckedTextView ctv) {
+        ctv.toggle();
+    }
+
+    void clearResults() {
+        TransitionManager.beginDelayedTransition(container, getTransition(R.transition.auto));
+        adapter.clear();
+        dataManager.clear();
+        results.setVisibility(View.GONE);
+        progress.setVisibility(View.GONE);
+        fab.setVisibility(View.GONE);
+        confirmSaveContainer.setVisibility(View.GONE);
+        resultsScrim.setVisibility(View.GONE);
+        setNoResultsVisibility(View.GONE);
+    }
+
+    void setNoResultsVisibility(int visibility) {
+        if (visibility == View.VISIBLE) {
+            if (noResults == null) {
+                noResults = (TextView) ((ViewStub)
+                        findViewById(R.id.stub_no_search_results)).inflate();
+                noResults.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        searchView.setQuery("", false);
+                        searchView.requestFocus();
+                        ImeUtils.showIme(searchView);
+                    }
+                });
+            }
+            String message = String.format(
+                    getString(R.string.no_search_results), searchView.getQuery().toString());
+            SpannableStringBuilder ssb = new SpannableStringBuilder(message);
+            ssb.setSpan(new StyleSpan(Typeface.ITALIC),
+                    message.indexOf('“') + 1,
+                    message.length() - 1,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            noResults.setText(ssb);
+        }
+        if (noResults != null) {
+            noResults.setVisibility(visibility);
+        }
+    }
+
+    void searchFor(String query) {
+        clearResults();
+        progress.setVisibility(View.VISIBLE);
+        ImeUtils.hideIme(searchView);
+        searchView.clearFocus();
+        dataManager.searchFor(query);
+    }
+
+    Transition getTransition(@TransitionRes int transitionId) {
+        Transition transition = transitions.get(transitionId);
+        if (transition == null) {
+            transition = TransitionInflater.from(this).inflateTransition(transitionId);
+            transitions.put(transitionId, transition);
+        }
+        return transition;
     }
 
     private void setupSearchView() {
@@ -248,7 +310,7 @@ public class SearchActivity extends Activity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus && confirmSaveContainer.getVisibility() == View.VISIBLE) {
-                    hideSaveConfimation();
+                    hideSaveConfirmation();
                 }
             }
         });
@@ -278,60 +340,4 @@ public class SearchActivity extends Activity {
         });
     }
 
-    private void clearResults() {
-        TransitionManager.beginDelayedTransition(container, getTransition(R.transition.auto));
-        adapter.clear();
-        dataManager.clear();
-        results.setVisibility(View.GONE);
-        progress.setVisibility(View.GONE);
-        fab.setVisibility(View.GONE);
-        confirmSaveContainer.setVisibility(View.GONE);
-        resultsScrim.setVisibility(View.GONE);
-        setNoResultsVisibility(View.GONE);
-    }
-
-    private void setNoResultsVisibility(int visibility) {
-        if (visibility == View.VISIBLE) {
-            if (noResults == null) {
-                noResults = (TextView) ((ViewStub)
-                        findViewById(R.id.stub_no_search_results)).inflate();
-                noResults.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        searchView.setQuery("", false);
-                        searchView.requestFocus();
-                        ImeUtils.showIme(searchView);
-                    }
-                });
-            }
-            String message = String.format(
-                    getString(R.string.no_search_results), searchView.getQuery().toString());
-            SpannableStringBuilder ssb = new SpannableStringBuilder(message);
-            ssb.setSpan(new StyleSpan(Typeface.ITALIC),
-                    message.indexOf('“') + 1,
-                    message.length() - 1,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            noResults.setText(ssb);
-        }
-        if (noResults != null) {
-            noResults.setVisibility(visibility);
-        }
-    }
-
-    private void searchFor(String query) {
-        clearResults();
-        progress.setVisibility(View.VISIBLE);
-        ImeUtils.hideIme(searchView);
-        searchView.clearFocus();
-        dataManager.searchFor(query);
-    }
-
-    private Transition getTransition(@TransitionRes int transitionId) {
-        Transition transition = transitions.get(transitionId);
-        if (transition == null) {
-            transition = TransitionInflater.from(this).inflateTransition(transitionId);
-            transitions.put(transitionId, transition);
-        }
-        return transition;
-    }
 }
