@@ -61,15 +61,15 @@ public class DenvelopingConverter extends Converter.Factory {
                     jsonReader.beginObject();
                     while (jsonReader.hasNext()) {
                         if (payloadName.equals(jsonReader.nextName())) {
-                            try {
-                                return adapter.read(jsonReader);
-                            } finally {
-                                body.close();
-                            }
+                            return adapter.read(jsonReader);
+                        } else {
+                            jsonReader.skipValue();
                         }
                     }
+                    return null;
+                } finally {
+                    body.close();
                 }
-                return null;
             }
         };
     }
