@@ -22,8 +22,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import java.util.List;
+
 import io.plaidapp.data.api.designernews.model.NewStoryRequest;
-import io.plaidapp.data.api.designernews.model.StoriesResponse;
 import io.plaidapp.data.api.designernews.model.Story;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import retrofit2.Call;
@@ -72,16 +73,16 @@ public class PostStoryService extends IntentService {
             }
             if (storyToPost == null) return;
 
-            final Call<StoriesResponse> postStoryCall =
+            final Call<List<Story>> postStoryCall =
                     designerNewsPrefs.getApi().postStory(storyToPost);
             try {
-                final Response<StoriesResponse> response = postStoryCall.execute();
-                final StoriesResponse story = response.body();
-                if (story != null && story.stories != null && !story.stories.isEmpty()) {
+                final Response<List<Story>> response = postStoryCall.execute();
+                final List<Story> stories = response.body();
+                if (stories != null && !stories.isEmpty()) {
                     if (broadcastResult) {
                         final Intent success = new Intent(BROADCAST_ACTION_SUCCESS);
                         // API doesn't fill in author details so add them here
-                        final Story returnedStory = story.stories.get(0);
+                        final Story returnedStory = stories.get(0);
                         final Story.Builder builder = Story.Builder.from(returnedStory)
                                 .setUserId(designerNewsPrefs.getUserId())
                                 .setUserDisplayName(designerNewsPrefs.getUserName())
