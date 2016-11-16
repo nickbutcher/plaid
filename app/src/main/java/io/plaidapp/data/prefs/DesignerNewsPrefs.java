@@ -21,8 +21,11 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+
 import io.plaidapp.BuildConfig;
 import io.plaidapp.data.api.ClientAuthInterceptor;
+import io.plaidapp.data.api.DenvelopingConverter;
 import io.plaidapp.data.api.designernews.DesignerNewsService;
 import io.plaidapp.data.api.designernews.model.User;
 import okhttp3.OkHttpClient;
@@ -143,10 +146,12 @@ public class DesignerNewsPrefs {
                 .addInterceptor(
                         new ClientAuthInterceptor(accessToken, BuildConfig.DESIGNER_NEWS_CLIENT_ID))
                 .build();
+        final Gson gson = new Gson();
         api = new Retrofit.Builder()
                 .baseUrl(DesignerNewsService.ENDPOINT)
                 .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(new DenvelopingConverter(gson))
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(DesignerNewsService.class);
     }
