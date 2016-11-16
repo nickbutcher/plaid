@@ -85,7 +85,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.3.0'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'com.squareup.okhttp3:okhttp:3.4.2'
     compile 'org.jsoup:jsoup:1.10.1'
     compile project(':bypass')
 }
