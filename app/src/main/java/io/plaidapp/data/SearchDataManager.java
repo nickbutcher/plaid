@@ -21,7 +21,6 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.plaidapp.data.api.designernews.model.StoriesResponse;
 import io.plaidapp.data.api.designernews.model.Story;
 import io.plaidapp.data.api.dribbble.DribbbleSearchService;
 import io.plaidapp.data.api.dribbble.model.Shot;
@@ -83,14 +82,13 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
 
     private void searchDesignerNews(final String query, final int resultsPage) {
         loadStarted();
-        final Call<StoriesResponse> dnSearchCall = getDesignerNewsApi().search(query, resultsPage);
-        dnSearchCall.enqueue(new Callback<StoriesResponse>() {
+        final Call<List<Story>> dnSearchCall = getDesignerNewsApi().search(query, resultsPage);
+        dnSearchCall.enqueue(new Callback<List<Story>>() {
             @Override
-            public void onResponse(Call<StoriesResponse> call, Response<StoriesResponse> response) {
+            public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
                 if (response.isSuccessful()) {
                     loadFinished();
-                    final List<Story> stories =
-                            response.body() != null ? response.body().stories : null;
+                    List<Story> stories = response.body();
                     if (stories != null) {
                         setPage(stories, resultsPage);
                         setDataSource(stories,
@@ -104,7 +102,7 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
             }
 
             @Override
-            public void onFailure(Call<StoriesResponse> call, Throwable t) {
+            public void onFailure(Call<List<Story>> call, Throwable t) {
                 failure(dnSearchCall);
             }
         });
