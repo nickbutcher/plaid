@@ -22,6 +22,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import java.util.List;
 
 import io.plaidapp.BuildConfig;
 import io.plaidapp.data.api.AuthInterceptor;
+import io.plaidapp.data.api.DenvelopingConverter;
 import io.plaidapp.data.api.dribbble.DribbbleService;
 import io.plaidapp.data.api.dribbble.model.User;
 import okhttp3.OkHttpClient;
@@ -219,14 +221,14 @@ public class DribbblePrefs {
         final OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new AuthInterceptor(getAccessToken()))
                 .build();
+        final Gson gson = new GsonBuilder()
+                .setDateFormat(DribbbleService.DATE_FORMAT)
+                .create();
         api = new Retrofit.Builder()
                 .baseUrl(DribbbleService.ENDPOINT)
                 .client(client)
-                .addConverterFactory(
-                        GsonConverterFactory.create(
-                                new GsonBuilder()
-                                        .setDateFormat(DribbbleService.DATE_FORMAT)
-                                        .create()))
+                .addConverterFactory(new DenvelopingConverter(gson))
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create((DribbbleService.class));
     }

@@ -66,7 +66,6 @@ import io.plaidapp.BuildConfig;
 import io.plaidapp.R;
 import io.plaidapp.data.api.designernews.model.AccessToken;
 import io.plaidapp.data.api.designernews.model.User;
-import io.plaidapp.data.api.designernews.model.UserResponse;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
@@ -295,11 +294,11 @@ public class DesignerNewsLogin extends Activity {
     }
 
     private void showLoggedInUser() {
-        final Call<UserResponse> authedUser = designerNewsPrefs.getApi().getAuthedUser();
-        authedUser.enqueue(new Callback<UserResponse>() {
+        final Call<User> authedUser = designerNewsPrefs.getApi().getAuthedUser();
+        authedUser.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                final User user = response.body().user;
+            public void onResponse(Call<User> call, Response<User> response) {
+                final User user = response.body();
                 designerNewsPrefs.setLoggedInUser(user);
                 final Toast confirmLogin = new Toast(getApplicationContext());
                 final View v = LayoutInflater.from(DesignerNewsLogin.this).inflate(R.layout
@@ -322,7 +321,7 @@ public class DesignerNewsLogin extends Activity {
             }
 
             @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 Log.e(getClass().getCanonicalName(), t.getMessage(), t);
             }
         });

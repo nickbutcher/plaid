@@ -21,7 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import io.plaidapp.data.api.designernews.model.StoryResponse;
+import io.plaidapp.data.api.designernews.model.Story;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -47,23 +47,23 @@ public class UpvoteStoryService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_UPVOTE.equals(action)) {
-                handleActionUpvote(intent.getLongExtra(EXTRA_STORY_ID, 0l));
+                handleActionUpvote(intent.getLongExtra(EXTRA_STORY_ID, 0L));
             }
         }
     }
 
     private void handleActionUpvote(long storyId) {
-        if (storyId == 0l) return;
+        if (storyId == 0L) return;
         final DesignerNewsPrefs designerNewsPrefs = DesignerNewsPrefs.get(this);
         if (!designerNewsPrefs.isLoggedIn()) {
             // TODO prompt for login
             return;
         }
 
-        final Call<StoryResponse> upvoteStoryCall = designerNewsPrefs.getApi().upvoteStory(storyId);
+        final Call<Story> upvoteStoryCall = designerNewsPrefs.getApi().upvoteStory(storyId);
         try {
-            final Response<StoryResponse> response = upvoteStoryCall.execute();
-            final int newVotesCount = response.body().story.vote_count;
+            final Response<Story> response = upvoteStoryCall.execute();
+            // int newVotesCount = response.body().vote_count;
             // TODO report success
         } catch (Exception e) {
             // TODO report failure

@@ -16,14 +16,15 @@
 
 package io.plaidapp.data.api.designernews;
 
+import java.util.List;
 import java.util.Map;
 
+import io.plaidapp.data.api.EnvelopePayload;
 import io.plaidapp.data.api.designernews.model.AccessToken;
 import io.plaidapp.data.api.designernews.model.Comment;
 import io.plaidapp.data.api.designernews.model.NewStoryRequest;
-import io.plaidapp.data.api.designernews.model.StoriesResponse;
-import io.plaidapp.data.api.designernews.model.StoryResponse;
-import io.plaidapp.data.api.designernews.model.UserResponse;
+import io.plaidapp.data.api.designernews.model.Story;
+import io.plaidapp.data.api.designernews.model.User;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -45,29 +46,34 @@ public interface DesignerNewsService {
 
     String ENDPOINT = "https://www.designernews.co/";
 
+    @EnvelopePayload("stories")
     @GET("api/v1/stories")
-    Call<StoriesResponse> getTopStories(@Query("page") Integer page);
+    Call<List<Story>> getTopStories(@Query("page") Integer page);
 
+    @EnvelopePayload("stories")
     @GET("api/v1/stories/recent")
-    Call<StoriesResponse> getRecentStories(@Query("page") Integer page);
+    Call<List<Story>> getRecentStories(@Query("page") Integer page);
 
+    @EnvelopePayload("stories")
     @GET("api/v1/stories/search")
-    Call<StoriesResponse> search(@Query("query") String query,
-                                 @Query("page") Integer page);
+    Call<List<Story>> search(@Query("query") String query, @Query("page") Integer page);
 
     @FormUrlEncoded
     @POST("oauth/token")
     Call<AccessToken> login(@FieldMap() Map<String, String> loginParams);
 
+    @EnvelopePayload("user")
     @GET("api/v1/me")
-    Call<UserResponse> getAuthedUser();
+    Call<User> getAuthedUser();
 
+    @EnvelopePayload("story")
     @POST("api/v1/stories/{id}/upvote")
-    Call<StoryResponse> upvoteStory(@Path("id") long storyId);
+    Call<Story> upvoteStory(@Path("id") long storyId);
 
+    @EnvelopePayload("stories")
     @Headers("Content-Type: application/vnd.api+json")
     @POST("api/v2/stories")
-    Call<StoriesResponse> postStory(@Body NewStoryRequest story);
+    Call<List<Story>> postStory(@Body NewStoryRequest story);
 
     @FormUrlEncoded
     @POST("api/v1/stories/{id}/reply")
