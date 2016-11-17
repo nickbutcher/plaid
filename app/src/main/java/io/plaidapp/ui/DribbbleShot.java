@@ -560,6 +560,13 @@ public class DribbbleShot extends Activity {
             // kick off an anim (via animated state list) on the post button. see
             // @drawable/ic_add_comment
             postComment.setActivated(hasFocus);
+
+            // prevent content hovering over image when not pinned.
+            if(hasFocus) {
+                imageView.bringToFront();
+                imageView.setOffset(-imageView.getHeight());
+                imageView.setImmediatePin(true);
+            }
         }
     };
 
