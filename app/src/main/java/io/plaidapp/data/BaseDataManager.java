@@ -19,12 +19,15 @@ package io.plaidapp.data;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import io.plaidapp.BuildConfig;
 import io.plaidapp.data.api.AuthInterceptor;
+import io.plaidapp.data.api.DenvelopingConverter;
 import io.plaidapp.data.api.designernews.DesignerNewsService;
 import io.plaidapp.data.api.dribbble.DribbbleSearchConverter;
 import io.plaidapp.data.api.dribbble.DribbbleSearchService;
@@ -160,10 +163,12 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
         final OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new AuthInterceptor(BuildConfig.PROCUCT_HUNT_DEVELOPER_TOKEN))
                 .build();
+        final Gson gson = new Gson();
         productHuntApi = new Retrofit.Builder()
                 .baseUrl(ProductHuntService.ENDPOINT)
                 .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(new DenvelopingConverter(gson))
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(ProductHuntService.class);
     }

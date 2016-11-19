@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc.
+ * Copyright 2016 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package io.plaidapp.data.api.designernews.model;
+package io.plaidapp.data.api;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Models a response from the Designer News API that returns a single user
+ * An annotation for identifying the payload that we want to extract from an API response wrapped in
+ * an envelope object.
  */
-public class UserResponse {
-
-    public final User user;
-
-    public UserResponse(User user) {
-        this.user = user;
-    }
+@Target(METHOD)
+@Retention(RUNTIME)
+public @interface EnvelopePayload {
+    String value() default "";
 }
