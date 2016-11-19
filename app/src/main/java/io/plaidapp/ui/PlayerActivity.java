@@ -348,6 +348,9 @@ public class PlayerActivity extends Activity {
     @OnClick({R.id.shot_count, R.id.followers_count, R.id.likes_count})
     void playerActionClick(TextView view) {
         ((AnimatedVectorDrawable) view.getCompoundDrawables()[1]).start();
+        
+        if(followerCount < 1) return;
+        
         switch (view.getId()) {
             case R.id.followers_count:
                 PlayerSheet.start(PlayerActivity.this, player);
