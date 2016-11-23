@@ -57,6 +57,7 @@ import io.plaidapp.R;
 import io.plaidapp.data.PlaidItem;
 import io.plaidapp.data.SearchDataManager;
 import io.plaidapp.data.pocket.PocketUtils;
+import io.plaidapp.util.ShortcutHelper;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
 import io.plaidapp.ui.transitions.CircularReveal;
@@ -141,6 +142,7 @@ public class SearchActivity extends Activity {
 
         setupTransitions();
         onNewIntent(getIntent());
+        ShortcutHelper.reportSearchUsed(this);
     }
 
     @Override
