@@ -44,7 +44,7 @@ import butterknife.OnTextChanged;
 import io.plaidapp.R;
 import io.plaidapp.data.api.designernews.PostStoryService;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
-import io.plaidapp.data.prefs.PostShortcutManager;
+import io.plaidapp.util.ShortcutHelper;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.ui.widget.BottomSheet;
@@ -141,7 +141,7 @@ public class PostNewDesignerNewsStory extends Activity {
                 }
             });
         }
-        PostShortcutManager.reportUsed(this);
+        ShortcutHelper.reportPostUsed(this);
     }
 
     @Override
