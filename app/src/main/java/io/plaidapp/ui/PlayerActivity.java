@@ -146,6 +146,7 @@ public class PlayerActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        adapter.updateOnclickStatus();
         draggableFrame.addListener(chromeFader);
     }
 
