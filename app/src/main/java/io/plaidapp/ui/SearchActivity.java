@@ -171,6 +171,12 @@ public class SearchActivity extends Activity {
     }
 
     @Override
+    protected void onResume(){
+        super.onResume();
+        adapter.updateOnclickStatus();
+    }
+
+    @Override
     protected void onDestroy() {
         dataManager.cancelLoading();
         super.onDestroy();
