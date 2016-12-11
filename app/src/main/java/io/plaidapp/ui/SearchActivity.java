@@ -157,12 +157,6 @@ public class SearchActivity extends Activity {
     }
 
     @Override
-    protected void onResume(){
-        super.onResume();
-        adapter.updateOnclickStatus();
-    }
-
-    @Override
     public void onBackPressed() {
         if (confirmSaveContainer.getVisibility() == View.VISIBLE) {
             hideSaveConfirmation();
