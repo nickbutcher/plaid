@@ -751,6 +751,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     }
 
+    /* for updating the status on item click */
     public void updateOnclickStatus(){
         isActivityStarted = false;
     }
