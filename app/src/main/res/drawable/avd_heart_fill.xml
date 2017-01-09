@@ -51,13 +51,25 @@
 
         <aapt:attr name="android:animation">
 
-            <objectAnimator
-                android:propertyName="pathData"
-                android:valueFrom="@string/heart_clip_hidden"
-                android:valueTo="@string/heart_clip_shown"
-                android:valueType="pathType"
-                android:duration="@integer/heart_fill_time"
-                android:interpolator="@android:interpolator/fast_out_slow_in" />
+            <set android:ordering="sequentially">
+
+                <objectAnimator
+                    android:propertyName="pathData"
+                    android:valueFrom="@string/heart_clip_hidden"
+                    android:valueTo="@string/heart_clip_mid"
+                    android:valueType="pathType"
+                    android:duration="160"
+                    android:interpolator="@android:interpolator/fast_out_linear_in" />
+
+                <objectAnimator
+                    android:propertyName="pathData"
+                    android:valueFrom="@string/heart_clip_mid"
+                    android:valueTo="@string/heart_clip_shown"
+                    android:valueType="pathType"
+                    android:duration="120"
+                    android:interpolator="@android:interpolator/linear_out_slow_in" />
+
+            </set>
 
         </aapt:attr>
 
