@@ -242,7 +242,7 @@ public interface DribbbleService {
     })
     @interface ShotTimeframe {}
 
-    // Short sort order
+    // Shot sort order
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({
             SHOT_SORT_COMMENTS,
