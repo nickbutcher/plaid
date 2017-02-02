@@ -121,9 +121,11 @@ public class PlayerActivity extends Activity {
         }
 
         // setup immersive mode i.e. draw behind the system chrome & adjust insets
-        draggableFrame.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        draggableFrame.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         draggableFrame.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
             @Override
             public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {

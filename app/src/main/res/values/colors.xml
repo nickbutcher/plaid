@@ -36,7 +36,9 @@
     <color name="background_card">#ffffff</color>
     <color name="background_dark">#ff333333</color>
     <color name="immersive_bars">#99000000</color>
-    <color name="light_immersive_bars">@color/immersive_bars</color>
+    <color name="light_immersive_bars">#b3eeeeee</color> <!-- 70% grey 200 -->
+    <color name="light_status_bar">@color/immersive_bars</color> <!-- overridden on v23+ -->
+    <color name="light_nav_bar">@color/immersive_bars</color> <!-- overridden on v26+ -->
     <color name="status_bar_back">#ff676767</color> <!-- this is blended with immersive_bars to produce the desired status bar color i.e. background_super_dark -->
     <color name="background_super_dark">#ff292929</color>
     <color name="scrim">#99323232</color>
