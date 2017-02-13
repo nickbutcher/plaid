@@ -20,6 +20,7 @@ import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Outline;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
@@ -117,7 +118,7 @@ public class MorphDrawable extends Drawable {
 
     @Override
     public int getOpacity() {
-        return paint.getAlpha();
+        return paint.getAlpha() == 255 ? PixelFormat.OPAQUE : PixelFormat.TRANSLUCENT;
     }
 
 }

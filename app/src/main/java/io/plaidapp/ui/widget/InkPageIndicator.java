@@ -272,7 +272,8 @@ public class InkPageIndicator extends View implements ViewPager.OnPageChangeList
             case MeasureSpec.AT_MOST:
                 height = Math.min(desiredHeight, MeasureSpec.getSize(heightMeasureSpec));
                 break;
-            default: // MeasureSpec.UNSPECIFIED
+            case MeasureSpec.UNSPECIFIED:
+            default:
                 height = desiredHeight;
                 break;
         }
@@ -286,7 +287,8 @@ public class InkPageIndicator extends View implements ViewPager.OnPageChangeList
             case MeasureSpec.AT_MOST:
                 width = Math.min(desiredWidth, MeasureSpec.getSize(widthMeasureSpec));
                 break;
-            default: // MeasureSpec.UNSPECIFIED
+            case MeasureSpec.UNSPECIFIED:
+            default:
                 width = desiredWidth;
                 break;
         }
