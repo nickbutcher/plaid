@@ -71,6 +71,7 @@ repositories {
 }
 
 ext.supportLibVersion = '25.1.0'
+ext.retrofit2Version = '2.2.0'
 
 dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
@@ -83,8 +84,8 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile "com.squareup.retrofit2:retrofit:${retrofit2Version}"
+    compile "com.squareup.retrofit2:converter-gson:${retrofit2Version}"
     compile 'com.squareup.okhttp3:okhttp:3.4.2'
     compile 'org.jsoup:jsoup:1.10.1'
     compile project(':bypass')

@@ -32,7 +32,7 @@ import retrofit2.Response;
 public abstract class TeamMembersDataManager extends PaginatedDataManager<List<User>> {
 
     private final String teamName;
-    private Call teamMembersCall;
+    private Call<List<User>> teamMembersCall;
 
     public TeamMembersDataManager(Context context, String teamName) {
         super(context);

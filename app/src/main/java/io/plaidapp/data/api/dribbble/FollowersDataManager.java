@@ -32,7 +32,7 @@ import retrofit2.Response;
 public abstract class FollowersDataManager extends PaginatedDataManager<List<Follow>> {
 
     private final long playerId;
-    private Call userFollowersCall;
+    private Call<List<Follow>> userFollowersCall;
 
     public FollowersDataManager(Context context, long playerId) {
         super(context);
