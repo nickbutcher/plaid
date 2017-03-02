@@ -70,11 +70,11 @@ repositories {
     jcenter()
 }
 
-ext.supportLibVersion = '25.1.0'
+ext.supportLibVersion = '25.2.0'
 ext.retrofit2Version = '2.2.0'
 
 dependencies {
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0'
     compile "com.android.support:customtabs:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:palette-v7:${supportLibVersion}"
