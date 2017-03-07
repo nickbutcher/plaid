@@ -89,7 +89,7 @@ import io.plaidapp.ui.widget.CollapsingTitleLayout;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import io.plaidapp.util.HtmlUtils;
-import io.plaidapp.util.ImageUtils;
+import io.plaidapp.util.DrawableUtils;
 import io.plaidapp.util.ImeUtils;
 import io.plaidapp.util.ViewUtils;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
@@ -264,7 +264,7 @@ public class DesignerNewsStory extends Activity {
         PendingIntent pendingIntent = PendingIntent.getService(context, 0, upvoteStory, 0);
         return new CustomTabsIntent.Builder(session)
                 .setToolbarColor(ContextCompat.getColor(context, R.color.designer_news))
-                .setActionButton(ImageUtils.vectorToBitmap(context,
+                .setActionButton(DrawableUtils.drawableToBitmap(context,
                                 R.drawable.ic_upvote_filled_24dp_white),
                         context.getString(R.string.upvote_story),
                         pendingIntent,
