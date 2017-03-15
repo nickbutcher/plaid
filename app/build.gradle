@@ -70,7 +70,7 @@ repositories {
     jcenter()
 }
 
-ext.supportLibVersion = '25.2.0'
+ext.supportLibVersion = '25.3.0'
 ext.retrofit2Version = '2.2.0'
 
 dependencies {
