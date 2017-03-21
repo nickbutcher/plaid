@@ -38,7 +38,7 @@ public abstract class PlayerShotsDataManager extends PaginatedDataManager<List<S
 
     private final long userId;
     private final boolean isTeam;
-    private Call loadShotsCall;
+    private Call<List<Shot>> loadShotsCall;
 
     public PlayerShotsDataManager(Context context, User player) {
         super(context);
