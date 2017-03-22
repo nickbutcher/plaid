@@ -68,8 +68,8 @@
             android:paddingTop="@dimen/avatar_margin"
             android:paddingEnd="@dimen/padding_normal"
             android:paddingBottom="@dimen/spacing_normal"
-            tools:text="Nick Butcher"
-            style="@style/Widget.Plaid.PlayerTitle" />
+            android:textAppearance="@style/TextAppearance.Author.Title"
+            tools:text="Nick Butcher" />
 
         <Button
             android:id="@+id/follow"
@@ -93,16 +93,16 @@
             android:id="@+id/player_bio"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/follow"
-            app:layout_constraintEnd_toEndOf="parent"
             android:paddingStart="@dimen/padding_normal"
             android:paddingTop="@dimen/padding_normal"
             android:paddingEnd="@dimen/padding_normal"
-            android:textColorLink="@color/dribbble_links"
+            android:textAppearance="@style/TextAppearance.DribbbleShotDescription"
             android:textColorHighlight="@color/dribbble_link_highlight"
-            tools:text="Designer &amp; developer at Google."
-            style="@style/Widget.Plaid.DribbbleShotDescription" />
+            android:textColorLink="@color/dribbble_links"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/follow"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Designer &amp; developer at Google." />
 
         <io.plaidapp.ui.widget.BaselineGridTextView
             android:id="@+id/shot_count"

@@ -16,7 +16,7 @@ public class TextColorSpan extends ForegroundColorSpan {
 
     private @ColorInt int color;
 
-    public TextColorSpan(int color) {
+    public TextColorSpan(@ColorInt int color) {
         super(color);
         this.color = color;
     }

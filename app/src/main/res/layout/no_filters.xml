@@ -23,6 +23,6 @@
     android:padding="@dimen/padding_normal"
     android:paddingTop="@dimen/padding_normal"
     android:textAlignment="center"
+    android:textAppearance="@style/TextAppearance.EmptyText"
     android:elevation="1dp"
-    android:background="?android:selectableItemBackground"
-    style="@style/Widget.Plaid.EmptyText" />
+    android:background="?android:selectableItemBackground" />

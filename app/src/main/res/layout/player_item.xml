@@ -65,15 +65,15 @@
         android:id="@+id/player_bio"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/player_avatar"
-        android:layout_below="@id/player_name"
         android:layout_alignParentEnd="true"
+        android:layout_below="@id/player_name"
+        android:layout_toEndOf="@id/player_avatar"
         android:layout_marginTop="@dimen/spacing_micro"
-        android:maxLines="2"
         android:ellipsize="end"
-        android:textColorLink="@color/dribbble_links"
+        android:maxLines="2"
+        android:textAppearance="@style/TextAppearance.Comment"
         android:textColorHighlight="@color/dribbble_link_highlight"
-        tools:text="Blah blah blah blah blah blah blah blah blah blah blah blah blah"
-        style="@style/Widget.Plaid.Comment" />
+        android:textColorLink="@color/dribbble_links"
+        tools:text="Blah blah blah blah blah blah blah blah blah blah blah blah blah" />
 
 </io.plaidapp.ui.widget.ForegroundRelativeLayout>

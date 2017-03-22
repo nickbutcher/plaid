@@ -31,14 +31,14 @@
         android:id="@+id/story_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/padding_normal"
         android:layout_marginTop="@dimen/padding_normal"
+        android:paddingStart="@dimen/padding_normal"
         android:paddingEnd="@dimen/padding_normal"
-        android:textColorLink="@color/designer_news_links"
+        android:textAppearance="@style/TextAppearance.DesignerNewsDescription"
         android:textColorHighlight="@color/designer_news_link_highlight"
+        android:textColorLink="@color/designer_news_links"
         android:breakStrategy="high_quality"
-        tools:text="Blah blah blah blah blah blah blah blah blah blah blah"
-        style="@style/Widget.Plaid.DesignerNewsDescription" />
+        tools:text="Blah blah blah blah blah blah blah blah blah blah blah" />
 
     <LinearLayout
         android:layout_width="match_parent"

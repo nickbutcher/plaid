@@ -79,6 +79,7 @@ import io.plaidapp.data.prefs.SourceManager;
 import io.plaidapp.ui.recyclerview.Divided;
 import io.plaidapp.ui.transitions.ReflowText;
 import io.plaidapp.ui.widget.BadgedFourThreeImageView;
+import io.plaidapp.ui.widget.BaselineGridTextView;
 import io.plaidapp.util.ObservableColorMatrix;
 import io.plaidapp.util.TransitionUtils;
 import io.plaidapp.util.ViewUtils;
@@ -709,7 +710,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     static class DesignerNewsStoryHolder extends RecyclerView.ViewHolder implements Divided {
 
-        @BindView(R.id.story_title) TextView title;
+        @BindView(R.id.story_title) BaselineGridTextView title;
         @BindView(R.id.story_comments) TextView comments;
         @BindView(R.id.pocket) ImageButton pocket;
 

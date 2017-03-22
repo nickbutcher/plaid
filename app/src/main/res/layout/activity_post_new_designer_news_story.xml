@@ -38,15 +38,15 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/background_light"
+            android:gravity="start|center_vertical"
+            android:minHeight="?android:actionBarSize"
             android:paddingStart="@dimen/padding_normal"
             android:paddingTop="@dimen/spacing_micro"
             android:paddingEnd="@dimen/padding_normal"
             android:paddingBottom="@dimen/spacing_micro"
-            android:gravity="start|center_vertical"
-            android:minHeight="?android:actionBarSize"
             android:text="@string/new_story_title"
-            android:background="@color/background_light"
-            style="@style/Widget.Plaid.DialogTitle" />
+            android:textAppearance="@style/TextAppearance.DialogTitle" />
 
         <io.plaidapp.ui.widget.ObservableScrollView
             android:id="@+id/scroll_container"
@@ -67,7 +67,7 @@
                     android:paddingStart="@dimen/padding_normal"
                     android:paddingEnd="@dimen/padding_normal"
                     android:text="@string/new_story_instructions"
-                    style="@style/Widget.Plaid.Subhead" />
+                    android:textAppearance="@style/TextAppearance.Subhead" />
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/new_story_title_label"
@@ -94,7 +94,7 @@
                     android:paddingStart="@dimen/padding_normal"
                     android:paddingEnd="@dimen/padding_normal"
                     android:text="@string/new_story_link_or_comment"
-                    style="@style/Widget.Plaid.Subhead" />
+                    android:textAppearance="@style/TextAppearance.Subhead" />
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/new_story_url_label"

@@ -48,9 +48,9 @@
             android:paddingTop="24dp"
             android:paddingEnd="@dimen/padding_normal"
             android:paddingBottom="@dimen/spacing_large"
-            android:textColorLink="@color/plaid_links"
+            android:textAppearance="@style/TextAppearance.About"
             android:textColorHighlight="?android:colorPrimary"
-            style="@style/Widget.Plaid.About" />
+            android:textColorLink="@color/plaid_links" />
 
     </LinearLayout>
 

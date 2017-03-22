@@ -33,23 +33,23 @@
         android:paddingBottom="@dimen/padding_normal"
         android:background="@color/light_grey"
         android:breakStrategy="simple"
+        android:textAppearance="@style/TextAppearance.DribbbleShotTitle"
         app:fabGravity="bottom|end"
         app:fabOverlayHeight="@dimen/half_fab_plus_single_padding"
         app:fabOverlayWidth="@dimen/fab_plus_single_padding"
-        tools:text="Dribbble shot title"
-        style="@style/Widget.Plaid.DribbbleShotTitle" />
+        tools:text="Dribbble shot title" />
 
     <io.plaidapp.ui.widget.FabOverlapTextView
         android:id="@+id/shot_description"
         android:layout_columnSpan="3"
+        android:breakStrategy="high_quality"
+        android:paddingEnd="@dimen/padding_normal"
         android:paddingStart="@dimen/padding_normal"
         android:paddingTop="@dimen/padding_normal"
-        android:paddingEnd="@dimen/padding_normal"
-        android:breakStrategy="high_quality"
+        android:textAppearance="@style/TextAppearance.DribbbleShotDescription"
         app:fabGravity="top|end"
         app:fabOverlayHeight="@dimen/half_fab_plus_single_padding"
         app:fabOverlayWidth="@dimen/fab_plus_single_padding"
-        tools:text="Check out this sweet eye candy!"
-        style="@style/Widget.Plaid.DribbbleShotDescription" />
+        tools:text="Check out this sweet eye candy!" />
 
 </merge>
