@@ -25,5 +25,5 @@
     android:layout_marginBottom="@dimen/spacing_normal"
     android:padding="@dimen/padding_normal"
     android:text="@string/about_libs_intro"
-    style="@style/Widget.Plaid.About"
+    android:textAppearance="@style/TextAppearance.About"
     tools:showIn="@layout/about_libs" />

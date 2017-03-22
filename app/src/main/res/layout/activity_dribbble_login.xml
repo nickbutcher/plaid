@@ -41,10 +41,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:gravity="center"
             android:layout_marginBottom="@dimen/spacing_normal"
+            android:gravity="center"
             android:text="@string/need_login"
-            style="@style/Widget.Plaid.DialogText" />
+            android:textAppearance="@style/TextAppearance.DialogContent" />
 
         <Button
             android:id="@+id/login"

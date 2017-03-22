@@ -68,13 +68,13 @@
         android:id="@+id/comment_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_toEndOf="@id/player_avatar"
         android:layout_below="@id/comment_author"
-        android:layout_alignParentEnd="true"
-        android:textColorLink="@color/dribbble_links"
+        android:textAppearance="@style/TextAppearance.Comment"
         android:textColorHighlight="@color/dribbble_link_highlight"
-        tools:text="Blah blah blah blah blah blah blah blah blah blah blah blah blah"
-        style="@style/Widget.Plaid.Comment" />
+        android:textColorLink="@color/dribbble_links"
+        tools:text="Blah blah blah blah blah blah blah blah blah blah blah blah blah" />
 
     <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/comment_likes_count"

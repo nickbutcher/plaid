@@ -31,15 +31,14 @@
 
         <!-- standard text appearance attribs -->
         <attr name="android:text" />
-        <attr name="android:textSize" />
-        <attr name="android:textColor" />
-        <attr name="android:letterSpacing" />
-        <attr name="android:fontFeatureSettings" />
         <attr name="android:textAppearance" />
         <attr name="android:breakStrategy" />
 
-        <!-- custom font support -->
-        <attr name="font" />
+        <attr name="android:textSize" />
+        <attr name="android:textColor" />
+        <attr name="android:letterSpacing" />
+        <attr name="android:fontFamily" />
+        <attr name="android:fontFeatureSettings" />
 
         <!-- 4dp grid alignment -->
         <attr name="lineHeightHint" />

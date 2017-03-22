@@ -23,6 +23,6 @@
     android:padding="@dimen/spacing_huge"
     android:paddingTop="@dimen/spacing_huge"
     android:textAlignment="center"
+    android:textAppearance="@style/TextAppearance.EmptyText"
     android:drawableTop="@drawable/ic_search_24dp"
-    android:drawablePadding="@dimen/spacing_micro"
-    style="@style/Widget.Plaid.EmptyText" />
+    android:drawablePadding="@dimen/spacing_micro" />

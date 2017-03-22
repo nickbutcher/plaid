@@ -45,10 +45,10 @@
             android:id="@+id/dialog_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_normal"
             android:layout_marginBottom="@dimen/dialog_title_spacing"
+            android:layout_marginStart="@dimen/spacing_normal"
             android:text="@string/designer_news_login"
-            style="@style/Widget.Plaid.DialogTitle" />
+            android:textAppearance="@style/TextAppearance.DialogTitle" />
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/username_float_label"
