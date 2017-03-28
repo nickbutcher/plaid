@@ -228,6 +228,7 @@ public class DesignerNewsLogin extends Activity {
         authedUser.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
+                if (!response.isSuccessful()) return;
                 final User user = response.body();
                 designerNewsPrefs.setLoggedInUser(user);
                 final Toast confirmLogin = new Toast(getApplicationContext());
