@@ -136,6 +136,18 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.SearchShortcutConfigureActivity"
+            android:theme="@style/Plaid.Translucent"
+            android:icon="@drawable/ic_shortcut_search"
+            android:label="@string/search"
+            android:excludeFromRecents="true"
+            android:taskAffinity="">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".data.api.designernews.PostStoryService"
             android:exported="false" />
