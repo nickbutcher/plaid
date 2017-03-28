@@ -210,17 +210,6 @@ public class DesignerNewsLogin extends Activity {
         maybeShowAccounts();
     }
 
-    private TextWatcher loginFieldWatcher = new TextWatcher() {
-        @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-        @Override public void onTextChanged(CharSequence s, int start, int before, int count) { }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            login.setEnabled(isLoginValid());
-        }
-    };
-
     void maybeShowAccounts() {
         if (username.hasFocus()
                 && username.isAttachedToWindow()
@@ -233,6 +222,57 @@ public class DesignerNewsLogin extends Activity {
     boolean isLoginValid() {
         return username.length() > 0 && password.length() > 0;
     }
+
+    void showLoggedInUser() {
+        final Call<User> authedUser = designerNewsPrefs.getApi().getAuthedUser();
+        authedUser.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                final User user = response.body();
+                designerNewsPrefs.setLoggedInUser(user);
+                final Toast confirmLogin = new Toast(getApplicationContext());
+                final View v = LayoutInflater.from(DesignerNewsLogin.this).inflate(R.layout
+                        .toast_logged_in_confirmation, null, false);
+                ((TextView) v.findViewById(R.id.name)).setText(user.display_name.toLowerCase());
+                // need to use app context here as the activity will be destroyed shortly
+                Glide.with(getApplicationContext())
+                        .load(user.portrait_url)
+                        .placeholder(R.drawable.avatar_placeholder)
+                        .transform(new CircleTransform(getApplicationContext()))
+                        .into((ImageView) v.findViewById(R.id.avatar));
+                v.findViewById(R.id.scrim).setBackground(ScrimUtil
+                        .makeCubicGradientScrimDrawable(
+                                ContextCompat.getColor(DesignerNewsLogin.this, R.color.scrim),
+                                5, Gravity.BOTTOM));
+                confirmLogin.setView(v);
+                confirmLogin.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                confirmLogin.setDuration(Toast.LENGTH_LONG);
+                confirmLogin.show();
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e(getClass().getCanonicalName(), t.getMessage(), t);
+            }
+        });
+    }
+
+    void showLoginFailed() {
+        Snackbar.make(container, "Log in failed", Snackbar.LENGTH_SHORT).show();
+        showLogin();
+        password.requestFocus();
+    }
+
+    private TextWatcher loginFieldWatcher = new TextWatcher() {
+        @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+        @Override public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            login.setEnabled(isLoginValid());
+        }
+    };
 
     private void showLoading() {
         TransitionManager.beginDelayedTransition(container);
@@ -277,12 +317,6 @@ public class DesignerNewsLogin extends Activity {
         });
     }
 
-    void showLoginFailed() {
-        Snackbar.make(container, "Log in failed", Snackbar.LENGTH_SHORT).show();
-        showLogin();
-        password.requestFocus();
-    }
-
     private Map<String, String> buildLoginParams(@NonNull String username, @NonNull String password) {
         final Map<String, String> loginParams = new HashMap<>(5);
         loginParams.put("client_id", BuildConfig.DESIGNER_NEWS_CLIENT_ID);
@@ -291,40 +325,6 @@ public class DesignerNewsLogin extends Activity {
         loginParams.put("username", username);
         loginParams.put("password", password);
         return loginParams;
-    }
-
-    void showLoggedInUser() {
-        final Call<User> authedUser = designerNewsPrefs.getApi().getAuthedUser();
-        authedUser.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                final User user = response.body();
-                designerNewsPrefs.setLoggedInUser(user);
-                final Toast confirmLogin = new Toast(getApplicationContext());
-                final View v = LayoutInflater.from(DesignerNewsLogin.this).inflate(R.layout
-                        .toast_logged_in_confirmation, null, false);
-                ((TextView) v.findViewById(R.id.name)).setText(user.display_name.toLowerCase());
-                // need to use app context here as the activity will be destroyed shortly
-                Glide.with(getApplicationContext())
-                        .load(user.portrait_url)
-                        .placeholder(R.drawable.avatar_placeholder)
-                        .transform(new CircleTransform(getApplicationContext()))
-                        .into((ImageView) v.findViewById(R.id.avatar));
-                v.findViewById(R.id.scrim).setBackground(ScrimUtil
-                        .makeCubicGradientScrimDrawable(
-                                ContextCompat.getColor(DesignerNewsLogin.this, R.color.scrim),
-                                5, Gravity.BOTTOM));
-                confirmLogin.setView(v);
-                confirmLogin.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
-                confirmLogin.setDuration(Toast.LENGTH_LONG);
-                confirmLogin.show();
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Log.e(getClass().getCanonicalName(), t.getMessage(), t);
-            }
-        });
     }
 
     private void setupAccountAutocomplete() {
