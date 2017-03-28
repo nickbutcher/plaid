@@ -92,7 +92,7 @@ public class DesignerNewsLogin extends Activity {
     @BindView(R.id.signup) Button signup;
     @BindView(R.id.login) Button login;
     @BindView(R.id.loading) ProgressBar loading;
-    private DesignerNewsPrefs designerNewsPrefs;
+    DesignerNewsPrefs designerNewsPrefs;
     private boolean shouldPromptForPermission = false;
 
     @Override
@@ -195,7 +195,7 @@ public class DesignerNewsLogin extends Activity {
      * (if there is one). Otherwise we may show the permissions dialog or account dropdown
      * during the enter animation which is jarring.
      */
-    private void finishSetup() {
+    void finishSetup() {
         if (shouldPromptForPermission) {
             requestPermissions(new String[]{ Manifest.permission.GET_ACCOUNTS },
                     PERMISSIONS_REQUEST_GET_ACCOUNTS);
@@ -221,7 +221,7 @@ public class DesignerNewsLogin extends Activity {
         }
     };
 
-    private void maybeShowAccounts() {
+    void maybeShowAccounts() {
         if (username.hasFocus()
                 && username.isAttachedToWindow()
                 && username.getAdapter() != null
@@ -230,7 +230,7 @@ public class DesignerNewsLogin extends Activity {
         }
     }
 
-    private boolean isLoginValid() {
+    boolean isLoginValid() {
         return username.length() > 0 && password.length() > 0;
     }
 
@@ -277,7 +277,7 @@ public class DesignerNewsLogin extends Activity {
         });
     }
 
-    private void showLoginFailed() {
+    void showLoginFailed() {
         Snackbar.make(container, "Log in failed", Snackbar.LENGTH_SHORT).show();
         showLogin();
         password.requestFocus();
@@ -293,7 +293,7 @@ public class DesignerNewsLogin extends Activity {
         return loginParams;
     }
 
-    private void showLoggedInUser() {
+    void showLoggedInUser() {
         final Call<User> authedUser = designerNewsPrefs.getApi().getAuthedUser();
         authedUser.enqueue(new Callback<User>() {
             @Override
