@@ -87,7 +87,7 @@
         android:layout_alignParentEnd="true"
         android:layout_below="@id/comment_text"
         android:textColor="@color/dark_icon"
-        android:text="0"
+        android:text="@string/comment_likes_count"
         android:background="?android:selectableItemBackgroundBorderless"
         android:visibility="gone"  />
 
