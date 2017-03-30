@@ -82,6 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_micro"
             app:hintTextAppearance="@style/TextAppearance.FloatLabelHint"
+            app:passwordToggleEnabled="true"
             app:passwordToggleDrawable="@drawable/asl_password_visibility"
             app:passwordToggleTint="?colorControlNormal">
 

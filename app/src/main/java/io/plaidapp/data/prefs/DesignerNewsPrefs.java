@@ -18,12 +18,17 @@ package io.plaidapp.data.prefs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
+
+import com.google.gson.Gson;
 
 import io.plaidapp.BuildConfig;
 import io.plaidapp.data.api.ClientAuthInterceptor;
+import io.plaidapp.data.api.DenvelopingConverter;
 import io.plaidapp.data.api.designernews.DesignerNewsService;
 import io.plaidapp.data.api.designernews.model.User;
+import io.plaidapp.util.ShortcutHelper;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -74,12 +79,13 @@ public class DesignerNewsPrefs {
         return isLoggedIn;
     }
 
-    public void setAccessToken(String accessToken) {
+    public void setAccessToken(@NonNull Context context, String accessToken) {
         if (!TextUtils.isEmpty(accessToken)) {
             this.accessToken = accessToken;
             isLoggedIn = true;
             prefs.edit().putString(KEY_ACCESS_TOKEN, accessToken).apply();
             createApi();
+            ShortcutHelper.enablePostShortcut(context);
         }
     }
 
@@ -116,7 +122,7 @@ public class DesignerNewsPrefs {
                 .build();
     }
 
-    public void logout() {
+    public void logout(@NonNull Context context) {
         isLoggedIn = false;
         accessToken = null;
         username = null;
@@ -128,6 +134,7 @@ public class DesignerNewsPrefs {
         editor.putString(KEY_USER_AVATAR, null);
         editor.apply();
         createApi();
+        ShortcutHelper.disablePostShortcut(context);
     }
 
     public DesignerNewsService getApi() {
@@ -140,10 +147,12 @@ public class DesignerNewsPrefs {
                 .addInterceptor(
                         new ClientAuthInterceptor(accessToken, BuildConfig.DESIGNER_NEWS_CLIENT_ID))
                 .build();
+        final Gson gson = new Gson();
         api = new Retrofit.Builder()
                 .baseUrl(DesignerNewsService.ENDPOINT)
                 .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(new DenvelopingConverter(gson))
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(DesignerNewsService.class);
     }

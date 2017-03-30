@@ -39,7 +39,7 @@
         android:propertyName="strokeWidth"
         android:valueFrom="0"
         android:valueTo="4"
-        android:duration="4" />
+        android:duration="0" />
 
     <!-- decrease the trim end i.e trace out the circle & tick shapes -->
     <objectAnimator

@@ -20,10 +20,6 @@
     android:installLocation="auto"
     package="io.plaidapp">
 
-    <uses-sdk
-        android:minSdkVersion="21"
-        android:targetSdkVersion="23" />
-
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -31,8 +27,10 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:extractNativeLibs="false"
         android:theme="@style/Plaid">
 
         <activity
@@ -41,8 +39,8 @@
             android:theme="@style/Plaid.Home"
             android:exported="true" />
 
-        <!-- use an alias in case we want to change the launch activity later without breaking
-             homescreen shortcuts.  Note must be defined after the targetActivity -->
+        <!-- Use an alias in case we want to change the launch activity later without breaking
+             homescreen shortcuts. Note must be defined after the targetActivity -->
         <activity-alias
             android:name=".Launcher"
             android:label="@string/app_name"
@@ -51,6 +49,9 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity-alias>
 
         <activity
@@ -66,9 +67,6 @@
                     android:host="dribbble.com"
                     android:pathPrefix="/shots/"/>
             </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.HomeActivity" />
         </activity>
 
         <activity
@@ -82,11 +80,7 @@
         <activity
             android:name=".ui.DesignerNewsStory"
             android:parentActivityName=".ui.HomeActivity"
-            android:theme="@style/Plaid.Translucent.DesignerNewsStory">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.HomeActivity" />
-        </activity>
+            android:theme="@style/Plaid.Translucent.DesignerNewsStory" />
 
         <activity
             android:name=".ui.SearchActivity"
@@ -128,11 +122,7 @@
         <activity
             android:name=".ui.AboutActivity"
             android:theme="@style/Plaid.Translucent.About"
-            android:parentActivityName=".ui.HomeActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.HomeActivity" />
-        </activity>
+            android:parentActivityName=".ui.HomeActivity" />
 
         <activity
             android:name=".ui.PostNewDesignerNewsStory"

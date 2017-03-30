@@ -21,7 +21,7 @@
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorBackground">@color/background_light</item>
         <item name="android:colorAccent">@color/accent</item>
-        <item name="android:navigationBarColor">@color/primary_super_dark</item>
+        <item name="android:navigationBarColor">@color/background_super_dark</item>
         <item name="android:statusBarColor">@color/background_super_dark</item>
         <item name="android:textColorHint">@color/hint_disabled_dark</item>
         <item name="android:windowBackground">@color/background_light</item>
@@ -368,6 +368,15 @@
     <style name="TextAppearance.Subhead" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:textColor">@color/text_secondary_dark</item>
         <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <style name="Widget.Plaid.SecondaryText">
+        <item name="android:textAppearance">@style/TextAppearance.SecondaryText</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <style name="TextAppearance.SecondaryText" parent="@android:style/TextAppearance.Material.Body1">
+        <item name="android:textColor">@color/text_tertiary_dark</item>
     </style>
 
     <style name="Widget.Plaid.PlayerTitle">

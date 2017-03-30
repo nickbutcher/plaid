@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.plaidapp.data.api.designernews.model.StoriesResponse;
 import io.plaidapp.data.api.designernews.model.Story;
 import io.plaidapp.data.api.dribbble.DribbbleSearchService;
 import io.plaidapp.data.api.dribbble.DribbbleService;
@@ -31,7 +30,6 @@ import io.plaidapp.data.api.dribbble.model.Like;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.dribbble.model.User;
 import io.plaidapp.data.api.producthunt.model.Post;
-import io.plaidapp.data.api.producthunt.model.PostsResponse;
 import io.plaidapp.data.prefs.SourceManager;
 import io.plaidapp.ui.FilterAdapter;
 import retrofit2.Call;
@@ -175,21 +173,19 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
     }
 
     private void loadDesignerNewsTopStories(final int page) {
-        final Call<StoriesResponse> topStories = getDesignerNewsApi().getTopStories(page);
-        topStories.enqueue(new Callback<StoriesResponse>() {
+        final Call<List<Story>> topStories = getDesignerNewsApi().getTopStories(page);
+        topStories.enqueue(new Callback<List<Story>>() {
             @Override
-            public void onResponse(Call<StoriesResponse> call, Response<StoriesResponse> response) {
+            public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
                 if (response.isSuccessful()) {
-                    final List<Story> stories =
-                            response.body() != null ? response.body().stories : null;
-                    sourceLoaded(stories, page, SourceManager.SOURCE_DESIGNER_NEWS_POPULAR);
+                    sourceLoaded(response.body(), page, SourceManager.SOURCE_DESIGNER_NEWS_POPULAR);
                 } else {
                     loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR);
                 }
             }
 
             @Override
-            public void onFailure(Call<StoriesResponse> call, Throwable t) {
+            public void onFailure(Call<List<Story>> call, Throwable t) {
                 loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR);
             }
         });
@@ -197,21 +193,19 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
     }
 
     private void loadDesignerNewsRecent(final int page) {
-        final Call<StoriesResponse> recentStoriesCall = getDesignerNewsApi().getRecentStories(page);
-        recentStoriesCall.enqueue(new Callback<StoriesResponse>() {
+        final Call<List<Story>> recentStoriesCall = getDesignerNewsApi().getRecentStories(page);
+        recentStoriesCall.enqueue(new Callback<List<Story>>() {
             @Override
-            public void onResponse(Call<StoriesResponse> call, Response<StoriesResponse> response) {
+            public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
                 if (response.isSuccessful()) {
-                    final List<Story> stories =
-                            response.body() != null ? response.body().stories : null;
-                    sourceLoaded(stories, page, SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
+                    sourceLoaded(response.body(), page, SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
                 } else {
                     loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
                 }
             }
 
             @Override
-            public void onFailure(Call<StoriesResponse> call, Throwable t) {
+            public void onFailure(Call<List<Story>> call, Throwable t) {
                 loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
             }
         });
@@ -220,21 +214,19 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
 
     private void loadDesignerNewsSearch(final Source.DesignerNewsSearchSource source,
                                         final int page) {
-        final Call<StoriesResponse> searchCall = getDesignerNewsApi().search(source.query, page);
-        searchCall.enqueue(new Callback<StoriesResponse>() {
+        final Call<List<Story>> searchCall = getDesignerNewsApi().search(source.query, page);
+        searchCall.enqueue(new Callback<List<Story>>() {
             @Override
-            public void onResponse(Call<StoriesResponse> call, Response<StoriesResponse> response) {
+            public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
                 if (response.isSuccessful()) {
-                final List<Story> stories =
-                        response.body() != null ? response.body().stories : null;
-                    sourceLoaded(stories, page, source.key);
+                    sourceLoaded(response.body(), page, source.key);
                 } else {
                     loadFailed(source.key);
                 }
             }
 
             @Override
-            public void onFailure(Call<StoriesResponse> call, Throwable t) {
+            public void onFailure(Call<List<Story>> call, Throwable t) {
                 loadFailed(source.key);
             }
         });
@@ -438,20 +430,19 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
 
     private void loadProductHunt(final int page) {
         // this API's paging is 0 based but this class (& sorting) is 1 based so adjust locally
-        final Call<PostsResponse> postsCall = getProductHuntApi().getPosts(page - 1);
-        postsCall.enqueue(new Callback<PostsResponse>() {
+        final Call<List<Post>> postsCall = getProductHuntApi().getPosts(page - 1);
+        postsCall.enqueue(new Callback<List<Post>>() {
             @Override
-            public void onResponse(Call<PostsResponse> call, Response<PostsResponse> response) {
+            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if (response.isSuccessful()) {
-                    final List<Post> posts = response.body() != null ? response.body().posts : null;
-                    sourceLoaded(posts, page, SourceManager.SOURCE_PRODUCT_HUNT);
+                    sourceLoaded(response.body(), page, SourceManager.SOURCE_PRODUCT_HUNT);
                 } else {
                     loadFailed(SourceManager.SOURCE_PRODUCT_HUNT);
                 }
             }
 
             @Override
-            public void onFailure(Call<PostsResponse> call, Throwable t) {
+            public void onFailure(Call<List<Post>> call, Throwable t) {
                 loadFailed(SourceManager.SOURCE_PRODUCT_HUNT);
             }
         });

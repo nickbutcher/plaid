@@ -17,10 +17,62 @@
 
 <animated-vector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/heart_anim">
+    xmlns:aapt="http://schemas.android.com/aapt">
 
-    <target
-        android:name="clip"
-        android:animation="@animator/heart_fill" />
+    <aapt:attr name="android:drawable">
+
+        <vector
+            android:width="56dp"
+            android:height="56dp"
+            android:viewportWidth="56"
+            android:viewportHeight="56">
+
+            <path
+                android:pathData="@string/heart_empty_path_56dp"
+                android:fillColor="@color/fab_heart_empty" />
+
+            <group android:name="filled">
+
+                <clip-path
+                    android:name="clip"
+                    android:pathData="@string/heart_clip_hidden" />
+
+                <path
+                    android:pathData="@string/heart_full_path_56dp"
+                    android:fillColor="@color/fab_heart_full" />
+
+            </group>
+
+        </vector>
+
+    </aapt:attr>
+
+    <target android:name="clip">
+
+        <aapt:attr name="android:animation">
+
+            <set android:ordering="sequentially">
+
+                <objectAnimator
+                    android:propertyName="pathData"
+                    android:valueFrom="@string/heart_clip_hidden"
+                    android:valueTo="@string/heart_clip_mid"
+                    android:valueType="pathType"
+                    android:duration="160"
+                    android:interpolator="@android:interpolator/fast_out_linear_in" />
+
+                <objectAnimator
+                    android:propertyName="pathData"
+                    android:valueFrom="@string/heart_clip_mid"
+                    android:valueTo="@string/heart_clip_shown"
+                    android:valueType="pathType"
+                    android:duration="120"
+                    android:interpolator="@android:interpolator/linear_out_slow_in" />
+
+            </set>
+
+        </aapt:attr>
+
+    </target>
 
 </animated-vector>

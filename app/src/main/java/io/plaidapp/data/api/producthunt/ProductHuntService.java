@@ -16,7 +16,10 @@
 
 package io.plaidapp.data.api.producthunt;
 
-import io.plaidapp.data.api.producthunt.model.PostsResponse;
+import java.util.List;
+
+import io.plaidapp.data.api.EnvelopePayload;
+import io.plaidapp.data.api.producthunt.model.Post;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -28,6 +31,7 @@ public interface ProductHuntService {
 
     String ENDPOINT = "https://api.producthunt.com/";
 
+    @EnvelopePayload("posts")
     @GET("v1/posts")
-    Call<PostsResponse> getPosts(@Query("days_ago") Integer page);
+    Call<List<Post>> getPosts(@Query("days_ago") Integer page);
 }

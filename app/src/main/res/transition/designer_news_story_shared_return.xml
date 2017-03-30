@@ -57,7 +57,7 @@
         </targets>
         <transition
             class="io.plaidapp.ui.transitions.ReflowText"
-            app:speed="1"
+            app:velocity="1000dp"
             app:minDuration="230"
             app:maxDuration="230"
             app:staggerDelay="10"

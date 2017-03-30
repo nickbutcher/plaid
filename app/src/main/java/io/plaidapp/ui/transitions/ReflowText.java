@@ -76,18 +76,18 @@ public class ReflowText extends Transition {
     private static final int OPACITY_MID_TRANSITION = (int) (0.8f * OPAQUE);
     private static final float STAGGER_DECAY = 0.8f;
 
-    private float speed = 0.7f;         // DPs per ms
+    private int velocity = 700;         // pixels per second
     private long minDuration = 200;     // ms
     private long maxDuration = 400;     // ms
     private long staggerDelay = 40;     // ms
     private long duration;
     // this is hack for preventing view from drawing briefly at the end of the transition :(
-    private boolean freezeFrame;
+    private final boolean freezeFrame;
 
     public ReflowText(Context context, AttributeSet attrs) {
         super(context, attrs);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ReflowText);
-        speed = a.getFloat(R.styleable.ReflowText_speed, speed);
+        velocity = a.getDimensionPixelSize(R.styleable.ReflowText_velocity, velocity);
         minDuration = a.getInt(R.styleable.ReflowText_minDuration, (int) minDuration);
         maxDuration = a.getInt(R.styleable.ReflowText_maxDuration, (int) maxDuration);
         staggerDelay = a.getInt(R.styleable.ReflowText_staggerDelay, (int) staggerDelay);
@@ -143,7 +143,7 @@ public class ReflowText extends Transition {
         AnimatorSet transition = new AnimatorSet();
         ReflowData startData = (ReflowData) startValues.values.get(PROPNAME_DATA);
         ReflowData endData = (ReflowData) endValues.values.get(PROPNAME_DATA);
-        duration = calculateDuration(startData.bounds, endData.bounds, view.getContext());
+        duration = calculateDuration(startData.bounds, endData.bounds);
 
         // create layouts & capture a bitmaps of the text in both states
         // (with max lines variants where needed)
@@ -481,15 +481,11 @@ public class ReflowText extends Transition {
     /**
      * Calculate the duration for the transition depending upon how far the text has to move.
      */
-    private long calculateDuration(
-            @NonNull Rect startPosition,
-            @NonNull Rect endPosition,
-            @NonNull Context context) {
-        float pxDistance = (float) Math.hypot(
+    private long calculateDuration(@NonNull Rect startPosition, @NonNull Rect endPosition) {
+        float distance = (float) Math.hypot(
                 startPosition.exactCenterX() - endPosition.exactCenterX(),
                 startPosition.exactCenterY() - endPosition.exactCenterY());
-        float dpDistance = pxDistance / context.getResources().getDisplayMetrics().density;
-        long duration = (long) (dpDistance / speed);
+        long duration = (long) (1000 * (distance / velocity));
         return Math.max(minDuration, Math.min(maxDuration, duration));
     }
 
@@ -497,7 +493,7 @@ public class ReflowText extends Transition {
      * Holds all data needed to describe a block of text i.e. to be able to re-create the
      * {@link Layout}.
      */
-    static class ReflowData implements Parcelable {
+    private static class ReflowData implements Parcelable {
 
         final String text;
         final float textSize;
@@ -532,7 +528,7 @@ public class ReflowText extends Transition {
             maxLines = reflowable.getMaxLines();
         }
 
-        protected ReflowData(Parcel in) {
+        ReflowData(Parcel in) {
             text = in.readString();
             textSize = in.readFloat();
             textColor = in.readInt();
@@ -589,14 +585,14 @@ public class ReflowText extends Transition {
     /**
      * Models the location of a run of text in both start and end states.
      */
-    static class Run {
+    private static class Run {
 
         final Rect start;
         final boolean startVisible;
         final Rect end;
         final boolean endVisible;
 
-        public Run(Rect start, boolean startVisible, Rect end, boolean endVisible) {
+        Run(Rect start, boolean startVisible, Rect end, boolean endVisible) {
             this.start = start;
             this.startVisible = startVisible;
             this.end = end;
@@ -612,7 +608,7 @@ public class ReflowText extends Transition {
      * text scaled down has different kerning. Instead we use images of both states and switch
      * during the transition. We use images as animating text size thrashes the font cache.
      */
-    static class SwitchDrawable extends Drawable {
+    private static class SwitchDrawable extends Drawable {
 
         static final Property<SwitchDrawable, PointF> TOP_LEFT =
                 new Property<SwitchDrawable, PointF>(PointF.class, "topLeft") {
@@ -681,8 +677,10 @@ public class ReflowText extends Transition {
 
         private final Paint paint;
         private final float switchThreshold;
-        private Bitmap currentBitmap, endBitmap;
-        private Rect currentBitmapSrcBounds, endBitmapSrcBounds;
+        private Bitmap currentBitmap;
+        private final Bitmap endBitmap;
+        private Rect currentBitmapSrcBounds;
+        private final Rect endBitmapSrcBounds;
         private boolean hasSwitched = false;
         private PointF topLeft;
         private int width, height;
@@ -703,7 +701,7 @@ public class ReflowText extends Transition {
         }
 
         @Override
-        public void draw(Canvas canvas) {
+        public void draw(@NonNull Canvas canvas) {
             canvas.drawBitmap(currentBitmap, currentBitmapSrcBounds, getBounds(), paint);
         }
 

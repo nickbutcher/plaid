@@ -35,20 +35,19 @@ public class ViewOffsetHelper {
     /**
      * Animatable property
      */
-    public static final Property<ViewOffsetHelper, Integer> OFFSET_Y = new AnimUtils
-            .IntProperty<ViewOffsetHelper>("topAndBottomOffset") {
+    public static final Property<ViewOffsetHelper, Integer> OFFSET_Y =
+            AnimUtils.createIntProperty(
+                    new AnimUtils.IntProp<ViewOffsetHelper>("topAndBottomOffset") {
+                @Override
+                public void set(ViewOffsetHelper viewOffsetHelper, int offset) {
+                    viewOffsetHelper.setTopAndBottomOffset(offset);
+                }
 
-        @Override
-        public void setValue(ViewOffsetHelper viewOffsetHelper, int offset) {
-            viewOffsetHelper.setTopAndBottomOffset(offset);
-        }
-
-        @Override
-        public Integer get(ViewOffsetHelper viewOffsetHelper) {
-            return viewOffsetHelper.getTopAndBottomOffset();
-        }
-
-    };
+                @Override
+                public int get(ViewOffsetHelper viewOffsetHelper) {
+                    return viewOffsetHelper.getTopAndBottomOffset();
+                }
+            });
 
     private final View mView;
 
@@ -89,8 +88,6 @@ public class ViewOffsetHelper {
     /**
      * Set the top and bottom offset for this {@link ViewOffsetHelper}'s view by
      * an relative amount.
-     *
-     * @param relativeOffset
      */
     public void offsetTopAndBottom(int relativeOffset) {
         mOffsetTop += relativeOffset;
@@ -116,8 +113,6 @@ public class ViewOffsetHelper {
     /**
      * Set the left and right offset for this {@link ViewOffsetHelper}'s view by
      * an relative amount.
-     *
-     * @param relativeOffset
      */
     public void offsetLeftAndRight(int relativeOffset) {
         mOffsetLeft += relativeOffset;

@@ -78,8 +78,7 @@
     <string name="sign_up">Sign up</string>
     <string name="dn_login_action">Log in</string>
 
-    <!-- dribble login -->
-    <string name="dribbble_login_failed">Login failed</string>
+    <string name="login_failed">Login failed</string>
 
     <!-- designer news story -->
     <string name="upvote_story">Upvote story</string>
@@ -138,6 +137,14 @@
     <string name="about_libs_intro">Plaid is built with the help of these awesome&#160;libraries</string>
     <string name="about_lib_link">website</string>
 
+    <!-- app shortcuts -->
+    <string name="shortcut_search_short_label">@string/search</string>
+    <string name="shortcut_search_long_label">@string/search</string>
+    <string name="shortcut_search_disabled">Search not available</string>
+    <string name="shortcut_post_short_label">New Story</string>
+    <string name="shortcut_post_long_label">New Designer News story</string>
+    <string name="shortcut_post_disabled">Log in to Designer News to post a new story</string>
+
     <!-- transition shared elements -->
     <string name="transition_shot" translatable="false">shot</string>
     <string name="transition_shot_title" translatable="false">shot_title</string>
@@ -152,4 +159,5 @@
     <string name="transition_player_background" translatable="false">transition_player_background</string>
     <string name="transition_search_back" translatable="false">transition_search_back</string>
 
+    <string name="comment_likes_count">0</string>
 </resources>

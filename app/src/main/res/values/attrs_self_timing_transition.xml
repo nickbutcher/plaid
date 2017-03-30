@@ -17,7 +17,7 @@
 
 <resources>
 
-    <attr name="speed" format="float" />
+    <attr name="velocity" format="dimension" />
     <attr name="minDuration" format="integer" />
     <attr name="maxDuration" format="integer" />
 

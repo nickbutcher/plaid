@@ -51,7 +51,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -113,31 +112,30 @@ public class DribbbleShot extends Activity {
     @BindView(R.id.shot) ParallaxScrimageView imageView;
     @BindView(R.id.dribbble_comments) RecyclerView commentsList;
     @BindView(R.id.fab_heart) FABToggle fab;
-    private View shotDescription;
-    private View shotSpacer;
+    View shotDescription;
+    View shotSpacer;
+    Button likeCount;
+    Button viewCount;
+    Button share;
+    ImageView playerAvatar;
+    EditText enterComment;
+    ImageButton postComment;
     private View title;
     private View description;
-    private LinearLayout shotActions;
-    private Button likeCount;
-    private Button viewCount;
-    private Button share;
     private TextView playerName;
-    private ImageView playerAvatar;
     private TextView shotTimeAgo;
     private View commentFooter;
     private ImageView userAvatar;
-    private EditText enterComment;
-    private ImageButton postComment;
-
-    private Shot shot;
-    private int fabOffset;
-    private DribbblePrefs dribbblePrefs;
-    private boolean performingLike;
-    private boolean allowComment;
-    private CircleTransform circleTransform;
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
-    private CommentsAdapter adapter;
-    private CommentAnimator commentAnimator;
+
+    Shot shot;
+    int fabOffset;
+    DribbblePrefs dribbblePrefs;
+    boolean performingLike;
+    boolean allowComment;
+    CircleTransform circleTransform;
+    CommentsAdapter adapter;
+    CommentAnimator commentAnimator;
     @BindDimen(R.dimen.large_avatar_size) int largeAvatarSize;
     @BindDimen(R.dimen.z_card) int cardElevation;
 
@@ -153,13 +151,12 @@ public class DribbbleShot extends Activity {
         shotSpacer = shotDescription.findViewById(R.id.shot_spacer);
         title = shotDescription.findViewById(R.id.shot_title);
         description = shotDescription.findViewById(R.id.shot_description);
-        shotActions = (LinearLayout) shotDescription.findViewById(R.id.shot_actions);
         likeCount = (Button) shotDescription.findViewById(R.id.shot_like_count);
         viewCount = (Button) shotDescription.findViewById(R.id.shot_view_count);
         share = (Button) shotDescription.findViewById(R.id.shot_share_action);
         playerName = (TextView) shotDescription.findViewById(R.id.player_name);
         playerAvatar = (ImageView) shotDescription.findViewById(R.id.player_avatar);
-        shotTimeAgo = (TextView) shotDescription.findViewById(R.id.shot_time_ago);;
+        shotTimeAgo = (TextView) shotDescription.findViewById(R.id.shot_time_ago);
 
         setupCommenting();
         commentsList.addOnScrollListener(scrollListener);
@@ -261,7 +258,36 @@ public class DribbbleShot extends Activity {
         outContent.setWebUri(Uri.parse(shot.url));
     }
 
-    private void bindShot(final boolean postponeEnterTransition) {
+    public void postComment(View view) {
+        if (dribbblePrefs.isLoggedIn()) {
+            if (TextUtils.isEmpty(enterComment.getText())) return;
+            enterComment.setEnabled(false);
+            final Call<Comment> postCommentCall = dribbblePrefs.getApi().postComment(
+                    shot.id, enterComment.getText().toString().trim());
+            postCommentCall.enqueue(new Callback<Comment>() {
+                @Override
+                public void onResponse(Call<Comment> call, Response<Comment> response) {
+                    loadComments();
+                    enterComment.getText().clear();
+                    enterComment.setEnabled(true);
+                }
+
+                @Override
+                public void onFailure(Call<Comment> call, Throwable t) {
+                    enterComment.setEnabled(true);
+                }
+            });
+        } else {
+            Intent login = new Intent(DribbbleShot.this, DribbbleLogin.class);
+            FabTransform.addExtras(login, ContextCompat.getColor(
+                    DribbbleShot.this, R.color.background_light), R.drawable.ic_comment_add);
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                    DribbbleShot.this, postComment, getString(R.string.transition_dribbble_login));
+            startActivityForResult(login, RC_LOGIN_COMMENT, options.toBundle());
+        }
+    }
+
+    void bindShot(final boolean postponeEnterTransition) {
         final Resources res = getResources();
 
         // load the main image
@@ -394,7 +420,7 @@ public class DribbbleShot extends Activity {
         checkLiked();
     }
 
-    private void reportUrlError() {
+    void reportUrlError() {
         Snackbar.make(draggableFrame, R.string.bad_dribbble_shot_url, Snackbar.LENGTH_SHORT).show();
         draggableFrame.postDelayed(new Runnable() {
             @Override
@@ -402,34 +428,6 @@ public class DribbbleShot extends Activity {
                 finishAfterTransition();
             }
         }, 3000L);
-    }
-
-    private void setupCommenting() {
-        allowComment = !dribbblePrefs.isLoggedIn()
-                || (dribbblePrefs.isLoggedIn() && dribbblePrefs.userCanPost());
-        if (allowComment && commentFooter == null) {
-            commentFooter = getLayoutInflater().inflate(R.layout.dribbble_enter_comment,
-                    commentsList, false);
-            userAvatar = (ForegroundImageView) commentFooter.findViewById(R.id.avatar);
-            enterComment = (EditText) commentFooter.findViewById(R.id.comment);
-            postComment = (ImageButton) commentFooter.findViewById(R.id.post_comment);
-            enterComment.setOnFocusChangeListener(enterCommentFocus);
-        } else if (!allowComment && commentFooter != null) {
-            adapter.removeCommentingFooter();
-            commentFooter = null;
-            Toast.makeText(getApplicationContext(),
-                    R.string.prospects_cant_post, Toast.LENGTH_SHORT).show();
-        }
-
-        if (allowComment
-                && dribbblePrefs.isLoggedIn()
-                && !TextUtils.isEmpty(dribbblePrefs.getUserAvatar())) {
-            Glide.with(this)
-                    .load(dribbblePrefs.getUserAvatar())
-                    .transform(circleTransform)
-                    .placeholder(R.drawable.ic_player)
-                    .into(userAvatar);
-        }
     }
 
     private View.OnClickListener shotClick = new View.OnClickListener() {
@@ -443,14 +441,14 @@ public class DribbbleShot extends Activity {
      * We run a transition to expand/collapse comments. Scrolling the RecyclerView while this is
      * running causes issues, so we consume touch events while the transition runs.
      */
-    private View.OnTouchListener touchEater = new View.OnTouchListener() {
+    View.OnTouchListener touchEater = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
             return true;
         }
     };
 
-    private void openLink(String url) {
+    void openLink(String url) {
         CustomTabActivityHelper.openCustomTab(
                 DribbbleShot.this,
                 new CustomTabsIntent.Builder()
@@ -562,6 +560,13 @@ public class DribbbleShot extends Activity {
             // kick off an anim (via animated state list) on the post button. see
             // @drawable/ic_add_comment
             postComment.setActivated(hasFocus);
+
+            // prevent content hovering over image when not pinned.
+            if(hasFocus) {
+                imageView.bringToFront();
+                imageView.setOffset(-imageView.getHeight());
+                imageView.setImmediatePin(true);
+            }
         }
     };
 
@@ -608,7 +613,7 @@ public class DribbbleShot extends Activity {
         }
     };
 
-    private void loadComments() {
+    void loadComments() {
         final Call<List<Comment>> commentsCall =
                 dribbblePrefs.getApi().getComments(shot.id, 0, DribbbleService.PER_PAGE_MAX);
         commentsCall.enqueue(new Callback<List<Comment>>() {
@@ -624,14 +629,14 @@ public class DribbbleShot extends Activity {
         });
     }
 
-    private void setResultAndFinish() {
+    void setResultAndFinish() {
         final Intent resultData = new Intent();
         resultData.putExtra(RESULT_EXTRA_SHOT_ID, shot.id);
         setResult(RESULT_OK, resultData);
         finishAfterTransition();
     }
 
-    private void calculateFabPosition() {
+    void calculateFabPosition() {
         // calculate 'natural' position i.e. with full height image. Store it for use when scrolling
         fabOffset = imageView.getHeight() + title.getHeight() - (fab.getHeight() / 2);
         fab.setOffset(fabOffset);
@@ -640,7 +645,7 @@ public class DribbbleShot extends Activity {
         fab.setMinOffset(imageView.getMinimumHeight() - (fab.getHeight() / 2));
     }
 
-    private void doLike() {
+    void doLike() {
         performingLike = true;
         if (fab.isChecked()) {
             final Call<Like> likeCall = dribbblePrefs.getApi().like(shot.id);
@@ -671,6 +676,10 @@ public class DribbbleShot extends Activity {
         }
     }
 
+    boolean isOP(long playerId) {
+        return shot.user != null && shot.user.id == playerId;
+    }
+
     private void checkLiked() {
         if (shot != null && dribbblePrefs.isLoggedIn()) {
             final Call<Like> likedCall = dribbblePrefs.getApi().liked(shot.id);
@@ -691,40 +700,35 @@ public class DribbbleShot extends Activity {
         }
     }
 
-    public void postComment(View view) {
-        if (dribbblePrefs.isLoggedIn()) {
-            if (TextUtils.isEmpty(enterComment.getText())) return;
-            enterComment.setEnabled(false);
-            final Call<Comment> postCommentCall = dribbblePrefs.getApi().postComment(
-                    shot.id, enterComment.getText().toString().trim());
-            postCommentCall.enqueue(new Callback<Comment>() {
-                @Override
-                public void onResponse(Call<Comment> call, Response<Comment> response) {
-                    loadComments();
-                    enterComment.getText().clear();
-                    enterComment.setEnabled(true);
-                }
+    private void setupCommenting() {
+        allowComment = !dribbblePrefs.isLoggedIn()
+                || (dribbblePrefs.isLoggedIn() && dribbblePrefs.userCanPost());
+        if (allowComment && commentFooter == null) {
+            commentFooter = getLayoutInflater().inflate(R.layout.dribbble_enter_comment,
+                    commentsList, false);
+            userAvatar = (ForegroundImageView) commentFooter.findViewById(R.id.avatar);
+            enterComment = (EditText) commentFooter.findViewById(R.id.comment);
+            postComment = (ImageButton) commentFooter.findViewById(R.id.post_comment);
+            enterComment.setOnFocusChangeListener(enterCommentFocus);
+        } else if (!allowComment && commentFooter != null) {
+            adapter.removeCommentingFooter();
+            commentFooter = null;
+            Toast.makeText(getApplicationContext(),
+                    R.string.prospects_cant_post, Toast.LENGTH_SHORT).show();
+        }
 
-                @Override
-                public void onFailure(Call<Comment> call, Throwable t) {
-                    enterComment.setEnabled(true);
-                }
-            });
-        } else {
-            Intent login = new Intent(DribbbleShot.this, DribbbleLogin.class);
-            FabTransform.addExtras(login, ContextCompat.getColor(
-                    DribbbleShot.this, R.color.background_light), R.drawable.ic_comment_add);
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
-                    DribbbleShot.this, postComment, getString(R.string.transition_dribbble_login));
-            startActivityForResult(login, RC_LOGIN_COMMENT, options.toBundle());
+        if (allowComment
+                && dribbblePrefs.isLoggedIn()
+                && !TextUtils.isEmpty(dribbblePrefs.getUserAvatar())) {
+            Glide.with(this)
+                    .load(dribbblePrefs.getUserAvatar())
+                    .transform(circleTransform)
+                    .placeholder(R.drawable.ic_player)
+                    .into(userAvatar);
         }
     }
 
-    private boolean isOP(long playerId) {
-        return shot.user != null && shot.user.id == playerId;
-    }
-
-    /* package */ class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private static final int EXPAND = 0x1;
         private static final int COLLAPSE = 0x2;
@@ -732,13 +736,13 @@ public class DribbbleShot extends Activity {
         private static final int REPLY = 0x4;
 
         private final List<Comment> comments = new ArrayList<>();
-        private final Transition expandCollapse;
+        final Transition expandCollapse;
         private final View description;
         private View footer;
 
         private boolean loading;
         private boolean noComments;
-        private int expandedCommentPosition = RecyclerView.NO_POSITION;
+        int expandedCommentPosition = RecyclerView.NO_POSITION;
 
         CommentsAdapter(
                 @NonNull View description,
@@ -764,20 +768,6 @@ public class DribbbleShot extends Activity {
                     commentsList.setOnTouchListener(null);
                 }
             });
-        }
-
-        void addComments(List<Comment> newComments) {
-            hideLoadingIndicator();
-            noComments = false;
-            comments.addAll(newComments);
-            notifyItemRangeInserted(1, newComments.size());
-        }
-
-        void removeCommentingFooter() {
-            if (footer == null) return;
-            int footerPos = getItemCount() - 1;
-            footer = null;
-            notifyItemRemoved(footerPos);
         }
 
         @Override
@@ -843,6 +833,24 @@ public class DribbbleShot extends Activity {
             }
         }
 
+        Comment getComment(int adapterPosition) {
+            return comments.get(adapterPosition - 1); // description
+        }
+
+        void addComments(List<Comment> newComments) {
+            hideLoadingIndicator();
+            noComments = false;
+            comments.addAll(newComments);
+            notifyItemRangeInserted(1, newComments.size());
+        }
+
+        void removeCommentingFooter() {
+            if (footer == null) return;
+            int footerPos = getItemCount() - 1;
+            footer = null;
+            notifyItemRemoved(footerPos);
+        }
+
         private CommentViewHolder createCommentHolder(ViewGroup parent, int viewType) {
             final CommentViewHolder holder = new CommentViewHolder(
                     getLayoutInflater().inflate(viewType, parent, false));
@@ -858,7 +866,7 @@ public class DribbbleShot extends Activity {
                     commentAnimator.setAnimateMoves(false);
 
                     // collapse any currently expanded items
-                    if (expandedCommentPosition != RecyclerView.NO_POSITION) {
+                    if (RecyclerView.NO_POSITION != expandedCommentPosition) {
                         notifyItemChanged(expandedCommentPosition, COLLAPSE);
                     }
 
@@ -1027,7 +1035,7 @@ public class DribbbleShot extends Activity {
                             .toString().toLowerCase());
             HtmlUtils.setTextWithNiceLinks(holder.commentBody,
                     comment.getParsedBody(holder.commentBody));
-            holder.likeHeart.setChecked(comment.liked != null && comment.liked.booleanValue());
+            holder.likeHeart.setChecked(comment.liked != null && comment.liked);
             holder.likeHeart.setEnabled(comment.user.id != dribbblePrefs.getUserId());
             holder.likesCount.setText(String.valueOf(comment.likes_count));
             setExpanded(holder, isExpanded);
@@ -1054,10 +1062,6 @@ public class DribbbleShot extends Activity {
             }
         }
 
-        private Comment getComment(int adapterPosition) {
-            return comments.get(adapterPosition - 1); // description
-        }
-
         private void hideLoadingIndicator() {
             if (!loading) return;
             loading = false;
@@ -1065,14 +1069,14 @@ public class DribbbleShot extends Activity {
         }
     }
 
-    /* package */ static class SimpleViewHolder extends RecyclerView.ViewHolder {
+    static class SimpleViewHolder extends RecyclerView.ViewHolder {
 
-        public SimpleViewHolder(View itemView) {
+        SimpleViewHolder(View itemView) {
             super(itemView);
         }
     }
 
-    /* package */ static class CommentViewHolder extends RecyclerView.ViewHolder {
+    static class CommentViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.player_avatar) ImageView avatar;
         @BindView(R.id.comment_author) AuthorTextView author;
@@ -1096,7 +1100,7 @@ public class DribbbleShot extends Activity {
      * custom item animator allows us to stop RecyclerView from trying to handle this for us while
      * the transition is running.
      */
-    /* package */ static class CommentAnimator extends SlideInItemAnimator {
+    static class CommentAnimator extends SlideInItemAnimator {
 
         private boolean animateMoves = false;
 

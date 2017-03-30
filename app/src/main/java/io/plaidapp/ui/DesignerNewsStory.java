@@ -78,7 +78,6 @@ import io.plaidapp.R;
 import io.plaidapp.data.api.designernews.UpvoteStoryService;
 import io.plaidapp.data.api.designernews.model.Comment;
 import io.plaidapp.data.api.designernews.model.Story;
-import io.plaidapp.data.api.designernews.model.StoryResponse;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.ui.drawable.ThreadedCommentDrawable;
 import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
@@ -556,22 +555,19 @@ public class DesignerNewsStory extends Activity {
         if (designerNewsPrefs.isLoggedIn()) {
             if (!upvoteStory.isActivated()) {
                 upvoteStory.setActivated(true);
-                final Call<StoryResponse> upvoteStory
+                final Call<Story> upvoteStory
                         = designerNewsPrefs.getApi().upvoteStory(story.id);
-                upvoteStory.enqueue(new Callback<StoryResponse>() {
+                upvoteStory.enqueue(new Callback<Story>() {
                     @Override
-                    public void onResponse(Call<StoryResponse> call, Response<StoryResponse>
-                            response) {
-                        final int newUpvoteCount = response.body().story.vote_count;
+                    public void onResponse(Call<Story> call, Response<Story> response) {
+                        final int newUpvoteCount = response.body().vote_count;
                         DesignerNewsStory.this.upvoteStory.setText(getResources().getQuantityString(
                                 R.plurals.upvotes, newUpvoteCount,
                                 NumberFormat.getInstance().format(newUpvoteCount)));
                     }
 
                     @Override
-                    public void onFailure(Call<StoryResponse> call, Throwable t) {
-
-                    }
+                    public void onFailure(Call<Story> call, Throwable t) { }
                 });
             } else {
                 upvoteStory.setActivated(false);

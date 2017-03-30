@@ -20,8 +20,7 @@
     <!-- app palette -->
     <color name="primary">#69F0AE</color>
     <color name="accent">@color/primary</color> <!-- mono-color -->
-    <color name="primary_dark">#5acc95</color>
-    <color name="primary_super_dark">#11261c</color> <!-- same hue & sat, 15% brightness -->
+    <color name="primary_dark">#4aa87a</color>
 
     <!-- common colours -->
     <color name="text_primary_dark">#de000000</color> <!-- 87% -->
@@ -34,6 +33,7 @@
     <color name="ripple_dark">@color/mid_grey</color>
     <color name="background_light">#fafafa</color> <!-- grey 50 -->
     <color name="background_lightish">#e0e0e0</color> <!-- grey 300 -->
+    <color name="background_card">#ffffff</color>
     <color name="background_dark">#ff333333</color>
     <color name="immersive_bars">#99000000</color>
     <color name="light_immersive_bars">@color/immersive_bars</color>

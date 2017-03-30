@@ -19,8 +19,10 @@ package io.plaidapp.util;
 import android.animation.Animator;
 import android.animation.TimeInterpolator;
 import android.content.Context;
-import android.transition.Transition;
+import android.os.Build;
 import android.util.ArrayMap;
+import android.util.FloatProperty;
+import android.util.IntProperty;
 import android.util.Property;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
@@ -78,61 +80,100 @@ public class AnimUtils {
         return a + (b - a) * t;
     }
 
-
     /**
-     * An implementation of {@link android.util.Property} to be used specifically with fields of
-     * type
-     * <code>float</code>. This type-specific subclass enables performance benefit by allowing
-     * calls to a {@link #set(Object, Float) set()} function that takes the primitive
-     * <code>float</code> type and avoids autoboxing and other overhead associated with the
-     * <code>Float</code> class.
-     *
-     * @param <T> The class on which the Property is declared.
-     **/
-    public static abstract class FloatProperty<T> extends Property<T, Float> {
-        public FloatProperty(String name) {
-            super(Float.class, name);
+     * A delegate for creating a {@link Property} of <code>int</code> type.
+     */
+    public static abstract class IntProp<T> {
+
+        public final String name;
+
+        public IntProp(String name) {
+            this.name = name;
         }
 
-        /**
-         * A type-specific override of the {@link #set(Object, Float)} that is faster when dealing
-         * with fields of type <code>float</code>.
-         */
-        public abstract void setValue(T object, float value);
+        public abstract void set(T object, int value);
+        public abstract int get(T object);
+    }
 
-        @Override
-        final public void set(T object, Float value) {
-            setValue(object, value);
+    /**
+     * The animation framework has an optimization for <code>Properties</code> of type
+     * <code>int</code> but it was only made public in API24, so wrap the impl in our own type
+     * and conditionally create the appropriate type, delegating the implementation.
+     */
+    public static <T> Property<T, Integer> createIntProperty(final IntProp<T> impl) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return new IntProperty<T>(impl.name) {
+                @Override
+                public Integer get(T object) {
+                    return impl.get(object);
+                }
+
+                @Override
+                public void setValue(T object, int value) {
+                    impl.set(object, value);
+                }
+            };
+        } else {
+            return new Property<T, Integer>(Integer.class, impl.name) {
+                @Override
+                public Integer get(T object) {
+                    return impl.get(object);
+                }
+
+                @Override
+                public void set(T object, Integer value) {
+                    impl.set(object, value);
+                }
+            };
         }
     }
 
     /**
-     * An implementation of {@link android.util.Property} to be used specifically with fields of
-     * type
-     * <code>int</code>. This type-specific subclass enables performance benefit by allowing
-     * calls to a {@link #set(Object, Integer) set()} function that takes the primitive
-     * <code>int</code> type and avoids autoboxing and other overhead associated with the
-     * <code>Integer</code> class.
-     *
-     * @param <T> The class on which the Property is declared.
+     * A delegate for creating a {@link Property} of <code>float</code> type.
      */
-    public static abstract class IntProperty<T> extends Property<T, Integer> {
+    public static abstract class FloatProp<T> {
 
-        public IntProperty(String name) {
-            super(Integer.class, name);
+        public final String name;
+
+        protected FloatProp(String name) {
+            this.name = name;
         }
 
-        /**
-         * A type-specific override of the {@link #set(Object, Integer)} that is faster when dealing
-         * with fields of type <code>int</code>.
-         */
-        public abstract void setValue(T object, int value);
+        public abstract void set(T object, float value);
+        public abstract float get(T object);
+    }
 
-        @Override
-        final public void set(T object, Integer value) {
-            setValue(object, value.intValue());
+    /**
+     * The animation framework has an optimization for <code>Properties</code> of type
+     * <code>float</code> but it was only made public in API24, so wrap the impl in our own type
+     * and conditionally create the appropriate type, delegating the implementation.
+     */
+    public static <T> Property<T, Float> createFloatProperty(final FloatProp<T> impl) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return new FloatProperty<T>(impl.name) {
+                @Override
+                public Float get(T object) {
+                    return impl.get(object);
+                }
+
+                @Override
+                public void setValue(T object, float value) {
+                    impl.set(object, value);
+                }
+            };
+        } else {
+            return new Property<T, Float>(Float.class, impl.name) {
+                @Override
+                public Float get(T object) {
+                    return impl.get(object);
+                }
+
+                @Override
+                public void set(T object, Float value) {
+                    impl.set(object, value);
+                }
+            };
         }
-
     }
 
     /**
@@ -143,8 +184,7 @@ public class AnimUtils {
      */
     public static class NoPauseAnimator extends Animator {
         private final Animator mAnimator;
-        private final ArrayMap<AnimatorListener, AnimatorListener> mListeners =
-                new ArrayMap<AnimatorListener, AnimatorListener>();
+        private final ArrayMap<AnimatorListener, AnimatorListener> mListeners = new ArrayMap<>();
 
         public NoPauseAnimator(Animator animator) {
             mAnimator = animator;
@@ -186,7 +226,7 @@ public class AnimUtils {
 
         @Override
         public ArrayList<AnimatorListener> getListeners() {
-            return new ArrayList<AnimatorListener>(mListeners.keySet());
+            return new ArrayList<>(mListeners.keySet());
         }
 
         @Override
@@ -267,11 +307,11 @@ public class AnimUtils {
         }
     }
 
-    static class AnimatorListenerWrapper implements Animator.AnimatorListener {
+    private static class AnimatorListenerWrapper implements Animator.AnimatorListener {
         private final Animator mAnimator;
         private final Animator.AnimatorListener mListener;
 
-        public AnimatorListenerWrapper(Animator animator, Animator.AnimatorListener listener) {
+        AnimatorListenerWrapper(Animator animator, Animator.AnimatorListener listener) {
             mAnimator = animator;
             mListener = listener;
         }

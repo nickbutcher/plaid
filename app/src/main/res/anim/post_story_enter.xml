@@ -17,7 +17,7 @@
 
 <alpha
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="@integer/rapid_animation"
     android:fromAlpha="0.0"
     android:toAlpha="1.0"
+    android:duration="300"
     android:interpolator="@android:interpolator/linear_out_slow_in" />

@@ -47,15 +47,11 @@ public class ViewUtils {
 
     private ViewUtils() { }
 
-    private static int actionBarSize = -1;
-
-    public static int getActionBarSize(Context context) {
-        if (actionBarSize < 0) {
-            TypedValue value = new TypedValue();
-            context.getTheme().resolveAttribute(android.R.attr.actionBarSize, value, true);
-            actionBarSize = TypedValue.complexToDimensionPixelSize(value.data, context
-                    .getResources().getDisplayMetrics());
-        }
+    public static int getActionBarSize(@NonNull Context context) {
+        TypedValue value = new TypedValue();
+        context.getTheme().resolveAttribute(android.R.attr.actionBarSize, value, true);
+        int actionBarSize = TypedValue.complexToDimensionPixelSize(
+                value.data, context.getResources().getDisplayMetrics());
         return actionBarSize;
     }
 
@@ -157,64 +153,60 @@ public class ViewUtils {
     }
 
     public static final Property<View, Integer> BACKGROUND_COLOR
-            = new AnimUtils.IntProperty<View>("backgroundColor") {
-
+            = AnimUtils.createIntProperty(new AnimUtils.IntProp<View>("backgroundColor") {
         @Override
-        public void setValue(View view, int value) {
-            view.setBackgroundColor(value);
+        public void set(View view, int color) {
+            view.setBackgroundColor(color);
         }
 
         @Override
-        public Integer get(View view) {
+        public int get(View view) {
             Drawable d = view.getBackground();
             if (d instanceof ColorDrawable) {
                 return ((ColorDrawable) d).getColor();
             }
             return Color.TRANSPARENT;
         }
-    };
+    });
 
     public static final Property<TextView, Integer> TEXT_COLOR
-            = new AnimUtils.IntProperty<TextView>("textColor") {
-
+            = AnimUtils.createIntProperty(new AnimUtils.IntProp<TextView>("textColor") {
         @Override
-        public void setValue(TextView textView, int color) {
-            textView.setTextColor(color);
+        public void set(TextView textView, int textColor) {
+            textView.setTextColor(textColor);
         }
 
         @Override
-        public Integer get(TextView textView) {
+        public int get(TextView textView) {
             return textView.getCurrentTextColor();
         }
-    };
+    });
 
     public static final Property<Drawable, Integer> DRAWABLE_ALPHA
-            = new AnimUtils.IntProperty<Drawable>("alpha") {
-
+            = AnimUtils.createIntProperty(new AnimUtils.IntProp<Drawable>("alpha") {
         @Override
-        public void setValue(Drawable drawable, int alpha) {
+        public void set(Drawable drawable, int alpha) {
             drawable.setAlpha(alpha);
         }
 
         @Override
-        public Integer get(Drawable drawable) {
+        public int get(Drawable drawable) {
             return drawable.getAlpha();
         }
-    };
+    });
 
     public static final Property<ImageView, Integer> IMAGE_ALPHA
-            = new AnimUtils.IntProperty<ImageView>("imageAlpha") {
-
+            = AnimUtils.createIntProperty(new AnimUtils.IntProp<ImageView>("imageAlpha") {
         @Override
-        public void setValue(ImageView imageView, int value) {
-            imageView.setImageAlpha(value);
+        public void set(ImageView imageView, int alpha) {
+            imageView.setImageAlpha(alpha);
         }
 
         @Override
-        public Integer get(ImageView imageView) {
+        public int get(ImageView imageView) {
             return imageView.getImageAlpha();
         }
-    };
+    });
 
     public static final ViewOutlineProvider CIRCULAR_OUTLINE = new ViewOutlineProvider() {
         @Override

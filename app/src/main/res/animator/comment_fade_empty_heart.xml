@@ -17,8 +17,8 @@
 
 <objectAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:propertyName="alpha"
-    android:valueFrom="1.0"
-    android:valueTo="0.0"
-    android:duration="300"
-    android:interpolator="@android:interpolator/fast_out_slow_in" />
+    android:propertyName="fillAlpha"
+    android:valueFrom="1"
+    android:valueTo="0"
+    android:duration="200"
+    android:interpolator="@android:interpolator/fast_out_linear_in" />

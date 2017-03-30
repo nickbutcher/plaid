@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2015 Google Inc.
+  Copyright 2016 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,11 +15,16 @@
   limitations under the License.
   -->
 
-<objectAnimator
+<animated-vector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:propertyName="pathData"
-    android:valueFrom="@string/heart_clip_hidden"
-    android:valueTo="@string/heart_clip_shown"
-    android:valueType="pathType"
-    android:duration="@integer/heart_fill_time"
-    android:interpolator="@android:interpolator/fast_out_slow_in" />
+    android:drawable="@drawable/heart_comment_anim">
+
+    <target
+        android:name="filled"
+        android:animation="@animator/comment_expand_full_heart" />
+
+    <target
+        android:name="empty"
+        android:animation="@animator/comment_fade_empty_heart" />
+
+</animated-vector>

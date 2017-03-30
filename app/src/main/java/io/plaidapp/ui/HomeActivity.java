@@ -58,8 +58,6 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.WindowInsets;
-import android.view.animation.AnimationUtils;
-import android.widget.ActionMenuView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -70,7 +68,6 @@ import android.widget.Toolbar;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -114,18 +111,19 @@ public class HomeActivity extends Activity {
     @BindView(R.id.filters) RecyclerView filtersList;
     @BindView(android.R.id.empty) ProgressBar loading;
     @Nullable @BindView(R.id.no_connection) ImageView noConnection;
-    private TextView noFiltersEmptyText;
-    private ImageButton fabPosting;
-    private SpannedGridLayoutManager layoutManager;
+
+    ImageButton fabPosting;
+    SpannedGridLayoutManager layoutManager;
     @BindInt(R.integer.num_columns) int columns;
     @BindInt(R.integer.expanded_item_column_span) int expandedItemColSpan;
-    private boolean connected = true;
+    boolean connected = true;
+    private TextView noFiltersEmptyText;
     private boolean monitoringConnectivity = false;
 
     // data
-    private DataManager dataManager;
-    private FeedAdapter adapter;
-    private FilterAdapter filtersAdapter;
+    DataManager dataManager;
+    FeedAdapter adapter;
+    FilterAdapter filtersAdapter;
     private DesignerNewsPrefs designerNewsPrefs;
     private DribbblePrefs dribbblePrefs;
 
@@ -139,7 +137,6 @@ public class HomeActivity extends Activity {
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
 
-        //toolbar.inflateMenu(R.menu.main);
         setActionBar(toolbar);
         if (savedInstanceState == null) {
             animateToolbar();
@@ -202,8 +199,8 @@ public class HomeActivity extends Activity {
                 // inset the grid top by statusbar+toolbar & the bottom by the navbar (don't clip)
                 grid.setPadding(
                         grid.getPaddingLeft() + insets.getSystemWindowInsetLeft(), // landscape
-                        insets.getSystemWindowInsetTop() + ViewUtils.getActionBarSize
-                                (HomeActivity.this),
+                        insets.getSystemWindowInsetTop()
+                                + ViewUtils.getActionBarSize(HomeActivity.this),
                         grid.getPaddingRight() + insets.getSystemWindowInsetRight(), // landscape
                         grid.getPaddingBottom() + insets.getSystemWindowInsetBottom());
 
@@ -282,8 +279,8 @@ public class HomeActivity extends Activity {
 
         // When reentering, if the shared element is no longer on screen (e.g. after an
         // orientation change) then scroll it into view.
-        final long sharedShotId = data.getLongExtra(DribbbleShot.RESULT_EXTRA_SHOT_ID, -1l);
-        if (sharedShotId != -1l                                             // returning from a shot
+        final long sharedShotId = data.getLongExtra(DribbbleShot.RESULT_EXTRA_SHOT_ID, -1L);
+        if (sharedShotId != -1L                                             // returning from a shot
                 && adapter.getDataItemCount() > 0                           // grid populated
                 && grid.findViewHolderForItemId(sharedShotId) == null) {    // view not attached
             final int position = adapter.getItemPosition(sharedShotId);
@@ -351,7 +348,7 @@ public class HomeActivity extends Activity {
                 if (!designerNewsPrefs.isLoggedIn()) {
                     startActivity(new Intent(this, DesignerNewsLogin.class));
                 } else {
-                    designerNewsPrefs.logout();
+                    designerNewsPrefs.logout(HomeActivity.this);
                     // TODO something better than a toast!!
                     Toast.makeText(getApplicationContext(), R.string.designer_news_logged_out,
                             Toast.LENGTH_SHORT).show();
@@ -363,6 +360,15 @@ public class HomeActivity extends Activity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.END)) {
+            drawer.closeDrawer(GravityCompat.END);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -382,13 +388,13 @@ public class HomeActivity extends Activity {
                     boolean newSource = false;
                     if (data.getBooleanExtra(SearchActivity.EXTRA_SAVE_DRIBBBLE, false)) {
                         dribbbleSearch = new Source.DribbbleSearchSource(query, true);
-                        newSource |= filtersAdapter.addFilter(dribbbleSearch);
+                        newSource = filtersAdapter.addFilter(dribbbleSearch);
                     }
                     if (data.getBooleanExtra(SearchActivity.EXTRA_SAVE_DESIGNER_NEWS, false)) {
                         designerNewsSearch = new Source.DesignerNewsSearchSource(query, true);
                         newSource |= filtersAdapter.addFilter(designerNewsSearch);
                     }
-                    if (newSource && (dribbbleSearch != null || designerNewsSearch != null)) {
+                    if (newSource) {
                         highlightNewSources(dribbbleSearch, designerNewsSearch);
                     }
                 }
@@ -508,25 +514,29 @@ public class HomeActivity extends Activity {
                     // success animation
                     AnimatedVectorDrawable complete =
                             (AnimatedVectorDrawable) getDrawable(R.drawable.avd_upload_complete);
-                    fabPosting.setImageDrawable(complete);
-                    complete.start();
-                    fabPosting.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            fabPosting.setVisibility(View.GONE);
-                        }
-                    }, 2100); // length of R.drawable.avd_upload_complete
+                    if (complete != null) {
+                        fabPosting.setImageDrawable(complete);
+                        complete.start();
+                        fabPosting.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                fabPosting.setVisibility(View.GONE);
+                            }
+                        }, 2100); // length of R.drawable.avd_upload_complete
+                    }
 
                     // actually add the story to the grid
                     Story newStory = intent.getParcelableExtra(PostStoryService.EXTRA_NEW_STORY);
-                    adapter.addAndResort(Arrays.asList(new Story[]{ newStory }));
+                    adapter.addAndResort(Collections.singletonList(newStory));
                     break;
                 case PostStoryService.BROADCAST_ACTION_FAILURE:
                     // failure animation
                     AnimatedVectorDrawable failed =
                             (AnimatedVectorDrawable) getDrawable(R.drawable.avd_upload_error);
-                    fabPosting.setImageDrawable(failed);
-                    failed.start();
+                    if (failed != null) {
+                        fabPosting.setImageDrawable(failed);
+                        failed.start();
+                    }
                     // remove the upload progress 'fab' and reshow the regular one
                     fabPosting.animate()
                             .alpha(0f)
@@ -549,7 +559,7 @@ public class HomeActivity extends Activity {
         }
     };
 
-    private void registerPostStoryResultListener() {
+    void registerPostStoryResultListener() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(PostStoryService.BROADCAST_ACTION_SUCCESS);
         intentFilter.addAction(PostStoryService.BROADCAST_ACTION_FAILURE);
@@ -557,8 +567,61 @@ public class HomeActivity extends Activity {
                 registerReceiver(postStoryResultReceiver, intentFilter);
     }
 
-    private void unregisterPostStoryResultListener() {
+    void unregisterPostStoryResultListener() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(postStoryResultReceiver);
+    }
+
+    void revealPostingProgress() {
+        Animator reveal = ViewAnimationUtils.createCircularReveal(fabPosting,
+                (int) fabPosting.getPivotX(),
+                (int) fabPosting.getPivotY(),
+                0f,
+                fabPosting.getWidth() / 2)
+                .setDuration(600L);
+        reveal.setInterpolator(AnimUtils.getFastOutLinearInInterpolator(this));
+        reveal.start();
+        AnimatedVectorDrawable uploading =
+                (AnimatedVectorDrawable) getDrawable(R.drawable.avd_uploading);
+        if (uploading != null) {
+            fabPosting.setImageDrawable(uploading);
+            uploading.start();
+        }
+    }
+
+    void ensurePostingProgressInflated() {
+        if (fabPosting != null) return;
+        fabPosting = (ImageButton) ((ViewStub) findViewById(R.id.stub_posting_progress)).inflate();
+    }
+
+    void checkEmptyState() {
+        if (adapter.getDataItemCount() == 0) {
+            // if grid is empty check whether we're loading or if no filters are selected
+            if (filtersAdapter.getEnabledSourcesCount() > 0) {
+                if (connected) {
+                    loading.setVisibility(View.VISIBLE);
+                    setNoFiltersEmptyTextVisibility(View.GONE);
+                }
+            } else {
+                loading.setVisibility(View.GONE);
+                setNoFiltersEmptyTextVisibility(View.VISIBLE);
+            }
+            toolbar.setTranslationZ(0f);
+        } else {
+            loading.setVisibility(View.GONE);
+            setNoFiltersEmptyTextVisibility(View.GONE);
+        }
+    }
+
+    int getAuthSourceRequestCode(Source filter) {
+        switch (filter.key) {
+            case SourceManager.SOURCE_DRIBBBLE_FOLLOWING:
+                return RC_AUTH_DRIBBBLE_FOLLOWING;
+            case SourceManager.SOURCE_DRIBBBLE_USER_LIKES:
+                return RC_AUTH_DRIBBBLE_USER_LIKES;
+            case SourceManager.SOURCE_DRIBBBLE_USER_SHOTS:
+                return RC_AUTH_DRIBBBLE_USER_SHOTS;
+        }
+        throw new InvalidParameterException();
     }
 
     private void showPostingProgress() {
@@ -576,45 +639,6 @@ public class HomeActivity extends Activity {
                     revealPostingProgress();
                 }
             });
-        }
-    }
-
-    private void revealPostingProgress() {
-        Animator reveal = ViewAnimationUtils.createCircularReveal(fabPosting,
-                (int) fabPosting.getPivotX(),
-                (int) fabPosting.getPivotY(),
-                0f,
-                fabPosting.getWidth() / 2)
-                .setDuration(600L);
-        reveal.setInterpolator(AnimUtils.getFastOutLinearInInterpolator(this));
-        reveal.start();
-        AnimatedVectorDrawable uploading =
-                (AnimatedVectorDrawable) getDrawable(R.drawable.avd_uploading);
-        fabPosting.setImageDrawable(uploading);
-        uploading.start();
-    }
-
-    private void ensurePostingProgressInflated() {
-        if (fabPosting != null) return;
-        fabPosting = (ImageButton) ((ViewStub) findViewById(R.id.stub_posting_progress)).inflate();
-    }
-
-    private void checkEmptyState() {
-        if (adapter.getDataItemCount() == 0) {
-            // if grid is empty check whether we're loading or if no filters are selected
-            if (filtersAdapter.getEnabledSourcesCount() > 0) {
-                if (connected) {
-                    loading.setVisibility(View.VISIBLE);
-                    setNoFiltersEmptyTextVisibility(View.GONE);
-                }
-            } else {
-                loading.setVisibility(View.GONE);
-                setNoFiltersEmptyTextVisibility(View.VISIBLE);
-            }
-            toolbar.setTranslationZ(0f);
-        } else {
-            loading.setVisibility(View.GONE);
-            setNoFiltersEmptyTextVisibility(View.GONE);
         }
     }
 
@@ -660,11 +684,8 @@ public class HomeActivity extends Activity {
     }
 
     private void setupTaskDescription() {
-        // set a silhouette icon in overview as the launcher icon is a bit busy
-        // and looks bad on top of colorPrimary
-        //Bitmap overviewIcon = ImageUtils.vectorToBitmap(this, R.drawable.ic_launcher_silhouette);
-        // TODO replace launcher icon with a monochrome version from RN.
-        Bitmap overviewIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        Bitmap overviewIcon =
+                BitmapFactory.decodeResource(getResources(), getApplicationInfo().icon);
         setTaskDescription(new ActivityManager.TaskDescription(getString(R.string.app_name),
                 overviewIcon,
                 ContextCompat.getColor(this, R.color.primary)));
@@ -688,29 +709,6 @@ public class HomeActivity extends Activity {
                     .setStartDelay(300)
                     .setDuration(900)
                     .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(this));
-        }
-        View amv = toolbar.getChildAt(1);
-        if (amv != null & amv instanceof ActionMenuView) {
-            ActionMenuView actions = (ActionMenuView) amv;
-            popAnim(actions.getChildAt(0), 500, 200); // filter
-            popAnim(actions.getChildAt(1), 700, 200); // overflow
-        }
-    }
-
-    private void popAnim(View v, int startDelay, int duration) {
-        if (v != null) {
-            v.setAlpha(0f);
-            v.setScaleX(0f);
-            v.setScaleY(0f);
-
-            v.animate()
-                    .alpha(1f)
-                    .scaleX(1f)
-                    .scaleY(1f)
-                    .setStartDelay(startDelay)
-                    .setDuration(duration)
-                    .setInterpolator(AnimationUtils.loadInterpolator(this,
-                            android.R.interpolator.overshoot));
         }
     }
 
@@ -743,7 +741,7 @@ public class HomeActivity extends Activity {
                 drawer.closeDrawer(GravityCompat.END);
             }
         };
-        drawer.setDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+        drawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
 
             // if the user interacts with the filters while it's open then don't auto-close
             private final View.OnTouchListener filtersTouch = new View.OnTouchListener() {
@@ -775,7 +773,7 @@ public class HomeActivity extends Activity {
             public void onDrawerClosed(View drawerView) {
                 // reset
                 filtersList.setOnTouchListener(null);
-                drawer.setDrawerListener(null);
+                drawer.removeDrawerListener(this);
             }
 
             @Override
@@ -788,15 +786,6 @@ public class HomeActivity extends Activity {
         });
         drawer.openDrawer(GravityCompat.END);
         drawer.postDelayed(closeDrawerRunnable, 2000L);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.END)) {
-            drawer.closeDrawer(GravityCompat.END);
-        } else {
-            super.onBackPressed();
-        }
     }
 
     private void checkConnectivity() {
@@ -812,8 +801,10 @@ public class HomeActivity extends Activity {
             }
             final AnimatedVectorDrawable avd =
                     (AnimatedVectorDrawable) getDrawable(R.drawable.avd_no_connection);
-            noConnection.setImageDrawable(avd);
-            avd.start();
+            if (noConnection != null && avd != null) {
+                noConnection.setImageDrawable(avd);
+                avd.start();
+            }
 
             connectivityManager.registerNetworkCallback(
                     new NetworkRequest.Builder()
@@ -823,7 +814,8 @@ public class HomeActivity extends Activity {
         }
     }
 
-    private ConnectivityManager.NetworkCallback connectivityCallback = new ConnectivityManager.NetworkCallback() {
+    private ConnectivityManager.NetworkCallback connectivityCallback
+            = new ConnectivityManager.NetworkCallback() {
         @Override
         public void onAvailable(Network network) {
             connected = true;
@@ -844,16 +836,4 @@ public class HomeActivity extends Activity {
             connected = false;
         }
     };
-
-    private int getAuthSourceRequestCode(Source filter) {
-        switch (filter.key) {
-            case SourceManager.SOURCE_DRIBBBLE_FOLLOWING:
-                return RC_AUTH_DRIBBBLE_FOLLOWING;
-            case SourceManager.SOURCE_DRIBBBLE_USER_LIKES:
-                return RC_AUTH_DRIBBBLE_USER_LIKES;
-            case SourceManager.SOURCE_DRIBBBLE_USER_SHOTS:
-                return RC_AUTH_DRIBBBLE_USER_SHOTS;
-        }
-        throw new InvalidParameterException();
-    }
 }

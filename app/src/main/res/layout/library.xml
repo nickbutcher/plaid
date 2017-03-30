@@ -27,7 +27,7 @@
     android:paddingBottom="@dimen/spacing_normal"
     android:foreground="?android:selectableItemBackground"
     android:stateListAnimator="@animator/raise"
-    android:background="@color/background_light"
+    android:background="@color/background_card"
     android:elevation="@dimen/z_card">
 
     <ImageView
@@ -50,12 +50,23 @@
         android:layout_alignParentEnd="true"
         style="@style/Widget.Plaid.Subhead" />
 
+    <io.plaidapp.ui.widget.BaselineGridTextView
+        android:id="@+id/library_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/library_name"
+        android:layout_toEndOf="@id/library_image"
+        android:layout_alignParentEnd="true"
+        android:maxLines="2"
+        android:ellipsize="end"
+        style="@style/Widget.Plaid.SecondaryText" />
+
     <Button
         android:id="@+id/library_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_below="@id/library_name"
+        android:layout_below="@id/library_description"
         android:text="@string/about_lib_link"
         android:textColor="@color/text_secondary_dark"
         style="?android:borderlessButtonStyle" />

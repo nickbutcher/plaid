@@ -58,7 +58,6 @@ public class StretchyChangeBounds extends Transition {
     private long minTrailingDuration = 200;     // ms
     private long maxTrailingDuration = 400;     // ms
     private long leadingDuration = 200;         // ms
-    private long trailingDuration = 200;         // ms
 
     public StretchyChangeBounds(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -144,7 +143,7 @@ public class StretchyChangeBounds extends Transition {
         Interpolator slowOutFastInInterpolator = AnimationUtils.loadInterpolator(
                 sceneRoot.getContext(), R.interpolator.slow_out_fast_in);
         AnimatorSet transition = new AnimatorSet();
-        trailingDuration =
+        long trailingDuration =
                 calculateTrailingDuration(startBounds, endBounds, sceneRoot.getContext());
 
         Animator leadingEdges, trailingEdges;
@@ -235,59 +234,59 @@ public class StretchyChangeBounds extends Transition {
      * An extension to {@link ColorDrawable} with convenience methods and properties for easily
      * animating its position and size.
      */
-    static class StretchColorDrawable extends ColorDrawable {
+    private static class StretchColorDrawable extends ColorDrawable {
 
-        static final Property<StretchColorDrawable, Integer> LEFT =
-                new AnimUtils.IntProperty<StretchColorDrawable>("left") {
+        static final Property<StretchColorDrawable, Integer> LEFT
+                = AnimUtils.createIntProperty(new AnimUtils.IntProp<StretchColorDrawable>("left") {
                     @Override
-                    public Integer get(StretchColorDrawable drawable) {
-                        return drawable.getLeft();
-                    }
-
-                    @Override
-                    public void setValue(StretchColorDrawable drawable, int left) {
+                    public void set(StretchColorDrawable drawable, int left) {
                         drawable.setLeft(left);
                     }
-                };
 
-        static final Property<StretchColorDrawable, Integer> TOP =
-                new AnimUtils.IntProperty<StretchColorDrawable>("top") {
                     @Override
-                    public Integer get(StretchColorDrawable drawable) {
-                        return drawable.getTop();
+                    public int get(StretchColorDrawable drawable) {
+                        return drawable.getLeft();
                     }
+                });
 
+        static final Property<StretchColorDrawable, Integer> TOP
+                = AnimUtils.createIntProperty(new AnimUtils.IntProp<StretchColorDrawable>("top") {
                     @Override
-                    public void setValue(StretchColorDrawable drawable, int top) {
+                    public void set(StretchColorDrawable drawable, int top) {
                         drawable.setTop(top);
                     }
-                };
 
-        static final Property<StretchColorDrawable, Integer> RIGHT =
-                new AnimUtils.IntProperty<StretchColorDrawable>("right") {
                     @Override
-                    public Integer get(StretchColorDrawable drawable) {
-                        return drawable.getRight();
+                    public int get(StretchColorDrawable drawable) {
+                        return drawable.getTop();
                     }
+                });
 
+        static final Property<StretchColorDrawable, Integer> RIGHT
+                = AnimUtils.createIntProperty(new AnimUtils.IntProp<StretchColorDrawable>("right") {
                     @Override
-                    public void setValue(StretchColorDrawable drawable, int right) {
+                    public void set(StretchColorDrawable drawable, int right) {
                         drawable.setRight(right);
                     }
-                };
 
-        static final Property<StretchColorDrawable, Integer> BOTTOM =
-                new AnimUtils.IntProperty<StretchColorDrawable>("bottom") {
                     @Override
-                    public Integer get(StretchColorDrawable drawable) {
-                        return drawable.getBottom();
+                    public int get(StretchColorDrawable drawable) {
+                        return drawable.getRight();
                     }
+                });
 
+        static final Property<StretchColorDrawable, Integer> BOTTOM
+               = AnimUtils.createIntProperty(new AnimUtils.IntProp<StretchColorDrawable>("bottom") {
                     @Override
-                    public void setValue(StretchColorDrawable drawable, int bottom) {
+                    public void set(StretchColorDrawable drawable, int bottom) {
                         drawable.setBottom(bottom);
                     }
-                };
+
+                    @Override
+                    public int get(StretchColorDrawable drawable) {
+                        return drawable.getBottom();
+                    }
+                });
 
         private int left, top, right, bottom;
 

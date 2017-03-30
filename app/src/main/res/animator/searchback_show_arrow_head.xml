@@ -21,10 +21,10 @@
 
     <!-- first we need to immediately reset state -->
     <objectAnimator
-        android:duration="0"
         android:propertyName="trimPathEnd"
+        android:duration="0"
         android:valueFrom="@fraction/searchback_arrow_head_search_trim_end"
-        android:valueTo="@fraction/searchback_arrow_head_search_trim_end"/>
+        android:valueTo="@fraction/searchback_arrow_head_search_trim_end" />
 
     <!-- then run the animation after a delay -->
     <objectAnimator
@@ -34,13 +34,5 @@
         android:startOffset="@integer/searchback_show_arrow_head_delay"
         android:duration="@integer/searchback_show_hide_arrow_head_duration"
         android:interpolator="@android:interpolator/fast_out_slow_in" />
-
-    <objectAnimator
-        android:propertyName="translateX"
-        android:valueFrom="100"
-        android:valueTo="20"
-        android:startOffset="@integer/searchback_show_arrow_head_delay"
-        android:duration="@integer/searchback_show_hide_arrow_head_duration"
-        android:interpolator="@android:interpolator/fast_out_slow_in"/>
 
 </set>

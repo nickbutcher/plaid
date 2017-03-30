@@ -29,20 +29,7 @@
     <transition
         android:fromId="@id/not_liked"
         android:toId="@id/liked"
-        android:reversible="false">
-
-        <animated-vector android:drawable="@drawable/heart_comment_anim">
-
-            <target
-                android:name="filled"
-                android:animation="@animator/comment_expand_full_heart" />
-
-            <target
-                android:name="empty"
-                android:animation="@animator/comment_fade_empty_heart" />
-
-        </animated-vector>
-
-    </transition>
+        android:drawable="@drawable/avd_like_comment"
+        android:reversible="false" />
 
 </animated-selector>

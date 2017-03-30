@@ -60,6 +60,11 @@ public class InsetDividerDecoration extends RecyclerView.ItemDecoration {
             RecyclerView.ViewHolder viewHolder = parent.getChildViewHolder(child);
 
             if (viewHolder.getClass() == dividedClass) {
+                // skip if this *or next* view is activated
+                if (child.isActivated()
+                     || (i + 1 < childCount && parent.getChildAt(i + 1).isActivated())) {
+                    continue;
+                }
                 lines[i * 4] = inset + lm.getDecoratedLeft(child);
                 lines[(i * 4) + 2] = lm.getDecoratedRight(child);
                 int y = lm.getDecoratedBottom(child) + (int) child.getTranslationY() - height;

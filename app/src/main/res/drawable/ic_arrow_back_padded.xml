@@ -19,7 +19,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="48dp"
     android:height="24dp"
-    android:viewportWidth="36"
+    android:viewportWidth="48"
     android:viewportHeight="24">
 
     <path

@@ -26,6 +26,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.transition.Transition;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -43,6 +44,7 @@ import butterknife.OnTextChanged;
 import io.plaidapp.R;
 import io.plaidapp.data.api.designernews.PostStoryService;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
+import io.plaidapp.util.ShortcutHelper;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.ui.widget.BottomSheet;
@@ -117,10 +119,12 @@ public class PostNewDesignerNewsStory extends Activity {
             ShareCompat.IntentReader intentReader = ShareCompat.IntentReader.from(this);
             url.setText(intentReader.getText());
             title.setText(intentReader.getSubject());
-
-            // when receiving a share there is no shared element transition so animate up the
-            // bottom sheet to establish the spatial model i.e. that it can be dismissed downward
-            overridePendingTransition(R.anim.post_story_enter, R.anim.fade_out_rapidly);
+        }
+        if (!hasSharedElementTransition()) {
+            // when launched from share or app shortcut there is no shared element transition so
+            // animate up the bottom sheet to establish the spatial model i.e. that it can be
+            // dismissed downward
+            overridePendingTransition(R.anim.post_story_enter, R.anim.post_story_exit);
             bottomSheetContent.getViewTreeObserver().addOnPreDrawListener(
                     new ViewTreeObserver.OnPreDrawListener() {
                 @Override
@@ -137,18 +141,24 @@ public class PostNewDesignerNewsStory extends Activity {
                 }
             });
         }
+        ShortcutHelper.reportPostUsed(this);
     }
 
     @Override
     protected void onPause() {
         // customize window animations
-        overridePendingTransition(0, R.anim.fade_out_rapidly);
+        overridePendingTransition(R.anim.post_story_enter, R.anim.post_story_exit);
         super.onPause();
     }
 
     @Override
     public void onBackPressed() {
-        if (isShareIntent()) {
+        dismiss();
+    }
+
+    @OnClick(R.id.bottom_sheet)
+    protected void dismiss() {
+        if (!hasSharedElementTransition()) {
             bottomSheetContent.animate()
                     .translationY(bottomSheetContent.getHeight())
                     .setDuration(160L)
@@ -157,17 +167,12 @@ public class PostNewDesignerNewsStory extends Activity {
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            finishAfterTransition();
+                            finish();
                         }
                     });
         } else {
-            super.onBackPressed();
+            finishAfterTransition();
         }
-    }
-
-    @OnClick(R.id.bottom_sheet)
-    protected void dismiss() {
-        finishAfterTransition();
     }
 
     @OnTextChanged(R.id.new_story_title)
@@ -218,6 +223,11 @@ public class PostNewDesignerNewsStory extends Activity {
 
     private boolean isShareIntent() {
         return getIntent() != null && Intent.ACTION_SEND.equals(getIntent().getAction());
+    }
+
+    private boolean hasSharedElementTransition() {
+        Transition transition = getWindow().getSharedElementEnterTransition();
+        return (transition != null && !transition.getTargets().isEmpty());
     }
 
     private void setPostButtonState() {
