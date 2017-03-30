@@ -259,7 +259,7 @@ public class DesignerNewsLogin extends Activity {
     }
 
     void showLoginFailed() {
-        Snackbar.make(container, "Log in failed", Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(container, R.string.login_failed, Snackbar.LENGTH_SHORT).show();
         showLogin();
         password.requestFocus();
     }
