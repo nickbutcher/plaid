@@ -78,8 +78,7 @@
     <string name="sign_up">Sign up</string>
     <string name="dn_login_action">Log in</string>
 
-    <!-- dribble login -->
-    <string name="dribbble_login_failed">Login failed</string>
+    <string name="login_failed">Login failed</string>
 
     <!-- designer news story -->
     <string name="upvote_story">Upvote story</string>
@@ -160,4 +159,5 @@
     <string name="transition_player_background" translatable="false">transition_player_background</string>
     <string name="transition_search_back" translatable="false">transition_search_back</string>
 
+    <string name="comment_likes_count">0</string>
 </resources>
