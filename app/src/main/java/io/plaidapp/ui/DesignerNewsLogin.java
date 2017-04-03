@@ -19,10 +19,13 @@ package io.plaidapp.ui;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -30,7 +33,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.transition.Transition;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.util.Patterns;
@@ -70,7 +72,6 @@ import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.util.ScrimUtil;
-import io.plaidapp.util.TransitionUtils;
 import io.plaidapp.util.glide.CircleTransform;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -105,17 +106,6 @@ public class DesignerNewsLogin extends Activity {
                     ContextCompat.getColor(this, R.color.background_light),
                     getResources().getDimensionPixelSize(R.dimen.dialog_corners));
         }
-        if (getWindow().getSharedElementEnterTransition() != null) {
-            getWindow().getSharedElementEnterTransition().addListener(new TransitionUtils.TransitionListenerAdapter() {
-                @Override
-                public void onTransitionEnd(Transition transition) {
-                    getWindow().getSharedElementEnterTransition().removeListener(this);
-                    finishSetup();
-                }
-            });
-        } else {
-            finishSetup();
-        }
 
         loading.setVisibility(View.GONE);
         setupAccountAutocomplete();
@@ -145,15 +135,34 @@ public class DesignerNewsLogin extends Activity {
         designerNewsPrefs = DesignerNewsPrefs.get(this);
     }
 
+    @Override @SuppressLint("NewApi")
+    public void onEnterAnimationComplete() {
+        /* Postpone some of the setup steps so that we can run it after the enter transition (if
+        there is one). Otherwise we may show the permissions dialog or account dropdown during the
+        enter animation which is jarring. */
+        if (shouldPromptForPermission) {
+            requestPermissions(new String[]{Manifest.permission.GET_ACCOUNTS},
+                    PERMISSIONS_REQUEST_GET_ACCOUNTS);
+            shouldPromptForPermission = false;
+        }
+        username.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                maybeShowAccounts();
+            }
+        });
+        maybeShowAccounts();
+    }
+
     @Override
     public void onBackPressed() {
         dismiss(null);
     }
 
-    @Override
+    @Override @TargetApi(Build.VERSION_CODES.M)
     public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions,
-                                           int[] grantResults) {
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST_GET_ACCOUNTS) {
             TransitionManager.beginDelayedTransition(container);
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -190,26 +199,6 @@ public class DesignerNewsLogin extends Activity {
         finishAfterTransition();
     }
 
-    /**
-     * Postpone some of the setup steps so that we can run it after the enter transition
-     * (if there is one). Otherwise we may show the permissions dialog or account dropdown
-     * during the enter animation which is jarring.
-     */
-    void finishSetup() {
-        if (shouldPromptForPermission) {
-            requestPermissions(new String[]{ Manifest.permission.GET_ACCOUNTS },
-                    PERMISSIONS_REQUEST_GET_ACCOUNTS);
-            shouldPromptForPermission = false;
-        }
-        username.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                maybeShowAccounts();
-            }
-        });
-        maybeShowAccounts();
-    }
-
     void maybeShowAccounts() {
         if (username.hasFocus()
                 && username.isAttachedToWindow()
@@ -223,6 +212,7 @@ public class DesignerNewsLogin extends Activity {
         return username.length() > 0 && password.length() > 0;
     }
 
+    @SuppressLint("InflateParams")
     void showLoggedInUser() {
         final Call<User> authedUser = designerNewsPrefs.getApi().getAuthedUser();
         authedUser.enqueue(new Callback<User>() {
@@ -328,6 +318,7 @@ public class DesignerNewsLogin extends Activity {
         return loginParams;
     }
 
+    @SuppressLint("NewApi")
     private void setupAccountAutocomplete() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS) ==
                 PackageManager.PERMISSION_GRANTED) {
@@ -351,6 +342,7 @@ public class DesignerNewsLogin extends Activity {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     private void setupPermissionPrimer() {
         permissionPrimer.setChecked(false);
         permissionPrimer.setVisibility(View.VISIBLE);
