@@ -37,7 +37,7 @@ android {
         targetSdkVersion 25
         versionCode gitCommitCount
         versionName gitTag
-        archivesBaseName = "plaid-${versionName}"
+        archivesBaseName = "plaid"
         resConfig "en"
         buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
         buildConfigField "String", "DRIBBBLE_CLIENT_ID", "\"${dribbble_client_id}\""
