@@ -31,6 +31,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion '25.0.2'
 
+
     defaultConfig {
         applicationId "io.plaidapp"
         minSdkVersion 21
@@ -44,6 +45,10 @@ android {
         buildConfigField "String", "DRIBBBLE_CLIENT_SECRET", "\"${dribbble_client_secret}\""
         buildConfigField "String",
                 "DRIBBBLE_CLIENT_ACCESS_TOKEN", "\"${dribbble_client_access_token}\""
+
+        buildConfigField "String", "DEVIANTART_CLIENT_ID", "\"${deviantart_client_id}\""
+        buildConfigField "String", "DEVIANTART_CLIENT_SECRET", "\"${deviantart_client_secret}\""
+
         buildConfigField "String", "DESIGNER_NEWS_CLIENT_ID", "\"${designer_news_client_id}\""
         buildConfigField "String",
                 "DESIGNER_NEWS_CLIENT_SECRET", "\"${designer_news_client_secret}\""
@@ -73,6 +78,7 @@ repositories {
 ext.supportLibVersion = '25.3.1'
 ext.retrofit2Version = '2.2.0'
 
+
 dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile "com.android.support:customtabs:${supportLibVersion}"
@@ -86,6 +92,11 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     compile "com.squareup.retrofit2:retrofit:${retrofit2Version}"
     compile "com.squareup.retrofit2:converter-gson:${retrofit2Version}"
+    compile ("com.squareup.retrofit2:converter-simplexml:${retrofit2Version}") {
+        exclude group: 'xpp3', module: 'xpp3'
+        exclude group: 'stax', module: 'stax-api'
+        exclude group: 'stax', module: 'stax'
+    }
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
     compile 'org.jsoup:jsoup:1.10.1'
     compile project(':bypass')

@@ -84,6 +84,7 @@ import io.plaidapp.data.api.designernews.PostStoryService;
 import io.plaidapp.data.api.designernews.model.Story;
 import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
+import io.plaidapp.data.prefs.DeviantartPrefs;
 import io.plaidapp.data.prefs.DribbblePrefs;
 import io.plaidapp.data.prefs.SourceManager;
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
@@ -103,6 +104,8 @@ public class HomeActivity extends Activity {
     private static final int RC_AUTH_DRIBBBLE_USER_SHOTS = 3;
     private static final int RC_NEW_DESIGNER_NEWS_STORY = 4;
     private static final int RC_NEW_DESIGNER_NEWS_LOGIN = 5;
+    private static final int RC_DEVIANTART_POPULAR = 6;
+    private static final int RC_DEVIANTART_DAILY = 7;
 
     @BindView(R.id.drawer) DrawerLayout drawer;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -122,8 +125,9 @@ public class HomeActivity extends Activity {
     DataManager dataManager;
     FeedAdapter adapter;
     FilterAdapter filtersAdapter;
-    private DesignerNewsPrefs designerNewsPrefs;
+    //private DesignerNewsPrefs designerNewsPrefs;
     private DribbblePrefs dribbblePrefs;
+    private DeviantartPrefs deviantartPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,22 +146,38 @@ public class HomeActivity extends Activity {
         setExitSharedElementCallback(FeedAdapter.createSharedElementReenterCallback(this));
 
         dribbblePrefs = DribbblePrefs.get(this);
-        designerNewsPrefs = DesignerNewsPrefs.get(this);
+        deviantartPrefs = DeviantartPrefs.get(this);
+//        designerNewsPrefs = DesignerNewsPrefs.get(this);
         filtersAdapter = new FilterAdapter(this, SourceManager.getSources(this),
                 new FilterAdapter.FilterAuthoriser() {
-            @Override
-            public void requestDribbbleAuthorisation(View sharedElement, Source forSource) {
-                Intent login = new Intent(HomeActivity.this, DribbbleLogin.class);
-                MorphTransform.addExtras(login,
-                        ContextCompat.getColor(HomeActivity.this, R.color.background_dark),
-                        sharedElement.getHeight() / 2);
-                ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation(HomeActivity.this,
-                                sharedElement, getString(R.string.transition_dribbble_login));
-                startActivityForResult(login,
-                        getAuthSourceRequestCode(forSource), options.toBundle());
-            }
-        });
+                @Override
+                public void requestDribbbleAuthorisation(View sharedElement, Source forSource) {
+                    Intent login = new Intent(HomeActivity.this, DribbbleLogin.class);
+                    MorphTransform.addExtras(login,
+                            ContextCompat.getColor(HomeActivity.this, R.color.background_dark),
+                            sharedElement.getHeight() / 2);
+                    ActivityOptions options =
+                            ActivityOptions.makeSceneTransitionAnimation(HomeActivity.this,
+                                    sharedElement, getString(R.string.transition_dribbble_login));
+                    startActivityForResult(login,
+                            getAuthSourceRequestCode(forSource), options.toBundle());
+                }
+
+                @Override
+                public void requestDeviantartAuthorisation(View sharedElement, Source forSource) {
+                    Intent login = new Intent(HomeActivity.this, DeviantartLogin.class);
+                    MorphTransform.addExtras(login,
+                            ContextCompat.getColor(HomeActivity.this, R.color.background_dark),
+                            sharedElement.getHeight() / 2);
+                    ActivityOptions options =
+                            ActivityOptions.makeSceneTransitionAnimation(HomeActivity.this,
+                                    sharedElement, getString(R.string.transition_deviantart_login));
+                    startActivityForResult(login,
+                            getAuthSourceRequestCode(forSource), options.toBundle());
+
+                }
+
+                });
         dataManager = new DataManager(this, filtersAdapter) {
             @Override
             public void onDataLoaded(List<? extends PlaidItem> data) {
@@ -261,12 +281,14 @@ public class HomeActivity extends Activity {
     protected void onResume() {
         super.onResume();
         dribbblePrefs.addLoginStatusListener(filtersAdapter);
+        deviantartPrefs.addLoginStatusListener(filtersAdapter);
         checkConnectivity();
     }
 
     @Override
     protected void onPause() {
         dribbblePrefs.removeLoginStatusListener(filtersAdapter);
+        deviantartPrefs.removeLoginStatusListener(filtersAdapter);
         if (monitoringConnectivity) {
             final ConnectivityManager connectivityManager
                     = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -318,11 +340,17 @@ public class HomeActivity extends Activity {
             dribbbleLogin.setTitle(dribbblePrefs.isLoggedIn() ?
                     R.string.dribbble_log_out : R.string.dribbble_login);
         }
-        final MenuItem designerNewsLogin = menu.findItem(R.id.menu_designer_news_login);
-        if (designerNewsLogin != null) {
-            designerNewsLogin.setTitle(designerNewsPrefs.isLoggedIn() ?
-                    R.string.designer_news_log_out : R.string.designer_news_login);
+        final MenuItem deviantartLogin = menu.findItem(R.id.menu_deviantart_login);
+        if (deviantartLogin != null) {
+            deviantartLogin.setTitle(deviantartPrefs.isLoggedIn() ?
+                    R.string.deviantart_log_out : R.string.deviantart_login);
         }
+
+//        final MenuItem designerNewsLogin = menu.findItem(R.id.menu_designer_news_login);
+//        if (designerNewsLogin != null) {
+//            designerNewsLogin.setTitle(designerNewsPrefs.isLoggedIn() ?
+//                    R.string.designer_news_log_out : R.string.designer_news_login);
+//        }
         return true;
     }
 
@@ -347,17 +375,24 @@ public class HomeActivity extends Activity {
                     Toast.makeText(getApplicationContext(), R.string.dribbble_logged_out, Toast
                             .LENGTH_SHORT).show();
                 }
-                return true;
-            case R.id.menu_designer_news_login:
-                if (!designerNewsPrefs.isLoggedIn()) {
-                    startActivity(new Intent(this, DesignerNewsLogin.class));
-                } else {
-                    designerNewsPrefs.logout(HomeActivity.this);
-                    // TODO something better than a toast!!
-                    Toast.makeText(getApplicationContext(), R.string.designer_news_logged_out,
-                            Toast.LENGTH_SHORT).show();
+                if(!deviantartPrefs.isLoggedIn()){
+                    deviantartPrefs.login(HomeActivity.this);
+                }else{
+                    deviantartPrefs.logout();
+                    Toast.makeText(getApplicationContext(), "Logged out of Deviantart", Toast
+                          .LENGTH_LONG).show();
                 }
                 return true;
+//            case R.id.menu_designer_news_login:
+//                if (!designerNewsPrefs.isLoggedIn()) {
+//                    startActivity(new Intent(this, DesignerNewsLogin.class));
+//                } else {
+//                    designerNewsPrefs.logout(HomeActivity.this);
+//                    // TODO something better than a toast!!
+//                    Toast.makeText(getApplicationContext(), R.string.designer_news_logged_out,
+//                            Toast.LENGTH_SHORT).show();
+//                }
+//                return true;
             case R.id.menu_about:
                 startActivity(new Intent(HomeActivity.this, AboutActivity.class),
                         ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
@@ -440,7 +475,19 @@ public class HomeActivity extends Activity {
                             SourceManager.SOURCE_DRIBBBLE_USER_SHOTS, this);
                 }
                 break;
+            case RC_DEVIANTART_POPULAR:
+                if (resultCode == RESULT_OK) {
+                    filtersAdapter.enableFilterByKey(
+                            SourceManager.SOURCE_DEVIANTART_POPULAR, this);
+                }
+            case RC_DEVIANTART_DAILY:
+                if (resultCode == RESULT_OK) {
+                    filtersAdapter.enableFilterByKey(
+                            SourceManager.SOURCE_DEVIANTART_DAILY, this);
+                }
+                break;
         }
+
     }
 
     @Override
@@ -490,23 +537,23 @@ public class HomeActivity extends Activity {
 
     @OnClick(R.id.fab)
     protected void fabClick() {
-        if (designerNewsPrefs.isLoggedIn()) {
-            Intent intent = new Intent(this, PostNewDesignerNewsStory.class);
-            FabTransform.addExtras(intent,
-                    ContextCompat.getColor(this, R.color.accent), R.drawable.ic_add_dark);
-            intent.putExtra(PostStoryService.EXTRA_BROADCAST_RESULT, true);
-            registerPostStoryResultListener();
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, fab,
-                    getString(R.string.transition_new_designer_news_post));
-            startActivityForResult(intent, RC_NEW_DESIGNER_NEWS_STORY, options.toBundle());
-        } else {
-            Intent intent = new Intent(this, DesignerNewsLogin.class);
-            FabTransform.addExtras(intent,
-                    ContextCompat.getColor(this, R.color.accent), R.drawable.ic_add_dark);
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, fab,
-                    getString(R.string.transition_designer_news_login));
-            startActivityForResult(intent, RC_NEW_DESIGNER_NEWS_LOGIN, options.toBundle());
-        }
+//        if (designerNewsPrefs.isLoggedIn()) {
+//            Intent intent = new Intent(this, PostNewDesignerNewsStory.class);
+//            FabTransform.addExtras(intent,
+//                    ContextCompat.getColor(this, R.color.accent), R.drawable.ic_add_dark);
+//            intent.putExtra(PostStoryService.EXTRA_BROADCAST_RESULT, true);
+//            registerPostStoryResultListener();
+//            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, fab,
+//                    getString(R.string.transition_new_designer_news_post));
+//            startActivityForResult(intent, RC_NEW_DESIGNER_NEWS_STORY, options.toBundle());
+//        } else {
+//            Intent intent = new Intent(this, DesignerNewsLogin.class);
+//            FabTransform.addExtras(intent,
+//                    ContextCompat.getColor(this, R.color.accent), R.drawable.ic_add_dark);
+//            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, fab,
+//                    getString(R.string.transition_designer_news_login));
+//            startActivityForResult(intent, RC_NEW_DESIGNER_NEWS_LOGIN, options.toBundle());
+//        }
     }
 
     BroadcastReceiver postStoryResultReceiver = new BroadcastReceiver() {
@@ -624,6 +671,10 @@ public class HomeActivity extends Activity {
                 return RC_AUTH_DRIBBBLE_USER_LIKES;
             case SourceManager.SOURCE_DRIBBBLE_USER_SHOTS:
                 return RC_AUTH_DRIBBBLE_USER_SHOTS;
+            case SourceManager.SOURCE_DEVIANTART_POPULAR:
+                return  RC_DEVIANTART_POPULAR;
+            case SourceManager.SOURCE_DEVIANTART_DAILY:
+                return  RC_DEVIANTART_DAILY;
         }
         throw new InvalidParameterException();
     }

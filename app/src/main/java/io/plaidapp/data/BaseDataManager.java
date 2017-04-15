@@ -1,18 +1,3 @@
-/*
- * Copyright 2015 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package io.plaidapp.data;
 
@@ -29,11 +14,13 @@ import io.plaidapp.BuildConfig;
 import io.plaidapp.data.api.AuthInterceptor;
 import io.plaidapp.data.api.DenvelopingConverter;
 import io.plaidapp.data.api.designernews.DesignerNewsService;
+import io.plaidapp.data.api.deviantart.DeviantartService;
 import io.plaidapp.data.api.dribbble.DribbbleSearchConverter;
 import io.plaidapp.data.api.dribbble.DribbbleSearchService;
 import io.plaidapp.data.api.dribbble.DribbbleService;
 import io.plaidapp.data.api.producthunt.ProductHuntService;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
+import io.plaidapp.data.prefs.DeviantartPrefs;
 import io.plaidapp.data.prefs.DribbblePrefs;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -49,7 +36,9 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
     private final AtomicInteger loadingCount;
     private final DesignerNewsPrefs designerNewsPrefs;
     private final DribbblePrefs dribbblePrefs;
+    private final DeviantartPrefs deviantartPrefs;
     private DribbbleSearchService dribbbleSearchApi;
+    private DeviantartService deviantartService;
     private ProductHuntService productHuntApi;
     private List<DataLoadingSubject.DataLoadingCallbacks> loadingCallbacks;
 
@@ -57,6 +46,7 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
         loadingCount = new AtomicInteger(0);
         designerNewsPrefs = DesignerNewsPrefs.get(context);
         dribbblePrefs = DribbblePrefs.get(context);
+        deviantartPrefs = DeviantartPrefs.get(context);
     }
 
     public abstract void onDataLoaded(T data);
@@ -93,6 +83,11 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
         if (dribbbleSearchApi == null) createDribbbleSearchApi();
         return dribbbleSearchApi;
     }
+
+    public DeviantartService getDeviantartApi() {
+        return deviantartPrefs.getApi();
+    }
+
 
     @Override
     public void registerCallback(DataLoadingSubject.DataLoadingCallbacks callback) {
@@ -137,14 +132,14 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
         }
     }
 
-    protected void dispatchLoadingStartedCallbacks() {
+    private void dispatchLoadingStartedCallbacks() {
         if (loadingCallbacks == null || loadingCallbacks.isEmpty()) return;
         for (DataLoadingCallbacks loadingCallback : loadingCallbacks) {
             loadingCallback.dataStartedLoading();
         }
     }
 
-    protected void dispatchLoadingFinishedCallbacks() {
+    private void dispatchLoadingFinishedCallbacks() {
         if (loadingCallbacks == null || loadingCallbacks.isEmpty()) return;
         for (DataLoadingCallbacks loadingCallback : loadingCallbacks) {
             loadingCallback.dataFinishedLoading();
@@ -158,6 +153,8 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
                 .build()
                 .create((DribbbleSearchService.class));
     }
+
+
 
     private void createProductHuntApi() {
         final OkHttpClient client = new OkHttpClient.Builder()

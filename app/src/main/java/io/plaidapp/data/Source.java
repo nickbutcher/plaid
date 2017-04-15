@@ -78,6 +78,36 @@ public class Source {
         }
     }
 
+
+    public static class DeviantartSearchSource extends DeviantartSource {
+
+        public static final String DEVIANTART_QUERY_PREFIX = "DEVIANTART_QUERY_";
+        private static final int SEARCH_SORT_ORDER = 400;
+
+        public final String query;
+
+        public DeviantartSearchSource(String query,
+                                    boolean active) {
+            super(DEVIANTART_QUERY_PREFIX + query, SEARCH_SORT_ORDER, "“" + query + "”", active);
+            this.query = query;
+        }
+
+        @Override
+        public boolean isSwipeDismissable() {
+            return true;
+        }
+    }
+
+    public static class DeviantartSource extends Source {
+
+        public DeviantartSource(String key,
+                                  int sortOrder,
+                                  String name,
+                                  boolean active) {
+            super(key, sortOrder, name, R.drawable.deviantart_logo, active);
+        }
+    }
+
     public static class DesignerNewsSource extends Source {
 
         public DesignerNewsSource(String key,
