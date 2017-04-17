@@ -62,9 +62,9 @@ public interface DesignerNewsService {
     @POST("oauth/token")
     Call<AccessToken> login(@FieldMap() Map<String, String> loginParams);
 
-    @EnvelopePayload("user")
-    @GET("api/v1/me")
-    Call<User> getAuthedUser();
+    @EnvelopePayload("users")
+    @GET("api/v2/me")
+    Call<List<User>> getAuthedUser();
 
     @EnvelopePayload("story")
     @POST("api/v1/stories/{id}/upvote")
