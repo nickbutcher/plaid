@@ -47,7 +47,7 @@ public interface DesignerNewsService {
     String ENDPOINT = "https://www.designernews.co/";
 
     @EnvelopePayload("stories")
-    @GET("api/v1/stories")
+    @GET("api/v2/stories")
     Call<List<Story>> getTopStories(@Query("page") Integer page);
 
     @EnvelopePayload("stories")
