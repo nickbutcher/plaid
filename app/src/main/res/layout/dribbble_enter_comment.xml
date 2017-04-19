@@ -51,7 +51,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:inputType="textCapSentences"
-            android:focusable="false"
             android:textSize="16sp"
             android:textColor="@color/text_primary_dark" />
 

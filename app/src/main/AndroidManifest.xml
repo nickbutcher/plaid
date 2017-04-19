@@ -57,7 +57,8 @@
         <activity
             android:name=".ui.DribbbleShot"
             android:parentActivityName=".ui.HomeActivity"
-            android:theme="@style/Plaid.Translucent.Dribbble.Shot">
+            android:theme="@style/Plaid.Translucent.Dribbble.Shot"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

@@ -710,15 +710,6 @@ public class DribbbleShot extends Activity {
             enterComment = (EditText) commentFooter.findViewById(R.id.comment);
             postComment = (ImageButton) commentFooter.findViewById(R.id.post_comment);
             enterComment.setOnFocusChangeListener(enterCommentFocus);
-            enterComment.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    if(enterComment.isFocusable()) return false;
-                    enterComment.setFocusableInTouchMode(true);
-                    enterComment.setFocusable(true);
-                    return false;
-                }
-            });
         } else if (!allowComment && commentFooter != null) {
             adapter.removeCommentingFooter();
             commentFooter = null;
