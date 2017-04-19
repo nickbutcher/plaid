@@ -29,7 +29,7 @@ def gitCommitCount = 100 +
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId "io.plaidapp"
@@ -37,7 +37,7 @@ android {
         targetSdkVersion 25
         versionCode gitCommitCount
         versionName gitTag
-        archivesBaseName = "plaid-${versionName}"
+        archivesBaseName = "plaid"
         resConfig "en"
         buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
         buildConfigField "String", "DRIBBBLE_CLIENT_ID", "\"${dribbble_client_id}\""
@@ -70,10 +70,11 @@ repositories {
     jcenter()
 }
 
-ext.supportLibVersion = '25.0.1'
+ext.supportLibVersion = '25.3.1'
+ext.retrofit2Version = '2.2.0'
 
 dependencies {
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile "com.android.support:customtabs:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:palette-v7:${supportLibVersion}"
@@ -83,9 +84,9 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.squareup.okhttp3:okhttp:3.4.2'
+    compile "com.squareup.retrofit2:retrofit:${retrofit2Version}"
+    compile "com.squareup.retrofit2:converter-gson:${retrofit2Version}"
+    compile 'com.squareup.okhttp3:okhttp:3.6.0'
     compile 'org.jsoup:jsoup:1.10.1'
     compile project(':bypass')
 }

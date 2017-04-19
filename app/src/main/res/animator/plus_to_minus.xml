@@ -21,5 +21,5 @@
     android:valueFrom="@string/path_follow_plus"
     android:valueTo="@string/path_follow_minus"
     android:valueType="pathType"
-    android:duration="@integer/heart_fill_time"
+    android:duration="@android:integer/config_mediumAnimTime"
     android:interpolator="@android:interpolator/fast_out_slow_in" />

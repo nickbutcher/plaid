@@ -32,7 +32,7 @@ import retrofit2.Response;
 public abstract class ShotLikesDataManager extends PaginatedDataManager<List<Like>> {
 
     private final long shotId;
-    private Call shotLikesCall;
+    private Call<List<Like>> shotLikesCall;
 
     public ShotLikesDataManager(Context context, long shotId) {
         super(context);

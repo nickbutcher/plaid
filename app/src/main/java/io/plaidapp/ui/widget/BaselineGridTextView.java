@@ -67,8 +67,7 @@ public class BaselineGridTextView extends FontTextView {
 
         lineHeightMultiplierHint =
                 a.getFloat(R.styleable.BaselineGridTextView_lineHeightMultiplierHint, 1f);
-        lineHeightHint =
-                a.getDimensionPixelSize(R.styleable.BaselineGridTextView_lineHeightHint, 0);
+        lineHeightHint = a.getDimension(R.styleable.BaselineGridTextView_lineHeightHint, 0);
         maxLinesByHeight = a.getBoolean(R.styleable.BaselineGridTextView_maxLinesByHeight, false);
         a.recycle();
 
@@ -132,14 +131,14 @@ public class BaselineGridTextView extends FontTextView {
      * Ensures line height is a multiple of 4dp.
      */
     private void computeLineHeight() {
-        final Paint.FontMetricsInt fm = getPaint().getFontMetricsInt();
-        final int fontHeight = Math.abs(fm.ascent - fm.descent) + fm.leading;
+        final Paint.FontMetrics fm = getPaint().getFontMetrics();
+        final float fontHeight = Math.abs(fm.ascent - fm.descent) + fm.leading;
         final float desiredLineHeight = (lineHeightHint > 0)
                 ? lineHeightHint
                 : lineHeightMultiplierHint * fontHeight;
 
         final int baselineAlignedLineHeight =
-                (int) (FOUR_DIP * (float) Math.ceil(desiredLineHeight / FOUR_DIP));
+                (int) ((FOUR_DIP * (float) Math.ceil(desiredLineHeight / FOUR_DIP)) + 0.5f);
         setLineSpacing(baselineAlignedLineHeight - fontHeight, 1f);
     }
 
