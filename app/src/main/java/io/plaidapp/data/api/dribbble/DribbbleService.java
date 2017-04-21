@@ -43,7 +43,7 @@ public interface DribbbleService {
     String ENDPOINT = "https://api.dribbble.com/";
     String DATE_FORMAT = "yyyy/MM/dd HH:mm:ss Z";
     int PER_PAGE_MAX = 100;
-    int PER_PAGE_DEFAULT = 30;
+    int PER_PAGE_DEFAULT = 4;
 
 
     /* Shots */

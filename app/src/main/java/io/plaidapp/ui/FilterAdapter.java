@@ -38,6 +38,7 @@ import java.util.List;
 
 import io.plaidapp.R;
 import io.plaidapp.data.Source;
+import io.plaidapp.data.prefs.DeviantartPrefs;
 import io.plaidapp.data.prefs.DribbblePrefs;
 import io.plaidapp.data.prefs.SourceManager;
 import io.plaidapp.ui.recyclerview.ItemTouchHelperAdapter;
@@ -49,10 +50,12 @@ import io.plaidapp.util.ViewUtils;
  * Adapter for showing the list of data sources used as filters for the home grid.
  */
 public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterViewHolder>
-        implements ItemTouchHelperAdapter, DribbblePrefs.DribbbleLoginStatusListener {
+        implements ItemTouchHelperAdapter, DribbblePrefs.DribbbleLoginStatusListener, DeviantartPrefs.DeviantartLoginStatusListener {
+
 
     public interface FilterAuthoriser {
         void requestDribbbleAuthorisation(View sharedElement, Source forSource);
+        void requestDeviantartAuthorisation(View sharedElement, Source forSource);
     }
 
     private static final int FILTER_ICON_ENABLED_ALPHA = 179; // 70%
@@ -160,6 +163,26 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
     }
 
     @Override
+    public void onDeviantartLogin() {
+        // no-op
+    }
+
+    @Override
+    public void onDeviantartLogout() {
+        for (int i = 0; i < filters.size(); i++) {
+            Source filter = filters.get(i);
+            if (filter.active && isAuthorisedDeviantartSource(filter)) {
+                filter.active = false;
+                SourceManager.updateSource(filter, context);
+                dispatchFiltersChanged(filter);
+                notifyItemChanged(i, FilterAnimator.FILTER_DISABLED);
+            }
+        }
+
+    }
+
+
+    @Override
     public FilterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         final FilterViewHolder holder = new FilterViewHolder(LayoutInflater.from(viewGroup
                 .getContext()).inflate(R.layout.filter_item, viewGroup, false));
@@ -172,7 +195,11 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
                 if (isAuthorisedDribbbleSource(filter) &&
                         !DribbblePrefs.get(holder.itemView.getContext()).isLoggedIn()) {
                     authoriser.requestDribbbleAuthorisation(holder.filterIcon, filter);
-                } else {
+                } else
+                if (isAuthorisedDeviantartSource(filter) &&
+                        !DeviantartPrefs.get(holder.itemView.getContext()).isLoggedIn()){
+                    authoriser.requestDeviantartAuthorisation(holder.filterIcon, filter);
+                }else {
                     filter.active = !filter.active;
                     holder.filterName.setEnabled(filter.active);
                     notifyItemChanged(position, filter.active ? FilterAnimator.FILTER_ENABLED
@@ -264,6 +291,12 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
                 || source.key.equals(SourceManager.SOURCE_DRIBBBLE_USER_LIKES)
                 || source.key.equals(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
     }
+
+    private boolean isAuthorisedDeviantartSource(Source source) {
+        return source.key.equals(SourceManager.SOURCE_DEVIANTART_POPULAR)
+                || source.key.equals(SourceManager.SOURCE_DEVIANTART_DAILY);
+    }
+
 
     private void dispatchFiltersChanged(Source filter) {
         if (callbacks != null && !callbacks.isEmpty()) {

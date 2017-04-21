@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-buildscript {
+package io.plaidapp.data.api.deviantart.model;
 
-    repositories {
-        jcenter()
+public class AccessToken {
+
+    public final String access_token;
+    private final String token_type;
+    private final String refresh_token;
+    private final String scope;
+
+    public AccessToken(String access_token, String token_type, String refresh_token, String scope) {
+        this.access_token = access_token;
+        this.token_type = token_type;
+        this.refresh_token = refresh_token;
+        this.scope = scope;
     }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
-    }
-
 }

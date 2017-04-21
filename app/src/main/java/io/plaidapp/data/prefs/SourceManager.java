@@ -34,6 +34,8 @@ import io.plaidapp.data.Source;
  */
 public class SourceManager {
 
+    public static final String SOURCE_DEVIANTART_POPULAR = "SOURCE_DEVIANTART_POPULAR";
+    public static final String SOURCE_DEVIANTART_DAILY = "SOURCE_DEVIANTART_DAILY";
     public static final String SOURCE_DESIGNER_NEWS_POPULAR = "SOURCE_DESIGNER_NEWS_POPULAR";
     public static final String SOURCE_DESIGNER_NEWS_RECENT = "SOURCE_DESIGNER_NEWS_RECENT";
     public static final String SOURCE_DRIBBBLE_POPULAR = "SOURCE_DRIBBBLE_POPULAR";
@@ -126,10 +128,10 @@ public class SourceManager {
 
     private static ArrayList<Source> getDefaultSources(Context context) {
         ArrayList<Source> defaultSources = new ArrayList<>(11);
-        defaultSources.add(new Source.DesignerNewsSource(SOURCE_DESIGNER_NEWS_POPULAR, 100,
-                context.getString(R.string.source_designer_news_popular), true));
-        defaultSources.add(new Source.DesignerNewsSource(SOURCE_DESIGNER_NEWS_RECENT, 101,
-                context.getString(R.string.source_designer_news_recent), false));
+//        defaultSources.add(new Source.DesignerNewsSource(SOURCE_DESIGNER_NEWS_POPULAR, 100,
+//                context.getString(R.string.source_designer_news_popular), false));
+//        defaultSources.add(new Source.DesignerNewsSource(SOURCE_DESIGNER_NEWS_RECENT, 101,
+//                context.getString(R.string.source_designer_news_recent), false));
         // 200 sort order range left for DN searches
         defaultSources.add(new Source.DribbbleSource(SOURCE_DRIBBBLE_POPULAR, 300,
                 context.getString(R.string.source_dribbble_popular), true));
@@ -146,9 +148,11 @@ public class SourceManager {
         defaultSources.add(new Source.DribbbleSource(SOURCE_DRIBBBLE_ANIMATED, 306,
                 context.getString(R.string.source_dribbble_animated), false));
         defaultSources.add(new Source.DribbbleSearchSource(context.getString(R.string
-                .source_dribbble_search_material_design), true));
+                .source_dribbble_search_surreal_art), true));
         // 400 sort order range left for dribbble searches
-        defaultSources.add(new Source(SOURCE_PRODUCT_HUNT, 500,
+        defaultSources.add(new Source.DeviantartSource(SOURCE_DEVIANTART_POPULAR, 500, "Popular Deviations", false));
+        defaultSources.add(new Source.DeviantartSource(SOURCE_DEVIANTART_DAILY, 501, "Daily Deviations", false));
+        defaultSources.add(new Source(SOURCE_PRODUCT_HUNT, 700,
                 context.getString(R.string.source_product_hunt),
                 R.drawable.ic_product_hunt, false));
         return defaultSources;

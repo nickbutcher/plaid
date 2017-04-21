@@ -53,6 +53,7 @@ import butterknife.OnClick;
 import io.plaidapp.R;
 import io.plaidapp.data.DataLoadingSubject;
 import io.plaidapp.data.PaginatedDataManager;
+import io.plaidapp.data.api.deviantart.model.Deviation;
 import io.plaidapp.data.api.dribbble.FollowersDataManager;
 import io.plaidapp.data.api.dribbble.ShotLikesDataManager;
 import io.plaidapp.data.api.dribbble.model.Follow;
@@ -106,6 +107,15 @@ public class PlayerSheet extends Activity {
         launching.startActivity(starter,
                 ActivityOptions.makeSceneTransitionAnimation(launching).toBundle());
     }
+
+    public static void start(Activity launching, Deviation deviation) {
+        Intent starter = new Intent(launching, PlayerSheet.class);
+        starter.putExtra(EXTRA_MODE, MODE_SHOT_LIKES);
+        starter.putExtra(EXTRA_SHOT, deviation);
+        launching.startActivity(starter,
+                ActivityOptions.makeSceneTransitionAnimation(launching).toBundle());
+    }
+
 
     public static void start(Activity launching, User player) {
         Intent starter = new Intent(launching, PlayerSheet.class);

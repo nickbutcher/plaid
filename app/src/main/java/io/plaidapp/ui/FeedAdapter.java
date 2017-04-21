@@ -40,6 +40,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -69,12 +70,15 @@ import io.plaidapp.data.PlaidItem;
 import io.plaidapp.data.PlaidItemSorting;
 import io.plaidapp.data.api.designernews.StoryWeigher;
 import io.plaidapp.data.api.designernews.model.Story;
+import io.plaidapp.data.api.deviantart.DeviationWeigher;
+import io.plaidapp.data.api.deviantart.model.Deviation;
 import io.plaidapp.data.api.dribbble.PlayerShotsDataManager;
 import io.plaidapp.data.api.dribbble.ShotWeigher;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.producthunt.PostWeigher;
 import io.plaidapp.data.api.producthunt.model.Post;
 import io.plaidapp.data.pocket.PocketUtils;
+import io.plaidapp.data.prefs.DeviantartPrefs;
 import io.plaidapp.data.prefs.SourceManager;
 import io.plaidapp.ui.transitions.ReflowText;
 import io.plaidapp.ui.widget.BadgedFourThreeImageView;
@@ -82,6 +86,7 @@ import io.plaidapp.util.ObservableColorMatrix;
 import io.plaidapp.util.TransitionUtils;
 import io.plaidapp.util.ViewUtils;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
+import io.plaidapp.util.glide.DeviationTarget;
 import io.plaidapp.util.glide.DribbbleTarget;
 
 import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
@@ -97,6 +102,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static final int TYPE_DESIGNER_NEWS_STORY = 0;
     private static final int TYPE_DRIBBBLE_SHOT = 1;
     private static final int TYPE_PRODUCT_HUNT_POST = 2;
+    private static final int TYPE_DEVIATION_POST = 3;
     private static final int TYPE_LOADING_MORE = -1;
 
     // we need to hold on to an activity ref for the shared element transitions :/
@@ -115,6 +121,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private ShotWeigher shotWeigher;
     private StoryWeigher storyWeigher;
     private PostWeigher postWeigher;
+    private DeviationWeigher deviationWeigher;
+
+//    private int deviantKeySize;
 
     public FeedAdapter(Activity hostActivity,
                        DataLoadingSubject dataLoading,
@@ -129,6 +138,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         comparator = new PlaidItemSorting.PlaidItemComparator();
         items = new ArrayList<>();
         setHasStableIds(true);
+
+//        deviantKeySize = 0;
 
         // get the dribbble shot placeholder colors & badge color from the theme
         final TypedArray a = host.obtainStyledAttributes(R.styleable.DribbbleFeed);
@@ -157,8 +168,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 return createDesignerNewsStoryHolder(parent);
             case TYPE_DRIBBBLE_SHOT:
                 return createDribbbleShotHolder(parent);
+            case TYPE_DEVIATION_POST:
+                return createDeviationPostHolder(parent);
             case TYPE_PRODUCT_HUNT_POST:
                 return createProductHuntStoryHolder(parent);
+
             case TYPE_LOADING_MORE:
                 return new LoadingMoreHolder(
                         layoutInflater.inflate(R.layout.infinite_loading, parent, false));
@@ -173,8 +187,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 bindDesignerNewsStory((Story) getItem(position), (DesignerNewsStoryHolder) holder);
                 break;
             case TYPE_DRIBBBLE_SHOT:
-                bindDribbbleShotHolder(
-                        (Shot) getItem(position), (DribbbleShotHolder) holder, position);
+                bindDribbbleShotHolder((Shot) getItem(position), (DribbbleShotHolder) holder, position);
+                break;
+            case TYPE_DEVIATION_POST:
+                bindDeviantartPostHolder((Deviation) getItem(position), (DeviationPostHolder) holder, position);
                 break;
             case TYPE_PRODUCT_HUNT_POST:
                 bindProductHuntPostView((Post) getItem(position), (ProductHuntStoryHolder) holder);
@@ -187,6 +203,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onViewRecycled(RecyclerView.ViewHolder holder) {
+        if (holder instanceof DeviationPostHolder) {
+            // reset the badge & ripple which are dynamically determined
+            DeviationPostHolder deviationPostHolder = (DeviationPostHolder) holder;
+            deviationPostHolder.deviationImage.setBadgeColor(initialGifBadgeColor);
+            deviationPostHolder.deviationImage.showBadge(false);
+            deviationPostHolder.deviationImage.setForeground(
+                    ContextCompat.getDrawable(host, R.drawable.mid_grey_ripple));
+
+        }
+
         if (holder instanceof DribbbleShotHolder) {
             // reset the badge & ripple which are dynamically determined
             DribbbleShotHolder shotHolder = (DribbbleShotHolder) holder;
@@ -331,6 +357,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return holder;
     }
 
+
     private void bindDribbbleShotHolder(final Shot shot,
                                         final DribbbleShotHolder holder,
                                         int position) {
@@ -394,6 +421,139 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.image.setTransitionName(shot.html_url);
     }
 
+
+    @NonNull
+    private DeviationPostHolder createDeviationPostHolder(ViewGroup parent) {
+
+        final DeviationPostHolder holder = new DeviationPostHolder(
+                layoutInflater.inflate(R.layout.deviantart_deviation_item, parent, false), "test");
+        holder.deviationImage.setBadgeColor(initialGifBadgeColor);
+        holder.deviationImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setClass(host, DeviationActivity.class);
+                intent.putExtra(DeviationActivity.EXTRA_SHOT,
+                        (Deviation) getItem(holder.getAdapterPosition()));
+                setGridItemContentTransitions(holder.deviationImage);
+                ActivityOptions options =
+                        ActivityOptions.makeSceneTransitionAnimation(host,
+                                Pair.create(view, host.getString(R.string.transition_shot)),
+                                Pair.create(view, host.getString(R.string
+                                        .transition_shot_background)));
+                host.startActivityForResult(intent, REQUEST_CODE_VIEW_SHOT, options.toBundle());
+            }
+        });
+        // play animated GIFs whilst touched
+        holder.deviationImage.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // check if it's an event we care about, else bail fast
+                final int action = event.getAction();
+                if (!(action == MotionEvent.ACTION_DOWN
+                        || action == MotionEvent.ACTION_UP
+                        || action == MotionEvent.ACTION_CANCEL)) return false;
+
+                // get the image and check if it's an animated GIF
+                final Drawable drawable = holder.deviationImage.getDrawable();
+                if (drawable == null) return false;
+                GifDrawable gif = null;
+                if (drawable instanceof GifDrawable) {
+                    gif = (GifDrawable) drawable;
+                } else if (drawable instanceof TransitionDrawable) {
+                    // we fade in images on load which uses a TransitionDrawable; check its layers
+                    TransitionDrawable fadingIn = (TransitionDrawable) drawable;
+                    for (int i = 0; i < fadingIn.getNumberOfLayers(); i++) {
+                        if (fadingIn.getDrawable(i) instanceof GifDrawable) {
+                            gif = (GifDrawable) fadingIn.getDrawable(i);
+                            break;
+                        }
+                    }
+                }
+                if (gif == null) return false;
+                // GIF found, start/stop it on press/lift
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        gif.start();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        gif.stop();
+                        break;
+                }
+                return false;
+            }
+        });
+        return holder;
+    }
+
+
+    private void bindDeviantartPostHolder(final Deviation deviation,
+                                        final DeviationPostHolder holder,
+                                        int position) {
+//        final int[] imageSize = deviation.content..bestSize();
+//        holder.deviationImage.setImageDrawable(null);
+//        holder.itemView.setActivated(holder.getAdapterPosition() == holder.getOldPosition());
+
+        Glide.with(host)
+                .load(deviation.content.getSource())
+                .listener(new RequestListener<String, GlideDrawable>() {
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource,
+                                                   String model,
+                                                   Target<GlideDrawable> target,
+                                                   boolean isFromMemoryCache,
+                                                   boolean isFirstResource) {
+                        if (!deviation.hasFadedIn) {
+                            holder.deviationImage.setHasTransientState(true);
+                            final ObservableColorMatrix cm = new ObservableColorMatrix();
+                            final ObjectAnimator saturation = ObjectAnimator.ofFloat(
+                                    cm, ObservableColorMatrix.SATURATION, 0f, 1f);
+                            saturation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener
+                                    () {
+                                @Override
+                                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                                    // just animating the color matrix does not invalidate the
+                                    // drawable so need this update listener.  Also have to create a
+                                    // new CMCF as the matrix is immutable :(
+                                    holder.deviationImage.setColorFilter(new ColorMatrixColorFilter(cm));
+                                }
+                            });
+                            saturation.setDuration(2000L);
+                            saturation.setInterpolator(getFastOutSlowInInterpolator(host));
+                            saturation.addListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    holder.deviationImage.clearColorFilter();
+                                    holder.deviationImage.setHasTransientState(false);
+                                }
+                            });
+                            saturation.start();
+                            deviation.hasFadedIn = true;
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable>
+                            target, boolean isFirstResource) {
+                        return false;
+                    }
+                })
+                .placeholder(shotLoadingPlaceholders[position % shotLoadingPlaceholders.length])
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .fitCenter()
+                .into(new DeviationTarget(holder.deviationImage, false));
+        // need both placeholder & background to prevent seeing through shot as it fades in
+        holder.deviationImage.setBackground(
+                shotLoadingPlaceholders[position % shotLoadingPlaceholders.length]);
+//        holder.image.showBadge(deviation);
+        // need a unique transition name per shot, let's use it's url
+        holder.deviationImage.setTransitionName(deviation.content.getSource());
+    }
+
+
     @NonNull
     private ProductHuntStoryHolder createProductHuntStoryHolder(ViewGroup parent) {
         final ProductHuntStoryHolder holder = new ProductHuntStoryHolder(
@@ -447,7 +607,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 return TYPE_DESIGNER_NEWS_STORY;
             } else if (item instanceof Shot) {
                 return TYPE_DRIBBBLE_SHOT;
-            } else if (item instanceof Post) {
+            } else if (item instanceof  Deviation){
+                return TYPE_DEVIATION_POST;
+            }
+            else if (item instanceof Post) {
                 return TYPE_PRODUCT_HUNT_POST;
             }
         }
@@ -501,6 +664,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             case SourceManager.SOURCE_DRIBBBLE_USER_SHOTS:
             case SourceManager.SOURCE_DRIBBBLE_USER_LIKES:
             case SourceManager.SOURCE_PRODUCT_HUNT:
+//            case SourceManager.SOURCE_DEVIANTART:
             case PlayerShotsDataManager.SOURCE_PLAYER_SHOTS:
             case PlayerShotsDataManager.SOURCE_TEAM_SHOTS:
                 if (naturalOrderWeigher == null) {
@@ -520,6 +684,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 } else if (items.get(0) instanceof Post) {
                     if (postWeigher == null) postWeigher = new PostWeigher();
                     weigher = postWeigher;
+                } else if (items.get(0) instanceof Deviation) {
+                    if (deviationWeigher == null) deviationWeigher = new DeviationWeigher();
+                    weigher = deviationWeigher;
+//                    deviantKeySize = items.size(); //DeviantartPrefs.get(host).getKeySize();
                 }
         }
         weigher.weigh(items);
@@ -533,8 +701,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         for (PlaidItem newItem : newItems) {
             boolean add = true;
             for (int i = 0; i < count; i++) {
-                PlaidItem existingItem = getItem(i);
-                if (existingItem.equals(newItem)) {
+                String existingItem = getItem(i).title;
+                if (existingItem.equalsIgnoreCase(newItem.title)) {
                     add = false;
                     break;
                 }
@@ -658,13 +826,23 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void dataStartedLoading() {
         if (showLoadingMore) return;
         showLoadingMore = true;
-        notifyItemInserted(getLoadingMoreItemPosition());
+//        if(deviantKeySize > 0){
+//            notifyItemInserted(deviantKeySize);
+//        }else{
+            notifyItemInserted(getLoadingMoreItemPosition());
+//        }
+        
     }
 
     @Override
     public void dataFinishedLoading() {
         if (!showLoadingMore) return;
-        final int loadingPos = getLoadingMoreItemPosition();
+
+        int loadingPos = getLoadingMoreItemPosition();
+//        if(deviantKeySize > 0){
+//            loadingPos = deviantKeySize;
+//           // DeviantartPrefs.get(host).setLoadSize(0);
+//        }
         showLoadingMore = false;
         notifyItemRemoved(loadingPos);
     }
@@ -707,6 +885,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             image = (BadgedFourThreeImageView) itemView;
         }
 
+    }
+
+    /* package */ static class DeviationPostHolder extends RecyclerView.ViewHolder {
+        BadgedFourThreeImageView deviationImage;
+        String url;
+
+        DeviationPostHolder(View deviationImageView, String urlHolder) {
+            super(deviationImageView);
+            deviationImage = (BadgedFourThreeImageView) deviationImageView;
+            url = urlHolder;
+        }
     }
 
     /* package */ static class DesignerNewsStoryHolder extends RecyclerView.ViewHolder {
