@@ -115,6 +115,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private ShotWeigher shotWeigher;
     private StoryWeigher storyWeigher;
     private PostWeigher postWeigher;
+    private boolean isActivityStarted = false;
 
     public FeedAdapter(Activity hostActivity,
                        DataLoadingSubject dataLoading,
@@ -232,16 +233,18 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                 HomeGridItemAnimator.STORY_COMMENTS_RETURN);
                     }
                 });
-
-                final ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation(host,
-                                Pair.create((View) holder.title,
-                                        host.getString(R.string.transition_story_title)),
-                                Pair.create(holder.itemView,
-                                        host.getString(R.string.transition_story_title_background)),
-                                Pair.create(holder.itemView,
-                                        host.getString(R.string.transition_story_background)));
-                host.startActivity(intent, options.toBundle());
+                if (!isActivityStarted) {
+                    isActivityStarted = true;
+                    final ActivityOptions options =
+                            ActivityOptions.makeSceneTransitionAnimation(host,
+                                    Pair.create((View) holder.title,
+                                            host.getString(R.string.transition_story_title)),
+                                    Pair.create(holder.itemView,
+                                            host.getString(R.string.transition_story_title_background)),
+                                    Pair.create(holder.itemView,
+                                            host.getString(R.string.transition_story_background)));
+                    host.startActivity(intent, options.toBundle());
+                }
             }
         });
         if (pocketIsInstalled) {
@@ -280,12 +283,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 intent.putExtra(DribbbleShot.EXTRA_SHOT,
                         (Shot) getItem(holder.getAdapterPosition()));
                 setGridItemContentTransitions(holder.image);
-                ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation(host,
-                                Pair.create(view, host.getString(R.string.transition_shot)),
-                                Pair.create(view, host.getString(R.string
-                                        .transition_shot_background)));
-                host.startActivityForResult(intent, REQUEST_CODE_VIEW_SHOT, options.toBundle());
+                if (!isActivityStarted) {
+                    isActivityStarted = true;
+                    ActivityOptions options =
+                            ActivityOptions.makeSceneTransitionAnimation(host,
+                                    Pair.create(view, host.getString(R.string.transition_shot)),
+                                    Pair.create(view, host.getString(R.string
+                                            .transition_shot_background)));
+                    host.startActivityForResult(intent, REQUEST_CODE_VIEW_SHOT, options.toBundle());
+                }
             }
         });
         // play animated GIFs whilst touched
@@ -743,6 +749,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             progress = (ProgressBar) itemView;
         }
 
+    }
+
+    /* for updating the status on item click */
+    public void updateOnclickStatus(){
+        isActivityStarted = false;
     }
 
 }

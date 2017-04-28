@@ -260,6 +260,7 @@ public class HomeActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        adapter.updateOnclickStatus();
         dribbblePrefs.addLoginStatusListener(filtersAdapter);
         checkConnectivity();
     }
