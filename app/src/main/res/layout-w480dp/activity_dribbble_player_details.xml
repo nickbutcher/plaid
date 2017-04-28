@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:elevation="@dimen/z_card"
+    android:transitionGroup="false"
+    tools:showIn="@layout/activity_dribbble_player">
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/large_avatar_size"
+        android:layout_height="@dimen/large_avatar_size"
+        android:layout_marginStart="@dimen/avatar_margin_start"
+        android:layout_marginTop="@dimen/spacing_micro"
+        android:elevation="@dimen/z_card"
+        android:padding="@dimen/avatar_padding"
+        android:src="@drawable/avatar_placeholder"
+        android:transitionName="@string/transition_player_avatar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <io.plaidapp.ui.widget.BaselineGridTextView
+        android:id="@+id/player_name"
+        style="@style/Widget.Plaid.PlayerTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_normal"
+        android:paddingTop="@dimen/avatar_margin"
+        app:layout_constraintEnd_toEndOf="@id/avatar"
+        app:layout_constraintStart_toStartOf="@id/avatar"
+        app:layout_constraintTop_toBottomOf="@id/avatar"
+        tools:text="Nick Butcher" />
+
+    <Button
+        android:id="@+id/follow"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/spacing_normal"
+        android:drawableStart="@drawable/asl_follow"
+        android:paddingBottom="@dimen/spacing_normal"
+        android:paddingEnd="@dimen/padding_normal"
+        android:paddingStart="@dimen/padding_normal"
+        android:paddingTop="@dimen/spacing_normal"
+        android:text="@string/follow"
+        android:textAppearance="@style/TextAppearance.DarkButton"
+        android:theme="@style/LightRippleOverlay"
+        app:layout_constraintEnd_toEndOf="@id/avatar"
+        app:layout_constraintStart_toStartOf="@id/avatar"
+        app:layout_constraintTop_toBottomOf="@id/player_name" />
+
+    <io.plaidapp.ui.widget.BaselineGridTextView
+        android:id="@+id/player_bio"
+        style="@style/Widget.Plaid.DribbbleShotDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/padding_normal"
+        android:paddingStart="@dimen/spacing_xlarge"
+        android:textColorHighlight="@color/dribbble_link_highlight"
+        android:textColorLink="@color/dribbble_links"
+        app:layout_constraintBottom_toBottomOf="@id/avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/avatar"
+        app:layout_constraintTop_toTopOf="@id/avatar"
+        tools:text="Designer &amp; developer at Google." />
+
+    <io.plaidapp.ui.widget.BaselineGridTextView
+        android:id="@+id/shot_count"
+        style="@style/Widget.Plaid.InlineActionButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:drawableTop="@drawable/avd_shots"
+        android:paddingBottom="@dimen/padding_large"
+        android:paddingTop="@dimen/padding_large"
+        app:layout_constraintEnd_toStartOf="@+id/followers_count"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toRightOf="@id/avatar"
+        app:layout_constraintTop_toBottomOf="@id/player_bio"
+        tools:text="1337 shots" />
+
+    <io.plaidapp.ui.widget.BaselineGridTextView
+        android:id="@id/followers_count"
+        style="@style/Widget.Plaid.InlineActionButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/avd_followers"
+        android:paddingBottom="@dimen/padding_large"
+        android:paddingTop="@dimen/padding_large"
+        app:layout_constraintEnd_toStartOf="@+id/likes_count"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/shot_count"
+        app:layout_constraintTop_toBottomOf="@id/player_bio"
+        tools:text="1337 followers" />
+
+    <io.plaidapp.ui.widget.BaselineGridTextView
+        android:id="@id/likes_count"
+        style="@style/Widget.Plaid.InlineActionButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/avd_likes"
+        android:paddingBottom="@dimen/spacing_xlarge"
+        android:paddingTop="@dimen/padding_large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/followers_count"
+        app:layout_constraintTop_toBottomOf="@id/player_bio"
+        tools:text="1,000,000 likes" />
+
+</android.support.constraint.ConstraintLayout>

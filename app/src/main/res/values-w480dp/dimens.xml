@@ -20,4 +20,6 @@
     <!-- bottom sheet -->
     <dimen name="bottom_sheet_width">480dp</dimen>
 
+    <!-- dribbble player -->
+    <dimen name="avatar_margin_start">24dp</dimen>
 </resources>
