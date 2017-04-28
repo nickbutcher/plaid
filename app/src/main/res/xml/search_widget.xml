@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/search_widget"
+    android:minWidth="@dimen/min_touch_target"
+    android:minHeight="@dimen/min_touch_target"
+    android:resizeMode="none"
+    android:widgetCategory="home_screen"
+    android:previewImage="@drawable/ic_shortcut_search"/>
+

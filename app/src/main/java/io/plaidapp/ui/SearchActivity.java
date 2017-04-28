@@ -69,6 +69,7 @@ public class SearchActivity extends Activity {
     public static final String EXTRA_QUERY = "EXTRA_QUERY";
     public static final String EXTRA_SAVE_DRIBBBLE = "EXTRA_SAVE_DRIBBBLE";
     public static final String EXTRA_SAVE_DESIGNER_NEWS = "EXTRA_SAVE_DESIGNER_NEWS";
+    public static final String EXTRA_DISABLE_SAVE = "EXTRA_DISABLE_SAVE";
     public static final int RESULT_CODE_SAVE = 7;
 
     @BindView(R.id.searchback) ImageButton searchBack;
@@ -99,7 +100,7 @@ public class SearchActivity extends Activity {
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
         setupSearchView();
-
+        final Intent intent = getIntent();
         dataManager = new SearchDataManager(this) {
             @Override
             public void onDataLoaded(List<? extends PlaidItem> data) {
@@ -109,7 +110,8 @@ public class SearchActivity extends Activity {
                                 getTransition(R.transition.search_show_results));
                         progress.setVisibility(View.GONE);
                         results.setVisibility(View.VISIBLE);
-                        fab.setVisibility(View.VISIBLE);
+                        fab.setVisibility(intent.hasExtra(EXTRA_DISABLE_SAVE) && intent.getBooleanExtra(EXTRA_DISABLE_SAVE, false) ?
+                                View.GONE : View.VISIBLE);
                     }
                     adapter.addAndResort(data);
                 } else {

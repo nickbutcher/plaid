@@ -154,6 +154,16 @@
                 android:resource="@xml/glide_disk_cache_path" />
         </provider>
 
+        <receiver android:name=".ui.widget.SearchAppWidget" android:label="@string/search_hint">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/search_widget"
+            />
+        </receiver>
+
         <!-- Glide configurations for image loading -->
         <meta-data
             android:name="io.plaidapp.util.glide.GlideConfiguration"
