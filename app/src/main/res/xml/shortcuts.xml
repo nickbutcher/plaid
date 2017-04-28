@@ -26,7 +26,11 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetClass="io.plaidapp.ui.SearchActivity"
-            android:targetPackage="io.plaidapp" />
+            android:targetPackage="io.plaidapp">
+            <extra
+                android:name="EXTRA_DISABLE_SAVE"
+                android:value="true"/>
+        </intent>
     </shortcut>
 
 </shortcuts>

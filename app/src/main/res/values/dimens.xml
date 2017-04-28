@@ -38,7 +38,7 @@
     <!-- text input layout seems to add 4dp of extra padding. The following account for this -->
     <dimen name="padding_normal_til">12dp</dimen>
     <dimen name="til_margin_fix">-4dp</dimen>
-
+    <dimen name="min_touch_target">48dp</dimen>
 
     <!-- dialogs -->
     <dimen name="padding_dialog">24dp</dimen>
