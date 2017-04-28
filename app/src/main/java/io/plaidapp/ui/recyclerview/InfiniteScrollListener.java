@@ -16,6 +16,7 @@
 
 package io.plaidapp.ui.recyclerview;
 
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -51,7 +52,15 @@ public abstract class InfiniteScrollListener extends RecyclerView.OnScrollListen
         final int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
 
         if ((totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_THRESHOLD)) {
-            onLoadMore();
+            Handler handler = new Handler();
+
+            final Runnable r = new Runnable() {
+                public void run() {
+                    onLoadMore();
+                }
+            };
+
+            handler.post(r);
         }
     }
 
