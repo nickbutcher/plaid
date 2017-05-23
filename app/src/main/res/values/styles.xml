@@ -187,7 +187,7 @@
 
     <style name="TextAppearance.ToolbarTitle" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
         <item name="android:textColor">@color/text_primary_light</item>
-        <item name="font">roboto-mono-regular</item>
+        <item name="fontName">roboto-mono-regular</item>
     </style>
 
     <style name="TextAppearance.ToolbarTitleSmallCaps" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
@@ -197,14 +197,14 @@
     </style>
 
     <style name="TextAppearance.DribbbleShotTitle" parent="@android:style/TextAppearance.Material.Headline">
-        <item name="font">roboto-mono-regular</item>
+        <item name="fontName">roboto-mono-regular</item>
         <item name="android:textColor">@color/text_primary_dark</item>
     </style>
 
     <style name="TextAppearance.TilePrimary" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:letterSpacing">0.01</item>
         <item name="lineHeightHint">20sp</item>
-        <item name="font">roboto-mono-regular</item>
+        <item name="fontName">roboto-mono-regular</item>
     </style>
 
     <style name="Widget.Plaid.TilePrimary">
