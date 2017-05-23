@@ -145,9 +145,9 @@ public class CollapsingTitleLayout extends FrameLayout implements ReflowText.Ref
                 Color.WHITE));
         collapsedTextSize = atp.getDimensionPixelSize(
                 R.styleable.CollapsingTextAppearance_android_textSize, 0);
-        if (atp.hasValue(R.styleable.CollapsingTextAppearance_font)) {
+        if (atp.hasValue(R.styleable.CollapsingTextAppearance_fontName)) {
             paint.setTypeface(FontUtil.get(getContext(),
-                    atp.getString(R.styleable.CollapsingTextAppearance_font)));
+                    atp.getString(R.styleable.CollapsingTextAppearance_fontName)));
         }
         atp.recycle();
 

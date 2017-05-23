@@ -55,9 +55,9 @@ public class CutoutTextView extends View {
 
         final TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable
                 .CutoutTextView, 0, 0);
-        if (a.hasValue(R.styleable.CutoutTextView_font)) {
+        if (a.hasValue(R.styleable.CutoutTextView_fontName)) {
             textPaint.setTypeface(FontUtil.get(context, a.getString(R.styleable
-                    .CutoutTextView_font)));
+                    .CutoutTextView_fontName)));
         }
         if (a.hasValue(R.styleable.CutoutTextView_foregroundColor)) {
             foregroundColor = a.getColor(R.styleable.CutoutTextView_foregroundColor,

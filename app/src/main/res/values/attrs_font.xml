@@ -17,13 +17,13 @@
 
 <resources>
 
-    <attr name="font" format="string" />
+    <attr name="fontName" format="string" />
 
     <declare-styleable name="FontTextAppearance">
         <attr name="android:textSize" />
         <attr name="android:textColor" />
         <attr name="android:fontFamily" />
-        <attr name="font" />
+        <attr name="fontName" />
     </declare-styleable>
 
 </resources>

@@ -13,11 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
 
 apply plugin: 'com.android.application'
 
@@ -68,13 +63,16 @@ android {
 
 repositories {
     jcenter()
+    maven {
+        url 'https://maven.google.com'
+    }
 }
 
-ext.supportLibVersion = '25.3.1'
+ext.supportLibVersion = '26.0.0-beta1'
 ext.retrofit2Version = '2.2.0'
 
 dependencies {
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support.constraint:constraint-layout:1.1.0-beta1'
     compile "com.android.support:customtabs:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:palette-v7:${supportLibVersion}"
