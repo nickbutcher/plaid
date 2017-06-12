@@ -17,13 +17,11 @@
 buildscript {
 
     repositories {
-        maven {
-            url 'https://maven.google.com'
-        }
+        google()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-alpha1'
+        classpath 'com.android.tools.build:gradle:3.0.0-alpha3'
     }
 
 }
