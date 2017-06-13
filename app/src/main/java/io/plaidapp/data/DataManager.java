@@ -17,6 +17,7 @@
 package io.plaidapp.data;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,12 +25,16 @@ import java.util.List;
 import java.util.Map;
 
 import io.plaidapp.data.api.designernews.model.Story;
+import io.plaidapp.data.api.deviantart.DeviantartService;
+import io.plaidapp.data.api.deviantart.model.Deviation;
+import io.plaidapp.data.api.deviantart.model.Popular;
 import io.plaidapp.data.api.dribbble.DribbbleSearchService;
 import io.plaidapp.data.api.dribbble.DribbbleService;
 import io.plaidapp.data.api.dribbble.model.Like;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.dribbble.model.User;
 import io.plaidapp.data.api.producthunt.model.Post;
+import io.plaidapp.data.prefs.DeviantartPrefs;
 import io.plaidapp.data.prefs.SourceManager;
 import io.plaidapp.ui.FilterAdapter;
 import retrofit2.Call;
@@ -45,14 +50,19 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
     private final FilterAdapter filterAdapter;
     private Map<String, Integer> pageIndexes;
     private Map<String, Call> inflight;
+    private Context mContext;
+    private int deviantartOffSet = 0;
+    private List<Deviation> deviations;
 
     public DataManager(Context context,
                        FilterAdapter filterAdapter) {
         super(context);
+        mContext = context;
         this.filterAdapter = filterAdapter;
         filterAdapter.registerFilterChangedCallback(filterListener);
         setupPageIndexes();
         inflight = new HashMap<>();
+        deviations = new ArrayList<>();
     }
 
     public void loadAllDataSources() {
@@ -125,12 +135,19 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
                 case SourceManager.SOURCE_PRODUCT_HUNT:
                     loadProductHunt(page);
                     break;
+                case SourceManager.SOURCE_DEVIANTART_POPULAR:
+                    loadPopularDeviations(page);
+                    break;
+                case SourceManager.SOURCE_DEVIANTART_DAILY:
+                    loadDailyDeviations(page);
+                    break;
                 default:
                     if (source instanceof Source.DribbbleSearchSource) {
                         loadDribbbleSearch((Source.DribbbleSearchSource) source, page);
-                    } else if (source instanceof Source.DesignerNewsSearchSource) {
-                        loadDesignerNewsSearch((Source.DesignerNewsSearchSource) source, page);
                     }
+//                   else if (source instanceof Source.DesignerNewsSearchSource) {
+//                        loadDesignerNewsSearch((Source.DesignerNewsSearchSource) source, page);
+//                    }
                     break;
             }
         }
@@ -170,6 +187,15 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
     private void loadFailed(String key) {
         loadFinished();
         inflight.remove(key);
+        Log.d("key", key);
+        /**
+         * To - do
+         *
+         * Add Snackbar showing
+         * particular choice failed
+         * (dribbble/designer news authenticate user)
+         */
+
     }
 
     private void loadDesignerNewsTopStories(final int page) {
@@ -414,7 +440,8 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
             @Override
             public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
                 if (response.isSuccessful()) {
-                    sourceLoaded(response.body(), page, source.key);
+                    Log.d("dribbbleSize" , String.valueOf(response.body().size()));
+                     sourceLoaded(response.body(), page, source.key);
                 } else {
                     loadFailed(source.key);
                 }
@@ -426,6 +453,84 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
             }
         });
         inflight.put(source.key, searchCall);
+    }
+
+
+    private void loadDailyDeviations(final int page) {
+
+        final Call<List<Deviation>> userHandleCall =  getDeviantartApi()
+                                    .getDailyDeviations();
+        userHandleCall.enqueue(new Callback<List<Deviation>>() {
+            @Override
+            public void onResponse(Call<List<Deviation>> call, Response<List<Deviation>> response) {
+                if (response.isSuccessful()) {
+                    Log.d("DeviantLoaded", String.valueOf(response.body()));
+                        sourceLoaded(response.body(), page, SourceManager.SOURCE_DEVIANTART_DAILY);
+                } else {
+                    loadFailed(SourceManager.SOURCE_DEVIANTART_DAILY);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Deviation>> call, Throwable t) {
+                loadFailed(SourceManager.SOURCE_DEVIANTART_DAILY);
+            }
+        });
+        inflight.put(SourceManager.SOURCE_DEVIANTART_DAILY, userHandleCall);
+
+    }
+
+    private void loadPopularDeviations(final int page) {
+        // this API's paging is 0 based but this class (& sorting) is 1 based so adjust locally
+
+        final Call<Popular> userHandleCall = //getDeviantartApi().getUserGallery("arnabsaha", DeviantartService.PER_PAGE_DEFAULT, deviantartOffSet);
+
+                getDeviantartApi().getPopularDeviations("digitalart", DeviantartService.PER_PAGE_DEFAULT, deviantartOffSet);
+        userHandleCall.enqueue(new Callback<Popular>() {
+            @Override
+            public void onResponse(Call<Popular> call, Response<Popular> response) {
+                if (response.isSuccessful()) {
+                    Log.d("DeviantLoaded", String.valueOf(response.body().results));
+                    Popular popular = response.body();
+                    deviantartOffSet = popular.next_offset+1;
+                    Log.d("Results", popular.results.toString());
+
+                    Deviation d;
+                    List<Deviation> results = popular.results;
+                    for(int deviantions = 0; deviantions < results.size(); deviantions++){
+                        Deviation parseDeviation = results.get(deviantions);
+                        d = new Deviation(parseDeviation.id, parseDeviation.title, parseDeviation.description, parseDeviation.url, parseDeviation.content);//, parseDeviation.stats);
+                        deviations.add(d);
+                    }
+
+
+
+                    Log.d("Deviations", String.valueOf(deviations.size()));
+
+                    //DeviantartPrefs.get(mContext).setLoadSize(deviations.size());
+                    if(deviations.size() > 0) {
+//                        for (int i = 0; i < deviations.size(); i++) {
+//                            Log.d("title", deviations.get(i).title);
+//                            Log.d("url", deviations.get(i).url);
+//                            Log.d("likes", String.valueOf(deviations.get(i).stats.getLikes()));
+//                            Log.d("comments", String.valueOf(deviations.get(i).stats.getComments()));
+//                        }
+
+
+                        sourceLoaded(deviations, page, SourceManager.SOURCE_DEVIANTART_POPULAR);
+                    }
+                } else {
+                    loadFailed(SourceManager.SOURCE_DEVIANTART_POPULAR);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Popular> call, Throwable t) {
+                loadFailed(SourceManager.SOURCE_DEVIANTART_POPULAR);
+            }
+        });
+        inflight.put(SourceManager.SOURCE_DEVIANTART_POPULAR, userHandleCall);
+
     }
 
     private void loadProductHunt(final int page) {
