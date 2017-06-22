@@ -22,7 +22,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
 /**
- * Adapted form https://github.com/Pocket/Pocket-AndroidWear-SDK/blob/master/library/src/com
+ * Adapted from https://github.com/Pocket/Pocket-AndroidWear-SDK/blob/master/library/src/com
  * /pocket/util/PocketUtil.java
  */
 public class PocketUtils {
