@@ -15,6 +15,8 @@
  */
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 // query git for the SHA, Tag and commit count. Use these to automate versioning.
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
@@ -72,6 +74,7 @@ dependencies {
     compile "com.android.support:design:${versions.supportLibrary}"
     compile "com.android.support:palette-v7:${versions.supportLibrary}"
     compile "com.android.support:recyclerview-v7:${versions.supportLibrary}"
+
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
     compile 'com.google.code.gson:gson:2.8.0'
@@ -81,5 +84,6 @@ dependencies {
     compile "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
     compile 'com.squareup.okhttp3:okhttp:3.8.0'
     compile 'org.jsoup:jsoup:1.10.1'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin_version}"
     compile project(':bypass')
 }
