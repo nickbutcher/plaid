@@ -16,20 +16,8 @@
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@color/light_grey" />
     <foreground>
-        <vector
-            android:width="108dp"
-            android:height="108dp"
-            android:viewportWidth="108"
-            android:viewportHeight="108">
-            <path
-                android:pathData="M30 52v16c0 2.2 1.8 4 4 4s4-1.8 4-4V52h-8z"
-                android:fillColor="#0E418B" />
-            <path
-                android:pathData="M38 68v4h-4c2.2 0 4-1.8 4-4zm0-32h36v30c0 3.32-2.7 6-6 6H38V36z"
-                android:fillColor="#286FDC" />
-            <path
-                android:pathData="M53 52h-7v4h7v7h4v-7h7v-4h-7v-7h-4v7z"
-                android:fillColor="#1750A4" />
-        </vector>
+        <inset
+            android:drawable="@drawable/ic_shortcut_post_foreground"
+            android:inset="9.26%" /> <!-- 10dp padding on each side of 108dp asset -->
     </foreground>
 </adaptive-icon>
