@@ -13,11 +13,9 @@
   the License.
   -->
 
-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@color/light_grey" />
-    <foreground>
-        <inset
-            android:drawable="@drawable/ic_shortcut_search_foreground"
-            android:inset="9.26%" /> <!-- 10dp padding on each side of 108dp asset -->
-    </foreground>
-</adaptive-icon>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/light_grey" />
+    <size android:width="44dp" android:height="44dp" />
+</shape>
