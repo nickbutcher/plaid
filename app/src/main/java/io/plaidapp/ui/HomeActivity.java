@@ -26,7 +26,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.ConnectivityManager;
@@ -92,6 +91,7 @@ import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.util.AnimUtils;
+import io.plaidapp.util.DrawableUtils;
 import io.plaidapp.util.ViewUtils;
 
 
@@ -688,8 +688,7 @@ public class HomeActivity extends Activity {
     }
 
     private void setupTaskDescription() {
-        Bitmap overviewIcon =
-                BitmapFactory.decodeResource(getResources(), getApplicationInfo().icon);
+        Bitmap overviewIcon = DrawableUtils.drawableToBitmap(this, getApplicationInfo().icon);
         setTaskDescription(new ActivityManager.TaskDescription(getString(R.string.app_name),
                 overviewIcon,
                 ContextCompat.getColor(this, R.color.primary)));

@@ -60,14 +60,14 @@ public class FontTextView extends TextView {
                     android.R.style.TextAppearance);
             TypedArray atp = getContext().obtainStyledAttributes(textAppearanceId,
                     R.styleable.FontTextAppearance);
-            if (atp.hasValue(R.styleable.FontTextAppearance_font)) {
-                setFont(atp.getString(R.styleable.FontTextAppearance_font));
+            if (atp.hasValue(R.styleable.FontTextAppearance_fontName)) {
+                setFont(atp.getString(R.styleable.FontTextAppearance_fontName));
             }
             atp.recycle();
         }
 
-        if (a.hasValue(R.styleable.FontTextView_font)) {
-            setFont(a.getString(R.styleable.FontTextView_font));
+        if (a.hasValue(R.styleable.FontTextView_fontName)) {
+            setFont(a.getString(R.styleable.FontTextView_fontName));
         }
         a.recycle();
     }

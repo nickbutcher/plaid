@@ -17,7 +17,7 @@
 
 <resources>
     <declare-styleable name="FontTextView">
-        <attr name="font" />
+        <attr name="fontName" />
         <attr name="android:textAppearance" />
     </declare-styleable>
 </resources>

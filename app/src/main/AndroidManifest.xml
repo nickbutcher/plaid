@@ -27,10 +27,10 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:extractNativeLibs="false"
+        android:appCategory="image"
         android:theme="@style/Plaid">
 
         <activity

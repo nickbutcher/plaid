@@ -33,7 +33,7 @@
     <declare-styleable name="CollapsingTextAppearance">
         <attr name="android:textSize" />
         <attr name="android:textColor" />
-        <attr name="font" />
+        <attr name="fontName" />
     </declare-styleable>
 
 </resources>

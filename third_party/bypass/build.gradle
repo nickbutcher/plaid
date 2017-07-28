@@ -22,6 +22,6 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile "com.android.support:support-annotations:${versions.supportLibrary}"
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "com.android.support:support-annotations:${versions.supportLibrary}"
 }
