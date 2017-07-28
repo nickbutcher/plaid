@@ -1,3 +1,28 @@
+package io.plaidapp.data.prefs;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.text.TextUtils;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
+import io.plaidapp.BuildConfig;
+import io.plaidapp.data.api.AuthInterceptor;
+import io.plaidapp.data.api.DenvelopingConverter;
+import io.plaidapp.data.api.deviantart.DeviantartService;
+import io.plaidapp.data.api.deviantart.model.User;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 /*
  * Copyright 2015 Google Inc.
  *
@@ -14,41 +39,25 @@
  * limitations under the License.
  */
 
-package io.plaidapp.data.prefs;
-
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.text.TextUtils;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import io.plaidapp.BuildConfig;
-import io.plaidapp.data.api.AuthInterceptor;
-import io.plaidapp.data.api.DenvelopingConverter;
-import io.plaidapp.data.api.dribbble.DribbbleService;
-import io.plaidapp.data.api.dribbble.model.User;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 /**
- * Storing dribbble user state.
+ * Storing deviantart user state.
  */
-public class DribbblePrefs {
+public class DeviantartPrefs {
 
-    public static final String LOGIN_CALLBACK = "dribbble-auth-callback";
-    public static final String LOGIN_URL = "https://dribbble.com/oauth/authorize?client_id="
-            + BuildConfig.DRIBBBLE_CLIENT_ID
+    public static final String LOGIN_CALLBACK = "deviantart-auth-callback";
+
+//    public static final String LOGIN_URL = "https://dribbble.com/oauth/authorize?client_id="
+//            + BuildConfig.DRIBBBLE_CLIENT_ID
+//            + "&redirect_uri=plaid%3A%2F%2F" + LOGIN_CALLBACK
+//            + "&scope=public+write+comment+upload";
+//
+    String LOGIN_URL = "https://www.deviantart.com/oauth2/authorize?client_id="
+            + BuildConfig.DEVIANTART_CLIENT_ID
             + "&redirect_uri=foshizzle%3A%2F%2F" + LOGIN_CALLBACK
-            + "&scope=public+write+comment+upload";
-    private static final String DRIBBBLE_PREF = "DRIBBBLE_PREF";
+            + "&response_type=code&scope=basic%20browse";
+
+
+    private static final String DEVIANTART_PREF = "DEVIANTART_PREF";
     private static final String KEY_ACCESS_TOKEN = "KEY_ACCESS_TOKEN";
     private static final String KEY_USER_ID = "KEY_USER_ID";
     private static final String KEY_USER_NAME = "KEY_USER_NAME";
@@ -58,35 +67,35 @@ public class DribbblePrefs {
     private static final List<String> CREATIVE_TYPES
             = Arrays.asList(new String[] { "Player", "Team" });
 
-    private static volatile DribbblePrefs singleton;
+    private static volatile DeviantartPrefs singleton;
     private final SharedPreferences prefs;
 
     private String accessToken;
     private boolean isLoggedIn = false;
-    private long userId;
+    private UUID userId;
     private String userName;
     private String userUsername;
     private String userAvatar;
     private String userType;
-    private DribbbleService api;
-    private List<DribbbleLoginStatusListener> loginStatusListeners;
+    private DeviantartService api;
+    private List<DeviantartLoginStatusListener> loginStatusListeners;
 
-    public static DribbblePrefs get(Context context) {
+    public static DeviantartPrefs get(Context context) {
         if (singleton == null) {
-            synchronized (DribbblePrefs.class) {
-                singleton = new DribbblePrefs(context);
+            synchronized (DeviantartPrefs.class) {
+                singleton = new DeviantartPrefs(context);
             }
         }
         return singleton;
     }
 
-    private DribbblePrefs(Context context) {
-        prefs = context.getApplicationContext().getSharedPreferences(DRIBBBLE_PREF, Context
+    private DeviantartPrefs(Context context) {
+        prefs = context.getApplicationContext().getSharedPreferences(DEVIANTART_PREF, Context
                 .MODE_PRIVATE);
         accessToken = prefs.getString(KEY_ACCESS_TOKEN, null);
         isLoggedIn = !TextUtils.isEmpty(accessToken);
         if (isLoggedIn) {
-            userId = prefs.getLong(KEY_USER_ID, 0l);
+            userId = UUID.fromString(prefs.getString(KEY_USER_ID, null));
             userName = prefs.getString(KEY_USER_NAME, null);
             userUsername = prefs.getString(KEY_USER_USERNAME, null);
             userAvatar = prefs.getString(KEY_USER_AVATAR, null);
@@ -94,9 +103,9 @@ public class DribbblePrefs {
         }
     }
 
-    public interface DribbbleLoginStatusListener {
-        void onDribbbleLogin();
-        void onDribbbleLogout();
+    public interface DeviantartLoginStatusListener {
+        void onDeviantartLogin();
+        void onDeviantartLogout();
     }
 
     public boolean isLoggedIn() {
@@ -115,13 +124,13 @@ public class DribbblePrefs {
 
     public void setLoggedInUser(User user) {
         if (user != null) {
-            userName = user.name;
+            userName = user.username;
             userUsername = user.username;
-            userId = user.id;
-            userAvatar = user.avatar_url;
+            userId = user.userid;
+            userAvatar = user.portrait_url;
             userType = user.type;
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putLong(KEY_USER_ID, userId);
+            editor.putString(KEY_USER_ID, userId.toString());
             editor.putString(KEY_USER_NAME, userName);
             editor.putString(KEY_USER_USERNAME, userUsername);
             editor.putString(KEY_USER_AVATAR, userAvatar);
@@ -130,7 +139,7 @@ public class DribbblePrefs {
         }
     }
 
-    public long getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 
@@ -152,15 +161,14 @@ public class DribbblePrefs {
 
     public User getUser() {
         return new User.Builder()
-                .setId(userId)
-                .setName(userName)
-                .setUsername(userUsername)
-                .setAvatarUrl(userAvatar)
+                .setUserId(userId)
+                .setUsername(userName)
+                .setPortraitUrl(userAvatar)
                 .setType(userType)
                 .build();
     }
 
-    public DribbbleService getApi() {
+    public DeviantartService getApi() {
         if (api == null) createApi();
         return api;
     }
@@ -168,7 +176,7 @@ public class DribbblePrefs {
     public void logout() {
         isLoggedIn = false;
         accessToken = null;
-        userId = 0l;
+        userId = null;
         userName = null;
         userUsername = null;
         userAvatar = null;
@@ -188,14 +196,14 @@ public class DribbblePrefs {
         context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(LOGIN_URL)));
     }
 
-    public void addLoginStatusListener(DribbbleLoginStatusListener listener) {
+    public void addLoginStatusListener(DeviantartLoginStatusListener listener) {
         if (loginStatusListeners == null) {
             loginStatusListeners = new ArrayList<>();
         }
         loginStatusListeners.add(listener);
     }
 
-    public void removeLoginStatusListener(DribbbleLoginStatusListener listener) {
+    public void removeLoginStatusListener(DeviantartLoginStatusListener listener) {
         if (loginStatusListeners != null) {
             loginStatusListeners.remove(listener);
         }
@@ -203,16 +211,16 @@ public class DribbblePrefs {
 
     private void dispatchLoginEvent() {
         if (loginStatusListeners != null && !loginStatusListeners.isEmpty()) {
-            for (DribbbleLoginStatusListener listener : loginStatusListeners) {
-                listener.onDribbbleLogin();
+            for (DeviantartLoginStatusListener listener : loginStatusListeners) {
+                listener.onDeviantartLogin();
             }
         }
     }
 
     private void dispatchLogoutEvent() {
         if (loginStatusListeners != null && !loginStatusListeners.isEmpty()) {
-            for (DribbbleLoginStatusListener listener : loginStatusListeners) {
-                listener.onDribbbleLogout();
+            for (DeviantartLoginStatusListener listener : loginStatusListeners) {
+                listener.onDeviantartLogout();
             }
         }
     }
@@ -222,19 +230,21 @@ public class DribbblePrefs {
                 .addInterceptor(new AuthInterceptor(getAccessToken()))
                 .build();
         final Gson gson = new GsonBuilder()
-                .setDateFormat(DribbbleService.DATE_FORMAT)
+                .setDateFormat(DeviantartService.DATE_FORMAT)
                 .create();
         api = new Retrofit.Builder()
-                .baseUrl(DribbbleService.ENDPOINT)
+                .baseUrl(DeviantartService.ENDPOINT)
                 .client(client)
                 .addConverterFactory(new DenvelopingConverter(gson))
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
-                .create((DribbbleService.class));
+                .create((DeviantartService.class));
     }
 
-    private String getAccessToken() {
+    public String getAccessToken() {
         return accessToken;
     }
 
+  
 }
+

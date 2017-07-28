@@ -21,6 +21,7 @@
     <color name="primary">#69F0AE</color>
     <color name="accent">@color/primary</color> <!-- mono-color -->
     <color name="primary_dark">#4aa87a</color>
+    <color name="primary_option">#03a9f4</color>
 
     <!-- common colours -->
     <color name="text_primary_dark">#de000000</color> <!-- 87% -->
@@ -75,6 +76,7 @@
 
     <!-- dribbble -->
     <color name="dribbble">#fff06292</color> <!-- pink 300 -->
+    <color name="deviantart">#008080</color>
     <color name="dribbble_dark">#ec407a</color> <!-- pink 400 -->
     <color name="dribbble_super_dark">#ff33292d</color>
     <color name="dribbble_link_highlight">#b3f06292</color>

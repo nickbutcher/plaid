@@ -70,6 +70,21 @@
         </activity>
 
         <activity
+            android:name=".ui.DeviationActivity"
+            android:parentActivityName=".ui.HomeActivity"
+            android:theme="@style/Plaid.Translucent.Dribbble.Shot">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="deviantart.com"
+                    android:pathPrefix="/deviation/"/>
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".ui.PlayerActivity"
             android:theme="@style/Plaid.Translucent.Dribbble.Player" />
 
@@ -106,12 +121,28 @@
             <intent-filter>
                 <data
                     android:host="dribbble-auth-callback"
-                    android:scheme="plaid" />
+                    android:scheme="foshizzle" />
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.DeviantartLogin"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Plaid.Translucent.Dribbble.Login">
+            <intent-filter>
+                <data
+                    android:host="deviantart-auth-callback"
+                    android:scheme="foshizzle" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+
 
         <activity
             android:name=".ui.DesignerNewsLogin"

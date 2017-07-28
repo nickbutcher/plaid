@@ -26,19 +26,24 @@ android {
     compileSdkVersion versions.compileSdk
     buildToolsVersion versions.buildTools
 
+
     defaultConfig {
         applicationId "io.plaidapp"
         minSdkVersion 21
         targetSdkVersion versions.targetSdk
         versionCode gitCommitCount
         versionName gitTag
-        archivesBaseName = "plaid"
+        archivesBaseName = "plaid-${versionName}"
         resConfig "en"
         buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
         buildConfigField "String", "DRIBBBLE_CLIENT_ID", "\"${dribbble_client_id}\""
         buildConfigField "String", "DRIBBBLE_CLIENT_SECRET", "\"${dribbble_client_secret}\""
         buildConfigField "String",
                 "DRIBBBLE_CLIENT_ACCESS_TOKEN", "\"${dribbble_client_access_token}\""
+
+        buildConfigField "String", "DEVIANTART_CLIENT_ID", "\"${deviantart_client_id}\""
+        buildConfigField "String", "DEVIANTART_CLIENT_SECRET", "\"${deviantart_client_secret}\""
+
         buildConfigField "String", "DESIGNER_NEWS_CLIENT_ID", "\"${designer_news_client_id}\""
         buildConfigField "String",
                 "DESIGNER_NEWS_CLIENT_SECRET", "\"${designer_news_client_secret}\""
@@ -65,6 +70,11 @@ repositories {
     jcenter()
     google()
 }
+
+
+ext.supportLibVersion = '25.3.1'
+ext.retrofit2Version = '2.2.0'
+
 
 dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta1'
