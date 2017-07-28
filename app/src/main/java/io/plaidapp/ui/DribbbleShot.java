@@ -74,6 +74,7 @@ import io.plaidapp.data.api.dribbble.model.Comment;
 import io.plaidapp.data.api.dribbble.model.Like;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.prefs.DribbblePrefs;
+import io.plaidapp.ui.recyclerview.Divided;
 import io.plaidapp.ui.recyclerview.InsetDividerDecoration;
 import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
 import io.plaidapp.ui.transitions.FabTransform;
@@ -410,7 +411,6 @@ public class DribbbleShot extends Activity {
                 getResources().getInteger(R.integer.comment_expand_collapse_duration));
         commentsList.setAdapter(adapter);
         commentsList.addItemDecoration(new InsetDividerDecoration(
-                CommentViewHolder.class,
                 res.getDimensionPixelSize(R.dimen.divider_height),
                 res.getDimensionPixelSize(R.dimen.keyline_1),
                 ContextCompat.getColor(this, R.color.divider)));
@@ -1076,7 +1076,7 @@ public class DribbbleShot extends Activity {
         }
     }
 
-    static class CommentViewHolder extends RecyclerView.ViewHolder {
+    static class CommentViewHolder extends RecyclerView.ViewHolder implements Divided {
 
         @BindView(R.id.player_avatar) ImageView avatar;
         @BindView(R.id.comment_author) AuthorTextView author;

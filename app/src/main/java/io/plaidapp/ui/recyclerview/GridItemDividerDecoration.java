@@ -22,6 +22,7 @@ import android.graphics.Paint;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
+import android.support.annotation.Dimension;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -29,30 +30,25 @@ import android.view.View;
 
 /**
  * A {@link RecyclerView.ItemDecoration} which draws dividers (along the right & bottom)
- * for certain {@link RecyclerView.ViewHolder} types.
+ * for {@link RecyclerView.ViewHolder}s which implement {@link Divided}.
  */
 public class GridItemDividerDecoration extends RecyclerView.ItemDecoration {
 
-    private final Class[] dividedClasses;
     private final int dividerSize;
     private final Paint paint;
 
-    public GridItemDividerDecoration(Class[] dividedClasses,
-                                     int dividerSize,
+    public GridItemDividerDecoration(@Dimension int dividerSize,
                                      @ColorInt int dividerColor) {
-        this.dividedClasses = dividedClasses;
         this.dividerSize = dividerSize;
         paint = new Paint();
         paint.setColor(dividerColor);
         paint.setStyle(Paint.Style.FILL);
     }
 
-    public GridItemDividerDecoration(Class[] dividedClasses,
-                                     @NonNull Context context,
+    public GridItemDividerDecoration(@NonNull Context context,
                                      @DimenRes int dividerSizeResId,
                                      @ColorRes int dividerColorResId) {
-        this(dividedClasses,
-                context.getResources().getDimensionPixelSize(dividerSizeResId),
+        this(context.getResources().getDimensionPixelSize(dividerSizeResId),
                 ContextCompat.getColor(context, dividerColorResId));
     }
 
@@ -66,7 +62,7 @@ public class GridItemDividerDecoration extends RecyclerView.ItemDecoration {
             final View child = parent.getChildAt(i);
             RecyclerView.ViewHolder viewHolder = parent.getChildViewHolder(child);
 
-            if (requiresDivider(viewHolder)) {
+            if (viewHolder instanceof Divided) {
                 final int right = lm.getDecoratedRight(child);
                 final int bottom = lm.getDecoratedBottom(child);
                 // draw the bottom divider
@@ -83,13 +79,6 @@ public class GridItemDividerDecoration extends RecyclerView.ItemDecoration {
                         paint);
             }
         }
-    }
-
-    private boolean requiresDivider(RecyclerView.ViewHolder viewHolder) {
-        for (int i = 0; i < dividedClasses.length; i++) {
-            if (dividedClasses[i].isInstance(viewHolder)) return true;
-        }
-        return false;
     }
 
 }

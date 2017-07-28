@@ -19,25 +19,23 @@ package io.plaidapp.ui.recyclerview;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.ColorInt;
+import android.support.annotation.Dimension;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /**
- * A decoration which draws a horizontal divider between {@link RecyclerView.ViewHolder}s of a given
- * type; with a left inset.
+ * A decoration which draws a horizontal divider between {@link RecyclerView.ViewHolder}s which
+ * implement {@link Divided}; with a left inset.
  */
 public class InsetDividerDecoration extends RecyclerView.ItemDecoration {
 
-    private final Class dividedClass;
     private final Paint paint;
     private final int inset;
     private final int height;
 
-    public InsetDividerDecoration(Class dividedViewHolderClass,
-                                  int dividerHeight,
-                                  int leftInset,
+    public InsetDividerDecoration(@Dimension int dividerHeight,
+                                  @Dimension int leftInset,
                                   @ColorInt int dividerColor) {
-        dividedClass = dividedViewHolderClass;
         inset = leftInset;
         height = dividerHeight;
         paint = new Paint();
@@ -59,7 +57,7 @@ public class InsetDividerDecoration extends RecyclerView.ItemDecoration {
             View child = parent.getChildAt(i);
             RecyclerView.ViewHolder viewHolder = parent.getChildViewHolder(child);
 
-            if (viewHolder.getClass() == dividedClass) {
+            if (viewHolder instanceof Divided) {
                 // skip if this *or next* view is activated
                 if (child.isActivated()
                      || (i + 1 < childCount && parent.getChildAt(i + 1).isActivated())) {
