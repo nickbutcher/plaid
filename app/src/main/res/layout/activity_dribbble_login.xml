@@ -66,7 +66,7 @@
             android:layout_gravity="center_horizontal"
             android:textColor="@color/error"
             android:visibility="gone"
-            android:text="@string/dribbble_login_failed" />
+            android:text="@string/login_failed" />
 
         <include layout="@layout/loading" />
 

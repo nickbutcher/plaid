@@ -688,11 +688,8 @@ public class HomeActivity extends Activity {
     }
 
     private void setupTaskDescription() {
-        // set a silhouette icon in overview as the launcher icon is a bit busy
-        // and looks bad on top of colorPrimary
-        //Bitmap overviewIcon = ImageUtils.vectorToBitmap(this, R.drawable.ic_launcher_silhouette);
-        // TODO replace launcher icon with a monochrome version from RN.
-        Bitmap overviewIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        Bitmap overviewIcon =
+                BitmapFactory.decodeResource(getResources(), getApplicationInfo().icon);
         setTaskDescription(new ActivityManager.TaskDescription(getString(R.string.app_name),
                 overviewIcon,
                 ContextCompat.getColor(this, R.color.primary)));

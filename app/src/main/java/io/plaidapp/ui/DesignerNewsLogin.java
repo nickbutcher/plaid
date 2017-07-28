@@ -19,10 +19,13 @@ package io.plaidapp.ui;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -30,7 +33,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.transition.Transition;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.util.Patterns;
@@ -70,7 +72,6 @@ import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.util.ScrimUtil;
-import io.plaidapp.util.TransitionUtils;
 import io.plaidapp.util.glide.CircleTransform;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -92,7 +93,7 @@ public class DesignerNewsLogin extends Activity {
     @BindView(R.id.signup) Button signup;
     @BindView(R.id.login) Button login;
     @BindView(R.id.loading) ProgressBar loading;
-    private DesignerNewsPrefs designerNewsPrefs;
+    DesignerNewsPrefs designerNewsPrefs;
     private boolean shouldPromptForPermission = false;
 
     @Override
@@ -104,17 +105,6 @@ public class DesignerNewsLogin extends Activity {
             MorphTransform.setup(this, container,
                     ContextCompat.getColor(this, R.color.background_light),
                     getResources().getDimensionPixelSize(R.dimen.dialog_corners));
-        }
-        if (getWindow().getSharedElementEnterTransition() != null) {
-            getWindow().getSharedElementEnterTransition().addListener(new TransitionUtils.TransitionListenerAdapter() {
-                @Override
-                public void onTransitionEnd(Transition transition) {
-                    getWindow().getSharedElementEnterTransition().removeListener(this);
-                    finishSetup();
-                }
-            });
-        } else {
-            finishSetup();
         }
 
         loading.setVisibility(View.GONE);
@@ -145,15 +135,34 @@ public class DesignerNewsLogin extends Activity {
         designerNewsPrefs = DesignerNewsPrefs.get(this);
     }
 
+    @Override @SuppressLint("NewApi")
+    public void onEnterAnimationComplete() {
+        /* Postpone some of the setup steps so that we can run it after the enter transition (if
+        there is one). Otherwise we may show the permissions dialog or account dropdown during the
+        enter animation which is jarring. */
+        if (shouldPromptForPermission) {
+            requestPermissions(new String[]{Manifest.permission.GET_ACCOUNTS},
+                    PERMISSIONS_REQUEST_GET_ACCOUNTS);
+            shouldPromptForPermission = false;
+        }
+        username.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                maybeShowAccounts();
+            }
+        });
+        maybeShowAccounts();
+    }
+
     @Override
     public void onBackPressed() {
         dismiss(null);
     }
 
-    @Override
+    @Override @TargetApi(Build.VERSION_CODES.M)
     public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions,
-                                           int[] grantResults) {
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST_GET_ACCOUNTS) {
             TransitionManager.beginDelayedTransition(container);
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -190,24 +199,59 @@ public class DesignerNewsLogin extends Activity {
         finishAfterTransition();
     }
 
-    /**
-     * Postpone some of the setup steps so that we can run it after the enter transition
-     * (if there is one). Otherwise we may show the permissions dialog or account dropdown
-     * during the enter animation which is jarring.
-     */
-    private void finishSetup() {
-        if (shouldPromptForPermission) {
-            requestPermissions(new String[]{ Manifest.permission.GET_ACCOUNTS },
-                    PERMISSIONS_REQUEST_GET_ACCOUNTS);
-            shouldPromptForPermission = false;
+    void maybeShowAccounts() {
+        if (username.hasFocus()
+                && username.isAttachedToWindow()
+                && username.getAdapter() != null
+                && username.getAdapter().getCount() > 0) {
+            username.showDropDown();
         }
-        username.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+    }
+
+    boolean isLoginValid() {
+        return username.length() > 0 && password.length() > 0;
+    }
+
+    @SuppressLint("InflateParams")
+    void showLoggedInUser() {
+        final Call<User> authedUser = designerNewsPrefs.getApi().getAuthedUser();
+        authedUser.enqueue(new Callback<User>() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                maybeShowAccounts();
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (!response.isSuccessful()) return;
+                final User user = response.body();
+                designerNewsPrefs.setLoggedInUser(user);
+                final Toast confirmLogin = new Toast(getApplicationContext());
+                final View v = LayoutInflater.from(DesignerNewsLogin.this).inflate(R.layout
+                        .toast_logged_in_confirmation, null, false);
+                ((TextView) v.findViewById(R.id.name)).setText(user.display_name.toLowerCase());
+                // need to use app context here as the activity will be destroyed shortly
+                Glide.with(getApplicationContext())
+                        .load(user.portrait_url)
+                        .placeholder(R.drawable.avatar_placeholder)
+                        .transform(new CircleTransform(getApplicationContext()))
+                        .into((ImageView) v.findViewById(R.id.avatar));
+                v.findViewById(R.id.scrim).setBackground(ScrimUtil
+                        .makeCubicGradientScrimDrawable(
+                                ContextCompat.getColor(DesignerNewsLogin.this, R.color.scrim),
+                                5, Gravity.BOTTOM));
+                confirmLogin.setView(v);
+                confirmLogin.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                confirmLogin.setDuration(Toast.LENGTH_LONG);
+                confirmLogin.show();
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e(getClass().getCanonicalName(), t.getMessage(), t);
             }
         });
-        maybeShowAccounts();
+    }
+
+    void showLoginFailed() {
+        Snackbar.make(container, R.string.login_failed, Snackbar.LENGTH_SHORT).show();
+        showLogin();
+        password.requestFocus();
     }
 
     private TextWatcher loginFieldWatcher = new TextWatcher() {
@@ -220,19 +264,6 @@ public class DesignerNewsLogin extends Activity {
             login.setEnabled(isLoginValid());
         }
     };
-
-    private void maybeShowAccounts() {
-        if (username.hasFocus()
-                && username.isAttachedToWindow()
-                && username.getAdapter() != null
-                && username.getAdapter().getCount() > 0) {
-            username.showDropDown();
-        }
-    }
-
-    private boolean isLoginValid() {
-        return username.length() > 0 && password.length() > 0;
-    }
 
     private void showLoading() {
         TransitionManager.beginDelayedTransition(container);
@@ -277,12 +308,6 @@ public class DesignerNewsLogin extends Activity {
         });
     }
 
-    private void showLoginFailed() {
-        Snackbar.make(container, "Log in failed", Snackbar.LENGTH_SHORT).show();
-        showLogin();
-        password.requestFocus();
-    }
-
     private Map<String, String> buildLoginParams(@NonNull String username, @NonNull String password) {
         final Map<String, String> loginParams = new HashMap<>(5);
         loginParams.put("client_id", BuildConfig.DESIGNER_NEWS_CLIENT_ID);
@@ -293,40 +318,7 @@ public class DesignerNewsLogin extends Activity {
         return loginParams;
     }
 
-    private void showLoggedInUser() {
-        final Call<User> authedUser = designerNewsPrefs.getApi().getAuthedUser();
-        authedUser.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                final User user = response.body();
-                designerNewsPrefs.setLoggedInUser(user);
-                final Toast confirmLogin = new Toast(getApplicationContext());
-                final View v = LayoutInflater.from(DesignerNewsLogin.this).inflate(R.layout
-                        .toast_logged_in_confirmation, null, false);
-                ((TextView) v.findViewById(R.id.name)).setText(user.display_name.toLowerCase());
-                // need to use app context here as the activity will be destroyed shortly
-                Glide.with(getApplicationContext())
-                        .load(user.portrait_url)
-                        .placeholder(R.drawable.avatar_placeholder)
-                        .transform(new CircleTransform(getApplicationContext()))
-                        .into((ImageView) v.findViewById(R.id.avatar));
-                v.findViewById(R.id.scrim).setBackground(ScrimUtil
-                        .makeCubicGradientScrimDrawable(
-                                ContextCompat.getColor(DesignerNewsLogin.this, R.color.scrim),
-                                5, Gravity.BOTTOM));
-                confirmLogin.setView(v);
-                confirmLogin.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
-                confirmLogin.setDuration(Toast.LENGTH_LONG);
-                confirmLogin.show();
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Log.e(getClass().getCanonicalName(), t.getMessage(), t);
-            }
-        });
-    }
-
+    @SuppressLint("NewApi")
     private void setupAccountAutocomplete() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS) ==
                 PackageManager.PERMISSION_GRANTED) {
@@ -350,6 +342,7 @@ public class DesignerNewsLogin extends Activity {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     private void setupPermissionPrimer() {
         permissionPrimer.setChecked(false);
         permissionPrimer.setVisibility(View.VISIBLE);

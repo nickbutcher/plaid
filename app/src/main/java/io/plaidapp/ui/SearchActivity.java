@@ -92,6 +92,7 @@ public class SearchActivity extends Activity {
     FeedAdapter adapter;
     private TextView noResults;
     private SparseArray<Transition> transitions = new SparseArray<>();
+    private boolean focusQuery = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,9 +181,22 @@ public class SearchActivity extends Activity {
 
     @Override
     public void onEnterAnimationComplete() {
-        // focus the search view once the enter transition finishes
-        searchView.requestFocus();
-        ImeUtils.showIme(searchView);
+        if (focusQuery) {
+            // focus the search view once the enter transition finishes
+            searchView.requestFocus();
+            ImeUtils.showIme(searchView);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case FeedAdapter.REQUEST_CODE_VIEW_SHOT:
+                // by default we focus the search filed when entering this screen. Don't do that
+                // when returning from viewing a search result.
+                focusQuery = false;
+                break;
+        }
     }
 
     @OnClick({ R.id.scrim, R.id.searchback })

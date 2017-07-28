@@ -24,19 +24,31 @@
 
     <!-- Stroked heart, 2 paths so can 'draw' them concurrently by animating trim.
          Initially hidden -->
-    <path
-        android:name="heart_stroke_left_atrium"
-        android:pathData="M28.7194825,38.2960196 L25.6688233,35.5523072 C21.6213379,31.793335 18.0159912,28.8906251 18.0159912,24.845337 C18.0159912,21.5882568 20.6305373,19.9651315 23.6337891,19.9651442 C24.9985352,19.96515 26.7993165,21.180664 28.643982,23.1297608"
-        android:strokeWidth="2"
-        android:strokeColor="@color/fab_heart_empty"
-        android:trimPathEnd="0" />
+    <group>
 
-    <path
-        android:name="heart_stroke_right_atrium"
-        android:pathData="M27.2310342,38.2944327 L30.7645263,35.2004395 C34.8336142,31.2354829 37.751709,29.1181308 38.0040283,25.0838624 C38.1681943,22.4590544 35.7730552,20.034668 33.3791503,20.034668 C30.4320068,20.034668 29.671997,21.0472412 27.2310342,23.1328126"
-        android:strokeWidth="2"
-        android:strokeColor="@color/fab_heart_empty"
-        android:trimPathEnd="0" />
+        <clip-path android:pathData="M0,0 L28,0 L28,56, L0,56 Z" />
+
+        <path
+            android:name="heart_stroke_left_atrium"
+            android:pathData="M28.7194825,38.2960196 L25.6688233,35.5523072 C21.6213379,31.793335 18.0159912,28.8906251 18.0159912,24.845337 C18.0159912,21.5882568 20.6305373,19.9651315 23.6337891,19.9651442 C24.9985352,19.96515 26.7993165,21.180664 28.643982,23.1297608"
+            android:strokeWidth="2"
+            android:strokeColor="@color/fab_heart_empty"
+            android:trimPathEnd="0" />
+
+    </group>
+
+    <group>
+
+        <clip-path android:pathData="M28,0 L56,0 L56,56, L28,56 Z" />
+
+        <path
+            android:name="heart_stroke_right_atrium"
+            android:pathData="M27.2310342,38.2944327 L30.7645263,35.2004395 C34.8336142,31.2354829 37.751709,29.1181308 38.0040283,25.0838624 C38.1681943,22.4590544 35.7730552,20.034668 33.3791503,20.034668 C30.4320068,20.034668 29.671997,21.0472412 27.2310342,23.1328126"
+            android:strokeWidth="2"
+            android:strokeColor="@color/fab_heart_empty"
+            android:trimPathEnd="0" />
+
+    </group>
 
     <!-- left broken heart, need group to set pivot for rotation anim -->
     <group

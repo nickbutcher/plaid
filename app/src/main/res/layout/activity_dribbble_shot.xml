@@ -75,6 +75,13 @@
 
     </FrameLayout>
 
+    <!-- dummy view stopping the below RecyclerView from capturing focus which messes up layout -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:focusableInTouchMode="true"
+        android:importantForAccessibility="no" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/dribbble_comments"
         android:layout_width="match_parent"
