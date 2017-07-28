@@ -111,9 +111,9 @@ public class FabOverlapTextView extends View {
                     Color.BLACK));
             paint.setTextSize(atp.getDimensionPixelSize(
                     R.styleable.FontTextAppearance_android_textSize, (int) defaultTextSize));
-            if (atp.hasValue(R.styleable.FontTextAppearance_font)) {
+            if (atp.hasValue(R.styleable.FontTextAppearance_fontName)) {
                 paint.setTypeface(FontUtil.get(getContext(),
-                        atp.getString(R.styleable.FontTextAppearance_font)));
+                        atp.getString(R.styleable.FontTextAppearance_fontName)));
             }
             atp.recycle();
         }
