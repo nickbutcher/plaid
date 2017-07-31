@@ -22,7 +22,7 @@ buildscript {
             'buildTools'    : '26.0.1',
 
             'supportLibrary': '26.0.0',
-            'retrofit'      : '2.2.0',
+            'retrofit'      : '2.3.0',
             'butterknife'   : '8.6.0'
     ]
 
