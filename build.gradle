@@ -23,7 +23,7 @@ buildscript {
 
             'supportLibrary': '26.0.0',
             'retrofit'      : '2.3.0',
-            'butterknife'   : '8.6.0'
+            'butterknife'   : '8.7.0'
     ]
 
     repositories {
