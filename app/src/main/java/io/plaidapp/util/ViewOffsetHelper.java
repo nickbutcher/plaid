@@ -16,8 +16,8 @@
 
 package io.plaidapp.util;
 
+import android.support.animation.FloatPropertyCompat;
 import android.support.v4.view.ViewCompat;
-import android.util.Property;
 import android.view.View;
 
 /**
@@ -35,19 +35,18 @@ public class ViewOffsetHelper {
     /**
      * Animatable property
      */
-    public static final Property<ViewOffsetHelper, Integer> OFFSET_Y =
-            AnimUtils.createIntProperty(
-                    new AnimUtils.IntProp<ViewOffsetHelper>("topAndBottomOffset") {
-                @Override
-                public void set(ViewOffsetHelper viewOffsetHelper, int offset) {
-                    viewOffsetHelper.setTopAndBottomOffset(offset);
-                }
+    public static final FloatPropertyCompat<ViewOffsetHelper> OFFSET_Y
+            = new FloatPropertyCompat<ViewOffsetHelper>("offsetY") {
+        @Override
+        public float getValue(ViewOffsetHelper offsetHelper) {
+            return offsetHelper.getTopAndBottomOffset();
+        }
 
-                @Override
-                public int get(ViewOffsetHelper viewOffsetHelper) {
-                    return viewOffsetHelper.getTopAndBottomOffset();
-                }
-            });
+        @Override
+        public void setValue(ViewOffsetHelper offsetHelper, float offset) {
+            offsetHelper.setTopAndBottomOffset((int) offset);
+        }
+    };
 
     private final View mView;
 
