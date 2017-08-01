@@ -45,8 +45,9 @@ import io.plaidapp.util.ViewOffsetHelper;
 public class BottomSheet extends FrameLayout {
 
     // constants
-    private static final int MIN_FLING_DISMISS_VELOCITY = 2_000; // px/s
     private static final float SETTLE_STIFFNESS = 800f;
+    private static final int MIN_FLING_DISMISS_VELOCITY = 500; // dp/s
+    private final int SCALED_MIN_FLING_DISMISS_VELOCITY; // px/s
 
     // child views & helpers
     View sheet;
@@ -74,6 +75,8 @@ public class BottomSheet extends FrameLayout {
 
     public BottomSheet(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        SCALED_MIN_FLING_DISMISS_VELOCITY =
+            (int) (context.getResources().getDisplayMetrics().density * MIN_FLING_DISMISS_VELOCITY);
     }
 
     /**
@@ -196,8 +199,8 @@ public class BottomSheet extends FrameLayout {
 
     @Override
     public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed) {
-        if (velocityY <= -MIN_FLING_DISMISS_VELOCITY   /* flinging downward */
-                && !target.canScrollVertically(-1)) {  /* nested scrolling child can't scroll up */
+        if (velocityY <= -SCALED_MIN_FLING_DISMISS_VELOCITY   /* flinging downward */
+                && !target.canScrollVertically(-1)) {   /* nested scrolling child can't scroll up */
             animateSettle(dismissOffset, velocityY);
             return true;
         } else if (velocityY > 0 && !isExpanded()) {
@@ -292,7 +295,7 @@ public class BottomSheet extends FrameLayout {
         @Override
         public void onViewReleased(View releasedChild, float velocityX, float velocityY) {
             // dismiss on downward fling, otherwise settle back to expanded position
-            final boolean dismiss = velocityY >= MIN_FLING_DISMISS_VELOCITY;
+            final boolean dismiss = velocityY >= SCALED_MIN_FLING_DISMISS_VELOCITY;
             animateSettle(dismiss ? dismissOffset : 0, velocityY);
         }
 
