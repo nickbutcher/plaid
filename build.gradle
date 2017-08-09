@@ -21,7 +21,7 @@ buildscript {
             'targetSdk'     : 26,
             'buildTools'    : '26.0.1',
 
-            'supportLibrary': '26.0.0',
+            'supportLibrary': '26.0.1',
             'retrofit'      : '2.3.0',
             'butterknife'   : '8.7.0'
     ]
