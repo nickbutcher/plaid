@@ -16,12 +16,10 @@
 
 buildscript {
 
-
     ext.versions = [
             'compileSdk'    : 25,
             'targetSdk'     : 25,
             'buildTools'    : '25.0.3',
-
             'supportLibrary': '25.4.0',
             'retrofit'      : '2.2.0',
             'butterknife'   : '8.6.0',
@@ -35,7 +33,6 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin_version}"
-
     }
 
 }
