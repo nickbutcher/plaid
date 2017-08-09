@@ -19,13 +19,15 @@ package io.plaidapp.ui.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
+import android.support.annotation.FontRes;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 
 import io.plaidapp.R;
 
 /**
- * An extension to {@link android.widget.TextView} which aligns text to a 4dp baseline grid.
+ * An extension to {@link AppCompatTextView} which aligns text to a 4dp baseline grid.
  * <p>
  * To achieve this we expose a {@code lineHeightHint} allowing you to specify the desired line
  * height (alternatively a {@code lineHeightMultiplierHint} to use a multiplier of the text size).
@@ -36,7 +38,7 @@ import io.plaidapp.R;
  * the grid (relative to the view's top) & that this view's height is a multiple of 4dp so that
  * subsequent views start on the grid.
  */
-public class BaselineGridTextView extends FontTextView {
+public class BaselineGridTextView extends AppCompatTextView {
 
     private final float FOUR_DIP;
 
@@ -45,6 +47,7 @@ public class BaselineGridTextView extends FontTextView {
     private boolean maxLinesByHeight = false;
     private int extraTopPadding = 0;
     private int extraBottomPadding = 0;
+    private @FontRes int fontResId = 0;
 
     public BaselineGridTextView(Context context) {
         this(context, null);
@@ -55,19 +58,24 @@ public class BaselineGridTextView extends FontTextView {
     }
 
     public BaselineGridTextView(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
-    }
-
-    public BaselineGridTextView(Context context, AttributeSet attrs,
-                                int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
+        super(context, attrs, defStyleAttr);
 
         final TypedArray a = context.obtainStyledAttributes(
-                attrs, R.styleable.BaselineGridTextView, defStyleAttr, defStyleRes);
+                attrs, R.styleable.BaselineGridTextView, defStyleAttr, 0);
 
-        lineHeightMultiplierHint =
-                a.getFloat(R.styleable.BaselineGridTextView_lineHeightMultiplierHint, 1f);
-        lineHeightHint = a.getDimension(R.styleable.BaselineGridTextView_lineHeightHint, 0);
+        // first check TextAppearance for line height & font attributes
+        if (a.hasValue(R.styleable.BaselineGridTextView_android_textAppearance)) {
+            int textAppearanceId =
+                    a.getResourceId(R.styleable.BaselineGridTextView_android_textAppearance,
+                            android.R.style.TextAppearance);
+            TypedArray ta = context.obtainStyledAttributes(
+                    textAppearanceId, R.styleable.BaselineGridTextView);
+            parseTextAttrs(ta);
+            ta.recycle();
+        }
+
+        // then check view attrs
+        parseTextAttrs(a);
         maxLinesByHeight = a.getBoolean(R.styleable.BaselineGridTextView_maxLinesByHeight, false);
         a.recycle();
 
@@ -103,6 +111,10 @@ public class BaselineGridTextView extends FontTextView {
         requestLayout();
     }
 
+    public @FontRes int getFontResId() {
+        return fontResId;
+    }
+
     @Override
     public int getCompoundPaddingTop() {
         // include extra padding to place the first line's baseline on the grid
@@ -125,6 +137,20 @@ public class BaselineGridTextView extends FontTextView {
         height += ensureHeightGridAligned(height);
         setMeasuredDimension(getMeasuredWidth(), height);
         checkMaxLines(height, MeasureSpec.getMode(heightMeasureSpec));
+    }
+
+    private void parseTextAttrs(TypedArray a) {
+        if (a.hasValue(R.styleable.BaselineGridTextView_lineHeightMultiplierHint)) {
+            lineHeightMultiplierHint =
+                    a.getFloat(R.styleable.BaselineGridTextView_lineHeightMultiplierHint, 1f);
+        }
+        if (a.hasValue(R.styleable.BaselineGridTextView_lineHeightHint)) {
+            lineHeightHint = a.getDimensionPixelSize(
+                    R.styleable.BaselineGridTextView_lineHeightHint, 0);
+        }
+        if (a.hasValue(R.styleable.BaselineGridTextView_android_fontFamily)) {
+            fontResId = a.getResourceId(R.styleable.BaselineGridTextView_android_fontFamily, 0);
+        }
     }
 
     /**

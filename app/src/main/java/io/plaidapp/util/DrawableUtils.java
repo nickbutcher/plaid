@@ -21,25 +21,26 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
+import android.support.v4.content.ContextCompat;
 
 /**
- * Utility methods for working with images.
+ * Utility methods for working with drawables.
  */
-public class ImageUtils {
+public class DrawableUtils {
 
-    private ImageUtils() { }
+    private DrawableUtils() { }
 
-    public static Bitmap vectorToBitmap(Context context, Drawable vector) {
-        final Bitmap bitmap = Bitmap.createBitmap(vector.getIntrinsicWidth(),
-                vector.getIntrinsicHeight(),
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        final Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(),
                 Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(bitmap);
-        vector.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        vector.draw(canvas);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
         return bitmap;
     }
 
-    public static Bitmap vectorToBitmap(Context context, @DrawableRes int vectorDrawableId) {
-        return vectorToBitmap(context, context.getDrawable(vectorDrawableId));
+    public static Bitmap drawableToBitmap(Context context, @DrawableRes int drawableId) {
+        return drawableToBitmap(ContextCompat.getDrawable(context, drawableId));
     }
 }

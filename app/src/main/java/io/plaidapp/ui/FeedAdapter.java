@@ -76,8 +76,10 @@ import io.plaidapp.data.api.producthunt.PostWeigher;
 import io.plaidapp.data.api.producthunt.model.Post;
 import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.data.prefs.SourceManager;
+import io.plaidapp.ui.recyclerview.Divided;
 import io.plaidapp.ui.transitions.ReflowText;
 import io.plaidapp.ui.widget.BadgedFourThreeImageView;
+import io.plaidapp.ui.widget.BaselineGridTextView;
 import io.plaidapp.util.ObservableColorMatrix;
 import io.plaidapp.util.TransitionUtils;
 import io.plaidapp.util.ViewUtils;
@@ -100,7 +102,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static final int TYPE_LOADING_MORE = -1;
 
     // we need to hold on to an activity ref for the shared element transitions :/
-    private final Activity host;
+    final Activity host;
     private final LayoutInflater layoutInflater;
     private final PlaidItemSorting.PlaidItemComparator comparator;
     private final boolean pocketIsInstalled;
@@ -116,13 +118,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private StoryWeigher storyWeigher;
     private PostWeigher postWeigher;
 
-    public FeedAdapter(Activity hostActivity,
-                       DataLoadingSubject dataLoading,
-                       int columns,
-                       boolean pocketInstalled) {
+    FeedAdapter(Activity hostActivity,
+                @Nullable DataLoadingSubject dataLoading,
+                int columns,
+                boolean pocketInstalled) {
         this.host = hostActivity;
         this.dataLoading = dataLoading;
-        dataLoading.registerCallback(this);
+        if (dataLoading != null) {
+            dataLoading.registerCallback(this);
+        }
         this.columns = columns;
         this.pocketIsInstalled = pocketInstalled;
         layoutInflater = LayoutInflater.from(host);
@@ -434,7 +438,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void bindLoadingViewHolder(LoadingMoreHolder holder, int position) {
         // only show the infinite load progress spinner if there are already items in the
         // grid i.e. it's not the first item & data is being loaded
-        holder.progress.setVisibility((position > 0 && dataLoading.isDataLoading())
+        holder.progress.setVisibility((position > 0
+                && dataLoading != null
+                && dataLoading.isDataLoading())
                 ? View.VISIBLE : View.INVISIBLE);
     }
 
@@ -477,7 +483,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      * sorting them (depending on the data source). Will also expand some items to span multiple
      * grid columns.
      */
-    public void addAndResort(List<? extends PlaidItem> newItems) {
+    void addAndResort(List<? extends PlaidItem> newItems) {
         weighItems(newItems);
         deduplicateAndAdd(newItems);
         sort();
@@ -622,7 +628,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      * This can cause a strange layers-passing-through-each-other effect. On return hide the FAB
      * and animate it back in after the transition.
      */
-    private void setGridItemContentTransitions(View gridItem) {
+    void setGridItemContentTransitions(View gridItem) {
         final View fab = host.findViewById(R.id.fab);
         if (!ViewUtils.viewsIntersect(gridItem, fab)) return;
 
@@ -639,19 +645,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         host.getWindow().setReenterTransition(reenter);
     }
 
-    public int getDataItemCount() {
+    int getDataItemCount() {
         return items.size();
     }
 
     private int getLoadingMoreItemPosition() {
         return showLoadingMore ? getItemCount() - 1 : RecyclerView.NO_POSITION;
-    }
-
-    /**
-     * Which ViewHolder types require a divider decoration
-     */
-    public Class[] getDividedViewHolderClasses() {
-        return new Class[] { DesignerNewsStoryHolder.class, ProductHuntStoryHolder.class };
     }
 
     @Override
@@ -669,7 +668,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         notifyItemRemoved(loadingPos);
     }
 
-    public static SharedElementCallback createSharedElementReenterCallback(
+    static SharedElementCallback createSharedElementReenterCallback(
             @NonNull Context context) {
         final String shotTransitionName = context.getString(R.string.transition_shot);
         final String shotBackgroundTransitionName =
@@ -698,7 +697,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         };
     }
 
-    /* package */ static class DribbbleShotHolder extends RecyclerView.ViewHolder {
+    static class DribbbleShotHolder extends RecyclerView.ViewHolder {
 
         BadgedFourThreeImageView image;
 
@@ -709,9 +708,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     }
 
-    /* package */ static class DesignerNewsStoryHolder extends RecyclerView.ViewHolder {
+    static class DesignerNewsStoryHolder extends RecyclerView.ViewHolder implements Divided {
 
-        @BindView(R.id.story_title) TextView title;
+        @BindView(R.id.story_title) BaselineGridTextView title;
         @BindView(R.id.story_comments) TextView comments;
         @BindView(R.id.pocket) ImageButton pocket;
 
@@ -722,7 +721,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    /* package */ static class ProductHuntStoryHolder extends RecyclerView.ViewHolder {
+    static class ProductHuntStoryHolder extends RecyclerView.ViewHolder implements Divided {
 
         @BindView(R.id.hunt_title) TextView title;
         @BindView(R.id.tagline) TextView tagline;
@@ -734,7 +733,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    /* package */ static class LoadingMoreHolder extends RecyclerView.ViewHolder {
+    static class LoadingMoreHolder extends RecyclerView.ViewHolder {
 
         ProgressBar progress;
 

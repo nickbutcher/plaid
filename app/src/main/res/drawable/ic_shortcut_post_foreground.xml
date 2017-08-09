@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2017 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+  in compliance with the License. You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software distributed under the License
+  is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+  or implied. See the License for the specific language governing permissions and limitations under
+  the License.
+  -->
+
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <path
+        android:pathData="M14,23C14,23 14,30 14,30C14,31.11 14.89,32 16,32L16,32C17.1,32 18,31.1 18,30C18,30 18,23 18,23C18,23 14,23 14,23Z"
+        android:fillColor="#0E418B" />
+
+    <path
+        android:pathData="M18,32L16.22,32C16.22,32 16.22,32 16.22,31.99C17.17,31.88 17.91,31.12 17.99,30.17C18,30.17 18,30.17 18,30.17C18,26.16 18,17 18,17C18,17 33.95,17 33.95,17L33.95,26.01C33.95,29.32 31.26,32 27.94,32L18,32Z"
+        android:fillColor="#286FDC" />
+
+    <path
+        android:pathData="M24.76,23.5L21.76,23.5L21.76,25.5L24.76,25.5L24.76,28.5L26.76,28.5L26.76,25.5L29.76,25.5L29.76,23.5L26.76,23.5L26.76,20.5L24.76,20.5L24.76,23.5Z"
+        android:fillColor="#1750A4" />
+
+</vector>

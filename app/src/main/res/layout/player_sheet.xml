@@ -59,11 +59,11 @@
                 android:id="@+id/title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_gravity="start|center_vertical"
+                android:layout_weight="1"
                 android:paddingEnd="@dimen/padding_normal"
                 android:text="@string/new_story_title"
-                style="@style/Widget.Plaid.DialogTitle" />
+                android:textAppearance="@style/TextAppearance.DialogTitle" />
 
         </LinearLayout>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2015 Google Inc.
+  Copyright 2017 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,16 +14,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
-
-<resources>
-
-    <attr name="font" format="string" />
-
-    <declare-styleable name="FontTextAppearance">
-        <attr name="android:textSize" />
-        <attr name="android:textColor" />
-        <attr name="android:fontFamily" />
-        <attr name="font" />
-    </declare-styleable>
-
-</resources>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background" />
+    <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+</adaptive-icon>

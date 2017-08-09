@@ -18,31 +18,31 @@
 <!-- layout_[width|height] not needed as this is only included in a GridLayout -->
 <!--suppress AndroidDomInspection -->
 <merge
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="@layout/dribbble_shot_description">
 
     <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/shot_title"
-        android:layout_columnSpan="3"
         android:layout_width="match_parent"
+        android:layout_columnSpan="3"
         android:layout_marginBottom="@dimen/spacing_large"
+        android:background="@color/light_grey"
+        android:paddingBottom="@dimen/padding_normal"
+        android:paddingEnd="@dimen/padding_room_for_fab"
         android:paddingStart="@dimen/padding_normal"
         android:paddingTop="@dimen/padding_normal"
-        android:paddingEnd="@dimen/padding_room_for_fab"
-        android:paddingBottom="@dimen/padding_normal"
-        android:background="@color/light_grey"
-        tools:text="Dribbble shot title"
-        style="@style/Widget.Plaid.DribbbleShotTitle" />
+        android:textAppearance="@style/TextAppearance.DribbbleShotTitle"
+        tools:text="Dribbble shot title" />
 
     <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/shot_description"
         android:layout_columnSpan="3"
-        android:paddingStart="@dimen/padding_normal"
         android:paddingEnd="@dimen/padding_normal"
-        android:textColorLink="@color/dribbble_links"
+        android:paddingStart="@dimen/padding_normal"
+        android:textAppearance="@style/TextAppearance.DribbbleShotDescription"
         android:textColorHighlight="@color/dribbble_link_highlight"
-        tools:text="Check out this sweet eye candy!"
-        style="@style/Widget.Plaid.DribbbleShotDescription" />
+        android:textColorLink="@color/dribbble_links"
+        tools:text="Check out this sweet eye candy!" />
 
 </merge>

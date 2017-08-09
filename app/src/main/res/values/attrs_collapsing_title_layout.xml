@@ -27,13 +27,10 @@
         <attr name="collapsedTextSize" format="reference|dimension" />
         <attr name="lineHeightHint" />
         <attr name="android:textAppearance" />
-        <attr name="android:maxLines" />
-    </declare-styleable>
-
-    <declare-styleable name="CollapsingTextAppearance">
-        <attr name="android:textSize" />
         <attr name="android:textColor" />
-        <attr name="font" />
+        <attr name="android:textSize" />
+        <attr name="android:fontFamily" />
+        <attr name="android:maxLines" />
     </declare-styleable>
 
 </resources>
