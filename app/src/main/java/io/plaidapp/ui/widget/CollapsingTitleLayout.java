@@ -18,13 +18,16 @@ package io.plaidapp.ui.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.os.Build;
-import android.support.annotation.Nullable;
+import android.support.annotation.FontRes;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
 import android.text.Layout;
@@ -43,7 +46,6 @@ import io.plaidapp.R;
 import io.plaidapp.ui.span.TextColorSpan;
 import io.plaidapp.ui.transitions.ReflowText;
 import io.plaidapp.util.CollapsingTextHelper;
-import io.plaidapp.util.FontUtil;
 import io.plaidapp.util.ViewUtils;
 
 /**
@@ -71,6 +73,7 @@ public class CollapsingTitleLayout extends FrameLayout implements ReflowText.Ref
     private CharSequence title;
     private SpannableStringBuilder displayText;
     private TextPaint paint;
+    private @FontRes int fontResId;
     private float textTop;
     private float scrollOffset;
     private int scrollRange;
@@ -83,11 +86,11 @@ public class CollapsingTitleLayout extends FrameLayout implements ReflowText.Ref
     private float lineSpacingAdd;
 
     public CollapsingTitleLayout(Context context) {
-        this(context, null, 0, 0);
+        this(context, null);
     }
 
     public CollapsingTitleLayout(Context context, AttributeSet attrs) {
-        this(context, attrs, 0, 0);
+        this(context, attrs, R.attr.collapsingTitleLayoutStyle);
     }
 
     public CollapsingTitleLayout(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -136,33 +139,55 @@ public class CollapsingTitleLayout extends FrameLayout implements ReflowText.Ref
                     R.styleable.CollapsingTitleLayout_titleInsetBottom, 0);
         }
 
-        final int textAppearance = a.getResourceId(
-                R.styleable.CollapsingTitleLayout_android_textAppearance,
-                android.R.style.TextAppearance);
-        TypedArray atp = getContext().obtainStyledAttributes(textAppearance,
-                R.styleable.CollapsingTextAppearance);
-        paint.setColor(atp.getColor(R.styleable.CollapsingTextAppearance_android_textColor,
-                Color.WHITE));
-        collapsedTextSize = atp.getDimensionPixelSize(
-                R.styleable.CollapsingTextAppearance_android_textSize, 0);
-        if (atp.hasValue(R.styleable.CollapsingTextAppearance_font)) {
-            paint.setTypeface(FontUtil.get(getContext(),
-                    atp.getString(R.styleable.CollapsingTextAppearance_font)));
+        // first check TextAppearance for text attributes
+        if (a.hasValue(R.styleable.CollapsingTitleLayout_android_textAppearance)) {
+            final int textAppearanceId = a.getResourceId(
+                    R.styleable.CollapsingTitleLayout_android_textAppearance,
+                    android.R.style.TextAppearance);
+            TypedArray ta = getContext().obtainStyledAttributes(textAppearanceId,
+                    R.styleable.CollapsingTitleLayout);
+            parseTextAttrs(ta);
+            ta.recycle();
         }
-        atp.recycle();
 
-        if (a.hasValue(R.styleable.CollapsingTitleLayout_collapsedTextSize)) {
-            collapsedTextSize = a.getDimensionPixelSize(
+        // then check view for text attributes
+        parseTextAttrs(a);
+        a.recycle();
+    }
+
+    private void parseTextAttrs(TypedArray ta) {
+        if (ta.hasValue(R.styleable.CollapsingTitleLayout_collapsedTextSize)) {
+            collapsedTextSize = ta.getDimensionPixelSize(
                     R.styleable.CollapsingTitleLayout_collapsedTextSize, 0);
             paint.setTextSize(collapsedTextSize);
         }
-
-        maxExpandedTextSize = a.getDimensionPixelSize(
-                R.styleable.CollapsingTitleLayout_maxExpandedTextSize, Integer.MAX_VALUE);
-        lineHeightHint =
-                a.getDimensionPixelSize(R.styleable.CollapsingTitleLayout_lineHeightHint, 0);
-        maxLines = a.getInteger(R.styleable.CollapsingTitleLayout_android_maxLines, 5);
-        a.recycle();
+        if (ta.hasValue(R.styleable.CollapsingTitleLayout_android_textColor)) {
+            paint.setColor(ta.getColor(R.styleable.CollapsingTitleLayout_android_textColor,
+                    Color.WHITE));
+        }
+        if (ta.hasValue(R.styleable.CollapsingTitleLayout_android_fontFamily)) {
+            try {
+                fontResId =
+                        ta.getResourceId(R.styleable.CollapsingTitleLayout_android_fontFamily, 0);
+                Typeface font = ResourcesCompat.getFont(getContext(), fontResId);
+                if (font != null) {
+                    paint.setTypeface(font);
+                }
+            } catch (Resources.NotFoundException nfe) {
+                // swallow; use default typeface
+            }
+        }
+        if (ta.hasValue(R.styleable.CollapsingTitleLayout_maxExpandedTextSize)) {
+            maxExpandedTextSize = ta.getDimensionPixelSize(
+                    R.styleable.CollapsingTitleLayout_maxExpandedTextSize, Integer.MAX_VALUE);
+        }
+        if (ta.hasValue(R.styleable.CollapsingTitleLayout_lineHeightHint)) {
+            lineHeightHint =
+                    ta.getDimensionPixelSize(R.styleable.CollapsingTitleLayout_lineHeightHint, 0);
+        }
+        if (ta.hasValue(R.styleable.CollapsingTitleLayout_android_maxLines)) {
+            maxLines = ta.getInteger(R.styleable.CollapsingTitleLayout_android_maxLines, 5);
+        }
     }
 
     public void setTitle(CharSequence title) {
@@ -189,6 +214,7 @@ public class CollapsingTitleLayout extends FrameLayout implements ReflowText.Ref
         if (lineCount == 1) {
             collapsingText.draw(canvas);
         } else {
+            int savePoint = canvas.save();
             float x = titleInsetStart;
             float y = Math.max(textTop - scrollOffset, titleInsetTop);
             canvas.translate(x, y);
@@ -196,6 +222,7 @@ public class CollapsingTitleLayout extends FrameLayout implements ReflowText.Ref
                     getWidth() - titleInsetStart - titleInsetEnd,
                     Math.max(getHeight() - scrollOffset, collapsedHeight) - y);
             layout.draw(canvas);
+            canvas.restoreToCount(savePoint);
         }
     }
 
@@ -433,6 +460,11 @@ public class CollapsingTitleLayout extends FrameLayout implements ReflowText.Ref
     }
 
     @Override
+    public int getFontResId() {
+        return fontResId;
+    }
+
+    @Override
     public float getTextSize() {
         return lineCount == 1 ? collapsingText.getCurrentTextSize() : paint.getTextSize();
     }
@@ -442,26 +474,20 @@ public class CollapsingTitleLayout extends FrameLayout implements ReflowText.Ref
         return paint.getColor();
     }
 
-    @Nullable
-    @Override
-    public String getFontName() {
-        return FontUtil.getName(paint.getTypeface());
-    }
-
     @Override
     public int getMaxLines() {
         return maxLines;
     }
 
     private class Line {
-        public int startIndex;
-        public int endIndex;
-        public TextColorSpan span;
-        public int fullAlphaScrollOffset;
-        public int zeroAlphaScrollOffset;
-        public float currentAlpha = 1f;
+        int startIndex;
+        int endIndex;
+        TextColorSpan span;
+        int fullAlphaScrollOffset;
+        int zeroAlphaScrollOffset;
+        float currentAlpha = 1f;
 
-        public Line(int startIndex, int endIndex, TextColorSpan span,
+        Line(int startIndex, int endIndex, TextColorSpan span,
                     int fullAlphaScrollOffset, int zeroAlphaScrollOffset) {
             this.startIndex = startIndex;
             this.endIndex = endIndex;

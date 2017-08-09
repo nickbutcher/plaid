@@ -18,13 +18,14 @@ package io.plaidapp.ui.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.ColorInt;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.text.Layout;
 import android.text.Selection;
@@ -40,7 +41,6 @@ import android.view.View;
 
 import in.uncod.android.bypass.style.TouchableUrlSpan;
 import io.plaidapp.R;
-import io.plaidapp.util.FontUtil;
 
 /**
  * A view for displaying text that is will be overlapped by a Floating Action Button (FAB).
@@ -67,76 +67,48 @@ public class FabOverlapTextView extends View {
     private TouchableUrlSpan pressedSpan;
 
     public FabOverlapTextView(Context context) {
-        super(context);
-        init(context, null, 0, 0);
+        this(context, null);
     }
 
     public FabOverlapTextView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs, 0, 0);
+        this(context, attrs, android.R.attr.textViewStyle);
     }
 
     public FabOverlapTextView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
     }
 
     public FabOverlapTextView(Context context, AttributeSet attrs, int defStyleAttr, int
             defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-    private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         paint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FabOverlapTextView);
 
-        float defaultTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
-                DEFAULT_TEXT_SIZE_SP, getResources().getDisplayMetrics());
-
         setFabOverlapGravity(a.getInt(R.styleable.FabOverlapTextView_fabGravity,
                 Gravity.BOTTOM | Gravity.RIGHT));
-        setFabOverlapHeight(a.getDimensionPixelSize(R.styleable
-                .FabOverlapTextView_fabOverlayHeight, 0));
-        setFabOverlapWidth(a.getDimensionPixelSize(R.styleable
-                .FabOverlapTextView_fabOverlayWidth, 0));
+        setFabOverlapHeight(a.getDimensionPixelSize(
+                R.styleable.FabOverlapTextView_fabOverlayHeight, 0));
+        setFabOverlapWidth(a.getDimensionPixelSize(
+                R.styleable.FabOverlapTextView_fabOverlayWidth, 0));
 
+        // first check the TextAppearance for text attributes
         if (a.hasValue(R.styleable.FabOverlapTextView_android_textAppearance)) {
-            final int textAppearance = a.getResourceId(
+            final int textAppearanceId = a.getResourceId(
                     R.styleable.FabOverlapTextView_android_textAppearance,
                     android.R.style.TextAppearance);
-            TypedArray atp = getContext().obtainStyledAttributes(textAppearance,
-                    R.styleable.FontTextAppearance);
-            paint.setColor(atp.getColor(R.styleable.FontTextAppearance_android_textColor,
-                    Color.BLACK));
-            paint.setTextSize(atp.getDimensionPixelSize(
-                    R.styleable.FontTextAppearance_android_textSize, (int) defaultTextSize));
-            if (atp.hasValue(R.styleable.FontTextAppearance_font)) {
-                paint.setTypeface(FontUtil.get(getContext(),
-                        atp.getString(R.styleable.FontTextAppearance_font)));
-            }
-            atp.recycle();
+            TypedArray ta = getContext().obtainStyledAttributes(textAppearanceId,
+                    R.styleable.FabOverlapTextView);
+            parseTextAppearance(ta);
+            ta.recycle();
         }
 
-        if (a.hasValue(R.styleable.FabOverlapTextView_font)) {
-            setFont(a.getString(R.styleable.FabOverlapTextView_font));
-        }
-
-        if (a.hasValue(R.styleable.FabOverlapTextView_android_textColor)) {
-            setTextColor(a.getColor(R.styleable.FabOverlapTextView_android_textColor, 0));
-        }
-        if (a.hasValue(R.styleable.FabOverlapTextView_android_textSize)) {
-            setTextSize(a.getDimensionPixelSize(R.styleable.FabOverlapTextView_android_textSize,
-                    (int) defaultTextSize));
-        }
-
-        lineHeightHint = a.getDimensionPixelSize(R.styleable.FabOverlapTextView_lineHeightHint, 0);
-        unalignedTopPadding = getPaddingTop();
-        unalignedBottomPadding = getPaddingBottom();
-
+        // then check view for text attributes
+        parseTextAppearance(a);
         breakStrategy = a.getInt(R.styleable.FabOverlapTextView_android_breakStrategy,
                 Layout.BREAK_STRATEGY_BALANCED);
 
+        unalignedTopPadding = getPaddingTop();
+        unalignedBottomPadding = getPaddingBottom();
         a.recycle();
     }
 
@@ -173,16 +145,47 @@ public class FabOverlapTextView extends View {
         paint.setTypeface(typeface);
     }
 
-    public void setFont(String font) {
-        setTypeface(FontUtil.get(getContext(), font));
-    }
-
     public void setLetterSpacing(float letterSpacing) {
         paint.setLetterSpacing(letterSpacing);
     }
 
     public void setFontFeatureSettings(String fontFeatureSettings) {
         paint.setFontFeatureSettings(fontFeatureSettings);
+    }
+
+    private void parseTextAppearance(TypedArray a) {
+        if (a.hasValue(R.styleable.FabOverlapTextView_android_fontFamily)) {
+            try {
+                Typeface font = ResourcesCompat.getFont(getContext(),
+                        a.getResourceId(R.styleable.FabOverlapTextView_android_fontFamily, 0));
+                if (font != null) {
+                    setTypeface(font);
+                }
+            } catch (Resources.NotFoundException nfe) {
+                // swallow - use default typeface
+            }
+        }
+
+        if (a.hasValue(R.styleable.FabOverlapTextView_android_textColor)) {
+            setTextColor(a.getColor(R.styleable.FabOverlapTextView_android_textColor, 0));
+        }
+        if (a.hasValue(R.styleable.FabOverlapTextView_android_textSize)) {
+            int defaultTextSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                    DEFAULT_TEXT_SIZE_SP, getResources().getDisplayMetrics());
+            setTextSize(a.getDimensionPixelSize(R.styleable.FabOverlapTextView_android_textSize,
+                    defaultTextSize));
+        }
+        if (a.hasValue(R.styleable.FabOverlapTextView_android_letterSpacing)) {
+            setLetterSpacing(a.getFloat(R.styleable.FabOverlapTextView_android_letterSpacing, 0f));
+        }
+        if (a.hasValue(R.styleable.FabOverlapTextView_android_fontFeatureSettings)) {
+            setFontFeatureSettings(
+                    a.getString(R.styleable.FabOverlapTextView_android_fontFeatureSettings));
+        }
+        if (a.hasValue(R.styleable.FabOverlapTextView_lineHeightHint)) {
+            lineHeightHint =
+                    a.getDimensionPixelSize(R.styleable.FabOverlapTextView_lineHeightHint, 0);
+        }
     }
 
     private void recompute(int width) {

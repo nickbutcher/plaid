@@ -33,22 +33,22 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/about_header_height"
             android:text="@string/app_name"
-            app:foregroundColor="?android:colorPrimary"
-            app:font="roboto-mono-regular" />
+            android:fontFamily="@font/roboto_mono"
+            app:foregroundColor="?android:colorPrimary" />
 
         <io.plaidapp.ui.widget.BaselineGridTextView
             android:id="@+id/about_description"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:background="@color/background_light"
             android:paddingStart="@dimen/padding_normal"
             android:paddingTop="@dimen/padding_normal"
             android:paddingEnd="@dimen/padding_normal"
             android:paddingBottom="@dimen/spacing_large"
-            android:background="@color/background_light"
-            android:textColorLink="@color/plaid_links"
+            android:textAppearance="@style/TextAppearance.About"
             android:textColorHighlight="?android:colorPrimary"
-            style="@style/Widget.Plaid.About" />
+            android:textColorLink="@color/plaid_links" />
 
     </LinearLayout>
 

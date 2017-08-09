@@ -16,27 +16,22 @@
 
 package io.plaidapp.ui.widget;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.TimeInterpolator;
-import android.animation.ValueAnimator;
 import android.content.Context;
-import android.support.v4.view.MotionEventCompat;
+import android.support.animation.DynamicAnimation;
+import android.support.animation.SpringAnimation;
+import android.support.animation.SpringForce;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ViewOffsetHelper;
 
 /**
@@ -50,8 +45,9 @@ import io.plaidapp.util.ViewOffsetHelper;
 public class BottomSheet extends FrameLayout {
 
     // constants
-    final int MIN_FLING_VELOCITY;
-    private static final int MIN_SETTLE_VELOCITY = 6000; // px/s
+    private static final float SETTLE_STIFFNESS = 800f;
+    private static final int MIN_FLING_DISMISS_VELOCITY = 500; // dp/s
+    private final int SCALED_MIN_FLING_DISMISS_VELOCITY; // px/s
 
     // child views & helpers
     View sheet;
@@ -79,8 +75,8 @@ public class BottomSheet extends FrameLayout {
 
     public BottomSheet(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        final ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
-        MIN_FLING_VELOCITY = viewConfiguration.getScaledMinimumFlingVelocity();
+        SCALED_MIN_FLING_DISMISS_VELOCITY =
+            (int) (context.getResources().getDisplayMetrics().density * MIN_FLING_DISMISS_VELOCITY);
     }
 
     /**
@@ -134,7 +130,7 @@ public class BottomSheet extends FrameLayout {
         hasInteractedWithSheet = true;
         if (isNestedScrolling) return false;    /* prefer nested scrolling to dragging */
 
-        final int action = MotionEventCompat.getActionMasked(ev);
+        final int action = ev.getAction();
         if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
             sheetDragHelper.cancel();
             return false;
@@ -203,8 +199,8 @@ public class BottomSheet extends FrameLayout {
 
     @Override
     public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed) {
-        if (velocityY <= -MIN_FLING_VELOCITY           /* flinging downward */
-                && !target.canScrollVertically(-1)) {  /* nested scrolling child can't scroll up */
+        if (velocityY <= -SCALED_MIN_FLING_DISMISS_VELOCITY   /* flinging downward */
+                && !target.canScrollVertically(-1)) {   /* nested scrolling child can't scroll up */
             animateSettle(dismissOffset, velocityY);
             return true;
         } else if (velocityY > 0 && !isExpanded()) {
@@ -224,10 +220,6 @@ public class BottomSheet extends FrameLayout {
     }
 
     void animateSettle(int targetOffset, float initialVelocity) {
-        animateSettle(sheetOffsetHelper.getTopAndBottomOffset(), targetOffset, initialVelocity);
-    }
-
-    private void animateSettle(int initialOffset, final int targetOffset, float initialVelocity) {
         if (settling) return;
         if (sheetOffsetHelper.getTopAndBottomOffset() == targetOffset) {
           if (targetOffset >= dismissOffset) {
@@ -238,16 +230,21 @@ public class BottomSheet extends FrameLayout {
 
         settling = true;
         final boolean dismissing = targetOffset == dismissOffset;
-        final long duration = computeSettleDuration(initialVelocity, dismissing);
-        final ObjectAnimator settleAnim = ObjectAnimator.ofInt(sheetOffsetHelper,
-                ViewOffsetHelper.OFFSET_Y,
-                initialOffset,
-                targetOffset);
-        settleAnim.setDuration(duration);
-        settleAnim.setInterpolator(getSettleInterpolator(dismissing, initialVelocity));
-        settleAnim.addListener(new AnimatorListenerAdapter() {
+        // if we're dismissing, we don't want the view to decelerate as it reaches the bottom
+        // so set a target position that actually overshoots a little
+        final float finalPosition = dismissing ? dismissOffset * 1.1f : targetOffset;
+
+        SpringAnimation anim = new SpringAnimation(
+                sheetOffsetHelper, ViewOffsetHelper.OFFSET_Y, finalPosition)
+                .setStartValue(sheetOffsetHelper.getTopAndBottomOffset())
+                .setStartVelocity(initialVelocity)
+                .setMinimumVisibleChange(DynamicAnimation.MIN_VISIBLE_CHANGE_PIXELS);
+        anim.getSpring()
+                .setStiffness(SETTLE_STIFFNESS)
+                .setDampingRatio(SpringForce.DAMPING_RATIO_NO_BOUNCY);
+        anim.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
                 dispatchPositionChangedCallback();
                 if (dismissing) {
                     dispatchDismissCallback();
@@ -256,52 +253,14 @@ public class BottomSheet extends FrameLayout {
             }
         });
         if (callbacks != null && !callbacks.isEmpty()) {
-            settleAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            anim.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
                 @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    if (animation.getAnimatedFraction() > 0f) {
-                        dispatchPositionChangedCallback();
-                    }
+                public void onAnimationUpdate(DynamicAnimation animation, float value, float velocity) {
+                    dispatchPositionChangedCallback();
                 }
             });
         }
-        settleAnim.start();
-    }
-
-    /**
-     * Provides the appropriate interpolator for the settle animation depending upon:
-     * – If dismissing then exit at full speed i.e. linearly otherwise decelerate
-     * – If have initial velocity then respect it (i.e. start linearly) otherwise accelerate into
-     *   the animation.
-     */
-    private TimeInterpolator getSettleInterpolator(boolean dismissing, float initialVelocity) {
-        if (initialVelocity != 0) {
-            if (dismissing) {
-                return AnimUtils.getLinearInterpolator();
-            } else {
-                return AnimUtils.getLinearOutSlowInInterpolator(getContext());
-            }
-        } else {
-            if (dismissing) {
-                return AnimUtils.getFastOutLinearInInterpolator(getContext());
-            } else {
-                return AnimUtils.getFastOutSlowInInterpolator(getContext());
-            }
-        }
-    }
-
-    /**
-     * Calculate the duration of the settle animation based on the gesture velocity
-     * and how far it has to go.
-     */
-    private long computeSettleDuration(final float velocity, final boolean dismissing) {
-        // enforce a min velocity to prevent too slow settling
-        final float clampedVelocity = Math.max(MIN_SETTLE_VELOCITY, Math.abs(velocity));
-        final int settleDistance = dismissing
-                ? sheetBottom - sheet.getTop()
-                : sheet.getTop() - sheetExpandedTop;
-        // velocity is in px/s but we want duration in ms thus * 1000
-        return (long) (settleDistance * 1000 / clampedVelocity);
+        anim.start();
     }
 
     private final ViewDragHelper.Callback dragHelperCallbacks = new ViewDragHelper.Callback() {
@@ -336,7 +295,7 @@ public class BottomSheet extends FrameLayout {
         @Override
         public void onViewReleased(View releasedChild, float velocityX, float velocityY) {
             // dismiss on downward fling, otherwise settle back to expanded position
-            final boolean dismiss = velocityY >= MIN_FLING_VELOCITY;
+            final boolean dismiss = velocityY >= SCALED_MIN_FLING_DISMISS_VELOCITY;
             animateSettle(dismiss ? dismissOffset : 0, velocityY);
         }
 
@@ -370,7 +329,8 @@ public class BottomSheet extends FrameLayout {
         if (sheet.getTop() < minimumGap) {
             final int offset = minimumGap - sheet.getTop();
             if (animateChange) {
-                animateSettle(previousOffset, offset, 0);
+                sheetOffsetHelper.setTopAndBottomOffset(previousOffset);
+                animateSettle(offset, 0);
             } else {
                 sheetOffsetHelper.setTopAndBottomOffset(offset);
             }

@@ -23,6 +23,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -32,13 +33,16 @@ import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.ColorInt;
+import android.support.annotation.FontRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.res.ResourcesCompat;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -56,7 +60,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.plaidapp.R;
-import io.plaidapp.util.FontUtil;
+import io.plaidapp.ui.widget.BaselineGridTextView;
 
 /**
  * A transition for repositioning text. This will animate changes in text size and position,
@@ -443,8 +447,13 @@ public class ReflowText extends Transition {
         paint.setTextSize(data.textSize);
         paint.setColor(data.textColor);
         paint.setLetterSpacing(data.letterSpacing);
-        if (data.fontName != null) {
-            paint.setTypeface(FontUtil.get(context, data.fontName));
+        if (data.fontResId != 0) {
+            try {
+                Typeface font = ResourcesCompat.getFont(context, data.fontResId);
+                if (font != null) {
+                    paint.setTypeface(font);
+                }
+            } catch (Resources.NotFoundException nfe) { }
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -499,7 +508,7 @@ public class ReflowText extends Transition {
         final float textSize;
         final @ColorInt int textColor;
         final Rect bounds;
-        final @Nullable String fontName;
+        final @FontRes int fontResId;
         final float lineSpacingAdd;
         final float lineSpacingMult;
         final Point textPosition;
@@ -513,7 +522,7 @@ public class ReflowText extends Transition {
             text = reflowable.getText();
             textSize = reflowable.getTextSize();
             textColor = reflowable.getTextColor();
-            fontName = reflowable.getFontName();
+            fontResId = reflowable.getFontResId();
             final View view = reflowable.getView();
             int[] loc = new int[2];
             view.getLocationInWindow(loc);
@@ -533,7 +542,7 @@ public class ReflowText extends Transition {
             textSize = in.readFloat();
             textColor = in.readInt();
             bounds = (Rect) in.readValue(Rect.class.getClassLoader());
-            fontName = in.readString();
+            fontResId = in.readInt();
             lineSpacingAdd = in.readFloat();
             lineSpacingMult = in.readFloat();
             textPosition = (Point) in.readValue(Point.class.getClassLoader());
@@ -555,7 +564,7 @@ public class ReflowText extends Transition {
             dest.writeFloat(textSize);
             dest.writeInt(textColor);
             dest.writeValue(bounds);
-            dest.writeString(fontName);
+            dest.writeInt(fontResId);
             dest.writeFloat(lineSpacingAdd);
             dest.writeFloat(lineSpacingMult);
             dest.writeValue(textPosition);
@@ -789,7 +798,7 @@ public class ReflowText extends Transition {
         float getLineSpacingMult();
         int getBreakStrategy();
         float getLetterSpacing();
-        @Nullable String getFontName();
+        @FontRes int getFontResId();
         int getMaxLines();
     }
 
@@ -798,9 +807,9 @@ public class ReflowText extends Transition {
      */
     public static class ReflowableTextView implements Reflowable<TextView> {
 
-        private final TextView textView;
+        private final BaselineGridTextView textView;
 
-        public ReflowableTextView(TextView textView) {
+        public ReflowableTextView(BaselineGridTextView textView) {
             this.textView = textView;
         }
 
@@ -859,6 +868,11 @@ public class ReflowText extends Transition {
         }
 
         @Override
+        public int getFontResId() {
+            return textView.getFontResId();
+        }
+
+        @Override
         public float getTextSize() {
             return textView.getTextSize();
         }
@@ -866,12 +880,6 @@ public class ReflowText extends Transition {
         @Override
         public int getTextColor() {
             return textView.getCurrentTextColor();
-        }
-
-        @Nullable
-        @Override
-        public String getFontName() {
-            return FontUtil.getName(textView.getTypeface());
         }
 
         @Override

@@ -64,15 +64,13 @@
         android:id="@+id/comment_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/depth"
-        android:layout_below="@id/comment_author"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:paddingEnd="@dimen/padding_normal"
         android:paddingBottom="@dimen/padding_normal"
-        android:textColorLink="@color/designer_news_links"
+        android:textAppearance="@style/TextAppearance.Comment"
         android:textColorHighlight="@color/designer_news_link_highlight"
-        tools:text="Dude do you use sketch? You should totally use sketch. Should designers code??"
-        style="@style/Widget.Plaid.Comment" />
+        android:textColorLink="@color/designer_news_links"
+        tools:text="Dude do you use sketch? You should totally use sketch. Should designers code??" />
 
 </io.plaidapp.ui.widget.ForegroundRelativeLayout>

@@ -48,7 +48,7 @@
         android:layout_toEndOf="@id/library_image"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        style="@style/Widget.Plaid.Subhead" />
+        android:textAppearance="@style/TextAppearance.Subhead" />
 
     <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/library_description"

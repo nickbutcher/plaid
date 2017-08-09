@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2017 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+  in compliance with the License. You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software distributed under the License
+  is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+  or implied. See the License for the specific language governing permissions and limitations under
+  the License.
+  -->
+
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <path
+        android:pathData="M0,0 L108,0 L108,108 L0,108 L0,0 Z"
+        android:fillColor="@color/layered_icon_base" />
+    <path
+        android:pathData="M-2,54 L14,54 L14,70 L-2,70 L-2,54 Z M-2,22 L14,22 L14,38 L-2,38 L-2,22 Z M-2,86 L14,86 L14,102 L-2,102 L-2,86 Z M14,6 L30,6 L30,22 L14,22 L14,6 Z M14,70 L30,70 L30,86 L14,86 L14,70 Z M14,38 L30,38 L30,54 L14,54 L14,38 Z M14,102 L30,102 L30,118 L14,118 L14,102 Z M30,-10 L46,-10 L46,6 L30,6 L30,-10 Z M-2,-10 L14,-10 L14,6 L-2,6 L-2,-10 Z M30,54 L46,54 L46,70 L30,70 L30,54 Z M30,22 L46,22 L46,38 L30,38 L30,22 Z M30,86 L46,86 L46,102 L30,102 L30,86 Z M46,6 L62,6 L62,22 L46,22 L46,6 Z M46,70 L62,70 L62,86 L46,86 L46,70 Z M46,38 L62,38 L62,54 L46,54 L46,38 Z M46,102 L62,102 L62,118 L46,118 L46,102 Z M62,-10 L78,-10 L78,6 L62,6 L62,-10 Z M62,54 L78,54 L78,70 L62,70 L62,54 Z M62,22 L78,22 L78,38 L62,38 L62,22 Z M62,86 L78,86 L78,102 L62,102 L62,86 Z M78,6 L94,6 L94,22 L78,22 L78,6 Z M78,70 L94,70 L94,86 L78,86 L78,70 Z M78,38 L94,38 L94,54 L78,54 L78,38 Z M78,102 L94,102 L94,118 L78,118 L78,102 Z M94,-10 L110,-10 L110,6 L94,6 L94,-10 Z M94,54 L110,54 L110,70 L94,70 L94,54 Z M94,22 L110,22 L110,38 L94,38 L94,22 Z M94,86 L110,86 L110,102 L94,102 L94,86 Z M110,6 L126,6 L126,22 L110,22 L110,6 Z M110,70 L126,70 L126,86 L110,86 L110,70 Z M110,38 L126,38 L126,54 L110,54 L110,38 Z M110,102 L126,102 L126,118 L110,118 L110,102 Z"
+        android:fillColor="#90A4AE" />
+    <path
+        android:pathData="M14,-10 L30,-10 L30,6 L14,6 L14,-10 Z M14,22 L30,22 L30,38 L14,38 L14,22 Z M14,54 L30,54 L30,70 L14,70 L14,54 Z M14,86 L30,86 L30,102 L14,102 L14,86 Z M46,-10 L62,-10 L62,6 L46,6 L46,-10 Z M46,22 L62,22 L62,38 L46,38 L46,22 Z M46,54 L62,54 L62,70 L46,70 L46,54 Z M46,86 L62,86 L62,102 L46,102 L46,86 Z M78,-10 L94,-10 L94,6 L78,6 L78,-10 Z M78,22 L94,22 L94,38 L78,38 L78,22 Z M78,54 L94,54 L94,70 L78,70 L78,54 Z M78,86 L94,86 L94,102 L78,102 L78,86 Z"
+        android:fillColor="#B0BEC5" />
+
+</vector>

@@ -19,6 +19,6 @@
     <declare-styleable name="CutoutTextView">
         <attr name="foregroundColor" format="color" />
         <attr name="android:text" />
-        <attr name="font" />
+        <attr name="android:fontFamily" />
     </declare-styleable>
 </resources>

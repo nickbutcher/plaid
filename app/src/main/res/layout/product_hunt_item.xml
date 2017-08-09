@@ -36,8 +36,8 @@
         android:paddingBottom="@dimen/spacing_micro"
         android:ellipsize="end"
         android:breakStrategy="simple"
-        app:maxLinesByHeight="true"
-        style="@style/Widget.Plaid.TilePrimary" />
+        android:textAppearance="@style/TextAppearance.TilePrimary"
+        app:maxLinesByHeight="true" />
 
     <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/tagline"
@@ -49,8 +49,8 @@
         android:paddingBottom="@dimen/spacing_micro"
         android:ellipsize="end"
         android:breakStrategy="simple"
-        app:maxLinesByHeight="true"
-        style="@style/Widget.Plaid.TileSecondary" />
+        android:textAppearance="@style/TextAppearance.TileSecondary"
+        app:maxLinesByHeight="true" />
 
     <io.plaidapp.ui.widget.BaselineGridTextView
         android:id="@+id/story_comments"
@@ -63,6 +63,6 @@
         android:drawableStart="@drawable/ic_comment_light"
         android:gravity="center_vertical"
         android:padding="@dimen/spacing_normal"
-        style="@style/Widget.Plaid.TileSecondary" />
+        android:textAppearance="@style/TextAppearance.TileSecondary" />
 
 </io.plaidapp.ui.widget.FourThreeLinearLayout>

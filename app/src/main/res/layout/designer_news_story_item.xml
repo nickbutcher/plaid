@@ -39,9 +39,9 @@
         android:layout_weight="1"
         android:breakStrategy="simple"
         android:ellipsize="end"
+        android:textAppearance="@style/TextAppearance.TilePrimary"
         app:maxLinesByHeight="true"
-        tools:text="Amazing designer news story"
-        style="@style/Widget.Plaid.TilePrimary" />
+        tools:text="Amazing designer news story" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -73,8 +73,8 @@
             android:gravity="center_vertical"
             android:padding="@dimen/spacing_normal"
             android:paddingTop="@dimen/spacing_normal"
-            tools:text="7"
-            style="@style/Widget.Plaid.TileSecondary" />
+            android:textAppearance="@style/TextAppearance.TileSecondary"
+            tools:text="7" />
 
     </FrameLayout>
 

@@ -17,6 +17,7 @@
 package io.plaidapp.ui.widget;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -25,12 +26,13 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Typeface;
+import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
 
 import io.plaidapp.R;
-import io.plaidapp.util.FontUtil;
 import io.plaidapp.util.ViewUtils;
 
 /**
@@ -53,11 +55,16 @@ public class CutoutTextView extends View {
 
         textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 
-        final TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable
-                .CutoutTextView, 0, 0);
-        if (a.hasValue(R.styleable.CutoutTextView_font)) {
-            textPaint.setTypeface(FontUtil.get(context, a.getString(R.styleable
-                    .CutoutTextView_font)));
+        final TypedArray a =
+                getContext().obtainStyledAttributes(attrs, R.styleable.CutoutTextView, 0, 0);
+        if (a.hasValue(R.styleable.CutoutTextView_android_fontFamily)) {
+            try {
+                Typeface font = ResourcesCompat.getFont(getContext(),
+                        a.getResourceId(R.styleable.CutoutTextView_android_fontFamily, 0));
+                if (font != null) {
+                    textPaint.setTypeface(font);
+                }
+            } catch (Resources.NotFoundException nfe) { }
         }
         if (a.hasValue(R.styleable.CutoutTextView_foregroundColor)) {
             foregroundColor = a.getColor(R.styleable.CutoutTextView_foregroundColor,

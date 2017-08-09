@@ -17,6 +17,6 @@
 
 <resources>
 
-    <color name="light_immersive_bars">#b3eeeeee</color> <!-- 70% grey 200 -->
+    <color name="light_status_bar">@color/light_immersive_bars</color>
 
 </resources>

@@ -28,6 +28,7 @@
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
+        <item name="collapsingTitleLayoutStyle">@style/Widget.Plaid.CollapsingTitle</item>
     </style>
 
     <style name="Plaid.Home">
@@ -97,8 +98,8 @@
 
     <style name="Plaid.Translucent.Dribbble.Player">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@color/light_immersive_bars</item>
-        <item name="android:navigationBarColor">@color/immersive_bars</item>
+        <item name="android:statusBarColor">@color/light_status_bar</item>
+        <item name="android:navigationBarColor">@color/light_nav_bar</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
@@ -187,7 +188,7 @@
 
     <style name="TextAppearance.ToolbarTitle" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
         <item name="android:textColor">@color/text_primary_light</item>
-        <item name="font">roboto-mono-regular</item>
+        <item name="android:fontFamily">@font/roboto_mono</item>
     </style>
 
     <style name="TextAppearance.ToolbarTitleSmallCaps" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
@@ -197,18 +198,15 @@
     </style>
 
     <style name="TextAppearance.DribbbleShotTitle" parent="@android:style/TextAppearance.Material.Headline">
-        <item name="font">roboto-mono-regular</item>
+        <item name="android:fontFamily">@font/roboto_mono</item>
         <item name="android:textColor">@color/text_primary_dark</item>
+        <item name="lineHeightHint">32sp</item>
     </style>
 
     <style name="TextAppearance.TilePrimary" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:letterSpacing">0.01</item>
+        <item name="android:fontFamily">@font/roboto_mono</item>
         <item name="lineHeightHint">20sp</item>
-        <item name="font">roboto-mono-regular</item>
-    </style>
-
-    <style name="Widget.Plaid.TilePrimary">
-        <item name="android:textAppearance">@style/TextAppearance.TilePrimary</item>
     </style>
 
     <style name="TextAppearance.TileSecondary" parent="@android:style/TextAppearance.Material.Body2">
@@ -216,28 +214,15 @@
         <item name="android:textColor">?android:textColorSecondary</item>
     </style>
 
-    <style name="Widget.Plaid.TileSecondary">
-        <item name="android:textAppearance">@style/TextAppearance.TileSecondary</item>
-    </style>
-
     <style name="TextAppearance.DribbbleShotDescription" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:textColor">@color/text_tertiary_dark</item>
         <item name="android:letterSpacing">0.01</item>
+        <item name="lineHeightHint">24sp</item>
     </style>
 
     <style name="TextAppearance.Filter" parent="@android:style/TextAppearance.Material.Title">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/filter_text</item>
-    </style>
-
-    <style name="Widget.Plaid.DribbbleShotTitle">
-        <item name="android:textAppearance">@style/TextAppearance.DribbbleShotTitle</item>
-        <item name="lineHeightHint">32sp</item>
-    </style>
-
-    <style name="Widget.Plaid.DribbbleShotDescription">
-        <item name="android:textAppearance">@style/TextAppearance.DribbbleShotDescription</item>
-        <item name="lineHeightHint">24sp</item>
     </style>
 
     <style name="Widget.Plaid.CollapsingTitle">
@@ -254,10 +239,6 @@
     <style name="TextAppearance.DesignerNewsDescription" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:textColor">@color/text_secondary_dark</item>
         <item name="android:letterSpacing">0.01</item>
-    </style>
-
-    <style name="Widget.Plaid.DesignerNewsDescription">
-        <item name="android:textAppearance">@style/TextAppearance.DesignerNewsDescription</item>
         <item name="lineHeightHint">24sp</item>
     </style>
 
@@ -265,12 +246,8 @@
     <style name="TextAppearance.Comment" parent="@android:style/TextAppearance.Material.Body1">
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/text_secondary_dark</item>
-        <!--<item name="android:letterSpacing">0.01</item>-->
-    </style>
-
-    <style name="Widget.Plaid.Comment">
-        <item name="android:textAppearance">@style/TextAppearance.Comment</item>
         <item name="lineHeightHint">24sp</item>
+        <!--<item name="android:letterSpacing">0.01</item>-->
     </style>
 
     <style name="TextAppearance.Comment.None">
@@ -312,42 +289,29 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
-    <style name="Widget.Plaid.DialogText">
-        <item name="android:textAppearance">@style/TextAppearance.DialogContent</item>
-        <item name="lineHeightHint">20sp</item>
-    </style>
-
-    <style name="Widget.Plaid.DialogTitle">
-        <item name="android:textAppearance">@style/TextAppearance.DialogTitle</item>
-        <item name="lineHeightHint">28sp</item>
-    </style>
-
     <style name="TextAppearance.DialogTitle" parent="@android:style/TextAppearance.Material.Title">
         <item name="android:textColor">@color/text_primary_dark</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:letterSpacing">0.01</item>
+        <item name="lineHeightHint">28sp</item>
     </style>
 
     <style name="TextAppearance.DialogContent" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:textColor">@color/text_secondary_dark</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:letterSpacing">0.01</item>
-    </style>
-
-    <style name="Widget.Plaid.About">
-        <item name="android:textAppearance">@style/TextAppearance.About</item>
         <item name="lineHeightHint">24sp</item>
     </style>
 
     <style name="TextAppearance.About" parent="@android:style/TextAppearance.Material.Body1">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="lineHeightHint">24sp</item>
     </style>
 
-    <style name="Widget.Plaid.EmptyText">
-        <item name="android:textAppearance">@style/TextAppearance.DialogContent</item>
-        <item name="lineHeightHint">24sp</item>
+    <style name="TextAppearance.EmptyText" parent="@style/TextAppearance.DialogContent">
         <item name="android:textColor">@color/text_primary_light</item>
+        <item name="lineHeightHint">24sp</item>
     </style>
 
     <!-- By default float labels (well, the design lib) rely on AppCompat which we're not using
@@ -360,14 +324,10 @@
         <item name="android:textColor">@color/text_secondary_dark</item>
     </style>
 
-    <style name="Widget.Plaid.Subhead">
-        <item name="android:textAppearance">@style/TextAppearance.Subhead</item>
-        <item name="lineHeightHint">24sp</item>
-    </style>
-
     <style name="TextAppearance.Subhead" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:textColor">@color/text_secondary_dark</item>
         <item name="android:letterSpacing">0.01</item>
+        <item name="lineHeightHint">24sp</item>
     </style>
 
     <style name="Widget.Plaid.SecondaryText">
@@ -379,13 +339,9 @@
         <item name="android:textColor">@color/text_tertiary_dark</item>
     </style>
 
-    <style name="Widget.Plaid.PlayerTitle">
-        <item name="android:textAppearance">@style/TextAppearance.Author.Title</item>
-        <item name="lineHeightHint">28sp</item>
-    </style>
-
     <style name="TextAppearance.Author.Title" parent="@style/TextAppearance.CommentAuthor">
         <item name="android:textSize">20sp</item>
+        <item name="lineHeightHint">28sp</item>
     </style>
 
     <style name="PlaidDarkOverlay" parent="@android:style/ThemeOverlay.Material.Dark.ActionBar">

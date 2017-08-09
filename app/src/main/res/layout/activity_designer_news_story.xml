@@ -57,8 +57,7 @@
         android:textAppearance="@style/TextAppearance.ToolbarTitle"
         android:transitionName="@string/transition_story_title"
         android:transitionGroup="false"
-        android:theme="@style/PlaidDarkOverlay"
-        style="@style/Widget.Plaid.CollapsingTitle">
+        android:theme="@style/PlaidDarkOverlay">
 
         <io.plaidapp.ui.widget.PinnedOffsetView
             android:id="@+id/story_title_background"

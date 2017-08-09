@@ -44,12 +44,7 @@ public class DynamicTypeTextView extends BaselineGridTextView {
     }
 
     public DynamicTypeTextView(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
-    }
-
-    public DynamicTypeTextView(Context context, AttributeSet attrs,
-                               int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
+        super(context, attrs, defStyleAttr);
 
         /* re-use CollapsingTitleLayout attribs */
         final TypedArray a =
