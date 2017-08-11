@@ -49,9 +49,9 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -85,6 +85,7 @@ import io.plaidapp.util.TransitionUtils;
 import io.plaidapp.util.ViewUtils;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.util.glide.DribbbleTarget;
+import io.plaidapp.util.glide.GlideApp;
 
 import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
 
@@ -339,15 +340,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                         final DribbbleShotHolder holder,
                                         int position) {
         final int[] imageSize = shot.images.bestSize();
-        Glide.with(host)
+        GlideApp.with(host)
                 .load(shot.images.best())
-                .listener(new RequestListener<String, GlideDrawable>() {
+                .listener(new RequestListener<Drawable>() {
 
                     @Override
-                    public boolean onResourceReady(GlideDrawable resource,
-                                                   String model,
-                                                   Target<GlideDrawable> target,
-                                                   boolean isFromMemoryCache,
+                    public boolean onResourceReady(Drawable resource, Object model,
+                                                   Target<Drawable> target, DataSource dataSource,
                                                    boolean isFirstResource) {
                         if (!shot.hasFadedIn) {
                             holder.image.setHasTransientState(true);
@@ -380,13 +379,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
 
                     @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable>
-                            target, boolean isFirstResource) {
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                Target<Drawable> target, boolean isFirstResource) {
                         return false;
                     }
                 })
                 .placeholder(shotLoadingPlaceholders[position % shotLoadingPlaceholders.length])
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .fitCenter()
                 .override(imageSize[0], imageSize[1])
                 .into(new DribbbleTarget(holder.image, false));

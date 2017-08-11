@@ -57,7 +57,7 @@ import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.util.DribbbleUtils;
 import io.plaidapp.util.ViewUtils;
-import io.plaidapp.util.glide.CircleTransform;
+import io.plaidapp.util.glide.GlideApp;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -78,7 +78,6 @@ public class PlayerActivity extends Activity {
     GridLayoutManager layoutManager;
     Boolean following;
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
-    private CircleTransform circleTransform;
     private int followerCount;
 
     @BindView(R.id.draggable_frame) ElasticDragDismissFrameLayout draggableFrame;
@@ -99,7 +98,6 @@ public class PlayerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_player);
         ButterKnife.bind(this);
-        circleTransform = new CircleTransform(this);
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this);
 
         final Intent intent = getIntent();
@@ -199,10 +197,10 @@ public class PlayerActivity extends Activity {
         final Resources res = getResources();
         final NumberFormat nf = NumberFormat.getInstance();
 
-        Glide.with(this)
+        GlideApp.with(this)
                 .load(player.getHighQualityAvatarUrl())
                 .placeholder(R.drawable.avatar_placeholder)
-                .transform(circleTransform)
+                .circleCrop()
                 .into(avatar);
         playerName.setText(player.name.toLowerCase());
         if (!TextUtils.isEmpty(player.bio)) {

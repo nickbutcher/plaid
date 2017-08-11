@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -56,8 +57,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
@@ -91,7 +93,7 @@ import io.plaidapp.util.ImeUtils;
 import io.plaidapp.util.TransitionUtils;
 import io.plaidapp.util.ViewUtils;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
-import io.plaidapp.util.glide.CircleTransform;
+import io.plaidapp.util.glide.GlideApp;
 import io.plaidapp.util.glide.GlideUtils;
 import okhttp3.HttpUrl;
 import retrofit2.Call;
@@ -134,7 +136,6 @@ public class DribbbleShot extends Activity {
     DribbblePrefs dribbblePrefs;
     boolean performingLike;
     boolean allowComment;
-    CircleTransform circleTransform;
     CommentsAdapter adapter;
     CommentAnimator commentAnimator;
     @BindDimen(R.dimen.large_avatar_size) int largeAvatarSize;
@@ -145,7 +146,6 @@ public class DribbbleShot extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_shot);
         dribbblePrefs = DribbblePrefs.get(this);
-        circleTransform = new CircleTransform(this);
         ButterKnife.bind(this);
         shotDescription = getLayoutInflater().inflate(R.layout.dribbble_shot_description,
                 commentsList, false);
@@ -293,10 +293,10 @@ public class DribbbleShot extends Activity {
 
         // load the main image
         final int[] imageSize = shot.images.bestSize();
-        Glide.with(this)
+        GlideApp.with(this)
                 .load(shot.images.best())
                 .listener(shotLoadListener)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .priority(Priority.IMMEDIATE)
                 .override(imageSize[0], imageSize[1])
                 .into(imageView);
@@ -368,9 +368,9 @@ public class DribbbleShot extends Activity {
         });
         if (shot.user != null) {
             playerName.setText(shot.user.name.toLowerCase());
-            Glide.with(this)
+            GlideApp.with(this)
                     .load(shot.user.getHighQualityAvatarUrl())
-                    .transform(circleTransform)
+                    .circleCrop()
                     .placeholder(R.drawable.avatar_placeholder)
                     .override(largeAvatarSize, largeAvatarSize)
                     .into(playerAvatar);
@@ -458,12 +458,12 @@ public class DribbbleShot extends Activity {
                 Uri.parse(url));
     }
 
-    private RequestListener shotLoadListener = new RequestListener<String, GlideDrawable>() {
+    private RequestListener<Drawable> shotLoadListener = new RequestListener<Drawable>() {
         @Override
-        public boolean onResourceReady(GlideDrawable resource, String model,
-                                       Target<GlideDrawable> target, boolean isFromMemoryCache,
-                                       boolean isFirstResource) {
+        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target,
+                                       DataSource dataSource, boolean isFirstResource) {
             final Bitmap bitmap = GlideUtils.getBitmap(resource);
+            if (bitmap == null) return false;
             final int twentyFourDip = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                     24, DribbbleShot.this.getResources().getDisplayMetrics());
             Palette.from(bitmap)
@@ -548,8 +548,8 @@ public class DribbbleShot extends Activity {
         }
 
         @Override
-        public boolean onException(Exception e, String model, Target<GlideDrawable> target,
-                                   boolean isFirstResource) {
+        public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                    Target<Drawable> target, boolean isFirstResource) {
             return false;
         }
     };
@@ -720,9 +720,9 @@ public class DribbbleShot extends Activity {
         if (allowComment
                 && dribbblePrefs.isLoggedIn()
                 && !TextUtils.isEmpty(dribbblePrefs.getUserAvatar())) {
-            Glide.with(this)
+            GlideApp.with(this)
                     .load(dribbblePrefs.getUserAvatar())
-                    .transform(circleTransform)
+                    .circleCrop()
                     .placeholder(R.drawable.ic_player)
                     .into(userAvatar);
         }
@@ -1020,9 +1020,9 @@ public class DribbbleShot extends Activity {
         private void bindComment(CommentViewHolder holder, Comment comment) {
             final int position = holder.getAdapterPosition();
             final boolean isExpanded = position == expandedCommentPosition;
-            Glide.with(DribbbleShot.this)
+            GlideApp.with(DribbbleShot.this)
                     .load(comment.user.getHighQualityAvatarUrl())
-                    .transform(circleTransform)
+                    .circleCrop()
                     .placeholder(R.drawable.avatar_placeholder)
                     .override(largeAvatarSize, largeAvatarSize)
                     .into(holder.avatar);
