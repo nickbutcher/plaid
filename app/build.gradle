@@ -15,6 +15,8 @@
  */
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 // query git for the SHA, Tag and commit count. Use these to automate versioning.
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
@@ -83,4 +85,5 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.8.1'
     implementation 'org.jsoup:jsoup:1.10.3'
     implementation project(':bypass')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin_version}"
 }
