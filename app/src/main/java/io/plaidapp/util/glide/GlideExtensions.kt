@@ -14,27 +14,20 @@
  * limitations under the License.
  */
 
-buildscript {
+@file:JvmName("GlideUtils")
+package io.plaidapp.util.glide
 
-    ext.versions = [
-            'compileSdk'    : 26,
-            'targetSdk'     : 26,
-            'buildTools'    : '26.0.1',
-            'butterknife'   : '8.8.1',
-            'glide'         : '4.0.0',
-            'kotlin'        : '1.1.4',
-            'retrofit'      : '2.3.0',
-            'supportLibrary': '26.0.1'
-    ]
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 
-    repositories {
-        jcenter()
-        google()
+import com.bumptech.glide.load.resource.gif.GifDrawable
+
+fun Drawable.getBitmap(): Bitmap? {
+    if (this is BitmapDrawable) {
+        return bitmap
+    } else if (this is GifDrawable) {
+        return firstFrame
     }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-beta2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
-    }
-
+    throw IllegalArgumentException("Unknown drawable type.")
 }

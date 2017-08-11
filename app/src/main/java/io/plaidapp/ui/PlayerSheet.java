@@ -64,7 +64,7 @@ import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
 import io.plaidapp.ui.widget.BottomSheet;
 import io.plaidapp.util.DribbbleUtils;
-import io.plaidapp.util.glide.CircleTransform;
+import io.plaidapp.util.glide.GlideApp;
 
 import static io.plaidapp.util.AnimUtils.getLinearOutSlowInInterpolator;
 
@@ -242,12 +242,10 @@ public class PlayerSheet extends Activity {
         private List<T> items;
         private boolean loading = true;
         private LayoutInflater layoutInflater;
-        private CircleTransform circleTransform;
 
         PlayerAdapter(Context context) {
             layoutInflater = LayoutInflater.from(context);
             items = new ArrayList<>();
-            circleTransform = new CircleTransform(context);
             setHasStableIds(true);
         }
 
@@ -291,9 +289,9 @@ public class PlayerSheet extends Activity {
         }
 
         private void bindPlayer(PlayerViewHolder holder, T player) {
-            Glide.with(holder.itemView.getContext())
+            GlideApp.with(holder.itemView.getContext())
                     .load(player.getPlayer().getHighQualityAvatarUrl())
-                    .transform(circleTransform)
+                    .circleCrop()
                     .placeholder(R.drawable.avatar_placeholder)
                     .override(largeAvatarSize, largeAvatarSize)
                     .into(holder.playerAvatar);

@@ -18,6 +18,7 @@ package io.plaidapp.ui;
 
 import android.app.Activity;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -40,9 +41,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.DrawableRequestBuilder;
-import com.bumptech.glide.Glide;
-
 import java.security.InvalidParameterException;
 
 import butterknife.BindView;
@@ -53,19 +51,23 @@ import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.InkPageIndicator;
 import io.plaidapp.util.HtmlUtils;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
-import io.plaidapp.util.glide.CircleTransform;
+import io.plaidapp.util.glide.GlideApp;
+import io.plaidapp.util.glide.GlideRequest;
 
 /**
  * About screen. This displays 3 pages in a ViewPager:
- *  – About Plaid
- *  – Credit Roman for the awesome icon
- *  – Credit libraries
+ * – About Plaid
+ * – Credit Roman for the awesome icon
+ * – Credit libraries
  */
 public class AboutActivity extends Activity {
 
-    @BindView(R.id.draggable_frame) ElasticDragDismissFrameLayout draggableFrame;
-    @BindView(R.id.pager) ViewPager pager;
-    @BindView(R.id.indicator) InkPageIndicator pageIndicator;
+    @BindView(R.id.draggable_frame)
+    ElasticDragDismissFrameLayout draggableFrame;
+    @BindView(R.id.pager)
+    ViewPager pager;
+    @BindView(R.id.indicator)
+    InkPageIndicator pageIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,11 +98,17 @@ public class AboutActivity extends Activity {
     static class AboutPagerAdapter extends PagerAdapter {
 
         private View aboutPlaid;
-        @Nullable @BindView(R.id.about_description) TextView plaidDescription;
+        @Nullable
+        @BindView(R.id.about_description)
+        TextView plaidDescription;
         private View aboutIcon;
-        @Nullable @BindView(R.id.icon_description) TextView iconDescription;
+        @Nullable
+        @BindView(R.id.icon_description)
+        TextView iconDescription;
         private View aboutLibs;
-        @Nullable @BindView(R.id.libs_list) RecyclerView libsList;
+        @Nullable
+        @BindView(R.id.libs_list)
+        RecyclerView libsList;
 
         private final LayoutInflater layoutInflater;
         private final Bypass markdown;
@@ -226,14 +234,12 @@ public class AboutActivity extends Activity {
                         "A type-safe HTTP client for Android and Java.",
                         "http://square.github.io/retrofit/",
                         "https://avatars.githubusercontent.com/u/82592",
-                        false) };
+                        false)};
 
-        private final CircleTransform circleCrop;
         final Activity host;
 
         LibraryAdapter(Activity host) {
             this.host = host;
-            circleCrop = new CircleTransform(host);
         }
 
         @Override
@@ -248,7 +254,8 @@ public class AboutActivity extends Activity {
             throw new InvalidParameterException();
         }
 
-        private @NonNull LibraryHolder createLibraryHolder(ViewGroup parent) {
+        private @NonNull
+        LibraryHolder createLibraryHolder(ViewGroup parent) {
             final LibraryHolder holder = new LibraryHolder(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.library, parent, false));
             View.OnClickListener clickListener = new View.OnClickListener() {
@@ -290,11 +297,11 @@ public class AboutActivity extends Activity {
         private void bindLibrary(final LibraryHolder holder, final Library lib) {
             holder.name.setText(lib.name);
             holder.description.setText(lib.description);
-            DrawableRequestBuilder<String> request = Glide.with(holder.image.getContext())
+            GlideRequest<Drawable> request = GlideApp.with(holder.image.getContext())
                     .load(lib.imageUrl)
                     .placeholder(R.drawable.avatar_placeholder);
             if (lib.circleCrop) {
-                request.transform(circleCrop);
+                request.circleCrop();
             }
             request.into(holder.image);
         }
@@ -302,10 +309,14 @@ public class AboutActivity extends Activity {
 
     static class LibraryHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.library_image) ImageView image;
-        @BindView(R.id.library_name) TextView name;
-        @BindView(R.id.library_description) TextView description;
-        @BindView(R.id.library_link) Button link;
+        @BindView(R.id.library_image)
+        ImageView image;
+        @BindView(R.id.library_name)
+        TextView name;
+        @BindView(R.id.library_description)
+        TextView description;
+        @BindView(R.id.library_link)
+        Button link;
 
         LibraryHolder(View itemView) {
             super(itemView);
