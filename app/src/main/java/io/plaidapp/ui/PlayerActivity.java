@@ -36,7 +36,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
+import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -232,7 +233,9 @@ public class PlayerActivity extends Activity {
                 }
             }
         };
-        adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this));
+        ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider = new ViewPreloadSizeProvider<>();
+        adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this),
+                shotPreloadSizeProvider);
         shots.setAdapter(adapter);
         shots.setItemAnimator(new SlideInItemAnimator());
         shots.setVisibility(View.VISIBLE);
@@ -251,6 +254,9 @@ public class PlayerActivity extends Activity {
             }
         });
         shots.setHasFixedSize(true);
+        RecyclerViewPreloader<Shot> shotPreloader =
+                new RecyclerViewPreloader<>(this, adapter, shotPreloadSizeProvider, 4);
+        shots.addOnScrollListener(shotPreloader);
 
         // forward on any clicks above the first item in the grid (i.e. in the paddingTop)
         // to 'pass through' to the view behind

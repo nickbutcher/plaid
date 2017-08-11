@@ -66,6 +66,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
+import com.bumptech.glide.util.ViewPreloadSizeProvider;
+
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,6 +84,7 @@ import io.plaidapp.data.PlaidItem;
 import io.plaidapp.data.Source;
 import io.plaidapp.data.api.designernews.PostStoryService;
 import io.plaidapp.data.api.designernews.model.Story;
+import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.data.prefs.DribbblePrefs;
@@ -93,6 +97,7 @@ import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.DrawableUtils;
 import io.plaidapp.util.ViewUtils;
+import io.plaidapp.util.glide.GlideApp;
 
 
 public class HomeActivity extends Activity {
@@ -165,7 +170,8 @@ public class HomeActivity extends Activity {
                 checkEmptyState();
             }
         };
-        adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this));
+        ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider = new ViewPreloadSizeProvider<>();
+        adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this), shotPreloadSizeProvider);
 
         grid.setAdapter(adapter);
         layoutManager = new GridLayoutManager(this, columns);
@@ -187,6 +193,10 @@ public class HomeActivity extends Activity {
         grid.addItemDecoration(new GridItemDividerDecoration(this, R.dimen.divider_height,
                 R.color.divider));
         grid.setItemAnimator(new HomeGridItemAnimator());
+
+        RecyclerViewPreloader<Shot> shotPreloader =
+                new RecyclerViewPreloader<>(this, adapter, shotPreloadSizeProvider, 4);
+        grid.addOnScrollListener(shotPreloader);
 
         // drawer layout treats fitsSystemWindows specially so we have to handle insets ourselves
         drawer.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
