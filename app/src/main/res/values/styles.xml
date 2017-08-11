@@ -188,7 +188,7 @@
 
     <style name="TextAppearance.ToolbarTitle" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
         <item name="android:textColor">@color/text_primary_light</item>
-        <item name="android:fontFamily">@font/roboto_mono</item>
+        <item name="android:fontFamily">@font/comic</item>
     </style>
 
     <style name="TextAppearance.ToolbarTitleSmallCaps" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
@@ -198,14 +198,14 @@
     </style>
 
     <style name="TextAppearance.DribbbleShotTitle" parent="@android:style/TextAppearance.Material.Headline">
-        <item name="android:fontFamily">@font/roboto_mono</item>
+        <item name="android:fontFamily">@font/comic</item>
         <item name="android:textColor">@color/text_primary_dark</item>
         <item name="lineHeightHint">32sp</item>
     </style>
 
     <style name="TextAppearance.TilePrimary" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:letterSpacing">0.01</item>
-        <item name="android:fontFamily">@font/roboto_mono</item>
+        <item name="android:fontFamily">@font/comic</item>
         <item name="lineHeightHint">20sp</item>
     </style>
 
@@ -217,6 +217,7 @@
     <style name="TextAppearance.DribbbleShotDescription" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:textColor">@color/text_tertiary_dark</item>
         <item name="android:letterSpacing">0.01</item>
+        <item name="android:fontFamily">@font/comic</item>
         <item name="lineHeightHint">24sp</item>
     </style>
 
@@ -255,7 +256,7 @@
     </style>
 
     <style name="TextAppearance.CommentAuthor" parent="@android:style/TextAppearance.Material.Caption">
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily">@font/comic</item>
         <item name="android:textSize">14sp</item>
         <item name="android:fontFeatureSettings">smcp, onum</item>
         <item name="android:letterSpacing">0.02</item>
@@ -291,14 +292,14 @@
 
     <style name="TextAppearance.DialogTitle" parent="@android:style/TextAppearance.Material.Title">
         <item name="android:textColor">@color/text_primary_dark</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily">@font/comic</item>
         <item name="android:letterSpacing">0.01</item>
         <item name="lineHeightHint">28sp</item>
     </style>
 
     <style name="TextAppearance.DialogContent" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:textColor">@color/text_secondary_dark</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily">@font/comic</item>
         <item name="android:letterSpacing">0.01</item>
         <item name="lineHeightHint">24sp</item>
     </style>
@@ -365,6 +366,7 @@
         <item name="android:gravity">center_horizontal</item>
         <item name="android:textAppearance">@style/TextAppearance.CommentAuthor</item>
         <item name="android:drawablePadding">@dimen/spacing_micro</item>
+        <item name="android:fontFamily">@font/comic</item>
         <item name="android:background">?android:selectableItemBackgroundBorderless</item>
     </style>
 
