@@ -192,7 +192,7 @@ public class DesignerNewsStory extends Activity {
             // flatten the comments from a nested structure {@see Comment#comments} to a
             // list appropriate for our adapter (using the depth attribute).
             List<Comment> flattened = new ArrayList<>(story.comment_count);
-            unnestComments(story.comments, flattened);
+//            unnestComments(story.comments, flattened);
             commentsAdapter =
                     new DesignerNewsCommentsAdapter(header, flattened, enterCommentView);
             commentsList.setAdapter(commentsAdapter);
@@ -487,26 +487,26 @@ public class DesignerNewsStory extends Activity {
         });
 
         TextView storyPosterTime = (TextView) header.findViewById(R.id.story_poster_time);
-        SpannableString poster = new SpannableString(story.user_display_name.toLowerCase());
-        poster.setSpan(new TextAppearanceSpan(this, R.style.TextAppearance_CommentAuthor),
-                0, poster.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        CharSequence job =
-                !TextUtils.isEmpty(story.user_job) ? "\n" + story.user_job.toLowerCase() : "";
+//        SpannableString poster = new SpannableString(story.user_display_name.toLowerCase());
+//        poster.setSpan(new TextAppearanceSpan(this, R.style.TextAppearance_CommentAuthor),
+//                0, poster.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        CharSequence job =
+//                !TextUtils.isEmpty(story.user_job) ? "\n" + story.user_job.toLowerCase() : "";
         CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(story.created_at.getTime(),
                 System.currentTimeMillis(),
                 DateUtils.SECOND_IN_MILLIS)
                 .toString().toLowerCase();
-        storyPosterTime.setText(TextUtils.concat(poster, job, "\n", timeAgo));
-        ImageView avatar = (ImageView) header.findViewById(R.id.story_poster_avatar);
-        if (!TextUtils.isEmpty(story.user_portrait_url)) {
-            Glide.with(this)
-                    .load(story.user_portrait_url)
-                    .placeholder(R.drawable.avatar_placeholder)
-                    .transform(circleTransform)
-                    .into(avatar);
-        } else {
-            avatar.setVisibility(View.GONE);
-        }
+//        storyPosterTime.setText(TextUtils.concat(poster, job, "\n", timeAgo));
+//        ImageView avatar = (ImageView) header.findViewById(R.id.story_poster_avatar);
+//        if (!TextUtils.isEmpty(story.user_portrait_url)) {
+//            Glide.with(this)
+//                    .load(story.user_portrait_url)
+//                    .placeholder(R.drawable.avatar_placeholder)
+//                    .transform(circleTransform)
+//                    .into(avatar);
+//        } else {
+//            avatar.setVisibility(View.GONE);
+//        }
     }
 
     @NonNull

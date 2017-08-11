@@ -19,9 +19,7 @@ package io.plaidapp.data.api.designernews.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import io.plaidapp.data.PlaidItem;
 
@@ -34,69 +32,48 @@ public class Story extends PlaidItem implements Parcelable {
     public final String comment_html;
     public final int comment_count;
     public final int vote_count;
-    public final Date created_at;
     public final long user_id;
-    public final String user_display_name;
-    public final String user_portrait_url;
+    public final Date created_at;
+    public final StoryLinks links;
+    public final String user_display_name;   // Gone
+    public final String user_portrait_url;   // Gone
     public final String hostname;
     public final String badge;
-    public final String user_job;
-    public final List<Comment> comments;
+    public final String user_job;   // Gone
 
-    public Story(long id,
-                 String title,
-                 String url,
-                 String comment,
-                 String comment_html,
-                 int comment_count,
-                 int vote_count,
-                 Date created_at,
-                 long user_id,
-                 String user_display_name,
-                 String user_portrait_url,
-                 String hostname,
-                 String badge,
-                 String user_job,
-                 List<Comment> comments) {
+    public Story(
+            long id,
+            String title,
+            String url,
+            String comment,
+            String comment_html,
+            int comment_count,
+            int vote_count,
+            long user_id,
+            Date created_at,
+            String user_display_name,
+            String user_portrait_url,
+            String hostname,
+            String badge,
+            String user_job,
+            StoryLinks links) {
         super(id, title, url);
         this.comment = comment;
         this.comment_html = comment_html;
         this.comment_count = comment_count;
         this.vote_count = vote_count;
-        this.created_at = created_at;
         this.user_id = user_id;
+        this.created_at = created_at;
+        this.links = links;
         this.user_display_name = user_display_name;
         this.user_portrait_url = user_portrait_url;
         this.hostname = hostname;
         this.badge = badge;
         this.user_job = user_job;
-        this.comments = comments;
-    }
-
-    protected Story(Parcel in) {
-        super(in.readLong(), in.readString(), in.readString());
-        dataSource = in.readString();
-        comment = in.readString();
-        comment_html = in.readString();
-        comment_count = in.readInt();
-        vote_count = in.readInt();
-        long tmpCreated_at = in.readLong();
-        created_at = tmpCreated_at != -1 ? new Date(tmpCreated_at) : null;
-        user_id = in.readLong();
-        user_display_name = in.readString();
-        user_portrait_url = in.readString();
-        hostname = in.readString();
-        badge = in.readString();
-        user_job = in.readString();
-        if (in.readByte() == 0x01) {
-            comments = new ArrayList<Comment>();
-            in.readList(comments, Comment.class.getClassLoader());
-        } else {
-            comments = null;
-        }
     }
 
     public static class Builder {
+
         private long id;
         private String title;
         private String url;
@@ -104,14 +81,14 @@ public class Story extends PlaidItem implements Parcelable {
         private String commentHtml;
         private int commentCount;
         private int voteCount;
+        private long user_id;
         private Date createdAt;
-        private long userId;
+        private StoryLinks links;
         private String userDisplayName;
         private String userPortraitUrl;
         private String hostname;
         private String badge;
         private String userJob;
-        private List<Comment> comments;
 
         public Builder setId(long id) {
             this.id = id;
@@ -129,7 +106,7 @@ public class Story extends PlaidItem implements Parcelable {
         }
 
         public Builder setDefaultUrl(long id) {
-             this.url = "https://www.designernews.co/click/stories/" + id;
+            this.url = "https://www.designernews.co/click/stories/" + id;
             return this;
         }
 
@@ -158,8 +135,13 @@ public class Story extends PlaidItem implements Parcelable {
             return this;
         }
 
+        public Builder setLinks(StoryLinks links) {
+            this.links = links;
+            return this;
+        }
+
         public Builder setUserId(long user_id) {
-            this.userId = user_id;
+            this.user_id = user_id;
             return this;
         }
 
@@ -188,15 +170,10 @@ public class Story extends PlaidItem implements Parcelable {
             return this;
         }
 
-        public Builder setComments(List<Comment> comments) {
-            this.comments = comments;
-            return this;
-        }
-
         public Story build() {
             return new Story(id, title, url, comment, commentHtml, commentCount, voteCount,
-                    createdAt, userId, userDisplayName, userPortraitUrl, hostname, badge,
-                    userJob, comments);
+                    user_id, createdAt, userDisplayName, userPortraitUrl, hostname, badge,
+                    userJob, links);
         }
 
         public static Builder from(Story existing) {
@@ -209,13 +186,12 @@ public class Story extends PlaidItem implements Parcelable {
                     .setCommentCount(existing.comment_count)
                     .setVoteCount(existing.vote_count)
                     .setCreatedAt(existing.created_at)
-                    .setUserId(existing.user_id)
+                    .setLinks(existing.links)
                     .setUserDisplayName(existing.user_display_name)
                     .setUserPortraitUrl(existing.user_portrait_url)
                     .setHostname(existing.hostname)
                     .setBadge(existing.badge)
-                    .setUserJob(existing.user_job)
-                    .setComments(existing.comments);
+                    .setUserJob(existing.user_job);
         }
     }
 
@@ -232,36 +208,43 @@ public class Story extends PlaidItem implements Parcelable {
         dest.writeString(title);
         dest.writeString(url);
         dest.writeString(dataSource);
-        dest.writeString(comment);
-        dest.writeString(comment_html);
-        dest.writeInt(comment_count);
-        dest.writeInt(vote_count);
-        dest.writeLong(created_at != null ? created_at.getTime() : -1L);
-        dest.writeLong(user_id);
-        dest.writeString(user_display_name);
-        dest.writeString(user_portrait_url);
-        dest.writeString(hostname);
-        dest.writeString(badge);
-        dest.writeString(user_job);
-        if (comments == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(comments);
-        }
+        dest.writeString(this.comment);
+        dest.writeString(this.comment_html);
+        dest.writeInt(this.comment_count);
+        dest.writeInt(this.vote_count);
+        dest.writeLong(this.user_id);
+        dest.writeLong(this.created_at != null ? this.created_at.getTime() : -1);
+        dest.writeParcelable(this.links, flags);
+        dest.writeString(this.user_display_name);
+        dest.writeString(this.user_portrait_url);
+        dest.writeString(this.hostname);
+        dest.writeString(this.badge);
+        dest.writeString(this.user_job);
     }
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Story> CREATOR = new Parcelable.Creator<Story>() {
+    protected Story(Parcel in) {
+        super(in.readLong(), in.readString(), in.readString());
+        this.dataSource = in.readString();
+        this.comment = in.readString();
+        this.comment_html = in.readString();
+        this.comment_count = in.readInt();
+        this.vote_count = in.readInt();
+        this.user_id = in.readLong();
+        long tmpCreated_at = in.readLong();
+        this.created_at = tmpCreated_at == -1 ? null : new Date(tmpCreated_at);
+        this.links = in.readParcelable(StoryLinks.class.getClassLoader());
+        this.user_display_name = in.readString();
+        this.user_portrait_url = in.readString();
+        this.hostname = in.readString();
+        this.badge = in.readString();
+        this.user_job = in.readString();
+    }
+
+    public static final Creator<Story> CREATOR = new Creator<Story>() {
         @Override
-        public Story createFromParcel(Parcel in) {
-            return new Story(in);
-        }
+        public Story createFromParcel(Parcel source) {return new Story(source);}
 
         @Override
-        public Story[] newArray(int size) {
-            return new Story[size];
-        }
+        public Story[] newArray(int size) {return new Story[size];}
     };
-
 }

@@ -39,7 +39,6 @@ import retrofit2.http.Query;
 /**
  * Models the Designer News API.
  *
- * v1 docs: https://github.com/layervault/dn_api
  * v2 docs: https://github.com/DesignerNews/dn_api_v2
  */
 public interface DesignerNewsService {
@@ -47,27 +46,27 @@ public interface DesignerNewsService {
     String ENDPOINT = "https://www.designernews.co/";
 
     @EnvelopePayload("stories")
-    @GET("api/v1/stories")
-    Call<List<Story>> getTopStories(@Query("page") Integer page);
+    @GET("api/v2/stories")
+    Call<List<Story>> getTopStories(@Query("page") int page);
 
     @EnvelopePayload("stories")
-    @GET("api/v1/stories/recent")
-    Call<List<Story>> getRecentStories(@Query("page") Integer page);
+    @GET("api/v2/stories/recent")
+    Call<List<Story>> getRecentStories(@Query("page") int page);
 
     @EnvelopePayload("stories")
-    @GET("api/v1/stories/search")
-    Call<List<Story>> search(@Query("query") String query, @Query("page") Integer page);
+    @GET("api/v2/stories/search")
+    Call<List<Story>> search(@Query("query") String query, @Query("page") int page);
 
     @FormUrlEncoded
     @POST("oauth/token")
     Call<AccessToken> login(@FieldMap() Map<String, String> loginParams);
 
     @EnvelopePayload("user")
-    @GET("api/v1/me")
+    @GET("api/v2/me")
     Call<User> getAuthedUser();
 
     @EnvelopePayload("story")
-    @POST("api/v1/stories/{id}/upvote")
+    @POST("api/v2/stories/{id}/upvote")
     Call<Story> upvoteStory(@Path("id") long storyId);
 
     @EnvelopePayload("stories")
@@ -76,16 +75,18 @@ public interface DesignerNewsService {
     Call<List<Story>> postStory(@Body NewStoryRequest story);
 
     @FormUrlEncoded
-    @POST("api/v1/stories/{id}/reply")
-    Call<Comment> comment(@Path("id") long storyId,
-                          @Field("comment[body]") String comment);
+    @POST("api/v2/stories/{id}/reply")
+    Call<Comment> comment(
+            @Path("id") long storyId,
+            @Field("comment[body]") String comment);
 
     @FormUrlEncoded
-    @POST("api/v1/comments/{id}/reply")
-    Call<Comment> replyToComment(@Path("id") long commentId,
-                                 @Field("comment[body]") String comment);
+    @POST("api/v2/comments/{id}/reply")
+    Call<Comment> replyToComment(
+            @Path("id") long commentId,
+            @Field("comment[body]") String comment);
 
-    @POST("api/v1/comments/{id}/upvote")
+    @POST("api/v2/comments/{id}/upvote")
     Call<Comment> upvoteComment(@Path("id") long commentId);
 
 }
