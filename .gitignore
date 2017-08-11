@@ -1,5 +1,7 @@
 build
 *.iml
+*.project
+*.buildship.core.prefs
 out
 .idea
 prebuilts

@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -19,9 +20,11 @@ android {
 
 repositories {
     google()
+    jcenter()
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:support-annotations:${versions.supportLibrary}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin_version}"
 }
