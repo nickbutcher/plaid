@@ -55,7 +55,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -100,6 +99,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
 
 public class DribbbleShot extends Activity {
@@ -299,6 +299,7 @@ public class DribbbleShot extends Activity {
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .priority(Priority.IMMEDIATE)
                 .override(imageSize[0], imageSize[1])
+                .transition(withCrossFade())
                 .into(imageView);
         imageView.setOnClickListener(shotClick);
         shotSpacer.setOnClickListener(shotClick);
@@ -373,6 +374,7 @@ public class DribbbleShot extends Activity {
                     .circleCrop()
                     .placeholder(R.drawable.avatar_placeholder)
                     .override(largeAvatarSize, largeAvatarSize)
+                    .transition(withCrossFade())
                     .into(playerAvatar);
             View.OnClickListener playerClick = new View.OnClickListener() {
                 @Override
@@ -724,6 +726,7 @@ public class DribbbleShot extends Activity {
                     .load(dribbblePrefs.getUserAvatar())
                     .circleCrop()
                     .placeholder(R.drawable.ic_player)
+                    .transition(withCrossFade())
                     .into(userAvatar);
         }
     }
@@ -1025,6 +1028,7 @@ public class DribbbleShot extends Activity {
                     .circleCrop()
                     .placeholder(R.drawable.avatar_placeholder)
                     .override(largeAvatarSize, largeAvatarSize)
+                    .transition(withCrossFade())
                     .into(holder.avatar);
             holder.author.setText(comment.user.name.toLowerCase());
             holder.author.setOriginalPoster(isOP(comment.user.id));

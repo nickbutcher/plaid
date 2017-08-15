@@ -75,6 +75,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+
 public class DesignerNewsLogin extends Activity {
 
     private static final int PERMISSIONS_REQUEST_GET_ACCOUNTS = 0;
@@ -228,6 +230,7 @@ public class DesignerNewsLogin extends Activity {
                         .load(user.portrait_url)
                         .placeholder(R.drawable.avatar_placeholder)
                         .circleCrop()
+                        .transition(withCrossFade())
                         .into((ImageView) v.findViewById(R.id.avatar));
                 v.findViewById(R.id.scrim).setBackground(ScrimUtil
                         .makeCubicGradientScrimDrawable(

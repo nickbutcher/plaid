@@ -63,6 +63,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+
 /**
  * A screen displaying a player's details and their shots.
  */
@@ -202,6 +204,7 @@ public class PlayerActivity extends Activity {
                 .load(player.getHighQualityAvatarUrl())
                 .placeholder(R.drawable.avatar_placeholder)
                 .circleCrop()
+                .transition(withCrossFade())
                 .into(avatar);
         playerName.setText(player.name.toLowerCase());
         if (!TextUtils.isEmpty(player.bio)) {
