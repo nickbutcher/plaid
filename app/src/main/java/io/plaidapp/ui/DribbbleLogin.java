@@ -51,6 +51,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+
 public class DribbbleLogin extends Activity {
 
     private static final String STATE_LOGIN_FAILED = "loginFailed";
@@ -136,6 +138,7 @@ public class DribbbleLogin extends Activity {
                         .load(user.avatar_url)
                         .placeholder(R.drawable.ic_player)
                         .circleCrop()
+                        .transition(withCrossFade())
                         .into((ImageView) v.findViewById(R.id.avatar));
                 v.findViewById(R.id.scrim).setBackground(ScrimUtil.makeCubicGradientScrimDrawable
                         (ContextCompat.getColor(DribbbleLogin.this, R.color.scrim),

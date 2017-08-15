@@ -90,6 +90,7 @@ import io.plaidapp.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.util.glide.DribbbleTarget;
 import io.plaidapp.util.glide.GlideApp;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
 
 /**
@@ -393,6 +394,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 .placeholder(shotLoadingPlaceholders[position % shotLoadingPlaceholders.length])
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .fitCenter()
+                .transition(withCrossFade())
                 .override(imageSize[0], imageSize[1])
                 .into(new DribbbleTarget(holder.image, false));
         // need both placeholder & background to prevent seeing through shot as it fades in

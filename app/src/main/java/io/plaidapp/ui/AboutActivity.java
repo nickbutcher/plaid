@@ -54,6 +54,8 @@ import io.plaidapp.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.util.glide.GlideApp;
 import io.plaidapp.util.glide.GlideRequest;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+
 /**
  * About screen. This displays 3 pages in a ViewPager:
  * – About Plaid
@@ -62,12 +64,9 @@ import io.plaidapp.util.glide.GlideRequest;
  */
 public class AboutActivity extends Activity {
 
-    @BindView(R.id.draggable_frame)
-    ElasticDragDismissFrameLayout draggableFrame;
-    @BindView(R.id.pager)
-    ViewPager pager;
-    @BindView(R.id.indicator)
-    InkPageIndicator pageIndicator;
+    @BindView(R.id.draggable_frame) ElasticDragDismissFrameLayout draggableFrame;
+    @BindView(R.id.pager) ViewPager pager;
+    @BindView(R.id.indicator) InkPageIndicator pageIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,17 +97,11 @@ public class AboutActivity extends Activity {
     static class AboutPagerAdapter extends PagerAdapter {
 
         private View aboutPlaid;
-        @Nullable
-        @BindView(R.id.about_description)
-        TextView plaidDescription;
+        @Nullable @BindView(R.id.about_description) TextView plaidDescription;
         private View aboutIcon;
-        @Nullable
-        @BindView(R.id.icon_description)
-        TextView iconDescription;
+        @Nullable @BindView(R.id.icon_description) TextView iconDescription;
         private View aboutLibs;
-        @Nullable
-        @BindView(R.id.libs_list)
-        RecyclerView libsList;
+        @Nullable @BindView(R.id.libs_list) RecyclerView libsList;
 
         private final LayoutInflater layoutInflater;
         private final Bypass markdown;
@@ -254,8 +247,7 @@ public class AboutActivity extends Activity {
             throw new InvalidParameterException();
         }
 
-        private @NonNull
-        LibraryHolder createLibraryHolder(ViewGroup parent) {
+        private @NonNull LibraryHolder createLibraryHolder(ViewGroup parent) {
             final LibraryHolder holder = new LibraryHolder(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.library, parent, false));
             View.OnClickListener clickListener = new View.OnClickListener() {
@@ -299,6 +291,7 @@ public class AboutActivity extends Activity {
             holder.description.setText(lib.description);
             GlideRequest<Drawable> request = GlideApp.with(holder.image.getContext())
                     .load(lib.imageUrl)
+                    .transition(withCrossFade())
                     .placeholder(R.drawable.avatar_placeholder);
             if (lib.circleCrop) {
                 request.circleCrop();
@@ -309,14 +302,10 @@ public class AboutActivity extends Activity {
 
     static class LibraryHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.library_image)
-        ImageView image;
-        @BindView(R.id.library_name)
-        TextView name;
-        @BindView(R.id.library_description)
-        TextView description;
-        @BindView(R.id.library_link)
-        Button link;
+        @BindView(R.id.library_image) ImageView image;
+        @BindView(R.id.library_name) TextView name;
+        @BindView(R.id.library_description) TextView description;
+        @BindView(R.id.library_link) Button link;
 
         LibraryHolder(View itemView) {
             super(itemView);
