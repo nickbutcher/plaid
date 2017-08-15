@@ -85,5 +85,5 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.8.1'
     implementation 'org.jsoup:jsoup:1.10.3'
     implementation project(':bypass')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin_version}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin}"
 }
