@@ -38,8 +38,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.text.NumberFormat;
@@ -64,8 +62,9 @@ import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
 import io.plaidapp.ui.widget.BottomSheet;
 import io.plaidapp.util.DribbbleUtils;
-import io.plaidapp.util.glide.CircleTransform;
+import io.plaidapp.util.glide.GlideApp;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 import static io.plaidapp.util.AnimUtils.getLinearOutSlowInInterpolator;
 
 public class PlayerSheet extends Activity {
@@ -239,15 +238,13 @@ public class PlayerSheet extends Activity {
 
         private static final int TYPE_PLAYER = 7;
         private static final int TYPE_LOADING = -1;
-        private List<T> items;
         private boolean loading = true;
         private LayoutInflater layoutInflater;
-        private CircleTransform circleTransform;
+        List<T> items;
 
         PlayerAdapter(Context context) {
             layoutInflater = LayoutInflater.from(context);
             items = new ArrayList<>();
-            circleTransform = new CircleTransform(context);
             setHasStableIds(true);
         }
 
@@ -287,15 +284,16 @@ public class PlayerSheet extends Activity {
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             if (position == getLoadingMoreItemPosition()) return;
-            bindPlayer(((PlayerViewHolder) holder), items.get(position));
+            bindPlayer((PlayerViewHolder) holder, items.get(position));
         }
 
         private void bindPlayer(PlayerViewHolder holder, T player) {
-            Glide.with(holder.itemView.getContext())
+            GlideApp.with(holder.itemView.getContext())
                     .load(player.getPlayer().getHighQualityAvatarUrl())
-                    .transform(circleTransform)
+                    .circleCrop()
                     .placeholder(R.drawable.avatar_placeholder)
                     .override(largeAvatarSize, largeAvatarSize)
+                    .transition(withCrossFade())
                     .into(holder.playerAvatar);
             holder.playerName.setText(player.getPlayer().name.toLowerCase());
             if (!TextUtils.isEmpty(player.getPlayer().bio)) {
@@ -305,8 +303,7 @@ public class PlayerSheet extends Activity {
             }
             holder.timeAgo.setText(
                     DateUtils.getRelativeTimeSpanString(player.getDateCreated().getTime(),
-                            System.currentTimeMillis(),
-                            DateUtils.SECOND_IN_MILLIS)
+                            System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS)
                             .toString().toLowerCase());
         }
 
@@ -327,7 +324,7 @@ public class PlayerSheet extends Activity {
             return items.get(position).getId();
         }
 
-        public int getDataItemCount() {
+        int getDataItemCount() {
             return items.size();
         }
 
@@ -355,31 +352,31 @@ public class PlayerSheet extends Activity {
             notifyItemRemoved(loadingPos);
         }
 
-        public void addItems(List<T> newItems) {
+        void addItems(List<T> newItems) {
             final int insertRangeStart = getDataItemCount();
             items.addAll(newItems);
             notifyItemRangeInserted(insertRangeStart, newItems.size());
         }
     }
 
-    /* package */ static class PlayerViewHolder extends RecyclerView.ViewHolder {
+    static class PlayerViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.player_avatar) ImageView playerAvatar;
         @BindView(R.id.player_name) TextView playerName;
         @BindView(R.id.player_bio) TextView playerBio;
         @BindView(R.id.time_ago) TextView timeAgo;
 
-        public PlayerViewHolder(View itemView) {
+        PlayerViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }
 
-    private static class LoadingViewHolder extends RecyclerView.ViewHolder {
+    static class LoadingViewHolder extends RecyclerView.ViewHolder {
 
         ProgressBar progress;
 
-        public LoadingViewHolder(View itemView) {
+        LoadingViewHolder(View itemView) {
             super(itemView);
             progress = (ProgressBar) itemView;
         }

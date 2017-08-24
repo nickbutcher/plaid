@@ -54,8 +54,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -72,10 +70,12 @@ import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.util.ScrimUtil;
-import io.plaidapp.util.glide.CircleTransform;
+import io.plaidapp.util.glide.GlideApp;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 public class DesignerNewsLogin extends Activity {
 
@@ -226,10 +226,11 @@ public class DesignerNewsLogin extends Activity {
                         .toast_logged_in_confirmation, null, false);
                 ((TextView) v.findViewById(R.id.name)).setText(user.display_name.toLowerCase());
                 // need to use app context here as the activity will be destroyed shortly
-                Glide.with(getApplicationContext())
+                GlideApp.with(getApplicationContext())
                         .load(user.portrait_url)
                         .placeholder(R.drawable.avatar_placeholder)
-                        .transform(new CircleTransform(getApplicationContext()))
+                        .circleCrop()
+                        .transition(withCrossFade())
                         .into((ImageView) v.findViewById(R.id.avatar));
                 v.findViewById(R.id.scrim).setBackground(ScrimUtil
                         .makeCubicGradientScrimDrawable(
