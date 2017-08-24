@@ -16,16 +16,15 @@ package io.plaidapp.util.glide
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.support.rastermill.FrameSequenceDrawable
 import android.support.v4.content.ContextCompat
 import android.support.v7.graphics.Palette
-import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.transition.Transition
 import io.plaidapp.R
 import io.plaidapp.ui.widget.BadgedFourThreeImageView
 import io.plaidapp.util.ColorUtils
 import io.plaidapp.util.ViewUtils
-import io.plaidapp.util.isAnimated
 import io.plaidapp.util.measured
 
 /**
@@ -40,28 +39,21 @@ class DribbbleTarget(
 
     override fun onResourceReady(drawable: Drawable, transition: Transition<in Drawable>?) {
         super.onResourceReady(drawable, transition)
-        val isAnimated = drawable.isAnimated()
-        if (!autoplayGifs && isAnimated) {
-            (drawable as GifDrawable).stop()
-        }
         val bitmap = drawable.getBitmap() ?: return
         Palette.from(bitmap).clearFilters().generate(this)
-        if (isAnimated) {
+        if (drawable is FrameSequenceDrawable) {
+            drawable.setAutoPlay(autoplayGifs)
             // look at the area the badge covers to determine its color
             badgedImageView.measured(this::setBadgeColor)
         }
     }
 
     override fun onStart() {
-        if (autoplayGifs) {
-            super.onStart()
-        }
+        if (autoplayGifs) super.onStart()
     }
 
     override fun onStop() {
-        if (autoplayGifs) {
-            super.onStop()
-        }
+        if (autoplayGifs) super.onStop()
     }
 
     override fun onGenerated(palette: Palette) {

@@ -1,2 +1,3 @@
-include ':app', ':bypass'
+include ':app', ':bypass', ':framesequence'
 project(':bypass').projectDir = new File(rootDir, 'third_party/bypass')
+project(':framesequence').projectDir = new File(rootDir, 'third_party/framesequence')

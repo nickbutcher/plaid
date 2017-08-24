@@ -19,7 +19,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
-import com.bumptech.glide.load.resource.gif.GifDrawable
+import android.support.rastermill.FrameSequenceDrawable
 import io.plaidapp.util.layers
 
 fun Drawable.getBitmap(): Bitmap? {
@@ -31,7 +31,7 @@ fun Drawable.getBitmap(): Bitmap? {
     }
     if (this is BitmapDrawable) {
         return bitmap
-    } else if (this is GifDrawable) {
+    } else if (this is FrameSequenceDrawable) {
         return firstFrame
     }
     return null

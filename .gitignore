@@ -8,3 +8,4 @@ prebuilts
 .DS_Store
 local.properties
 .gradle
+.externalNativeBuild

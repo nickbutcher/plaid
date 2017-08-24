@@ -88,4 +88,5 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin}"
     implementation 'org.jsoup:jsoup:1.10.3'
     implementation project(':bypass')
+    implementation project(':framesequence')
 }

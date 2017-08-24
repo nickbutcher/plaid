@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.Animatable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -54,7 +55,6 @@ import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
@@ -313,15 +313,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 // get the image and check if it's an animated GIF
                 final Drawable drawable = holder.image.getDrawable();
                 if (drawable == null) return false;
-                GifDrawable gif = null;
-                if (drawable instanceof GifDrawable) {
-                    gif = (GifDrawable) drawable;
+                Animatable gif = null;
+                if (drawable instanceof Animatable) {
+                    gif = (Animatable) drawable;
                 } else if (drawable instanceof TransitionDrawable) {
                     // we fade in images on load which uses a TransitionDrawable; check its layers
                     TransitionDrawable fadingIn = (TransitionDrawable) drawable;
                     for (int i = 0; i < fadingIn.getNumberOfLayers(); i++) {
-                        if (fadingIn.getDrawable(i) instanceof GifDrawable) {
-                            gif = (GifDrawable) fadingIn.getDrawable(i);
+                        if (fadingIn.getDrawable(i) instanceof Animatable) {
+                            gif = (Animatable) fadingIn.getDrawable(i);
                             break;
                         }
                     }

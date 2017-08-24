@@ -1,0 +1,19 @@
+URL: https://android.googlesource.com/platform/frameworks/ex/+/77dfa2a9b4c5acafa45d7f09bd95dc44da54fc4d/framesequence/
+Version: 77dfa2a9b4c5acafa45d7f09bd95dc44da54fc4d
+License: Apache License v2.0
+License File: LICENSE
+
+URL: http://giflib.sourceforge.net/
+Version: 5.1.4
+License: MIT
+License File: jni/giflib/NOTICE
+
+Description:
+Fork of https://android.googlesource.com/platform/frameworks/ex/+/master/framesequence/
+
+Local Modifications:
+Included giflib dependency.
+Added CMake & gradle build scripts.
+Removed make build script.
+Removed webp support.
+Modified FrameSequenceDrawable to work with Drawable.ConstantState & expose some GIF properties
