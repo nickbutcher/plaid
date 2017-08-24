@@ -60,8 +60,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -88,17 +88,18 @@ import io.plaidapp.ui.widget.AuthorTextView;
 import io.plaidapp.ui.widget.CollapsingTitleLayout;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.PinnedOffsetView;
-import io.plaidapp.util.HtmlUtils;
 import io.plaidapp.util.DrawableUtils;
+import io.plaidapp.util.HtmlUtils;
 import io.plaidapp.util.ImeUtils;
 import io.plaidapp.util.ViewUtils;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
-import io.plaidapp.util.glide.CircleTransform;
+import io.plaidapp.util.glide.GlideApp;
 import io.plaidapp.util.glide.ImageSpanTarget;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 import static io.plaidapp.util.AnimUtils.getFastOutLinearInInterpolator;
 import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
 import static io.plaidapp.util.AnimUtils.getLinearOutSlowInInterpolator;
@@ -130,7 +131,6 @@ public class DesignerNewsStory extends Activity {
     private DesignerNewsPrefs designerNewsPrefs;
     private Bypass markdown;
     private CustomTabActivityHelper customTab;
-    private CircleTransform circleTransform;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,7 +149,6 @@ public class DesignerNewsStory extends Activity {
                 .setPreImageLinebreakHeight(4) //dps
                 .setBlockQuoteIndentSize(TypedValue.COMPLEX_UNIT_DIP, 2f)
                 .setBlockQuoteTextColor(ContextCompat.getColor(this, R.color.designer_news_quote)));
-        circleTransform = new CircleTransform(this);
         designerNewsPrefs = DesignerNewsPrefs.get(this);
         layoutManager = new LinearLayoutManager(this);
         commentsList.setLayoutManager(layoutManager);
@@ -446,15 +445,16 @@ public class DesignerNewsStory extends Activity {
     }
 
     private void bindDescription() {
-        final TextView storyComment = (TextView) header.findViewById(R.id.story_comment);
+        final TextView storyComment = header.findViewById(R.id.story_comment);
         if (!TextUtils.isEmpty(story.comment)) {
             HtmlUtils.parseMarkdownAndSetText(storyComment, story.comment, markdown,
                     new Bypass.LoadImageCallback() {
                 @Override
                 public void loadImage(String src, ImageLoadingSpan loadingSpan) {
-                    Glide.with(DesignerNewsStory.this)
-                            .load(src)
+                    GlideApp.with(DesignerNewsStory.this)
                             .asBitmap()
+                            .load(src)
+                            .transition(BitmapTransitionOptions.withCrossFade())
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(new ImageSpanTarget(storyComment, loadingSpan));
                 }
@@ -463,7 +463,7 @@ public class DesignerNewsStory extends Activity {
             storyComment.setVisibility(View.GONE);
         }
 
-        upvoteStory = (TextView) header.findViewById(R.id.story_vote_action);
+        upvoteStory = header.findViewById(R.id.story_vote_action);
         upvoteStory.setText(getResources().getQuantityString(R.plurals.upvotes, story.vote_count,
                 NumberFormat.getInstance().format(story.vote_count)));
         upvoteStory.setOnClickListener(new View.OnClickListener() {
@@ -473,7 +473,7 @@ public class DesignerNewsStory extends Activity {
             }
         });
 
-        final TextView share = (TextView) header.findViewById(R.id.story_share_action);
+        final TextView share = header.findViewById(R.id.story_share_action);
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -486,7 +486,7 @@ public class DesignerNewsStory extends Activity {
             }
         });
 
-        TextView storyPosterTime = (TextView) header.findViewById(R.id.story_poster_time);
+        TextView storyPosterTime = header.findViewById(R.id.story_poster_time);
         SpannableString poster = new SpannableString(story.user_display_name.toLowerCase());
         poster.setSpan(new TextAppearanceSpan(this, R.style.TextAppearance_CommentAuthor),
                 0, poster.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -497,12 +497,13 @@ public class DesignerNewsStory extends Activity {
                 DateUtils.SECOND_IN_MILLIS)
                 .toString().toLowerCase();
         storyPosterTime.setText(TextUtils.concat(poster, job, "\n", timeAgo));
-        ImageView avatar = (ImageView) header.findViewById(R.id.story_poster_avatar);
+        ImageView avatar = header.findViewById(R.id.story_poster_avatar);
         if (!TextUtils.isEmpty(story.user_portrait_url)) {
-            Glide.with(this)
+            GlideApp.with(this)
                     .load(story.user_portrait_url)
+                    .transition(withCrossFade())
                     .placeholder(R.drawable.avatar_placeholder)
-                    .transform(circleTransform)
+                    .circleCrop()
                     .into(avatar);
         } else {
             avatar.setVisibility(View.GONE);
@@ -806,9 +807,9 @@ public class DesignerNewsStory extends Activity {
                         new Bypass.LoadImageCallback() {
                     @Override
                     public void loadImage(String src, ImageLoadingSpan loadingSpan) {
-                        Glide.with(DesignerNewsStory.this)
-                                .load(src)
+                        GlideApp.with(DesignerNewsStory.this)
                                 .asBitmap()
+                                .load(src)
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(new ImageSpanTarget(holder.comment, loadingSpan));
                     }

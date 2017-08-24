@@ -18,6 +18,7 @@ package io.plaidapp.ui;
 
 import android.app.Activity;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -40,9 +41,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.DrawableRequestBuilder;
-import com.bumptech.glide.Glide;
-
 import java.security.InvalidParameterException;
 
 import butterknife.BindView;
@@ -53,13 +51,16 @@ import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.InkPageIndicator;
 import io.plaidapp.util.HtmlUtils;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
-import io.plaidapp.util.glide.CircleTransform;
+import io.plaidapp.util.glide.GlideApp;
+import io.plaidapp.util.glide.GlideRequest;
+
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 /**
  * About screen. This displays 3 pages in a ViewPager:
- *  – About Plaid
- *  – Credit Roman for the awesome icon
- *  – Credit libraries
+ * – About Plaid
+ * – Credit Roman for the awesome icon
+ * – Credit libraries
  */
 public class AboutActivity extends Activity {
 
@@ -226,14 +227,12 @@ public class AboutActivity extends Activity {
                         "A type-safe HTTP client for Android and Java.",
                         "http://square.github.io/retrofit/",
                         "https://avatars.githubusercontent.com/u/82592",
-                        false) };
+                        false)};
 
-        private final CircleTransform circleCrop;
         final Activity host;
 
         LibraryAdapter(Activity host) {
             this.host = host;
-            circleCrop = new CircleTransform(host);
         }
 
         @Override
@@ -290,11 +289,12 @@ public class AboutActivity extends Activity {
         private void bindLibrary(final LibraryHolder holder, final Library lib) {
             holder.name.setText(lib.name);
             holder.description.setText(lib.description);
-            DrawableRequestBuilder<String> request = Glide.with(holder.image.getContext())
+            GlideRequest<Drawable> request = GlideApp.with(holder.image.getContext())
                     .load(lib.imageUrl)
+                    .transition(withCrossFade())
                     .placeholder(R.drawable.avatar_placeholder);
             if (lib.circleCrop) {
-                request.transform(circleCrop);
+                request.circleCrop();
             }
             request.into(holder.image);
         }

@@ -46,6 +46,9 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
+import com.bumptech.glide.util.ViewPreloadSizeProvider;
+
 import java.util.List;
 
 import butterknife.BindDimen;
@@ -56,6 +59,7 @@ import butterknife.OnClick;
 import io.plaidapp.R;
 import io.plaidapp.data.PlaidItem;
 import io.plaidapp.data.SearchDataManager;
+import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.util.ShortcutHelper;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
@@ -121,7 +125,9 @@ public class SearchActivity extends Activity {
                 }
             }
         };
-        adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this));
+        ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider = new ViewPreloadSizeProvider<>();
+        adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this),
+                shotPreloadSizeProvider);
         setExitSharedElementCallback(FeedAdapter.createSharedElementReenterCallback(this));
         results.setAdapter(adapter);
         results.setItemAnimator(new SlideInItemAnimator());
@@ -140,6 +146,10 @@ public class SearchActivity extends Activity {
             }
         });
         results.setHasFixedSize(true);
+        results.setHasFixedSize(true);
+        RecyclerViewPreloader<Shot> shotPreloader =
+                new RecyclerViewPreloader<>(this, adapter, shotPreloadSizeProvider, 4);
+        results.addOnScrollListener(shotPreloader);
 
         setupTransitions();
         onNewIntent(getIntent());

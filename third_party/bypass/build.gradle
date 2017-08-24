@@ -26,5 +26,5 @@ repositories {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:support-annotations:${versions.supportLibrary}"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin_version}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin}"
 }

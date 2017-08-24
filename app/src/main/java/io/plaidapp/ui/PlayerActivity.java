@@ -36,7 +36,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
+import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -57,10 +58,12 @@ import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.util.DribbbleUtils;
 import io.plaidapp.util.ViewUtils;
-import io.plaidapp.util.glide.CircleTransform;
+import io.plaidapp.util.glide.GlideApp;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 /**
  * A screen displaying a player's details and their shots.
@@ -78,7 +81,6 @@ public class PlayerActivity extends Activity {
     GridLayoutManager layoutManager;
     Boolean following;
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
-    private CircleTransform circleTransform;
     private int followerCount;
 
     @BindView(R.id.draggable_frame) ElasticDragDismissFrameLayout draggableFrame;
@@ -99,7 +101,6 @@ public class PlayerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_player);
         ButterKnife.bind(this);
-        circleTransform = new CircleTransform(this);
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this);
 
         final Intent intent = getIntent();
@@ -199,10 +200,11 @@ public class PlayerActivity extends Activity {
         final Resources res = getResources();
         final NumberFormat nf = NumberFormat.getInstance();
 
-        Glide.with(this)
+        GlideApp.with(this)
                 .load(player.getHighQualityAvatarUrl())
                 .placeholder(R.drawable.avatar_placeholder)
-                .transform(circleTransform)
+                .circleCrop()
+                .transition(withCrossFade())
                 .into(avatar);
         playerName.setText(player.name.toLowerCase());
         if (!TextUtils.isEmpty(player.bio)) {
@@ -234,7 +236,9 @@ public class PlayerActivity extends Activity {
                 }
             }
         };
-        adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this));
+        ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider = new ViewPreloadSizeProvider<>();
+        adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this),
+                shotPreloadSizeProvider);
         shots.setAdapter(adapter);
         shots.setItemAnimator(new SlideInItemAnimator());
         shots.setVisibility(View.VISIBLE);
@@ -253,6 +257,9 @@ public class PlayerActivity extends Activity {
             }
         });
         shots.setHasFixedSize(true);
+        RecyclerViewPreloader<Shot> shotPreloader =
+                new RecyclerViewPreloader<>(this, adapter, shotPreloadSizeProvider, 4);
+        shots.addOnScrollListener(shotPreloader);
 
         // forward on any clicks above the first item in the grid (i.e. in the paddingTop)
         // to 'pass through' to the view behind

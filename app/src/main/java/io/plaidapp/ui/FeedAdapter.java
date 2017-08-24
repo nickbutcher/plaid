@@ -49,12 +49,15 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.ListPreloader;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,16 +88,19 @@ import io.plaidapp.util.TransitionUtils;
 import io.plaidapp.util.ViewUtils;
 import io.plaidapp.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.util.glide.DribbbleTarget;
+import io.plaidapp.util.glide.GlideApp;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
 
 /**
  * Adapter for displaying a grid of {@link PlaidItem}s.
  */
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-                         implements DataLoadingSubject.DataLoadingCallbacks {
+                         implements DataLoadingSubject.DataLoadingCallbacks,
+                                    ListPreloader.PreloadModelProvider<Shot> {
 
-    public static final int REQUEST_CODE_VIEW_SHOT = 5407;
+    static final int REQUEST_CODE_VIEW_SHOT = 5407;
 
     private static final int TYPE_DESIGNER_NEWS_STORY = 0;
     private static final int TYPE_DRIBBBLE_SHOT = 1;
@@ -109,8 +115,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final @Nullable DataLoadingSubject dataLoading;
     private final int columns;
     private final ColorDrawable[] shotLoadingPlaceholders;
-    private final @ColorInt int initialGifBadgeColor;
+    private final ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider;
 
+    private final @ColorInt int initialGifBadgeColor;
     private List<PlaidItem> items;
     private boolean showLoadingMore = false;
     private PlaidItemSorting.NaturalOrderWeigher naturalOrderWeigher;
@@ -121,7 +128,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     FeedAdapter(Activity hostActivity,
                 @Nullable DataLoadingSubject dataLoading,
                 int columns,
-                boolean pocketInstalled) {
+                boolean pocketInstalled, ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider) {
         this.host = hostActivity;
         this.dataLoading = dataLoading;
         if (dataLoading != null) {
@@ -129,6 +136,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
         this.columns = columns;
         this.pocketIsInstalled = pocketInstalled;
+        this.shotPreloadSizeProvider = shotPreloadSizeProvider;
         layoutInflater = LayoutInflater.from(host);
         comparator = new PlaidItemSorting.PlaidItemComparator();
         items = new ArrayList<>();
@@ -339,15 +347,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                         final DribbbleShotHolder holder,
                                         int position) {
         final int[] imageSize = shot.images.bestSize();
-        Glide.with(host)
+        GlideApp.with(host)
                 .load(shot.images.best())
-                .listener(new RequestListener<String, GlideDrawable>() {
+                .listener(new RequestListener<Drawable>() {
 
                     @Override
-                    public boolean onResourceReady(GlideDrawable resource,
-                                                   String model,
-                                                   Target<GlideDrawable> target,
-                                                   boolean isFromMemoryCache,
+                    public boolean onResourceReady(Drawable resource, Object model,
+                                                   Target<Drawable> target, DataSource dataSource,
                                                    boolean isFirstResource) {
                         if (!shot.hasFadedIn) {
                             holder.image.setHasTransientState(true);
@@ -380,14 +386,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
 
                     @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable>
-                            target, boolean isFirstResource) {
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                Target<Drawable> target, boolean isFirstResource) {
                         return false;
                     }
                 })
                 .placeholder(shotLoadingPlaceholders[position % shotLoadingPlaceholders.length])
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .fitCenter()
+                .transition(withCrossFade())
                 .override(imageSize[0], imageSize[1])
                 .into(new DribbbleTarget(holder.image, false));
         // need both placeholder & background to prevent seeing through shot as it fades in
@@ -396,6 +403,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.image.showBadge(shot.animated);
         // need a unique transition name per shot, let's use it's url
         holder.image.setTransitionName(shot.html_url);
+        shotPreloadSizeProvider.setView(holder.image);
     }
 
     @NonNull
@@ -461,10 +469,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private PlaidItem getItem(int position) {
+        if (position < 0 || position >= items.size()) return null;
         return items.get(position);
     }
 
-    public int getItemColumnSpan(int position) {
+    int getItemColumnSpan(int position) {
         switch (getItemViewType(position)) {
             case TYPE_LOADING_MORE:
                 return columns;
@@ -591,7 +600,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    public void removeDataSource(String dataSource) {
+    void removeDataSource(String dataSource) {
         for (int i = items.size() - 1; i >= 0; i--) {
             PlaidItem item = items.get(i);
             if (dataSource.equals(item.dataSource)) {
@@ -611,7 +620,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return getItem(position).id;
     }
 
-    public int getItemPosition(final long itemId) {
+    int getItemPosition(final long itemId) {
         for (int position = 0; position < items.size(); position++) {
             if (getItem(position).id == itemId) return position;
         }
@@ -628,7 +637,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      * This can cause a strange layers-passing-through-each-other effect. On return hide the FAB
      * and animate it back in after the transition.
      */
-    void setGridItemContentTransitions(View gridItem) {
+    private void setGridItemContentTransitions(View gridItem) {
         final View fab = host.findViewById(R.id.fab);
         if (!ViewUtils.viewsIntersect(gridItem, fab)) return;
 
@@ -695,6 +704,20 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 }
             }
         };
+    }
+
+    @Override
+    public List<Shot> getPreloadItems(int position) {
+        PlaidItem item = getItem(position);
+        if (item instanceof Shot) {
+            return Collections.singletonList((Shot) item);
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public RequestBuilder<Drawable> getPreloadRequestBuilder(Shot item) {
+        return GlideApp.with(host).load(item.images.best());
     }
 
     static class DribbbleShotHolder extends RecyclerView.ViewHolder {
