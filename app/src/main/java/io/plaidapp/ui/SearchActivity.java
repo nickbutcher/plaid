@@ -146,7 +146,6 @@ public class SearchActivity extends Activity {
             }
         });
         results.setHasFixedSize(true);
-        results.setHasFixedSize(true);
         RecyclerViewPreloader<Shot> shotPreloader =
                 new RecyclerViewPreloader<>(this, adapter, shotPreloadSizeProvider, 4);
         results.addOnScrollListener(shotPreloader);
