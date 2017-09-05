@@ -203,7 +203,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             // reset the badge & ripple which are dynamically determined
             DribbbleShotHolder shotHolder = (DribbbleShotHolder) holder;
             shotHolder.image.setBadgeColor(initialGifBadgeColor);
-            shotHolder.image.showBadge(false);
+            shotHolder.image.setDrawBadge(false);
             shotHolder.image.setForeground(
                     ContextCompat.getDrawable(host, R.drawable.mid_grey_ripple));
         }
@@ -400,7 +400,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         // need both placeholder & background to prevent seeing through shot as it fades in
         holder.image.setBackground(
                 shotLoadingPlaceholders[position % shotLoadingPlaceholders.length]);
-        holder.image.showBadge(shot.animated);
+        holder.image.setDrawBadge(shot.animated);
         // need a unique transition name per shot, let's use it's url
         holder.image.setTransitionName(shot.html_url);
         shotPreloadSizeProvider.setView(holder.image);

@@ -21,6 +21,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
 
@@ -36,4 +37,7 @@ fun drawableToBitmap(context: Context, @DrawableRes drawableId: Int) =
         ContextCompat.getDrawable(context, drawableId).toBitmap()
 
 fun Drawable.isAnimated() = this is Animatable
+
+val LayerDrawable.layers: List<Drawable>
+    get() = (0 until numberOfLayers).map { getDrawable(it) }
 
