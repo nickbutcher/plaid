@@ -30,6 +30,7 @@ import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.graphics.Palette;
 import android.text.TextPaint;
 import android.util.DisplayMetrics;
@@ -76,7 +77,7 @@ public class ViewUtils {
                 bounded ? new ColorDrawable(Color.WHITE) : null);
     }
 
-    public static RippleDrawable createRipple(@NonNull Palette palette,
+    public static RippleDrawable createRipple(@Nullable Palette palette,
                                               @FloatRange(from = 0f, to = 1f) float darkAlpha,
                                               @FloatRange(from = 0f, to = 1f) float lightAlpha,
                                               @ColorInt int fallbackColor,

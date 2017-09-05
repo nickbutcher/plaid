@@ -75,7 +75,7 @@ class DribbbleTarget(
         }
     }
 
-    override fun onGenerated(palette: Palette) {
+    override fun onGenerated(palette: Palette?) {
         (view as BadgedFourThreeImageView).foreground = ViewUtils.createRipple(palette, 0.25f, 0.5f,
                 ContextCompat.getColor(view.context, R.color.mid_grey), true)
     }
