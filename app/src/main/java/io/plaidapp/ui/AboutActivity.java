@@ -208,6 +208,11 @@ public class AboutActivity extends Activity {
                         "https://github.com/Uncodin/bypass",
                         "https://avatars.githubusercontent.com/u/1072254",
                         true),
+                new Library("Framesequence",
+                        "A high performance GIF decoder.",
+                        "https://android.googlesource.com/platform/frameworks/ex/+/master/framesequence/",
+                        "https://developer.android.com/images/android_icon_125.png",
+                        false),
                 new Library("Glide",
                         "An image loading and caching library for Android focused on smooth scrolling.",
                         "https://github.com/bumptech/glide",
@@ -271,7 +276,7 @@ public class AboutActivity extends Activity {
 
         @Override
         public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-            if (getItemViewType(position) == VIEW_TYPE_LIBRARY) {
+            if (holder.getItemViewType() == VIEW_TYPE_LIBRARY) {
                 bindLibrary((LibraryHolder) holder, libs[position - 1]); // adjust for intro
             }
         }
