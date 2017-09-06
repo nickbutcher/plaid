@@ -29,6 +29,7 @@
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
         <item name="collapsingTitleLayoutStyle">@style/Widget.Plaid.CollapsingTitle</item>
+        <item name="android:colorEdgeEffect">@color/mid_grey</item>
     </style>
 
     <style name="Plaid.Home">
