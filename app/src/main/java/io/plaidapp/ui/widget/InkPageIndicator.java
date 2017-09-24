@@ -175,6 +175,18 @@ public class InkPageIndicator extends View implements ViewPager.OnPageChangeList
         setCurrentPageImmediate();
     }
 
+    public void setUnselectedColour(int unselectedColour) {
+        this.unselectedColour = unselectedColour;
+        unselectedPaint.setColor(unselectedColour);
+        invalidate();
+    }
+
+    public void setSelectedColour(int selectedColour) {
+        this.selectedColour = selectedColour;
+        selectedPaint.setColor(selectedColour);
+        invalidate();
+    }
+
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         if (isAttachedToWindow) {
