@@ -220,7 +220,7 @@ public class SpannedGridLayoutManager extends RecyclerView.LayoutManager {
                 scrolled = dy;
             }
             if (top - scrolled >= 0) { // new top row came on screen
-                int newRow = firstVisibleRow - 1;
+                int newRow = getPreviousSpannedRow(firstVisibleRow);
                 if (newRow >= 0) {
                     int startOffset = top - (firstVisibleRow * cellHeight);
                     layoutRow(newRow, startOffset, recycler, state);
@@ -241,7 +241,7 @@ public class SpannedGridLayoutManager extends RecyclerView.LayoutManager {
                 scrolled = dy;
             }
             if ((bottom - scrolled) < getHeight() && lastVisibleRow != 0) { // new row scrolled in
-                int nextRow = lastVisibleRow + 1;
+                int nextRow = getNextSpannedRow(lastVisibleRow);
                 if (nextRow < getSpannedRowCount()) {
                     int startOffset = top - (firstVisibleRow * cellHeight);
                     layoutRow(nextRow, startOffset, recycler, state);
@@ -462,6 +462,15 @@ public class SpannedGridLayoutManager extends RecyclerView.LayoutManager {
             nextRow++;
         }
         return nextRow;
+    }
+
+    private int getPreviousSpannedRow(int rowIndex) {
+        int firstPositionInRow = getFirstPositionInSpannedRow(rowIndex);
+        int previousRow = rowIndex - 1;
+        while (previousRow > 0 && getFirstPositionInSpannedRow(previousRow) == firstPositionInRow) {
+            previousRow--;
+        }
+        return previousRow;
     }
 
     private int getFirstPositionInSpannedRow(int rowIndex) {
