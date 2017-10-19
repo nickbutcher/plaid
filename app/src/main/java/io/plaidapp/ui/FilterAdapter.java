@@ -40,7 +40,7 @@ import io.plaidapp.R;
 import io.plaidapp.data.Source;
 import io.plaidapp.data.prefs.DribbblePrefs;
 import io.plaidapp.data.prefs.SourceManager;
-import io.plaidapp.ui.recyclerview.ItemTouchHelperAdapter;
+import io.plaidapp.ui.recyclerview.FilterSwipeDismissListener;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ColorUtils;
 import io.plaidapp.util.ViewUtils;
@@ -49,7 +49,7 @@ import io.plaidapp.util.ViewUtils;
  * Adapter for showing the list of data sources used as filters for the home grid.
  */
 public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterViewHolder>
-        implements ItemTouchHelperAdapter, DribbblePrefs.DribbbleLoginStatusListener {
+        implements FilterSwipeDismissListener, DribbblePrefs.DribbbleLoginStatusListener {
 
     public interface FilterAuthoriser {
         void requestDribbbleAuthorisation(View sharedElement, Source forSource);
@@ -58,8 +58,8 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
     private static final int FILTER_ICON_ENABLED_ALPHA = 179; // 70%
     private static final int FILTER_ICON_DISABLED_ALPHA = 51; // 20%
 
-    private final List<Source> filters;
-    private final FilterAuthoriser authoriser;
+    final List<Source> filters;
+    final FilterAuthoriser authoriser;
     private final Context context;
     private @Nullable List<FiltersChangedCallbacks> callbacks;
 
@@ -259,13 +259,13 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
         }
     }
 
-    private boolean isAuthorisedDribbbleSource(Source source) {
+    boolean isAuthorisedDribbbleSource(Source source) {
         return source.key.equals(SourceManager.SOURCE_DRIBBBLE_FOLLOWING)
                 || source.key.equals(SourceManager.SOURCE_DRIBBBLE_USER_LIKES)
                 || source.key.equals(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
     }
 
-    private void dispatchFiltersChanged(Source filter) {
+    void dispatchFiltersChanged(Source filter) {
         if (callbacks != null && !callbacks.isEmpty()) {
             for (FiltersChangedCallbacks callback : callbacks) {
                 callback.onFiltersChanged(filter);
@@ -294,8 +294,8 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
 
         public FilterViewHolder(View itemView) {
             super(itemView);
-            filterName = (TextView) itemView.findViewById(R.id.filter_name);
-            filterIcon = (ImageView) itemView.findViewById(R.id.filter_icon);
+            filterName = itemView.findViewById(R.id.filter_name);
+            filterIcon = itemView.findViewById(R.id.filter_icon);
         }
     }
 
@@ -306,7 +306,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
         public static final int HIGHLIGHT = 3;
 
         @Override
-        public boolean canReuseUpdatedViewHolder(RecyclerView.ViewHolder viewHolder) {
+        public boolean canReuseUpdatedViewHolder(@NonNull RecyclerView.ViewHolder viewHolder) {
             return true;
         }
 
@@ -323,10 +323,10 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
 
         @NonNull
         @Override
-        public ItemHolderInfo recordPreLayoutInformation(RecyclerView.State state,
-                                                         RecyclerView.ViewHolder viewHolder,
+        public ItemHolderInfo recordPreLayoutInformation(@NonNull RecyclerView.State state,
+                                                         @NonNull RecyclerView.ViewHolder viewHolder,
                                                          int changeFlags,
-                                                         List<Object> payloads) {
+                                                         @NonNull List<Object> payloads) {
             FilterHolderInfo info = (FilterHolderInfo)
                     super.recordPreLayoutInformation(state, viewHolder, changeFlags, payloads);
             if (!payloads.isEmpty()) {
@@ -338,10 +338,10 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
         }
 
         @Override
-        public boolean animateChange(RecyclerView.ViewHolder oldHolder,
-                                     RecyclerView.ViewHolder newHolder,
-                                     ItemHolderInfo preInfo,
-                                     ItemHolderInfo postInfo) {
+        public boolean animateChange(@NonNull RecyclerView.ViewHolder oldHolder,
+                                     @NonNull RecyclerView.ViewHolder newHolder,
+                                     @NonNull ItemHolderInfo preInfo,
+                                     @NonNull ItemHolderInfo postInfo) {
             if (newHolder instanceof FilterViewHolder && preInfo instanceof FilterHolderInfo) {
                 final FilterViewHolder holder = (FilterViewHolder) newHolder;
                 final FilterHolderInfo info = (FilterHolderInfo) preInfo;
