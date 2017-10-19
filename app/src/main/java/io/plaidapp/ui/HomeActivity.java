@@ -261,7 +261,7 @@ public class HomeActivity extends Activity {
         filtersList.setItemAnimator(new FilterAdapter.FilterAnimator());
         filtersAdapter.registerFilterChangedCallback(filtersChangedCallbacks);
         dataManager.loadAllDataSources();
-        ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter);
+        ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter, this);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(filtersList);
         checkEmptyState();

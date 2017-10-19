@@ -57,6 +57,8 @@
     <color name="page_indicator_dark_selected">#ff333333</color>
     <color name="selected_comment_background">#ffffffff</color>
     <color name="error">#ffdd2c00</color>
+    <color name="delete">#fff44336</color>
+    <color name="shadow">#4c000000</color>
 
     <!-- text (most text uses material theme colours) -->
     <color name="hint_disabled_dark">#43000000</color> <!-- 26% black -->
