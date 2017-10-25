@@ -65,7 +65,7 @@ public class ColorUtils {
     public static @Lightness int isDark(Palette palette) {
         Palette.Swatch mostPopulous = getMostPopulousSwatch(palette);
         if (mostPopulous == null) return LIGHTNESS_UNKNOWN;
-        return isDark(mostPopulous.getHsl()) ? IS_DARK : IS_LIGHT;
+        return isDark(mostPopulous.getRgb()) ? IS_DARK : IS_LIGHT;
     }
 
     public static @Nullable Palette.Swatch getMostPopulousSwatch(Palette palette) {
@@ -106,19 +106,10 @@ public class ColorUtils {
     }
 
     /**
-     * Check that the lightness value (0–1)
-     */
-    public static boolean isDark(float[] hsl) { // @Size(3)
-        return hsl[2] < 0.5f;
-    }
-
-    /**
-     * Convert to HSL & check that the lightness value
+     * Check if a color is dark (convert to XYZ & check Y component)
      */
     public static boolean isDark(@ColorInt int color) {
-        float[] hsl = new float[3];
-        android.support.v4.graphics.ColorUtils.colorToHSL(color, hsl);
-        return isDark(hsl);
+        return android.support.v4.graphics.ColorUtils.calculateLuminance(color) < 0.5;
     }
 
     /**
