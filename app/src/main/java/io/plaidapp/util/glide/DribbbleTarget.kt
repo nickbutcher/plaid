@@ -18,15 +18,13 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 import android.support.v7.graphics.Palette
-import android.view.View
 import com.bumptech.glide.load.resource.gif.GifDrawable
-import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.transition.Transition
 import io.plaidapp.R
 import io.plaidapp.ui.widget.BadgedFourThreeImageView
 import io.plaidapp.util.ColorUtils
-import io.plaidapp.util.isAnimated
 import io.plaidapp.util.ViewUtils
+import io.plaidapp.util.isAnimated
 import io.plaidapp.util.measured
 
 /**
@@ -36,31 +34,19 @@ import io.plaidapp.util.measured
 class DribbbleTarget(
         private val badgedImageView: BadgedFourThreeImageView,
         private val autoplayGifs: Boolean
-) : DrawableImageViewTarget(badgedImageView), Palette.PaletteAsyncListener {
+) : NonAutoStartDrawableImageViewTarget(badgedImageView), Palette.PaletteAsyncListener {
 
-    override fun onResourceReady(drawable: Drawable, transition: Transition<in Drawable>?) {
-        super.onResourceReady(drawable, transition)
-        val isAnimated = drawable.isAnimated()
-        if (!autoplayGifs && isAnimated) {
-            (drawable as GifDrawable).stop()
+    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+        super.onResourceReady(resource, transition)
+        val isAnimated = resource.isAnimated()
+        if (autoplayGifs && isAnimated) {
+            (resource as GifDrawable).start()
         }
-        val bitmap = drawable.getBitmap() ?: return
+        val bitmap = resource.getBitmap() ?: return
         Palette.from(bitmap).clearFilters().generate(this)
         if (isAnimated) {
             // look at the area the badge covers to determine its color
             badgedImageView.measured(this::setBadgeColor)
-        }
-    }
-
-    override fun onStart() {
-        if (autoplayGifs) {
-            super.onStart()
-        }
-    }
-
-    override fun onStop() {
-        if (autoplayGifs) {
-            super.onStop()
         }
     }
 
