@@ -97,7 +97,6 @@ import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.DrawableUtils;
 import io.plaidapp.util.ViewUtils;
-import io.plaidapp.util.glide.GlideApp;
 
 
 public class HomeActivity extends Activity {
@@ -186,11 +185,7 @@ public class HomeActivity extends Activity {
         grid.addOnScrollListener(new InfiniteScrollListener(layoutManager, dataManager) {
             @Override
             public void onLoadMore() {
-                grid.post(new Runnable() {
-                    @Override public void run() {
-                        dataManager.loadAllDataSources();
-                    }
-                });
+                dataManager.loadAllDataSources();
             }
         });
         grid.setHasFixedSize(true);
