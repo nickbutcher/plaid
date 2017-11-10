@@ -17,10 +17,61 @@
 
 <animated-vector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/ic_views">
+    xmlns:aapt="http://schemas.android.com/aapt">
 
-    <target
-        android:name="pupil"
-        android:animation="@animator/look_around" />
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportHeight="24"
+            android:viewportWidth="24">
+            <path
+                android:name="eye"
+                android:pathData="M12,4.5 C7,4.5 2.73,7.61 1,12 C2.73,16.39 7,19.5 12,19.5 C17,19.5 21.27,16.39 23,12 C21.27,7.61 17,4.5 12,4.5 Z M12,17 C9.24,17 7,14.76 7,12 C7,9.24 9.24,7 12,7 C14.76,7 17,9.24 17,12 C17,14.76 14.76,17 12,17 Z"
+                android:fillColor="@color/inline_action_icon" />
+            <group android:name="pupil">
+                <path
+                    android:pathData="M12,9 C10.34,9 9,10.34 9,12 C9,13.66 10.34,15 12,15 C13.66,15 15,13.66 15,12 C15,10.34 13.66,9 12,9 L12,9 Z"
+                    android:fillColor="@color/inline_action_icon" />
+            </group>
+        </vector>
+    </aapt:attr>
+
+    <target android:name="pupil">
+        <aapt:attr name="android:animation">
+            <set
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:interpolator="@android:interpolator/fast_out_slow_in">
+                <objectAnimator
+                    android:propertyName="translateX"
+                    android:valueFrom="0"
+                    android:valueTo="2"
+                    android:duration="150" />
+                <objectAnimator
+                    android:propertyName="translateY"
+                    android:valueFrom="0"
+                    android:valueTo="-2"
+                    android:duration="100" />
+                <objectAnimator
+                    android:propertyName="translateX"
+                    android:valueFrom="2"
+                    android:valueTo="-2"
+                    android:startOffset="800"
+                    android:duration="150" />
+                <objectAnimator
+                    android:propertyName="translateX"
+                    android:valueFrom="-2"
+                    android:valueTo="0"
+                    android:startOffset="1800"
+                    android:duration="150" />
+                <objectAnimator
+                    android:propertyName="translateY"
+                    android:valueFrom="-2"
+                    android:valueTo="0"
+                    android:startOffset="1800"
+                    android:duration="100" />
+            </set>
+        </aapt:attr>
+    </target>
 
 </animated-vector>

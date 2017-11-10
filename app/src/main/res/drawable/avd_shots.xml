@@ -17,14 +17,99 @@
 
 <animated-vector
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:drawable="@drawable/ic_images">
 
-    <target
-        android:name="image"
-        android:animation="@animator/shots_below_morph" />
+    <target android:name="image">
+        <aapt:attr name="android:animation">
+            <set android:interpolator="@android:interpolator/linear">
+                <objectAnimator
+                    android:propertyName="pathData"
+                    android:valueFrom="@string/path_image_mountains"
+                    android:valueTo="@string/path_image_arrow_up"
+                    android:duration="300"
+                    android:valueType="pathType" />
+                <objectAnimator
+                    android:propertyName="pathData"
+                    android:valueFrom="@string/path_image_arrow_down"
+                    android:valueTo="@string/path_image_mountains"
+                    android:startOffset="1000"
+                    android:duration="300"
+                    android:valueType="pathType" />
+            </set>
+        </aapt:attr>
+    </target>
 
-    <target
-        android:name="image_group"
-        android:animation="@animator/shots_below_move" />
+    <target android:name="image_group">
+        <aapt:attr name="android:animation">
+            <set android:interpolator="@android:interpolator/fast_out_slow_in">
+                <!-- move up, scale down and rotate while the path is morphing -->
+                <objectAnimator
+                    android:propertyName="translateY"
+                    android:valueFrom="0"
+                    android:valueTo="-3"
+                    android:duration="250" />
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:valueFrom="1"
+                    android:valueTo="0.8"
+                    android:duration="250" />
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:valueFrom="1"
+                    android:valueTo="0.8"
+                    android:duration="250" />
+                <objectAnimator
+                    android:propertyName="rotation"
+                    android:valueFrom="0"
+                    android:valueTo="-180"
+                    android:duration="250" />
+
+                <!-- move the arrow down & restore scale -->
+                <objectAnimator
+                    android:propertyName="translateY"
+                    android:valueFrom="-3"
+                    android:valueTo="0"
+                    android:startOffset="250"
+                    android:duration="150" />
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:valueFrom="0.8"
+                    android:valueTo="1"
+                    android:startOffset="250"
+                    android:duration="150" />
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:valueFrom="0.8"
+                    android:valueTo="1"
+                    android:startOffset="250"
+                    android:duration="150" />
+
+                <!-- bounce back up -->
+                <objectAnimator
+                    android:propertyName="translateY"
+                    android:valueFrom="0"
+                    android:valueTo="-2"
+                    android:startOffset="400"
+                    android:duration="150" />
+                <!-- bounce down -->
+                <objectAnimator
+                    android:propertyName="translateY"
+                    android:valueFrom="-2"
+                    android:valueTo="0"
+                    android:startOffset="550"
+                    android:duration="150" />
+
+                <!-- instantaneously restore the rotation in preparation for the morph
+                     back from arrow to the standard icon -->
+                <objectAnimator
+                    android:propertyName="rotation"
+                    android:valueFrom="-180"
+                    android:valueTo="0"
+                    android:startOffset="1000"
+                    android:duration="0" />
+            </set>
+        </aapt:attr>
+    </target>
 
 </animated-vector>
