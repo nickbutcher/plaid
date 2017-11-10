@@ -34,6 +34,12 @@ public abstract class InfiniteScrollListener extends RecyclerView.OnScrollListen
 
     private final LinearLayoutManager layoutManager;
     private final DataLoadingSubject dataLoading;
+    private final Runnable loadMoreRunnable = new Runnable() {
+        @Override
+        public void run() {
+            onLoadMore();
+        }
+    };
 
     public InfiniteScrollListener(@NonNull LinearLayoutManager layoutManager,
                                   @NonNull DataLoadingSubject dataLoading) {
@@ -51,7 +57,7 @@ public abstract class InfiniteScrollListener extends RecyclerView.OnScrollListen
         final int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
 
         if ((totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_THRESHOLD)) {
-            onLoadMore();
+            recyclerView.post(loadMoreRunnable);
         }
     }
 
