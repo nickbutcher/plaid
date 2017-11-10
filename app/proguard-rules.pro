@@ -15,23 +15,21 @@
 #
 
 -dontobfuscate #STOPSHIP remove this
--dontwarn com.squareup.okhttp.**
--dontwarn okio.**
 -dontwarn retrofit2.**
 -dontwarn rx.**
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn javax.annotation.**
 
 -keep class io.plaidapp.data.api.dribbble.model.**  { *; }
 -keep class io.plaidapp.data.api.designernews.model.**  { *; }
 -keep class io.plaidapp.data.api.producthunt.model.**  { *; }
 -keep class io.plaidapp.ui.transitions.**  { *; }
-
 -keep class android.support.v7.widget.LinearLayoutManager {
     public protected *;
 }
 -keep public class * extends com.bumptech.glide.module.AppGlideModule
 -keep class com.bumptech.glide.GeneratedAppGlideModuleImpl
--keep class com.squareup.okhttp.** { *; }
--keep interface com.squareup.okhttp.** { *; }
 -keep class in.uncod.android.bypass.** { *; }
 -keep class retrofit2.** { *; }
 
@@ -40,3 +38,6 @@
 -keepclasseswithmembers class * {
     @retrofit.http.* <methods>;
 }
+
+# A resource is loaded with a relative path so the package of this class must be preserved.
+-keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
