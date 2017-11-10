@@ -17,9 +17,9 @@
 buildscript {
 
     ext.versions = [
-            'compileSdk'    : 26,
-            'targetSdk'     : 26,
-            'buildTools'    : '26.0.2',
+            'compileSdk'    : 27,
+            'targetSdk'     : 27,
+            'buildTools'    : '27.0.1',
             'butterknife'   : '8.8.1',
             'glide'         : '4.2.0',
             'kotlin'        : '1.1.51',
