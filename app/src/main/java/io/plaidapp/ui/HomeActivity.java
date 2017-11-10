@@ -97,7 +97,6 @@ import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.DrawableUtils;
 import io.plaidapp.util.ViewUtils;
-import io.plaidapp.util.glide.GlideApp;
 
 
 public class HomeActivity extends Activity {
