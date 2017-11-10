@@ -69,7 +69,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
     implementation "com.android.support:customtabs:${versions.supportLibrary}"
     implementation "com.android.support:design:${versions.supportLibrary}"
     implementation "com.android.support:palette-v7:${versions.supportLibrary}"
