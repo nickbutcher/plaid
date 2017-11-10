@@ -34,7 +34,7 @@ fun Drawable.toBitmap(): Bitmap {
 }
 
 fun drawableToBitmap(context: Context, @DrawableRes drawableId: Int) =
-        ContextCompat.getDrawable(context, drawableId).toBitmap()
+        ContextCompat.getDrawable(context, drawableId)?.toBitmap()
 
 fun Drawable.isAnimated() = this is Animatable
 
