@@ -22,7 +22,7 @@ buildscript {
             'buildTools'    : '27.0.1',
             'butterknife'   : '8.8.1',
             'glide'         : '4.3.0',
-            'kotlin'        : '1.1.60',
+            'kotlin'        : '1.2.0',
             'retrofit'      : '2.3.0',
             'supportLibrary': '27.0.1'
     ]
