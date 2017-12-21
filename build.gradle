@@ -21,7 +21,7 @@ buildscript {
             'targetSdk'     : 27,
             'buildTools'    : '27.0.2',
             'butterknife'   : '8.8.1',
-            'glide'         : '4.3.0',
+            'glide'         : '4.4.0',
             'kotlin'        : '1.2.10',
             'retrofit'      : '2.3.0',
             'supportLibrary': '27.0.2'
