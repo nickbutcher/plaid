@@ -211,19 +211,13 @@ public class PlayerSheet extends Activity {
     private void showClose() {
         if (dismissState == DISMISS_CLOSE) return;
         dismissState = DISMISS_CLOSE;
-        final AnimatedVectorDrawable downToClose = (AnimatedVectorDrawable)
-                ContextCompat.getDrawable(this, R.drawable.avd_down_to_close);
-        close.setImageDrawable(downToClose);
-        downToClose.start();
+        close.setImageState(new int[] {android.R.attr.state_expanded}, true);
     }
 
     private void showDown() {
         if (dismissState == DISMISS_DOWN) return;
         dismissState = DISMISS_DOWN;
-        final AnimatedVectorDrawable closeToDown = (AnimatedVectorDrawable)
-                ContextCompat.getDrawable(this, R.drawable.avd_close_to_down);
-        close.setImageDrawable(closeToDown);
-        closeToDown.start();
+        close.setImageState(new int[] {-android.R.attr.state_expanded}, true);
     }
 
     @OnClick({ R.id.bottom_sheet, R.id.close })
