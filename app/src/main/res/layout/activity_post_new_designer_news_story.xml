@@ -15,7 +15,7 @@
   limitations under the License.
   -->
 
-<io.plaidapp.ui.widget.BottomSheet
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -32,7 +32,9 @@
         android:elevation="@dimen/z_fab"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
-        android:transitionName="@string/transition_new_designer_news_post">
+        android:transitionName="@string/transition_new_designer_news_post"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        app:behavior_hideable="true">
 
         <io.plaidapp.ui.widget.BaselineGridTextView
             android:id="@+id/title"
@@ -156,4 +158,4 @@
 
     </LinearLayout>
 
-</io.plaidapp.ui.widget.BottomSheet>
+</android.support.design.widget.CoordinatorLayout>

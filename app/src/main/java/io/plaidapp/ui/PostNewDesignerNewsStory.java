@@ -22,12 +22,15 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.transition.Transition;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
@@ -47,7 +50,6 @@ import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.util.ShortcutHelper;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
-import io.plaidapp.ui.widget.BottomSheet;
 import io.plaidapp.ui.widget.ObservableScrollView;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ImeUtils;
@@ -57,7 +59,6 @@ public class PostNewDesignerNewsStory extends Activity {
     public static final int RESULT_DRAG_DISMISSED = 3;
     public static final int RESULT_POSTING = 4;
 
-    @BindView(R.id.bottom_sheet) BottomSheet bottomSheet;
     @BindView(R.id.bottom_sheet_content) ViewGroup bottomSheetContent;
     @BindView(R.id.title) TextView sheetTitle;
     @BindView(R.id.scroll_container) ObservableScrollView scrollContainer;
@@ -79,15 +80,21 @@ public class PostNewDesignerNewsStory extends Activity {
                     ContextCompat.getColor(this, R.color.background_light), 0);
         }
 
-        bottomSheet.registerCallback(new BottomSheet.Callbacks() {
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContent);
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
-            public void onSheetDismissed() {
-                // After a drag dismiss, finish without the shared element return transition as
-                // it no longer makes sense.  Let the launching window know it's a drag dismiss so
-                // that it can restore any UI used as an entering shared element
-                setResult(RESULT_DRAG_DISMISSED);
-                finish();
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    // After a drag dismiss, finish without the shared element return transition as
+                    // it no longer makes sense.  Let the launching window know it's a drag dismiss so
+                    // that it can restore any UI used as an entering shared element
+                    setResult(RESULT_DRAG_DISMISSED);
+                    finish();
+                }
             }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {}
         });
 
         scrollContainer.setListener(new ObservableScrollView.OnScrollListener() {
