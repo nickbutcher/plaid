@@ -124,8 +124,8 @@ public class MorphDialogToFab extends ChangeBounds {
         MorphDrawable background = new MorphDrawable(startColor, startCornerRadius);
         endValues.view.setBackground(background);
 
-        Animator color = ObjectAnimator.ofArgb(background, background.COLOR, endColor);
-        Animator corners = ObjectAnimator.ofFloat(background, background.CORNER_RADIUS,
+        Animator color = ObjectAnimator.ofArgb(background, MorphDrawable.COLOR, endColor);
+        Animator corners = ObjectAnimator.ofFloat(background, MorphDrawable.CORNER_RADIUS,
                 endCornerRadius);
 
         // hide child views (offset down & fade out)

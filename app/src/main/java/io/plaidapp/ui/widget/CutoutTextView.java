@@ -45,7 +45,6 @@ public class CutoutTextView extends View {
     private Bitmap cutout;
     private int foregroundColor = Color.MAGENTA;
     private String text;
-    private float textSize;
     private float textY;
     private float textX;
     private float maxTextSize;
@@ -86,8 +85,8 @@ public class CutoutTextView extends View {
 
     private void calculateTextPosition() {
         float targetWidth = getWidth() / PHI;
-        textSize = ViewUtils.getSingleLineTextSize(text, textPaint, targetWidth, 0f, maxTextSize,
-                0.5f, getResources().getDisplayMetrics());
+        float textSize = ViewUtils.getSingleLineTextSize(
+                text, textPaint, targetWidth, 0f, maxTextSize, 0.5f, getResources().getDisplayMetrics());
         textPaint.setTextSize(textSize);
 
         // measuring text is fun :] see: https://chris.banes.me/2014/03/27/measuring-text/
