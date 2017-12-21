@@ -32,7 +32,8 @@
         android:elevation="@dimen/z_fab"
         android:orientation="vertical"
         app:layout_behavior="@string/bottom_sheet_behavior"
-        app:behavior_hideable="true">
+        app:behavior_hideable="true"
+        app:behavior_skipCollapsed="true">
 
         <LinearLayout
             android:id="@+id/title_bar"

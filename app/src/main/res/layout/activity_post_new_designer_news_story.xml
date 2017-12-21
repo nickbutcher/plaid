@@ -34,7 +34,8 @@
         android:orientation="vertical"
         android:transitionName="@string/transition_new_designer_news_post"
         app:layout_behavior="@string/bottom_sheet_behavior"
-        app:behavior_hideable="true">
+        app:behavior_hideable="true"
+        app:behavior_skipCollapsed="true">
 
         <io.plaidapp.ui.widget.BaselineGridTextView
             android:id="@+id/title"
