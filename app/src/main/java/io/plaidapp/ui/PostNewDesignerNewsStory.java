@@ -27,6 +27,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.transition.Transition;
 import android.view.KeyEvent;
@@ -50,7 +51,6 @@ import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.util.ShortcutHelper;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
-import io.plaidapp.ui.widget.ObservableScrollView;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ImeUtils;
 
@@ -61,7 +61,7 @@ public class PostNewDesignerNewsStory extends Activity {
 
     @BindView(R.id.bottom_sheet_content) ViewGroup bottomSheetContent;
     @BindView(R.id.title) TextView sheetTitle;
-    @BindView(R.id.scroll_container) ObservableScrollView scrollContainer;
+    @BindView(R.id.scroll_container) NestedScrollView scrollContainer;
     @BindView(R.id.new_story_title) EditText title;
     @BindView(R.id.new_story_url_label) TextInputLayout urlLabel;
     @BindView(R.id.new_story_url) EditText url;
@@ -97,9 +97,10 @@ public class PostNewDesignerNewsStory extends Activity {
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {}
         });
 
-        scrollContainer.setListener(new ObservableScrollView.OnScrollListener() {
+        scrollContainer.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
-            public void onScrolled(int scrollY) {
+            public void onScrollChange(
+                    NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 if (scrollY != 0
                         && sheetTitle.getTranslationZ() != appBarElevation) {
                     sheetTitle.animate()

@@ -52,13 +52,12 @@
             android:text="@string/new_story_title"
             android:textAppearance="@style/TextAppearance.DialogTitle" />
 
-        <io.plaidapp.ui.widget.ObservableScrollView
+        <android.support.v4.widget.NestedScrollView
             android:id="@+id/scroll_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/spacing_normal"
-            android:clipToPadding="false"
-            android:nestedScrollingEnabled="true">
+            android:clipToPadding="false">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -156,7 +155,7 @@
 
             </LinearLayout>
 
-        </io.plaidapp.ui.widget.ObservableScrollView>
+        </android.support.v4.widget.NestedScrollView>
 
     </LinearLayout>
 
