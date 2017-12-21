@@ -28,6 +28,7 @@
         android:id="@+id/bottom_sheet_content"
         android:layout_width="@dimen/bottom_sheet_width"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:background="@color/background_light"
         android:elevation="@dimen/z_fab"
         android:focusableInTouchMode="true"
