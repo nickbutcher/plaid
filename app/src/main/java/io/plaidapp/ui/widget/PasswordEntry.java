@@ -28,6 +28,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.text.TextPaint;
 import android.text.method.PasswordTransformationMethod;
@@ -170,7 +171,7 @@ public class PasswordEntry extends TextInputEditText {
         }
 
         @Override
-        public void draw(Canvas canvas) {
+        public void draw(@NonNull Canvas canvas) {
             if (characters != null && morphProgress != NO_PROGRESS) {
                 final int saveCount = canvas.save();
                 canvas.translate(insetStart, baseline);

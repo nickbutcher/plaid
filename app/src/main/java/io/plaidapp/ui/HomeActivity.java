@@ -659,7 +659,7 @@ public class HomeActivity extends Activity {
         if (visibility == View.VISIBLE) {
             if (noFiltersEmptyText == null) {
                 // create the no filters empty text
-                ViewStub stub = (ViewStub) findViewById(R.id.stub_no_filters);
+                ViewStub stub = findViewById(R.id.stub_no_filters);
                 noFiltersEmptyText = (TextView) stub.inflate();
                 String emptyText = getString(R.string.no_filters_selected);
                 int filterPlaceholderStart = emptyText.indexOf('\u08B4');
@@ -808,7 +808,7 @@ public class HomeActivity extends Activity {
         if (!connected) {
             loading.setVisibility(View.GONE);
             if (noConnection == null) {
-                final ViewStub stub = (ViewStub) findViewById(R.id.stub_no_connection);
+                final ViewStub stub = findViewById(R.id.stub_no_connection);
                 noConnection = (ImageView) stub.inflate();
             }
             final AnimatedVectorDrawable avd =
