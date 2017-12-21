@@ -23,7 +23,7 @@
     android:paddingEnd="@dimen/padding_normal"
     android:paddingStart="@dimen/padding_normal"
     android:background="@drawable/mid_grey_bounded_ripple"
-    android:maxLines="1"
+    android:singleLine="true"
     android:ellipsize="marquee"
     android:textAppearance="?android:attr/textAppearanceLargePopupMenu"
     style="?android:attr/dropDownItemStyle" />
