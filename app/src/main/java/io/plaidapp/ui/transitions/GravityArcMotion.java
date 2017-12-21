@@ -161,7 +161,7 @@ public class GravityArcMotion extends ArcMotion {
             // Distance squared between end point and mid point is (1/2 hypotenuse)^2
             float midDist2 = h2 * 0.25f;
 
-            float minimumArcDist2 = 0;
+            float minimumArcDist2;
 
             if (Math.abs(deltaX) < Math.abs(deltaY)) {
                 // Similar triangles bfa and bde mean that (ab/fb = eb/bd)
