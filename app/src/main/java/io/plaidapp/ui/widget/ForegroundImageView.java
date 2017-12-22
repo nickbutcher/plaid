@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.ViewOutlineProvider;
@@ -61,7 +62,7 @@ public class ForegroundImageView extends AppCompatImageView {
     }
 
     @Override
-    protected boolean verifyDrawable(Drawable who) {
+    protected boolean verifyDrawable(@NonNull Drawable who) {
         return super.verifyDrawable(who) || (who == foreground);
     }
 

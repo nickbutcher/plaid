@@ -115,15 +115,16 @@ public class AboutActivity extends Activity {
             markdown = new Bypass(host, new Bypass.Options());
         }
 
+        @NonNull
         @Override
-        public Object instantiateItem(ViewGroup collection, int position) {
+        public Object instantiateItem(@NonNull ViewGroup collection, int position) {
             View layout = getPage(position, collection);
             collection.addView(layout);
             return layout;
         }
 
         @Override
-        public void destroyItem(ViewGroup collection, int position, Object view) {
+        public void destroyItem(@NonNull ViewGroup collection, int position, @NonNull Object view) {
             collection.removeView((View) view);
         }
 
@@ -133,7 +134,7 @@ public class AboutActivity extends Activity {
         }
 
         @Override
-        public boolean isViewFromObject(View view, Object object) {
+        public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
             return view == object;
         }
 

@@ -706,6 +706,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         };
     }
 
+    @NonNull
     @Override
     public List<Shot> getPreloadItems(int position) {
         PlaidItem item = getItem(position);

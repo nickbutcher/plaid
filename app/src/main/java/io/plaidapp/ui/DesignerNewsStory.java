@@ -162,7 +162,7 @@ public class DesignerNewsStory extends Activity {
         if (collapsingToolbar != null) { // narrow device: collapsing toolbar
             collapsingToolbar.addOnLayoutChangeListener(titlebarLayout);
             collapsingToolbar.setTitle(story.title);
-            final Toolbar toolbar = (Toolbar) findViewById(R.id.story_toolbar);
+            final Toolbar toolbar = findViewById(R.id.story_toolbar);
             toolbar.setNavigationOnClickListener(backClick);
             commentsList.addOnScrollListener(headerScrollListener);
 
@@ -181,7 +181,7 @@ public class DesignerNewsStory extends Activity {
             });
 
         } else { // w600dp configuration: content card scrolls over title bar
-            final TextView title = (TextView) findViewById(R.id.story_title);
+            final TextView title = findViewById(R.id.story_title);
             title.setText(story.title);
             findViewById(R.id.back).setOnClickListener(backClick);
         }
@@ -514,8 +514,8 @@ public class DesignerNewsStory extends Activity {
     private View setupCommentField() {
         View enterCommentView = getLayoutInflater()
                 .inflate(R.layout.designer_news_enter_comment, commentsList, false);
-        enterComment = (EditText) enterCommentView.findViewById(R.id.comment);
-        postComment = (ImageButton) enterCommentView.findViewById(R.id.post_comment);
+        enterComment = enterCommentView.findViewById(R.id.comment);
+        postComment = enterCommentView.findViewById(R.id.post_comment);
         postComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1073,16 +1073,16 @@ public class DesignerNewsStory extends Activity {
         public static final int COLLAPSE_COMMENT = 2;
 
         @Override
-        public boolean canReuseUpdatedViewHolder(RecyclerView.ViewHolder viewHolder) {
+        public boolean canReuseUpdatedViewHolder(@NonNull RecyclerView.ViewHolder viewHolder) {
             return true;
         }
 
         @NonNull
         @Override
-        public ItemHolderInfo recordPreLayoutInformation(RecyclerView.State state,
-                                                         RecyclerView.ViewHolder viewHolder,
+        public ItemHolderInfo recordPreLayoutInformation(@NonNull RecyclerView.State state,
+                                                         @NonNull RecyclerView.ViewHolder viewHolder,
                                                          int changeFlags,
-                                                         List<Object> payloads) {
+                                                         @NonNull List<Object> payloads) {
             CommentItemHolderInfo info = (CommentItemHolderInfo)
                     super.recordPreLayoutInformation(state, viewHolder, changeFlags, payloads);
             info.doExpand = payloads.contains(EXPAND_COMMENT);
@@ -1091,10 +1091,10 @@ public class DesignerNewsStory extends Activity {
         }
 
         @Override
-        public boolean animateChange(RecyclerView.ViewHolder oldHolder,
-                                     RecyclerView.ViewHolder newHolder,
-                                     ItemHolderInfo preInfo,
-                                     ItemHolderInfo postInfo) {
+        public boolean animateChange(@NonNull RecyclerView.ViewHolder oldHolder,
+                                     @NonNull RecyclerView.ViewHolder newHolder,
+                                     @NonNull ItemHolderInfo preInfo,
+                                     @NonNull ItemHolderInfo postInfo) {
             if (newHolder instanceof CommentHolder && preInfo instanceof CommentItemHolderInfo) {
                 final CommentHolder holder = (CommentHolder) newHolder;
                 final CommentItemHolderInfo info = (CommentItemHolderInfo) preInfo;
