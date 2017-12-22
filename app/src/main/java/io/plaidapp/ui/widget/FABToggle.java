@@ -17,6 +17,7 @@
 package io.plaidapp.ui.widget;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatImageButton;
 import android.util.AttributeSet;
 import android.widget.Checkable;
 import android.widget.ImageButton;
@@ -24,7 +25,7 @@ import android.widget.ImageButton;
 /**
  * A {@link Checkable} {@link ImageButton} which can be offset vertically.
  */
-public class FABToggle extends ImageButton implements Checkable {
+public class FABToggle extends AppCompatImageButton implements Checkable {
 
     private static final int[] CHECKED_STATE_SET = { android.R.attr.state_checked };
 

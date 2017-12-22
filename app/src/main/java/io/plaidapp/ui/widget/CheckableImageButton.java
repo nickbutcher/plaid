@@ -17,6 +17,7 @@
 package io.plaidapp.ui.widget;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatImageButton;
 import android.util.AttributeSet;
 import android.view.SoundEffectConstants;
 import android.widget.Checkable;
@@ -25,7 +26,7 @@ import android.widget.ImageButton;
 /**
  * An extension to {@link ImageButton} which implements the {@link Checkable} interface.
  */
-public class CheckableImageButton extends ImageButton implements Checkable {
+public class CheckableImageButton extends AppCompatImageButton implements Checkable {
 
     private static final int[] CHECKED_STATE_SET = {android.R.attr.state_checked};
 
