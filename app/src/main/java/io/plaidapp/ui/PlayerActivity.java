@@ -256,6 +256,7 @@ public class PlayerActivity extends Activity {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom,
                                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                shots.removeOnLayoutChangeListener(this);
                 getColumnCount();
             }
         });
@@ -445,7 +446,7 @@ public class PlayerActivity extends Activity {
         // here's the magic incantation that does what we want
         res.updateConfiguration(viewScopedConfig, viewScopedDM);
 
-        // resources now act as if the device is the size of this view!?! Mwahahaha.
+        // resources now act as if the device is the size of this view!!! Mwahahaha.
         columns = res.getInteger(R.integer.num_columns);
         layoutManager.setSpanCount(columns);
         adapter.setColumnCount(columns);
