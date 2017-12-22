@@ -69,11 +69,6 @@ public class ViewUtils {
         return(!canMove || dm.widthPixels < dm.heightPixels);
     }
 
-    public static boolean isOrientationPortrait(@NonNull Context context) {
-        final Configuration cfg = context.getResources().getConfiguration();
-        return cfg.orientation == Configuration.ORIENTATION_PORTRAIT;
-    }
-
     public static RippleDrawable createRipple(@ColorInt int color,
                                               @FloatRange(from = 0f, to = 1f) float alpha,
                                               boolean bounded) {

@@ -113,13 +113,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final PlaidItemSorting.PlaidItemComparator comparator;
     private final boolean pocketIsInstalled;
     private final @Nullable DataLoadingSubject dataLoading;
-    private final int columns;
     private final ColorDrawable[] shotLoadingPlaceholders;
     private final ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider;
 
     private final @ColorInt int initialGifBadgeColor;
     private List<PlaidItem> items;
     private boolean showLoadingMore = false;
+    private int columns;
     private PlaidItemSorting.NaturalOrderWeigher naturalOrderWeigher;
     private ShotWeigher shotWeigher;
     private StoryWeigher storyWeigher;
@@ -496,6 +496,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         weighItems(newItems);
         deduplicateAndAdd(newItems);
         sort();
+        expandPopularItems();
+        notifyDataSetChanged();
+    }
+
+    void setColumnCount(int columns) {
+        if (columns == this.columns) return;
+        this.columns = columns;
         expandPopularItems();
         notifyDataSetChanged();
     }

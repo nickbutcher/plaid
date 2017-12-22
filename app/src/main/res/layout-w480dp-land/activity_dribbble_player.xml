@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2015 Google Inc.
+  Copyright (c) 2017 Google Inc.
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+  in compliance with the License. You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+  Unless required by applicable law or agreed to in writing, software distributed under the License
+  is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+  or implied. See the License for the specific language governing permissions and limitations under
+  the License.
   -->
 
 <io.plaidapp.ui.widget.ElasticDragDismissFrameLayout
@@ -45,19 +43,27 @@
         android:background="@android:color/transparent">
 
         <android.support.constraint.Guideline
-            android:id="@+id/guideline"
+            android:id="@+id/bio_shots_divider"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="@dimen/guideline_percentage" />
+            app:layout_constraintGuide_percent="@dimen/player_bio_width" />
+
+        <!-- updated with status bar height -->
+        <android.support.constraint.Guideline
+            android:id="@+id/guide_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="0dp" />
 
         <ImageView
             android:id="@+id/avatar"
             android:layout_width="@dimen/large_avatar_size"
             android:layout_height="@dimen/large_avatar_size"
-            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@id/bio_shots_divider"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/guide_top"
             android:layout_marginTop="@dimen/spacing_micro"
             android:elevation="@dimen/z_card"
             android:padding="@dimen/avatar_padding"
@@ -68,7 +74,7 @@
             android:id="@+id/player_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@id/bio_shots_divider"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/avatar"
             android:paddingBottom="@dimen/spacing_normal"
@@ -82,7 +88,7 @@
             android:id="@+id/follow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@id/bio_shots_divider"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/player_name"
             android:drawableStart="@drawable/asl_follow"
@@ -96,12 +102,11 @@
             android:theme="@style/LightRippleOverlay"
             style="@style/Widget.AppCompat.Button.Colored" />
 
-
         <io.plaidapp.ui.widget.BaselineGridTextView
             android:id="@+id/player_bio"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@id/bio_shots_divider"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/follow"
             android:paddingStart="@dimen/padding_normal"
@@ -148,7 +153,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/followers_count"
             app:layout_constraintTop_toBottomOf="@id/player_bio"
-            app:layout_constraintEnd_toEndOf="@id/guideline"
+            app:layout_constraintEnd_toEndOf="@id/bio_shots_divider"
             app:layout_constraintHorizontal_weight="1"
             android:paddingTop="@dimen/padding_normal"
             android:paddingBottom="@dimen/padding_normal"
@@ -162,8 +167,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="@+id/bio_shots_divider"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_margin="@dimen/spacing_huge"
             android:layout_gravity="bottom|center_horizontal" />
 
@@ -173,7 +179,7 @@
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="@+id/bio_shots_divider"
             app:layout_constraintTop_toTopOf="parent"
             android:clipToPadding="false"
             android:elevation="@dimen/z_card"
@@ -183,6 +189,5 @@
             tools:visibility="visible"/>
 
     </android.support.constraint.ConstraintLayout>
-
 
 </io.plaidapp.ui.widget.ElasticDragDismissFrameLayout>

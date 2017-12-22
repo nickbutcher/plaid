@@ -19,14 +19,17 @@ package io.plaidapp.ui;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.transition.TransitionManager;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +45,7 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import java.text.NumberFormat;
 import java.util.List;
 
+import butterknife.BindBool;
 import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -94,7 +98,8 @@ public class PlayerActivity extends Activity {
     @BindView(R.id.likes_count) TextView likesCount;
     @BindView(R.id.loading) ProgressBar loading;
     @BindView(R.id.player_shots) RecyclerView shots;
-    @BindInt(R.integer.num_columns_player) int columns;
+    @BindInt(R.integer.num_columns) int columns;
+    @BindBool(R.bool.player_two_column) boolean isTwoColumn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +141,15 @@ public class PlayerActivity extends Activity {
                 lpFrame.rightMargin += insets.getSystemWindowInsetRight();  // landscape
                 ((ViewGroup.MarginLayoutParams) avatar.getLayoutParams()).topMargin
                     += insets.getSystemWindowInsetTop();
-                ViewUtils.setPaddingTop(container, insets.getSystemWindowInsetTop());
+                if (isTwoColumn) {
+                    View guide = container.findViewById(R.id.guide_top);
+                    ConstraintLayout.LayoutParams lpGuide = (ConstraintLayout.LayoutParams) guide.getLayoutParams();
+                    lpGuide.guideBegin = insets.getSystemWindowInsetTop();
+                    guide.setLayoutParams(lpGuide);
+                    ViewUtils.setPaddingTop(shots, insets.getSystemWindowInsetTop());
+                } else {
+                    ViewUtils.setPaddingTop(container, insets.getSystemWindowInsetTop());
+                }
                 ViewUtils.setPaddingBottom(shots, insets.getSystemWindowInsetBottom());
                 // clear this listener so insets aren't re-applied
                 draggableFrame.setOnApplyWindowInsetsListener(null);
@@ -230,7 +243,7 @@ public class PlayerActivity extends Activity {
                 if (data != null && data.size() > 0) {
                     if (adapter.getDataItemCount() == 0) {
                         loading.setVisibility(View.GONE);
-                        if (ViewUtils.isOrientationPortrait(PlayerActivity.this)) {
+                        if (!isTwoColumn) {
                             ViewUtils.setPaddingTop(shots, likesCount.getBottom());
                         }
                     }
@@ -239,6 +252,13 @@ public class PlayerActivity extends Activity {
             }
         };
         ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider = new ViewPreloadSizeProvider<>();
+        shots.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                getColumnCount();
+            }
+        });
         adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this),
                 shotPreloadSizeProvider);
         shots.setAdapter(adapter);
@@ -291,7 +311,7 @@ public class PlayerActivity extends Activity {
             if (player.id == dataManager.getDribbblePrefs().getUserId()) {
                 TransitionManager.beginDelayedTransition(container);
                 follow.setVisibility(View.GONE);
-                if (ViewUtils.isOrientationPortrait(this)) {
+                if (!isTwoColumn) {
                     ViewUtils.setPaddingTop(shots, container.getHeight() - follow.getHeight()
                             - ((ViewGroup.MarginLayoutParams) follow.getLayoutParams()).bottomMargin);
                 }
@@ -401,6 +421,37 @@ public class PlayerActivity extends Activity {
         if (followerCount == 0) {
             followersCount.setBackground(null);
         }
+    }
+
+    void getColumnCount() {
+        final int width = shots.getWidth();
+        final int height = shots.getHeight();
+
+        // stash the original state
+        final Resources res = getResources();
+        final DisplayMetrics origDM = res.getDisplayMetrics();
+        final Configuration originalConfig = res.getConfiguration();
+        float density = origDM.density;
+
+        // create our own configs & pretend that the device is the size of this view
+        Configuration viewScopedConfig = new Configuration(originalConfig);
+        viewScopedConfig.screenWidthDp = Math.round(width / density);
+        viewScopedConfig.screenHeightDp = Math.round(height / density);
+        DisplayMetrics viewScopedDM = new DisplayMetrics();
+        viewScopedDM.setTo(origDM);
+        viewScopedDM.widthPixels = width;
+        viewScopedDM.heightPixels = height;
+
+        // here's the magic incantation that does what we want
+        res.updateConfiguration(viewScopedConfig, viewScopedDM);
+
+        // resources now act as if the device is the size of this view!?! Mwahahaha.
+        columns = res.getInteger(R.integer.num_columns);
+        layoutManager.setSpanCount(columns);
+        adapter.setColumnCount(columns);
+
+        // once we're done: reset
+        res.updateConfiguration(originalConfig, origDM);
     }
 
 }
