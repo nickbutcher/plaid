@@ -257,7 +257,7 @@ public class PlayerActivity extends Activity {
             public void onLayoutChange(View v, int left, int top, int right, int bottom,
                                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 shots.removeOnLayoutChangeListener(this);
-                getColumnCount();
+                getColumnCount(right - left, bottom - top);
             }
         });
         adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this),
@@ -424,10 +424,7 @@ public class PlayerActivity extends Activity {
         }
     }
 
-    void getColumnCount() {
-        final int width = shots.getWidth();
-        final int height = shots.getHeight();
-
+    void getColumnCount(int width, int height) {
         // stash the original state
         final Resources res = getResources();
         final DisplayMetrics origDM = res.getDisplayMetrics();
