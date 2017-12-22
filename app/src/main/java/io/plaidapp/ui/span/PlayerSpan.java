@@ -34,7 +34,7 @@ public class PlayerSpan extends TouchableUrlSpan {
     public void onClick(View view) {
         Intent intent = new Intent(view.getContext(), PlayerActivity.class);
         intent.putExtra(PlayerActivity.EXTRA_PLAYER_NAME, playerName);
-        if (playerId > 0l) {
+        if (playerId > 0L) {
             intent.putExtra(PlayerActivity.EXTRA_PLAYER_ID, playerId);
         }
         if (!TextUtils.isEmpty(playerUsername)) {

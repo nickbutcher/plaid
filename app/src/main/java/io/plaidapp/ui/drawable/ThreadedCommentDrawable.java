@@ -22,6 +22,7 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 
 /**
  * A drawable showing the depth of a threaded conversation
@@ -62,7 +63,7 @@ public class ThreadedCommentDrawable extends Drawable {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         for (int thread = 0; thread < threads; thread++) {
             int left = halfThreadWidth + (thread * (threadWidth + gap));
             canvas.drawLine(left, 0, left, getBounds().bottom, paint);

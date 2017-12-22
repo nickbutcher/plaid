@@ -52,7 +52,7 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
     private Pair<FeedAdapter.DesignerNewsStoryHolder, AnimatorSet> runningStoryCommentsReturn;
 
     @Override
-    public boolean canReuseUpdatedViewHolder(RecyclerView.ViewHolder viewHolder) {
+    public boolean canReuseUpdatedViewHolder(@NonNull RecyclerView.ViewHolder viewHolder) {
         return true;
     }
 
@@ -63,10 +63,10 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
 
     @NonNull
     @Override
-    public ItemHolderInfo recordPreLayoutInformation(RecyclerView.State state,
-                                                     RecyclerView.ViewHolder viewHolder,
+    public ItemHolderInfo recordPreLayoutInformation(@NonNull RecyclerView.State state,
+                                                     @NonNull RecyclerView.ViewHolder viewHolder,
                                                      int changeFlags,
-                                                     List<Object> payloads) {
+                                                     @NonNull List<Object> payloads) {
         ItemHolderInfo info =
                 super.recordPreLayoutInformation(state, viewHolder, changeFlags, payloads);
         if (info instanceof HomeGridItemHolderInfo) {
@@ -79,10 +79,10 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
     }
 
     @Override
-    public boolean animateChange(RecyclerView.ViewHolder oldHolder,
-                                 RecyclerView.ViewHolder newHolder,
-                                 ItemHolderInfo preInfo,
-                                 ItemHolderInfo postInfo) {
+    public boolean animateChange(@NonNull RecyclerView.ViewHolder oldHolder,
+                                 @NonNull RecyclerView.ViewHolder newHolder,
+                                 @NonNull ItemHolderInfo preInfo,
+                                 @NonNull ItemHolderInfo postInfo) {
         boolean runPending = super.animateChange(oldHolder, newHolder, preInfo, postInfo);
 
         if (preInfo instanceof HomeGridItemHolderInfo) {

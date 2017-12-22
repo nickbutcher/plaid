@@ -152,12 +152,12 @@ public class DribbbleShot extends Activity {
         shotSpacer = shotDescription.findViewById(R.id.shot_spacer);
         title = shotDescription.findViewById(R.id.shot_title);
         description = shotDescription.findViewById(R.id.shot_description);
-        likeCount = (Button) shotDescription.findViewById(R.id.shot_like_count);
-        viewCount = (Button) shotDescription.findViewById(R.id.shot_view_count);
-        share = (Button) shotDescription.findViewById(R.id.shot_share_action);
-        playerName = (TextView) shotDescription.findViewById(R.id.player_name);
-        playerAvatar = (ImageView) shotDescription.findViewById(R.id.player_avatar);
-        shotTimeAgo = (TextView) shotDescription.findViewById(R.id.shot_time_ago);
+        likeCount = shotDescription.findViewById(R.id.shot_like_count);
+        viewCount = shotDescription.findViewById(R.id.shot_view_count);
+        share = shotDescription.findViewById(R.id.shot_share_action);
+        playerName = shotDescription.findViewById(R.id.player_name);
+        playerAvatar = shotDescription.findViewById(R.id.player_avatar);
+        shotTimeAgo = shotDescription.findViewById(R.id.shot_time_ago);
 
         setupCommenting();
         commentsList.addOnScrollListener(scrollListener);
@@ -476,7 +476,7 @@ public class DribbbleShot extends Activity {
                         https://code.google.com/p/android/issues/detail?id=191013 */
                     .generate(new Palette.PaletteAsyncListener() {
                         @Override
-                        public void onGenerated(Palette palette) {
+                        public void onGenerated(@NonNull Palette palette) {
                             boolean isDark;
                             @ColorUtils.Lightness int lightness = ColorUtils.isDark(palette);
                             if (lightness == ColorUtils.LIGHTNESS_UNKNOWN) {
@@ -529,7 +529,7 @@ public class DribbbleShot extends Activity {
                     .clearFilters()
                     .generate(new Palette.PaletteAsyncListener() {
                         @Override
-                        public void onGenerated(Palette palette) {
+                        public void onGenerated(@NonNull Palette palette) {
                             // color the ripple on the image spacer (default is grey)
                             shotSpacer.setBackground(
                                     ViewUtils.createRipple(palette, 0.25f, 0.5f,
@@ -709,8 +709,8 @@ public class DribbbleShot extends Activity {
             commentFooter = getLayoutInflater().inflate(R.layout.dribbble_enter_comment,
                     commentsList, false);
             userAvatar = (ForegroundImageView) commentFooter.findViewById(R.id.avatar);
-            enterComment = (EditText) commentFooter.findViewById(R.id.comment);
-            postComment = (ImageButton) commentFooter.findViewById(R.id.post_comment);
+            enterComment = commentFooter.findViewById(R.id.comment);
+            postComment = commentFooter.findViewById(R.id.post_comment);
             enterComment.setOnFocusChangeListener(enterCommentFocus);
         } else if (!allowComment && commentFooter != null) {
             adapter.removeCommentingFooter();
