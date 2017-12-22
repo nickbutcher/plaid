@@ -20,12 +20,10 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -60,7 +58,6 @@ import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.dribbble.model.User;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
-import io.plaidapp.ui.widget.BottomSheet;
 import io.plaidapp.util.DribbbleUtils;
 import io.plaidapp.util.glide.GlideApp;
 
@@ -84,17 +81,13 @@ public class PlayerSheet extends Activity {
     })
     @interface PlayerSheetMode { }
 
-    @BindView(R.id.bottom_sheet) BottomSheet bottomSheet;
     @BindView(R.id.bottom_sheet_content) ViewGroup content;
     @BindView(R.id.title_bar) ViewGroup titleBar;
     @BindView(R.id.close) ImageView close;
     @BindView(R.id.title) TextView title;
     @BindView(R.id.player_list) RecyclerView playerList;
     @BindDimen(R.dimen.large_avatar_size) int largeAvatarSize;
-    private @Nullable Shot shot;
-    private @Nullable User player;
     private PaginatedDataManager dataManager;
-    private LinearLayoutManager layoutManager;
     private PlayerAdapter adapter;
     private int dismissState = DISMISS_DOWN;
 
@@ -124,7 +117,7 @@ public class PlayerSheet extends Activity {
         final @PlayerSheetMode int mode = intent.getIntExtra(EXTRA_MODE, -1);
         switch (mode) {
             case MODE_SHOT_LIKES:
-                shot = intent.getParcelableExtra(EXTRA_SHOT);
+                Shot shot = intent.getParcelableExtra(EXTRA_SHOT);
                 title.setText(getResources().getQuantityString(
                         R.plurals.fans,
                         (int) shot.likes_count,
@@ -137,7 +130,7 @@ public class PlayerSheet extends Activity {
                 };
                 break;
             case MODE_FOLLOWERS:
-                player = intent.getParcelableExtra(EXTRA_USER);
+                User player = intent.getParcelableExtra(EXTRA_USER);
                 title.setText(getResources().getQuantityString(
                         R.plurals.follower_count,
                         player.followers_count,
@@ -153,14 +146,22 @@ public class PlayerSheet extends Activity {
                 throw new IllegalArgumentException("Unknown launch mode.");
         }
 
-        bottomSheet.registerCallback(new BottomSheet.Callbacks() {
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(content);
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            private boolean interacted;
+
             @Override
-            public void onSheetDismissed() {
-                finishAfterTransition();
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    interacted = true;
+                }
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    finishAfterTransition();
+                }
             }
 
             @Override
-            public void onSheetPositionChanged(int sheetTop, boolean interacted) {
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
                 if (interacted && close.getVisibility() != View.VISIBLE) {
                     close.setVisibility(View.VISIBLE);
                     close.setAlpha(0f);
@@ -170,7 +171,7 @@ public class PlayerSheet extends Activity {
                             .setInterpolator(getLinearOutSlowInInterpolator(PlayerSheet.this))
                             .start();
                 }
-                if (sheetTop == 0) {
+                if (slideOffset == 1) {
                     showClose();
                 } else {
                     showDown();
@@ -178,7 +179,7 @@ public class PlayerSheet extends Activity {
             }
         });
 
-        layoutManager = new LinearLayoutManager(this);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         playerList.setLayoutManager(layoutManager);
         playerList.setItemAnimator(new SlideInItemAnimator());
         adapter = new PlayerAdapter(this);
@@ -223,7 +224,7 @@ public class PlayerSheet extends Activity {
     @OnClick({ R.id.bottom_sheet, R.id.close })
     public void dismiss(View view) {
         if (view.getVisibility() != View.VISIBLE) return;
-        bottomSheet.dismiss();
+        BottomSheetBehavior.from(content).setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
     private class PlayerAdapter<T extends PlayerListable>

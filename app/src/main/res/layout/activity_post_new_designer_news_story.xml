@@ -15,7 +15,7 @@
   limitations under the License.
   -->
 
-<io.plaidapp.ui.widget.BottomSheet
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -28,11 +28,15 @@
         android:id="@+id/bottom_sheet_content"
         android:layout_width="@dimen/bottom_sheet_width"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:background="@color/background_light"
         android:elevation="@dimen/z_fab"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
-        android:transitionName="@string/transition_new_designer_news_post">
+        android:transitionName="@string/transition_new_designer_news_post"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        app:behavior_hideable="true"
+        app:behavior_skipCollapsed="true">
 
         <io.plaidapp.ui.widget.BaselineGridTextView
             android:id="@+id/title"
@@ -48,13 +52,12 @@
             android:text="@string/new_story_title"
             android:textAppearance="@style/TextAppearance.DialogTitle" />
 
-        <io.plaidapp.ui.widget.ObservableScrollView
+        <android.support.v4.widget.NestedScrollView
             android:id="@+id/scroll_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/spacing_normal"
-            android:clipToPadding="false"
-            android:nestedScrollingEnabled="true">
+            android:clipToPadding="false">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -152,8 +155,8 @@
 
             </LinearLayout>
 
-        </io.plaidapp.ui.widget.ObservableScrollView>
+        </android.support.v4.widget.NestedScrollView>
 
     </LinearLayout>
 
-</io.plaidapp.ui.widget.BottomSheet>
+</android.support.design.widget.CoordinatorLayout>

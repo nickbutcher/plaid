@@ -15,8 +15,9 @@
   limitations under the License.
   -->
 
-<io.plaidapp.ui.widget.BottomSheet
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
@@ -27,9 +28,13 @@
         android:id="@+id/bottom_sheet_content"
         android:layout_width="@dimen/bottom_sheet_width"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:background="@color/background_light"
         android:elevation="@dimen/z_fab"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        app:behavior_hideable="true"
+        app:behavior_skipCollapsed="true">
 
         <LinearLayout
             android:id="@+id/title_bar"
@@ -77,4 +82,4 @@
 
     </LinearLayout>
 
-</io.plaidapp.ui.widget.BottomSheet>
+</android.support.design.widget.CoordinatorLayout>
