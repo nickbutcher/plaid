@@ -96,9 +96,6 @@ public class InkPageIndicator extends View implements ViewPager.OnPageChangeList
     private final Path unselectedDotRightPath;
     private final RectF rectF;
 
-    // animation
-    private ValueAnimator moveAnimation;
-    private AnimatorSet joiningAnimationSet;
     private PendingRetreatAnimator retreatAnimation;
     private PendingRevealAnimator[] revealAnimations;
     private final Interpolator interpolator;
@@ -588,7 +585,7 @@ public class InkPageIndicator extends View implements ViewPager.OnPageChangeList
         // retreat animations when it has moved 75% of the way.
         // The retreat animation in turn will kick of reveal anims when the
         // retreat has passed any dots to be revealed
-        moveAnimation = createMoveSelectedAnimator(dotCenterX[now], previousPage, now, steps);
+        ValueAnimator moveAnimation = createMoveSelectedAnimator(dotCenterX[now], previousPage, now, steps);
         moveAnimation.start();
     }
 
@@ -662,12 +659,6 @@ public class InkPageIndicator extends View implements ViewPager.OnPageChangeList
     private void setDotRevealFraction(int dot, float fraction) {
         dotRevealFractions[dot] = fraction;
         postInvalidateOnAnimation();
-    }
-
-    private void cancelJoiningAnimations() {
-        if (joiningAnimationSet != null && joiningAnimationSet.isRunning()) {
-            joiningAnimationSet.cancel();
-        }
     }
 
     /**
@@ -766,7 +757,6 @@ public class InkPageIndicator extends View implements ViewPager.OnPageChangeList
             addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    cancelJoiningAnimations();
                     clearJoiningFractions();
                     // we need to set this so that the dots are hidden until the reveal anim runs
                     for (int dot : dotsToHide) {

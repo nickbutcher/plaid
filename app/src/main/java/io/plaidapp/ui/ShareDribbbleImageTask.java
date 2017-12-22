@@ -78,14 +78,7 @@ class ShareDribbbleImageTask extends AsyncTask<Void, Void, File> {
     }
 
     private String getShareText() {
-        return new StringBuilder()
-                .append("“")
-                .append(shot.title)
-                .append("” by ")
-                .append(shot.user.name)
-                .append("\n")
-                .append(shot.url)
-                .toString();
+        return "“" + shot.title + "” by " + shot.user.name + "\n" + shot.url;
     }
 
     private String getImageMimeType(@NonNull String fileName) {

@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -50,6 +51,7 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
     private float totalDrag;
     private boolean draggingDown = false;
     private boolean draggingUp = false;
+    private int mLastActionEvent;
 
     private List<ElasticDragDismissCallback> callbacks;
 
@@ -135,12 +137,25 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
         dragScale(dyUnconsumed);
     }
 
+    @Override public boolean onInterceptTouchEvent(MotionEvent ev) {
+        mLastActionEvent = ev.getAction();
+        return super.onInterceptTouchEvent(ev);
+    }
+
     @Override
     public void onStopNestedScroll(View child) {
         if (Math.abs(totalDrag) >= dragDismissDistance) {
             dispatchDismissCallback();
         } else { // settle back to natural position
-            animate()
+            if (mLastActionEvent == MotionEvent.ACTION_DOWN) {
+                // this is a 'defensive cleanup for new gestures',
+                // don't animate here
+                // see also https://github.com/nickbutcher/plaid/issues/185
+                setTranslationY(0f);
+                setScaleX(1f);
+                setScaleY(1f);
+            } else {
+                animate()
                     .translationY(0f)
                     .scaleX(1f)
                     .scaleY(1f)
@@ -148,6 +163,7 @@ public class ElasticDragDismissFrameLayout extends FrameLayout {
                     .setInterpolator(AnimUtils.getFastOutSlowInInterpolator(getContext()))
                     .setListener(null)
                     .start();
+            }
             totalDrag = 0;
             draggingDown = draggingUp = false;
             dispatchDragCallback(0f, 0f, 0f, 0f);
