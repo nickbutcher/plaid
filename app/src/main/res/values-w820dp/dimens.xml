@@ -19,5 +19,8 @@
 
     <!-- grid -->
     <integer name="num_columns">4</integer>
+    <integer name="num_columns_player">3</integer>
 
+    <!-- dribbble player -->
+    <item name="guideline_percentage" format="float" type="dimen">0.35</item>
 </resources>
