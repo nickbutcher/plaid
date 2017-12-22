@@ -94,7 +94,7 @@ public class PlayerActivity extends Activity {
     @BindView(R.id.likes_count) TextView likesCount;
     @BindView(R.id.loading) ProgressBar loading;
     @BindView(R.id.player_shots) RecyclerView shots;
-    @BindInt(R.integer.num_columns) int columns;
+    @BindInt(R.integer.num_columns_player) int columns;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -230,7 +230,9 @@ public class PlayerActivity extends Activity {
                 if (data != null && data.size() > 0) {
                     if (adapter.getDataItemCount() == 0) {
                         loading.setVisibility(View.GONE);
-                        ViewUtils.setPaddingTop(shots, likesCount.getBottom());
+                        if (ViewUtils.isOrientationPortrait(PlayerActivity.this)) {
+                            ViewUtils.setPaddingTop(shots, likesCount.getBottom());
+                        }
                     }
                     adapter.addAndResort(data);
                 }
@@ -289,8 +291,10 @@ public class PlayerActivity extends Activity {
             if (player.id == dataManager.getDribbblePrefs().getUserId()) {
                 TransitionManager.beginDelayedTransition(container);
                 follow.setVisibility(View.GONE);
-                ViewUtils.setPaddingTop(shots, container.getHeight() - follow.getHeight()
-                        - ((ViewGroup.MarginLayoutParams) follow.getLayoutParams()).bottomMargin);
+                if (ViewUtils.isOrientationPortrait(this)) {
+                    ViewUtils.setPaddingTop(shots, container.getHeight() - follow.getHeight()
+                            - ((ViewGroup.MarginLayoutParams) follow.getLayoutParams()).bottomMargin);
+                }
             } else {
                 final Call<Void> followingCall = dataManager.getDribbbleApi().following(player.id);
                 followingCall.enqueue(new Callback<Void>() {
