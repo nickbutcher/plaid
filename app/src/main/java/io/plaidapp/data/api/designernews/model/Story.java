@@ -89,7 +89,7 @@ public class Story extends PlaidItem implements Parcelable {
         badge = in.readString();
         user_job = in.readString();
         if (in.readByte() == 0x01) {
-            comments = new ArrayList<Comment>();
+            comments = new ArrayList<>();
             in.readList(comments, Comment.class.getClassLoader());
         } else {
             comments = null;

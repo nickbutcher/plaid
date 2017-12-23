@@ -44,7 +44,6 @@ import android.transition.Transition;
 import android.transition.TransitionManager;
 import android.util.Pair;
 import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -162,12 +161,7 @@ public class DribbbleShot extends Activity {
         setupCommenting();
         commentsList.addOnScrollListener(scrollListener);
         commentsList.setOnFlingListener(flingListener);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setResultAndFinish();
-            }
-        });
+        back.setOnClickListener(v -> setResultAndFinish());
         fab.setOnClickListener(fabClick);
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this) {
             @Override
@@ -338,13 +332,10 @@ public class DribbbleShot extends Activity {
                 res.getQuantityString(R.plurals.likes,
                         (int) shot.likes_count,
                         nf.format(shot.likes_count)));
-        likeCount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((AnimatedVectorDrawable) likeCount.getCompoundDrawables()[1]).start();
-                if (shot.likes_count > 0) {
-                    PlayerSheet.start(DribbbleShot.this, shot);
-                }
+        likeCount.setOnClickListener(v -> {
+            ((AnimatedVectorDrawable) likeCount.getCompoundDrawables()[1]).start();
+            if (shot.likes_count > 0) {
+                PlayerSheet.start(DribbbleShot.this, shot);
             }
         });
         if (shot.likes_count == 0) {
@@ -354,18 +345,10 @@ public class DribbbleShot extends Activity {
                 res.getQuantityString(R.plurals.views,
                         (int) shot.views_count,
                         nf.format(shot.views_count)));
-        viewCount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((AnimatedVectorDrawable) viewCount.getCompoundDrawables()[1]).start();
-            }
-        });
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((AnimatedVectorDrawable) share.getCompoundDrawables()[1]).start();
-                new ShareDribbbleImageTask(DribbbleShot.this, shot).execute();
-            }
+        viewCount.setOnClickListener(v -> ((AnimatedVectorDrawable) viewCount.getCompoundDrawables()[1]).start());
+        share.setOnClickListener(v -> {
+            ((AnimatedVectorDrawable) share.getCompoundDrawables()[1]).start();
+            new ShareDribbbleImageTask(DribbbleShot.this, shot).execute();
         });
         if (shot.user != null) {
             playerName.setText(shot.user.name.toLowerCase());
@@ -376,23 +359,20 @@ public class DribbbleShot extends Activity {
                     .override(largeAvatarSize, largeAvatarSize)
                     .transition(withCrossFade())
                     .into(playerAvatar);
-            View.OnClickListener playerClick = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent player = new Intent(DribbbleShot.this, PlayerActivity.class);
-                    if (shot.user.shots_count > 0) { // legit user object
-                        player.putExtra(PlayerActivity.EXTRA_PLAYER, shot.user);
-                    } else {
-                        // search doesn't fully populate the user object,
-                        // in this case send the ID not the full user
-                        player.putExtra(PlayerActivity.EXTRA_PLAYER_NAME, shot.user.username);
-                        player.putExtra(PlayerActivity.EXTRA_PLAYER_ID, shot.user.id);
-                    }
-                    ActivityOptions options =
-                            ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this,
-                                    playerAvatar, getString(R.string.transition_player_avatar));
-                    startActivity(player, options.toBundle());
+            View.OnClickListener playerClick = v -> {
+                Intent player = new Intent(DribbbleShot.this, PlayerActivity.class);
+                if (shot.user.shots_count > 0) { // legit user object
+                    player.putExtra(PlayerActivity.EXTRA_PLAYER, shot.user);
+                } else {
+                    // search doesn't fully populate the user object,
+                    // in this case send the ID not the full user
+                    player.putExtra(PlayerActivity.EXTRA_PLAYER_NAME, shot.user.username);
+                    player.putExtra(PlayerActivity.EXTRA_PLAYER_ID, shot.user.id);
                 }
+                ActivityOptions options =
+                        ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this,
+                                playerAvatar, getString(R.string.transition_player_avatar));
+                startActivity(player, options.toBundle());
             };
             playerAvatar.setOnClickListener(playerClick);
             playerName.setOnClickListener(playerClick);
@@ -424,12 +404,7 @@ public class DribbbleShot extends Activity {
 
     void reportUrlError() {
         Snackbar.make(draggableFrame, R.string.bad_dribbble_shot_url, Snackbar.LENGTH_SHORT).show();
-        draggableFrame.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                finishAfterTransition();
-            }
-        }, 3000L);
+        draggableFrame.postDelayed(this::finishAfterTransition, 3000L);
     }
 
     private View.OnClickListener shotClick = new View.OnClickListener() {
@@ -443,12 +418,7 @@ public class DribbbleShot extends Activity {
      * We run a transition to expand/collapse comments. Scrolling the RecyclerView while this is
      * running causes issues, so we consume touch events while the transition runs.
      */
-    View.OnTouchListener touchEater = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            return true;
-        }
-    };
+    View.OnTouchListener touchEater = (view, motionEvent) -> true;
 
     void openLink(String url) {
         CustomTabActivityHelper.openCustomTab(
@@ -474,74 +444,62 @@ public class DribbbleShot extends Activity {
                         (e.g. pure black/white) but we don't want this. */
                     .setRegion(0, 0, bitmap.getWidth() - 1, twentyFourDip) /* - 1 to work around
                         https://code.google.com/p/android/issues/detail?id=191013 */
-                    .generate(new Palette.PaletteAsyncListener() {
-                        @Override
-                        public void onGenerated(@NonNull Palette palette) {
-                            boolean isDark;
-                            @ColorUtils.Lightness int lightness = ColorUtils.isDark(palette);
-                            if (lightness == ColorUtils.LIGHTNESS_UNKNOWN) {
-                                isDark = ColorUtils.isDark(bitmap, bitmap.getWidth() / 2, 0);
-                            } else {
-                                isDark = lightness == ColorUtils.IS_DARK;
-                            }
+                    .generate(palette -> {
+                        boolean isDark;
+                        @ColorUtils.Lightness int lightness = ColorUtils.isDark(palette);
+                        if (lightness == ColorUtils.LIGHTNESS_UNKNOWN) {
+                            isDark = ColorUtils.isDark(bitmap, bitmap.getWidth() / 2, 0);
+                        } else {
+                            isDark = lightness == ColorUtils.IS_DARK;
+                        }
 
-                            if (!isDark) { // make back icon dark on light images
-                                back.setColorFilter(ContextCompat.getColor(
-                                        DribbbleShot.this, R.color.dark_icon));
-                            }
+                        if (!isDark) { // make back icon dark on light images
+                            back.setColorFilter(ContextCompat.getColor(
+                                    DribbbleShot.this, R.color.dark_icon));
+                        }
 
-                            // color the status bar. Set a complementary dark color on L,
-                            // light or dark color on M (with matching status bar icons)
-                            int statusBarColor = getWindow().getStatusBarColor();
-                            final Palette.Swatch topColor =
-                                    ColorUtils.getMostPopulousSwatch(palette);
-                            if (topColor != null &&
-                                    (isDark || Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
-                                statusBarColor = ColorUtils.scrimify(topColor.getRgb(),
-                                        isDark, SCRIM_ADJUSTMENT);
-                                // set a light status bar on M+
-                                if (!isDark && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    ViewUtils.setLightStatusBar(imageView);
-                                }
+                        // color the status bar. Set a complementary dark color on L,
+                        // light or dark color on M (with matching status bar icons)
+                        int statusBarColor = getWindow().getStatusBarColor();
+                        final Palette.Swatch topColor =
+                                ColorUtils.getMostPopulousSwatch(palette);
+                        if (topColor != null &&
+                                (isDark || Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
+                            statusBarColor = ColorUtils.scrimify(topColor.getRgb(),
+                                    isDark, SCRIM_ADJUSTMENT);
+                            // set a light status bar on M+
+                            if (!isDark && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                ViewUtils.setLightStatusBar(imageView);
                             }
+                        }
 
-                            if (statusBarColor != getWindow().getStatusBarColor()) {
-                                imageView.setScrimColor(statusBarColor);
-                                ValueAnimator statusBarColorAnim = ValueAnimator.ofArgb(
-                                        getWindow().getStatusBarColor(), statusBarColor);
-                                statusBarColorAnim.addUpdateListener(new ValueAnimator
-                                        .AnimatorUpdateListener() {
-                                    @Override
-                                    public void onAnimationUpdate(ValueAnimator animation) {
-                                        getWindow().setStatusBarColor(
-                                                (int) animation.getAnimatedValue());
-                                    }
-                                });
-                                statusBarColorAnim.setDuration(1000L);
-                                statusBarColorAnim.setInterpolator(
-                                        getFastOutSlowInInterpolator(DribbbleShot.this));
-                                statusBarColorAnim.start();
-                            }
+                        if (statusBarColor != getWindow().getStatusBarColor()) {
+                            imageView.setScrimColor(statusBarColor);
+                            ValueAnimator statusBarColorAnim = ValueAnimator.ofArgb(
+                                    getWindow().getStatusBarColor(), statusBarColor);
+                            statusBarColorAnim.addUpdateListener(animation -> getWindow().setStatusBarColor(
+                                    (int) animation.getAnimatedValue()));
+                            statusBarColorAnim.setDuration(1000L);
+                            statusBarColorAnim.setInterpolator(
+                                    getFastOutSlowInInterpolator(DribbbleShot.this));
+                            statusBarColorAnim.start();
                         }
                     });
 
             Palette.from(bitmap)
                     .clearFilters()
-                    .generate(new Palette.PaletteAsyncListener() {
-                        @Override
-                        public void onGenerated(@NonNull Palette palette) {
-                            // color the ripple on the image spacer (default is grey)
-                            shotSpacer.setBackground(
-                                    ViewUtils.createRipple(palette, 0.25f, 0.5f,
-                                    ContextCompat.getColor(DribbbleShot.this, R.color.mid_grey),
-                                    true));
-                            // slightly more opaque ripple on the pinned image to compensate
-                            // for the scrim
-                            imageView.setForeground(
-                                    ViewUtils.createRipple(palette, 0.3f, 0.6f,
-                                    ContextCompat.getColor(DribbbleShot.this, R.color.mid_grey),
-                                    true));
-                        }
+                    .generate(palette -> {
+                        // color the ripple on the image spacer (default is grey)
+                        shotSpacer.setBackground(
+                                ViewUtils.createRipple(palette, 0.25f, 0.5f,
+                                ContextCompat.getColor(DribbbleShot.this, R.color.mid_grey),
+                                true));
+                        // slightly more opaque ripple on the pinned image to compensate
+                        // for the scrim
+                        imageView.setForeground(
+                                ViewUtils.createRipple(palette, 0.3f, 0.6f,
+                                ContextCompat.getColor(DribbbleShot.this, R.color.mid_grey),
+                                true));
                     });
 
             // TODO should keep the background if the image contains transparency?!
@@ -858,163 +816,148 @@ public class DribbbleShot extends Activity {
             final CommentViewHolder holder = new CommentViewHolder(
                     getLayoutInflater().inflate(viewType, parent, false));
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final int position = holder.getAdapterPosition();
-                    if (position == RecyclerView.NO_POSITION) return;
+            holder.itemView.setOnClickListener(v -> {
+                final int position = holder.getAdapterPosition();
+                if (position == RecyclerView.NO_POSITION) return;
 
-                    final Comment comment = getComment(position);
-                    TransitionManager.beginDelayedTransition(commentsList, expandCollapse);
-                    commentAnimator.setAnimateMoves(false);
+                final Comment comment = getComment(position);
+                TransitionManager.beginDelayedTransition(commentsList, expandCollapse);
+                commentAnimator.setAnimateMoves(false);
 
-                    // collapse any currently expanded items
-                    if (RecyclerView.NO_POSITION != expandedCommentPosition) {
-                        notifyItemChanged(expandedCommentPosition, COLLAPSE);
-                    }
-
-                    // expand this item (if it wasn't already)
-                    if (expandedCommentPosition != position) {
-                        expandedCommentPosition = position;
-                        notifyItemChanged(position, EXPAND);
-                        if (comment.liked == null) {
-                            final Call<Like> liked = dribbblePrefs.getApi()
-                                    .likedComment(shot.id, comment.id);
-                            liked.enqueue(new Callback<Like>() {
-                                @Override
-                                public void onResponse(Call<Like> call, Response<Like> response) {
-                                    comment.liked = response.isSuccessful();
-                                    holder.likeHeart.setChecked(comment.liked);
-                                    holder.likeHeart.jumpDrawablesToCurrentState();
-                                }
-
-                                @Override public void onFailure(Call<Like> call, Throwable t) { }
-                            });
-                        }
-                        if (enterComment != null && enterComment.hasFocus()) {
-                            enterComment.clearFocus();
-                            ImeUtils.hideIme(enterComment);
-                        }
-                        holder.itemView.requestFocus();
-                    } else {
-                        expandedCommentPosition = RecyclerView.NO_POSITION;
-                    }
+                // collapse any currently expanded items
+                if (RecyclerView.NO_POSITION != expandedCommentPosition) {
+                    notifyItemChanged(expandedCommentPosition, COLLAPSE);
                 }
-            });
 
-            holder.avatar.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final int position = holder.getAdapterPosition();
-                    if (position == RecyclerView.NO_POSITION) return;
-
-                    final Comment comment = getComment(position);
-                    final Intent player = new Intent(DribbbleShot.this, PlayerActivity.class);
-                    player.putExtra(PlayerActivity.EXTRA_PLAYER, comment.user);
-                    ActivityOptions options =
-                            ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this,
-                                    Pair.create(holder.itemView,
-                                            getString(R.string.transition_player_background)),
-                                    Pair.create((View) holder.avatar,
-                                            getString(R.string.transition_player_avatar)));
-                    startActivity(player, options.toBundle());
-                }
-            });
-
-            holder.reply.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final int position = holder.getAdapterPosition();
-                    if (position == RecyclerView.NO_POSITION) return;
-
-                    final Comment comment = getComment(position);
-                    enterComment.setText("@" + comment.user.username + " ");
-                    enterComment.setSelection(enterComment.getText().length());
-
-                    // collapse the comment and scroll the reply box (in the footer) into view
-                    expandedCommentPosition = RecyclerView.NO_POSITION;
-                    notifyItemChanged(position, REPLY);
-                    holder.reply.jumpDrawablesToCurrentState();
-                    enterComment.requestFocus();
-                    commentsList.smoothScrollToPosition(getItemCount() - 1);
-                }
-            });
-
-            holder.likeHeart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (dribbblePrefs.isLoggedIn()) {
-                        final int position = holder.getAdapterPosition();
-                        if (position == RecyclerView.NO_POSITION) return;
-
-                        final Comment comment = getComment(position);
-                        if (comment.liked == null || !comment.liked) {
-                            comment.liked = true;
-                            comment.likes_count++;
-                            holder.likesCount.setText(String.valueOf(comment.likes_count));
-                            notifyItemChanged(position, COMMENT_LIKE);
-                            final Call<Like> likeCommentCall =
-                                    dribbblePrefs.getApi().likeComment(shot.id, comment.id);
-                            likeCommentCall.enqueue(new Callback<Like>() {
-                                @Override
-                                public void onResponse(Call<Like> call, Response<Like> response) { }
-
-                                @Override
-                                public void onFailure(Call<Like> call, Throwable t) { }
-                            });
-                        } else {
-                            comment.liked = false;
-                            comment.likes_count--;
-                            holder.likesCount.setText(String.valueOf(comment.likes_count));
-                            notifyItemChanged(position, COMMENT_LIKE);
-                            final Call<Void> unlikeCommentCall =
-                                    dribbblePrefs.getApi().unlikeComment(shot.id, comment.id);
-                            unlikeCommentCall.enqueue(new Callback<Void>() {
-                                @Override
-                                public void onResponse(Call<Void> call, Response<Void> response) { }
-
-                                @Override
-                                public void onFailure(Call<Void> call, Throwable t) { }
-                            });
-                        }
-                    } else {
-                        holder.likeHeart.setChecked(false);
-                        startActivityForResult(new Intent(DribbbleShot.this,
-                                DribbbleLogin.class), RC_LOGIN_LIKE);
-                    }
-                }
-            });
-
-            holder.likesCount.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final int position = holder.getAdapterPosition();
-                    if (position == RecyclerView.NO_POSITION) return;
-
-                    final Comment comment = getComment(position);
-                    final Call<List<Like>> commentLikesCall =
-                            dribbblePrefs.getApi().getCommentLikes(shot.id, comment.id);
-                    commentLikesCall.enqueue(new Callback<List<Like>>() {
-                        @Override
-                        public void onResponse(Call<List<Like>> call,
-                                               Response<List<Like>> response) {
-                            // TODO something better than this.
-                            StringBuilder sb = new StringBuilder("Liked by:\n\n");
-                            for (Like like : response.body()) {
-                                if (like.user != null) {
-                                    sb.append("@");
-                                    sb.append(like.user.username);
-                                    sb.append("\n");
-                                }
+                // expand this item (if it wasn't already)
+                if (expandedCommentPosition != position) {
+                    expandedCommentPosition = position;
+                    notifyItemChanged(position, EXPAND);
+                    if (comment.liked == null) {
+                        final Call<Like> liked = dribbblePrefs.getApi()
+                                .likedComment(shot.id, comment.id);
+                        liked.enqueue(new Callback<Like>() {
+                            @Override
+                            public void onResponse(Call<Like> call, Response<Like> response) {
+                                comment.liked = response.isSuccessful();
+                                holder.likeHeart.setChecked(comment.liked);
+                                holder.likeHeart.jumpDrawablesToCurrentState();
                             }
-                            Toast.makeText(getApplicationContext(), sb.toString(), Toast
-                                    .LENGTH_SHORT).show();
-                        }
 
-                        @Override
-                        public void onFailure(Call<List<Like>> call, Throwable t) { }
-                    });
+                            @Override public void onFailure(Call<Like> call, Throwable t) { }
+                        });
+                    }
+                    if (enterComment != null && enterComment.hasFocus()) {
+                        enterComment.clearFocus();
+                        ImeUtils.hideIme(enterComment);
+                    }
+                    holder.itemView.requestFocus();
+                } else {
+                    expandedCommentPosition = RecyclerView.NO_POSITION;
                 }
+            });
+
+            holder.avatar.setOnClickListener(v -> {
+                final int position = holder.getAdapterPosition();
+                if (position == RecyclerView.NO_POSITION) return;
+
+                final Comment comment = getComment(position);
+                final Intent player = new Intent(DribbbleShot.this, PlayerActivity.class);
+                player.putExtra(PlayerActivity.EXTRA_PLAYER, comment.user);
+                ActivityOptions options =
+                        ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this,
+                                Pair.create(holder.itemView,
+                                        getString(R.string.transition_player_background)),
+                                Pair.create((View) holder.avatar,
+                                        getString(R.string.transition_player_avatar)));
+                startActivity(player, options.toBundle());
+            });
+
+            holder.reply.setOnClickListener(v -> {
+                final int position = holder.getAdapterPosition();
+                if (position == RecyclerView.NO_POSITION) return;
+
+                final Comment comment = getComment(position);
+                enterComment.setText("@" + comment.user.username + " ");
+                enterComment.setSelection(enterComment.getText().length());
+
+                // collapse the comment and scroll the reply box (in the footer) into view
+                expandedCommentPosition = RecyclerView.NO_POSITION;
+                notifyItemChanged(position, REPLY);
+                holder.reply.jumpDrawablesToCurrentState();
+                enterComment.requestFocus();
+                commentsList.smoothScrollToPosition(getItemCount() - 1);
+            });
+
+            holder.likeHeart.setOnClickListener(v -> {
+                if (dribbblePrefs.isLoggedIn()) {
+                    final int position = holder.getAdapterPosition();
+                    if (position == RecyclerView.NO_POSITION) return;
+
+                    final Comment comment = getComment(position);
+                    if (comment.liked == null || !comment.liked) {
+                        comment.liked = true;
+                        comment.likes_count++;
+                        holder.likesCount.setText(String.valueOf(comment.likes_count));
+                        notifyItemChanged(position, COMMENT_LIKE);
+                        final Call<Like> likeCommentCall =
+                                dribbblePrefs.getApi().likeComment(shot.id, comment.id);
+                        likeCommentCall.enqueue(new Callback<Like>() {
+                            @Override
+                            public void onResponse(Call<Like> call, Response<Like> response) { }
+
+                            @Override
+                            public void onFailure(Call<Like> call, Throwable t) { }
+                        });
+                    } else {
+                        comment.liked = false;
+                        comment.likes_count--;
+                        holder.likesCount.setText(String.valueOf(comment.likes_count));
+                        notifyItemChanged(position, COMMENT_LIKE);
+                        final Call<Void> unlikeCommentCall =
+                                dribbblePrefs.getApi().unlikeComment(shot.id, comment.id);
+                        unlikeCommentCall.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) { }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) { }
+                        });
+                    }
+                } else {
+                    holder.likeHeart.setChecked(false);
+                    startActivityForResult(new Intent(DribbbleShot.this,
+                            DribbbleLogin.class), RC_LOGIN_LIKE);
+                }
+            });
+
+            holder.likesCount.setOnClickListener(v -> {
+                final int position = holder.getAdapterPosition();
+                if (position == RecyclerView.NO_POSITION) return;
+
+                final Comment comment = getComment(position);
+                final Call<List<Like>> commentLikesCall =
+                        dribbblePrefs.getApi().getCommentLikes(shot.id, comment.id);
+                commentLikesCall.enqueue(new Callback<List<Like>>() {
+                    @Override
+                    public void onResponse(Call<List<Like>> call,
+                                           Response<List<Like>> response) {
+                        // TODO something better than this.
+                        StringBuilder sb = new StringBuilder("Liked by:\n\n");
+                        for (Like like : response.body()) {
+                            if (like.user != null) {
+                                sb.append("@");
+                                sb.append(like.user.username);
+                                sb.append("\n");
+                            }
+                        }
+                        Toast.makeText(getApplicationContext(), sb.toString(), Toast
+                                .LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Like>> call, Throwable t) { }
+                });
             });
 
             return holder;

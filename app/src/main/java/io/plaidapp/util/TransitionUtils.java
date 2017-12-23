@@ -70,7 +70,7 @@ public class TransitionUtils {
     }
 
     public static List<Boolean> setAncestralClipping(@NonNull View view, boolean clipChildren) {
-        return setAncestralClipping(view, clipChildren, new ArrayList<Boolean>());
+        return setAncestralClipping(view, clipChildren, new ArrayList<>());
     }
 
     private static List<Boolean> setAncestralClipping(

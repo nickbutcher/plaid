@@ -27,10 +27,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.transition.TransitionManager;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowInsets;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -127,21 +125,18 @@ public class PlayerActivity extends Activity {
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-        draggableFrame.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
-            @Override
-            public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
-                final ViewGroup.MarginLayoutParams lpFrame = (ViewGroup.MarginLayoutParams)
-                        draggableFrame.getLayoutParams();
-                lpFrame.leftMargin += insets.getSystemWindowInsetLeft();    // landscape
-                lpFrame.rightMargin += insets.getSystemWindowInsetRight();  // landscape
-                ((ViewGroup.MarginLayoutParams) avatar.getLayoutParams()).topMargin
-                    += insets.getSystemWindowInsetTop();
-                ViewUtils.setPaddingTop(container, insets.getSystemWindowInsetTop());
-                ViewUtils.setPaddingBottom(shots, insets.getSystemWindowInsetBottom());
-                // clear this listener so insets aren't re-applied
-                draggableFrame.setOnApplyWindowInsetsListener(null);
-                return insets;
-            }
+        draggableFrame.setOnApplyWindowInsetsListener((v, insets) -> {
+            final ViewGroup.MarginLayoutParams lpFrame = (ViewGroup.MarginLayoutParams)
+                    draggableFrame.getLayoutParams();
+            lpFrame.leftMargin += insets.getSystemWindowInsetLeft();    // landscape
+            lpFrame.rightMargin += insets.getSystemWindowInsetRight();  // landscape
+            ((ViewGroup.MarginLayoutParams) avatar.getLayoutParams()).topMargin
+                += insets.getSystemWindowInsetTop();
+            ViewUtils.setPaddingTop(container, insets.getSystemWindowInsetTop());
+            ViewUtils.setPaddingBottom(shots, insets.getSystemWindowInsetBottom());
+            // clear this listener so insets aren't re-applied
+            draggableFrame.setOnApplyWindowInsetsListener(null);
+            return insets;
         });
         setExitSharedElementCallback(FeedAdapter.createSharedElementReenterCallback(this));
     }
@@ -263,25 +258,22 @@ public class PlayerActivity extends Activity {
 
         // forward on any clicks above the first item in the grid (i.e. in the paddingTop)
         // to 'pass through' to the view behind
-        shots.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int firstVisible = layoutManager.findFirstVisibleItemPosition();
-                if (firstVisible > 0) return false;
+        shots.setOnTouchListener((v, event) -> {
+            final int firstVisible = layoutManager.findFirstVisibleItemPosition();
+            if (firstVisible > 0) return false;
 
-                // if no data loaded then pass through
-                if (adapter.getDataItemCount() == 0) {
-                    return container.dispatchTouchEvent(event);
-                }
-
-                final RecyclerView.ViewHolder vh = shots.findViewHolderForAdapterPosition(0);
-                if (vh == null) return false;
-                final int firstTop = vh.itemView.getTop();
-                if (event.getY() < firstTop) {
-                     return container.dispatchTouchEvent(event);
-                }
-                return false;
+            // if no data loaded then pass through
+            if (adapter.getDataItemCount() == 0) {
+                return container.dispatchTouchEvent(event);
             }
+
+            final RecyclerView.ViewHolder vh = shots.findViewHolderForAdapterPosition(0);
+            if (vh == null) return false;
+            final int firstTop = vh.itemView.getTop();
+            if (event.getY() < firstTop) {
+                 return container.dispatchTouchEvent(event);
+            }
+            return false;
         });
 
         // check if following

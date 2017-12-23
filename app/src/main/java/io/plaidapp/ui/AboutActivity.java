@@ -251,19 +251,16 @@ public class AboutActivity extends Activity {
         private @NonNull LibraryHolder createLibraryHolder(ViewGroup parent) {
             final LibraryHolder holder = new LibraryHolder(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.library, parent, false));
-            View.OnClickListener clickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = holder.getAdapterPosition();
-                    if (position == RecyclerView.NO_POSITION) return;
-                    CustomTabActivityHelper.openCustomTab(
-                            host,
-                            new CustomTabsIntent.Builder()
-                                    .setToolbarColor(ContextCompat.getColor(host, R.color.primary))
-                                    .addDefaultShareMenuItem()
-                                    .build(), Uri.parse(libs[position - 1].link));
+            View.OnClickListener clickListener = v -> {
+                int position = holder.getAdapterPosition();
+                if (position == RecyclerView.NO_POSITION) return;
+                CustomTabActivityHelper.openCustomTab(
+                        host,
+                        new CustomTabsIntent.Builder()
+                                .setToolbarColor(ContextCompat.getColor(host, R.color.primary))
+                                .addDefaultShareMenuItem()
+                                .build(), Uri.parse(libs[position - 1].link));
 
-                }
             };
             holder.itemView.setOnClickListener(clickListener);
             holder.link.setOnClickListener(clickListener);

@@ -57,7 +57,6 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.view.WindowInsets;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -148,20 +147,17 @@ public class HomeActivity extends Activity {
         dribbblePrefs = DribbblePrefs.get(this);
         designerNewsPrefs = DesignerNewsPrefs.get(this);
         filtersAdapter = new FilterAdapter(this, SourceManager.getSources(this),
-                new FilterAdapter.FilterAuthoriser() {
-            @Override
-            public void requestDribbbleAuthorisation(View sharedElement, Source forSource) {
-                Intent login = new Intent(HomeActivity.this, DribbbleLogin.class);
-                MorphTransform.addExtras(login,
-                        ContextCompat.getColor(HomeActivity.this, R.color.background_dark),
-                        sharedElement.getHeight() / 2);
-                ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation(HomeActivity.this,
-                                sharedElement, getString(R.string.transition_dribbble_login));
-                startActivityForResult(login,
-                        getAuthSourceRequestCode(forSource), options.toBundle());
-            }
-        });
+                (sharedElement, forSource) -> {
+                    Intent login = new Intent(HomeActivity.this, DribbbleLogin.class);
+                    MorphTransform.addExtras(login,
+                            ContextCompat.getColor(HomeActivity.this, R.color.background_dark),
+                            sharedElement.getHeight() / 2);
+                    ActivityOptions options =
+                            ActivityOptions.makeSceneTransitionAnimation(HomeActivity.this,
+                                    sharedElement, getString(R.string.transition_dribbble_login));
+                    startActivityForResult(login,
+                            getAuthSourceRequestCode(forSource), options.toBundle());
+                });
         dataManager = new DataManager(this, filtersAdapter) {
             @Override
             public void onDataLoaded(List<? extends PlaidItem> data) {
@@ -198,61 +194,58 @@ public class HomeActivity extends Activity {
         grid.addOnScrollListener(shotPreloader);
 
         // drawer layout treats fitsSystemWindows specially so we have to handle insets ourselves
-        drawer.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
-            @Override
-            public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
-                // inset the toolbar down by the status bar height
-                ViewGroup.MarginLayoutParams lpToolbar = (ViewGroup.MarginLayoutParams) toolbar
-                        .getLayoutParams();
-                lpToolbar.topMargin += insets.getSystemWindowInsetTop();
-                lpToolbar.leftMargin += insets.getSystemWindowInsetLeft();
-                lpToolbar.rightMargin += insets.getSystemWindowInsetRight();
-                toolbar.setLayoutParams(lpToolbar);
+        drawer.setOnApplyWindowInsetsListener((v, insets) -> {
+            // inset the toolbar down by the status bar height
+            ViewGroup.MarginLayoutParams lpToolbar = (ViewGroup.MarginLayoutParams) toolbar
+                    .getLayoutParams();
+            lpToolbar.topMargin += insets.getSystemWindowInsetTop();
+            lpToolbar.leftMargin += insets.getSystemWindowInsetLeft();
+            lpToolbar.rightMargin += insets.getSystemWindowInsetRight();
+            toolbar.setLayoutParams(lpToolbar);
 
-                // inset the grid top by statusbar+toolbar & the bottom by the navbar (don't clip)
-                grid.setPadding(
-                        grid.getPaddingLeft() + insets.getSystemWindowInsetLeft(), // landscape
-                        insets.getSystemWindowInsetTop()
-                                + ViewUtils.getActionBarSize(HomeActivity.this),
-                        grid.getPaddingRight() + insets.getSystemWindowInsetRight(), // landscape
-                        grid.getPaddingBottom() + insets.getSystemWindowInsetBottom());
+            // inset the grid top by statusbar+toolbar & the bottom by the navbar (don't clip)
+            grid.setPadding(
+                    grid.getPaddingLeft() + insets.getSystemWindowInsetLeft(), // landscape
+                    insets.getSystemWindowInsetTop()
+                            + ViewUtils.getActionBarSize(HomeActivity.this),
+                    grid.getPaddingRight() + insets.getSystemWindowInsetRight(), // landscape
+                    grid.getPaddingBottom() + insets.getSystemWindowInsetBottom());
 
-                // inset the fab for the navbar
-                ViewGroup.MarginLayoutParams lpFab = (ViewGroup.MarginLayoutParams) fab
-                        .getLayoutParams();
-                lpFab.bottomMargin += insets.getSystemWindowInsetBottom(); // portrait
-                lpFab.rightMargin += insets.getSystemWindowInsetRight(); // landscape
-                fab.setLayoutParams(lpFab);
+            // inset the fab for the navbar
+            ViewGroup.MarginLayoutParams lpFab = (ViewGroup.MarginLayoutParams) fab
+                    .getLayoutParams();
+            lpFab.bottomMargin += insets.getSystemWindowInsetBottom(); // portrait
+            lpFab.rightMargin += insets.getSystemWindowInsetRight(); // landscape
+            fab.setLayoutParams(lpFab);
 
-                View postingStub = findViewById(R.id.stub_posting_progress);
-                ViewGroup.MarginLayoutParams lpPosting =
-                        (ViewGroup.MarginLayoutParams) postingStub.getLayoutParams();
-                lpPosting.bottomMargin += insets.getSystemWindowInsetBottom(); // portrait
-                lpPosting.rightMargin += insets.getSystemWindowInsetRight(); // landscape
-                postingStub.setLayoutParams(lpPosting);
+            View postingStub = findViewById(R.id.stub_posting_progress);
+            ViewGroup.MarginLayoutParams lpPosting =
+                    (ViewGroup.MarginLayoutParams) postingStub.getLayoutParams();
+            lpPosting.bottomMargin += insets.getSystemWindowInsetBottom(); // portrait
+            lpPosting.rightMargin += insets.getSystemWindowInsetRight(); // landscape
+            postingStub.setLayoutParams(lpPosting);
 
-                // we place a background behind the status bar to combine with it's semi-transparent
-                // color to get the desired appearance.  Set it's height to the status bar height
-                View statusBarBackground = findViewById(R.id.status_bar_background);
-                FrameLayout.LayoutParams lpStatus = (FrameLayout.LayoutParams)
-                        statusBarBackground.getLayoutParams();
-                lpStatus.height = insets.getSystemWindowInsetTop();
-                statusBarBackground.setLayoutParams(lpStatus);
+            // we place a background behind the status bar to combine with it's semi-transparent
+            // color to get the desired appearance.  Set it's height to the status bar height
+            View statusBarBackground = findViewById(R.id.status_bar_background);
+            FrameLayout.LayoutParams lpStatus = (FrameLayout.LayoutParams)
+                    statusBarBackground.getLayoutParams();
+            lpStatus.height = insets.getSystemWindowInsetTop();
+            statusBarBackground.setLayoutParams(lpStatus);
 
-                // inset the filters list for the status bar / navbar
-                // need to set the padding end for landscape case
-                final boolean ltr = filtersList.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR;
-                filtersList.setPaddingRelative(filtersList.getPaddingStart(),
-                        filtersList.getPaddingTop() + insets.getSystemWindowInsetTop(),
-                        filtersList.getPaddingEnd() + (ltr ? insets.getSystemWindowInsetRight() :
-                                0),
-                        filtersList.getPaddingBottom() + insets.getSystemWindowInsetBottom());
+            // inset the filters list for the status bar / navbar
+            // need to set the padding end for landscape case
+            final boolean ltr = filtersList.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR;
+            filtersList.setPaddingRelative(filtersList.getPaddingStart(),
+                    filtersList.getPaddingTop() + insets.getSystemWindowInsetTop(),
+                    filtersList.getPaddingEnd() + (ltr ? insets.getSystemWindowInsetRight() :
+                            0),
+                    filtersList.getPaddingBottom() + insets.getSystemWindowInsetBottom());
 
-                // clear this listener so insets aren't re-applied
-                drawer.setOnApplyWindowInsetsListener(null);
+            // clear this listener so insets aren't re-applied
+            drawer.setOnApplyWindowInsetsListener(null);
 
-                return insets.consumeSystemWindowInsets();
-            }
+            return insets.consumeSystemWindowInsets();
         });
         setupTaskDescription();
 
@@ -530,12 +523,7 @@ public class HomeActivity extends Activity {
                     if (complete != null) {
                         fabPosting.setImageDrawable(complete);
                         complete.start();
-                        fabPosting.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                fabPosting.setVisibility(View.GONE);
-                            }
-                        }, 2100); // length of R.drawable.avd_upload_complete
+                        fabPosting.postDelayed(() -> fabPosting.setVisibility(View.GONE), 2100); // length of R.drawable.avd_upload_complete
                     }
 
                     // actually add the story to the grid
@@ -682,12 +670,7 @@ public class HomeActivity extends Activity {
                         emptyText.length(),
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 noFiltersEmptyText.setText(ssb);
-                noFiltersEmptyText.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        drawer.openDrawer(GravityCompat.END);
-                    }
-                });
+                noFiltersEmptyText.setOnClickListener(v -> drawer.openDrawer(GravityCompat.END));
             }
             noFiltersEmptyText.setVisibility(visibility);
         } else if (noFiltersEmptyText != null) {
@@ -747,12 +730,7 @@ public class HomeActivity extends Activity {
      *      4. closing the drawer (if user hasn't interacted with it)
      */
     private void highlightNewSources(final Source... sources) {
-        final Runnable closeDrawerRunnable = new Runnable() {
-            @Override
-            public void run() {
-                drawer.closeDrawer(GravityCompat.END);
-            }
-        };
+        final Runnable closeDrawerRunnable = () -> drawer.closeDrawer(GravityCompat.END);
         drawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
 
             // if the user interacts with the filters while it's open then don't auto-close
@@ -832,14 +810,11 @@ public class HomeActivity extends Activity {
         public void onAvailable(Network network) {
             connected = true;
             if (adapter.getDataItemCount() != 0) return;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    TransitionManager.beginDelayedTransition(drawer);
-                    noConnection.setVisibility(View.GONE);
-                    loading.setVisibility(View.VISIBLE);
-                    dataManager.loadAllDataSources();
-                }
+            runOnUiThread(() -> {
+                TransitionManager.beginDelayedTransition(drawer);
+                noConnection.setVisibility(View.GONE);
+                loading.setVisibility(View.VISIBLE);
+                dataManager.loadAllDataSources();
             });
         }
 

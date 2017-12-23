@@ -44,7 +44,7 @@ public class ParcelUtils {
         Map<String, String> map = null;
         int size = parcel.readInt();
         if (size > 0) {
-            map = new HashMap<String, String>(size);
+            map = new HashMap<>(size);
             for (int i = 0; i < size; i++) {
                 String key = parcel.readString();
                 String value = parcel.readString();

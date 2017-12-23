@@ -163,23 +163,20 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
     public FilterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         final FilterViewHolder holder = new FilterViewHolder(LayoutInflater.from(viewGroup
                 .getContext()).inflate(R.layout.filter_item, viewGroup, false));
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final int position = holder.getAdapterPosition();
-                if (position == RecyclerView.NO_POSITION) return;
-                final Source filter = filters.get(position);
-                if (isAuthorisedDribbbleSource(filter) &&
-                        !DribbblePrefs.get(holder.itemView.getContext()).isLoggedIn()) {
-                    authoriser.requestDribbbleAuthorisation(holder.filterIcon, filter);
-                } else {
-                    filter.active = !filter.active;
-                    holder.filterName.setEnabled(filter.active);
-                    notifyItemChanged(position, filter.active ? FilterAnimator.FILTER_ENABLED
-                            : FilterAnimator.FILTER_DISABLED);
-                    SourceManager.updateSource(filter, holder.itemView.getContext());
-                    dispatchFiltersChanged(filter);
-                }
+        holder.itemView.setOnClickListener(v -> {
+            final int position = holder.getAdapterPosition();
+            if (position == RecyclerView.NO_POSITION) return;
+            final Source filter = filters.get(position);
+            if (isAuthorisedDribbbleSource(filter) &&
+                    !DribbblePrefs.get(holder.itemView.getContext()).isLoggedIn()) {
+                authoriser.requestDribbbleAuthorisation(holder.filterIcon, filter);
+            } else {
+                filter.active = !filter.active;
+                holder.filterName.setEnabled(filter.active);
+                notifyItemChanged(position, filter.active ? FilterAnimator.FILTER_ENABLED
+                        : FilterAnimator.FILTER_DISABLED);
+                SourceManager.updateSource(filter, holder.itemView.getContext());
+                dispatchFiltersChanged(filter);
             }
         });
         return holder;

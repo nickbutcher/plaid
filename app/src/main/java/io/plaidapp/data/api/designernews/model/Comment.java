@@ -150,7 +150,7 @@ public class Comment implements Parcelable {
         user_portrait_url = in.readString();
         user_job = in.readString();
         if (in.readByte() == 0x01) {
-            comments = new ArrayList<Comment>();
+            comments = new ArrayList<>();
             in.readList(comments, Comment.class.getClassLoader());
         } else {
             comments = null;
