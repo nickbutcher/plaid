@@ -211,12 +211,9 @@ public class PasswordEntry extends TextInputEditText {
             }
 
             ValueAnimator anim = ValueAnimator.ofFloat(fromProgress, toProgress);
-            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    morphProgress = (float) valueAnimator.getAnimatedValue();
-                    invalidateSelf();
-                }
+            anim.addUpdateListener(valueAnimator -> {
+                morphProgress = (float) valueAnimator.getAnimatedValue();
+                invalidateSelf();
             });
 
             anim.setDuration(duration);

@@ -19,7 +19,6 @@ package io.plaidapp.ui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
@@ -214,59 +213,50 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final DesignerNewsStoryHolder holder = new DesignerNewsStoryHolder(layoutInflater.inflate(
                 R.layout.designer_news_story_item, parent, false), pocketIsInstalled);
         holder.itemView.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        final Story story = (Story) getItem(holder.getAdapterPosition());
-                        CustomTabActivityHelper.openCustomTab(host,
-                                DesignerNewsStory.getCustomTabIntent(host, story, null).build(),
-                                Uri.parse(story.url));
-                    }
+                v -> {
+                    final Story story = (Story) getItem(holder.getAdapterPosition());
+                    CustomTabActivityHelper.openCustomTab(host,
+                            DesignerNewsStory.getCustomTabIntent(host, story, null).build(),
+                            Uri.parse(story.url));
                 }
-            );
-        holder.comments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View commentsView) {
-                final Intent intent = new Intent();
-                intent.setClass(host, DesignerNewsStory.class);
-                intent.putExtra(DesignerNewsStory.EXTRA_STORY,
-                        (Story) getItem(holder.getAdapterPosition()));
-                ReflowText.addExtras(intent, new ReflowText.ReflowableTextView(holder.title));
-                setGridItemContentTransitions(holder.itemView);
+        );
+        holder.comments.setOnClickListener(commentsView -> {
+            final Intent intent = new Intent();
+            intent.setClass(host, DesignerNewsStory.class);
+            intent.putExtra(DesignerNewsStory.EXTRA_STORY,
+                    (Story) getItem(holder.getAdapterPosition()));
+            ReflowText.addExtras(intent, new ReflowText.ReflowableTextView(holder.title));
+            setGridItemContentTransitions(holder.itemView);
 
-                // on return, fade the pocket & comments buttons in
-                host.setExitSharedElementCallback(new SharedElementCallback() {
-                    @Override
-                    public void onSharedElementStart(List<String> sharedElementNames, List<View>
-                            sharedElements, List<View> sharedElementSnapshots) {
-                        host.setExitSharedElementCallback(null);
-                        notifyItemChanged(holder.getAdapterPosition(),
-                                HomeGridItemAnimator.STORY_COMMENTS_RETURN);
-                    }
-                });
+            // on return, fade the pocket & comments buttons in
+            host.setExitSharedElementCallback(new SharedElementCallback() {
+                @Override
+                public void onSharedElementStart(List<String> sharedElementNames, List<View>
+                        sharedElements, List<View> sharedElementSnapshots) {
+                    host.setExitSharedElementCallback(null);
+                    notifyItemChanged(holder.getAdapterPosition(),
+                            HomeGridItemAnimator.STORY_COMMENTS_RETURN);
+                }
+            });
 
-                final ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation(host,
-                                Pair.create((View) holder.title,
-                                        host.getString(R.string.transition_story_title)),
-                                Pair.create(holder.itemView,
-                                        host.getString(R.string.transition_story_title_background)),
-                                Pair.create(holder.itemView,
-                                        host.getString(R.string.transition_story_background)));
-                host.startActivity(intent, options.toBundle());
-            }
+            final ActivityOptions options =
+                    ActivityOptions.makeSceneTransitionAnimation(host,
+                            Pair.create((View) holder.title,
+                                    host.getString(R.string.transition_story_title)),
+                            Pair.create(holder.itemView,
+                                    host.getString(R.string.transition_story_title_background)),
+                            Pair.create(holder.itemView,
+                                    host.getString(R.string.transition_story_background)));
+            host.startActivity(intent, options.toBundle());
         });
         if (pocketIsInstalled) {
             holder.pocket.setImageAlpha(178); // grumble... no xml setter, grumble...
-            holder.pocket.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View view) {
-                    PocketUtils.addToPocket(host,
-                            ((Story) getItem(holder.getAdapterPosition())).url);
-                    // notify changed with a payload asking RV to run the anim
-                    notifyItemChanged(holder.getAdapterPosition(),
-                            HomeGridItemAnimator.ADD_TO_POCKET);
-                }
+            holder.pocket.setOnClickListener(view -> {
+                PocketUtils.addToPocket(host,
+                        ((Story) getItem(holder.getAdapterPosition())).url);
+                // notify changed with a payload asking RV to run the anim
+                notifyItemChanged(holder.getAdapterPosition(),
+                        HomeGridItemAnimator.ADD_TO_POCKET);
             });
         }
         return holder;
@@ -284,61 +274,55 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final DribbbleShotHolder holder = new DribbbleShotHolder(
                 layoutInflater.inflate(R.layout.dribbble_shot_item, parent, false));
         holder.image.setBadgeColor(initialGifBadgeColor);
-        holder.image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setClass(host, DribbbleShot.class);
-                intent.putExtra(DribbbleShot.EXTRA_SHOT,
-                        (Shot) getItem(holder.getAdapterPosition()));
-                setGridItemContentTransitions(holder.image);
-                ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation(host,
-                                Pair.create(view, host.getString(R.string.transition_shot)),
-                                Pair.create(view, host.getString(R.string
-                                        .transition_shot_background)));
-                host.startActivityForResult(intent, REQUEST_CODE_VIEW_SHOT, options.toBundle());
-            }
+        holder.image.setOnClickListener(view -> {
+            Intent intent = new Intent();
+            intent.setClass(host, DribbbleShot.class);
+            intent.putExtra(DribbbleShot.EXTRA_SHOT,
+                    (Shot) getItem(holder.getAdapterPosition()));
+            setGridItemContentTransitions(holder.image);
+            ActivityOptions options =
+                    ActivityOptions.makeSceneTransitionAnimation(host,
+                            Pair.create(view, host.getString(R.string.transition_shot)),
+                            Pair.create(view, host.getString(R.string
+                                    .transition_shot_background)));
+            host.startActivityForResult(intent, REQUEST_CODE_VIEW_SHOT, options.toBundle());
         });
         // play animated GIFs whilst touched
-        holder.image.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // check if it's an event we care about, else bail fast
-                final int action = event.getAction();
-                if (!(action == MotionEvent.ACTION_DOWN
-                        || action == MotionEvent.ACTION_UP
-                        || action == MotionEvent.ACTION_CANCEL)) return false;
+        holder.image.setOnTouchListener((v, event) -> {
+            // check if it's an event we care about, else bail fast
+            final int action = event.getAction();
+            if (!(action == MotionEvent.ACTION_DOWN
+                    || action == MotionEvent.ACTION_UP
+                    || action == MotionEvent.ACTION_CANCEL)) return false;
 
-                // get the image and check if it's an animated GIF
-                final Drawable drawable = holder.image.getDrawable();
-                if (drawable == null) return false;
-                GifDrawable gif = null;
-                if (drawable instanceof GifDrawable) {
-                    gif = (GifDrawable) drawable;
-                } else if (drawable instanceof TransitionDrawable) {
-                    // we fade in images on load which uses a TransitionDrawable; check its layers
-                    TransitionDrawable fadingIn = (TransitionDrawable) drawable;
-                    for (int i = 0; i < fadingIn.getNumberOfLayers(); i++) {
-                        if (fadingIn.getDrawable(i) instanceof GifDrawable) {
-                            gif = (GifDrawable) fadingIn.getDrawable(i);
-                            break;
-                        }
+            // get the image and check if it's an animated GIF
+            final Drawable drawable = holder.image.getDrawable();
+            if (drawable == null) return false;
+            GifDrawable gif = null;
+            if (drawable instanceof GifDrawable) {
+                gif = (GifDrawable) drawable;
+            } else if (drawable instanceof TransitionDrawable) {
+                // we fade in images on load which uses a TransitionDrawable; check its layers
+                TransitionDrawable fadingIn = (TransitionDrawable) drawable;
+                for (int i = 0; i < fadingIn.getNumberOfLayers(); i++) {
+                    if (fadingIn.getDrawable(i) instanceof GifDrawable) {
+                        gif = (GifDrawable) fadingIn.getDrawable(i);
+                        break;
                     }
                 }
-                if (gif == null) return false;
-                // GIF found, start/stop it on press/lift
-                switch (action) {
-                    case MotionEvent.ACTION_DOWN:
-                        gif.start();
-                        break;
-                    case MotionEvent.ACTION_UP:
-                    case MotionEvent.ACTION_CANCEL:
-                        gif.stop();
-                        break;
-                }
-                return false;
             }
+            if (gif == null) return false;
+            // GIF found, start/stop it on press/lift
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    gif.start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    gif.stop();
+                    break;
+            }
+            return false;
         });
         return holder;
     }
@@ -360,15 +344,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             final ObservableColorMatrix cm = new ObservableColorMatrix();
                             final ObjectAnimator saturation = ObjectAnimator.ofFloat(
                                     cm, ObservableColorMatrix.SATURATION, 0f, 1f);
-                            saturation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener
-                                    () {
-                                @Override
-                                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                                    // just animating the color matrix does not invalidate the
-                                    // drawable so need this update listener.  Also have to create a
-                                    // new CMCF as the matrix is immutable :(
-                                    holder.image.setColorFilter(new ColorMatrixColorFilter(cm));
-                                }
+                            saturation.addUpdateListener(valueAnimator -> {
+                                // just animating the color matrix does not invalidate the
+                                // drawable so need this update listener.  Also have to create a
+                                // new CMCF as the matrix is immutable :(
+                                holder.image.setColorFilter(new ColorMatrixColorFilter(cm));
                             });
                             saturation.setDuration(2000L);
                             saturation.setInterpolator(getFastOutSlowInInterpolator(host));
@@ -410,30 +390,20 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private ProductHuntStoryHolder createProductHuntStoryHolder(ViewGroup parent) {
         final ProductHuntStoryHolder holder = new ProductHuntStoryHolder(
                 layoutInflater.inflate(R.layout.product_hunt_item, parent, false));
-        holder.comments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CustomTabActivityHelper.openCustomTab(
-                        host,
-                        new CustomTabsIntent.Builder()
-                                .setToolbarColor(ContextCompat.getColor(host, R.color.product_hunt))
-                                .addDefaultShareMenuItem()
-                                .build(),
-                        Uri.parse(((Post) getItem(holder.getAdapterPosition())).discussion_url));
-            }
-        });
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CustomTabActivityHelper.openCustomTab(
-                        host,
-                        new CustomTabsIntent.Builder()
-                                .setToolbarColor(ContextCompat.getColor(host, R.color.product_hunt))
-                                .addDefaultShareMenuItem()
-                                .build(),
-                        Uri.parse(((Post) getItem(holder.getAdapterPosition())).redirect_url));
-            }
-        });
+        holder.comments.setOnClickListener(v -> CustomTabActivityHelper.openCustomTab(
+                host,
+                new CustomTabsIntent.Builder()
+                        .setToolbarColor(ContextCompat.getColor(host, R.color.product_hunt))
+                        .addDefaultShareMenuItem()
+                        .build(),
+                Uri.parse(((Post) getItem(holder.getAdapterPosition())).discussion_url)));
+        holder.itemView.setOnClickListener(v -> CustomTabActivityHelper.openCustomTab(
+                host,
+                new CustomTabsIntent.Builder()
+                        .setToolbarColor(ContextCompat.getColor(host, R.color.product_hunt))
+                        .addDefaultShareMenuItem()
+                        .build(),
+                Uri.parse(((Post) getItem(holder.getAdapterPosition())).redirect_url)));
         return holder;
     }
 

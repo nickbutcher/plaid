@@ -90,27 +90,24 @@ public class PostNewDesignerNewsStory extends Activity {
             }
         });
 
-        scrollContainer.setListener(new ObservableScrollView.OnScrollListener() {
-            @Override
-            public void onScrolled(int scrollY) {
-                if (scrollY != 0
-                        && sheetTitle.getTranslationZ() != appBarElevation) {
-                    sheetTitle.animate()
-                            .translationZ(appBarElevation)
-                            .setStartDelay(0L)
-                            .setDuration(80L)
-                            .setInterpolator(AnimUtils.getFastOutSlowInInterpolator
-                                    (PostNewDesignerNewsStory.this))
-                            .start();
-                } else if (scrollY == 0 && sheetTitle.getTranslationZ() == appBarElevation) {
-                    sheetTitle.animate()
-                            .translationZ(0f)
-                            .setStartDelay(0L)
-                            .setDuration(80L)
-                            .setInterpolator(AnimUtils.getFastOutSlowInInterpolator
-                                    (PostNewDesignerNewsStory.this))
-                            .start();
-                }
+        scrollContainer.setListener(scrollY -> {
+            if (scrollY != 0
+                    && sheetTitle.getTranslationZ() != appBarElevation) {
+                sheetTitle.animate()
+                        .translationZ(appBarElevation)
+                        .setStartDelay(0L)
+                        .setDuration(80L)
+                        .setInterpolator(AnimUtils.getFastOutSlowInInterpolator
+                                (PostNewDesignerNewsStory.this))
+                        .start();
+            } else if (scrollY == 0 && sheetTitle.getTranslationZ() == appBarElevation) {
+                sheetTitle.animate()
+                        .translationZ(0f)
+                        .setStartDelay(0L)
+                        .setDuration(80L)
+                        .setInterpolator(AnimUtils.getFastOutSlowInInterpolator
+                                (PostNewDesignerNewsStory.this))
+                        .start();
             }
         });
 

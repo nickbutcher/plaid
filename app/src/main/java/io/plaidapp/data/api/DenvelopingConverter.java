@@ -54,22 +54,19 @@ public class DenvelopingConverter extends Converter.Factory {
         if (payloadName == null) return null;
 
         final TypeAdapter<?> adapter = gson.getAdapter(TypeToken.get(type));
-        return new Converter<ResponseBody, Object>() {
-            @Override
-            public Object convert(ResponseBody body) throws IOException {
-                try (JsonReader jsonReader = gson.newJsonReader(body.charStream())) {
-                    jsonReader.beginObject();
-                    while (jsonReader.hasNext()) {
-                        if (payloadName.equals(jsonReader.nextName())) {
-                            return adapter.read(jsonReader);
-                        } else {
-                            jsonReader.skipValue();
-                        }
+        return (Converter<ResponseBody, Object>) body -> {
+            try (JsonReader jsonReader = gson.newJsonReader(body.charStream())) {
+                jsonReader.beginObject();
+                while (jsonReader.hasNext()) {
+                    if (payloadName.equals(jsonReader.nextName())) {
+                        return adapter.read(jsonReader);
+                    } else {
+                        jsonReader.skipValue();
                     }
-                    return null;
-                } finally {
-                    body.close();
                 }
+                return null;
+            } finally {
+                body.close();
             }
         };
     }

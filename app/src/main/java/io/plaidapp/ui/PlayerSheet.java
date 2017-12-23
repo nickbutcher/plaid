@@ -255,20 +255,17 @@ public class PlayerSheet extends Activity {
         private PlayerViewHolder createPlayerViewHolder(ViewGroup parent) {
             final PlayerViewHolder holder = new PlayerViewHolder(
                     layoutInflater.inflate(R.layout.player_item, parent, false));
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final User user = items.get(holder.getAdapterPosition()).getPlayer();
-                    final Intent player = new Intent(PlayerSheet.this, PlayerActivity.class);
-                    player.putExtra(PlayerActivity.EXTRA_PLAYER, user);
-                    final ActivityOptions options =
-                            ActivityOptions.makeSceneTransitionAnimation(PlayerSheet.this,
-                                    Pair.create((View) holder.playerAvatar,
-                                            getString(R.string.transition_player_avatar)),
-                                    Pair.create(holder.itemView,
-                                            getString(R.string.transition_player_background)));
-                    startActivity(player, options.toBundle());
-                }
+            holder.itemView.setOnClickListener(v -> {
+                final User user = items.get(holder.getAdapterPosition()).getPlayer();
+                final Intent player = new Intent(PlayerSheet.this, PlayerActivity.class);
+                player.putExtra(PlayerActivity.EXTRA_PLAYER, user);
+                final ActivityOptions options =
+                        ActivityOptions.makeSceneTransitionAnimation(PlayerSheet.this,
+                                Pair.create((View) holder.playerAvatar,
+                                        getString(R.string.transition_player_avatar)),
+                                Pair.create(holder.itemView,
+                                        getString(R.string.transition_player_background)));
+                startActivity(player, options.toBundle());
             });
             return holder;
         }
