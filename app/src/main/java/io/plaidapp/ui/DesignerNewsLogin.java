@@ -37,7 +37,6 @@ import android.transition.TransitionManager;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +45,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -111,26 +109,20 @@ public class DesignerNewsLogin extends Activity {
         setupAccountAutocomplete();
         username.addTextChangedListener(loginFieldWatcher);
         // the primer checkbox messes with focus order so force it
-        username.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                    password.requestFocus();
-                    return true;
-                }
-                return false;
+        username.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                password.requestFocus();
+                return true;
             }
+            return false;
         });
         password.addTextChangedListener(loginFieldWatcher);
-        password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE && isLoginValid()) {
-                    login.performClick();
-                    return true;
-                }
-                return false;
+        password.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE && isLoginValid()) {
+                login.performClick();
+                return true;
             }
+            return false;
         });
         designerNewsPrefs = DesignerNewsPrefs.get(this);
     }
@@ -145,12 +137,7 @@ public class DesignerNewsLogin extends Activity {
                     PERMISSIONS_REQUEST_GET_ACCOUNTS);
             shouldPromptForPermission = false;
         }
-        username.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                maybeShowAccounts();
-            }
-        });
+        username.setOnFocusChangeListener((v, hasFocus) -> maybeShowAccounts());
         maybeShowAccounts();
     }
 
@@ -347,13 +334,10 @@ public class DesignerNewsLogin extends Activity {
     private void setupPermissionPrimer() {
         permissionPrimer.setChecked(false);
         permissionPrimer.setVisibility(View.VISIBLE);
-        permissionPrimer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    requestPermissions(new String[]{ Manifest.permission.GET_ACCOUNTS },
-                            PERMISSIONS_REQUEST_GET_ACCOUNTS);
-                }
+        permissionPrimer.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                requestPermissions(new String[]{ Manifest.permission.GET_ACCOUNTS },
+                        PERMISSIONS_REQUEST_GET_ACCOUNTS);
             }
         });
     }

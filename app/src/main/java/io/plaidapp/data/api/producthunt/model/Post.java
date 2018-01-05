@@ -86,7 +86,7 @@ public class Post extends PlaidItem implements Parcelable {
         votes_count = in.readInt();
         user = (User) in.readValue(User.class.getClassLoader());
         if (in.readByte() == 0x01) {
-            makers = new ArrayList<User>();
+            makers = new ArrayList<>();
             in.readList(makers, User.class.getClassLoader());
         } else {
             makers = null;

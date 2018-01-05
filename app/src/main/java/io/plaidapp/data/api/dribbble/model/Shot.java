@@ -138,7 +138,7 @@ public class Shot extends PlaidItem implements Parcelable {
         projects_url = in.readString();
         rebounds_url = in.readString();
         animated = in.readByte() != 0x00;
-        tags = new ArrayList<String>();
+        tags = new ArrayList<>();
         in.readStringList(tags);
         user = (User) in.readValue(User.class.getClassLoader());
         team = (Team) in.readValue(Team.class.getClassLoader());

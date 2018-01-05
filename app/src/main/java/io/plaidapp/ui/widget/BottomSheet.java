@@ -243,23 +243,15 @@ public class BottomSheet extends FrameLayout {
         anim.getSpring()
                 .setStiffness(SETTLE_STIFFNESS)
                 .setDampingRatio(SpringForce.DAMPING_RATIO_NO_BOUNCY);
-        anim.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
-            @Override
-            public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
-                dispatchPositionChangedCallback();
-                if (dismissing) {
-                    dispatchDismissCallback();
-                }
-                settling = false;
+        anim.addEndListener((animation, canceled, value, velocity) -> {
+            dispatchPositionChangedCallback();
+            if (dismissing) {
+                dispatchDismissCallback();
             }
+            settling = false;
         });
         if (callbacks != null && !callbacks.isEmpty()) {
-            anim.addUpdateListener(new DynamicAnimation.OnAnimationUpdateListener() {
-                @Override
-                public void onAnimationUpdate(DynamicAnimation animation, float value, float velocity) {
-                    dispatchPositionChangedCallback();
-                }
-            });
+            anim.addUpdateListener((animation, value, velocity) -> dispatchPositionChangedCallback());
         }
         anim.start();
     }
