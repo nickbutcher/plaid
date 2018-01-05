@@ -268,13 +268,10 @@ public class SearchActivity extends Activity {
             if (noResults == null) {
                 noResults = (TextView) ((ViewStub)
                         findViewById(R.id.stub_no_search_results)).inflate();
-                noResults.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        searchView.setQuery("", false);
-                        searchView.requestFocus();
-                        ImeUtils.showIme(searchView);
-                    }
+                noResults.setOnClickListener(v -> {
+                    searchView.setQuery("", false);
+                    searchView.requestFocus();
+                    ImeUtils.showIme(searchView);
                 });
             }
             String message = String.format(
@@ -331,12 +328,9 @@ public class SearchActivity extends Activity {
                 return true;
             }
         });
-        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus && confirmSaveContainer.getVisibility() == View.VISIBLE) {
-                    hideSaveConfirmation();
-                }
+        searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus && confirmSaveContainer.getVisibility() == View.VISIBLE) {
+                hideSaveConfirmation();
             }
         });
     }
