@@ -84,14 +84,19 @@ public class DribbbleLogin extends Activity {
             isLoginFailed = savedInstanceState.getBoolean(STATE_LOGIN_FAILED, false);
             loginFailed.setVisibility(isLoginFailed ? View.VISIBLE : View.GONE);
         }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         checkAuthCallback(getIntent());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        checkAuthCallback(intent);
+        // Update getIntent() to this new Intent
+        setIntent(intent);
     }
 
     public void doLogin(View view) {
@@ -175,6 +180,9 @@ public class DribbbleLogin extends Activity {
                 && DribbblePrefs.LOGIN_CALLBACK.equals(intent.getData().getAuthority())) {
             showLoading();
             getAccessToken(intent.getData().getQueryParameter("code"));
+        } else {
+            // Prevent ProgressBar loading forever on Login cancel
+            showLogin();
         }
     }
 
