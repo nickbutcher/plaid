@@ -42,9 +42,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.Annotation;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.SpannedString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
@@ -649,26 +651,35 @@ public class HomeActivity extends Activity {
                 // create the no filters empty text
                 ViewStub stub = findViewById(R.id.stub_no_filters);
                 noFiltersEmptyText = (TextView) stub.inflate();
-                String emptyText = getString(R.string.no_filters_selected);
-                int filterPlaceholderStart = emptyText.indexOf('\u08B4');
-                int altMethodStart = filterPlaceholderStart + 3;
+                SpannedString emptyText = (SpannedString) getText(R.string.no_filters_selected);
                 SpannableStringBuilder ssb = new SpannableStringBuilder(emptyText);
-                // show an image of the filter icon
-                ssb.setSpan(new ImageSpan(this, R.drawable.ic_filter_small,
-                                ImageSpan.ALIGN_BASELINE),
-                        filterPlaceholderStart,
-                        filterPlaceholderStart + 1,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                // make the alt method (swipe from right) less prominent and italic
-                ssb.setSpan(new ForegroundColorSpan(
-                                ContextCompat.getColor(this, R.color.text_secondary_light)),
-                        altMethodStart,
-                        emptyText.length(),
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                ssb.setSpan(new StyleSpan(Typeface.ITALIC),
-                        altMethodStart,
-                        emptyText.length(),
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                final Annotation[] annotations =
+                        emptyText.getSpans(0, emptyText.length(), Annotation.class);
+                if (annotations != null && annotations.length > 0) {
+                    for (int i = 0; i < annotations.length; i++) {
+                        final Annotation annotation = annotations[i];
+                        if (annotation.getKey().equals("src")) {
+                            // image span markup
+                            String name = annotation.getValue();
+                            int id = getResources().getIdentifier(name, null, getPackageName());
+                            if (id == 0) continue;
+                            ssb.setSpan(new ImageSpan(this, id,
+                                            ImageSpan.ALIGN_BASELINE),
+                                    emptyText.getSpanStart(annotation),
+                                    emptyText.getSpanEnd(annotation),
+                                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        } else if (annotation.getKey().equals("foregroundColor")) {
+                            // foreground color span markup
+                            String name = annotation.getValue();
+                            int id = getResources().getIdentifier(name, null, getPackageName());
+                            if (id == 0) continue;
+                            ssb.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this, id)),
+                                    emptyText.getSpanStart(annotation),
+                                    emptyText.getSpanEnd(annotation),
+                                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+                    }
+                }
                 noFiltersEmptyText.setText(ssb);
                 noFiltersEmptyText.setOnClickListener(v -> drawer.openDrawer(GravityCompat.END));
             }
