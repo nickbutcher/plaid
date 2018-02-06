@@ -16,7 +16,6 @@ package io.plaidapp.ui.widget
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -34,6 +33,8 @@ import android.support.annotation.ColorInt
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.Gravity
+import androidx.graphics.applyCanvas
+import androidx.graphics.createBitmap
 import io.plaidapp.R
 
 /**
@@ -117,10 +118,7 @@ class BadgedFourThreeImageView(context: Context, attrs: AttributeSet
                 textPaint.getTextBounds(GIF, 0, GIF.length, textBounds)
                 val height = padding + textBounds.height() + padding
                 val width = padding + textBounds.width() + padding
-                bitmap = Bitmap.createBitmap(width.toInt(), height.toInt(), ARGB_8888).apply {
-                    setHasAlpha(true)
-                }
-                Canvas(bitmap).apply {
+                bitmap = createBitmap(width.toInt(), height.toInt()).applyCanvas {
                     val backgroundPaint = Paint(ANTI_ALIAS_FLAG)
                     backgroundPaint.color = BACKGROUND_COLOR
                     val cornerRadius = CORNER_RADIUS * density
