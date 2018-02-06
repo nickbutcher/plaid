@@ -79,12 +79,12 @@ dependencies {
     annotationProcessor "com.github.bumptech.glide:compiler:${versions.glide}"
     implementation "com.github.bumptech.glide:okhttp3-integration:${versions.glide}"
     implementation "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
-    implementation 'com.google.code.gson:gson:2.8.1'
+    implementation 'com.google.code.gson:gson:2.8.2'
     implementation "com.jakewharton:butterknife:${versions.butterknife}"
     annotationProcessor "com.jakewharton:butterknife-compiler:${versions.butterknife}"
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
-    implementation 'com.squareup.okhttp3:okhttp:3.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin}"
     implementation 'org.jsoup:jsoup:1.10.3'
     implementation project(':bypass')

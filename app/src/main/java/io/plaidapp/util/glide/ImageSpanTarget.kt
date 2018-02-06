@@ -37,7 +37,7 @@ class ImageSpanTarget(textView: TextView,
 
     private val textView: WeakReference<TextView> = WeakReference(textView)
 
-    override fun onResourceReady(bitmap: Bitmap, transition: Transition<in Bitmap>) {
+    override fun onResourceReady(bitmap: Bitmap, transition: Transition<in Bitmap>?) {
         val tv = textView.get()
         if (tv != null) {
             val bitmapDrawable = BitmapDrawable(tv.resources, bitmap)
