@@ -69,6 +69,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'androidx.core:core-ktx:0.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta4'
     implementation "com.android.support:customtabs:${versions.supportLibrary}"
     implementation "com.android.support:design:${versions.supportLibrary}"
