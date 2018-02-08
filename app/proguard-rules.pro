@@ -41,3 +41,6 @@
 
 # A resource is loaded with a relative path so the package of this class must be preserved.
 -keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
+
+# This optimization conflicts with how Retrofit uses proxy objects without concrete implementations
+-optimizations !method/removal/parameter
