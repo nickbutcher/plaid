@@ -55,6 +55,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -201,12 +202,12 @@ public class DesignerNewsLogin extends Activity {
 
     @SuppressLint("InflateParams")
     void showLoggedInUser() {
-        final Call<User> authedUser = designerNewsPrefs.getApi().getAuthedUser();
-        authedUser.enqueue(new Callback<User>() {
+        final Call<List<User>> authedUser = designerNewsPrefs.getApi().getAuthedUser();
+        authedUser.enqueue(new Callback<List<User>>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (!response.isSuccessful()) return;
-                final User user = response.body();
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (!response.isSuccessful() || (response.body() == null || response.body().isEmpty())) return;
+                final User user = response.body().get(0);
                 designerNewsPrefs.setLoggedInUser(user);
                 final Toast confirmLogin = new Toast(getApplicationContext());
                 final View v = LayoutInflater.from(DesignerNewsLogin.this).inflate(R.layout
@@ -230,7 +231,7 @@ public class DesignerNewsLogin extends Activity {
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<List<User>> call, Throwable t) {
                 Log.e(getClass().getCanonicalName(), t.getMessage(), t);
             }
         });
