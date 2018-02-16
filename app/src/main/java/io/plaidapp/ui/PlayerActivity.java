@@ -18,6 +18,7 @@ package io.plaidapp.ui;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -257,7 +258,7 @@ public class PlayerActivity extends Activity {
             public void onLayoutChange(View v, int left, int top, int right, int bottom,
                                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 shots.removeOnLayoutChangeListener(this);
-                getColumnCount(right - left, bottom - top);
+                updateColumnCount(right - left, bottom - top);
             }
         });
         adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this),
@@ -424,7 +425,7 @@ public class PlayerActivity extends Activity {
         }
     }
 
-    void getColumnCount(int width, int height) {
+    void updateColumnCount(int width, int height) {
         // stash the original state
         final Resources res = getResources();
         final DisplayMetrics origDM = res.getDisplayMetrics();
@@ -440,16 +441,19 @@ public class PlayerActivity extends Activity {
         viewScopedDM.widthPixels = width;
         viewScopedDM.heightPixels = height;
 
+        // NOTE: It seems that using `updateConfiguration()` in the actual Resources was affecting
+        // the underlying values which cause the wrong layout to be inflated. Also, the method is
+        // deprecated and the documentation recommends using the `createConfigurationContext()` method
+        // See bug from Nick - https://github.com/nickbutcher/plaid/pull/243
+        Context fakeContext = createConfigurationContext(viewScopedConfig);
         // here's the magic incantation that does what we want
-        res.updateConfiguration(viewScopedConfig, viewScopedDM);
+        Resources fakeRes = fakeContext.getResources();
+        fakeRes.updateConfiguration(viewScopedConfig, viewScopedDM);
 
-        // resources now act as if the device is the size of this view!!! Mwahahaha.
-        columns = res.getInteger(R.integer.num_columns);
+        // resources now act as if the device is the size of the grid!!! Mwahahaha.
+        columns = fakeRes.getInteger(R.integer.num_columns);
         layoutManager.setSpanCount(columns);
         adapter.setColumnCount(columns);
-
-        // once we're done: reset
-        res.updateConfiguration(originalConfig, origDM);
     }
 
 }
