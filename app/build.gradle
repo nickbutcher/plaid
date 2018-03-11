@@ -69,7 +69,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:0.1'
+    implementation "androidx.core:core-ktx:${versions.ktx}"
     implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta5'
     implementation "com.android.support:customtabs:${versions.supportLibrary}"
     implementation "com.android.support:design:${versions.supportLibrary}"
@@ -80,13 +80,14 @@ dependencies {
     annotationProcessor "com.github.bumptech.glide:compiler:${versions.glide}"
     implementation "com.github.bumptech.glide:okhttp3-integration:${versions.glide}"
     implementation "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
-    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation "com.google.code.gson:gson:${versions.gson}"
     implementation "com.jakewharton:butterknife:${versions.butterknife}"
     annotationProcessor "com.jakewharton:butterknife-compiler:${versions.butterknife}"
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
-    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+    implementation "com.squareup.okhttp3:okhttp:${versions.okhttp}"
+    implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin}"
-    implementation 'org.jsoup:jsoup:1.10.3'
+    implementation "org.jsoup:jsoup:${versions.jsoup}"
     implementation project(':bypass')
 }

@@ -17,19 +17,22 @@
 package io.plaidapp.data;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.plaidapp.data.api.designernews.model.Story;
+import io.plaidapp.data.api.designernews.DesignerNewsRepository;
 import io.plaidapp.data.api.dribbble.DribbbleSearchService;
 import io.plaidapp.data.api.dribbble.DribbbleService;
 import io.plaidapp.data.api.dribbble.model.Like;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.dribbble.model.User;
 import io.plaidapp.data.api.producthunt.model.Post;
+import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.data.prefs.SourceManager;
 import io.plaidapp.ui.FilterAdapter;
 import retrofit2.Call;
@@ -40,8 +43,10 @@ import retrofit2.Response;
  * Responsible for loading data from the various sources. Instantiating classes are responsible for
  * providing the {code onDataLoaded} method to do something with the data.
  */
-public abstract class DataManager extends BaseDataManager<List<? extends PlaidItem>> {
+public abstract class DataManager extends BaseDataManager<List<? extends PlaidItem>>
+        implements LoadSourceCallback {
 
+    private final DesignerNewsRepository designerNewsRepository;
     private final FilterAdapter filterAdapter;
     private Map<String, Integer> pageIndexes;
     private Map<String, Call> inflight;
@@ -49,6 +54,9 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
     public DataManager(Context context,
                        FilterAdapter filterAdapter) {
         super(context);
+        DesignerNewsPrefs designerNewsPrefs = DesignerNewsPrefs.get(context);
+        designerNewsRepository = new DesignerNewsRepository(designerNewsPrefs.getApi(),
+                designerNewsPrefs);
         this.filterAdapter = filterAdapter;
         filterAdapter.registerFilterChangedCallback(filterListener);
         setupPageIndexes();
@@ -69,26 +77,28 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
             }
             inflight.clear();
         }
+        designerNewsRepository.cancelAllRequests();
     }
 
     private final FilterAdapter.FiltersChangedCallbacks filterListener =
             new FilterAdapter.FiltersChangedCallbacks() {
-        @Override
-        public void onFiltersChanged(Source changedFilter) {
-            if (changedFilter.active) {
-                loadSource(changedFilter);
-            } else { // filter deactivated
-                final String key = changedFilter.key;
-                if (inflight.containsKey(key)) {
-                    final Call call = inflight.get(key);
-                    if (call != null) call.cancel();
-                    inflight.remove(key);
+                @Override
+                public void onFiltersChanged(Source changedFilter) {
+                    if (changedFilter.active) {
+                        loadSource(changedFilter);
+                    } else { // filter deactivated
+                        final String key = changedFilter.key;
+                        if (inflight.containsKey(key)) {
+                            final Call call = inflight.get(key);
+                            if (call != null) call.cancel();
+                            inflight.remove(key);
+                        }
+                        designerNewsRepository.cancelRequestOfSource(key);
+                        // clear the page index for the source
+                        pageIndexes.put(key, 0);
+                    }
                 }
-                // clear the page index for the source
-                pageIndexes.put(key, 0);
-            }
-        }
-    };
+            };
 
     private void loadSource(Source source) {
         if (source.active) {
@@ -157,80 +167,35 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
         return pageIndexes.get(key) != 0;
     }
 
-    private void sourceLoaded(List<? extends PlaidItem> data, int page, String key) {
+    @Override
+    public void sourceLoaded(@Nullable List<? extends PlaidItem> data, int page,
+            @NonNull String source) {
         loadFinished();
-        if (data != null && !data.isEmpty() && sourceIsEnabled(key)) {
+        if (data != null && !data.isEmpty() && sourceIsEnabled(source)) {
             setPage(data, page);
-            setDataSource(data, key);
+            setDataSource(data, source);
             onDataLoaded(data);
         }
-        inflight.remove(key);
+        inflight.remove(source);
     }
 
-    private void loadFailed(String key) {
+    @Override
+    public void loadFailed(@NonNull String source) {
         loadFinished();
-        inflight.remove(key);
+        inflight.remove(source);
     }
 
     private void loadDesignerNewsTopStories(final int page) {
-        final Call<List<Story>> topStories = getDesignerNewsApi().getTopStories(page);
-        topStories.enqueue(new Callback<List<Story>>() {
-            @Override
-            public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
-                if (response.isSuccessful()) {
-                    sourceLoaded(response.body(), page, SourceManager.SOURCE_DESIGNER_NEWS_POPULAR);
-                } else {
-                    loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Story>> call, Throwable t) {
-                loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR);
-            }
-        });
-        inflight.put(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR, topStories);
+        designerNewsRepository.loadTopStories(page, this);
     }
 
     private void loadDesignerNewsRecent(final int page) {
-        final Call<List<Story>> recentStoriesCall = getDesignerNewsApi().getRecentStories(page);
-        recentStoriesCall.enqueue(new Callback<List<Story>>() {
-            @Override
-            public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
-                if (response.isSuccessful()) {
-                    sourceLoaded(response.body(), page, SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
-                } else {
-                    loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Story>> call, Throwable t) {
-                loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_RECENT);
-            }
-        });
-        inflight.put(SourceManager.SOURCE_DESIGNER_NEWS_RECENT, recentStoriesCall);
+        designerNewsRepository.loadRecent(page, this);
     }
 
     private void loadDesignerNewsSearch(final Source.DesignerNewsSearchSource source,
-                                        final int page) {
-        final Call<List<Story>> searchCall = getDesignerNewsApi().search(source.query, page);
-        searchCall.enqueue(new Callback<List<Story>>() {
-            @Override
-            public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
-                if (response.isSuccessful()) {
-                    sourceLoaded(response.body(), page, source.key);
-                } else {
-                    loadFailed(source.key);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Story>> call, Throwable t) {
-                loadFailed(source.key);
-            }
-        });
-        inflight.put(source.key, searchCall);
+            final int page) {
+        designerNewsRepository.search(source.key, page, this);
     }
 
     private void loadDribbblePopular(final int page) {

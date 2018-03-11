@@ -17,13 +17,18 @@
 package io.plaidapp.data;
 
 import android.content.Context;
+import android.util.Log;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.plaidapp.data.api.designernews.model.Story;
+import io.plaidapp.data.api.designernews.DesignerNewsRepository;
 import io.plaidapp.data.api.dribbble.DribbbleSearchService;
 import io.plaidapp.data.api.dribbble.model.Shot;
+import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,8 +37,10 @@ import retrofit2.Response;
  * Responsible for loading search results from dribbble and designer news. Instantiating classes are
  * responsible for providing the {code onDataLoaded} method to do something with the data.
  */
-public abstract class SearchDataManager extends BaseDataManager<List<? extends PlaidItem>> {
+public abstract class SearchDataManager extends BaseDataManager<List<? extends PlaidItem>>
+        implements LoadSourceCallback {
 
+    private final DesignerNewsRepository designerNewsRepository;
     // state
     private String query = "";
     private int page = 1;
@@ -41,6 +48,10 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
 
     public SearchDataManager(Context context) {
         super(context);
+        DesignerNewsPrefs designerNewsPrefs = DesignerNewsPrefs.get(context);
+        designerNewsRepository = new DesignerNewsRepository(designerNewsPrefs.getApi(),
+                designerNewsPrefs);
+
         inflight = new ArrayList<>();
     }
 
@@ -73,6 +84,7 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
                 call.cancel();
             }
             inflight.clear();
+            designerNewsRepository.cancelAllRequests();
         }
     }
 
@@ -82,31 +94,8 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
 
     private void searchDesignerNews(final String query, final int resultsPage) {
         loadStarted();
-        final Call<List<Story>> dnSearchCall = getDesignerNewsApi().search(query, resultsPage);
-        dnSearchCall.enqueue(new Callback<List<Story>>() {
-            @Override
-            public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
-                if (response.isSuccessful()) {
-                    loadFinished();
-                    List<Story> stories = response.body();
-                    if (stories != null) {
-                        setPage(stories, resultsPage);
-                        setDataSource(stories,
-                                Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query);
-                        onDataLoaded(stories);
-                    }
-                    inflight.remove(dnSearchCall);
-                } else {
-                    failure(dnSearchCall);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Story>> call, Throwable t) {
-                failure(dnSearchCall);
-            }
-        });
-        inflight.add(dnSearchCall);
+        String source = Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query;
+        designerNewsRepository.search(source, resultsPage, this);
     }
 
     private void searchDribbble(final String query, final int resultsPage) {
@@ -138,6 +127,23 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
             }
         });
         inflight.add(dribbbleSearchCall);
+    }
+
+    @Override
+    public void sourceLoaded(@Nullable List<? extends PlaidItem> result, int page,
+            @NotNull String source) {
+        loadFinished();
+        if (result != null) {
+            setPage(result, page);
+            setDataSource(result,
+                    Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query);
+            onDataLoaded(result);
+        }
+    }
+
+    @Override
+    public void loadFailed(@NotNull String source) {
+        loadFinished();
     }
 
     private void failure(Call call) {

@@ -24,7 +24,11 @@ buildscript {
             'glide'         : '4.6.1',
             'kotlin'        : '1.2.21',
             'retrofit'      : '2.3.0',
-            'supportLibrary': '27.0.2'
+            'supportLibrary': '27.1.0',
+            'okhttp'        : '3.9.1',
+            'gson'          : '2.8.2',
+            'jsoup'         : '1.10.3',
+            'ktx'           : '0.2'
     ]
 
     repositories {
@@ -33,7 +37,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-alpha02'
+        classpath 'com.android.tools.build:gradle:3.2.0-alpha05'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
     }
 
