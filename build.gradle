@@ -24,7 +24,7 @@ buildscript {
             'glide'         : '4.6.1',
             'kotlin'        : '1.2.21',
             'retrofit'      : '2.3.0',
-            'supportLibrary': '27.0.2'
+            'supportLibrary': '27.1.0'
     ]
 
     repositories {
