@@ -45,7 +45,7 @@ android {
         buildConfigField "String",
                 "DESIGNER_NEWS_CLIENT_SECRET", "\"${designer_news_client_secret}\""
         buildConfigField "String",
-                "PROCUCT_HUNT_DEVELOPER_TOKEN", "\"${product_hunt_developer_token}\""
+                "PRODUCT_HUNT_DEVELOPER_TOKEN", "\"${product_hunt_developer_token}\""
         def filesAuthorityValue = applicationId + ".shareprovider"
         buildConfigField "String", "FILES_AUTHORITY", "\"${filesAuthorityValue}\""
         manifestPlaceholders = [filesAuthority: filesAuthorityValue]
