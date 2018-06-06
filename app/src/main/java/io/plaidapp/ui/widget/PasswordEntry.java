@@ -24,16 +24,21 @@ import android.content.res.ColorStateList;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.text.TextPaint;
 import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.animation.Interpolator;
+
+import java.util.Locale;
 
 import io.plaidapp.R;
 import io.plaidapp.util.AnimUtils;
@@ -45,11 +50,16 @@ import static io.plaidapp.util.AnimUtils.lerp;
  */
 public class PasswordEntry extends TextInputEditText {
 
+    private static final String TAG = "PasswordEntry";
+
+    private static final boolean DEBUG = false;
     static final char[] PASSWORD_MASK = { '\u2022' }; // PasswordTransformationMethod#DOT
 
-    private boolean passwordMasked = false;
+    private boolean passwordMasked;
     private MaskMorphDrawable maskDrawable;
+    private DebugDrawable mDebugDrawable;
     private ColorStateList textColor;
+    private Animator maskMorph;
 
     public PasswordEntry(Context context) {
         super(context);
@@ -97,9 +107,23 @@ public class PasswordEntry extends TextInputEditText {
             getOverlay().add(maskDrawable);
         }
 
+        if (DEBUG) {
+            if (mDebugDrawable == null) {
+                if (!isLaidOut() || getText().length() < 1) return;
+                mDebugDrawable = new DebugDrawable(getBaseline(), getTextLeft(), getPaint());
+                mDebugDrawable.setBounds(getPaddingLeft(), getPaddingTop(), getPaddingLeft(),
+                        getHeight() - getPaddingBottom());
+                getOverlay().add(mDebugDrawable);
+            }
+            mDebugDrawable.setText(getText().toString(), isMasked);
+        }
+
         // hide the text during the animation
         setTextColor(Color.TRANSPARENT);
-        Animator maskMorph = isMasked ?
+        if (maskMorph != null) {
+            maskMorph.cancel();
+        }
+        maskMorph = isMasked ?
                 maskDrawable.createShowMaskAnimator(password)
                 : maskDrawable.createHideMaskAnimator(password);
         maskMorph.addListener(new AnimatorListenerAdapter() {
@@ -132,9 +156,9 @@ public class PasswordEntry extends TextInputEditText {
         private static final float PROGRESS_MASK = 1f;
 
         private final TextPaint paint;
+        private Paint mMaskPaint;
         private final float charWidth;
         private final float maskDiameter;
-        private final float maskCenterY;
         private final float insetStart;
         private final int baseline;
         private final long showPasswordDuration;
@@ -151,10 +175,9 @@ public class PasswordEntry extends TextInputEditText {
             this.baseline = baseline;
             this.charWidth = charWidth;
             paint = new TextPaint(textPaint);
-            Rect maskBounds = new Rect();
-            paint.getTextBounds(PASSWORD_MASK, 0, 1, maskBounds);
-            maskDiameter = maskBounds.height();
-            maskCenterY = (maskBounds.top + maskBounds.bottom) / 2f;
+            mMaskPaint = new Paint();
+            mMaskPaint.setColor(Color.GRAY);
+            maskDiameter = paint.measureText(PASSWORD_MASK, 0, 1);
             showPasswordDuration =
                     context.getResources().getInteger(R.integer.show_password_duration);
             hidePasswordDuration =
@@ -176,7 +199,7 @@ public class PasswordEntry extends TextInputEditText {
                 final int saveCount = canvas.save();
                 canvas.translate(insetStart, baseline);
                 for (int i = 0; i < characters.length; i++) {
-                    characters[i].draw(canvas, paint, password, i, charWidth, morphProgress);
+                    characters[i].draw(canvas, paint, password, i, morphProgress);
                 }
                 canvas.restoreToCount(saveCount);
             }
@@ -205,14 +228,15 @@ public class PasswordEntry extends TextInputEditText {
             password = pw;
             updateBounds();
             characters = new PasswordCharacter[pw.length()];
-            String passStr = pw.toString();
+            int charX = 0;
             for (int i = 0; i < pw.length(); i++) {
-                characters[i] = new PasswordCharacter(passStr, i, paint, maskDiameter, maskCenterY);
+                characters[i] = new PasswordCharacter(i, maskDiameter, charX);
+                charX += paint.measureText(password.toString(), i, i + 1);
             }
 
             ValueAnimator anim = ValueAnimator.ofFloat(fromProgress, toProgress);
-            anim.addUpdateListener(valueAnimator -> {
-                morphProgress = (float) valueAnimator.getAnimatedValue();
+            anim.addUpdateListener(animation -> {
+                morphProgress = (float) animation.getAnimatedValue();
                 invalidateSelf();
             });
 
@@ -247,25 +271,103 @@ public class PasswordEntry extends TextInputEditText {
     }
 
     /**
+     * debug drawable to show the Password bound
+     */
+    static class DebugDrawable extends Drawable {
+        private Rect mCharBound = new Rect();
+        private Rect mMaskBound = new Rect();
+        private String mShowText;
+        private TextPaint mTextPaint;
+        private Paint mBoundPaint;
+        private int mTextCount;
+        private final int mBaseLine;
+        private final int mTextLeft;
+
+        private DebugDrawable(
+                int baseLine,
+                int textLeft,
+                TextPaint paint) {
+            mBaseLine = baseLine;
+            mTextLeft = textLeft;
+            mTextPaint = paint;
+
+            mBoundPaint = new Paint();
+            mBoundPaint.setColor(Color.RED);
+            mBoundPaint.setStyle(Paint.Style.STROKE);
+            mBoundPaint.setStrokeWidth(2f);
+
+            paint.getTextBounds(PASSWORD_MASK, 0, 1, mMaskBound);
+        }
+
+        public void setText(String text, boolean isMasked) {
+            mShowText = text;
+            mTextCount = mShowText.length();
+            if (isMasked) {
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < mTextCount; i++) {
+                    builder.append(PASSWORD_MASK[0]);
+                }
+                mShowText = builder.toString();
+            }
+            invalidateSelf();
+        }
+
+        @Override
+        public void draw(@NonNull Canvas canvas) {
+            int count = canvas.save();
+            canvas.translate(mTextLeft, mBaseLine);
+
+            int left = 0;
+            for (int i = 0; i < mTextCount; i++) {
+                float width = mTextPaint.measureText(mShowText, i, i + 1);
+                mTextPaint.getTextBounds(mShowText, i, i + 1, mCharBound);
+                mCharBound.left += left;
+                mCharBound.right += left;
+                canvas.drawRect(mCharBound, mBoundPaint);
+                left += width;
+
+                Log.v(TAG, String.format(Locale.US,
+                        "word of %d width : %f l(%d)r(%d)",
+                        i, width, mCharBound.left, mCharBound.right));
+            }
+            canvas.restoreToCount(count);
+        }
+
+        @Override
+        public void setAlpha(int alpha) {
+            if (mTextPaint.getAlpha() != alpha) {
+                mTextPaint.setAlpha(alpha);
+                invalidateSelf();
+            }
+        }
+
+        @Override
+        public void setColorFilter(@Nullable ColorFilter colorFilter) {
+            mTextPaint.setColorFilter(colorFilter);
+        }
+
+        @Override
+        public int getOpacity() {
+            return PixelFormat.TRANSLUCENT;
+        }
+    }
+
+    /**
      * Models a character in a password, holding info about it's drawing bounds and how it should
      * move/scale to morph to/from the password mask.
      */
     static class PasswordCharacter {
 
         private final Rect bounds = new Rect();
-        private final float textToMaskScale;
-        private final float maskToTextScale;
         private final float textOffsetY;
+        private final float maskX;
+        private final float charX;
 
-        PasswordCharacter(String password, int index, TextPaint paint,
-                          float maskCharDiameter, float maskCenterY) {
-            paint.getTextBounds(password, index, index + 1, bounds);
+        PasswordCharacter(int index, float maskCharDiameter, float charX) {
+            maskX = maskCharDiameter *  index;
+            this.charX = charX;
             // scale the mask from the character width, down to it's own width
-            maskToTextScale = Math.max(1f, bounds.width() / maskCharDiameter);
-            // scale text from it's height down to the mask character height
-            textToMaskScale = Math.min(0f, 1f / (bounds.height() / maskCharDiameter));
-            // difference between mask & character center
-            textOffsetY = maskCenterY - bounds.exactCenterY();
+            textOffsetY = bounds.bottom;
         }
 
 
@@ -273,31 +375,24 @@ public class PasswordEntry extends TextInputEditText {
          * Progress through the morph:  0 = character, 1 = •
          */
         void draw(Canvas canvas, TextPaint paint, CharSequence password,
-                  int index, float charWidth, float progress) {
+                  int index, float progress) {
             int alpha = paint.getAlpha();
-            float x = charWidth * index;
+            float x = lerp(charX, maskX, progress);
 
             // draw the character
             canvas.save();
-            float textScale = lerp(1f, textToMaskScale, progress);
-            // scale character: shrinks to/grows from the mask's height
-            canvas.scale(textScale, textScale, x + bounds.exactCenterX(), bounds.exactCenterY());
             // cross fade between the character/mask
             paint.setAlpha((int) lerp(alpha, 0, progress));
             // vertically move the character center toward/from the mask center
-            canvas.drawText(password, index, index + 1,
-                    x, lerp(0f, textOffsetY, progress) / textScale, paint);
+            canvas.drawText(password, index, index + 1, x, textOffsetY, paint);
             canvas.restore();
 
             // draw the mask
             canvas.save();
-            float maskScale = lerp(maskToTextScale, 1f, progress);
-            // scale the mask: down from/up to the character width
-            canvas.scale(maskScale, maskScale, x + bounds.exactCenterX(), bounds.exactCenterY());
             // cross fade between the mask/character
-            paint.setAlpha((int) AnimUtils.lerp(0, alpha, progress));
+            paint.setAlpha((int) lerp(0, alpha, progress));
             // vertically move the mask center from/toward the character center
-            canvas.drawText(PASSWORD_MASK, 0, 1, x, -lerp(textOffsetY, 0f, progress), paint);
+            canvas.drawText(PASSWORD_MASK, 0, 1, x, 0, paint);
             canvas.restore();
 
             // restore the paint to how we found it
