@@ -40,11 +40,13 @@ class DesignerNewsRepository(
                 if (response.isSuccessful) {
                     callback.sourceLoaded(response.body(), page, SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
                 } else {
+                    inflight.remove(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
                     callback.loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
                 }
             }
 
             override fun onFailure(call: Call<List<Story>>, t: Throwable) {
+                inflight.remove(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
                 callback.loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
             }
         })
