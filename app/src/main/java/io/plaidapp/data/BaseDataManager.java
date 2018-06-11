@@ -156,7 +156,7 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
 
     private void createProductHuntApi() {
         final OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(new AuthInterceptor(BuildConfig.PROCUCT_HUNT_DEVELOPER_TOKEN))
+                .addInterceptor(new AuthInterceptor(BuildConfig.PRODUCT_HUNT_DEVELOPER_TOKEN))
                 .addInterceptor(getHttpLoggingInterceptor())
                 .build();
         final Gson gson = new Gson();

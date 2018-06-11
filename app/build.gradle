@@ -26,7 +26,6 @@ def gitCommitCount = 100 +
 
 android {
     compileSdkVersion versions.compileSdk
-    buildToolsVersion versions.buildTools
 
     defaultConfig {
         applicationId "io.plaidapp"
