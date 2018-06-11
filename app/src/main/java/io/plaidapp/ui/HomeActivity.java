@@ -1,17 +1,18 @@
 /*
- * Copyright 2015 Google Inc.
+ *   Copyright 2018 Google LLC
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
  */
 
 package io.plaidapp.ui;
@@ -26,7 +27,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -50,7 +50,6 @@ import android.text.SpannedString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
-import android.text.style.StyleSpan;
 import android.transition.TransitionManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -95,6 +94,8 @@ import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
+import io.plaidapp.util.Activities;
+import io.plaidapp.util.ActivityHelper;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.DrawableUtils;
 import io.plaidapp.util.ViewUtils;
@@ -150,7 +151,7 @@ public class HomeActivity extends Activity {
         designerNewsPrefs = DesignerNewsPrefs.get(this);
         filtersAdapter = new FilterAdapter(this, SourceManager.getSources(this),
                 (sharedElement, forSource) -> {
-                    Intent login = new Intent(HomeActivity.this, DribbbleLogin.class);
+                    Intent login = ActivityHelper.intentTo(Activities.Dribbble.Login.INSTANCE);
                     MorphTransform.addExtras(login,
                             ContextCompat.getColor(HomeActivity.this, R.color.background_dark),
                             sharedElement.getHeight() / 2);
@@ -283,11 +284,12 @@ public class HomeActivity extends Activity {
     @Override
     public void onActivityReenter(int resultCode, Intent data) {
         if (data == null || resultCode != RESULT_OK
-                || !data.hasExtra(DribbbleShot.RESULT_EXTRA_SHOT_ID)) return;
+                || !data.hasExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID)) return;
 
         // When reentering, if the shared element is no longer on screen (e.g. after an
         // orientation change) then scroll it into view.
-        final long sharedShotId = data.getLongExtra(DribbbleShot.RESULT_EXTRA_SHOT_ID, -1L);
+        final long sharedShotId = data.getLongExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID,
+                -1L);
         if (sharedShotId != -1L                                             // returning from a shot
                 && adapter.getDataItemCount() > 0                           // grid populated
                 && grid.findViewHolderForItemId(sharedShotId) == null) {    // view not attached
@@ -340,7 +342,7 @@ public class HomeActivity extends Activity {
                 View searchMenuView = toolbar.findViewById(R.id.menu_search);
                 Bundle options = ActivityOptions.makeSceneTransitionAnimation(this, searchMenuView,
                         getString(R.string.transition_search_back)).toBundle();
-                startActivityForResult(new Intent(this, SearchActivity.class), RC_SEARCH, options);
+                startActivityForResult(ActivityHelper.intentTo(Activities.Search.INSTANCE), RC_SEARCH, options);
                 return true;
             case R.id.menu_dribbble_login:
                 if (!dribbblePrefs.isLoggedIn()) {
@@ -354,7 +356,7 @@ public class HomeActivity extends Activity {
                 return true;
             case R.id.menu_designer_news_login:
                 if (!designerNewsPrefs.isLoggedIn()) {
-                    startActivity(new Intent(this, DesignerNewsLogin.class));
+                    startActivity(ActivityHelper.intentTo(Activities.DesignerNews.Login.INSTANCE));
                 } else {
                     designerNewsPrefs.logout(HomeActivity.this);
                     // TODO something better than a toast!!
@@ -363,7 +365,7 @@ public class HomeActivity extends Activity {
                 }
                 return true;
             case R.id.menu_about:
-                startActivity(new Intent(HomeActivity.this, AboutActivity.class),
+                startActivity(ActivityHelper.intentTo(Activities.About.INSTANCE),
                         ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 return true;
         }
@@ -388,17 +390,17 @@ public class HomeActivity extends Activity {
                 if (searchMenuView != null) {
                     searchMenuView.setAlpha(1f);
                 }
-                if (resultCode == SearchActivity.RESULT_CODE_SAVE) {
-                    String query = data.getStringExtra(SearchActivity.EXTRA_QUERY);
+                if (resultCode == Activities.Search.RESULT_CODE_SAVE) {
+                    String query = data.getStringExtra(Activities.Search.EXTRA_QUERY);
                     if (TextUtils.isEmpty(query)) return;
                     Source dribbbleSearch = null;
                     Source designerNewsSearch = null;
                     boolean newSource = false;
-                    if (data.getBooleanExtra(SearchActivity.EXTRA_SAVE_DRIBBBLE, false)) {
+                    if (data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DRIBBBLE, false)) {
                         dribbbleSearch = new Source.DribbbleSearchSource(query, true);
                         newSource = filtersAdapter.addFilter(dribbbleSearch);
                     }
-                    if (data.getBooleanExtra(SearchActivity.EXTRA_SAVE_DESIGNER_NEWS, false)) {
+                    if (data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DESIGNER_NEWS, false)) {
                         designerNewsSearch = new Source.DesignerNewsSearchSource(query, true);
                         newSource |= filtersAdapter.addFilter(designerNewsSearch);
                     }
@@ -409,12 +411,12 @@ public class HomeActivity extends Activity {
                 break;
             case RC_NEW_DESIGNER_NEWS_STORY:
                 switch (resultCode) {
-                    case PostNewDesignerNewsStory.RESULT_DRAG_DISMISSED:
+                    case Activities.DesignerNews.PostStory.RESULT_DRAG_DISMISSED:
                         // need to reshow the FAB as there's no shared element transition
                         showFab();
                         unregisterPostStoryResultListener();
                         break;
-                    case PostNewDesignerNewsStory.RESULT_POSTING:
+                    case Activities.DesignerNews.PostStory.RESULT_POSTING:
                         showPostingProgress();
                         break;
                     default:
@@ -495,7 +497,7 @@ public class HomeActivity extends Activity {
     @OnClick(R.id.fab)
     protected void fabClick() {
         if (designerNewsPrefs.isLoggedIn()) {
-            Intent intent = new Intent(this, PostNewDesignerNewsStory.class);
+            Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.PostStory.INSTANCE);
             FabTransform.addExtras(intent,
                     ContextCompat.getColor(this, R.color.accent), R.drawable.ic_add_dark);
             intent.putExtra(PostStoryService.EXTRA_BROADCAST_RESULT, true);
@@ -504,7 +506,7 @@ public class HomeActivity extends Activity {
                     getString(R.string.transition_new_designer_news_post));
             startActivityForResult(intent, RC_NEW_DESIGNER_NEWS_STORY, options.toBundle());
         } else {
-            Intent intent = new Intent(this, DesignerNewsLogin.class);
+            Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.Login.INSTANCE);
             FabTransform.addExtras(intent,
                     ContextCompat.getColor(this, R.color.accent), R.drawable.ic_add_dark);
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, fab,

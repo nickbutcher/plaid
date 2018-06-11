@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    android:installLocation="auto"
+    package="io.plaidapp.activities">
+
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <dist:module
+        dist:onDemand="false"
+        dist:title="@string/feature_name_activities">
+        <dist:fusing include="true" />
+    </dist:module>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:extractNativeLibs="false"
+        android:appCategory="image"
+        android:theme="@style/Plaid">
+
+        <activity
+            android:name="io.plaidapp.ui.DribbbleShot"
+            android:parentActivityName="io.plaidapp.ui.HomeActivity"
+            android:theme="@style/Plaid.Translucent.Dribbble.Shot">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="dribbble.com"
+                    android:pathPrefix="/shots/"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="io.plaidapp.ui.PlayerActivity"
+            android:theme="@style/Plaid.Translucent.Dribbble.Player" />
+
+        <activity
+            android:name="io.plaidapp.ui.PlayerSheet"
+            android:theme="@style/Plaid.Translucent.Dribbble.PlayerSheet" />
+
+        <activity
+            android:name="io.plaidapp.ui.DesignerNewsStory"
+            android:parentActivityName="io.plaidapp.ui.HomeActivity"
+            android:theme="@style/Plaid.Translucent.DesignerNewsStory" />
+
+        <activity
+            android:name="io.plaidapp.ui.SearchActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/Plaid.Translucent.Search">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.google.android.gms.actions.SEARCH_ACTION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+
+        <activity
+            android:name="io.plaidapp.ui.DribbbleLogin"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Plaid.Translucent.Dribbble.Login">
+            <intent-filter>
+                <data
+                    android:host="dribbble-auth-callback"
+                    android:scheme="plaid" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="io.plaidapp.ui.DesignerNewsLogin"
+            android:exported="false"
+            android:theme="@style/Plaid.Translucent.DesignerNewsLogin"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name="io.plaidapp.ui.AboutActivity"
+            android:theme="@style/Plaid.Translucent.About"
+            android:parentActivityName="io.plaidapp.ui.HomeActivity" />
+
+        <activity
+            android:name="io.plaidapp.ui.PostNewDesignerNewsStory"
+            android:exported="true"
+            android:theme="@style/Plaid.Translucent.PostDesignerNewsStory">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name="io.plaidapp.data.api.designernews.PostStoryService"
+            android:exported="false" />
+
+        <service
+            android:name="io.plaidapp.data.api.designernews.UpvoteStoryService"
+            android:exported="false" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${filesAuthority}"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/glide_disk_cache_path" />
+        </provider>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+    </application>
+
+</manifest>
