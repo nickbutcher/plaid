@@ -28,14 +28,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import io.plaidapp.BuildConfig;
 import io.plaidapp.data.api.AuthInterceptor;
 import io.plaidapp.data.api.DenvelopingConverter;
-import io.plaidapp.data.api.designernews.DesignerNewsService;
 import io.plaidapp.data.api.dribbble.DribbbleSearchConverter;
 import io.plaidapp.data.api.dribbble.DribbbleSearchService;
 import io.plaidapp.data.api.dribbble.DribbbleService;
 import io.plaidapp.data.api.producthunt.ProductHuntService;
-import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.data.prefs.DribbblePrefs;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import okhttp3.logging.HttpLoggingInterceptor.Level;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -47,7 +47,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public abstract class BaseDataManager<T> implements DataLoadingSubject {
 
     private final AtomicInteger loadingCount;
-    private final DesignerNewsPrefs designerNewsPrefs;
     private final DribbblePrefs dribbblePrefs;
     private DribbbleSearchService dribbbleSearchApi;
     private ProductHuntService productHuntApi;
@@ -55,7 +54,6 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
 
     public BaseDataManager(@NonNull Context context) {
         loadingCount = new AtomicInteger(0);
-        designerNewsPrefs = DesignerNewsPrefs.get(context);
         dribbblePrefs = DribbblePrefs.get(context);
     }
 
@@ -66,14 +64,6 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
     @Override
     public boolean isDataLoading() {
         return loadingCount.get() > 0;
-    }
-
-    public DesignerNewsPrefs getDesignerNewsPrefs() {
-        return designerNewsPrefs;
-    }
-
-    public DesignerNewsService getDesignerNewsApi() {
-        return designerNewsPrefs.getApi();
     }
 
     public DribbblePrefs getDribbblePrefs() {
@@ -152,16 +142,22 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
     }
 
     private void createDribbbleSearchApi() {
+        final OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(getHttpLoggingInterceptor())
+                .build();
+
         dribbbleSearchApi = new Retrofit.Builder()
                 .baseUrl(DribbbleSearchService.ENDPOINT)
                 .addConverterFactory(new DribbbleSearchConverter.Factory())
+                .client(client)
                 .build()
                 .create((DribbbleSearchService.class));
     }
 
     private void createProductHuntApi() {
         final OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(new AuthInterceptor(BuildConfig.PRODUCT_HUNT_DEVELOPER_TOKEN))
+                .addInterceptor(new AuthInterceptor(BuildConfig.PROCUCT_HUNT_DEVELOPER_TOKEN))
+                .addInterceptor(getHttpLoggingInterceptor())
                 .build();
         final Gson gson = new Gson();
         productHuntApi = new Retrofit.Builder()
@@ -171,6 +167,14 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(ProductHuntService.class);
+    }
+
+    @NonNull
+    private HttpLoggingInterceptor getHttpLoggingInterceptor() {
+        Level debugLevel = BuildConfig.DEBUG ? Level.BASIC : Level.NONE;
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(debugLevel);
+        return loggingInterceptor;
     }
 
 }
