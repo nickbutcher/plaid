@@ -17,23 +17,22 @@
 buildscript {
 
     ext.versions = [
-            'compileSdk'    : 27,
-            'targetSdk'     : 27,
-            'buildTools'    : '27.0.3',
+            'compileSdk'    : 28,
+            'targetSdk'     : 28,
             'butterknife'   : '8.8.1',
-            'glide'         : '4.6.1',
-            'kotlin'        : '1.2.21',
-            'retrofit'      : '2.3.0',
-            'supportLibrary': '27.1.0',
-            'okhttp'        : '3.9.1',
-            'gson'          : '2.8.2',
-            'jsoup'         : '1.10.3',
+            'glide'         : '4.7.1',
+            'kotlin'        : '1.2.41',
+            'retrofit'      : '2.4.0',
+            'supportLibrary': '27.1.1',
+            'okhttp'        : '3.10.0',
+            'gson'          : '2.8.5',
+            'jsoup'         : '1.11.3',
             'ktx'           : '0.2'
     ]
 
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
