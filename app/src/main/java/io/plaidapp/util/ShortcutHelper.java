@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.List;
 
 import io.plaidapp.R;
-import io.plaidapp.ui.PostNewDesignerNewsStory;
 
 /**
  * Helper for working with launcher shortcuts.
@@ -48,8 +47,7 @@ public class ShortcutHelper {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) return;
         ShortcutManager shortcutManager = context.getSystemService(ShortcutManager.class);
 
-        Intent intent = new Intent(context, PostNewDesignerNewsStory.class);
-        intent.setAction(Intent.ACTION_VIEW);
+        Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.PostStory.INSTANCE);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         ShortcutInfo postShortcut
                 = new ShortcutInfo.Builder(context, POST_SHORTCUT_ID)

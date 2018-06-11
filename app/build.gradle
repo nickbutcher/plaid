@@ -18,12 +18,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-// query git for the SHA, Tag and commit count. Use these to automate versioning.
-def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
-def gitTag = 'git describe --tags'.execute([], project.rootDir).text.trim()
-def gitCommitCount = 100 +
-        Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
-
 android {
     compileSdkVersion versions.compileSdk
 
@@ -31,10 +25,11 @@ android {
         applicationId "io.plaidapp"
         minSdkVersion 21
         targetSdkVersion versions.targetSdk
-        versionCode gitCommitCount
-        versionName gitTag
+        versionCode rootProject.gitCommitCount
+        versionName rootProject.gitTag
         archivesBaseName = "plaid"
         resConfig "en"
+        buildConfigField "String", "DESIGNER_NEWS_CLIENT_ID", "\"${designer_news_client_id}\""
         buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
         buildConfigField "String", "DRIBBBLE_CLIENT_ID", "\"${dribbble_client_id}\""
         buildConfigField "String", "DRIBBBLE_CLIENT_SECRET", "\"${dribbble_client_secret}\""
@@ -45,14 +40,10 @@ android {
                 "DESIGNER_NEWS_CLIENT_SECRET", "\"${designer_news_client_secret}\""
         buildConfigField "String",
                 "PRODUCT_HUNT_DEVELOPER_TOKEN", "\"${product_hunt_developer_token}\""
-        def filesAuthorityValue = applicationId + ".shareprovider"
-        buildConfigField "String", "FILES_AUTHORITY", "\"${filesAuthorityValue}\""
-        manifestPlaceholders = [filesAuthority: filesAuthorityValue]
     }
-    buildTypes {
+        buildTypes {
         release {
             minifyEnabled true
-            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -60,6 +51,8 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    dynamicFeatures = [':features:activities']
 }
 
 repositories {
@@ -68,25 +61,25 @@ repositories {
 }
 
 dependencies {
-    implementation "androidx.core:core-ktx:${versions.coreKtx}"
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta5'
-    implementation "com.android.support:customtabs:${versions.supportLibrary}"
-    implementation "com.android.support:design:${versions.supportLibrary}"
-    implementation "com.android.support:palette-v7:${versions.supportLibrary}"
-    implementation "com.android.support:recyclerview-v7:${versions.supportLibrary}"
-    implementation "com.android.support:support-dynamic-animation:${versions.supportLibrary}"
-    implementation "com.github.bumptech.glide:glide:${versions.glide}"
+    api "androidx.core:core-ktx:${versions.coreKtx}"
+    api 'com.android.support.constraint:constraint-layout:1.1.0-beta5'
+    api "com.android.support:customtabs:${versions.supportLibrary}"
+    api "com.android.support:design:${versions.supportLibrary}"
+    api "com.android.support:palette-v7:${versions.supportLibrary}"
+    api "com.android.support:recyclerview-v7:${versions.supportLibrary}"
+    api "com.android.support:support-dynamic-animation:${versions.supportLibrary}"
+    api "com.github.bumptech.glide:glide:${versions.glide}"
     annotationProcessor "com.github.bumptech.glide:compiler:${versions.glide}"
-    implementation "com.github.bumptech.glide:okhttp3-integration:${versions.glide}"
-    implementation "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
-    implementation "com.google.code.gson:gson:${versions.gson}"
-    implementation "com.jakewharton:butterknife:${versions.butterknife}"
+    api "com.github.bumptech.glide:okhttp3-integration:${versions.glide}"
+    api "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
+    api "com.google.code.gson:gson:${versions.gson}"
+    api "com.jakewharton:butterknife:${versions.butterknife}"
     annotationProcessor "com.jakewharton:butterknife-compiler:${versions.butterknife}"
-    implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
-    implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
-    implementation "com.squareup.okhttp3:okhttp:${versions.okhttp}"
-    implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin}"
-    implementation "org.jsoup:jsoup:${versions.jsoup}"
-    implementation project(':bypass')
+    api "com.squareup.retrofit2:retrofit:${versions.retrofit}"
+    api "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
+    api "com.squareup.okhttp3:okhttp:${versions.okhttp}"
+    api "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
+    api "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin}"
+    api "org.jsoup:jsoup:${versions.jsoup}"
+    api project(':bypass')
 }
