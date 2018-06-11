@@ -1,2 +1,3 @@
 include ':app', ':bypass'
+include ':features:activities'
 project(':bypass').projectDir = new File(rootDir, 'third_party/bypass')

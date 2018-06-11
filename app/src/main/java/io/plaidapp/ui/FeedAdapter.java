@@ -1,17 +1,18 @@
 /*
- * Copyright 2015 Google Inc.
+ *   Copyright 2018 Google LLC
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
  */
 
 package io.plaidapp.ui;
@@ -53,6 +54,7 @@ import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -82,6 +84,8 @@ import io.plaidapp.ui.recyclerview.Divided;
 import io.plaidapp.ui.transitions.ReflowText;
 import io.plaidapp.ui.widget.BadgedFourThreeImageView;
 import io.plaidapp.ui.widget.BaselineGridTextView;
+import io.plaidapp.util.Activities;
+import io.plaidapp.util.ActivityHelper;
 import io.plaidapp.util.ObservableColorMatrix;
 import io.plaidapp.util.TransitionUtils;
 import io.plaidapp.util.ViewUtils;
@@ -216,14 +220,14 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 v -> {
                     final Story story = (Story) getItem(holder.getAdapterPosition());
                     CustomTabActivityHelper.openCustomTab(host,
-                            DesignerNewsStory.getCustomTabIntent(host, story, null).build(),
+                            Activities.DesignerNews.Story.INSTANCE
+                                    .customTabIntent(host, story, null).build(),
                             Uri.parse(story.url));
                 }
         );
         holder.comments.setOnClickListener(commentsView -> {
-            final Intent intent = new Intent();
-            intent.setClass(host, DesignerNewsStory.class);
-            intent.putExtra(DesignerNewsStory.EXTRA_STORY,
+            final Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.Story.INSTANCE);
+            intent.putExtra(Activities.DesignerNews.Story.EXTRA_STORY,
                     (Story) getItem(holder.getAdapterPosition()));
             ReflowText.addExtras(intent, new ReflowText.ReflowableTextView(holder.title));
             setGridItemContentTransitions(holder.itemView);
@@ -275,9 +279,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 layoutInflater.inflate(R.layout.dribbble_shot_item, parent, false));
         holder.image.setBadgeColor(initialGifBadgeColor);
         holder.image.setOnClickListener(view -> {
-            Intent intent = new Intent();
-            intent.setClass(host, DribbbleShot.class);
-            intent.putExtra(DribbbleShot.EXTRA_SHOT,
+            Intent intent = ActivityHelper.intentTo(Activities.Dribbble.Shot.INSTANCE);
+            intent.putExtra(Activities.Dribbble.Shot.EXTRA_SHOT,
                     (Shot) getItem(holder.getAdapterPosition()));
             setGridItemContentTransitions(holder.image);
             ActivityOptions options =
@@ -374,7 +377,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 .placeholder(shotLoadingPlaceholders[position % shotLoadingPlaceholders.length])
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .fitCenter()
-                .transition(withCrossFade())
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .override(imageSize[0], imageSize[1])
                 .into(new DribbbleTarget(holder.image, false));
         // need both placeholder & background to prevent seeing through shot as it fades in

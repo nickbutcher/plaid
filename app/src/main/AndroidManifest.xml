@@ -32,7 +32,6 @@
         android:extractNativeLibs="false"
         android:appCategory="image"
         android:theme="@style/Plaid">
-
         <activity
             android:name=".ui.HomeActivity"
             android:label="@string/app_name"
@@ -53,111 +52,6 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity-alias>
-
-        <activity
-            android:name=".ui.DribbbleShot"
-            android:parentActivityName=".ui.HomeActivity"
-            android:theme="@style/Plaid.Translucent.Dribbble.Shot">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="https"
-                    android:host="dribbble.com"
-                    android:pathPrefix="/shots/"/>
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".ui.PlayerActivity"
-            android:theme="@style/Plaid.Translucent.Dribbble.Player" />
-
-        <activity
-            android:name=".ui.PlayerSheet"
-            android:theme="@style/Plaid.Translucent.Dribbble.PlayerSheet" />
-
-        <activity
-            android:name=".ui.DesignerNewsStory"
-            android:parentActivityName=".ui.HomeActivity"
-            android:theme="@style/Plaid.Translucent.DesignerNewsStory" />
-
-        <activity
-            android:name=".ui.SearchActivity"
-            android:launchMode="singleTop"
-            android:theme="@style/Plaid.Translucent.Search">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.google.android.gms.actions.SEARCH_ACTION" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
-        </activity>
-
-        <activity
-            android:name=".ui.DribbbleLogin"
-            android:exported="true"
-            android:launchMode="singleTop"
-            android:theme="@style/Plaid.Translucent.Dribbble.Login">
-            <intent-filter>
-                <data
-                    android:host="dribbble-auth-callback"
-                    android:scheme="plaid" />
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".ui.DesignerNewsLogin"
-            android:exported="false"
-            android:theme="@style/Plaid.Translucent.DesignerNewsLogin"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name=".ui.AboutActivity"
-            android:theme="@style/Plaid.Translucent.About"
-            android:parentActivityName=".ui.HomeActivity" />
-
-        <activity
-            android:name=".ui.PostNewDesignerNewsStory"
-            android:exported="true"
-            android:theme="@style/Plaid.Translucent.PostDesignerNewsStory">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-        </activity>
-
-        <service
-            android:name=".data.api.designernews.PostStoryService"
-            android:exported="false" />
-
-        <service
-            android:name=".data.api.designernews.UpvoteStoryService"
-            android:exported="false" />
-
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="${filesAuthority}"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/glide_disk_cache_path" />
-        </provider>
-
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
-
     </application>
 
 </manifest>

@@ -1,17 +1,18 @@
 /*
- * Copyright 2015 Google Inc.
+ *   Copyright 2018 Google LLC
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
  */
 
 package io.plaidapp.ui;
@@ -57,17 +58,17 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
     }
 
     @Override
-    public ItemHolderInfo obtainHolderInfo() {
+    public RecyclerView.ItemAnimator.ItemHolderInfo obtainHolderInfo() {
         return new HomeGridItemHolderInfo();
     }
 
     @NonNull
     @Override
-    public ItemHolderInfo recordPreLayoutInformation(@NonNull RecyclerView.State state,
-                                                     @NonNull RecyclerView.ViewHolder viewHolder,
-                                                     int changeFlags,
-                                                     @NonNull List<Object> payloads) {
-        ItemHolderInfo info =
+    public RecyclerView.ItemAnimator.ItemHolderInfo recordPreLayoutInformation(@NonNull RecyclerView.State state,
+                                                                               @NonNull RecyclerView.ViewHolder viewHolder,
+                                                                               int changeFlags,
+                                                                               @NonNull List<Object> payloads) {
+        RecyclerView.ItemAnimator.ItemHolderInfo info =
                 super.recordPreLayoutInformation(state, viewHolder, changeFlags, payloads);
         if (info instanceof HomeGridItemHolderInfo) {
             HomeGridItemHolderInfo dnInfo = (HomeGridItemHolderInfo) info;
@@ -81,8 +82,8 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
     @Override
     public boolean animateChange(@NonNull RecyclerView.ViewHolder oldHolder,
                                  @NonNull RecyclerView.ViewHolder newHolder,
-                                 @NonNull ItemHolderInfo preInfo,
-                                 @NonNull ItemHolderInfo postInfo) {
+                                 @NonNull RecyclerView.ItemAnimator.ItemHolderInfo preInfo,
+                                 @NonNull RecyclerView.ItemAnimator.ItemHolderInfo postInfo) {
         boolean runPending = super.animateChange(oldHolder, newHolder, preInfo, postInfo);
 
         if (preInfo instanceof HomeGridItemHolderInfo) {
@@ -277,7 +278,7 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
         commentsReturnAnim.start();
     }
 
-    private class HomeGridItemHolderInfo extends ItemHolderInfo {
+    private class HomeGridItemHolderInfo extends RecyclerView.ItemAnimator.ItemHolderInfo {
         boolean animateAddToPocket;
         boolean returnFromComments;
     }
