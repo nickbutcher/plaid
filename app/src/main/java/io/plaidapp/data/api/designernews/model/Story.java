@@ -19,6 +19,7 @@ package io.plaidapp.data.api.designernews.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,18 +32,22 @@ import io.plaidapp.data.PlaidItem;
  */
 public class Story extends PlaidItem implements Parcelable {
 
+    @Nullable
     public final String comment;
     public final String comment_html;
     public final int comment_count;
     public final int vote_count;
-    public final Date created_at;
     public final long user_id;
-    public final String user_display_name;
-    public final String user_portrait_url;
+    public final Date created_at;
+    public final StoryLinks links;
+    @Nullable
+    public final String user_display_name;   // Gone
+    @Nullable
+    public final String user_portrait_url;   // Gone
     public final String hostname;
     public final String badge;
     public final String user_job;
-    public final List<Comment> comments;
+    public final List<Comment> comments; // Gone
 
     public Story(long id,
                  String title,
@@ -58,7 +63,8 @@ public class Story extends PlaidItem implements Parcelable {
                  String hostname,
                  String badge,
                  String user_job,
-                 List<Comment> comments) {
+                 List<Comment> comments,
+                 StoryLinks links) {
         super(id, title, url);
         this.comment = comment;
         this.comment_html = comment_html;
@@ -72,6 +78,7 @@ public class Story extends PlaidItem implements Parcelable {
         this.badge = badge;
         this.user_job = user_job;
         this.comments = comments;
+        this.links = links;
     }
 
     protected Story(Parcel in) {
@@ -95,6 +102,7 @@ public class Story extends PlaidItem implements Parcelable {
         } else {
             comments = null;
         }
+        this.links = in.readParcelable(StoryLinks.class.getClassLoader());
     }
 
     public static class Builder {
@@ -113,6 +121,7 @@ public class Story extends PlaidItem implements Parcelable {
         private String badge;
         private String userJob;
         private List<Comment> comments;
+        private StoryLinks links;
 
         public Builder setId(long id) {
             this.id = id;
@@ -194,10 +203,15 @@ public class Story extends PlaidItem implements Parcelable {
             return this;
         }
 
+        public Builder setLinks(StoryLinks links) {
+            this.links = links;
+            return this;
+        }
+
         public Story build() {
             return new Story(id, title, url, comment, commentHtml, commentCount, voteCount,
                     createdAt, userId, userDisplayName, userPortraitUrl, hostname, badge,
-                    userJob, comments);
+                    userJob, comments, links);
         }
 
         public static Builder from(Story existing) {
@@ -216,7 +230,8 @@ public class Story extends PlaidItem implements Parcelable {
                     .setHostname(existing.hostname)
                     .setBadge(existing.badge)
                     .setUserJob(existing.user_job)
-                    .setComments(existing.comments);
+                    .setComments(existing.comments)
+                    .setLinks(existing.links);
         }
     }
 
@@ -250,6 +265,33 @@ public class Story extends PlaidItem implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeList(comments);
         }
+        dest.writeParcelable(this.links, flags);
+    }
+
+    @Override
+    public String toString() {
+        return "Story{" +
+                "comment='" + comment + '\'' +
+                ", comment_html='" + comment_html + '\'' +
+                ", comment_count=" + comment_count +
+                ", vote_count=" + vote_count +
+                ", user_id=" + user_id +
+                ", created_at=" + created_at +
+                ", links=" + links +
+                ", user_display_name='" + user_display_name + '\'' +
+                ", user_portrait_url='" + user_portrait_url + '\'' +
+                ", hostname='" + hostname + '\'' +
+                ", badge='" + badge + '\'' +
+                ", user_job='" + user_job + '\'' +
+                ", comments=" + comments +
+                ", id=" + id +
+                ", title='" + title + '\'' +
+                ", url='" + url + '\'' +
+                ", dataSource='" + dataSource + '\'' +
+                ", page=" + page +
+                ", weight=" + weight +
+                ", colspan=" + colspan +
+                '}';
     }
 
     @SuppressWarnings("unused")

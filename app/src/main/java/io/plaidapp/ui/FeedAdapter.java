@@ -216,43 +216,46 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private DesignerNewsStoryHolder createDesignerNewsStoryHolder(ViewGroup parent) {
         final DesignerNewsStoryHolder holder = new DesignerNewsStoryHolder(layoutInflater.inflate(
                 R.layout.designer_news_story_item, parent, false), pocketIsInstalled);
-        holder.itemView.setOnClickListener(
-                v -> {
-                    final Story story = (Story) getItem(holder.getAdapterPosition());
-                    CustomTabActivityHelper.openCustomTab(host,
-                            Activities.DesignerNews.Story.INSTANCE
-                                    .customTabIntent(host, story, null).build(),
-                            Uri.parse(story.url));
-                }
-        );
-        holder.comments.setOnClickListener(commentsView -> {
-            final Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.Story.INSTANCE);
-            intent.putExtra(Activities.DesignerNews.Story.EXTRA_STORY,
-                    (Story) getItem(holder.getAdapterPosition()));
-            ReflowText.addExtras(intent, new ReflowText.ReflowableTextView(holder.title));
-            setGridItemContentTransitions(holder.itemView);
-
-            // on return, fade the pocket & comments buttons in
-            host.setExitSharedElementCallback(new SharedElementCallback() {
-                @Override
-                public void onSharedElementStart(List<String> sharedElementNames, List<View>
-                        sharedElements, List<View> sharedElementSnapshots) {
-                    host.setExitSharedElementCallback(null);
-                    notifyItemChanged(holder.getAdapterPosition(),
-                            HomeGridItemAnimator.STORY_COMMENTS_RETURN);
-                }
-            });
-
-            final ActivityOptions options =
-                    ActivityOptions.makeSceneTransitionAnimation(host,
-                            Pair.create((View) holder.title,
-                                    host.getString(R.string.transition_story_title)),
-                            Pair.create(holder.itemView,
-                                    host.getString(R.string.transition_story_title_background)),
-                            Pair.create(holder.itemView,
-                                    host.getString(R.string.transition_story_background)));
-            host.startActivity(intent, options.toBundle());
-        });
+        // TODO add click listeners again
+        // removing click listeners for now, until we're calling the needed APIs
+        // with DN v2 APIs these lead to crashes
+//        holder.itemView.setOnClickListener(
+//                v -> {
+//                    final Story story = (Story) getItem(holder.getAdapterPosition());
+//                    CustomTabActivityHelper.openCustomTab(host,
+//                            Activities.DesignerNews.Story.INSTANCE
+//                                    .customTabIntent(host, story, null).build(),
+//                            Uri.parse(story.url));
+//                }
+//        );
+//        holder.comments.setOnClickListener(commentsView -> {
+//            final Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.Story.INSTANCE);
+//            intent.putExtra(Activities.DesignerNews.Story.EXTRA_STORY,
+//                    (Story) getItem(holder.getAdapterPosition()));
+//            ReflowText.addExtras(intent, new ReflowText.ReflowableTextView(holder.title));
+//            setGridItemContentTransitions(holder.itemView);
+//
+//            // on return, fade the pocket & comments buttons in
+//            host.setExitSharedElementCallback(new SharedElementCallback() {
+//                @Override
+//                public void onSharedElementStart(List<String> sharedElementNames, List<View>
+//                        sharedElements, List<View> sharedElementSnapshots) {
+//                    host.setExitSharedElementCallback(null);
+//                    notifyItemChanged(holder.getAdapterPosition(),
+//                            HomeGridItemAnimator.STORY_COMMENTS_RETURN);
+//                }
+//            });
+//
+//            final ActivityOptions options =
+//                    ActivityOptions.makeSceneTransitionAnimation(host,
+//                            Pair.create((View) holder.title,
+//                                    host.getString(R.string.transition_story_title)),
+//                            Pair.create(holder.itemView,
+//                                    host.getString(R.string.transition_story_title_background)),
+//                            Pair.create(holder.itemView,
+//                                    host.getString(R.string.transition_story_background)));
+//            host.startActivity(intent, options.toBundle());
+//        });
         if (pocketIsInstalled) {
             holder.pocket.setImageAlpha(178); // grumble... no xml setter, grumble...
             holder.pocket.setOnClickListener(view -> {
