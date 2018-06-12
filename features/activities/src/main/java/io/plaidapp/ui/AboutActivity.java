@@ -43,8 +43,6 @@ import android.widget.TextView;
 
 import java.security.InvalidParameterException;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import in.uncod.android.bypass.Bypass;
 import io.plaidapp.activities.R;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
@@ -64,15 +62,17 @@ import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOption
  */
 public class AboutActivity extends Activity {
 
-    @BindView(R.id.draggable_frame) ElasticDragDismissFrameLayout draggableFrame;
-    @BindView(R.id.pager) ViewPager pager;
-    @BindView(R.id.indicator) InkPageIndicator pageIndicator;
+    private ElasticDragDismissFrameLayout draggableFrame;
+    private ViewPager pager;
+    private InkPageIndicator pageIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
-        ButterKnife.bind(this);
+        draggableFrame = findViewById(R.id.draggable_frame);
+        pager = findViewById(R.id.pager);
+        pageIndicator = findViewById(R.id.indicator);
 
         pager.setAdapter(new AboutPagerAdapter(AboutActivity.this));
         pager.setPageMargin(getResources().getDimensionPixelSize(io.plaidapp.R.dimen.spacing_normal));
@@ -97,11 +97,14 @@ public class AboutActivity extends Activity {
     static class AboutPagerAdapter extends PagerAdapter {
 
         private View aboutPlaid;
-        @Nullable @BindView(R.id.about_description) TextView plaidDescription;
+        @Nullable
+        TextView plaidDescription;
         private View aboutIcon;
-        @Nullable @BindView(R.id.icon_description) TextView iconDescription;
+        @Nullable
+        TextView iconDescription;
         private View aboutLibs;
-        @Nullable @BindView(R.id.libs_list) RecyclerView libsList;
+        @Nullable
+        RecyclerView libsList;
 
         private final LayoutInflater layoutInflater;
         private final Bypass markdown;
@@ -143,7 +146,7 @@ public class AboutActivity extends Activity {
                 case 0:
                     if (aboutPlaid == null) {
                         aboutPlaid = layoutInflater.inflate(R.layout.about_plaid, parent, false);
-                        ButterKnife.bind(this, aboutPlaid);
+                        bindViews(aboutPlaid);
                         // fun with spans & markdown
                         CharSequence about0 = markdown.markdownToSpannable(resources
                                 .getString(io.plaidapp.R.string.about_plaid_0), plaidDescription, null);
@@ -169,7 +172,7 @@ public class AboutActivity extends Activity {
                 case 1:
                     if (aboutIcon == null) {
                         aboutIcon = layoutInflater.inflate(R.layout.about_icon, parent, false);
-                        ButterKnife.bind(this, aboutIcon);
+                        bindViews(aboutIcon);
                         CharSequence icon0 = resources.getString(io.plaidapp.R.string.about_icon_0);
                         CharSequence icon1 = markdown.markdownToSpannable(resources
                                 .getString(io.plaidapp.R.string.about_icon_1), iconDescription, null);
@@ -180,12 +183,18 @@ public class AboutActivity extends Activity {
                 case 2:
                     if (aboutLibs == null) {
                         aboutLibs = layoutInflater.inflate(R.layout.about_libs, parent, false);
-                        ButterKnife.bind(this, aboutLibs);
+                        bindViews(aboutLibs);
                         libsList.setAdapter(new LibraryAdapter(host));
                     }
                     return aboutLibs;
             }
             throw new InvalidParameterException();
+        }
+
+        private void bindViews(View parent) {
+            plaidDescription = parent.findViewById(R.id.about_description);
+            iconDescription = parent.findViewById(R.id.icon_description);
+            libsList = parent.findViewById(R.id.libs_list);
         }
     }
 
@@ -248,7 +257,8 @@ public class AboutActivity extends Activity {
             throw new InvalidParameterException();
         }
 
-        private @NonNull LibraryHolder createLibraryHolder(ViewGroup parent) {
+        private @NonNull
+        LibraryHolder createLibraryHolder(ViewGroup parent) {
             final LibraryHolder holder = new LibraryHolder(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.library, parent, false));
             View.OnClickListener clickListener = v -> {
@@ -301,14 +311,17 @@ public class AboutActivity extends Activity {
 
     static class LibraryHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.library_image) ImageView image;
-        @BindView(R.id.library_name) TextView name;
-        @BindView(R.id.library_description) TextView description;
-        @BindView(R.id.library_link) Button link;
+        ImageView image;
+        TextView name;
+        TextView description;
+        Button link;
 
         LibraryHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            image = itemView.findViewById(R.id.library_image);
+            name = itemView.findViewById(R.id.library_name);
+            description = itemView.findViewById(R.id.library_description);
+            link = itemView.findViewById(R.id.library_link);
         }
     }
 

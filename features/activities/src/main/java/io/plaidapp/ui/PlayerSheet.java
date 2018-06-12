@@ -42,10 +42,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindDimen;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.plaidapp.activities.R;
 import io.plaidapp.data.DataLoadingSubject;
 import io.plaidapp.data.PaginatedDataManager;
@@ -84,20 +80,13 @@ public class PlayerSheet extends Activity {
     @interface PlayerSheetMode {
     }
 
-    @BindView(R.id.bottom_sheet)
-    BottomSheet bottomSheet;
-    @BindView(R.id.bottom_sheet_content)
-    ViewGroup content;
-    @BindView(R.id.title_bar)
-    ViewGroup titleBar;
-    @BindView(R.id.close)
-    ImageView close;
-    @BindView(R.id.title)
-    TextView title;
-    @BindView(R.id.player_list)
-    RecyclerView playerList;
-    @BindDimen(io.plaidapp.R.dimen.large_avatar_size)
-    int largeAvatarSize;
+    private BottomSheet bottomSheet;
+    private ViewGroup content;
+    private ViewGroup titleBar;
+    private ImageView close;
+    private TextView title;
+    private RecyclerView playerList;
+    private int largeAvatarSize;
     private @Nullable
     Shot shot;
     private @Nullable
@@ -127,7 +116,7 @@ public class PlayerSheet extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.player_sheet);
-        ButterKnife.bind(this);
+        bindResources();
 
         final Intent intent = getIntent();
         final @PlayerSheetMode int mode = intent.getIntExtra(EXTRA_MODE, -1);
@@ -203,6 +192,20 @@ public class PlayerSheet extends Activity {
         dataManager.loadData(); // kick off initial load
     }
 
+    private void bindResources() {
+        bottomSheet = findViewById(R.id.bottom_sheet);
+        content = findViewById(R.id.bottom_sheet_content);
+        titleBar = findViewById(R.id.title_bar);
+        close = findViewById(R.id.close);
+        title = findViewById(R.id.title);
+        playerList = findViewById(R.id.player_list);
+        largeAvatarSize = getResources()
+                .getDimensionPixelSize(io.plaidapp.R.dimen.large_avatar_size);
+        View.OnClickListener dismiss = view -> dismiss(view);
+        bottomSheet.setOnClickListener(dismiss);
+        close.setOnClickListener(dismiss);
+    }
+
     @Override
     protected void onDestroy() {
         dataManager.cancelLoading();
@@ -229,7 +232,6 @@ public class PlayerSheet extends Activity {
         close.setImageState(new int[]{-android.R.attr.state_expanded}, true);
     }
 
-    @OnClick({R.id.bottom_sheet, R.id.close})
     public void dismiss(View view) {
         if (view.getVisibility() != View.VISIBLE) return;
         bottomSheet.dismiss();
@@ -363,18 +365,17 @@ public class PlayerSheet extends Activity {
 
     static class PlayerViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.player_avatar)
         ImageView playerAvatar;
-        @BindView(R.id.player_name)
         TextView playerName;
-        @BindView(R.id.player_bio)
         TextView playerBio;
-        @BindView(R.id.time_ago)
         TextView timeAgo;
 
         PlayerViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            playerAvatar = itemView.findViewById(R.id.player_avatar);
+            playerName = itemView.findViewById(R.id.player_name);
+            playerBio = itemView.findViewById(R.id.player_bio);
+            timeAgo = itemView.findViewById(R.id.time_ago);
         }
     }
 

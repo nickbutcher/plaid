@@ -26,7 +26,9 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.transition.Transition;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
@@ -36,44 +38,38 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import butterknife.BindDimen;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnEditorAction;
-import butterknife.OnTextChanged;
 import io.plaidapp.activities.R;
 import io.plaidapp.data.api.designernews.PostStoryService;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
-import io.plaidapp.util.Activities;
-import io.plaidapp.util.ActivityHelper;
-import io.plaidapp.util.ShortcutHelper;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.ui.widget.BottomSheet;
 import io.plaidapp.ui.widget.ObservableScrollView;
+import io.plaidapp.util.Activities;
+import io.plaidapp.util.ActivityHelper;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ImeUtils;
+import io.plaidapp.util.ShortcutHelper;
 
 public class PostNewDesignerNewsStory extends Activity {
 
-    @BindView(R.id.bottom_sheet) BottomSheet bottomSheet;
-    @BindView(R.id.bottom_sheet_content) ViewGroup bottomSheetContent;
-    @BindView(R.id.title) TextView sheetTitle;
-    @BindView(R.id.scroll_container) ObservableScrollView scrollContainer;
-    @BindView(R.id.new_story_title) EditText title;
-    @BindView(R.id.new_story_url_label) TextInputLayout urlLabel;
-    @BindView(R.id.new_story_url) EditText url;
-    @BindView(R.id.new_story_comment_label) TextInputLayout commentLabel;
-    @BindView(R.id.new_story_comment) EditText comment;
-    @BindView(R.id.new_story_post) Button post;
-    @BindDimen(io.plaidapp.R.dimen.z_app_bar) float appBarElevation;
+    private BottomSheet bottomSheet;
+    private ViewGroup bottomSheetContent;
+    private TextView sheetTitle;
+    private ObservableScrollView scrollContainer;
+    private EditText title;
+    private TextInputLayout urlLabel;
+    private EditText url;
+    private TextInputLayout commentLabel;
+    private EditText comment;
+    private Button post;
+    private float appBarElevation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_new_designer_news_story);
-        ButterKnife.bind(this);
+        bindResources();
         if (!FabTransform.setup(this, bottomSheetContent)) {
             MorphTransform.setup(this, bottomSheetContent,
                     ContextCompat.getColor(this, io.plaidapp.R.color.background_light), 0);
@@ -141,6 +137,72 @@ public class PostNewDesignerNewsStory extends Activity {
         ShortcutHelper.reportPostUsed(this);
     }
 
+    private void bindResources() {
+        bottomSheet = findViewById(R.id.bottom_sheet);
+        bottomSheet.setOnClickListener(view -> dismiss());
+        bottomSheetContent = findViewById(R.id.bottom_sheet_content);
+        sheetTitle = findViewById(R.id.title);
+        scrollContainer = findViewById(R.id.scroll_container);
+        title = findViewById(R.id.new_story_title);
+        title.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                titleTextChanged(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        urlLabel = findViewById(R.id.new_story_url_label);
+        url = findViewById(R.id.new_story_url);
+        url.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                urlTextChanged(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        url.setOnEditorActionListener(this::onEditorAction);
+        commentLabel = findViewById(R.id.new_story_comment_label);
+        comment = findViewById(R.id.new_story_comment);
+        comment.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                commentTextChanged(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        comment.setOnEditorActionListener(this::onEditorAction);
+        post = findViewById(R.id.new_story_post);
+        post.setOnClickListener(view -> postNewStory());
+        appBarElevation = getResources().getDimensionPixelSize(io.plaidapp.R.dimen.z_app_bar);
+    }
+
     @Override
     protected void onPause() {
         // customize window animations
@@ -153,7 +215,6 @@ public class PostNewDesignerNewsStory extends Activity {
         dismiss();
     }
 
-    @OnClick(R.id.bottom_sheet)
     protected void dismiss() {
         if (!hasSharedElementTransition()) {
             bottomSheetContent.animate()
@@ -172,12 +233,10 @@ public class PostNewDesignerNewsStory extends Activity {
         }
     }
 
-    @OnTextChanged(R.id.new_story_title)
     protected void titleTextChanged(CharSequence text) {
         setPostButtonState();
     }
 
-    @OnTextChanged(R.id.new_story_url)
     protected void urlTextChanged(CharSequence text) {
         final boolean emptyUrl = TextUtils.isEmpty(text);
         comment.setEnabled(emptyUrl);
@@ -186,7 +245,6 @@ public class PostNewDesignerNewsStory extends Activity {
         setPostButtonState();
     }
 
-    @OnTextChanged(R.id.new_story_comment)
     protected void commentTextChanged(CharSequence text) {
         final boolean emptyComment = TextUtils.isEmpty(text);
         url.setEnabled(emptyComment);
@@ -195,7 +253,6 @@ public class PostNewDesignerNewsStory extends Activity {
         setPostButtonState();
     }
 
-    @OnClick(R.id.new_story_post)
     protected void postNewStory() {
         if (DesignerNewsPrefs.get(this).isLoggedIn()) {
             ImeUtils.hideIme(title);
@@ -233,7 +290,6 @@ public class PostNewDesignerNewsStory extends Activity {
                             || !TextUtils.isEmpty(comment.getText())));
     }
 
-    @OnEditorAction({ R.id.new_story_url, R.id.new_story_comment })
     protected boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_SEND) {
             postNewStory();
