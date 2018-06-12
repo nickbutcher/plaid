@@ -172,52 +172,9 @@
         <item name="lineHeightHint">24sp</item>
     </style>
 
-    <style name="TextAppearance.EmptyState" parent="@android:style/TextAppearance.Material.Subhead">
-        <item name="android:textColor">@color/grey_300</item>
-    </style>
-
-    <style name="TextAppearance.Button" parent="@android:style/TextAppearance.Material.Widget.Button">
-        <item name="android:textStyle">bold</item>
-        <item name="android:letterSpacing">0.1</item>
-    </style>
-
-    <style name="TextAppearance.DarkButton" parent="@android:style/TextAppearance.Material.Widget.Button">
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
-    <style name="TextAppearance.TilePrimary" parent="@android:style/TextAppearance.Material.Subhead">
-        <item name="android:letterSpacing">0.01</item>
-        <item name="android:fontFamily">@font/roboto_mono</item>
-        <item name="lineHeightHint">20sp</item>
-    </style>
-
-    <style name="TextAppearance.TileSecondary" parent="@android:style/TextAppearance.Material.Body2">
-        <item name="android:letterSpacing">0.01</item>
-        <item name="android:textColor">?android:textColorSecondary</item>
-    </style>
-
-    <style name="TextAppearance.DialogTitle" parent="@android:style/TextAppearance.Material.Title">
-        <item name="android:textColor">@color/text_primary_dark</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:letterSpacing">0.01</item>
-        <item name="lineHeightHint">28sp</item>
-    </style>
-
-    <style name="TextAppearance.DialogContent" parent="@android:style/TextAppearance.Material.Subhead">
-        <item name="android:textColor">@color/text_secondary_dark</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:letterSpacing">0.01</item>
-        <item name="lineHeightHint">24sp</item>
-    </style>
-
     <style name="TextAppearance.About" parent="@android:style/TextAppearance.Material.Body1">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/text_secondary_dark</item>
-        <item name="lineHeightHint">24sp</item>
-    </style>
-
-    <style name="TextAppearance.EmptyText" parent="@style/TextAppearance.DialogContent">
-        <item name="android:textColor">@color/text_primary_light</item>
         <item name="lineHeightHint">24sp</item>
     </style>
 
