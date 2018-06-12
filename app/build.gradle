@@ -40,11 +40,18 @@ android {
                 "DESIGNER_NEWS_CLIENT_SECRET", "\"${designer_news_client_secret}\""
         buildConfigField "String",
                 "PRODUCT_HUNT_DEVELOPER_TOKEN", "\"${product_hunt_developer_token}\""
+        def filesAuthorityValue = applicationId + ".shareprovider"
+        buildConfigField "String", "FILES_AUTHORITY", "\"${filesAuthorityValue}\""
+        manifestPlaceholders = [filesAuthority: filesAuthorityValue]
+
+        buildConfigField "boolean", "DESIGNER_NEWS_V2", "true" // May be overridden by a build type.
     }
-        buildTypes {
+    buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            buildConfigField "boolean", "DESIGNER_NEWS_V2", "false"
         }
     }
     compileOptions {
@@ -62,7 +69,7 @@ repositories {
 
 dependencies {
     api "androidx.core:core-ktx:${versions.coreKtx}"
-    api 'com.android.support.constraint:constraint-layout:1.1.0-beta5'
+    api "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
     api "com.android.support:customtabs:${versions.supportLibrary}"
     api "com.android.support:design:${versions.supportLibrary}"
     api "com.android.support:palette-v7:${versions.supportLibrary}"
@@ -79,7 +86,7 @@ dependencies {
     api "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
     api "com.squareup.okhttp3:okhttp:${versions.okhttp}"
     api "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
-    api "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin}"
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
     api "org.jsoup:jsoup:${versions.jsoup}"
     api project(':bypass')
 }

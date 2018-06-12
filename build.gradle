@@ -17,17 +17,18 @@
 buildscript {
 
     ext.versions = [
-            'compileSdk'    : 28,
-            'targetSdk'     : 28,
-            'butterknife'   : '8.8.1',
-            'glide'         : '4.7.1',
-            'kotlin'        : '1.2.41',
-            'retrofit'      : '2.4.0',
-            'supportLibrary': '27.1.1',
-            'okhttp'        : '3.10.0',
-            'gson'          : '2.8.5',
-            'jsoup'         : '1.11.3',
-            'coreKtx'       : '0.3'
+            'compileSdk'      : 28,
+            'targetSdk'       : 28,
+            'supportLibrary'  : '27.1.1',
+            'constraintLayout': '1.1.1',
+            'butterknife'     : '8.8.1',
+            'glide'           : '4.7.1',
+            'kotlin'          : '1.2.41',
+            'retrofit'        : '2.4.0',
+            'okhttp'          : '3.10.0',
+            'gson'            : '2.8.5',
+            'jsoup'           : '1.11.3',
+            'coreKtx'         : '0.3'
     ]
 
     repositories {
