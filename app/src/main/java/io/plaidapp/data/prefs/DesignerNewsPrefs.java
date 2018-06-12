@@ -31,6 +31,7 @@ import io.plaidapp.data.api.designernews.DesignerNewsService;
 import io.plaidapp.data.api.designernews.model.User;
 import io.plaidapp.util.ShortcutHelper;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -147,6 +148,7 @@ public class DesignerNewsPrefs {
         final OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(
                         new ClientAuthInterceptor(accessToken, BuildConfig.DESIGNER_NEWS_CLIENT_ID))
+                .addInterceptor(getHttpLoggingInterceptor())
                 .build();
         final Gson gson = new Gson();
         api = new Retrofit.Builder()
@@ -156,6 +158,15 @@ public class DesignerNewsPrefs {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(DesignerNewsService.class);
+    }
+
+    @NonNull
+    private HttpLoggingInterceptor getHttpLoggingInterceptor() {
+        HttpLoggingInterceptor.Level
+                debugLevel = BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BASIC : HttpLoggingInterceptor.Level.NONE;
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(debugLevel);
+        return loggingInterceptor;
     }
 
 }

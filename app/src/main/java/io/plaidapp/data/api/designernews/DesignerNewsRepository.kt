@@ -17,6 +17,7 @@
 
 package io.plaidapp.data.api.designernews
 
+import io.plaidapp.BuildConfig
 import io.plaidapp.data.LoadSourceCallback
 import io.plaidapp.data.api.designernews.model.Story
 import io.plaidapp.data.prefs.DesignerNewsPrefs
@@ -34,7 +35,9 @@ class DesignerNewsRepository(
     private val inflight: MutableMap<String, Call<*>> = HashMap()
 
     fun loadTopStories(page: Int, callback: LoadSourceCallback) {
-        val topStories = service.getTopStories(page)
+        val topStories = if (BuildConfig.DESIGNER_NEWS_V2)
+            service.getTopStoriesV2(page) else
+            service.getTopStories(page)
         topStories.enqueue(object : Callback<List<Story>> {
             override fun onResponse(call: Call<List<Story>>, response: Response<List<Story>>) {
                 if (response.isSuccessful) {
@@ -54,7 +57,9 @@ class DesignerNewsRepository(
     }
 
     fun loadRecent(page: Int, callback: LoadSourceCallback) {
-        val recentStoriesCall = service.getRecentStories(page)
+        val recentStoriesCall = if (BuildConfig.DESIGNER_NEWS_V2)
+            service.getRecentStoriesV2(page) else
+            service.getRecentStories(page)
         recentStoriesCall.enqueue(object : Callback<List<Story>> {
             override fun onResponse(call: Call<List<Story>>, response: Response<List<Story>>) {
                 if (response.isSuccessful) {
