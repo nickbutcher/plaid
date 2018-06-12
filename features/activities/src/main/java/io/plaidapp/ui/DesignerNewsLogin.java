@@ -58,8 +58,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.plaidapp.BuildConfig;
 import io.plaidapp.activities.R;
 import io.plaidapp.data.api.designernews.model.AccessToken;
@@ -80,17 +78,17 @@ public class DesignerNewsLogin extends Activity {
     private static final int PERMISSIONS_REQUEST_GET_ACCOUNTS = 0;
 
     boolean isDismissing = false;
-    @BindView(R.id.container) ViewGroup container;
-    @BindView(R.id.dialog_title) TextView title;
-    @BindView(R.id.username_float_label) TextInputLayout usernameLabel;
-    @BindView(R.id.username) AutoCompleteTextView username;
-    @BindView(R.id.permission_primer) CheckBox permissionPrimer;
-    @BindView(R.id.password_float_label) TextInputLayout passwordLabel;
-    @BindView(R.id.password) EditText password;
-    @BindView(R.id.actions_container) FrameLayout actionsContainer;
-    @BindView(R.id.signup) Button signup;
-    @BindView(R.id.login) Button login;
-    @BindView(R.id.loading) ProgressBar loading;
+    private ViewGroup container;
+    private TextView title;
+    private TextInputLayout usernameLabel;
+    private AutoCompleteTextView username;
+    private CheckBox permissionPrimer;
+    private TextInputLayout passwordLabel;
+    private EditText password;
+    private FrameLayout actionsContainer;
+    private Button signup;
+    private Button login;
+    private ProgressBar loading;
     DesignerNewsPrefs designerNewsPrefs;
     private boolean shouldPromptForPermission = false;
 
@@ -98,7 +96,7 @@ public class DesignerNewsLogin extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_login);
-        ButterKnife.bind(this);
+        bindViews();
         if (!FabTransform.setup(this, container)) {
             MorphTransform.setup(this, container,
                     ContextCompat.getColor(this, io.plaidapp.R.color.background_light),
@@ -127,7 +125,22 @@ public class DesignerNewsLogin extends Activity {
         designerNewsPrefs = DesignerNewsPrefs.get(this);
     }
 
-    @Override @SuppressLint("NewApi")
+    private void bindViews() {
+        container = findViewById(R.id.container);
+        title = findViewById(R.id.dialog_title);
+        usernameLabel = findViewById(R.id.username_float_label);
+        username = findViewById(R.id.username);
+        permissionPrimer = findViewById(R.id.permission_primer);
+        passwordLabel = findViewById(R.id.password_float_label);
+        password = findViewById(R.id.password);
+        actionsContainer = findViewById(R.id.actions_container);
+        signup = findViewById(R.id.signup);
+        login = findViewById(R.id.login);
+        loading = findViewById(R.id.loading);
+    }
+
+    @Override
+    @SuppressLint("NewApi")
     public void onEnterAnimationComplete() {
         /* Postpone some of the setup steps so that we can run it after the enter transition (if
         there is one). Otherwise we may show the permissions dialog or account dropdown during the

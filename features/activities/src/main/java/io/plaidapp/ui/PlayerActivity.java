@@ -40,10 +40,6 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import java.text.NumberFormat;
 import java.util.List;
 
-import butterknife.BindInt;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.plaidapp.activities.R;
 import io.plaidapp.data.api.dribbble.PlayerShotsDataManager;
 import io.plaidapp.data.api.dribbble.model.Shot;
@@ -77,36 +73,24 @@ public class PlayerActivity extends Activity {
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
     private int followerCount;
 
-    @BindView(R.id.draggable_frame)
-    ElasticDragDismissFrameLayout draggableFrame;
-    @BindView(R.id.container)
-    ViewGroup container;
-    @BindView(R.id.avatar)
-    ImageView avatar;
-    @BindView(R.id.player_name)
-    TextView playerName;
-    @BindView(R.id.follow)
-    Button follow;
-    @BindView(R.id.player_bio)
-    TextView bio;
-    @BindView(R.id.shot_count)
-    TextView shotCount;
-    @BindView(R.id.followers_count)
-    TextView followersCount;
-    @BindView(R.id.likes_count)
-    TextView likesCount;
-    @BindView(R.id.loading)
-    ProgressBar loading;
-    @BindView(R.id.player_shots)
-    RecyclerView shots;
-    @BindInt(io.plaidapp.R.integer.num_columns)
-    int columns;
+    private ElasticDragDismissFrameLayout draggableFrame;
+    private ViewGroup container;
+    private ImageView avatar;
+    private TextView playerName;
+    private Button follow;
+    private TextView bio;
+    private TextView shotCount;
+    private TextView followersCount;
+    private TextView likesCount;
+    private ProgressBar loading;
+    private RecyclerView shots;
+    private int columns;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_player);
-        ButterKnife.bind(this);
+        bindResources();
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this);
 
         final Intent intent = getIntent();
@@ -147,6 +131,26 @@ public class PlayerActivity extends Activity {
             return insets;
         });
         setExitSharedElementCallback(FeedAdapter.createSharedElementReenterCallback(this));
+    }
+
+    private void bindResources() {
+        draggableFrame = findViewById(R.id.draggable_frame);
+        container = findViewById(R.id.container);
+        avatar = findViewById(R.id.avatar);
+        playerName = findViewById(R.id.player_name);
+        follow = findViewById(R.id.follow);
+        follow.setOnClickListener(view -> follow());
+        bio = findViewById(R.id.player_bio);
+        shotCount = findViewById(R.id.shot_count);
+        followersCount = findViewById(R.id.followers_count);
+        likesCount = findViewById(R.id.likes_count);
+        loading = findViewById(R.id.loading);
+        shots = findViewById(R.id.player_shots);
+        columns = getResources().getInteger(io.plaidapp.R.integer.num_columns);
+        View.OnClickListener listener = view -> playerActionClick((TextView) view);
+        shotCount.setOnClickListener(listener);
+        followersCount.setOnClickListener(listener);
+        likesCount.setOnClickListener(listener);
     }
 
     @Override
@@ -318,7 +322,6 @@ public class PlayerActivity extends Activity {
         }
     }
 
-    @OnClick(R.id.follow)
     void follow() {
         if (DribbblePrefs.get(this).isLoggedIn()) {
             if (following != null && following) {
@@ -365,7 +368,6 @@ public class PlayerActivity extends Activity {
         }
     }
 
-    @OnClick({R.id.shot_count, R.id.followers_count, R.id.likes_count})
     void playerActionClick(TextView view) {
         ((AnimatedVectorDrawable) view.getCompoundDrawables()[1]).start();
         switch (view.getId()) {
