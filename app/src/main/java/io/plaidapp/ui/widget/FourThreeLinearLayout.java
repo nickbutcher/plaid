@@ -19,7 +19,10 @@ package io.plaidapp.ui.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
+
+import static android.view.View.MeasureSpec.EXACTLY;
+import static android.view.View.MeasureSpec.getSize;
+import static android.view.View.MeasureSpec.makeMeasureSpec;
 
 /**
  * A extension of ForegroundLinearLayout that is always 4:3 aspect ratio.
@@ -32,8 +35,7 @@ public class FourThreeLinearLayout extends ForegroundLinearLayout {
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
-        int fourThreeHeight = View.MeasureSpec.makeMeasureSpec(View.MeasureSpec.getSize(widthSpec) * 3 / 4,
-                View.MeasureSpec.EXACTLY);
+        int fourThreeHeight = makeMeasureSpec(getSize(widthSpec) * 3 / 4, EXACTLY);
         super.onMeasure(widthSpec, fourThreeHeight);
     }
 

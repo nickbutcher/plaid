@@ -28,33 +28,66 @@ import android.support.v4.content.ContextCompat
 import io.plaidapp.R
 import io.plaidapp.data.api.designernews.UpvoteStoryService
 
+/**
+ * Helpers to start activities in a modularized world.
+ */
+
 private const val PACKAGE_NAME = "io.plaidapp.ui"
 
+/**
+ * Create an Intent with [Intent.ACTION_VIEW] to an [AddressableActivity].
+ */
 fun intentTo(addressableActivity: AddressableActivity): Intent {
     return Intent(Intent.ACTION_VIEW).setClassName(
             "io.plaidapp",
             addressableActivity.className)
 }
 
+/**
+ * An [android.app.Activity] that can be addressed by an intent.
+ */
 interface AddressableActivity {
+    /**
+     * The activity class name.
+     */
     val className: String
 }
 
+/**
+ * All addressable activities.
+ *
+ * Can contain intent extra names or functions associated with the activity creation.
+ */
 object Activities {
 
+    /**
+     * AboutActivity
+     */
     object About : AddressableActivity {
         override val className = "$PACKAGE_NAME.AboutActivity"
     }
 
+    /**
+     * Base object for DesignerNews activities.
+     */
     object DesignerNews {
+        /**
+         * DesignerNewsLogin Activity
+         */
         object Login : AddressableActivity {
             override val className = "$PACKAGE_NAME.DesignerNewsLogin"
         }
 
+        /**
+         * DesignerNewsStory Activity
+         */
         object Story : AddressableActivity {
             override val className = "$PACKAGE_NAME.DesignerNewsStory"
             const val EXTRA_STORY = "story"
 
+            /**
+             * Create the intent for this Activity's custom tab.
+             */
             fun customTabIntent(
                     context: Context,
                     story: io.plaidapp.data.api.designernews.model.Story,
@@ -78,33 +111,54 @@ object Activities {
             }
         }
 
+        /**
+         * PostNewDesignerNewsStory Activity
+         */
         object PostStory : AddressableActivity {
             override val className = "$PACKAGE_NAME.PostNewDesignerNewsStory"
+
             const val RESULT_DRAG_DISMISSED = 3
             const val RESULT_POSTING = 4
         }
     }
 
+    /**
+     * Base object for Dribbble activities.
+     */
     object Dribbble {
+        /**
+         * DribbbleLogin Activity
+         */
         object Login : AddressableActivity {
             override val className = "$PACKAGE_NAME.DribbbleLogin"
         }
 
+        /**
+         * DribbbleShot Activity
+         */
         object Shot : AddressableActivity {
             override val className = "$PACKAGE_NAME.DribbbleShot"
+
             const val EXTRA_SHOT = "EXTRA_SHOT"
             const val RESULT_EXTRA_SHOT_ID = "RESULT_EXTRA_SHOT_ID"
         }
     }
 
+    /**
+     * PlayerActivity
+     */
     object Player : AddressableActivity {
         override val className = "$PACKAGE_NAME.PlayerActivity"
+
         const val EXTRA_PLAYER = "EXTRA_PLAYER"
         const val EXTRA_PLAYER_NAME = "EXTRA_PLAYER_NAME"
         const val EXTRA_PLAYER_ID = "EXTRA_PLAYER_ID"
         const val EXTRA_PLAYER_USERNAME = "EXTRA_PLAYER_USERNAME"
     }
 
+    /**
+     * SearchActivity
+     */
     object Search : AddressableActivity {
         override val className = "$PACKAGE_NAME.SearchActivity"
 

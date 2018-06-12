@@ -20,6 +20,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
+import static android.view.View.MeasureSpec.EXACTLY;
+import static android.view.View.MeasureSpec.getSize;
+import static android.view.View.MeasureSpec.makeMeasureSpec;
+
 /**
  * A View that always has a 4:3 aspect ratio.
  */
@@ -32,8 +36,7 @@ public class FourThreeView extends View {
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
-        int fourThreeHeight = MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthSpec) * 3 / 4,
-                MeasureSpec.EXACTLY);
+        int fourThreeHeight = makeMeasureSpec(getSize(widthSpec) * 3 / 4, EXACTLY);
         super.onMeasure(widthSpec, fourThreeHeight);
     }
 

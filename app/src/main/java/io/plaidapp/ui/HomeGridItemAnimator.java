@@ -24,6 +24,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.ItemAnimator;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +36,9 @@ import io.plaidapp.ui.transitions.GravityArcMotion;
 import io.plaidapp.util.AnimUtils;
 import io.plaidapp.util.ViewUtils;
 
+
 /**
- * A {@link RecyclerView.ItemAnimator} for running animations specific to our home grid.
+ * A {@link ItemAnimator} for running animations specific to our home grid.
  */
 public class HomeGridItemAnimator extends SlideInItemAnimator {
 
@@ -58,17 +60,18 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
     }
 
     @Override
-    public RecyclerView.ItemAnimator.ItemHolderInfo obtainHolderInfo() {
+    public ItemHolderInfo obtainHolderInfo() {
         return new HomeGridItemHolderInfo();
     }
 
     @NonNull
     @Override
-    public RecyclerView.ItemAnimator.ItemHolderInfo recordPreLayoutInformation(@NonNull RecyclerView.State state,
-                                                                               @NonNull RecyclerView.ViewHolder viewHolder,
-                                                                               int changeFlags,
-                                                                               @NonNull List<Object> payloads) {
-        RecyclerView.ItemAnimator.ItemHolderInfo info =
+    public ItemHolderInfo recordPreLayoutInformation(
+            @NonNull RecyclerView.State state,
+            @NonNull RecyclerView.ViewHolder viewHolder,
+            int changeFlags,
+            @NonNull List<Object> payloads) {
+        ItemHolderInfo info =
                 super.recordPreLayoutInformation(state, viewHolder, changeFlags, payloads);
         if (info instanceof HomeGridItemHolderInfo) {
             HomeGridItemHolderInfo dnInfo = (HomeGridItemHolderInfo) info;
@@ -82,8 +85,8 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
     @Override
     public boolean animateChange(@NonNull RecyclerView.ViewHolder oldHolder,
                                  @NonNull RecyclerView.ViewHolder newHolder,
-                                 @NonNull RecyclerView.ItemAnimator.ItemHolderInfo preInfo,
-                                 @NonNull RecyclerView.ItemAnimator.ItemHolderInfo postInfo) {
+                                 @NonNull ItemHolderInfo preInfo,
+                                 @NonNull ItemHolderInfo postInfo) {
         boolean runPending = super.animateChange(oldHolder, newHolder, preInfo, postInfo);
 
         if (preInfo instanceof HomeGridItemHolderInfo) {
@@ -156,7 +159,7 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
         return super.isRunning()
                 || (runningAddToPocket != null && runningAddToPocket.second.isRunning())
                 || (runningStoryCommentsReturn != null
-                        && runningStoryCommentsReturn.second.isRunning());
+                && runningStoryCommentsReturn.second.isRunning());
     }
 
     private void animateAddToPocket(final FeedAdapter.DesignerNewsStoryHolder holder) {
@@ -278,7 +281,7 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
         commentsReturnAnim.start();
     }
 
-    private class HomeGridItemHolderInfo extends RecyclerView.ItemAnimator.ItemHolderInfo {
+    private class HomeGridItemHolderInfo extends ItemHolderInfo {
         boolean animateAddToPocket;
         boolean returnFromComments;
     }
