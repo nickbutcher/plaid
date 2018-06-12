@@ -27,7 +27,7 @@ buildscript {
             'okhttp'        : '3.10.0',
             'gson'          : '2.8.5',
             'jsoup'         : '1.11.3',
-            'ktx'           : '0.2'
+            'coreKtx'       : '0.3'
     ]
 
     repositories {
@@ -36,7 +36,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-alpha17'
+        classpath 'com.android.tools.build:gradle:3.2.0-alpha18'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
     }
 
