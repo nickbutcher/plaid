@@ -1,8 +1,9 @@
-# \[ 🚧 Work in progress 👷‍♀️⛏👷🔧️👷🔧 🚧 ️] Plaid 2.0 
+# \[ 🚧 Work in progress 👷‍♀️⛏👷🔧️👷🔧 🚧 \] Plaid 2.0 
 
 Rewriting Plaid using [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/), in Kotlin. 
 
-👎 During the initial development stage, we're not accepting external PRs. 
+🛑 During the initial development stage, we're not accepting external PRs. 🛑
+
 👍 Comments and new issues created are welcomed. 
 
 ### Background
@@ -20,6 +21,7 @@ All of these problems are encountered by many projects in the Android community 
 ### Non-Goals
 Changes to the styles, themes, icons, animations, transitions or any other UI elements that were the initial focus of Plaid, are outside the scope of this refactoring. 
 
+---
 
 # Plaid 1.0
 
