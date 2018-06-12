@@ -33,8 +33,8 @@ import android.support.annotation.ColorInt
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.Gravity
-import androidx.graphics.applyCanvas
-import androidx.graphics.createBitmap
+import androidx.core.graphics.applyCanvas
+import androidx.core.graphics.createBitmap
 import io.plaidapp.R
 
 /**
