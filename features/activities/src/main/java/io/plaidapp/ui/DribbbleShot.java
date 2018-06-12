@@ -65,9 +65,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindDimen;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.plaidapp.activities.R;
 import io.plaidapp.data.api.dribbble.DribbbleService;
 import io.plaidapp.data.api.dribbble.model.Comment;
@@ -108,11 +105,11 @@ public class DribbbleShot extends Activity {
     private static final int RC_LOGIN_COMMENT = 1;
     private static final float SCRIM_ADJUSTMENT = 0.075f;
 
-    @BindView(R.id.draggable_frame) ElasticDragDismissFrameLayout draggableFrame;
-    @BindView(R.id.back) ImageButton back;
-    @BindView(R.id.shot) ParallaxScrimageView imageView;
-    @BindView(R.id.dribbble_comments) RecyclerView commentsList;
-    @BindView(R.id.fab_heart) FABToggle fab;
+    private ElasticDragDismissFrameLayout draggableFrame;
+    private ImageButton back;
+    private ParallaxScrimageView imageView;
+    private RecyclerView commentsList;
+    private FABToggle fab;
     View shotDescription;
     View shotSpacer;
     Button likeCount;
@@ -136,15 +133,15 @@ public class DribbbleShot extends Activity {
     boolean allowComment;
     CommentsAdapter adapter;
     CommentAnimator commentAnimator;
-    @BindDimen(io.plaidapp.R.dimen.large_avatar_size) int largeAvatarSize;
-    @BindDimen(io.plaidapp.R.dimen.z_card) int cardElevation;
+    private int largeAvatarSize;
+    private int cardElevation;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_shot);
         dribbblePrefs = DribbblePrefs.get(this);
-        ButterKnife.bind(this);
+        bindResources();
         shotDescription = getLayoutInflater().inflate(R.layout.dribbble_shot_description,
                 commentsList, false);
         shotSpacer = shotDescription.findViewById(R.id.shot_spacer);
@@ -200,6 +197,17 @@ public class DribbbleShot extends Activity {
                 reportUrlError();
             }
         }
+    }
+
+    private void bindResources() {
+        draggableFrame = findViewById(R.id.draggable_frame);
+        back = findViewById(R.id.back);
+        imageView = findViewById(R.id.shot);
+        commentsList = findViewById(R.id.dribbble_comments);
+        fab = findViewById(R.id.fab_heart);
+        Resources res = getResources();
+        largeAvatarSize = res.getDimensionPixelSize(io.plaidapp.R.dimen.large_avatar_size);
+        cardElevation = res.getDimensionPixelSize(io.plaidapp.R.dimen.z_card);
     }
 
     @Override
@@ -301,14 +309,14 @@ public class DribbbleShot extends Activity {
         if (postponeEnterTransition) postponeEnterTransition();
         imageView.getViewTreeObserver().addOnPreDrawListener(
                 new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                imageView.getViewTreeObserver().removeOnPreDrawListener(this);
-                calculateFabPosition();
-                if (postponeEnterTransition) startPostponedEnterTransition();
-                return true;
-            }
-        });
+                    @Override
+                    public boolean onPreDraw() {
+                        imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+                        calculateFabPosition();
+                        if (postponeEnterTransition) startPostponedEnterTransition();
+                        return true;
+                    }
+                });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ((FabOverlapTextView) title).setText(shot.title);
@@ -1028,17 +1036,23 @@ public class DribbbleShot extends Activity {
 
     static class CommentViewHolder extends RecyclerView.ViewHolder implements Divided {
 
-        @BindView(R.id.player_avatar) ImageView avatar;
-        @BindView(R.id.comment_author) AuthorTextView author;
-        @BindView(R.id.comment_time_ago) TextView timeAgo;
-        @BindView(R.id.comment_text) TextView commentBody;
-        @BindView(R.id.comment_reply) ImageButton reply;
-        @BindView(R.id.comment_like) CheckableImageButton likeHeart;
-        @BindView(R.id.comment_likes_count) TextView likesCount;
+        ImageView avatar;
+        AuthorTextView author;
+        TextView timeAgo;
+        TextView commentBody;
+        ImageButton reply;
+        CheckableImageButton likeHeart;
+        TextView likesCount;
 
         CommentViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            avatar = itemView.findViewById(R.id.player_avatar);
+            author = itemView.findViewById(R.id.comment_author);
+            timeAgo = itemView.findViewById(R.id.comment_time_ago);
+            commentBody = itemView.findViewById(R.id.comment_text);
+            reply = itemView.findViewById(R.id.comment_reply);
+            likeHeart = itemView.findViewById(R.id.comment_like);
+            likesCount = itemView.findViewById(R.id.comment_likes_count);
         }
     }
 

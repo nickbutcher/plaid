@@ -33,8 +33,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.plaidapp.BuildConfig;
 import io.plaidapp.activities.R;
 import io.plaidapp.data.api.dribbble.DribbbleAuthService;
@@ -59,18 +57,18 @@ public class DribbbleLogin extends Activity {
 
     boolean isDismissing = false;
     boolean isLoginFailed = false;
-    @BindView(R.id.container) ViewGroup container;
-    @BindView(R.id.login_message) TextView message;
-    @BindView(R.id.login) Button login;
-    @BindView(R.id.loading) ProgressBar loading;
-    @BindView(R.id.login_failed_message) TextView loginFailed;
+    private ViewGroup container;
+    private TextView message;
+    private Button login;
+    private ProgressBar loading;
+    private TextView loginFailed;
     DribbblePrefs dribbblePrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_login);
-        ButterKnife.bind(this);
+        bindViews();
         loading.setVisibility(View.GONE);
         dribbblePrefs = DribbblePrefs.get(this);
 
@@ -84,6 +82,14 @@ public class DribbbleLogin extends Activity {
             isLoginFailed = savedInstanceState.getBoolean(STATE_LOGIN_FAILED, false);
             loginFailed.setVisibility(isLoginFailed ? View.VISIBLE : View.GONE);
         }
+    }
+
+    private void bindViews() {
+        container = findViewById(R.id.container);
+        message = findViewById(R.id.login_message);
+        login = findViewById(R.id.login);
+        loading = findViewById(R.id.loading);
+        loginFailed = findViewById(R.id.login_failed_message);
     }
 
     @Override

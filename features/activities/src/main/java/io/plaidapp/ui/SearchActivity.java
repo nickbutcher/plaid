@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.app.SharedElementCallback;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -51,43 +53,39 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
 import java.util.List;
 
-import butterknife.BindDimen;
-import butterknife.BindInt;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.plaidapp.activities.R;
 import io.plaidapp.data.PlaidItem;
 import io.plaidapp.data.SearchDataManager;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.pocket.PocketUtils;
-import io.plaidapp.util.Activities;
-import io.plaidapp.util.ShortcutHelper;
 import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
 import io.plaidapp.ui.transitions.CircularReveal;
+import io.plaidapp.util.Activities;
 import io.plaidapp.util.ImeUtils;
+import io.plaidapp.util.ShortcutHelper;
 import io.plaidapp.util.TransitionUtils;
 
 public class SearchActivity extends Activity {
 
-    @BindView(R.id.searchback) ImageButton searchBack;
-    @BindView(R.id.searchback_container) ViewGroup searchBackContainer;
-    @BindView(R.id.search_view) SearchView searchView;
-    @BindView(R.id.search_background) View searchBackground;
-    @BindView(android.R.id.empty) ProgressBar progress;
-    @BindView(R.id.search_results) RecyclerView results;
-    @BindView(R.id.container) ViewGroup container;
-    @BindView(R.id.search_toolbar) ViewGroup searchToolbar;
-    @BindView(R.id.results_container) ViewGroup resultsContainer;
-    @BindView(R.id.fab) ImageButton fab;
-    @BindView(R.id.confirm_save_container) ViewGroup confirmSaveContainer;
-    @BindView(R.id.save_dribbble) CheckedTextView saveDribbble;
-    @BindView(R.id.save_designer_news) CheckedTextView saveDesignerNews;
-    @BindView(R.id.scrim) View scrim;
-    @BindView(R.id.results_scrim) View resultsScrim;
-    @BindInt(io.plaidapp.R.integer.num_columns) int columns;
-    @BindDimen(io.plaidapp.R.dimen.z_app_bar) float appBarElevation;
+    private ImageButton searchBack;
+    private ViewGroup searchBackContainer;
+    private SearchView searchView;
+    private View searchBackground;
+    private ProgressBar progress;
+    private RecyclerView results;
+    private ViewGroup container;
+    private ViewGroup searchToolbar;
+    private ViewGroup resultsContainer;
+    private ImageButton fab;
+    private ViewGroup confirmSaveContainer;
+    private CheckedTextView saveDribbble;
+    private CheckedTextView saveDesignerNews;
+    private Button saveConfirmed;
+    private View scrim;
+    private View resultsScrim;
+    private int columns;
+    private float appBarElevation;
     SearchDataManager dataManager;
     FeedAdapter adapter;
     private TextView noResults;
@@ -98,7 +96,7 @@ public class SearchActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        ButterKnife.bind(this);
+        bindResources();
         setupSearchView();
 
         dataManager = new SearchDataManager(this) {
@@ -149,6 +147,36 @@ public class SearchActivity extends Activity {
         setupTransitions();
         onNewIntent(getIntent());
         ShortcutHelper.reportSearchUsed(this);
+    }
+
+    private void bindResources() {
+        searchBack = findViewById(R.id.searchback);
+        searchBack.setOnClickListener(view -> dismiss());
+        searchBackContainer = findViewById(R.id.searchback_container);
+        searchView = findViewById(R.id.search_view);
+        searchBackground = findViewById(R.id.search_background);
+        progress = findViewById(android.R.id.empty);
+        results = findViewById(R.id.search_results);
+        container = findViewById(R.id.container);
+        searchToolbar = findViewById(R.id.search_toolbar);
+        resultsContainer = findViewById(R.id.results_container);
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(view -> save());
+        confirmSaveContainer = findViewById(R.id.confirm_save_container);
+        View.OnClickListener toggleSave = view -> toggleSaveCheck((CheckedTextView) view);
+        saveDribbble = findViewById(R.id.save_dribbble);
+        saveDribbble.setOnClickListener(toggleSave);
+        saveDesignerNews = findViewById(R.id.save_designer_news);
+        saveDesignerNews.setOnClickListener(toggleSave);
+        saveConfirmed = findViewById(R.id.save_confirmed);
+        saveConfirmed.setOnClickListener(view -> doSave());
+        scrim = findViewById(R.id.scrim);
+        scrim.setOnClickListener(view -> dismiss());
+        resultsScrim = findViewById(R.id.results_scrim);
+        resultsScrim.setOnClickListener(view -> hideSaveConfirmation());
+        Resources res = getResources();
+        columns = res.getInteger(io.plaidapp.R.integer.num_columns);
+        appBarElevation = res.getDimensionPixelSize(io.plaidapp.R.dimen.z_app_bar);
     }
 
     @Override
@@ -204,14 +232,12 @@ public class SearchActivity extends Activity {
         }
     }
 
-    @OnClick({ R.id.scrim, R.id.searchback })
     protected void dismiss() {
         // clear the background else the touch ripple moves with the translation which looks bad
         searchBack.setBackground(null);
         finishAfterTransition();
     }
 
-    @OnClick(R.id.fab)
     protected void save() {
         // show the save confirmation bubble
         TransitionManager.beginDelayedTransition(
@@ -221,7 +247,6 @@ public class SearchActivity extends Activity {
         resultsScrim.setVisibility(View.VISIBLE);
     }
 
-    @OnClick(R.id.save_confirmed)
     protected void doSave() {
         Intent saveData = new Intent();
         saveData.putExtra(Activities.Search.EXTRA_QUERY, dataManager.getQuery());
@@ -231,7 +256,6 @@ public class SearchActivity extends Activity {
         dismiss();
     }
 
-    @OnClick(R.id.results_scrim)
     protected void hideSaveConfirmation() {
         if (confirmSaveContainer.getVisibility() == View.VISIBLE) {
             TransitionManager.beginDelayedTransition(
@@ -242,7 +266,6 @@ public class SearchActivity extends Activity {
         }
     }
 
-    @OnClick({ R.id.save_dribbble, R.id.save_designer_news })
     protected void toggleSaveCheck(CheckedTextView ctv) {
         ctv.toggle();
     }

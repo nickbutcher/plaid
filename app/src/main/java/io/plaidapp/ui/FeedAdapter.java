@@ -707,9 +707,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     static class DesignerNewsStoryHolder extends RecyclerView.ViewHolder implements Divided {
 
-        @BindView(R.id.story_title) BaselineGridTextView title;
-        @BindView(R.id.story_comments) TextView comments;
-        @BindView(R.id.pocket) ImageButton pocket;
+        BaselineGridTextView title;
+        TextView comments;
+        ImageButton pocket;
 
         DesignerNewsStoryHolder(View itemView, boolean pocketIsInstalled) {
             super(itemView);

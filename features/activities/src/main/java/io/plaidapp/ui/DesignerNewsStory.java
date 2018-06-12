@@ -23,11 +23,10 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.app.PendingIntent;
 import android.app.SharedElementCallback;
 import android.app.assist.AssistContent;
-import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Path;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.Uri;
@@ -35,8 +34,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.customtabs.CustomTabsIntent;
-import android.support.customtabs.CustomTabsSession;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
@@ -68,13 +65,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.BindDimen;
-import butterknife.BindInt;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import in.uncod.android.bypass.Bypass;
 import io.plaidapp.activities.R;
-import io.plaidapp.data.api.designernews.UpvoteStoryService;
 import io.plaidapp.data.api.designernews.model.Comment;
 import io.plaidapp.data.api.designernews.model.Story;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
@@ -88,7 +80,6 @@ import io.plaidapp.ui.widget.CollapsingTitleLayout;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import io.plaidapp.util.Activities;
-import io.plaidapp.util.DrawableUtils;
 import io.plaidapp.util.HtmlUtils;
 import io.plaidapp.util.ImeUtils;
 import io.plaidapp.util.ViewUtils;
@@ -109,35 +100,25 @@ public class DesignerNewsStory extends Activity {
     private static final int RC_LOGIN_UPVOTE = 7;
 
     private View header;
-    @BindView(R.id.comments_list)
-    RecyclerView commentsList;
+    private RecyclerView commentsList;
     private LinearLayoutManager layoutManager;
     private DesignerNewsCommentsAdapter commentsAdapter;
-    @BindView(R.id.fab)
-    ImageButton fab;
-    @BindView(R.id.fab_expand)
-    View fabExpand;
-    @BindView(R.id.comments_container)
-    ElasticDragDismissFrameLayout draggableFrame;
+    private ImageButton fab;
+    private View fabExpand;
+    private ElasticDragDismissFrameLayout draggableFrame;
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
     @Nullable
-    @BindView(R.id.backdrop_toolbar)
-    CollapsingTitleLayout collapsingToolbar;
+    private CollapsingTitleLayout collapsingToolbar;
     @Nullable
-    @BindView(R.id.story_title_background)
-    PinnedOffsetView toolbarBackground;
+    private PinnedOffsetView toolbarBackground;
     @Nullable
-    @BindView(R.id.background)
-    View background;
+    private View background;
     private TextView upvoteStory;
     private EditText enterComment;
     private ImageButton postComment;
-    @BindInt(io.plaidapp.R.integer.fab_expand_duration)
-    int fabExpandDuration;
-    @BindDimen(io.plaidapp.R.dimen.comment_thread_width)
-    int threadWidth;
-    @BindDimen(io.plaidapp.R.dimen.comment_thread_gap)
-    int threadGap;
+    private int fabExpandDuration;
+    private int threadWidth;
+    private int threadGap;
 
     private Story story;
     private DesignerNewsPrefs designerNewsPrefs;
@@ -148,7 +129,7 @@ public class DesignerNewsStory extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_story);
-        ButterKnife.bind(this);
+        bindResources();
 
         story = getIntent().getParcelableExtra(Activities.DesignerNews.Story.EXTRA_STORY);
         fab.setOnClickListener(fabClick);
@@ -215,6 +196,20 @@ public class DesignerNewsStory extends Activity {
         }
         customTab = new CustomTabActivityHelper();
         customTab.setConnectionCallback(customTabConnect);
+    }
+
+    private void bindResources() {
+        commentsList = findViewById(R.id.comments_list);
+        fab = findViewById(R.id.fab);
+        fabExpand = findViewById(R.id.fab_expand);
+        draggableFrame = findViewById(R.id.comments_container);
+        collapsingToolbar = findViewById(R.id.backdrop_toolbar);
+        toolbarBackground = findViewById(R.id.story_title_background);
+        background = findViewById(R.id.background);
+        Resources res = getResources();
+        fabExpandDuration = res.getInteger(io.plaidapp.R.integer.fab_expand_duration);
+        threadWidth = res.getDimensionPixelSize(io.plaidapp.R.dimen.comment_thread_width);
+        threadGap = res.getDimensionPixelSize(io.plaidapp.R.dimen.comment_thread_gap);
     }
 
     @Override
@@ -979,35 +974,33 @@ public class DesignerNewsStory extends Activity {
 
     /* package */ static class CommentHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.depth)
         ImageView threadDepth;
-        @BindView(R.id.comment_author)
         AuthorTextView author;
-        @BindView(R.id.comment_time_ago)
         TextView timeAgo;
-        @BindView(R.id.comment_text)
         TextView comment;
 
         public CommentHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            threadDepth = itemView.findViewById(R.id.depth);
+            author = itemView.findViewById(R.id.comment_author);
+            timeAgo = itemView.findViewById(R.id.comment_time_ago);
+            comment = itemView.findViewById(R.id.comment_text);
         }
     }
 
     /* package */ static class CommentReplyHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.comment_votes)
         Button commentVotes;
-        @BindView(R.id.comment_reply_label)
         TextInputLayout replyLabel;
-        @BindView(R.id.comment_reply)
         EditText commentReply;
-        @BindView(R.id.post_reply)
         ImageButton postReply;
 
         public CommentReplyHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            commentVotes = itemView.findViewById(R.id.comment_votes);
+            replyLabel = itemView.findViewById(R.id.comment_reply_label);
+            commentReply = itemView.findViewById(R.id.comment_reply);
+            postReply = itemView.findViewById(R.id.post_reply);
         }
 
     }
