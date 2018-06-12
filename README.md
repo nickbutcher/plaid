@@ -1,4 +1,27 @@
-# Plaid
+# \[ 🚧 Work in progress 👷‍♀️⛏👷🔧️👷🔧 🚧 ️] Plaid 2.0 
+
+Rewriting Plaid using [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/), in Kotlin. 
+
+👎 During the initial development stage, we're not accepting external PRs. 
+👍 Comments and new issues created are welcomed. 
+
+### Background
+
+Plaid was written with one big goal: showcase material design in Android in a real application. While Plaid successfully achieved its goal, from an architecture point of view, it lacks all features that would make it a modular, scalable, testable and maintainable app: with UI logic in Android classes, no tests and only one module. 
+Plaid represents a great real world app example: it provides a fairly complex set of functionalities, it has technical debt, it has features that have to be dealt with as APIs are being removed.
+All of these problems are encountered by many projects in the Android community and therefore, make Plaid a suitable showcase for all the advantages that architecture components bring. 
+
+### Goals
+* Migrate Plaid to Architecture Components. The refactoring will follow the architecture described in [Guide to App Architecture](https://developer.android.com/jetpack/docs/guide).  
+* Convert to Kotlin, while migrating to Architecture Components.
+* Modularize the app using [dynamic feature modules](https://developer.android.com/guide/app-bundle/).
+* Showcase the extensibility of the architecture by adding an extra data source, once the migration is finished.
+
+### Non-Goals
+Changes to the styles, themes, icons, animations, transitions or any other UI elements that were the initial focus of Plaid, are outside the scope of this refactoring. 
+
+
+# Plaid 1.0
 
 <img src="screenshots/plaid_demo.gif" width="300" align="right" hspace="20">
 
