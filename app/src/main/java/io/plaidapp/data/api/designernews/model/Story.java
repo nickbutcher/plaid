@@ -41,13 +41,13 @@ public class Story extends PlaidItem implements Parcelable {
     public final Date created_at;
     public final StoryLinks links;
     @Nullable
-    public final String user_display_name;   // Gone
+    public final String user_display_name; // Removed in DN API V2
     @Nullable
-    public final String user_portrait_url;   // Gone
+    public final String user_portrait_url; // Removed in DN API V2
     public final String hostname;
     public final String badge;
     public final String user_job;
-    public final List<Comment> comments; // Gone
+    public final List<Comment> comments; // Removed in DN API V2
 
     public Story(long id,
                  String title,
