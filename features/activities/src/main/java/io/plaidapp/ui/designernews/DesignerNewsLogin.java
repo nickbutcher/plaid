@@ -16,6 +16,8 @@
 
 package io.plaidapp.ui.designernews;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -71,13 +73,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
-
 public class DesignerNewsLogin extends Activity {
 
     private static final int PERMISSIONS_REQUEST_GET_ACCOUNTS = 0;
 
-    boolean isDismissing = false;
+    private boolean isDismissing = false;
     private ViewGroup container;
     private TextView title;
     private TextInputLayout usernameLabel;
@@ -89,7 +89,8 @@ public class DesignerNewsLogin extends Activity {
     private Button signup;
     private Button login;
     private ProgressBar loading;
-    DesignerNewsPrefs designerNewsPrefs;
+
+    private DesignerNewsPrefs designerNewsPrefs;
     private boolean shouldPromptForPermission = false;
 
     @Override
@@ -159,10 +160,11 @@ public class DesignerNewsLogin extends Activity {
         dismiss(null);
     }
 
-    @Override @TargetApi(Build.VERSION_CODES.M)
+    @Override
+    @TargetApi(Build.VERSION_CODES.M)
     public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+            @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST_GET_ACCOUNTS) {
             TransitionManager.beginDelayedTransition(container);
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -185,7 +187,9 @@ public class DesignerNewsLogin extends Activity {
 
     public void doLogin(View view) {
         showLoading();
-        getAccessToken();
+        getAccessToken(designerNewsPrefs.getApi(),
+                username.getText().toString(),
+                password.getText().toString());
     }
 
     public void signup(View view) {
@@ -199,7 +203,7 @@ public class DesignerNewsLogin extends Activity {
         finishAfterTransition();
     }
 
-    void maybeShowAccounts() {
+   private void maybeShowAccounts() {
         if (username.hasFocus()
                 && username.isAttachedToWindow()
                 && username.getAdapter() != null
@@ -213,34 +217,15 @@ public class DesignerNewsLogin extends Activity {
     }
 
     @SuppressLint("InflateParams")
-    void showLoggedInUser() {
-        final Call<User> authedUser = designerNewsPrefs.getApi().getAuthedUser();
+    private void showLoggedInUser(DesignerNewsService service) {
+        final Call<User> authedUser = service.getAuthedUser();
         authedUser.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (!response.isSuccessful()) return;
                 final User user = response.body();
                 designerNewsPrefs.setLoggedInUser(user);
-                final Toast confirmLogin = new Toast(getApplicationContext());
-                final View v = LayoutInflater.from(DesignerNewsLogin.this).inflate(R.layout
-                        .toast_logged_in_confirmation, null, false);
-                ((TextView) v.findViewById(R.id.name)).setText(user.display_name.toLowerCase());
-                // need to use app context here as the activity will be destroyed shortly
-                GlideApp.with(getApplicationContext())
-                        .load(user.portrait_url)
-                        .placeholder(io.plaidapp.R.drawable.avatar_placeholder)
-                        .circleCrop()
-                        .transition(withCrossFade())
-                        .into((ImageView) v.findViewById(R.id.avatar));
-                v.findViewById(R.id.scrim).setBackground(ScrimUtil
-                        .makeCubicGradientScrimDrawable(
-                                ContextCompat.getColor(DesignerNewsLogin.this,
-                                        io.plaidapp.R.color.scrim),
-                                5, Gravity.BOTTOM));
-                confirmLogin.setView(v);
-                confirmLogin.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
-                confirmLogin.setDuration(Toast.LENGTH_LONG);
-                confirmLogin.show();
+                updateUiWithUser(user);
             }
 
             @Override
@@ -250,6 +235,29 @@ public class DesignerNewsLogin extends Activity {
         });
     }
 
+    private void updateUiWithUser(User user) {
+        final Toast confirmLogin = new Toast(getApplicationContext());
+        final View v = LayoutInflater.from(DesignerNewsLogin.this).inflate(R.layout
+                .toast_logged_in_confirmation, null, false);
+        ((TextView) v.findViewById(R.id.name)).setText(user.display_name.toLowerCase());
+        // need to use app context here as the activity will be destroyed shortly
+        GlideApp.with(getApplicationContext())
+                .load(user.portrait_url)
+                .placeholder(io.plaidapp.R.drawable.avatar_placeholder)
+                .circleCrop()
+                .transition(withCrossFade())
+                .into((ImageView) v.findViewById(R.id.avatar));
+        v.findViewById(R.id.scrim).setBackground(ScrimUtil
+                .makeCubicGradientScrimDrawable(
+                        ContextCompat.getColor(DesignerNewsLogin.this,
+                                io.plaidapp.R.color.scrim),
+                        5, Gravity.BOTTOM));
+        confirmLogin.setView(v);
+        confirmLogin.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+        confirmLogin.setDuration(Toast.LENGTH_LONG);
+        confirmLogin.show();
+    }
+
     void showLoginFailed() {
         Snackbar.make(container, io.plaidapp.R.string.login_failed, Snackbar.LENGTH_SHORT).show();
         showLogin();
@@ -257,9 +265,13 @@ public class DesignerNewsLogin extends Activity {
     }
 
     private TextWatcher loginFieldWatcher = new TextWatcher() {
-        @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
-        @Override public void onTextChanged(CharSequence s, int start, int before, int count) { }
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -286,15 +298,15 @@ public class DesignerNewsLogin extends Activity {
         loading.setVisibility(View.GONE);
     }
 
-    private void getAccessToken() {
-        final Call<AccessToken> login = designerNewsPrefs.getApi().login(
-                buildLoginParams(username.getText().toString(), password.getText().toString()));
+    private void getAccessToken(DesignerNewsService service, String username, String password) {
+        final Call<AccessToken> login = service.login(buildLoginParams(username, password));
         login.enqueue(new Callback<AccessToken>() {
             @Override
             public void onResponse(Call<AccessToken> call, Response<AccessToken> response) {
                 if (response.isSuccessful()) {
-                    designerNewsPrefs.setAccessToken(DesignerNewsLogin.this, response.body().access_token);
-                    showLoggedInUser();
+                    designerNewsPrefs.setAccessToken(DesignerNewsLogin.this,
+                            response.body().access_token);
+                    showLoggedInUser(service);
                     setResult(Activity.RESULT_OK);
                     finish();
                 } else {
@@ -310,7 +322,8 @@ public class DesignerNewsLogin extends Activity {
         });
     }
 
-    private Map<String, String> buildLoginParams(@NonNull String username, @NonNull String password) {
+    private Map<String, String> buildLoginParams(@NonNull String username,
+            @NonNull String password) {
         final Map<String, String> loginParams = new HashMap<>(5);
         loginParams.put("client_id", BuildConfig.DESIGNER_NEWS_CLIENT_ID);
         loginParams.put("client_secret", BuildConfig.DESIGNER_NEWS_CLIENT_SECRET);
@@ -350,7 +363,7 @@ public class DesignerNewsLogin extends Activity {
         permissionPrimer.setVisibility(View.VISIBLE);
         permissionPrimer.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                requestPermissions(new String[]{ Manifest.permission.GET_ACCOUNTS },
+                requestPermissions(new String[]{Manifest.permission.GET_ACCOUNTS},
                         PERMISSIONS_REQUEST_GET_ACCOUNTS);
             }
         });
