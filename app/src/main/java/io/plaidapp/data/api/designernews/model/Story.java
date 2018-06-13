@@ -102,7 +102,7 @@ public class Story extends PlaidItem implements Parcelable {
         } else {
             comments = null;
         }
-        this.links = in.readParcelable(StoryLinks.class.getClassLoader());
+        links = in.readParcelable(StoryLinks.class.getClassLoader());
     }
 
     public static class Builder {

@@ -35,9 +35,11 @@ class DesignerNewsRepository(
     private val inflight: MutableMap<String, Call<*>> = HashMap()
 
     fun loadTopStories(page: Int, callback: LoadSourceCallback) {
-        val topStories = if (BuildConfig.DESIGNER_NEWS_V2)
-            service.getTopStoriesV2(page) else
+        val topStories = if (BuildConfig.DESIGNER_NEWS_V2) {
+            service.getTopStoriesV2(page)
+        } else {
             service.getTopStories(page)
+        }
         topStories.enqueue(object : Callback<List<Story>> {
             override fun onResponse(call: Call<List<Story>>, response: Response<List<Story>>) {
                 if (response.isSuccessful) {
@@ -57,9 +59,11 @@ class DesignerNewsRepository(
     }
 
     fun loadRecent(page: Int, callback: LoadSourceCallback) {
-        val recentStoriesCall = if (BuildConfig.DESIGNER_NEWS_V2)
-            service.getRecentStoriesV2(page) else
+        val recentStoriesCall = if (BuildConfig.DESIGNER_NEWS_V2) {
+            service.getRecentStoriesV2(page)
+        } else {
             service.getRecentStories(page)
+        }
         recentStoriesCall.enqueue(object : Callback<List<Story>> {
             override fun onResponse(call: Call<List<Story>>, response: Response<List<Story>>) {
                 if (response.isSuccessful) {
