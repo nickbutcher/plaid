@@ -25,10 +25,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.plaidapp.designernews.data.api.DesignerNewsRepository;
 import io.plaidapp.data.api.dribbble.DribbbleSearchService;
 import io.plaidapp.data.api.dribbble.model.Shot;
-import io.plaidapp.designernews.DesignerNewsPrefs;
+import io.plaidapp.designernews.Injection;
+import io.plaidapp.designernews.data.api.DesignerNewsRepository;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,8 +48,7 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
 
     public SearchDataManager(Context context) {
         super(context);
-        DesignerNewsPrefs designerNewsPrefs = DesignerNewsPrefs.get(context);
-        designerNewsRepository = new DesignerNewsRepository(designerNewsPrefs.getApi());
+        designerNewsRepository = Injection.provideDesignerNewsRepository(context);
 
         inflight = new ArrayList<>();
     }
