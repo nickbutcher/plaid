@@ -15,15 +15,15 @@
  *
  */
 
-package io.plaidapp.data.api.designernews;
+package io.plaidapp.designernews.data.api;
 
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import io.plaidapp.data.api.designernews.model.Story;
-import io.plaidapp.data.prefs.DesignerNewsPrefs;
+import io.plaidapp.designernews.data.api.model.Story;
+import io.plaidapp.designernews.DesignerNewsPrefs;
 import retrofit2.Call;
 import retrofit2.Response;
 

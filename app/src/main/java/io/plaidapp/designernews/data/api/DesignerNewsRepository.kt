@@ -15,13 +15,12 @@
  *
  */
 
-package io.plaidapp.data.api.designernews
+package io.plaidapp.designernews.data.api
 
 import io.plaidapp.BuildConfig
 import io.plaidapp.data.LoadSourceCallback
-import io.plaidapp.data.api.designernews.model.Story
-import io.plaidapp.data.prefs.DesignerNewsPrefs
 import io.plaidapp.data.prefs.SourceManager
+import io.plaidapp.designernews.data.api.model.Story
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,9 +28,7 @@ import retrofit2.Response
 /**
  * Repository class that handles work with Designer News.
  */
-class DesignerNewsRepository(
-        val service: DesignerNewsService,
-        val preferences: DesignerNewsPrefs) {
+class DesignerNewsRepository(private val service: DesignerNewsService) {
     private val inflight: MutableMap<String, Call<*>> = HashMap()
 
     fun loadTopStories(page: Int, callback: LoadSourceCallback) {
@@ -107,5 +104,16 @@ class DesignerNewsRepository(
 
     fun cancelRequestOfSource(source: String) {
         inflight[source].apply { this?.cancel() }
+    }
+
+    companion object {
+        @Volatile
+        private var INSTANCE: DesignerNewsRepository? = null
+
+        fun getInstance(service: DesignerNewsService): DesignerNewsRepository =
+                INSTANCE ?: synchronized(this) {
+                    INSTANCE
+                            ?: DesignerNewsRepository(service).also { INSTANCE = it }
+                }
     }
 }

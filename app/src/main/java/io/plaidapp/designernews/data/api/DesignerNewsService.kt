@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package io.plaidapp.data.api.designernews
+package io.plaidapp.designernews.data.api
 
 import io.plaidapp.data.api.EnvelopePayload
-import io.plaidapp.data.api.designernews.model.AccessToken
-import io.plaidapp.data.api.designernews.model.Comment
-import io.plaidapp.data.api.designernews.model.NewStoryRequest
-import io.plaidapp.data.api.designernews.model.Story
-import io.plaidapp.data.api.designernews.model.User
+import io.plaidapp.designernews.data.api.model.AccessToken
+import io.plaidapp.designernews.data.api.model.Comment
+import io.plaidapp.designernews.data.api.model.NewStoryRequest
+import io.plaidapp.designernews.data.api.model.Story
+import io.plaidapp.designernews.data.api.model.User
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Field
