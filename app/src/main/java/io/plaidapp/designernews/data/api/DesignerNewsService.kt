@@ -41,10 +41,6 @@ import retrofit2.http.Query
  */
 interface DesignerNewsService {
 
-    @EnvelopePayload("user")
-    @GET("api/v1/me")
-    fun getAuthedUser(): Call<User>
-
     @EnvelopePayload("stories")
     @GET("api/v2/stories")
     fun getTopStoriesV2(@Query("page") page: Int?): Call<List<Story>>
@@ -64,6 +60,10 @@ interface DesignerNewsService {
     @EnvelopePayload("stories")
     @GET("api/v1/stories/search")
     fun search(@Query("query") query: String, @Query("page") page: Int?): Call<List<Story>>
+
+    @EnvelopePayload("user")
+    @GET("api/v1/me")
+    fun getAuthedUser(): Call<User>
 
     @FormUrlEncoded
     @POST("oauth/token")
