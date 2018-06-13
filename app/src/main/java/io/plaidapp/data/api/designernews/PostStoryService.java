@@ -27,6 +27,7 @@ import java.util.List;
 
 import io.plaidapp.data.api.designernews.model.NewStoryRequest;
 import io.plaidapp.data.api.designernews.model.Story;
+import io.plaidapp.data.api.designernews.model.User;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -84,10 +85,11 @@ public class PostStoryService extends IntentService {
                         final Intent success = new Intent(BROADCAST_ACTION_SUCCESS);
                         // API doesn't fill in author details so add them here
                         final Story returnedStory = stories.get(0);
+                        final User user = designerNewsPrefs.getUser();
                         final Story.Builder builder = Story.Builder.from(returnedStory)
-                                .setUserId(designerNewsPrefs.getUserId())
-                                .setUserDisplayName(designerNewsPrefs.getUserName())
-                                .setUserPortraitUrl(designerNewsPrefs.getUserAvatar());
+                                .setUserId(user.id)
+                                .setUserDisplayName(user.display_name)
+                                .setUserPortraitUrl(user.portrait_url);
                         // API doesn't add a self URL, so potentially add one for consistency
                         if (TextUtils.isEmpty(returnedStory.url)) {
                             builder.setDefaultUrl(returnedStory.id);

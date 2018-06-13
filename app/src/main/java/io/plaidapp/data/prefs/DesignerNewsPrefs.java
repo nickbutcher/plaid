@@ -28,6 +28,8 @@ import io.plaidapp.BuildConfig;
 import io.plaidapp.data.api.ClientAuthInterceptor;
 import io.plaidapp.data.api.DenvelopingConverter;
 import io.plaidapp.data.api.designernews.DesignerNewsService;
+import io.plaidapp.data.api.designernews.login.DesignerNewsLoginLocalStorage;
+import io.plaidapp.data.api.designernews.login.DesignerNewsLoginRepository;
 import io.plaidapp.data.api.designernews.model.User;
 import io.plaidapp.util.ShortcutHelper;
 import okhttp3.OkHttpClient;
@@ -40,21 +42,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class DesignerNewsPrefs {
 
-    private static final String DESIGNER_NEWS_PREF = "DESIGNER_NEWS_PREF";
-    private static final String KEY_ACCESS_TOKEN = "KEY_ACCESS_TOKEN";
-    private static final String KEY_USER_ID = "KEY_USER_ID";
-    private static final String KEY_USER_NAME = "KEY_USER_NAME";
-    private static final String KEY_USER_AVATAR = "KEY_USER_AVATAR";
-
     private static volatile DesignerNewsPrefs singleton;
-    private final SharedPreferences prefs;
 
-    private String accessToken;
-    private boolean isLoggedIn = false;
-    private long userId;
-    private String username;
-    private String userAvatar;
     private DesignerNewsService api;
+    private DesignerNewsLoginRepository loginRepository;
 
     public static DesignerNewsPrefs get(Context context) {
         if (singleton == null) {
@@ -66,85 +57,44 @@ public class DesignerNewsPrefs {
     }
 
     private DesignerNewsPrefs(Context context) {
-        prefs = context.getApplicationContext().getSharedPreferences(DESIGNER_NEWS_PREF, Context
-                .MODE_PRIVATE);
-        accessToken = prefs.getString(KEY_ACCESS_TOKEN, null);
-        isLoggedIn = !TextUtils.isEmpty(accessToken);
-        if (isLoggedIn) {
-            userId = prefs.getLong(KEY_USER_ID, 0l);
-            username = prefs.getString(KEY_USER_NAME, null);
-            userAvatar = prefs.getString(KEY_USER_AVATAR, null);
-        }
+        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences
+                (DesignerNewsLoginLocalStorage.DESIGNER_NEWS_PREF,
+                        Context.MODE_PRIVATE);
+        loginRepository = new DesignerNewsLoginRepository(new DesignerNewsLoginLocalStorage(prefs));
     }
 
     public boolean isLoggedIn() {
-        return isLoggedIn;
+        return loginRepository.isLoggedIn();
     }
 
     public void setAccessToken(@NonNull Context context, String accessToken) {
         if (!TextUtils.isEmpty(accessToken)) {
-            this.accessToken = accessToken;
-            isLoggedIn = true;
-            prefs.edit().putString(KEY_ACCESS_TOKEN, accessToken).apply();
-            createApi();
+            loginRepository.setAccessToken(accessToken);
+            createApi(accessToken);
             ShortcutHelper.enablePostShortcut(context);
         }
     }
 
     public void setLoggedInUser(User user) {
-        if (user != null) {
-            userId = user.id;
-            username = user.display_name;
-            userAvatar = user.portrait_url;
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putLong(KEY_USER_ID, userId);
-            editor.putString(KEY_USER_NAME, username);
-            editor.putString(KEY_USER_AVATAR, userAvatar);
-            editor.apply();
-        }
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public String getUserName() {
-        return username;
-    }
-
-    public String getUserAvatar() {
-        return userAvatar;
+        loginRepository.setLoggedInUser(user);
     }
 
     public User getUser() {
-        return new User.Builder()
-                .setId(userId)
-                .setDisplayName(username)
-                .setPortraitUrl(userAvatar)
-                .build();
+        return loginRepository.getUser();
     }
 
     public void logout(@NonNull Context context) {
-        isLoggedIn = false;
-        accessToken = null;
-        username = null;
-        userAvatar = null;
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(KEY_ACCESS_TOKEN, null);
-        editor.putLong(KEY_USER_ID, 0l);
-        editor.putString(KEY_USER_NAME, null);
-        editor.putString(KEY_USER_AVATAR, null);
-        editor.apply();
-        createApi();
+        loginRepository.logout();
+        createApi(loginRepository.getAccessToken());
         ShortcutHelper.disablePostShortcut(context);
     }
 
     public DesignerNewsService getApi() {
-        if (api == null) createApi();
+        if (api == null) createApi(loginRepository.getAccessToken());
         return api;
     }
 
-    private void createApi() {
+    private void createApi(String accessToken) {
         final OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(
                         new ClientAuthInterceptor(accessToken, BuildConfig.DESIGNER_NEWS_CLIENT_ID))
@@ -163,7 +113,8 @@ public class DesignerNewsPrefs {
     @NonNull
     private HttpLoggingInterceptor getHttpLoggingInterceptor() {
         HttpLoggingInterceptor.Level
-                debugLevel = BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BASIC : HttpLoggingInterceptor.Level.NONE;
+                debugLevel = BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BASIC
+                : HttpLoggingInterceptor.Level.NONE;
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(debugLevel);
         return loggingInterceptor;
