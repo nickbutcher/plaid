@@ -69,6 +69,7 @@ import in.uncod.android.bypass.Bypass;
 import io.plaidapp.activities.R;
 import io.plaidapp.data.api.designernews.model.Comment;
 import io.plaidapp.data.api.designernews.model.Story;
+import io.plaidapp.data.api.designernews.model.User;
 import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.ui.drawable.ThreadedCommentDrawable;
 import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
@@ -865,14 +866,15 @@ public class DesignerNewsStory extends Activity {
                     // insert a locally created comment before actually
                     // hitting the API for immediate response
                     int replyDepth = replyingTo.depth + 1;
+                    User user = designerNewsPrefs.getUser();
                     final int newReplyPosition = commentsAdapter.addCommentReply(
                             new Comment.Builder()
                                     .setBody(holder.commentReply.getText().toString())
                                     .setCreatedAt(new Date())
                                     .setDepth(replyDepth)
-                                    .setUserId(designerNewsPrefs.getUserId())
-                                    .setUserDisplayName(designerNewsPrefs.getUserName())
-                                    .setUserPortraitUrl(designerNewsPrefs.getUserAvatar())
+                                    .setUserId(user.id)
+                                    .setUserDisplayName(user.display_name)
+                                    .setUserPortraitUrl(user.portrait_url)
                                     .build(),
                             inReplyToCommentPosition);
                     final Call<Comment> replyToComment = designerNewsPrefs.getApi()
