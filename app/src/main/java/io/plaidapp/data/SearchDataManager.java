@@ -18,7 +18,6 @@
 package io.plaidapp.data;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,10 +25,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.plaidapp.data.api.designernews.DesignerNewsRepository;
+import io.plaidapp.designernews.data.api.DesignerNewsRepository;
 import io.plaidapp.data.api.dribbble.DribbbleSearchService;
 import io.plaidapp.data.api.dribbble.model.Shot;
-import io.plaidapp.data.prefs.DesignerNewsPrefs;
+import io.plaidapp.designernews.DesignerNewsPrefs;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,8 +49,7 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
     public SearchDataManager(Context context) {
         super(context);
         DesignerNewsPrefs designerNewsPrefs = DesignerNewsPrefs.get(context);
-        designerNewsRepository = new DesignerNewsRepository(designerNewsPrefs.getApi(),
-                designerNewsPrefs);
+        designerNewsRepository = new DesignerNewsRepository(designerNewsPrefs.getApi());
 
         inflight = new ArrayList<>();
     }

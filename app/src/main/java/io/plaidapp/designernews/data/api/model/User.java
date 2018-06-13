@@ -15,7 +15,7 @@
  *
  */
 
-package io.plaidapp.data.api.designernews.model;
+package io.plaidapp.designernews.data.api.model;
 
 /**
  * Models a Desinger News User

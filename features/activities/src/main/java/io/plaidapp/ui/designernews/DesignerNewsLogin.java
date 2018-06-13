@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui;
+package io.plaidapp.ui.designernews;
 
 import android.Manifest;
 import android.accounts.Account;
@@ -60,9 +60,9 @@ import java.util.Set;
 
 import io.plaidapp.BuildConfig;
 import io.plaidapp.activities.R;
-import io.plaidapp.data.api.designernews.model.AccessToken;
-import io.plaidapp.data.api.designernews.model.User;
-import io.plaidapp.data.prefs.DesignerNewsPrefs;
+import io.plaidapp.designernews.data.api.model.AccessToken;
+import io.plaidapp.designernews.data.api.model.User;
+import io.plaidapp.designernews.DesignerNewsPrefs;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.util.ScrimUtil;

@@ -26,15 +26,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.plaidapp.data.api.designernews.DesignerNewsRepository;
 import io.plaidapp.data.api.dribbble.DribbbleSearchService;
 import io.plaidapp.data.api.dribbble.DribbbleService;
 import io.plaidapp.data.api.dribbble.model.Like;
 import io.plaidapp.data.api.dribbble.model.Shot;
 import io.plaidapp.data.api.dribbble.model.User;
 import io.plaidapp.data.api.producthunt.model.Post;
-import io.plaidapp.data.prefs.DesignerNewsPrefs;
 import io.plaidapp.data.prefs.SourceManager;
+import io.plaidapp.designernews.Injection;
+import io.plaidapp.designernews.data.api.DesignerNewsRepository;
 import io.plaidapp.ui.FilterAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,11 +53,9 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
     private Map<String, Call> inflight;
 
     public DataManager(Context context,
-                       FilterAdapter filterAdapter) {
+            FilterAdapter filterAdapter) {
         super(context);
-        DesignerNewsPrefs designerNewsPrefs = DesignerNewsPrefs.get(context);
-        designerNewsRepository = new DesignerNewsRepository(designerNewsPrefs.getApi(),
-                designerNewsPrefs);
+        designerNewsRepository = Injection.provideDesignerNewsRepository(context);
         this.filterAdapter = filterAdapter;
         filterAdapter.registerFilterChangedCallback(filterListener);
         setupPageIndexes();
