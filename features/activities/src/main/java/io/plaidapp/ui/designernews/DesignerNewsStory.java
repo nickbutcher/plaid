@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui;
+package io.plaidapp.ui.designernews;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -67,10 +67,10 @@ import java.util.List;
 
 import in.uncod.android.bypass.Bypass;
 import io.plaidapp.activities.R;
-import io.plaidapp.data.api.designernews.model.Comment;
-import io.plaidapp.data.api.designernews.model.Story;
-import io.plaidapp.data.api.designernews.model.User;
-import io.plaidapp.data.prefs.DesignerNewsPrefs;
+import io.plaidapp.designernews.data.api.model.Comment;
+import io.plaidapp.designernews.data.api.model.Story;
+import io.plaidapp.designernews.data.api.model.User;
+import io.plaidapp.designernews.DesignerNewsPrefs;
 import io.plaidapp.ui.drawable.ThreadedCommentDrawable;
 import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
 import io.plaidapp.ui.transitions.GravityArcMotion;

@@ -15,7 +15,7 @@
  *
  */
 
-package io.plaidapp.data.api.designernews;
+package io.plaidapp.designernews.data.api;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -25,10 +25,10 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import io.plaidapp.data.api.designernews.model.NewStoryRequest;
-import io.plaidapp.data.api.designernews.model.Story;
-import io.plaidapp.data.api.designernews.model.User;
-import io.plaidapp.data.prefs.DesignerNewsPrefs;
+import io.plaidapp.designernews.data.api.model.NewStoryRequest;
+import io.plaidapp.designernews.data.api.model.Story;
+import io.plaidapp.designernews.data.api.model.User;
+import io.plaidapp.designernews.DesignerNewsPrefs;
 import retrofit2.Call;
 import retrofit2.Response;
 

@@ -15,12 +15,12 @@
  *
  */
 
-package io.plaidapp.data.api.designernews;
+package io.plaidapp.designernews.data.api;
 
 import java.util.List;
 
 import io.plaidapp.data.PlaidItemSorting;
-import io.plaidapp.data.api.designernews.model.Story;
+import io.plaidapp.designernews.data.api.model.Story;
 
 /**
  * Utility class for applying weights to a group of {@link Story}s for sorting. Weighs stories

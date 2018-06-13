@@ -15,7 +15,7 @@
  *
  */
 
-package io.plaidapp.data.api.designernews.model;
+package io.plaidapp.designernews.data.api.model;
 
 /**
  * Models the editable attributes usable when posting a new story. New stories can have either a
