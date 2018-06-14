@@ -21,6 +21,7 @@ import android.text.TextUtils
 import io.plaidapp.designernews.data.api.model.User
 
 class DesignerNewsLoginRepository(private val storage: DesignerNewsLoginLocalStorage) {
+
     var accessToken: String? = null
         set(value) {
             if (!value.isNullOrEmpty()) {

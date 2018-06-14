@@ -78,11 +78,11 @@ fun provideDesignerNewsRepository(service: DesignerNewsService): DesignerNewsRep
 }
 
 private fun getHttpLoggingInterceptor(): HttpLoggingInterceptor {
-    val debugLevel = if (BuildConfig.DEBUG)
+    val debugLevel = if (BuildConfig.DEBUG) {
         HttpLoggingInterceptor.Level.BASIC
-    else
+    } else {
         HttpLoggingInterceptor.Level.NONE
-    val loggingInterceptor = HttpLoggingInterceptor()
-    loggingInterceptor.level = debugLevel
-    return loggingInterceptor
+    }
+    return HttpLoggingInterceptor()
+            .also { it.level = debugLevel }
 }
