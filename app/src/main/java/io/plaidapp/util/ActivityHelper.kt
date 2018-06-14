@@ -75,7 +75,7 @@ object Activities {
          * DesignerNewsLogin Activity
          */
         object Login : AddressableActivity {
-            override val className = "$PACKAGE_NAME.DesignerNewsLogin"
+            override val className = "$PACKAGE_NAME.designernews.DesignerNewsLogin"
         }
 
         /**
