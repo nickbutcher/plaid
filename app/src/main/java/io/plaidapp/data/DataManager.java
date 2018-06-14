@@ -52,8 +52,7 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
     private Map<String, Integer> pageIndexes;
     private Map<String, Call> inflight;
 
-    public DataManager(Context context,
-            FilterAdapter filterAdapter) {
+    public DataManager(Context context, FilterAdapter filterAdapter) {
         super(context);
         designerNewsRepository = Injection.provideDesignerNewsRepository(context);
         this.filterAdapter = filterAdapter;
