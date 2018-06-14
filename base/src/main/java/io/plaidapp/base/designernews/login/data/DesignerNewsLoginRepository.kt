@@ -19,8 +19,19 @@ package io.plaidapp.base.designernews.login.data
 
 import android.text.TextUtils
 import io.plaidapp.base.designernews.data.api.model.User
+import android.util.Log
+import io.plaidapp.base.BuildConfig
+import io.plaidapp.base.designernews.data.api.DesignerNewsService
+import io.plaidapp.base.designernews.data.api.model.AccessToken
+import io.plaidapp.base.designernews.provideDesignerNewsService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.*
 
 class DesignerNewsLoginRepository(private val storage: DesignerNewsLoginLocalStorage) {
+
+    private var api: DesignerNewsService
 
     var accessToken: String? = null
         set(value) {
@@ -41,16 +52,11 @@ class DesignerNewsLoginRepository(private val storage: DesignerNewsLoginLocalSto
 
     init {
         accessToken = storage.accessToken
+        api = provideDesignerNewsService(accessToken)
+
         isLoggedIn = !TextUtils.isEmpty(accessToken)
         if (isLoggedIn) {
             user = storage.user
-        }
-    }
-
-    fun setLoggedInUser(user: User?) {
-        user?.apply {
-            storage.user = user
-            isLoggedIn = true
         }
     }
 
@@ -59,6 +65,70 @@ class DesignerNewsLoginRepository(private val storage: DesignerNewsLoginLocalSto
         accessToken = null
         user = null
         storage.clearData()
+    }
+
+
+    fun login(username: String,
+              password: String,
+              onSuccess: (user: User) -> Unit,
+              onError: (error: String) -> Unit) {
+
+        val login = api.login(buildLoginParams(username, password))
+        login.enqueue(object : Callback<AccessToken> {
+            override fun onResponse(call: Call<AccessToken>, response: Response<AccessToken>) {
+                if (response.isSuccessful) {
+                    accessToken = response.body()!!.access_token
+                    requestUser(onSuccess, onError)
+                } else {
+                    onError("Access token retrieval failed")
+                }
+            }
+
+            override fun onFailure(call: Call<AccessToken>, t: Throwable) {
+                Log.e(javaClass.canonicalName, t.message, t)
+                onError("Access token retrieval failed with ${t.message}")
+            }
+        })
+    }
+
+    private fun requestUser(onSuccess: (user: User) -> Unit,
+                            onError: (error: String) -> Unit) {
+        val authedUser = api.getAuthedUser()
+        authedUser.enqueue(object : Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                if (!response.isSuccessful) return
+                val user = response.body()
+                if (user != null) {
+                    setLoggedInUser(user)
+                    onSuccess(user)
+                } else {
+                    onError("Failed to get user")
+                }
+            }
+
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                Log.e(javaClass.canonicalName, t.message, t)
+                onError("Failed to get authed user ${t.message}")
+            }
+        })
+    }
+
+    private fun setLoggedInUser(user: User?) {
+        user?.apply {
+            storage.user = user
+            isLoggedIn = true
+        }
+    }
+
+    private fun buildLoginParams(username: String,
+                                 password: String): Map<String, String> {
+        val loginParams = HashMap<String, String>(5)
+        loginParams["client_id"] = BuildConfig.DESIGNER_NEWS_CLIENT_ID
+        loginParams["client_secret"] = BuildConfig.DESIGNER_NEWS_CLIENT_SECRET
+        loginParams["grant_type"] = "password"
+        loginParams["username"] = username
+        loginParams["password"] = password
+        return loginParams
     }
 
     companion object {

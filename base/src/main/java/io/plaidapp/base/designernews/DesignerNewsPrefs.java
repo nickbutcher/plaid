@@ -19,7 +19,6 @@ package io.plaidapp.base.designernews;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import io.plaidapp.base.designernews.data.api.DesignerNewsService;
 import io.plaidapp.base.designernews.data.api.model.User;
@@ -52,18 +51,6 @@ public class DesignerNewsPrefs {
 
     public boolean isLoggedIn() {
         return loginRepository.isLoggedIn();
-    }
-
-    public void setAccessToken(@NonNull Context context, String accessToken) {
-        if (!TextUtils.isEmpty(accessToken)) {
-            loginRepository.setAccessToken(accessToken);
-            createApi();
-            ShortcutHelper.enablePostShortcut(context);
-        }
-    }
-
-    public void setLoggedInUser(User user) {
-        loginRepository.setLoggedInUser(user);
     }
 
     public User getUser() {
