@@ -62,7 +62,6 @@ public class DesignerNewsPrefs {
     }
 
     public DesignerNewsService getApi() {
-        return loginRepository.getApi();
+        return loginRepository.getService();
     }
-
 }

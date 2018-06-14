@@ -23,7 +23,7 @@ import io.plaidapp.base.designernews.data.api.model.User
 /**
  * Local storage for Designer News login related data.
  */
-class DesignerNewsLoginLocalStorage(private val prefs: SharedPreferences) {
+class DesignerNewsLoginLocalDataSource(private val prefs: SharedPreferences) {
 
     var accessToken: String?
         get() = prefs.getString(KEY_ACCESS_TOKEN, null)
