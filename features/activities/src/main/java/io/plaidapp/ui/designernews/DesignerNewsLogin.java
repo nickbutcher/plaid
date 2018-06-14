@@ -62,6 +62,7 @@ import java.util.Set;
 
 import io.plaidapp.BuildConfig;
 import io.plaidapp.activities.R;
+import io.plaidapp.designernews.data.api.DesignerNewsService;
 import io.plaidapp.designernews.data.api.model.AccessToken;
 import io.plaidapp.designernews.data.api.model.User;
 import io.plaidapp.designernews.DesignerNewsPrefs;
