@@ -22,7 +22,7 @@ android {
     compileSdkVersion versions.compileSdk
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion versions.targetSdk
         archivesBaseName = "plaid"
         resConfig "en"
@@ -38,10 +38,6 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    lintOptions {
-        abortOnError false
     }
 }
 
