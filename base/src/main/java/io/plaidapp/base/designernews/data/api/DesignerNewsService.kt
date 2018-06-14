@@ -62,7 +62,7 @@ interface DesignerNewsService {
     @GET("api/v1/stories/search")
     fun search(@Query("query") query: String, @Query("page") page: Int?): Call<List<Story>>
 
-    @EnvelopePayload("user")
+    @EnvelopePayload("users")
     @GET("api/v2/me")
     fun getAuthedUser(): Call<List<User>>
 
@@ -93,7 +93,7 @@ interface DesignerNewsService {
     fun upvoteComment(@Path("id") commentId: Long): Call<Comment>
 
     companion object {
-       const val ENDPOINT = "https://www.designernews.co/"
+        const val ENDPOINT = "https://www.designernews.co/"
     }
 
 }
