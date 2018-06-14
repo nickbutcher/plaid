@@ -81,6 +81,8 @@ class DesignerNewsLoginRepository(private val storage: DesignerNewsLoginLocalSto
             override fun onResponse(call: Call<AccessToken>, response: Response<AccessToken>) {
                 if (response.isSuccessful) {
                     accessToken = response.body()!!.access_token
+                    // reconstruct the API based on the access token
+                    api = provideDesignerNewsService(accessToken)
                     requestUser(onSuccess, onError)
                 } else {
                     onError("Access token retrieval failed")
