@@ -31,7 +31,7 @@ import java.util.*
 
 class DesignerNewsLoginRepository(private val storage: DesignerNewsLoginLocalStorage) {
 
-    private var api: DesignerNewsService
+    var api: DesignerNewsService
 
     var accessToken: String? = null
         set(value) {
@@ -64,7 +64,10 @@ class DesignerNewsLoginRepository(private val storage: DesignerNewsLoginLocalSto
         isLoggedIn = false
         accessToken = null
         user = null
+
         storage.clearData()
+        // recreate the API, based on null token
+        api = provideDesignerNewsService(accessToken)
     }
 
 
@@ -94,19 +97,23 @@ class DesignerNewsLoginRepository(private val storage: DesignerNewsLoginLocalSto
     private fun requestUser(onSuccess: (user: User) -> Unit,
                             onError: (error: String) -> Unit) {
         val authedUser = api.getAuthedUser()
-        authedUser.enqueue(object : Callback<User> {
-            override fun onResponse(call: Call<User>, response: Response<User>) {
-                if (!response.isSuccessful) return
-                val user = response.body()
-                if (user != null) {
-                    setLoggedInUser(user)
-                    onSuccess(user)
+        authedUser.enqueue(object : Callback<List<User>> {
+            override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
+                if (!response.isSuccessful || response.body() == null ||
+                        response.body()!!.isEmpty()) {
+                    onError("Failed to get user")
+                    return
+                }
+                val users = response.body()
+                if (users != null && users.isNotEmpty()) {
+                    setLoggedInUser(users[0])
+                    onSuccess(users[0])
                 } else {
                     onError("Failed to get user")
                 }
             }
 
-            override fun onFailure(call: Call<User>, t: Throwable) {
+            override fun onFailure(call: Call<List<User>>, t: Throwable) {
                 Log.e(javaClass.canonicalName, t.message, t)
                 onError("Failed to get authed user ${t.message}")
             }
