@@ -39,17 +39,19 @@ import retrofit2.converter.gson.GsonConverterFactory
  */
 
 
-fun provideDesignerNewsLoginLocalStorage(context: Context): DesignerNewsLoginLocalStorage {
+fun provideDesignerNewsLoginLocalStorage(context: Context): DesignerNewsLoginLocalDataSource {
     val preferences = context.applicationContext
             .getSharedPreferences(
-                    DesignerNewsLoginLocalStorage.DESIGNER_NEWS_PREF,
+                    DesignerNewsLoginLocalDataSource.DESIGNER_NEWS_PREF,
                     Context.MODE_PRIVATE
             )
-    return DesignerNewsLoginLocalStorage(preferences)
+    return DesignerNewsLoginLocalDataSource(preferences)
 }
 
 fun provideDesignerNewsLoginRepository(context: Context): DesignerNewsLoginRepository {
-    return DesignerNewsLoginRepository.getInstance(provideDesignerNewsLoginLocalStorage(context))
+    return DesignerNewsLoginRepository.getInstance(
+            provideDesignerNewsLoginLocalStorage(context),
+            DesignerNewsLoginRemoteDataSource())
 }
 
 fun provideDesignerNewsService(accessToken: String? = null): DesignerNewsService {
