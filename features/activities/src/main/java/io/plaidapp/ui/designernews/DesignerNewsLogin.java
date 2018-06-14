@@ -203,7 +203,7 @@ public class DesignerNewsLogin extends Activity {
         finishAfterTransition();
     }
 
-   private void maybeShowAccounts() {
+    private void maybeShowAccounts() {
         if (username.hasFocus()
                 && username.isAttachedToWindow()
                 && username.getAdapter() != null
@@ -237,8 +237,8 @@ public class DesignerNewsLogin extends Activity {
 
     private void updateUiWithUser(User user) {
         final Toast confirmLogin = new Toast(getApplicationContext());
-        final View v = LayoutInflater.from(DesignerNewsLogin.this).inflate(R.layout
-                .toast_logged_in_confirmation, null, false);
+        final View v = LayoutInflater.from(DesignerNewsLogin.this)
+                .inflate(R.layout.toast_logged_in_confirmation, null, false);
         ((TextView) v.findViewById(R.id.name)).setText(user.display_name.toLowerCase());
         // need to use app context here as the activity will be destroyed shortly
         GlideApp.with(getApplicationContext())
