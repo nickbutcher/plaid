@@ -15,19 +15,4 @@
   limitations under the License.
   -->
 
-<transitionSet
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <transition
-        class="io.plaidapp.ui.transitions.Pop"
-        android:duration="@android:integer/config_shortAnimTime"
-        android:startDelay="@android:integer/config_shortAnimTime"
-        android:interpolator="@android:interpolator/fast_out_slow_in">
-        <targets>
-            <target android:targetId="@id/fab" />
-        </targets>
-    </transition>
-
-    <fade />
-
-</transitionSet>
+<fade />
