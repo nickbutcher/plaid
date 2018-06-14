@@ -78,7 +78,7 @@ fun provideDesignerNewsRepository(service: DesignerNewsService): io.plaidapp.bas
 
 private fun getHttpLoggingInterceptor(): HttpLoggingInterceptor {
     val debugLevel = if (BuildConfig.DEBUG) {
-        HttpLoggingInterceptor.Level.BASIC
+        HttpLoggingInterceptor.Level.BODY
     } else {
         HttpLoggingInterceptor.Level.NONE
     }

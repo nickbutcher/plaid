@@ -32,7 +32,6 @@ public class DesignerNewsPrefs {
 
     private static volatile DesignerNewsPrefs singleton;
 
-    private DesignerNewsService api;
     private DesignerNewsLoginRepository loginRepository;
 
     public static DesignerNewsPrefs get(Context context) {
@@ -59,19 +58,11 @@ public class DesignerNewsPrefs {
 
     public void logout(@NonNull Context context) {
         loginRepository.logout();
-        createApi();
         ShortcutHelper.disablePostShortcut(context);
     }
 
     public DesignerNewsService getApi() {
-        if (api == null) {
-            createApi();
-        }
-        return api;
-    }
-
-    private void createApi() {
-        api = Injection.provideDesignerNewsService(loginRepository.getAccessToken());
+        return loginRepository.getApi();
     }
 
 }

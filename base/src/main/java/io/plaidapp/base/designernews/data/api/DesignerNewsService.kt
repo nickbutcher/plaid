@@ -63,8 +63,8 @@ interface DesignerNewsService {
     fun search(@Query("query") query: String, @Query("page") page: Int?): Call<List<Story>>
 
     @EnvelopePayload("user")
-    @GET("api/v1/me")
-    fun getAuthedUser(): Call<User>
+    @GET("api/v2/me")
+    fun getAuthedUser(): Call<List<User>>
 
     @FormUrlEncoded
     @POST("oauth/token")
