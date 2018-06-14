@@ -5,7 +5,7 @@ android {
     compileSdkVersion versions.compileSdk
 
     defaultConfig {
-        minSdkVersion 8
+        minSdkVersion 21
         targetSdkVersion versions.targetSdk
         versionCode 1
         versionName "1.0"
@@ -14,10 +14,6 @@ android {
         release {
             minifyEnabled false
         }
-    }
-
-    lintOptions {
-        abortOnError false
     }
 }
 
