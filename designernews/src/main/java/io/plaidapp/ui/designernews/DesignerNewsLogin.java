@@ -55,15 +55,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import io.plaidapp.BuildConfig;
 import io.plaidapp.base.designernews.data.api.model.AccessToken;
 import io.plaidapp.designernews.R;
 import io.plaidapp.base.designernews.data.api.DesignerNewsService;
+import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRepository;
 import io.plaidapp.base.designernews.data.api.model.User;
 import io.plaidapp.base.designernews.DesignerNewsPrefs;
 import io.plaidapp.ui.transitions.FabTransform;
@@ -73,6 +72,7 @@ import io.plaidapp.base.util.glide.GlideApp;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import kotlin.Unit;
 
 public class DesignerNewsLogin extends Activity {
 
@@ -91,13 +91,17 @@ public class DesignerNewsLogin extends Activity {
     private Button login;
     private ProgressBar loading;
 
-    private DesignerNewsPrefs designerNewsPrefs;
+    private DesignerNewsLoginRepository loginRepository;
+
     private boolean shouldPromptForPermission = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_login);
+
+        loginRepository = Injection.provideDesignerNewsLoginRepository(this);
+
         bindViews();
         if (!FabTransform.setup(this, container)) {
             MorphTransform.setup(this, container,
@@ -124,7 +128,6 @@ public class DesignerNewsLogin extends Activity {
             }
             return false;
         });
-        designerNewsPrefs = DesignerNewsPrefs.get(this);
     }
 
     private void bindViews() {
@@ -188,9 +191,19 @@ public class DesignerNewsLogin extends Activity {
 
     public void doLogin(View view) {
         showLoading();
-        getAccessToken(designerNewsPrefs.getApi(),
-                username.getText().toString(),
-                password.getText().toString());
+
+        loginRepository.login(username.getText().toString(),
+                password.getText().toString(),
+                user -> {
+                    updateUiWithUser(user);
+                    setResult(Activity.RESULT_OK);
+                    finish();
+                    return Unit.INSTANCE;
+                }, error -> {
+                    Log.e(getClass().getCanonicalName(), error);
+                    showLoginFailed();
+                    return Unit.INSTANCE;
+                });
     }
 
     public void signup(View view) {
@@ -215,25 +228,6 @@ public class DesignerNewsLogin extends Activity {
 
     boolean isLoginValid() {
         return username.length() > 0 && password.length() > 0;
-    }
-
-    @SuppressLint("InflateParams")
-    private void showLoggedInUser(DesignerNewsService service) {
-        final Call<User> authedUser = service.getAuthedUser();
-        authedUser.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (!response.isSuccessful()) return;
-                final User user = response.body();
-                designerNewsPrefs.setLoggedInUser(user);
-                updateUiWithUser(user);
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Log.e(getClass().getCanonicalName(), t.getMessage(), t);
-            }
-        });
     }
 
     private void updateUiWithUser(User user) {
@@ -297,41 +291,6 @@ public class DesignerNewsLogin extends Activity {
         passwordLabel.setVisibility(View.VISIBLE);
         actionsContainer.setVisibility(View.VISIBLE);
         loading.setVisibility(View.GONE);
-    }
-
-    private void getAccessToken(DesignerNewsService service, String username, String password) {
-        final Call<AccessToken> login = service.login(buildLoginParams(username, password));
-        login.enqueue(new Callback<AccessToken>() {
-            @Override
-            public void onResponse(Call<AccessToken> call, Response<AccessToken> response) {
-                if (response.isSuccessful()) {
-                    designerNewsPrefs.setAccessToken(DesignerNewsLogin.this,
-                            response.body().access_token);
-                    showLoggedInUser(service);
-                    setResult(Activity.RESULT_OK);
-                    finish();
-                } else {
-                    showLoginFailed();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<AccessToken> call, Throwable t) {
-                Log.e(getClass().getCanonicalName(), t.getMessage(), t);
-                showLoginFailed();
-            }
-        });
-    }
-
-    private Map<String, String> buildLoginParams(@NonNull String username,
-            @NonNull String password) {
-        final Map<String, String> loginParams = new HashMap<>(5);
-        loginParams.put("client_id", BuildConfig.DESIGNER_NEWS_CLIENT_ID);
-        loginParams.put("client_secret", BuildConfig.DESIGNER_NEWS_CLIENT_SECRET);
-        loginParams.put("grant_type", "password");
-        loginParams.put("username", username);
-        loginParams.put("password", password);
-        return loginParams;
     }
 
     @SuppressLint("NewApi")
