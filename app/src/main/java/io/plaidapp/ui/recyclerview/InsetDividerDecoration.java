@@ -23,6 +23,8 @@ import android.support.annotation.Dimension;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import io.plaidapp.base.ui.recyclerview.Divided;
+
 /**
  * A decoration which draws a horizontal divider between {@link RecyclerView.ViewHolder}s which
  * implement {@link Divided}; with a left inset.

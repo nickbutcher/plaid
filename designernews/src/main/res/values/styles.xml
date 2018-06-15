@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~   Copyright 2018 Google LLC
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~   Unless required by applicable law or agreed to in writing, software
+  ~   distributed under the License is distributed on an "AS IS" BASIS,
+  ~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  ~
+  -->
+
+<resources>
+
+    <style name="Plaid.Translucent.DesignerNewsLogin">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:colorPrimary">@color/designer_news</item>
+        <item name="android:colorAccent">@color/designer_news</item>
+        <item name="android:colorButtonNormal">@color/designer_news_button</item>
+        <item name="android:colorControlActivated">@color/designer_news</item>
+    </style>
+
+    <style name="Plaid.Translucent.DesignerNewsStory">
+        <item name="android:colorPrimary">@color/designer_news</item>
+        <item name="android:colorAccent">@color/designer_news</item>
+        <item name="android:colorControlActivated">?android:colorAccent</item>
+        <item name="android:statusBarColor">@color/designer_news_dark</item>
+        <item name="android:navigationBarColor">@color/designer_news_super_dark</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/designer_news_story_shared_enter</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/designer_news_story_shared_return</item>
+        <item name="android:windowEnterTransition">@transition/designer_news_story_enter</item>
+        <item name="android:windowReturnTransition">@transition/designer_news_story_return</item>
+    </style>
+
+    <style name="Plaid.Translucent.PostDesignerNewsStory">
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:colorPrimary">@color/designer_news</item>
+        <item name="android:colorAccent">@color/designer_news</item>
+        <item name="android:statusBarColor">@color/background_super_dark</item>
+        <item name="android:navigationBarColor">@color/background_super_dark</item>
+        <item name="android:colorButtonNormal">@color/designer_news_button</item>
+        <item name="android:colorControlActivated">@color/designer_news</item>
+        <item name="android:colorControlNormal">@color/hint_disabled_dark</item>
+    </style>
+
+    <style name="TextAppearance.CommentAuthor.DesignerNews">
+        <item name="android:textColor">@color/designer_news_author</item>
+    </style>
+
+    <style name="TextAppearance.DesignerNewsDescription" parent="@android:style/TextAppearance.Material.Subhead">
+        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="lineHeightHint">24sp</item>
+    </style>
+
+</resources>

@@ -21,7 +21,7 @@ android {
     compileSdkVersion versions.compileSdk
 
     defaultConfig {
-        minSdkVersion 23
+        minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         def filesAuthorityValue = applicationId + ".shareprovider"
         buildConfigField "String", "FILES_AUTHORITY", "\"${filesAuthorityValue}\""

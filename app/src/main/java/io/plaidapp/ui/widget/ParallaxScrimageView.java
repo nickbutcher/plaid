@@ -29,8 +29,9 @@ import android.util.AttributeSet;
 import android.util.Property;
 
 import io.plaidapp.R;
-import io.plaidapp.util.AnimUtils;
-import io.plaidapp.util.ColorUtils;
+import io.plaidapp.base.ui.widget.FourThreeImageView;
+import io.plaidapp.base.util.AnimUtils;
+import io.plaidapp.base.util.ColorUtils;
 
 /**
  * An image view which supports parallax scrolling and applying a scrim onto it's content. Get it.

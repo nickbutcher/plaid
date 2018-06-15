@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~   Copyright 2018 Google LLC
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~   Unless required by applicable law or agreed to in writing, software
+  ~   distributed under the License is distributed on an "AS IS" BASIS,
+  ~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  ~
+  -->
+
+<resources>
+
+    <style name="Plaid.Translucent.Search">
+        <item name="android:windowAnimationStyle">@style/SearchWindowAnimations</item>
+        <item name="android:statusBarColor">@color/background_super_dark</item>
+        <item name="android:navigationBarColor">@color/background_super_dark</item>
+        <item name="android:windowEnterTransition">@transition/search_enter</item>
+        <item name="android:windowReturnTransition">@transition/search_return</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/search_shared_enter</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/search_shared_return</item>
+        <item name="android:windowSharedElementsUseOverlay">true</item>
+        <item name="shotLoadingPlaceholderColors">@array/loading_placeholders_dark</item>
+        <item name="initialBadgeColor">@color/gif_badge_dark_image</item>
+    </style>
+
+    <style name="SearchWindowAnimations">
+        <item name="android:windowEnterAnimation">@null</item>
+        <item name="android:windowExitAnimation">@anim/fade_out_rapidly</item>
+    </style>
+
+    <style name="SearchViewTheme" parent="PlaidDarkOverlay">
+        <item name="colorControlActivated">?android:colorAccent</item>
+        <item name="android:searchViewStyle">@style/Widget.Plaid.SearchView</item>
+    </style>
+
+    <style name="ExpandedFabTheme" parent="@android:style/ThemeOverlay.Material.Light">
+        <item name="android:textColorPrimary">@color/dark_icon</item>
+        <item name="android:textColorPrimaryDisableOnly">@color/dark_icon</item>
+        <item name="android:colorControlActivated">@color/dark_icon</item>
+    </style>
+
+    <style name="Widget.Plaid.SearchView" parent="android:style/Widget.Material.SearchView">
+        <item name="android:searchIcon">@android:color/transparent</item>
+        <item name="android:searchHintIcon">@android:color/transparent</item>
+        <item name="android:queryBackground">@android:color/transparent</item>
+        <item name="android:submitBackground">@android:color/transparent</item>
+    </style>
+
+</resources>

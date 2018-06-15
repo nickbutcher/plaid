@@ -37,6 +37,9 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Interpolator;
 
+import io.plaidapp.base.util.AnimUtils;
+import io.plaidapp.base.util.MathUtils;
+
 /**
  * Adapted from design support lib.
  */

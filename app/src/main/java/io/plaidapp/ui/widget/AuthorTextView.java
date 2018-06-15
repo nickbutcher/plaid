@@ -20,6 +20,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import io.plaidapp.R;
+import io.plaidapp.base.ui.widget.BaselineGridTextView;
 
 /**
  * An extension to TextView which supports a custom state of {@link #STATE_ORIGINAL_POSTER} for

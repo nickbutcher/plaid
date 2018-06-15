@@ -39,57 +39,7 @@
     <string name="edit">Edit</string>
     <string name="no_filters_selected">No filters selected, press the filter button above (<annotation src="@drawable/ic_filter_small">&#2228;</annotation>)\n<i><annotation foregroundColor="@color/text_secondary_light">or swipe from the&#160;right</annotation></i></string>
 
-    <!-- data sources / filters -->
-    <string name="source_designer_news_popular">Popular Designer News</string>
-    <string name="source_designer_news_recent">Recent Designer News</string>
-    <string name="source_dribbble_popular">Popular Dribbbles</string>
-    <string name="source_dribbble_following">Dribbble following</string>
-    <string name="source_dribbble_user_likes">My Dribbble likes</string>
-    <string name="source_dribbble_user_shots">My Dribbble shots</string>
-    <string name="source_dribbble_recent">Recent Dribbbles</string>
-    <string name="source_dribbble_debuts">Dribbble Debuts</string>
-    <string name="source_dribbble_animated">Dribbble Animated</string>
-    <string name="source_dribbble_search_material_design">Material Design</string>
-    <string name="source_product_hunt">Product Hunt</string>
-
-    <!-- Search -->
-    <string name="search_hint">Search Dribbble &amp; Designer News</string>
-    <string name="no_search_results">No results for\n“%1$s”</string>
-    <string name="confirm_save_dribbble_search">Save Dribbble</string>
-    <string name="confirm_save_designer_news_search">Save Designer News</string>
-    <string name="confirm_save_search">Save</string>
-
-    <!-- new designer news story -->
-    <string name="new_story_title">Post a story to Designer News</string>
-    <string name="new_story_instructions">Submit a link or provide a comment to start a discussion.</string>
-    <string name="new_story_link_or_comment">Include a link <b>or</b> a comment</string>
-    <string name="new_story_post_title">Post title</string>
-    <string name="new_story_url">Url</string>
-    <string name="new_story_url_hint">Link</string>
-    <string name="new_story_post">Post</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-
-    <!-- designer news login -->
-    <string name="username">Username</string>
-    <string name="get_accounts_permission_primer_message">Autocomplete email addresses</string>
-    <string name="password">Password</string>
-    <string name="sign_up">Sign up</string>
-    <string name="dn_login_action">Log in</string>
-
-    <string name="login_failed">Login failed</string>
-
-    <!-- designer news story -->
-    <string name="upvote_story">Upvote story</string>
-    <!-- using strings for the number of views/likes as we run them through NumberFormat -->
-    <plurals name="upvotes">
-        <item quantity="zero">no upvotes</item>
-        <item quantity="one">%s upvote</item>
-        <item quantity="other">%s upvotes</item>
-    </plurals>
-
-
-    <!-- dribbble shot screen -->
+      <!-- dribbble shot screen -->
     <!-- using strings for the number of views/likes as we run them through NumberFormat -->
     <plurals name="likes">
         <item quantity="zero">no likes</item>
@@ -126,39 +76,4 @@
         <item quantity="other">%s Fans</item>
     </plurals>
 
-    <!-- about screen -->
-    <string name="about_plaid_0">Plaid is a source of design news &amp; inspiration that serves as a concrete example of [material design principles](https://www.google.com/design/spec/material-design/introduction.html#introduction-principles). Plaid pulls data from [Designer News](https://www.designernews.co/), [Dribbble](https://dribbble.com/) &amp; [Product Hunt](https://www.producthunt.com/); it is in no way an official client for these services nor endorsed by them. It is rather good&#160;though.</string>
-    <string name="about_plaid_1">Plaid is written by Nick&#160;Butcher</string>
-    <string name="about_plaid_2">[Twitter](http://twitter.com/crafty) | [Google+](http://google.com/+NickButcher)</string>
-    <string name="about_plaid_3">The source code is available on [GitHub](http://github.com/nickbutcher/plaid)</string>
-    <string name="about_icon_0">"Plaid\'s icon is lovingly crafted by the inimitable Roman&#160;Nurik"</string>
-    <string name="about_icon_1">[Twitter](http://twitter.com/romannurik) | [Google+](http://google.com/+RomanNurik)</string>
-    <string name="about_libs_intro">Plaid is built with the help of these awesome&#160;libraries</string>
-    <string name="about_lib_link">website</string>
-
-    <!-- app shortcuts -->
-    <string name="shortcut_search_short_label">@string/search</string>
-    <string name="shortcut_search_long_label">@string/search</string>
-    <string name="shortcut_search_disabled">Search not available</string>
-    <string name="shortcut_post_short_label">New Story</string>
-    <string name="shortcut_post_long_label">New Designer News story</string>
-    <string name="shortcut_post_disabled">Log in to Designer News to post a new story</string>
-
-    <!-- transition shared elements -->
-    <string name="transition_shot" translatable="false">shot</string>
-    <string name="transition_shot_title" translatable="false">shot_title</string>
-    <string name="transition_shot_background" translatable="false">shot_background</string>
-    <string name="transition_story_title" translatable="false">story_title</string>
-    <string name="transition_story_title_background" translatable="false">story_title_background</string>
-    <string name="transition_story_background" translatable="false">transition_story_background</string>
-    <string name="transition_dribbble_login" translatable="false">dribbble_login</string>
-    <string name="transition_designer_news_login" translatable="false">transition_designer_news_login</string>
-    <string name="transition_new_designer_news_post" translatable="false">new_designer_news_post</string>
-    <string name="transition_player_avatar" translatable="false">transition_player_avatar</string>
-    <string name="transition_player_background" translatable="false">transition_player_background</string>
-    <string name="transition_search_back" translatable="false">transition_search_back</string>
-
-    <string name="comment_likes_count">0</string>
-    <string name="title_dribbble">Dribbble</string>
-    <string name="title_about">About</string>
 </resources>

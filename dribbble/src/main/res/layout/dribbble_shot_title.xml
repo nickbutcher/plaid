@@ -22,7 +22,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="@layout/dribbble_shot_description">
 
-    <io.plaidapp.ui.widget.BaselineGridTextView
+    <io.plaidapp.base.ui.widget.BaselineGridTextView
         android:id="@+id/shot_title"
         android:layout_width="match_parent"
         android:layout_columnSpan="3"
@@ -35,7 +35,7 @@
         android:textAppearance="@style/TextAppearance.DribbbleShotTitle"
         tools:text="Dribbble shot title" />
 
-    <io.plaidapp.ui.widget.BaselineGridTextView
+    <io.plaidapp.base.ui.widget.BaselineGridTextView
         android:id="@+id/shot_description"
         android:layout_columnSpan="3"
         android:paddingEnd="@dimen/padding_normal"
