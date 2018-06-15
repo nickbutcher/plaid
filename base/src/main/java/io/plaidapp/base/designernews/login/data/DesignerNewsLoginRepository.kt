@@ -17,12 +17,17 @@
 
 package io.plaidapp.base.designernews.login.data
 
-import android.text.TextUtils
 import io.plaidapp.base.designernews.data.api.DesignerNewsService
 import io.plaidapp.base.designernews.data.api.model.User
 
-class DesignerNewsLoginRepository(private val localDataSource: DesignerNewsLoginLocalDataSource,
-                                  private val remoteDataSource: DesignerNewsLoginRemoteDataSource) {
+/**
+ * Repository that handles Designer News login data. It knows what data sources need to be
+ * triggered to login and where to store the data, once the user was logged in.
+ */
+class DesignerNewsLoginRepository(
+        private val localDataSource: DesignerNewsLoginLocalDataSource,
+        private val remoteDataSource: DesignerNewsLoginRemoteDataSource
+) {
 
     var isLoggedIn: Boolean = false
         private set
@@ -33,10 +38,12 @@ class DesignerNewsLoginRepository(private val localDataSource: DesignerNewsLogin
         private set
 
     init {
-        isLoggedIn = !TextUtils.isEmpty(localDataSource.accessToken)
+        val accessToken = localDataSource.authToken
+        isLoggedIn = !accessToken.isNullOrEmpty()
         if (isLoggedIn) {
             user = localDataSource.user
         }
+        remoteDataSource.updateAuthToken(accessToken)
     }
 
     fun logout() {
@@ -44,14 +51,15 @@ class DesignerNewsLoginRepository(private val localDataSource: DesignerNewsLogin
         user = null
 
         localDataSource.clearData()
-        remoteDataSource.accessToken = null
+        remoteDataSource.logout()
     }
 
-    fun login(username: String,
-              password: String,
-              onSuccess: (user: User) -> Unit,
-              onError: (error: String) -> Unit) {
-
+    fun login(
+            username: String,
+            password: String,
+            onSuccess: (user: User) -> Unit,
+            onError: (error: String) -> Unit
+    ) {
         remoteDataSource.login(
                 username,
                 password,
@@ -71,24 +79,22 @@ class DesignerNewsLoginRepository(private val localDataSource: DesignerNewsLogin
 
     // exposing this for now, until we can remove the API usage from the DesignerNewsPrefs
     fun getService(): DesignerNewsService {
-        return remoteDataSource.api
+        return remoteDataSource.service
     }
 
     companion object {
         @Volatile
         private var INSTANCE: DesignerNewsLoginRepository? = null
 
-        fun getInstance(localDataSource: DesignerNewsLoginLocalDataSource,
-                        remoteDataSource: DesignerNewsLoginRemoteDataSource):
-                DesignerNewsLoginRepository =
+        fun getInstance(
+                localDataSource: DesignerNewsLoginLocalDataSource,
+                remoteDataSource: DesignerNewsLoginRemoteDataSource
+        ): DesignerNewsLoginRepository =
                 INSTANCE ?: synchronized(this) {
-                    INSTANCE
-                            ?: DesignerNewsLoginRepository(
-                                    localDataSource,
-                                    remoteDataSource
-                            ).also {
-                                INSTANCE = it
-                            }
+                    INSTANCE ?: DesignerNewsLoginRepository(
+                            localDataSource,
+                            remoteDataSource
+                    ).also { INSTANCE = it }
                 }
     }
 }
