@@ -218,15 +218,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         // TODO add click listeners again
         // removing click listeners for now, until we're calling the needed APIs
         // with DN v2 APIs these lead to crashes
-//        holder.itemView.setOnClickListener(
-//                v -> {
-//                    final Story story = (Story) getItem(holder.getAdapterPosition());
-//                    CustomTabActivityHelper.openCustomTab(host,
-//                            Activities.DesignerNews.Story.INSTANCE
-//                                    .customTabIntent(host, story, null).build(),
-//                            Uri.parse(story.url));
-//                }
-//        );
+        holder.itemView.setOnClickListener(
+                v -> {
+                    final Story story = (Story) getItem(holder.getAdapterPosition());
+                    if (story.url != null) {
+                        CustomTabActivityHelper.openCustomTab(host,
+                                Activities.DesignerNews.Story.INSTANCE
+                                        .customTabIntent(host, story, null).build(),
+                                Uri.parse(story.url));
+                    }
+                }
+        );
 //        holder.comments.setOnClickListener(commentsView -> {
 //            final Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.Story.INSTANCE);
 //            intent.putExtra(Activities.DesignerNews.Story.EXTRA_STORY,
