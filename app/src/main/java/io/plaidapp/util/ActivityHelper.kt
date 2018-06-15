@@ -82,7 +82,7 @@ object Activities {
          * DesignerNewsStory Activity
          */
         object Story : AddressableActivity {
-            override val className = "$PACKAGE_NAME.DesignerNewsStory"
+            override val className = "$PACKAGE_NAME.designernews.DesignerNewsStory"
             const val EXTRA_STORY = "story"
 
             /**
@@ -91,7 +91,7 @@ object Activities {
             fun customTabIntent(
                     context: Context,
                     story: io.plaidapp.designernews.data.api.model.Story,
-                    session: CustomTabsSession
+                    session: CustomTabsSession?
             ): CustomTabsIntent.Builder {
                 val upvoteStory = Intent(context, UpvoteStoryService::class.java)
                 upvoteStory.action = UpvoteStoryService.ACTION_UPVOTE
@@ -115,7 +115,7 @@ object Activities {
          * PostNewDesignerNewsStory Activity
          */
         object PostStory : AddressableActivity {
-            override val className = "$PACKAGE_NAME.PostNewDesignerNewsStory"
+            override val className = "$PACKAGE_NAME.designernews.PostNewDesignerNewsStory"
 
             const val RESULT_DRAG_DISMISSED = 3
             const val RESULT_POSTING = 4
