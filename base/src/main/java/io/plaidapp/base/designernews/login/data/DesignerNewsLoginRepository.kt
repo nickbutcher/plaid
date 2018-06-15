@@ -89,12 +89,13 @@ class DesignerNewsLoginRepository(
         fun getInstance(
                 localDataSource: DesignerNewsLoginLocalDataSource,
                 remoteDataSource: DesignerNewsLoginRemoteDataSource
-        ): DesignerNewsLoginRepository =
-                INSTANCE ?: synchronized(this) {
-                    INSTANCE ?: DesignerNewsLoginRepository(
-                            localDataSource,
-                            remoteDataSource
-                    ).also { INSTANCE = it }
-                }
+        ): DesignerNewsLoginRepository {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: DesignerNewsLoginRepository(
+                        localDataSource,
+                        remoteDataSource
+                ).also { INSTANCE = it }
+            }
+        }
     }
 }
