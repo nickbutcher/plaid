@@ -81,6 +81,7 @@ import io.plaidapp.data.api.producthunt.model.Post;
 import io.plaidapp.data.pocket.PocketUtils;
 import io.plaidapp.data.prefs.SourceManager;
 import io.plaidapp.ui.recyclerview.Divided;
+import io.plaidapp.ui.transitions.ReflowText;
 import io.plaidapp.ui.widget.BadgedFourThreeImageView;
 import io.plaidapp.ui.widget.BaselineGridTextView;
 import io.plaidapp.util.Activities;
@@ -229,34 +230,34 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 }
         );
-//        holder.comments.setOnClickListener(commentsView -> {
-//            final Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.Story.INSTANCE);
-//            intent.putExtra(Activities.DesignerNews.Story.EXTRA_STORY,
-//                    (Story) getItem(holder.getAdapterPosition()));
-//            ReflowText.addExtras(intent, new ReflowText.ReflowableTextView(holder.title));
-//            setGridItemContentTransitions(holder.itemView);
-//
-//            // on return, fade the pocket & comments buttons in
-//            host.setExitSharedElementCallback(new SharedElementCallback() {
-//                @Override
-//                public void onSharedElementStart(List<String> sharedElementNames, List<View>
-//                        sharedElements, List<View> sharedElementSnapshots) {
-//                    host.setExitSharedElementCallback(null);
-//                    notifyItemChanged(holder.getAdapterPosition(),
-//                            HomeGridItemAnimator.STORY_COMMENTS_RETURN);
-//                }
-//            });
-//
-//            final ActivityOptions options =
-//                    ActivityOptions.makeSceneTransitionAnimation(host,
-//                            Pair.create((View) holder.title,
-//                                    host.getString(R.string.transition_story_title)),
-//                            Pair.create(holder.itemView,
-//                                    host.getString(R.string.transition_story_title_background)),
-//                            Pair.create(holder.itemView,
-//                                    host.getString(R.string.transition_story_background)));
-//            host.startActivity(intent, options.toBundle());
-//        });
+        holder.comments.setOnClickListener(commentsView -> {
+            final Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.Story.INSTANCE);
+            intent.putExtra(Activities.DesignerNews.Story.EXTRA_STORY,
+                    (Story) getItem(holder.getAdapterPosition()));
+            ReflowText.addExtras(intent, new ReflowText.ReflowableTextView(holder.title));
+            setGridItemContentTransitions(holder.itemView);
+
+            // on return, fade the pocket & comments buttons in
+            host.setExitSharedElementCallback(new SharedElementCallback() {
+                @Override
+                public void onSharedElementStart(List<String> sharedElementNames, List<View>
+                        sharedElements, List<View> sharedElementSnapshots) {
+                    host.setExitSharedElementCallback(null);
+                    notifyItemChanged(holder.getAdapterPosition(),
+                            HomeGridItemAnimator.STORY_COMMENTS_RETURN);
+                }
+            });
+
+            final ActivityOptions options =
+                    ActivityOptions.makeSceneTransitionAnimation(host,
+                            Pair.create((View) holder.title,
+                                    host.getString(R.string.transition_story_title)),
+                            Pair.create(holder.itemView,
+                                    host.getString(R.string.transition_story_title_background)),
+                            Pair.create(holder.itemView,
+                                    host.getString(R.string.transition_story_background)));
+            host.startActivity(intent, options.toBundle());
+        });
         if (pocketIsInstalled) {
             holder.pocket.setImageAlpha(178); // grumble... no xml setter, grumble...
             holder.pocket.setOnClickListener(view -> {

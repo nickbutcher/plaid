@@ -181,7 +181,7 @@ public class DesignerNewsStory extends Activity {
         }
 
         final View enterCommentView = setupCommentField();
-        if (story.comment_count > 0) {
+        if (story.comments != null && story.comments.size() > 0) {
             // flatten the comments from a nested structure {@see Comment#comments} to a
             // list appropriate for our adapter (using the depth attribute).
             List<Comment> flattened = new ArrayList<>(story.comment_count);
@@ -463,16 +463,19 @@ public class DesignerNewsStory extends Activity {
         });
 
         TextView storyPosterTime = header.findViewById(R.id.story_poster_time);
-        SpannableString poster = new SpannableString(story.user_display_name.toLowerCase());
-        poster.setSpan(new TextAppearanceSpan(this, R.style.TextAppearance_CommentAuthor),
-                0, poster.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        CharSequence job =
-                !TextUtils.isEmpty(story.user_job) ? "\n" + story.user_job.toLowerCase() : "";
-        CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(story.created_at.getTime(),
-                System.currentTimeMillis(),
-                DateUtils.SECOND_IN_MILLIS)
-                .toString().toLowerCase();
-        storyPosterTime.setText(TextUtils.concat(poster, job, "\n", timeAgo));
+        if(story.user_display_name != null && story.user_job != null) {
+            SpannableString poster = new SpannableString(story.user_display_name.toLowerCase());
+            poster.setSpan(new TextAppearanceSpan(this, R.style.TextAppearance_CommentAuthor),
+                    0, poster.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            CharSequence job =
+                    !TextUtils.isEmpty(story.user_job) ? "\n" + story.user_job.toLowerCase() : "";
+            CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(story.created_at.getTime(),
+                    System.currentTimeMillis(),
+                    DateUtils.SECOND_IN_MILLIS)
+                    .toString().toLowerCase();
+            storyPosterTime.setText(TextUtils.concat(poster, job, "\n", timeAgo));
+
+        }
         ImageView avatar = header.findViewById(R.id.story_poster_avatar);
         if (!TextUtils.isEmpty(story.user_portrait_url)) {
             GlideApp.with(this)
