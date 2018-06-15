@@ -26,9 +26,6 @@ android {
         targetSdkVersion versions.targetSdk
         archivesBaseName = "plaid"
         resConfig "en"
-        def filesAuthorityValue = applicationId + ".shareprovider"
-        buildConfigField "String", "FILES_AUTHORITY", "\"${filesAuthorityValue}\""
-        manifestPlaceholders = [filesAuthority: filesAuthorityValue]
     }
     buildTypes {
         release {

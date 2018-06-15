@@ -18,7 +18,6 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    android:installLocation="auto"
     package="io.plaidapp.activities">
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -40,33 +39,16 @@
         android:appCategory="image"
         android:theme="@style/Plaid">
 
-        <activity
-            android:name="io.plaidapp.ui.DribbbleShot"
-            android:parentActivityName="io.plaidapp.ui.HomeActivity"
-            android:theme="@style/Plaid.Translucent.Dribbble.Shot">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="https"
-                    android:host="dribbble.com"
-                    android:pathPrefix="/shots/"/>
-            </intent-filter>
-        </activity>
 
-        <activity
-            android:name="io.plaidapp.ui.PlayerActivity"
-            android:theme="@style/Plaid.Translucent.Dribbble.Player" />
-
-        <activity
-            android:name="io.plaidapp.ui.PlayerSheet"
-            android:theme="@style/Plaid.Translucent.Dribbble.PlayerSheet" />
 
         <activity
             android:name="io.plaidapp.ui.designernews.DesignerNewsStory"
             android:parentActivityName="io.plaidapp.ui.HomeActivity"
-            android:theme="@style/Plaid.Translucent.DesignerNewsStory" />
+            android:theme="@style/Plaid.Translucent.DesignerNewsStory">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name="io.plaidapp.ui.SearchActivity"
@@ -85,30 +67,10 @@
         </activity>
 
         <activity
-            android:name="io.plaidapp.ui.DribbbleLogin"
-            android:exported="true"
-            android:launchMode="singleTop"
-            android:theme="@style/Plaid.Translucent.Dribbble.Login">
-            <intent-filter>
-                <data
-                    android:host="dribbble-auth-callback"
-                    android:scheme="plaid" />
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
-        </activity>
-
-        <activity
             android:name="io.plaidapp.ui.designernews.DesignerNewsLogin"
             android:exported="false"
             android:theme="@style/Plaid.Translucent.DesignerNewsLogin"
             android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name="io.plaidapp.ui.AboutActivity"
-            android:theme="@style/Plaid.Translucent.About"
-            android:parentActivityName="io.plaidapp.ui.HomeActivity" />
 
         <activity
             android:name="io.plaidapp.ui.designernews.PostNewDesignerNewsStory"
@@ -129,21 +91,6 @@
         <service
             android:name="io.plaidapp.designernews.data.api.UpvoteStoryService"
             android:exported="false" />
-
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="${filesAuthority}"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/glide_disk_cache_path" />
-        </provider>
-
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
-
     </application>
 
 </manifest>
