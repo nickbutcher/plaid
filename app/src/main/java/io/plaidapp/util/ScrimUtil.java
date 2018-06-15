@@ -26,6 +26,9 @@ import android.graphics.drawable.shapes.RectShape;
 import android.support.annotation.ColorInt;
 import android.view.Gravity;
 
+import io.plaidapp.base.util.ColorUtils;
+import io.plaidapp.base.util.MathUtils;
+
 /**
  * * Borrowed from github.com/romannurik/muzei
  */

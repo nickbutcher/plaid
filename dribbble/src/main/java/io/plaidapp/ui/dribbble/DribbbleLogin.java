@@ -36,23 +36,21 @@ import android.widget.Toast;
 
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
-import io.plaidapp.BuildConfig;
+import io.plaidapp.base.BuildConfig;
 import io.plaidapp.dribbble.R;
-import io.plaidapp.data.api.dribbble.DribbbleAuthService;
-import io.plaidapp.data.api.dribbble.model.AccessToken;
-import io.plaidapp.data.api.dribbble.model.User;
-import io.plaidapp.data.prefs.DribbblePrefs;
+import io.plaidapp.base.data.api.dribbble.DribbbleAuthService;
+import io.plaidapp.base.data.api.dribbble.model.AccessToken;
+import io.plaidapp.base.data.api.dribbble.model.User;
+import io.plaidapp.base.data.prefs.DribbblePrefs;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.util.ScrimUtil;
-import io.plaidapp.util.glide.GlideApp;
+import io.plaidapp.base.util.glide.GlideApp;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 public class DribbbleLogin extends Activity {
 

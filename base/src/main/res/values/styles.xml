@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~   Copyright 2018 Google LLC
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~   Unless required by applicable law or agreed to in writing, software
+  ~   distributed under the License is distributed on an "AS IS" BASIS,
+  ~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  ~
+  -->
+
+<resources>
+
+    <style name="Plaid" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorBackground">@color/background_light</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:navigationBarColor">@color/background_super_dark</item>
+        <item name="android:statusBarColor">@color/background_super_dark</item>
+        <item name="android:textColorHint">@color/hint_disabled_dark</item>
+        <item name="android:windowBackground">@color/background_light</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:windowSharedElementsUseOverlay">false</item>
+        <item name="collapsingTitleLayoutStyle">@style/Widget.Plaid.CollapsingTitle</item>
+        <item name="android:colorEdgeEffect">@color/mid_grey</item>
+    </style>
+
+    <style name="Plaid.Home">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/immersive_bars</item>
+        <item name="android:navigationBarColor">@color/immersive_bars</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@color/background_dark</item>
+        <item name="android:windowEnterTransition">@transition/home_enter</item>
+        <item name="shotLoadingPlaceholderColors">@array/loading_placeholders_dark</item>
+        <item name="initialBadgeColor">@color/gif_badge_dark_image</item>
+    </style>
+
+    <style name="Plaid.Translucent">
+        <!-- using a semi-transparent window background for the drag-back gesture -->
+        <item name="android:windowBackground">@color/scrim</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <!-- Placeholders. Implementations in feature modules. -->
+    <style name="Plaid.Translucent.About" />
+    <style name="Plaid.Translucent.DesignerNewsStory" />
+    <style name="Plaid.Translucent.DesignerNewsLogin" />
+    <style name="Plaid.Translucent.PostDesignerNewsStory" />
+    <style name="Plaid.Translucent.Dribbble" />
+    <style name="Plaid.Translucent.Dribbble.Login" />
+    <style name="Plaid.Translucent.Dribbble.Shot" />
+    <style name="Plaid.Translucent.Dribbble.Player" />
+    <style name="Plaid.Translucent.Dribbble.PlayerSheet" />
+    <style name="Plaid.Translucent.Search" />
+
+
+    <style name="TextAppearance" />
+
+    <style name="TextAppearance.DialogContent" parent="@android:style/TextAppearance.Material.Subhead">
+        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="lineHeightHint">24sp</item>
+    </style>
+
+    <style name="TextAppearance.EmptyText" parent="@style/TextAppearance.DialogContent">
+        <item name="android:textColor">@color/text_primary_light</item>
+        <item name="lineHeightHint">24sp</item>
+    </style>
+
+    <style name="TextAppearance.TilePrimary" parent="@android:style/TextAppearance.Material.Subhead">
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:fontFamily">@font/roboto_mono</item>
+        <item name="lineHeightHint">20sp</item>
+    </style>
+
+    <style name="TextAppearance.TileSecondary" parent="@android:style/TextAppearance.Material.Body2">
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+</resources>

@@ -44,9 +44,9 @@ import android.widget.FrameLayout;
 
 import io.plaidapp.R;
 import io.plaidapp.ui.span.TextColorSpan;
-import io.plaidapp.ui.transitions.ReflowText;
+import io.plaidapp.base.ui.transitions.ReflowText;
 import io.plaidapp.util.CollapsingTextHelper;
-import io.plaidapp.util.ViewUtils;
+import io.plaidapp.base.util.ViewUtils;
 
 /**
  * A layout that draws a title and can collapse down to a condensed size.  If the title shows over

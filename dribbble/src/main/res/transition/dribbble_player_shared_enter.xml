@@ -23,7 +23,7 @@
 
     <changeBounds android:duration="300">
         <pathMotion
-            class="io.plaidapp.ui.transitions.GravityArcMotion"
+            class="io.plaidapp.base.ui.transitions.GravityArcMotion"
             android:maximumAngle="50" />
     </changeBounds>
     <transition

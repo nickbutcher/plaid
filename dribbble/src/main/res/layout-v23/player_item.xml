@@ -15,7 +15,7 @@
   limitations under the License.
   -->
 
-<io.plaidapp.ui.widget.ForegroundRelativeLayout
+<io.plaidapp.base.ui.widget.ForegroundRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -40,7 +40,7 @@
         android:padding="@dimen/avatar_padding"
         android:src="@drawable/avatar_placeholder" />
 
-    <io.plaidapp.ui.widget.BaselineGridTextView
+    <io.plaidapp.base.ui.widget.BaselineGridTextView
         android:id="@+id/time_ago"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
         android:textAppearance="@style/TextAppearance.CommentTimestamp"
         tools:text="3 hours ago" />
 
-    <io.plaidapp.ui.widget.BaselineGridTextView
+    <io.plaidapp.base.ui.widget.BaselineGridTextView
         android:id="@+id/player_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
         android:textAppearance="@style/TextAppearance.CommentAuthor.Dribbble"
         tools:text="Nick B" />
 
-    <io.plaidapp.ui.widget.BaselineGridTextView
+    <io.plaidapp.base.ui.widget.BaselineGridTextView
         android:id="@+id/player_bio"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -76,4 +76,4 @@
         android:textColorLink="@color/dribbble_links"
         tools:text="Blah blah blah blah blah blah blah blah blah blah blah blah blah" />
 
-</io.plaidapp.ui.widget.ForegroundRelativeLayout>
+</io.plaidapp.base.ui.widget.ForegroundRelativeLayout>

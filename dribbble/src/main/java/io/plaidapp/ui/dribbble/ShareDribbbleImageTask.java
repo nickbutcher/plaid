@@ -30,7 +30,7 @@ import com.bumptech.glide.Glide;
 import java.io.File;
 
 import io.plaidapp.dribbble.BuildConfig;
-import io.plaidapp.data.api.dribbble.model.Shot;
+import io.plaidapp.base.data.api.dribbble.model.Shot;
 
 /**
  * An AsyncTask which retrieves a File from the Glide cache then shares it.

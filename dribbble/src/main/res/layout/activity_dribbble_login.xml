@@ -36,7 +36,7 @@
         android:background="@drawable/dialog_background"
         android:transitionName="@string/transition_dribbble_login">
 
-        <io.plaidapp.ui.widget.BaselineGridTextView
+        <io.plaidapp.base.ui.widget.BaselineGridTextView
             android:id="@+id/login_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

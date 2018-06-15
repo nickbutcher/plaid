@@ -23,28 +23,20 @@ android {
 
     defaultConfig {
         applicationId "io.plaidapp"
-        minSdkVersion 23
+        minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         versionCode rootProject.gitCommitCount
         versionName rootProject.gitTag
         archivesBaseName = "plaid"
         resConfig "en"
-        buildConfigField "String", "DESIGNER_NEWS_CLIENT_ID", "\"${designer_news_client_id}\""
         buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
-        buildConfigField "String", "DRIBBBLE_CLIENT_ID", "\"${dribbble_client_id}\""
-        buildConfigField "String", "DRIBBBLE_CLIENT_SECRET", "\"${dribbble_client_secret}\""
-        buildConfigField "String",
-                "DRIBBBLE_CLIENT_ACCESS_TOKEN", "\"${dribbble_client_access_token}\""
         buildConfigField "String", "DESIGNER_NEWS_CLIENT_ID", "\"${designer_news_client_id}\""
         buildConfigField "String",
                 "DESIGNER_NEWS_CLIENT_SECRET", "\"${designer_news_client_secret}\""
-        buildConfigField "String",
-                "PRODUCT_HUNT_DEVELOPER_TOKEN", "\"${product_hunt_developer_token}\""
+
         def filesAuthorityValue = applicationId + ".shareprovider"
         buildConfigField "String", "FILES_AUTHORITY", "\"${filesAuthorityValue}\""
         manifestPlaceholders = [filesAuthority: filesAuthorityValue]
-
-        buildConfigField "boolean", "DESIGNER_NEWS_V2", "true" // May be overridden by a build type.
     }
     buildTypes {
         release {
@@ -58,8 +50,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-    dynamicFeatures = [':features:activities', ':dribbble', ':about']
+    dynamicFeatures = [':about', ':designernews', ':dribbble']
 }
 
 repositories {
@@ -68,25 +59,7 @@ repositories {
 }
 
 dependencies {
-    api "androidx.core:core-ktx:${versions.coreKtx}"
-    api "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
-    api "com.android.support:customtabs:${versions.supportLibrary}"
-    api "com.android.support:design:${versions.supportLibrary}"
-    api "com.android.support:palette-v7:${versions.supportLibrary}"
-    api "com.android.support:recyclerview-v7:${versions.supportLibrary}"
-    api "com.android.support:support-dynamic-animation:${versions.supportLibrary}"
-    api "com.github.bumptech.glide:glide:${versions.glide}"
-    annotationProcessor "com.github.bumptech.glide:compiler:${versions.glide}"
-    api "com.github.bumptech.glide:okhttp3-integration:${versions.glide}"
-    api "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
-    api "com.google.code.gson:gson:${versions.gson}"
-    implementation "com.jakewharton:butterknife:${versions.butterknife}"
-    annotationProcessor "com.jakewharton:butterknife-compiler:${versions.butterknife}"
-    api "com.squareup.retrofit2:retrofit:${versions.retrofit}"
-    api "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
-    api "com.squareup.okhttp3:okhttp:${versions.okhttp}"
-    api "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
-    api "org.jsoup:jsoup:${versions.jsoup}"
+    api project(':base')
     api project(':bypass')
+    implementation project(':search')
 }

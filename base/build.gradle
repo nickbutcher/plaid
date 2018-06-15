@@ -1,0 +1,78 @@
+/*
+ *   Copyright 2018 Google LLC
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ */
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion versions.compileSdk
+
+    defaultConfig {
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+
+        buildConfigField "String", "DESIGNER_NEWS_CLIENT_ID", "\"${designer_news_client_id}\""
+        buildConfigField "boolean", "DESIGNER_NEWS_V2", "true" // May be overridden by a build type.
+
+        buildConfigField "String", "DRIBBBLE_CLIENT_ID", "\"${dribbble_client_id}\""
+        buildConfigField "String", "DRIBBBLE_CLIENT_SECRET", "\"${dribbble_client_secret}\""
+        buildConfigField "String",
+                "DRIBBBLE_CLIENT_ACCESS_TOKEN", "\"${dribbble_client_access_token}\""
+
+        buildConfigField "String",
+                "PRODUCT_HUNT_DEVELOPER_TOKEN", "\"${product_hunt_developer_token}\""
+    }
+
+    buildTypes {
+        release {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+repositories {
+    google()
+    jcenter()
+}
+
+dependencies {
+    api "androidx.core:core-ktx:${versions.coreKtx}"
+    api "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
+    api "com.android.support:customtabs:${versions.supportLibrary}"
+    api "com.android.support:design:${versions.supportLibrary}"
+    api "com.android.support:palette-v7:${versions.supportLibrary}"
+    api "com.android.support:recyclerview-v7:${versions.supportLibrary}"
+    api "com.android.support:support-dynamic-animation:${versions.supportLibrary}"
+    api "com.github.bumptech.glide:glide:${versions.glide}"
+    annotationProcessor "com.github.bumptech.glide:compiler:${versions.glide}"
+    api "com.github.bumptech.glide:okhttp3-integration:${versions.glide}"
+    api "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
+    api "com.google.code.gson:gson:${versions.gson}"
+    api "com.squareup.retrofit2:retrofit:${versions.retrofit}"
+    api "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
+    api "com.squareup.okhttp3:okhttp:${versions.okhttp}"
+    api "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
+    api "org.jsoup:jsoup:${versions.jsoup}"
+    api project(':bypass')
+}

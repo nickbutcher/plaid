@@ -74,32 +74,30 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import butterknife.BindInt;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.plaidapp.R;
-import io.plaidapp.data.DataManager;
-import io.plaidapp.data.PlaidItem;
-import io.plaidapp.data.Source;
-import io.plaidapp.designernews.data.api.PostStoryService;
-import io.plaidapp.designernews.data.api.model.Story;
-import io.plaidapp.data.api.dribbble.model.Shot;
-import io.plaidapp.data.pocket.PocketUtils;
-import io.plaidapp.designernews.DesignerNewsPrefs;
-import io.plaidapp.data.prefs.DribbblePrefs;
-import io.plaidapp.data.prefs.SourceManager;
+import io.plaidapp.base.ui.FeedAdapter;
+import io.plaidapp.base.ui.FilterAdapter;
+import io.plaidapp.base.ui.HomeGridItemAnimator;
+import io.plaidapp.base.util.ActivityHelper;
+import io.plaidapp.base.data.DataManager;
+import io.plaidapp.base.data.PlaidItem;
+import io.plaidapp.base.data.Source;
+import io.plaidapp.base.util.DrawableUtils;
+import io.plaidapp.base.designernews.data.api.PostStoryService;
+import io.plaidapp.base.designernews.data.api.model.Story;
+import io.plaidapp.base.data.api.dribbble.model.Shot;
+import io.plaidapp.base.data.pocket.PocketUtils;
+import io.plaidapp.base.designernews.DesignerNewsPrefs;
+import io.plaidapp.base.data.prefs.DribbblePrefs;
+import io.plaidapp.base.data.prefs.SourceManager;
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
-import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
+import io.plaidapp.base.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
-import io.plaidapp.util.Activities;
-import io.plaidapp.util.ActivityHelper;
-import io.plaidapp.util.AnimUtils;
-import io.plaidapp.util.DrawableUtils;
-import io.plaidapp.util.ViewUtils;
-
+import io.plaidapp.base.util.Activities;
+import io.plaidapp.base.util.AnimUtils;
+import io.plaidapp.base.util.ViewUtils;
 
 public class HomeActivity extends Activity {
 
@@ -110,16 +108,16 @@ public class HomeActivity extends Activity {
     private static final int RC_NEW_DESIGNER_NEWS_STORY = 4;
     private static final int RC_NEW_DESIGNER_NEWS_LOGIN = 5;
 
-    @BindView(R.id.drawer) DrawerLayout drawer;
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.grid) RecyclerView grid;
-    @BindView(R.id.fab) ImageButton fab;
-    @BindView(R.id.filters) RecyclerView filtersList;
-    @BindView(android.R.id.empty) ProgressBar loading;
-    @Nullable @BindView(R.id.no_connection) ImageView noConnection;
+    private DrawerLayout drawer;
+    private Toolbar toolbar;
+    private RecyclerView grid;
+    private ImageButton fab;
+    private RecyclerView filtersList;
+    private ProgressBar loading;
+    private @Nullable ImageView noConnection;
     ImageButton fabPosting;
     GridLayoutManager layoutManager;
-    @BindInt(R.integer.num_columns) int columns;
+    private int columns;
     boolean connected = true;
     private TextView noFiltersEmptyText;
     private boolean monitoringConnectivity = false;
@@ -135,7 +133,7 @@ public class HomeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        ButterKnife.bind(this);
+        bindResources();
 
         drawer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -260,6 +258,19 @@ public class HomeActivity extends Activity {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(filtersList);
         checkEmptyState();
+    }
+
+    private void bindResources() {
+        drawer = findViewById(R.id.drawer);
+        toolbar = findViewById(R.id.toolbar);
+        grid = findViewById(R.id.grid);
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(view -> { fabClick(); });
+        filtersList = findViewById(R.id.filters);
+        loading = findViewById(android.R.id.empty);
+        noConnection = findViewById(R.id.no_connection);
+
+        columns = getResources().getInteger(R.integer.num_columns);
     }
 
     @Override
@@ -494,7 +505,6 @@ public class HomeActivity extends Activity {
         }
     };
 
-    @OnClick(R.id.fab)
     protected void fabClick() {
         if (designerNewsPrefs.isLoggedIn()) {
             Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.PostStory.INSTANCE);

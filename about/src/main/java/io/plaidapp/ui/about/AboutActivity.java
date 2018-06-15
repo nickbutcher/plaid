@@ -48,10 +48,10 @@ import in.uncod.android.bypass.Bypass;
 import io.plaidapp.about.R;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.about.widget.InkPageIndicator;
-import io.plaidapp.util.HtmlUtils;
-import io.plaidapp.util.customtabs.CustomTabActivityHelper;
-import io.plaidapp.util.glide.GlideApp;
-import io.plaidapp.util.glide.GlideRequest;
+import io.plaidapp.base.util.HtmlUtils;
+import io.plaidapp.base.util.customtabs.CustomTabActivityHelper;
+import io.plaidapp.base.util.glide.GlideApp;
+import io.plaidapp.base.util.glide.GlideRequest;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
@@ -76,7 +76,8 @@ public class AboutActivity extends Activity {
         pageIndicator = findViewById(R.id.indicator);
 
         pager.setAdapter(new AboutPagerAdapter(AboutActivity.this));
-        pager.setPageMargin(getResources().getDimensionPixelSize(io.plaidapp.R.dimen.spacing_normal));
+        pager.setPageMargin(getResources()
+                .getDimensionPixelSize(io.plaidapp.R.dimen.spacing_normal));
         pageIndicator.setViewPager(pager);
 
         draggableFrame.addListener(
@@ -150,18 +151,18 @@ public class AboutActivity extends Activity {
                         bindViews(aboutPlaid);
                         // fun with spans & markdown
                         CharSequence about0 = markdown.markdownToSpannable(resources
-                                .getString(io.plaidapp.R.string.about_plaid_0), plaidDescription, null);
+                                .getString(R.string.about_plaid_0), plaidDescription, null);
                         SpannableString about1 = new SpannableString(
-                                resources.getString(io.plaidapp.R.string.about_plaid_1));
+                                resources.getString(R.string.about_plaid_1));
                         about1.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
                                 0, about1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         SpannableString about2 = new SpannableString(markdown.markdownToSpannable
-                                (resources.getString(io.plaidapp.R.string.about_plaid_2),
+                                (resources.getString(R.string.about_plaid_2),
                                         plaidDescription, null));
                         about2.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
                                 0, about2.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         SpannableString about3 = new SpannableString(markdown.markdownToSpannable
-                                (resources.getString(io.plaidapp.R.string.about_plaid_3),
+                                (resources.getString(R.string.about_plaid_3),
                                         plaidDescription, null));
                         about3.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
                                 0, about3.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -174,9 +175,9 @@ public class AboutActivity extends Activity {
                     if (aboutIcon == null) {
                         aboutIcon = layoutInflater.inflate(R.layout.about_icon, parent, false);
                         bindViews(aboutIcon);
-                        CharSequence icon0 = resources.getString(io.plaidapp.R.string.about_icon_0);
+                        CharSequence icon0 = resources.getString(R.string.about_icon_0);
                         CharSequence icon1 = markdown.markdownToSpannable(resources
-                                .getString(io.plaidapp.R.string.about_icon_1), iconDescription, null);
+                                .getString(R.string.about_icon_1), iconDescription, null);
                         CharSequence iconDesc = TextUtils.concat(icon0, "\n", icon1);
                         HtmlUtils.setTextWithNiceLinks(iconDescription, iconDesc);
                     }
@@ -209,11 +210,6 @@ public class AboutActivity extends Activity {
                         "https://developer.android.com/topic/libraries/support-library",
                         "https://developer.android.com/images/android_icon_125.png",
                         false),
-                new Library("ButterKnife",
-                        "Bind Android views and callbacks to fields and methods.",
-                        "http://jakewharton.github.io/butterknife/",
-                        "https://avatars.githubusercontent.com/u/66577",
-                        true),
                 new Library("Bypass",
                         "Skip the HTML, Bypass takes markdown and renders it directly.",
                         "https://github.com/Uncodin/bypass",

@@ -58,7 +58,7 @@
             android:transitionName="@string/transition_player_avatar"
             android:src="@drawable/avatar_placeholder" />
 
-        <io.plaidapp.ui.widget.BaselineGridTextView
+        <io.plaidapp.base.ui.widget.BaselineGridTextView
             android:id="@+id/player_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
             android:theme="@style/LightRippleOverlay"
             style="@style/Widget.AppCompat.Button.Colored" />
 
-        <io.plaidapp.ui.widget.BaselineGridTextView
+        <io.plaidapp.base.ui.widget.BaselineGridTextView
             android:id="@+id/player_bio"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="Designer &amp; developer at Google." />
 
-        <io.plaidapp.ui.widget.BaselineGridTextView
+        <io.plaidapp.base.ui.widget.BaselineGridTextView
             android:id="@+id/shot_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
             tools:text="1337 shots"
             style="@style/Widget.Plaid.InlineActionButton" />
 
-        <io.plaidapp.ui.widget.BaselineGridTextView
+        <io.plaidapp.base.ui.widget.BaselineGridTextView
             android:id="@id/followers_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -135,7 +135,7 @@
             tools:text="1337 followers"
             style="@style/Widget.Plaid.InlineActionButton" />
 
-        <io.plaidapp.ui.widget.BaselineGridTextView
+        <io.plaidapp.base.ui.widget.BaselineGridTextView
             android:id="@id/likes_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
