@@ -23,6 +23,7 @@ import android.text.TextUtils;
 
 import java.io.IOException;
 
+import io.plaidapp.designernews.data.api.DesignerNewsAuthTokenHolder;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -34,26 +35,20 @@ import okhttp3.Response;
  */
 public class ClientAuthInterceptor implements Interceptor {
 
-    private final String accessToken;
+    private final DesignerNewsAuthTokenHolder tokenHolder;
     private final String clientId;
-    private final boolean hasAccessToken;
 
-    public ClientAuthInterceptor(@Nullable String accessToken, @NonNull String clientId) {
-        if (!TextUtils.isEmpty(accessToken)) {
-            this.accessToken = accessToken;
-            hasAccessToken = true;
-        } else {
-            this.accessToken = null;
-            hasAccessToken = false;
-        }
+    public ClientAuthInterceptor(@Nullable DesignerNewsAuthTokenHolder tokenHolder,
+            @NonNull String clientId) {
+        this.tokenHolder = tokenHolder;
         this.clientId = clientId;
     }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
         final Request.Builder requestBuilder = chain.request().newBuilder();
-        if (hasAccessToken) {
-            requestBuilder.addHeader("Authorization", "Bearer " + accessToken);
+        if (!TextUtils.isEmpty(tokenHolder.getAuthToken())) {
+            requestBuilder.addHeader("Authorization", "Bearer " + tokenHolder.getAuthToken());
         } else {
             final HttpUrl url = chain.request().url().newBuilder()
                     .addQueryParameter("client_id", clientId).build();
