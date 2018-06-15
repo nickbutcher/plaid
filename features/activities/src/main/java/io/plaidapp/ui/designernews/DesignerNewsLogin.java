@@ -138,7 +138,7 @@ public class DesignerNewsLogin extends Activity {
         actionsContainer = findViewById(R.id.actions_container);
         signup = findViewById(R.id.signup);
         login = findViewById(R.id.login);
-        loading = findViewById(R.id.loading);
+        loading = findViewById(io.plaidapp.R.id.loading);
     }
 
     @Override
@@ -239,16 +239,16 @@ public class DesignerNewsLogin extends Activity {
     private void updateUiWithUser(User user) {
         final Toast confirmLogin = new Toast(getApplicationContext());
         final View v = LayoutInflater.from(DesignerNewsLogin.this)
-                .inflate(R.layout.toast_logged_in_confirmation, null, false);
-        ((TextView) v.findViewById(R.id.name)).setText(user.display_name.toLowerCase());
+                .inflate(io.plaidapp.R.layout.toast_logged_in_confirmation, null, false);
+        ((TextView) v.findViewById(io.plaidapp.R.id.name)).setText(user.display_name.toLowerCase());
         // need to use app context here as the activity will be destroyed shortly
         GlideApp.with(getApplicationContext())
                 .load(user.portrait_url)
                 .placeholder(io.plaidapp.R.drawable.avatar_placeholder)
                 .circleCrop()
                 .transition(withCrossFade())
-                .into((ImageView) v.findViewById(R.id.avatar));
-        v.findViewById(R.id.scrim).setBackground(ScrimUtil
+                .into((ImageView) v.findViewById(io.plaidapp.R.id.avatar));
+        v.findViewById(io.plaidapp.R.id.scrim).setBackground(ScrimUtil
                 .makeCubicGradientScrimDrawable(
                         ContextCompat.getColor(DesignerNewsLogin.this,
                                 io.plaidapp.R.color.scrim),

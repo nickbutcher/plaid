@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2015 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -160,4 +159,6 @@
     <string name="transition_search_back" translatable="false">transition_search_back</string>
 
     <string name="comment_likes_count">0</string>
+    <string name="title_dribbble">Dribbble</string>
+    <string name="title_about">About</string>
 </resources>

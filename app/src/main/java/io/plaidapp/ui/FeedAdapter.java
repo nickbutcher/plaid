@@ -128,7 +128,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private StoryWeigher storyWeigher;
     private PostWeigher postWeigher;
 
-    FeedAdapter(Activity hostActivity,
+    public FeedAdapter(Activity hostActivity,
                 @Nullable DataLoadingSubject dataLoading,
                 int columns,
                 boolean pocketInstalled, ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider) {
@@ -451,7 +451,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return items.get(position);
     }
 
-    int getItemColumnSpan(int position) {
+    public int getItemColumnSpan(int position) {
         switch (getItemViewType(position)) {
             case TYPE_LOADING_MORE:
                 return columns;
@@ -470,7 +470,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      * sorting them (depending on the data source). Will also expand some items to span multiple
      * grid columns.
      */
-    void addAndResort(List<? extends PlaidItem> newItems) {
+    public void addAndResort(List<? extends PlaidItem> newItems) {
         weighItems(newItems);
         deduplicateAndAdd(newItems);
         sort();
@@ -598,7 +598,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return getItem(position).id;
     }
 
-    int getItemPosition(final long itemId) {
+    public int getItemPosition(final long itemId) {
         for (int position = 0; position < items.size(); position++) {
             if (getItem(position).id == itemId) return position;
         }
@@ -632,7 +632,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         host.getWindow().setReenterTransition(reenter);
     }
 
-    int getDataItemCount() {
+    public int getDataItemCount() {
         return items.size();
     }
 
@@ -655,7 +655,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         notifyItemRemoved(loadingPos);
     }
 
-    static SharedElementCallback createSharedElementReenterCallback(
+    public static SharedElementCallback createSharedElementReenterCallback(
             @NonNull Context context) {
         final String shotTransitionName = context.getString(R.string.transition_shot);
         final String shotBackgroundTransitionName =

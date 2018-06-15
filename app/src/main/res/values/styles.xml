@@ -160,9 +160,6 @@
         <item name="lineHeightHint">24sp</item>
     </style>
 
-    <!-- Placeholder. Implementation in base module.-->
-    <style name="Widget.Plaid.CollapsingTitle" />
-
     <style name="ExpandedFabTheme" parent="@android:style/ThemeOverlay.Material.Light">
         <item name="android:textColorPrimary">@color/dark_icon</item>
         <item name="android:textColorPrimaryDisableOnly">@color/dark_icon</item>
@@ -184,5 +181,86 @@
     <style name="Plaid.Translucent.Dribbble.Player" />
     <style name="Plaid.Translucent.Dribbble.PlayerSheet" />
     <style name="Plaid.Translucent.Search" />
+
+    <!-- By default float labels (well, the design lib) rely on AppCompat which we're not using
+     yet (minSdk=21). We use this style to work around this and to provide the accent color. -->
+    <style name="TextAppearance.FloatLabelHint" parent="@android:style/TextAppearance.Material.Caption">
+        <item name="android:textColor">?android:colorAccent</item>
+    </style>
+
+    <style name="TextAppearance.Subhead" parent="@android:style/TextAppearance.Material.Subhead">
+        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="lineHeightHint">24sp</item>
+    </style>
+
+    <style name="Widget.Plaid.SecondaryText">
+        <item name="android:textAppearance">@style/TextAppearance.SecondaryText</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <style name="TextAppearance.SecondaryText" parent="@android:style/TextAppearance.Material.Body1">
+        <item name="android:textColor">@color/text_tertiary_dark</item>
+    </style>
+
+    <style name="TextAppearance.Author.Title" parent="@style/TextAppearance.CommentAuthor">
+        <item name="android:textSize">20sp</item>
+        <item name="lineHeightHint">28sp</item>
+    </style>
+
+    <style name="TextAppearance.CommentAuthor" parent="@android:style/TextAppearance.Material.Caption">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFeatureSettings">smcp, onum</item>
+        <item name="android:letterSpacing">0.02</item>
+    </style>
+
+    <!-- todo revert to material styles? -->
+    <style name="TextAppearance.Comment" parent="@android:style/TextAppearance.Material.Body1">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="lineHeightHint">24sp</item>
+        <!--<item name="android:letterSpacing">0.01</item>-->
+    </style>
+
+    <style name="TextAppearance.Comment.None">
+        <item name="android:textColor">@color/grey_300</item>
+    </style>
+
+    <style name="TextAppearance.CommentTimestamp" parent="@android:style/TextAppearance.Material.Caption">
+        <item name="android:textColor">@color/hint_disabled_dark</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFeatureSettings">onum, smcp</item>
+        <item name="android:letterSpacing">0.02</item>
+    </style>
+
+    <style name="Widget.Plaid.CollapsingTitle">
+        <item name="android:textAppearance">@style/TextAppearance.ToolbarTitle</item>
+        <item name="lineHeightHint">28sp</item>
+        <item name="maxExpandedTextSize">@dimen/display_4_text_size</item>
+        <item name="titleInsetStart">@dimen/keyline_1</item>
+        <item name="titleInsetTop">@dimen/padding_normal</item>
+        <item name="titleInsetEnd">@dimen/padding_normal</item>
+        <item name="titleInsetBottom">@dimen/padding_normal</item>
+        <item name="android:maxLines">5</item>
+    </style>
+
+    <style name="Widget.Plaid.HintCheckBox" parent="@android:style/Widget.Material.CompoundButton.CheckBox">
+        <item name="android:textColor">@color/text_secondary_dark</item>
+    </style>
+
+    <style name="Widget.Plaid.InlineActionButton" parent="@android:style/Widget.Material.Button">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textAppearance">@style/TextAppearance.CommentAuthor</item>
+        <item name="android:drawablePadding">@dimen/spacing_micro</item>
+        <item name="android:background">?android:selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="Widget.Plaid.SearchView" parent="android:style/Widget.Material.SearchView">
+        <item name="android:searchIcon">@android:color/transparent</item>
+        <item name="android:searchHintIcon">@android:color/transparent</item>
+        <item name="android:queryBackground">@android:color/transparent</item>
+        <item name="android:submitBackground">@android:color/transparent</item>
+    </style>
 
 </resources>
