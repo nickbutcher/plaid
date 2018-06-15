@@ -32,7 +32,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import io.plaidapp.R;
-import io.plaidapp.util.TransitionUtils;
+import io.plaidapp.base.util.TransitionUtils;
 
 /**
  * An alternative to {@link android.transition.Slide} which staggers elements by <b>distance</b>

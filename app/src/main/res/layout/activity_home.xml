@@ -15,10 +15,9 @@
   limitations under the License.
   -->
 
-<android.support.v4.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -39,19 +38,19 @@
             android:id="@+id/grid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            android:scrollbarStyle="outsideOverlay"
             android:clipToPadding="false"
-            android:elevation="1dp" />
+            android:elevation="1dp"
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbars="vertical" />
 
         <Toolbar
             android:id="@+id/toolbar"
+            style="@style/Widget.Plaid.HomeToolbar"
             android:layout_width="match_parent"
             android:layout_height="?android:actionBarSize"
-            android:title="@string/app_name"
-            android:outlineProvider="none"
             android:elevation="1dp"
-            style="@style/Widget.Plaid.HomeToolbar" />
+            android:outlineProvider="none"
+            android:title="@string/app_name" />
 
         <ProgressBar
             android:id="@android:id/empty"
@@ -66,8 +65,8 @@
             android:id="@+id/stub_no_filters"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_huge"
             android:layout_gravity="center"
+            android:layout_margin="@dimen/spacing_huge"
             android:layout="@layout/no_filters" />
 
         <ViewStub
@@ -78,24 +77,24 @@
             android:layout="@layout/no_connection" />
 
         <ImageButton
-            android:id="@+id/fab"
+            android:id="@id/fab"
             android:layout_width="@dimen/fab_size"
             android:layout_height="@dimen/fab_size"
-            android:elevation="@dimen/z_fab"
-            android:background="@drawable/fab"
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="@dimen/padding_normal"
             android:layout_marginBottom="@dimen/padding_normal"
-            android:stateListAnimator="@animator/raise"
-            android:src="@drawable/ic_add_dark" />
+            android:background="@drawable/fab"
+            android:elevation="@dimen/z_fab"
+            android:src="@drawable/ic_add_dark"
+            android:stateListAnimator="@animator/raise" />
 
         <ViewStub
             android:id="@+id/stub_posting_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_marginBottom="@dimen/padding_normal"
             android:layout_marginEnd="@dimen/padding_normal"
+            android:layout_marginBottom="@dimen/padding_normal"
             android:layout="@layout/posting_progress" />
 
     </FrameLayout>
@@ -106,13 +105,13 @@
         android:layout_width="@dimen/drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:paddingTop="@dimen/spacing_normal"
-        android:paddingBottom="@dimen/spacing_normal"
-        android:elevation="@dimen/z_drawer"
         android:background="@color/background_dark"
         android:clipToPadding="false"
-        android:scrollbars="vertical"
+        android:elevation="@dimen/z_drawer"
+        android:paddingTop="@dimen/spacing_normal"
+        android:paddingBottom="@dimen/spacing_normal"
         android:scrollbarStyle="outsideOverlay"
+        android:scrollbars="vertical"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:listitem="@layout/filter_item" />
 

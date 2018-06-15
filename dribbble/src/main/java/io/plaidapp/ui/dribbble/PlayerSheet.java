@@ -45,24 +45,24 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.plaidapp.data.DataLoadingSubject;
-import io.plaidapp.data.PaginatedDataManager;
-import io.plaidapp.data.api.dribbble.FollowersDataManager;
-import io.plaidapp.data.api.dribbble.ShotLikesDataManager;
-import io.plaidapp.data.api.dribbble.model.Follow;
-import io.plaidapp.data.api.dribbble.model.Like;
-import io.plaidapp.data.api.dribbble.model.PlayerListable;
-import io.plaidapp.data.api.dribbble.model.Shot;
-import io.plaidapp.data.api.dribbble.model.User;
+import io.plaidapp.base.data.DataLoadingSubject;
+import io.plaidapp.base.data.PaginatedDataManager;
+import io.plaidapp.base.data.api.dribbble.FollowersDataManager;
+import io.plaidapp.base.data.api.dribbble.ShotLikesDataManager;
+import io.plaidapp.base.data.api.dribbble.model.Follow;
+import io.plaidapp.base.data.api.dribbble.model.Like;
+import io.plaidapp.base.data.api.dribbble.model.PlayerListable;
+import io.plaidapp.base.data.api.dribbble.model.Shot;
+import io.plaidapp.base.data.api.dribbble.model.User;
 import io.plaidapp.dribbble.R;
-import io.plaidapp.ui.recyclerview.InfiniteScrollListener;
-import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
+import io.plaidapp.base.ui.recyclerview.InfiniteScrollListener;
+import io.plaidapp.base.ui.recyclerview.SlideInItemAnimator;
 import io.plaidapp.ui.widget.BottomSheet;
-import io.plaidapp.util.Activities;
-import io.plaidapp.util.DribbbleUtils;
-import io.plaidapp.util.glide.GlideApp;
+import io.plaidapp.base.util.Activities;
+import io.plaidapp.base.util.DribbbleUtils;
+import io.plaidapp.base.util.glide.GlideApp;
 
-import static io.plaidapp.util.AnimUtils.getLinearOutSlowInInterpolator;
+import static io.plaidapp.base.util.AnimUtils.getLinearOutSlowInInterpolator;
 
 public class PlayerSheet extends Activity {
 

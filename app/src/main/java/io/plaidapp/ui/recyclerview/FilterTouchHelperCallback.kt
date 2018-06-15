@@ -29,7 +29,8 @@ import android.support.v7.widget.RecyclerView.ViewHolder
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.support.v7.widget.helper.ItemTouchHelper.START
 import io.plaidapp.R
-import io.plaidapp.ui.FilterAdapter
+import io.plaidapp.base.ui.FilterAdapter
+import io.plaidapp.base.ui.recyclerview.FilterSwipeDismissListener
 import io.plaidapp.util.setTranslation
 
 /**

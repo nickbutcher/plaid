@@ -26,7 +26,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.util.Property;
 
-import io.plaidapp.util.AnimUtils;
+import io.plaidapp.base.util.AnimUtils;
 
 /**
  * A drawable that can morph size, shape (via it's corner radius) and color.  Specifically this is

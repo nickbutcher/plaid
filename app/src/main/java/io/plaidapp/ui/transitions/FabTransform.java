@@ -47,7 +47,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.plaidapp.R;
-import io.plaidapp.util.AnimUtils;
+import io.plaidapp.base.ui.transitions.GravityArcMotion;
+import io.plaidapp.base.util.AnimUtils;
 
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 

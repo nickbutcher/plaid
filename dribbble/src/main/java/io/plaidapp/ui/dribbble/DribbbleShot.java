@@ -67,39 +67,39 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.plaidapp.data.api.dribbble.DribbbleService;
-import io.plaidapp.data.api.dribbble.model.Comment;
-import io.plaidapp.data.api.dribbble.model.Like;
-import io.plaidapp.data.api.dribbble.model.Shot;
-import io.plaidapp.data.prefs.DribbblePrefs;
+import io.plaidapp.base.data.api.dribbble.DribbbleService;
+import io.plaidapp.base.data.api.dribbble.model.Comment;
+import io.plaidapp.base.data.api.dribbble.model.Like;
+import io.plaidapp.base.data.api.dribbble.model.Shot;
+import io.plaidapp.base.data.prefs.DribbblePrefs;
+import io.plaidapp.base.util.glide.GlideUtils;
 import io.plaidapp.dribbble.R;
 import io.plaidapp.ui.dribbble.widget.FabOverlapTextView;
-import io.plaidapp.ui.recyclerview.Divided;
+import io.plaidapp.base.ui.recyclerview.Divided;
 import io.plaidapp.ui.recyclerview.InsetDividerDecoration;
-import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
+import io.plaidapp.base.ui.recyclerview.SlideInItemAnimator;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.widget.AuthorTextView;
 import io.plaidapp.ui.widget.CheckableImageButton;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.FABToggle;
-import io.plaidapp.ui.widget.ForegroundImageView;
+import io.plaidapp.base.ui.widget.ForegroundImageView;
 import io.plaidapp.ui.widget.ParallaxScrimageView;
-import io.plaidapp.util.Activities;
-import io.plaidapp.util.ColorUtils;
-import io.plaidapp.util.HtmlUtils;
-import io.plaidapp.util.ImeUtils;
-import io.plaidapp.util.TransitionUtils;
-import io.plaidapp.util.ViewUtils;
-import io.plaidapp.util.customtabs.CustomTabActivityHelper;
-import io.plaidapp.util.glide.GlideApp;
-import io.plaidapp.util.glide.GlideUtils;
+import io.plaidapp.base.util.Activities;
+import io.plaidapp.base.util.ColorUtils;
+import io.plaidapp.base.util.HtmlUtils;
+import io.plaidapp.base.util.ImeUtils;
+import io.plaidapp.base.util.TransitionUtils;
+import io.plaidapp.base.util.ViewUtils;
+import io.plaidapp.base.util.customtabs.CustomTabActivityHelper;
+import io.plaidapp.base.util.glide.GlideApp;
 import okhttp3.HttpUrl;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
-import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
+import static io.plaidapp.base.util.AnimUtils.getFastOutSlowInInterpolator;
 
 public class DribbbleShot extends Activity {
 

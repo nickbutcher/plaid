@@ -5,7 +5,7 @@ import android.support.annotation.FloatRange;
 import android.text.TextPaint;
 import android.text.style.ForegroundColorSpan;
 
-import io.plaidapp.util.ColorUtils;
+import io.plaidapp.base.util.ColorUtils;
 
 /**
  * An extension to {@link ForegroundColorSpan} which allows updating the color or alpha component.

@@ -1,0 +1,78 @@
+<!--
+  ~   Copyright 2018 Google LLC
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~   Unless required by applicable law or agreed to in writing, software
+  ~   distributed under the License is distributed on an "AS IS" BASIS,
+  ~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  ~
+  -->
+
+<resources>
+    <!-- data sources / filters -->
+    <string name="source_designer_news_popular">Popular Designer News</string>
+    <string name="source_designer_news_recent">Recent Designer News</string>
+    <string name="source_dribbble_popular">Popular Dribbbles</string>
+    <string name="source_dribbble_following">Dribbble following</string>
+    <string name="source_dribbble_user_likes">My Dribbble likes</string>
+    <string name="source_dribbble_user_shots">My Dribbble shots</string>
+    <string name="source_dribbble_recent">Recent Dribbbles</string>
+    <string name="source_dribbble_debuts">Dribbble Debuts</string>
+    <string name="source_dribbble_animated">Dribbble Animated</string>
+    <string name="source_dribbble_search_material_design">Material Design</string>
+    <string name="source_product_hunt">Product Hunt</string>
+
+    <!-- new designer news story -->
+    <string name="new_story_title">Post a story to Designer News</string>
+    <string name="new_story_instructions">Submit a link or provide a comment to start a discussion.</string>
+    <string name="new_story_link_or_comment">Include a link <b>or</b> a comment</string>
+    <string name="new_story_post_title">Post title</string>
+    <string name="new_story_url">Url</string>
+    <string name="new_story_url_hint">Link</string>
+    <string name="new_story_post">Post</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- designer news login -->
+    <string name="username">Username</string>
+    <string name="get_accounts_permission_primer_message">Autocomplete email addresses</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign up</string>
+    <string name="dn_login_action">Log in</string>
+
+    <string name="login_failed">Login failed</string>
+
+    <!-- designer news story -->
+    <string name="upvote_story">Upvote story</string>
+    <!-- using strings for the number of views/likes as we run them through NumberFormat -->
+    <plurals name="upvotes">
+        <item quantity="zero">no upvotes</item>
+        <item quantity="one">%s upvote</item>
+        <item quantity="other">%s upvotes</item>
+    </plurals>
+
+    <!-- app shortcuts -->
+    <string name="shortcut_search_short_label">@string/search</string>
+    <string name="shortcut_search_long_label">@string/search</string>
+    <string name="shortcut_search_disabled">Search not available</string>
+    <string name="shortcut_post_short_label">New Story</string>
+    <string name="shortcut_post_long_label">New Designer News story</string>
+    <string name="shortcut_post_disabled">Log in to Designer News to post a new story</string>
+
+    <string name="search">Search</string>
+    <string name="filter">Filter</string>
+    <string name="about">About</string>
+
+    <string name="comment_likes_count">0</string>
+    <string name="title_dribbble">Dribbble</string>
+    <string name="title_about">About</string>
+    <string name="title_search">Search</string>
+
+</resources>

@@ -26,7 +26,7 @@
     android:orientation="horizontal"
     android:baselineAligned="false">
 
-    <io.plaidapp.ui.widget.ForegroundImageView
+    <io.plaidapp.base.ui.widget.ForegroundImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/avatar_bounds"
         android:layout_height="@dimen/avatar_bounds"

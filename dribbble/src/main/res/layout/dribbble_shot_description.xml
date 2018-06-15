@@ -30,7 +30,7 @@
     <!-- transparent background needed for the ripple on the spacer -->
 
     <!-- spacer for the image -->
-    <io.plaidapp.ui.widget.FourThreeView
+    <io.plaidapp.base.ui.widget.FourThreeView
         android:id="@+id/shot_spacer"
         android:layout_columnSpan="3"
         android:background="@drawable/mid_grey_bounded_ripple" />
@@ -77,7 +77,7 @@
 
     </LinearLayout>
 
-    <io.plaidapp.ui.widget.BaselineGridTextView
+    <io.plaidapp.base.ui.widget.BaselineGridTextView
         android:id="@+id/player_name"
         android:layout_gravity="end"
         android:layout_width="wrap_content"
@@ -109,7 +109,7 @@
         android:layout_width="@dimen/avatar_margin"
         android:layout_rowSpan="2" />
 
-    <io.plaidapp.ui.widget.BaselineGridTextView
+    <io.plaidapp.base.ui.widget.BaselineGridTextView
         android:id="@+id/shot_time_ago"
         android:layout_gravity="end"
         android:gravity="end"
