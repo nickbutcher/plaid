@@ -60,10 +60,6 @@ android {
     }
 
     dynamicFeatures = [':features:activities']
-
-    lintOptions {
-        abortOnError false
-    }
 }
 
 repositories {
