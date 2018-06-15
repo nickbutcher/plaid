@@ -9,10 +9,11 @@ class DesignerNewsAuthTokenHolder(var authToken: String? = null) {
         @Volatile
         private var INSTANCE: DesignerNewsAuthTokenHolder? = null
 
-        fun getInstance(authToken: String?): DesignerNewsAuthTokenHolder =
-                INSTANCE ?: synchronized(this) {
-                    INSTANCE
-                            ?: DesignerNewsAuthTokenHolder(authToken).also { INSTANCE = it }
-                }
+        fun getInstance(authToken: String?): DesignerNewsAuthTokenHolder {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE
+                        ?: DesignerNewsAuthTokenHolder(authToken).also { INSTANCE = it }
+            }
+        }
     }
 }

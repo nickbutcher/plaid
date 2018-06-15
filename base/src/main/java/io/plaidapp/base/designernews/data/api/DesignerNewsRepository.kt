@@ -110,10 +110,11 @@ class DesignerNewsRepository(private val service: io.plaidapp.base.designernews.
         @Volatile
         private var INSTANCE: io.plaidapp.base.designernews.data.api.DesignerNewsRepository? = null
 
-        fun getInstance(service: io.plaidapp.base.designernews.data.api.DesignerNewsService): io.plaidapp.base.designernews.data.api.DesignerNewsRepository =
-                io.plaidapp.base.designernews.data.api.DesignerNewsRepository.Companion.INSTANCE ?: synchronized(this) {
-                    io.plaidapp.base.designernews.data.api.DesignerNewsRepository.Companion.INSTANCE
-                            ?: io.plaidapp.base.designernews.data.api.DesignerNewsRepository(service).also { io.plaidapp.base.designernews.data.api.DesignerNewsRepository.Companion.INSTANCE = it }
-                }
+        fun getInstance(service: io.plaidapp.base.designernews.data.api.DesignerNewsService): DesignerNewsRepository {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE
+                        ?: DesignerNewsRepository(service).also { INSTANCE = it }
+            }
+        }
     }
 }
