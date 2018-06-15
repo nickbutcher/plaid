@@ -23,7 +23,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:onClick="dismiss"
-    tools:context="io.plaidapp.ui.DribbbleLogin">
+    tools:context="io.plaidapp.ui.dribbble.ui.DribbbleLogin">
 
     <LinearLayout
         android:id="@+id/container"

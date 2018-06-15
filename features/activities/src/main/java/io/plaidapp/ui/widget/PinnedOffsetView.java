@@ -21,7 +21,7 @@ import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
-import io.plaidapp.activities.R;
+import io.plaidapp.R;
 
 /**
  * A view which supports a minimum vertical offset (i.e. translation Y) and has a custom pinned

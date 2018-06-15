@@ -36,7 +36,11 @@
             android:name=".ui.HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/Plaid.Home"
-            android:exported="true" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
 
         <!-- Use an alias in case we want to change the launch activity later without breaking
              homescreen shortcuts. Note must be defined after the targetActivity -->
@@ -52,6 +56,10 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity-alias>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

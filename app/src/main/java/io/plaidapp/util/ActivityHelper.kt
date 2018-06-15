@@ -64,7 +64,7 @@ object Activities {
      * AboutActivity
      */
     object About : AddressableActivity {
-        override val className = "$PACKAGE_NAME.AboutActivity"
+        override val className = "$PACKAGE_NAME.about.AboutActivity"
     }
 
     /**
@@ -130,14 +130,14 @@ object Activities {
          * DribbbleLogin Activity
          */
         object Login : AddressableActivity {
-            override val className = "$PACKAGE_NAME.DribbbleLogin"
+            override val className = "$PACKAGE_NAME.dribbble.DribbbleLogin"
         }
 
         /**
          * DribbbleShot Activity
          */
         object Shot : AddressableActivity {
-            override val className = "$PACKAGE_NAME.DribbbleShot"
+            override val className = "$PACKAGE_NAME.dribbble.DribbbleShot"
 
             const val EXTRA_SHOT = "EXTRA_SHOT"
             const val RESULT_EXTRA_SHOT_ID = "RESULT_EXTRA_SHOT_ID"
@@ -148,7 +148,7 @@ object Activities {
      * PlayerActivity
      */
     object Player : AddressableActivity {
-        override val className = "$PACKAGE_NAME.PlayerActivity"
+        override val className = "$PACKAGE_NAME.dribbble.PlayerActivity"
 
         const val EXTRA_PLAYER = "EXTRA_PLAYER"
         const val EXTRA_PLAYER_NAME = "EXTRA_PLAYER_NAME"

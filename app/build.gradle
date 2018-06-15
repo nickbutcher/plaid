@@ -59,7 +59,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    dynamicFeatures = [':features:activities']
+    dynamicFeatures = [':features:activities', ':dribbble', ':about']
 }
 
 repositories {
