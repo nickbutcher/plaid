@@ -12,6 +12,7 @@ import io.plaidapp.designernews.data.api.model.Comment
 
 /**
  * View holder for a Designer News comment reply.
+ * TODO move more CommentReply related actions here
  */
 internal class CommentReplyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -24,5 +25,4 @@ internal class CommentReplyViewHolder(itemView: View) : RecyclerView.ViewHolder(
         commentVotes.text = comment.vote_count.toString()
         commentVotes.isActivated = comment.upvoted != null && comment.upvoted
     }
-
 }
