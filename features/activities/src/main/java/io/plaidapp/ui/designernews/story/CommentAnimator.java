@@ -5,9 +5,11 @@ import android.support.v7.widget.RecyclerView;
 
 import java.util.List;
 
-import io.plaidapp.ui.designernews.story.DesignerNewsStory.CommentItemHolderInfo;
 import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
 
+/**
+ * Slide in animator for Designer News comments
+ */
 class CommentAnimator extends SlideInItemAnimator {
 
     CommentAnimator(long addRemoveDuration) {
@@ -30,7 +32,7 @@ class CommentAnimator extends SlideInItemAnimator {
             @NonNull RecyclerView.ViewHolder viewHolder,
             int changeFlags,
             @NonNull List<Object> payloads) {
-        CommentItemHolderInfo info = (CommentItemHolderInfo)
+        DesignerNewsStory.CommentItemHolderInfo info = (DesignerNewsStory.CommentItemHolderInfo)
                 super.recordPreLayoutInformation(state, viewHolder, changeFlags, payloads);
         info.doExpand = payloads.contains(EXPAND_COMMENT);
         info.doCollapse = payloads.contains(COLLAPSE_COMMENT);
@@ -43,10 +45,11 @@ class CommentAnimator extends SlideInItemAnimator {
             @NonNull RecyclerView.ViewHolder newHolder,
             @NonNull ItemHolderInfo preInfo,
             @NonNull ItemHolderInfo postInfo) {
-        if (newHolder instanceof CommentViewHolder && preInfo instanceof CommentItemHolderInfo) {
+        if (newHolder instanceof CommentViewHolder
+                && preInfo instanceof DesignerNewsStory.CommentItemHolderInfo) {
             final CommentViewHolder holder = (CommentViewHolder) newHolder;
-            final CommentItemHolderInfo
-                    info = (CommentItemHolderInfo) preInfo;
+            final DesignerNewsStory.CommentItemHolderInfo
+                    info = (DesignerNewsStory.CommentItemHolderInfo) preInfo;
             holder.animate(info, this);
         }
         return super.animateChange(oldHolder, newHolder, preInfo, postInfo);
@@ -55,7 +58,6 @@ class CommentAnimator extends SlideInItemAnimator {
 
     @Override
     public ItemHolderInfo obtainHolderInfo() {
-        return new CommentItemHolderInfo();
+        return new DesignerNewsStory.CommentItemHolderInfo();
     }
-
 }

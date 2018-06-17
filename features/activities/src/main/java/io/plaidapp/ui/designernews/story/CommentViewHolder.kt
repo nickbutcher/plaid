@@ -14,7 +14,7 @@ import io.plaidapp.ui.widget.AuthorTextView
 import io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator
 import io.plaidapp.util.AnimUtils.getLinearOutSlowInInterpolator
 
-class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+internal class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     val threadDepth: ImageView = itemView.findViewById(R.id.depth)
     val author: AuthorTextView = itemView.findViewById(R.id.comment_author)

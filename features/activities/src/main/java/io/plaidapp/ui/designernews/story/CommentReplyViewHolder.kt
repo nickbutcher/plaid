@@ -10,7 +10,10 @@ import android.widget.ImageButton
 import io.plaidapp.activities.R
 import io.plaidapp.designernews.data.api.model.Comment
 
-class CommentReplyHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+/**
+ * View holder for a Designer News comment reply.
+ */
+internal class CommentReplyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     val commentVotes: Button = itemView.findViewById(R.id.comment_votes)
     val replyLabel: TextInputLayout = itemView.findViewById(R.id.comment_reply_label)
