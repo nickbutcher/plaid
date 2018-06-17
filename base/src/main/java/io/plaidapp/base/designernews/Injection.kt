@@ -49,10 +49,10 @@ val interceptor = HttpLoggingInterceptor().apply { level = debugLevel }
 fun provideDesignerNewsLoginLocalDataSource(context: Context): DesignerNewsLoginLocalDataSource {
     val preferences = context.applicationContext
             .getSharedPreferences(
-                    SharedPreferencesDesignerNewsLoginLocalDataSource.DESIGNER_NEWS_PREF,
+                    DesignerNewsLoginLocalDataSource.DESIGNER_NEWS_PREF,
                     Context.MODE_PRIVATE
             )
-    return SharedPreferencesDesignerNewsLoginLocalDataSource(preferences)
+    return DesignerNewsLoginLocalDataSource(preferences)
 }
 
 fun provideDesignerNewsLoginRepository(context: Context): DesignerNewsLoginRepository {
