@@ -31,6 +31,8 @@ buildscript {
             'coreKtx'           : '0.3',
             'coroutines'        : '0.22.5',
             'retrofitCoroutines': '1.0.0',
+            'coroutines'        : '0.22.5',
+            'retrofitCoroutines': '1.0.0',
             'junit'             : '4.12',
             'test_runner'       : '1.0.2',
             'test_rules'        : '1.0.2',
