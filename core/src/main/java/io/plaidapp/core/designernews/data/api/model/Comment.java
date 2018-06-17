@@ -39,7 +39,7 @@ public class Comment implements Parcelable {
     public final String user_display_name;
     public final String user_portrait_url;
     public final String user_job;
-    public List<Comment> comments = new ArrayList<>();
+    public List<CommentLinks> commentLinks = new ArrayList<>();
 
     // TODO move this to a decorator
     public Boolean upvoted;
@@ -54,7 +54,7 @@ public class Comment implements Parcelable {
                    String user_display_name,
                    String user_portrait_url,
                    String user_job,
-                   List<Comment> comments) {
+                   List<CommentLinks> commentLinks) {
         this.id = id;
         this.body = body;
         this.body_html = body_html;
@@ -65,7 +65,7 @@ public class Comment implements Parcelable {
         this.user_display_name = user_display_name;
         this.user_portrait_url = user_portrait_url;
         this.user_job = user_job;
-        this.comments = comments;
+        this.commentLinks = commentLinks;
     }
 
     public static class Builder {
@@ -151,10 +151,10 @@ public class Comment implements Parcelable {
         user_portrait_url = in.readString();
         user_job = in.readString();
         if (in.readByte() == 0x01) {
-            comments = new ArrayList<>();
-            in.readList(comments, Comment.class.getClassLoader());
+            commentLinks = new ArrayList<>();
+            in.readList(commentLinks, Comment.class.getClassLoader());
         } else {
-            comments = null;
+            commentLinks = null;
         }
     }
 
@@ -175,11 +175,11 @@ public class Comment implements Parcelable {
         dest.writeString(user_display_name);
         dest.writeString(user_portrait_url);
         dest.writeString(user_job);
-        if (comments == null) {
+        if (commentLinks == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
-            dest.writeList(comments);
+            dest.writeList(commentLinks);
         }
     }
 
@@ -209,7 +209,7 @@ public class Comment implements Parcelable {
                 ", user_display_name='" + user_display_name + '\'' +
                 ", user_portrait_url='" + user_portrait_url + '\'' +
                 ", user_job='" + user_job + '\'' +
-                ", comments=" + comments +
+                ", commentLinks=" + commentLinks +
                 ", upvoted=" + upvoted +
                 '}';
     }

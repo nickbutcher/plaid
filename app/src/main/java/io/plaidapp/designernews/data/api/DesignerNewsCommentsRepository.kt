@@ -2,7 +2,7 @@ package io.plaidapp.designernews.data.api
 
 import android.util.Log
 import io.plaidapp.designernews.data.api.model.Comment
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.async
 
 class DesignerNewsCommentsRepository(private val service: DesignerNewsService) {
 
@@ -14,9 +14,9 @@ class DesignerNewsCommentsRepository(private val service: DesignerNewsService) {
             onError: (error: String) -> Unit
     ) {
         val requestIds = ids.joinToString()
-        Log.d("flo", "ids $ids req $requestIds" )
+        Log.d("flo", "ids $ids req $requestIds")
         inProgress = true
-        launch {
+        async {
             val result = service.getComments(requestIds).await()
             if (result.isSuccessful && result.body() != null) {
                 onSuccess(result.body().orEmpty())
