@@ -80,6 +80,9 @@ dependencies {
     api "com.squareup.okhttp3:okhttp:${versions.okhttp}"
     api "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
+    api "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:" +
+            "${versions.retrofitCoroutines}"
     api "org.jsoup:jsoup:${versions.jsoup}"
     api project(':bypass')
 
