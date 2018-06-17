@@ -39,7 +39,7 @@ public class Comment implements Parcelable {
     public final String user_display_name;
     public final String user_portrait_url;
     public final String user_job;
-    public final List<Comment> comments;
+    public List<Comment> comments = new ArrayList<>();
 
     // TODO move this to a decorator
     public Boolean upvoted;
@@ -196,4 +196,21 @@ public class Comment implements Parcelable {
         }
     };
 
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", body='" + body + '\'' +
+                ", body_html='" + body_html + '\'' +
+                ", created_at=" + created_at +
+                ", depth=" + depth +
+                ", vote_count=" + vote_count +
+                ", user_id=" + user_id +
+                ", user_display_name='" + user_display_name + '\'' +
+                ", user_portrait_url='" + user_portrait_url + '\'' +
+                ", user_job='" + user_job + '\'' +
+                ", comments=" + comments +
+                ", upvoted=" + upvoted +
+                '}';
+    }
 }
