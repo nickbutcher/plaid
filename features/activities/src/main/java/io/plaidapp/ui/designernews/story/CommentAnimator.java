@@ -12,14 +12,14 @@ import io.plaidapp.ui.recyclerview.SlideInItemAnimator;
  */
 class CommentAnimator extends SlideInItemAnimator {
 
+    static final int EXPAND_COMMENT = 1;
+    static final int COLLAPSE_COMMENT = 2;
+
     CommentAnimator(long addRemoveDuration) {
         super();
         setAddDuration(addRemoveDuration);
         setRemoveDuration(addRemoveDuration);
     }
-
-    static final int EXPAND_COMMENT = 1;
-    static final int COLLAPSE_COMMENT = 2;
 
     @Override
     public boolean canReuseUpdatedViewHolder(@NonNull RecyclerView.ViewHolder viewHolder) {
@@ -39,7 +39,6 @@ class CommentAnimator extends SlideInItemAnimator {
         return info;
     }
 
-
     @Override
     public boolean animateChange(@NonNull RecyclerView.ViewHolder oldHolder,
             @NonNull RecyclerView.ViewHolder newHolder,
@@ -54,7 +53,6 @@ class CommentAnimator extends SlideInItemAnimator {
         }
         return super.animateChange(oldHolder, newHolder, preInfo, postInfo);
     }
-
 
     @Override
     public ItemHolderInfo obtainHolderInfo() {
