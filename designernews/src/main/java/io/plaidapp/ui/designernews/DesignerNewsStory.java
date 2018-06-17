@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.designernews;
+package io.plaidapp.ui.designernews.story;
+
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+
+import static io.plaidapp.util.AnimUtils.getFastOutLinearInInterpolator;
+import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
+import static io.plaidapp.util.AnimUtils.getLinearOutSlowInInterpolator;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -34,7 +40,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -49,7 +54,6 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -66,35 +70,29 @@ import java.util.Date;
 import java.util.List;
 
 import in.uncod.android.bypass.Bypass;
-import io.plaidapp.designernews.R;
-import io.plaidapp.base.designernews.DesignerNewsPrefs;
-import io.plaidapp.base.designernews.data.api.model.Comment;
-import io.plaidapp.base.designernews.data.api.model.Story;
-import io.plaidapp.base.designernews.data.api.model.User;
+import io.plaidapp.activities.R;
+import io.plaidapp.designernews.DesignerNewsPrefs;
+import io.plaidapp.designernews.data.api.model.Comment;
+import io.plaidapp.designernews.data.api.model.Story;
+import io.plaidapp.designernews.data.api.model.User;
+import io.plaidapp.ui.designernews.DesignerNewsLogin;
 import io.plaidapp.ui.drawable.ThreadedCommentDrawable;
-import io.plaidapp.base.ui.recyclerview.SlideInItemAnimator;
-import io.plaidapp.base.ui.transitions.GravityArcMotion;
+import io.plaidapp.ui.transitions.GravityArcMotion;
 import io.plaidapp.ui.transitions.MorphTransform;
-import io.plaidapp.base.ui.transitions.ReflowText;
-import io.plaidapp.ui.widget.AuthorTextView;
+import io.plaidapp.ui.transitions.ReflowText;
 import io.plaidapp.ui.widget.CollapsingTitleLayout;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.PinnedOffsetView;
-import io.plaidapp.base.util.Activities;
-import io.plaidapp.base.util.HtmlUtils;
-import io.plaidapp.base.util.ImeUtils;
-import io.plaidapp.base.util.ViewUtils;
-import io.plaidapp.base.util.customtabs.CustomTabActivityHelper;
-import io.plaidapp.base.util.glide.GlideApp;
-import io.plaidapp.base.util.glide.ImageSpanTarget;
+import io.plaidapp.util.Activities;
+import io.plaidapp.util.HtmlUtils;
+import io.plaidapp.util.ImeUtils;
+import io.plaidapp.util.ViewUtils;
+import io.plaidapp.util.customtabs.CustomTabActivityHelper;
+import io.plaidapp.util.glide.GlideApp;
+import io.plaidapp.util.glide.ImageSpanTarget;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
-import static io.plaidapp.base.util.AnimUtils.getFastOutLinearInInterpolator;
-import static io.plaidapp.base.util.AnimUtils.getFastOutSlowInInterpolator;
-import static io.plaidapp.base.util.AnimUtils.getLinearOutSlowInInterpolator;
 
 public class DesignerNewsStory extends Activity {
 
@@ -120,8 +118,10 @@ public class DesignerNewsStory extends Activity {
     private int fabExpandDuration;
     private int threadWidth;
     private int threadGap;
+    private View enterCommentView;
 
     private Story story;
+
     private DesignerNewsPrefs designerNewsPrefs;
     private Bypass markdown;
     private CustomTabActivityHelper customTab;
@@ -130,9 +130,11 @@ public class DesignerNewsStory extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_story);
+
         bindResources();
 
         story = getIntent().getParcelableExtra(Activities.DesignerNews.Story.EXTRA_STORY);
+
         fab.setOnClickListener(fabClick);
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this);
         markdown = new Bypass(this, new Bypass.Options()
@@ -142,7 +144,8 @@ public class DesignerNewsStory extends Activity {
                 .setBlockQuoteLineIndent(8) // dps
                 .setPreImageLinebreakHeight(4) //dps
                 .setBlockQuoteIndentSize(TypedValue.COMPLEX_UNIT_DIP, 2f)
-                .setBlockQuoteTextColor(ContextCompat.getColor(this, io.plaidapp.R.color.designer_news_quote)));
+                .setBlockQuoteTextColor(
+                        ContextCompat.getColor(this, io.plaidapp.R.color.designer_news_quote)));
         designerNewsPrefs = DesignerNewsPrefs.get(this);
         layoutManager = new LinearLayoutManager(this);
         commentsList.setLayoutManager(layoutManager);
@@ -180,28 +183,31 @@ public class DesignerNewsStory extends Activity {
             findViewById(R.id.back).setOnClickListener(backClick);
         }
 
-        final View enterCommentView = setupCommentField();
-        if (story.comments != null && story.comments.size() > 0) {
-            // flatten the comments from a nested structure {@see Comment#comments} to a
-            // list appropriate for our adapter (using the depth attribute).
-            List<Comment> flattened = new ArrayList<>(story.comment_count);
-            unnestComments(story.comments, flattened);
-            commentsAdapter =
-                    new DesignerNewsCommentsAdapter(header, flattened, enterCommentView);
-            commentsList.setAdapter(commentsAdapter);
+        enterCommentView = setupCommentField();
+        commentsAdapter = new DesignerNewsCommentsAdapter(
+                header, new ArrayList<>(0), enterCommentView);
+        commentsList.setAdapter(commentsAdapter);
 
-        } else {
-            commentsAdapter = new DesignerNewsCommentsAdapter(
-                    header, new ArrayList<>(0), enterCommentView);
-            commentsList.setAdapter(commentsAdapter);
-        }
         customTab = new CustomTabActivityHelper();
         customTab.setConnectionCallback(customTabConnect);
     }
 
+    private void setupComments(View enterCommentView, List<Comment> comments) {
+        if (comments.size() > 0) {
+            // flatten the comments from a nested structure {@see Comment#comments} to a
+            // list appropriate for our adapter (using the depth attribute).
+            List<Comment> flattened = new ArrayList<>(story.comment_count);
+            unnestComments(comments, flattened);
+            commentsAdapter =
+                    new DesignerNewsCommentsAdapter(header, comments, enterCommentView);
+            commentsList.setAdapter(commentsAdapter);
+
+        }
+    }
+
     private void bindResources() {
         commentsList = findViewById(R.id.comments_list);
-        fab = findViewById(io.plaidapp.base.R.id.fab);
+        fab = findViewById(R.id.fab);
         fabExpand = findViewById(R.id.fab_expand);
         draggableFrame = findViewById(R.id.comments_container);
         collapsingToolbar = findViewById(R.id.backdrop_toolbar);
@@ -260,7 +266,9 @@ public class DesignerNewsStory extends Activity {
     @Override
     @TargetApi(Build.VERSION_CODES.M)
     public void onProvideAssistContent(AssistContent outContent) {
-        outContent.setWebUri(Uri.parse(story.url));
+        if (story.url != null) {
+            outContent.setWebUri(Uri.parse(story.url));
+        }
     }
 
     private final CustomTabActivityHelper.ConnectionCallback customTabConnect
@@ -268,7 +276,9 @@ public class DesignerNewsStory extends Activity {
 
         @Override
         public void onCustomTabsConnected() {
-            customTab.mayLaunchUrl(Uri.parse(story.url), null, null);
+            if (story.url != null) {
+                customTab.mayLaunchUrl(Uri.parse(story.url), null, null);
+            }
         }
 
         @Override
@@ -301,7 +311,7 @@ public class DesignerNewsStory extends Activity {
     private void updateFabVisibility() {
         // the FAB position can interfere with the enter comment field. Hide the FAB if:
         // - The comment field is scrolled onto screen
-        // - The comment field is focused (i.e. stories with no/few comments might not push the
+        // - The comment field is focused (i.e. stories with no/few commentLinks might not push the
         //   enter comment field off-screen so need to make sure the button is accessible
         // - A comment reply field is focused
         final boolean enterCommentFocused = enterComment.isFocused();
@@ -448,8 +458,9 @@ public class DesignerNewsStory extends Activity {
         }
 
         upvoteStory = header.findViewById(R.id.story_vote_action);
-        upvoteStory.setText(getResources().getQuantityString(io.plaidapp.R.plurals.upvotes, story.vote_count,
-                NumberFormat.getInstance().format(story.vote_count)));
+        upvoteStory.setText(
+                getResources().getQuantityString(io.plaidapp.R.plurals.upvotes, story.vote_count,
+                        NumberFormat.getInstance().format(story.vote_count)));
         upvoteStory.setOnClickListener(v -> upvoteStory());
 
         final TextView share = header.findViewById(R.id.story_share_action);
@@ -463,7 +474,7 @@ public class DesignerNewsStory extends Activity {
         });
 
         TextView storyPosterTime = header.findViewById(R.id.story_poster_time);
-        if(story.user_display_name != null && story.user_job != null) {
+        if (story.user_display_name != null && story.user_job != null) {
             SpannableString poster = new SpannableString(story.user_display_name.toLowerCase());
             poster.setSpan(new TextAppearanceSpan(this, R.style.TextAppearance_CommentAuthor),
                     0, poster.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -608,8 +619,8 @@ public class DesignerNewsStory extends Activity {
         private boolean replyToCommentFocused = false;
 
         DesignerNewsCommentsAdapter(@NonNull View header,
-                                    @NonNull List<Comment> comments,
-                                    @NonNull View footer) {
+                @NonNull List<Comment> comments,
+                @NonNull View footer) {
             this.header = header;
             this.comments = comments;
             this.footer = footer;
@@ -618,8 +629,9 @@ public class DesignerNewsStory extends Activity {
         @Override
         public int getItemViewType(int position) {
             if (position == 0) return TYPE_HEADER;
-            if (isCommentReplyExpanded() && position == expandedCommentPosition + 1)
+            if (isCommentReplyExpanded() && position == expandedCommentPosition + 1) {
                 return TYPE_COMMENT_REPLY;
+            }
             int footerPosition = hasComments() ? 1 + comments.size() // header + comments
                     : 2; // header + no comments view
             if (isCommentReplyExpanded()) footerPosition++;
@@ -650,21 +662,22 @@ public class DesignerNewsStory extends Activity {
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             switch (getItemViewType(position)) {
                 case TYPE_COMMENT:
-                    bindComment((CommentHolder) holder, null);
+                    bindComment((CommentViewHolder) holder, null);
                     break;
                 case TYPE_COMMENT_REPLY:
-                    bindCommentReply((CommentReplyHolder) holder);
+                    ((CommentReplyHolder) holder).bindCommentReply(
+                            getComment(holder.getAdapterPosition() - 1));
                     break;
             } // nothing to bind for header / no comment / footer views
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder,
-                                     int position,
-                                     List<Object> partialChangePayloads) {
+                int position,
+                List<Object> partialChangePayloads) {
             switch (getItemViewType(position)) {
                 case TYPE_COMMENT:
-                    bindComment((CommentHolder) holder, partialChangePayloads);
+                    bindComment((CommentViewHolder) holder, partialChangePayloads);
                     break;
                 default:
                     onBindViewHolder(holder, position);
@@ -727,7 +740,9 @@ public class DesignerNewsStory extends Activity {
         private int adapterPositionToCommentIndex(int adapterPosition) {
             int index = adapterPosition - 1; // less header
             if (isCommentReplyExpanded()
-                    && adapterPosition > expandedCommentPosition) index--;
+                    && adapterPosition > expandedCommentPosition) {
+                index--;
+            }
             return index;
         }
 
@@ -741,8 +756,8 @@ public class DesignerNewsStory extends Activity {
         }
 
         @NonNull
-        private CommentHolder createCommentHolder(ViewGroup parent) {
-            final CommentHolder holder = new CommentHolder(
+        private CommentViewHolder createCommentHolder(ViewGroup parent) {
+            final CommentViewHolder holder = new CommentViewHolder(
                     getLayoutInflater().inflate(R.layout.designer_news_comment, parent, false));
             holder.itemView.setOnClickListener(v -> {
                 final boolean collapsingSelf =
@@ -755,7 +770,7 @@ public class DesignerNewsStory extends Activity {
                 notifyItemInserted(expandedCommentPosition + 1);
                 notifyItemChanged(expandedCommentPosition, CommentAnimator.EXPAND_COMMENT);
             });
-            holder.threadDepth.setImageDrawable(
+            holder.getThreadDepth().setImageDrawable(
                     new ThreadedCommentDrawable(threadWidth, threadGap));
 
             return holder;
@@ -770,7 +785,7 @@ public class DesignerNewsStory extends Activity {
             updateFabVisibility();
         }
 
-        private void bindComment(final CommentHolder holder, List<Object> partialChanges) {
+        private void bindComment(final CommentViewHolder holder, List<Object> partialChanges) {
             // Check if this is a partial update for expanding/collapsing a comment. If it is we
             // can do a partial bind as the bound data has not changed.
             if (partialChanges == null || partialChanges.isEmpty() ||
@@ -778,18 +793,20 @@ public class DesignerNewsStory extends Activity {
                             || partialChanges.contains(CommentAnimator.EXPAND_COMMENT))) {
 
                 final Comment comment = getComment(holder.getAdapterPosition());
-                HtmlUtils.parseMarkdownAndSetText(holder.comment, comment.body, markdown,
+
+                HtmlUtils.parseMarkdownAndSetText(holder.getComment(), comment.body, markdown,
                         (src, loadingSpan) -> GlideApp.with(DesignerNewsStory.this)
                                 .asBitmap()
                                 .load(src)
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(new ImageSpanTarget(holder.comment, loadingSpan)));
+                                .into(new ImageSpanTarget(holder.getComment(), loadingSpan)));
+
                 if (comment.user_display_name != null) {
-                    holder.author.setText(comment.user_display_name.toLowerCase());
+                    holder.getAuthor().setText(comment.user_display_name.toLowerCase());
                 }
-                holder.author.setOriginalPoster(isOP(comment.user_id));
+                holder.getAuthor().setOriginalPoster(isOP(comment.user_id));
                 if (comment.created_at != null) {
-                    holder.timeAgo.setText(
+                    holder.getTimeAgo().setText(
                             DateUtils.getRelativeTimeSpanString(comment.created_at.getTime(),
                                     System.currentTimeMillis(),
                                     DateUtils.SECOND_IN_MILLIS)
@@ -799,26 +816,140 @@ public class DesignerNewsStory extends Activity {
                 //((ThreadedCommentDrawable) holder.threadDepth.getDrawable())
                 //     .setDepth(comment.depth);
 
-                holder.threadDepth.setImageDrawable(
+                holder.getThreadDepth().setImageDrawable(
                         new ThreadedCommentDrawable(threadWidth, threadGap, comment.depth));
             }
 
             // set/clear expanded comment state
             holder.itemView.setActivated(holder.getAdapterPosition() == expandedCommentPosition);
             if (holder.getAdapterPosition() == expandedCommentPosition) {
-                final int threadDepthWidth = holder.threadDepth.getDrawable().getIntrinsicWidth();
+                final int threadDepthWidth = holder.getThreadDepth().getDrawable().getIntrinsicWidth();
                 final float leftShift = -(threadDepthWidth + ((ViewGroup.MarginLayoutParams)
-                        holder.threadDepth.getLayoutParams()).getMarginEnd());
-                holder.author.setTranslationX(leftShift);
-                holder.comment.setTranslationX(leftShift);
-                holder.threadDepth.setTranslationX(-(threadDepthWidth
+                        holder.getThreadDepth().getLayoutParams()).getMarginEnd());
+                holder.getAuthor().setTranslationX(leftShift);
+                holder.getComment().setTranslationX(leftShift);
+                holder.getThreadDepth().setTranslationX(-(threadDepthWidth
                         + ((ViewGroup.MarginLayoutParams)
-                        holder.threadDepth.getLayoutParams()).getMarginStart()));
+                        holder.getThreadDepth().getLayoutParams()).getMarginStart()));
             } else {
-                holder.threadDepth.setTranslationX(0f);
-                holder.author.setTranslationX(0f);
-                holder.comment.setTranslationX(0f);
+                holder.getThreadDepth().setTranslationX(0f);
+                holder.getAuthor().setTranslationX(0f);
+                holder.getComment().setTranslationX(0f);
             }
+        }
+
+        private void upvoteComment(Long id) {
+            final Call<Comment> upvoteComment =
+                    designerNewsPrefs.getApi().upvoteComment(id);
+            upvoteComment.enqueue(new Callback<Comment>() {
+                @Override
+                public void onResponse(Call<Comment> call,
+                        Response<Comment> response) {
+                }
+
+                @Override
+                public void onFailure(Call<Comment> call, Throwable t) {
+                }
+            });
+        }
+
+        private void replyToComment(Long commentId, String reply) {
+            final Call<Comment> replyToComment = designerNewsPrefs.getApi()
+                    .replyToComment(commentId, reply);
+            replyToComment.enqueue(new Callback<Comment>() {
+                @Override
+                public void onResponse(Call<Comment> call, Response<Comment> response) {
+
+                }
+
+                @Override
+                public void onFailure(Call<Comment> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(),
+                            "Failed to post comment :(", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        private void handleCommentVotesClick(CommentReplyHolder holder,
+                boolean isUserLoggedIn,
+                Comment comment) {
+            if (isUserLoggedIn) {
+                if (!holder.getCommentVotes().isActivated()) {
+                    upvoteComment(comment.id);
+                    comment.upvoted = true;
+                    comment.vote_count++;
+                    holder.getCommentVotes().setText(String.valueOf(comment.vote_count));
+                    holder.getCommentVotes().setActivated(true);
+                } else {
+                    comment.upvoted = false;
+                    comment.vote_count--;
+                    holder.getCommentVotes().setText(String.valueOf(comment.vote_count));
+                    holder.getCommentVotes().setActivated(false);
+                    // TODO actually delete upvote - florina: why?
+                }
+            } else {
+                needsLogin(holder.getCommentVotes(), 0);
+            }
+            holder.getCommentReply().clearFocus();
+        }
+
+        private void handleCommentReplyFocus(CommentReplyHolder holder,
+                Interpolator interpolator) {
+            holder.getCommentVotes().animate()
+                    .translationX(-holder.getCommentVotes().getWidth())
+                    .alpha(0f)
+                    .setDuration(200L)
+                    .setInterpolator(interpolator);
+            holder.getReplyLabel().animate()
+                    .translationX(-holder.getCommentVotes().getWidth())
+                    .setDuration(200L)
+                    .setInterpolator(interpolator);
+            holder.getPostReply().setVisibility(View.VISIBLE);
+            holder.getPostReply().setAlpha(0f);
+            holder.getPostReply().animate()
+                    .alpha(1f)
+                    .setDuration(200L)
+                    .setInterpolator(interpolator)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            holder.itemView.setHasTransientState(true);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            holder.itemView.setHasTransientState(false);
+                        }
+                    });
+        }
+
+        private void handleCommentReplyFocusLoss(CommentReplyHolder holder,
+                Interpolator interpolator) {
+            holder.getCommentVotes().animate()
+                    .translationX(0f)
+                    .alpha(1f)
+                    .setDuration(200L)
+                    .setInterpolator(interpolator);
+            holder.getReplyLabel().animate()
+                    .translationX(0f)
+                    .setDuration(200L)
+                    .setInterpolator(interpolator);
+            holder.getPostReply().animate()
+                    .alpha(0f)
+                    .setDuration(200L)
+                    .setInterpolator(interpolator)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            holder.itemView.setHasTransientState(true);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            holder.getPostReply().setVisibility(View.INVISIBLE);
+                            holder.itemView.setHasTransientState(true);
+                        }
+                    });
         }
 
         @NonNull
@@ -826,42 +957,16 @@ public class DesignerNewsStory extends Activity {
             final CommentReplyHolder holder = new CommentReplyHolder(getLayoutInflater()
                     .inflate(R.layout.designer_news_comment_actions, parent, false));
 
-            holder.commentVotes.setOnClickListener(v -> {
-                if (designerNewsPrefs.isLoggedIn()) {
-                    Comment comment = getComment(holder.getAdapterPosition());
-                    if (!holder.commentVotes.isActivated()) {
-                        final Call<Comment> upvoteComment =
-                                designerNewsPrefs.getApi().upvoteComment(comment.id);
-                        upvoteComment.enqueue(new Callback<Comment>() {
-                            @Override
-                            public void onResponse(Call<Comment> call,
-                                                   Response<Comment> response) {
-                            }
-
-                            @Override
-                            public void onFailure(Call<Comment> call, Throwable t) {
-                            }
-                        });
-                        comment.upvoted = true;
-                        comment.vote_count++;
-                        holder.commentVotes.setText(String.valueOf(comment.vote_count));
-                        holder.commentVotes.setActivated(true);
-                    } else {
-                        comment.upvoted = false;
-                        comment.vote_count--;
-                        holder.commentVotes.setText(String.valueOf(comment.vote_count));
-                        holder.commentVotes.setActivated(false);
-                        // TODO actually delete upvote
-                    }
-                } else {
-                    needsLogin(holder.commentVotes, 0);
-                }
-                holder.commentReply.clearFocus();
+            holder.getCommentVotes().setOnClickListener(v -> {
+                Comment comment = getComment(holder.getAdapterPosition());
+                handleCommentVotesClick(holder, designerNewsPrefs.isLoggedIn(), comment);
             });
 
-            holder.postReply.setOnClickListener(v -> {
+            holder.getPostReply().setOnClickListener(v -> {
                 if (designerNewsPrefs.isLoggedIn()) {
-                    if (TextUtils.isEmpty(holder.commentReply.getText())) return;
+                    String reply = holder.getCommentReply().getText().toString();
+                    if (reply.isEmpty()) return;
+
                     final int inReplyToCommentPosition = holder.getAdapterPosition() - 1;
                     final Comment replyingTo = getComment(inReplyToCommentPosition);
                     collapseExpandedComment();
@@ -872,7 +977,7 @@ public class DesignerNewsStory extends Activity {
                     User user = designerNewsPrefs.getUser();
                     final int newReplyPosition = commentsAdapter.addCommentReply(
                             new Comment.Builder()
-                                    .setBody(holder.commentReply.getText().toString())
+                                    .setBody(holder.getCommentReply().getText().toString())
                                     .setCreatedAt(new Date())
                                     .setDepth(replyDepth)
                                     .setUserId(user.id)
@@ -880,134 +985,32 @@ public class DesignerNewsStory extends Activity {
                                     .setUserPortraitUrl(user.portrait_url)
                                     .build(),
                             inReplyToCommentPosition);
-                    final Call<Comment> replyToComment = designerNewsPrefs.getApi()
-                            .replyToComment(replyingTo.id,
-                                    holder.commentReply.getText().toString());
-                    replyToComment.enqueue(new Callback<Comment>() {
-                        @Override
-                        public void onResponse(Call<Comment> call, Response<Comment> response) {
 
-                        }
-
-                        @Override
-                        public void onFailure(Call<Comment> call, Throwable t) {
-                            Toast.makeText(getApplicationContext(),
-                                    "Failed to post comment :(", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    holder.commentReply.getText().clear();
-                    ImeUtils.hideIme(holder.commentReply);
+                    replyToComment(replyingTo.id, reply);
+                    holder.getCommentReply().getText().clear();
+                    ImeUtils.hideIme(holder.getCommentReply());
                     commentsList.scrollToPosition(newReplyPosition);
                 } else {
-                    needsLogin(holder.postReply, 0);
+                    needsLogin(holder.getPostReply(), 0);
                 }
-                holder.commentReply.clearFocus();
+                holder.getCommentReply().clearFocus();
             });
 
-            holder.commentReply.setOnFocusChangeListener((v, hasFocus) -> {
+            holder.getCommentReply().setOnFocusChangeListener((v, hasFocus) -> {
                 replyToCommentFocused = hasFocus;
-                final Interpolator interp = getFastOutSlowInInterpolator(holder
+                final Interpolator interpolator = getFastOutSlowInInterpolator(holder
                         .itemView.getContext());
                 if (hasFocus) {
-                    holder.commentVotes.animate()
-                            .translationX(-holder.commentVotes.getWidth())
-                            .alpha(0f)
-                            .setDuration(200L)
-                            .setInterpolator(interp);
-                    holder.replyLabel.animate()
-                            .translationX(-holder.commentVotes.getWidth())
-                            .setDuration(200L)
-                            .setInterpolator(interp);
-                    holder.postReply.setVisibility(View.VISIBLE);
-                    holder.postReply.setAlpha(0f);
-                    holder.postReply.animate()
-                            .alpha(1f)
-                            .setDuration(200L)
-                            .setInterpolator(interp)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationStart(Animator animation) {
-                                    holder.itemView.setHasTransientState(true);
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    holder.itemView.setHasTransientState(false);
-                                }
-                            });
+                    handleCommentReplyFocus(holder, interpolator);
                     updateFabVisibility();
                 } else {
-                    holder.commentVotes.animate()
-                            .translationX(0f)
-                            .alpha(1f)
-                            .setDuration(200L)
-                            .setInterpolator(interp);
-                    holder.replyLabel.animate()
-                            .translationX(0f)
-                            .setDuration(200L)
-                            .setInterpolator(interp);
-                    holder.postReply.animate()
-                            .alpha(0f)
-                            .setDuration(200L)
-                            .setInterpolator(interp)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationStart(Animator animation) {
-                                    holder.itemView.setHasTransientState(true);
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    holder.postReply.setVisibility(View.INVISIBLE);
-                                    holder.itemView.setHasTransientState(true);
-                                }
-                            });
+                    handleCommentReplyFocusLoss(holder, interpolator);
                     updateFabVisibility();
                 }
-                holder.postReply.setActivated(hasFocus);
+                holder.getPostReply().setActivated(hasFocus);
             });
-
             return holder;
         }
-
-        private void bindCommentReply(CommentReplyHolder holder) {
-            Comment comment = getComment(holder.getAdapterPosition() - 1);
-            holder.commentVotes.setText(String.valueOf(comment.vote_count));
-            holder.commentVotes.setActivated(comment.upvoted != null && comment.upvoted);
-        }
-    }
-
-    /* package */ static class CommentHolder extends RecyclerView.ViewHolder {
-
-        ImageView threadDepth;
-        AuthorTextView author;
-        TextView timeAgo;
-        TextView comment;
-
-        public CommentHolder(View itemView) {
-            super(itemView);
-            threadDepth = itemView.findViewById(R.id.depth);
-            author = itemView.findViewById(R.id.comment_author);
-            timeAgo = itemView.findViewById(R.id.comment_time_ago);
-            comment = itemView.findViewById(R.id.comment_text);
-        }
-    }
-
-    /* package */ static class CommentReplyHolder extends RecyclerView.ViewHolder {
-
-        Button commentVotes;
-        TextInputLayout replyLabel;
-        EditText commentReply;
-        ImageButton postReply;
-
-        public CommentReplyHolder(View itemView) {
-            super(itemView);
-            commentVotes = itemView.findViewById(R.id.comment_votes);
-            replyLabel = itemView.findViewById(R.id.comment_reply_label);
-            commentReply = itemView.findViewById(R.id.comment_reply);
-            postReply = itemView.findViewById(R.id.post_reply);
-        }
-
     }
 
     /* package */ static class HeaderHolder extends RecyclerView.ViewHolder {
@@ -1031,135 +1034,9 @@ public class DesignerNewsStory extends Activity {
         }
     }
 
-    private static class CommentAnimator extends SlideInItemAnimator {
-
-        CommentAnimator(long addRemoveDuration) {
-            super();
-            setAddDuration(addRemoveDuration);
-            setRemoveDuration(addRemoveDuration);
-        }
-
-        public static final int EXPAND_COMMENT = 1;
-        public static final int COLLAPSE_COMMENT = 2;
-
-        @Override
-        public boolean canReuseUpdatedViewHolder(@NonNull RecyclerView.ViewHolder viewHolder) {
-            return true;
-        }
-
-        @NonNull
-        @Override
-        public ItemHolderInfo recordPreLayoutInformation(@NonNull RecyclerView.State state,
-                                                         @NonNull RecyclerView.ViewHolder viewHolder,
-                                                         int changeFlags,
-                                                         @NonNull List<Object> payloads) {
-            CommentItemHolderInfo info = (CommentItemHolderInfo)
-                    super.recordPreLayoutInformation(state, viewHolder, changeFlags, payloads);
-            info.doExpand = payloads.contains(EXPAND_COMMENT);
-            info.doCollapse = payloads.contains(COLLAPSE_COMMENT);
-            return info;
-        }
-
-        @Override
-        public boolean animateChange(@NonNull RecyclerView.ViewHolder oldHolder,
-                                     @NonNull RecyclerView.ViewHolder newHolder,
-                                     @NonNull ItemHolderInfo preInfo,
-                                     @NonNull ItemHolderInfo postInfo) {
-            if (newHolder instanceof CommentHolder && preInfo instanceof CommentItemHolderInfo) {
-                final CommentHolder holder = (CommentHolder) newHolder;
-                final CommentItemHolderInfo info = (CommentItemHolderInfo) preInfo;
-                final float expandedThreadOffset = -(holder.threadDepth.getWidth() + ((ViewGroup
-                        .MarginLayoutParams) holder.threadDepth.getLayoutParams())
-                        .getMarginStart());
-                final float expandedAuthorCommentOffset = -(holder.threadDepth.getWidth() +
-                        ((ViewGroup.MarginLayoutParams) holder.threadDepth.getLayoutParams())
-                                .getMarginEnd());
-
-                if (info.doExpand) {
-                    Interpolator moveInterpolator = getFastOutSlowInInterpolator(holder
-                            .itemView.getContext());
-                    holder.threadDepth.setTranslationX(0f);
-                    holder.threadDepth.animate()
-                            .translationX(expandedThreadOffset)
-                            .setDuration(160L)
-                            .setInterpolator(moveInterpolator);
-                    holder.author.setTranslationX(0f);
-                    holder.author.animate()
-                            .translationX(expandedAuthorCommentOffset)
-                            .setDuration(320L)
-                            .setInterpolator(moveInterpolator);
-                    holder.comment.setTranslationX(0f);
-                    holder.comment.animate()
-                            .translationX(expandedAuthorCommentOffset)
-                            .setDuration(320L)
-                            .setInterpolator(moveInterpolator)
-                            .setListener(new AnimatorListenerAdapter() {
-
-                                @Override
-                                public void onAnimationStart(Animator animation) {
-                                    dispatchChangeStarting(holder, false);
-                                    holder.itemView.setHasTransientState(true);
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    holder.itemView.setHasTransientState(false);
-                                    dispatchChangeFinished(holder, false);
-                                }
-                            });
-                } else if (info.doCollapse) {
-                    Interpolator enterInterpolator = getLinearOutSlowInInterpolator
-                            (holder.itemView
-                                    .getContext());
-                    Interpolator moveInterpolator = getFastOutSlowInInterpolator(holder
-                            .itemView
-                            .getContext());
-
-                    // return the thread depth indicator into place
-                    holder.threadDepth.setTranslationX(expandedThreadOffset);
-                    holder.threadDepth.animate()
-                            .translationX(0f)
-                            .setDuration(200L)
-                            .setInterpolator(enterInterpolator)
-                            .setListener(new AnimatorListenerAdapter() {
-
-                                @Override
-                                public void onAnimationStart(Animator animation) {
-                                    dispatchChangeStarting(holder, false);
-                                    holder.itemView.setHasTransientState(true);
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    holder.itemView.setHasTransientState(false);
-                                    dispatchChangeFinished(holder, false);
-                                }
-                            });
-
-                    // return the text into place
-                    holder.author.setTranslationX(expandedAuthorCommentOffset);
-                    holder.author.animate()
-                            .translationX(0f)
-                            .setDuration(200L)
-                            .setInterpolator(moveInterpolator);
-                    holder.comment.setTranslationX(expandedAuthorCommentOffset);
-                    holder.comment.animate()
-                            .translationX(0f)
-                            .setDuration(200L)
-                            .setInterpolator(moveInterpolator);
-                }
-            }
-            return super.animateChange(oldHolder, newHolder, preInfo, postInfo);
-        }
-
-        @Override
-        public ItemHolderInfo obtainHolderInfo() {
-            return new CommentItemHolderInfo();
-        }
-
-        /* package */ static class CommentItemHolderInfo extends ItemHolderInfo {
-            boolean doExpand;
-            boolean doCollapse;
-        }
+    public static class CommentItemHolderInfo extends
+            RecyclerView.ItemAnimator.ItemHolderInfo {
+        boolean doExpand;
+        boolean doCollapse;
     }
 }

@@ -25,7 +25,7 @@
     android:layout_height="match_parent"
     app:dragDismissDistance="@dimen/drag_dismiss_distance"
     app:dragDismissScale="0.95"
-    tools:context="io.plaidapp.ui.designernews.DesignerNewsStory">
+    tools:context="io.plaidapp.ui.designernews.story.DesignerNewsStory">
 
     <!-- Use a separate view for the background, rather than on the root view because it is a
          shared element. Otherwise it interferes with the window enter transition i.e. as it is
