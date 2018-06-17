@@ -22,7 +22,9 @@ import io.plaidapp.core.designernews.data.api.model.Comment
 import io.plaidapp.core.designernews.data.api.model.NewStoryRequest
 import io.plaidapp.core.designernews.data.api.model.Story
 import io.plaidapp.core.designernews.data.api.model.User
+import kotlinx.coroutines.experimental.Deferred
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FieldMap
@@ -77,6 +79,10 @@ interface DesignerNewsService {
     @Headers("Content-Type: application/vnd.api+json")
     @POST("api/v2/stories")
     fun postStory(@Body story: NewStoryRequest): Call<List<Story>>
+
+    @EnvelopePayload("comments")
+    @GET("api/v2/comments/{ids}")
+    fun getComments(@Path("ids") commentIds: String): Deferred<Response<List<Comment>>>
 
     @FormUrlEncoded
     @POST("api/v1/stories/{id}/reply")
