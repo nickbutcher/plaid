@@ -50,7 +50,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.style.TextAppearanceSpan;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -143,13 +142,9 @@ public class DesignerNewsStory extends Activity {
 
         commentsRepository.getComments(story.links.getComments(),
                 comments -> {
-                    Log.d("flo", "comments " + comments);
                     setupComments(enterCommentView, (List<Comment>) comments);
                     return Unit.INSTANCE;
-                }, error -> {
-                    Log.e("flo", "error" + error);
-                    return Unit.INSTANCE;
-                });
+                }, error -> Unit.INSTANCE);
 
         fab.setOnClickListener(fabClick);
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this);
@@ -214,10 +209,8 @@ public class DesignerNewsStory extends Activity {
             // list appropriate for our adapter (using the depth attribute).
             List<Comment> flattened = new ArrayList<>(story.comment_count);
             unnestComments(comments, flattened);
-            commentsAdapter =
-                    new DesignerNewsCommentsAdapter(header, flattened, enterCommentView);
+            commentsAdapter.updateList(comments);
             commentsList.setAdapter(commentsAdapter);
-
         }
     }
 
@@ -306,7 +299,7 @@ public class DesignerNewsStory extends Activity {
             = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            updateScrollDependentUi();
+//            updateScrollDependentUi();
         }
     };
 
@@ -607,9 +600,9 @@ public class DesignerNewsStory extends Activity {
     private void unnestComments(List<Comment> nested, List<Comment> flat) {
         for (Comment comment : nested) {
             flat.add(comment);
-            if (comment.comments != null && comment.comments.size() > 0) {
-                unnestComments(comment.comments, flat);
-            }
+//            if (comment.commentLinks != null && comment.commentLinks.size() > 0) {
+//                unnestComments(comment.commentLinks, flat);
+//            }
         }
     }
 
@@ -648,6 +641,11 @@ public class DesignerNewsStory extends Activity {
             this.header = header;
             this.comments = comments;
             this.footer = footer;
+        }
+
+        public void updateList(List<Comment> comments) {
+            this.comments = comments;
+            notifyDataSetChanged();
         }
 
         @Override

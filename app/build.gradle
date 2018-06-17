@@ -67,5 +67,11 @@ dependencies {
     implementation "com.crashlytics.sdk.android:crashlytics:${versions.chrashlytics}"
 }
 
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
+
 // Must be applied after dependencies. See https://stackoverflow.com/a/38018985
 apply plugin: 'com.google.gms.google-services'
