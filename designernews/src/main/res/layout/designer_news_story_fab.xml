@@ -20,7 +20,7 @@
     tools:showIn="@layout/activity_designer_news_story">
 
     <ImageButton
-        android:id="@id/fab"
+        android:id="@+id/fab"
         android:layout_width="@dimen/fab_size"
         android:layout_height="@dimen/fab_size"
         android:layout_gravity="bottom|end"

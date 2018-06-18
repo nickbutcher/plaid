@@ -18,9 +18,9 @@ package io.plaidapp.ui.designernews.story;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
-import static io.plaidapp.util.AnimUtils.getFastOutLinearInInterpolator;
-import static io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator;
-import static io.plaidapp.util.AnimUtils.getLinearOutSlowInInterpolator;
+import static io.plaidapp.base.util.AnimUtils.getFastOutLinearInInterpolator;
+import static io.plaidapp.base.util.AnimUtils.getFastOutSlowInInterpolator;
+import static io.plaidapp.base.util.AnimUtils.getLinearOutSlowInInterpolator;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -70,26 +70,26 @@ import java.util.Date;
 import java.util.List;
 
 import in.uncod.android.bypass.Bypass;
-import io.plaidapp.activities.R;
-import io.plaidapp.designernews.DesignerNewsPrefs;
-import io.plaidapp.designernews.data.api.model.Comment;
-import io.plaidapp.designernews.data.api.model.Story;
-import io.plaidapp.designernews.data.api.model.User;
+import io.plaidapp.base.designernews.data.api.model.User;
+import io.plaidapp.base.util.HtmlUtils;
+import io.plaidapp.base.util.ViewUtils;
+import io.plaidapp.base.util.glide.GlideApp;
+import io.plaidapp.base.util.glide.ImageSpanTarget;
+import io.plaidapp.designernews.R;
+import io.plaidapp.base.designernews.DesignerNewsPrefs;
+import io.plaidapp.base.designernews.data.api.model.Comment;
+import io.plaidapp.base.designernews.data.api.model.Story;
+import io.plaidapp.base.ui.transitions.GravityArcMotion;
+import io.plaidapp.base.ui.transitions.ReflowText;
+import io.plaidapp.base.util.Activities;
+import io.plaidapp.base.util.ImeUtils;
+import io.plaidapp.base.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.ui.designernews.DesignerNewsLogin;
 import io.plaidapp.ui.drawable.ThreadedCommentDrawable;
-import io.plaidapp.ui.transitions.GravityArcMotion;
 import io.plaidapp.ui.transitions.MorphTransform;
-import io.plaidapp.ui.transitions.ReflowText;
 import io.plaidapp.ui.widget.CollapsingTitleLayout;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.PinnedOffsetView;
-import io.plaidapp.util.Activities;
-import io.plaidapp.util.HtmlUtils;
-import io.plaidapp.util.ImeUtils;
-import io.plaidapp.util.ViewUtils;
-import io.plaidapp.util.customtabs.CustomTabActivityHelper;
-import io.plaidapp.util.glide.GlideApp;
-import io.plaidapp.util.glide.ImageSpanTarget;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -118,10 +118,8 @@ public class DesignerNewsStory extends Activity {
     private int fabExpandDuration;
     private int threadWidth;
     private int threadGap;
-    private View enterCommentView;
 
     private Story story;
-
     private DesignerNewsPrefs designerNewsPrefs;
     private Bypass markdown;
     private CustomTabActivityHelper customTab;
@@ -183,26 +181,23 @@ public class DesignerNewsStory extends Activity {
             findViewById(R.id.back).setOnClickListener(backClick);
         }
 
-        enterCommentView = setupCommentField();
-        commentsAdapter = new DesignerNewsCommentsAdapter(
-                header, new ArrayList<>(0), enterCommentView);
-        commentsList.setAdapter(commentsAdapter);
-
-        customTab = new CustomTabActivityHelper();
-        customTab.setConnectionCallback(customTabConnect);
-    }
-
-    private void setupComments(View enterCommentView, List<Comment> comments) {
-        if (comments.size() > 0) {
+        final View enterCommentView = setupCommentField();
+        if (story.comments != null && story.comments.size() > 0) {
             // flatten the comments from a nested structure {@see Comment#comments} to a
             // list appropriate for our adapter (using the depth attribute).
             List<Comment> flattened = new ArrayList<>(story.comment_count);
-            unnestComments(comments, flattened);
+            unnestComments(story.comments, flattened);
             commentsAdapter =
-                    new DesignerNewsCommentsAdapter(header, comments, enterCommentView);
+                    new DesignerNewsCommentsAdapter(header, flattened, enterCommentView);
             commentsList.setAdapter(commentsAdapter);
 
+        } else {
+            commentsAdapter = new DesignerNewsCommentsAdapter(
+                    header, new ArrayList<>(0), enterCommentView);
+            commentsList.setAdapter(commentsAdapter);
         }
+        customTab = new CustomTabActivityHelper();
+        customTab.setConnectionCallback(customTabConnect);
     }
 
     private void bindResources() {
@@ -665,7 +660,7 @@ public class DesignerNewsStory extends Activity {
                     bindComment((CommentViewHolder) holder, null);
                     break;
                 case TYPE_COMMENT_REPLY:
-                    ((CommentReplyHolder) holder).bindCommentReply(
+                    ((CommentReplyViewHolder) holder).bindCommentReply(
                             getComment(holder.getAdapterPosition() - 1));
                     break;
             } // nothing to bind for header / no comment / footer views
@@ -768,7 +763,8 @@ public class DesignerNewsStory extends Activity {
                 // show reply below this
                 expandedCommentPosition = holder.getAdapterPosition();
                 notifyItemInserted(expandedCommentPosition + 1);
-                notifyItemChanged(expandedCommentPosition, CommentAnimator.EXPAND_COMMENT);
+                notifyItemChanged(expandedCommentPosition,
+                        CommentAnimator.EXPAND_COMMENT);
             });
             holder.getThreadDepth().setImageDrawable(
                     new ThreadedCommentDrawable(threadWidth, threadGap));
@@ -778,7 +774,8 @@ public class DesignerNewsStory extends Activity {
 
         private void collapseExpandedComment() {
             if (!isCommentReplyExpanded()) return;
-            notifyItemChanged(expandedCommentPosition, CommentAnimator.COLLAPSE_COMMENT);
+            notifyItemChanged(expandedCommentPosition,
+                    CommentAnimator.COLLAPSE_COMMENT);
             notifyItemRemoved(expandedCommentPosition + 1);
             replyToCommentFocused = false;
             expandedCommentPosition = RecyclerView.NO_POSITION;
@@ -790,7 +787,8 @@ public class DesignerNewsStory extends Activity {
             // can do a partial bind as the bound data has not changed.
             if (partialChanges == null || partialChanges.isEmpty() ||
                     !(partialChanges.contains(CommentAnimator.COLLAPSE_COMMENT)
-                            || partialChanges.contains(CommentAnimator.EXPAND_COMMENT))) {
+                            || partialChanges.contains(
+                            CommentAnimator.EXPAND_COMMENT))) {
 
                 final Comment comment = getComment(holder.getAdapterPosition());
 
@@ -823,7 +821,8 @@ public class DesignerNewsStory extends Activity {
             // set/clear expanded comment state
             holder.itemView.setActivated(holder.getAdapterPosition() == expandedCommentPosition);
             if (holder.getAdapterPosition() == expandedCommentPosition) {
-                final int threadDepthWidth = holder.getThreadDepth().getDrawable().getIntrinsicWidth();
+                final int threadDepthWidth =
+                        holder.getThreadDepth().getDrawable().getIntrinsicWidth();
                 final float leftShift = -(threadDepthWidth + ((ViewGroup.MarginLayoutParams)
                         holder.getThreadDepth().getLayoutParams()).getMarginEnd());
                 holder.getAuthor().setTranslationX(leftShift);
@@ -870,7 +869,7 @@ public class DesignerNewsStory extends Activity {
             });
         }
 
-        private void handleCommentVotesClick(CommentReplyHolder holder,
+        private void handleCommentVotesClick(CommentReplyViewHolder holder,
                 boolean isUserLoggedIn,
                 Comment comment) {
             if (isUserLoggedIn) {
@@ -893,7 +892,7 @@ public class DesignerNewsStory extends Activity {
             holder.getCommentReply().clearFocus();
         }
 
-        private void handleCommentReplyFocus(CommentReplyHolder holder,
+        private void handleCommentReplyFocus(CommentReplyViewHolder holder,
                 Interpolator interpolator) {
             holder.getCommentVotes().animate()
                     .translationX(-holder.getCommentVotes().getWidth())
@@ -923,7 +922,7 @@ public class DesignerNewsStory extends Activity {
                     });
         }
 
-        private void handleCommentReplyFocusLoss(CommentReplyHolder holder,
+        private void handleCommentReplyFocusLoss(CommentReplyViewHolder holder,
                 Interpolator interpolator) {
             holder.getCommentVotes().animate()
                     .translationX(0f)
@@ -953,8 +952,8 @@ public class DesignerNewsStory extends Activity {
         }
 
         @NonNull
-        private CommentReplyHolder createCommentReplyHolder(ViewGroup parent) {
-            final CommentReplyHolder holder = new CommentReplyHolder(getLayoutInflater()
+        private CommentReplyViewHolder createCommentReplyHolder(ViewGroup parent) {
+            final CommentReplyViewHolder holder = new CommentReplyViewHolder(getLayoutInflater()
                     .inflate(R.layout.designer_news_comment_actions, parent, false));
 
             holder.getCommentVotes().setOnClickListener(v -> {
@@ -1034,9 +1033,4 @@ public class DesignerNewsStory extends Activity {
         }
     }
 
-    public static class CommentItemHolderInfo extends
-            RecyclerView.ItemAnimator.ItemHolderInfo {
-        boolean doExpand;
-        boolean doCollapse;
-    }
 }
