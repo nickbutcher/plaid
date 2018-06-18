@@ -6,6 +6,8 @@ Rewriting Plaid using [Android Architecture Components](https://developer.androi
 
 👍 Comments and new issues created are welcomed. 
 
+[![CircleCI](https://circleci.com/gh/nickbutcher/plaid/tree/master.svg?style=shield)](https://circleci.com/gh/nickbutcher/plaid/tree/master)
+
 ### Background
 
 Plaid was written with one big goal: showcase material design in Android in a real application. While Plaid successfully achieved its goal, from an architecture point of view, it lacks all features that would make it a modular, scalable, testable and maintainable app: with UI logic in Android classes, no tests and only one module. 
