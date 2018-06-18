@@ -28,12 +28,18 @@ buildscript {
             'okhttp'          : '3.10.0',
             'gson'            : '2.8.5',
             'jsoup'           : '1.11.3',
-            'coreKtx'         : '0.3'
+            'coreKtx'         : '0.3',
+            'junit'           : '4.12',
+            'test_runner'     : '1.0.2',
+            'test_rules'      : '1.0.2',
+            'espresso'        : '3.0.2',
+            'mockito'         : '2.19.0'
     ]
 
     repositories {
         google()
         mavenCentral()
+        jcenter()
     }
 
     dependencies {
