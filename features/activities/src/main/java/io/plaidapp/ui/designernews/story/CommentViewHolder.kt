@@ -52,6 +52,9 @@ internal class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         val expandedThreadOffset = getExpandedThreadOffset()
         val expandedAuthorCommentOffset = getExpandedAuthorCommentOffset()
         val moveInterpolator = getFastOutSlowInInterpolator(itemView.context)
+
+        // TODO: Nick - extract the animator here
+
         threadDepth.translationX = 0f
         threadDepth.animate().apply {
             translationX(expandedThreadOffset)
