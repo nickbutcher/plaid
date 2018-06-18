@@ -1,3 +1,20 @@
+/*
+ *   Copyright 2018 Google LLC
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ */
+
 package io.plaidapp.ui.designernews.story
 
 import android.animation.Animator
@@ -21,28 +38,19 @@ internal class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     val timeAgo: TextView = itemView.findViewById(R.id.comment_time_ago)
     val comment: TextView = itemView.findViewById(R.id.comment_text)
 
-    fun animate(info: DesignerNewsStory.CommentItemHolderInfo,
-                animator: SlideInItemAnimator) {
-        val expandedThreadOffset = (-(threadDepth.width
-                + (threadDepth.layoutParams as ViewGroup.MarginLayoutParams)
-                .marginStart)).toFloat()
-        val expandedAuthorCommentOffset = (-(threadDepth.width
-                + (threadDepth.layoutParams as ViewGroup.MarginLayoutParams)
-                .marginEnd)).toFloat()
+    private fun getExpandedAuthorCommentOffset() = (-(threadDepth.width
+            + (threadDepth.layoutParams as ViewGroup.MarginLayoutParams)
+            .marginEnd)).toFloat()
 
-        if (info.doExpand) {
-            expand(expandedThreadOffset, expandedAuthorCommentOffset, animator)
-        } else if (info.doCollapse) {
-            collapse(expandedThreadOffset,
-                    expandedAuthorCommentOffset, animator)
-        }
-    }
+    private fun getExpandedThreadOffset() = (-(threadDepth.width
+            + (threadDepth.layoutParams as ViewGroup.MarginLayoutParams)
+            .marginStart)).toFloat()
 
-    private fun expand(
-            expandedThreadOffset: Float,
-            expandedAuthorCommentOffset: Float,
+    fun expand(
             animator: SlideInItemAnimator
     ) {
+        val expandedThreadOffset = getExpandedThreadOffset()
+        val expandedAuthorCommentOffset = getExpandedAuthorCommentOffset()
         val moveInterpolator = getFastOutSlowInInterpolator(itemView.context)
         threadDepth.translationX = 0f
         threadDepth.animate().apply {
@@ -76,11 +84,12 @@ internal class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         }
     }
 
-    private fun collapse(
-            expandedThreadOffset: Float,
-            expandedAuthorCommentOffset: Float,
+    fun collapse(
             animator: SlideInItemAnimator
     ) {
+        val expandedThreadOffset = getExpandedThreadOffset()
+        val expandedAuthorCommentOffset = getExpandedAuthorCommentOffset()
+
         val enterInterpolator = getLinearOutSlowInInterpolator(itemView.context)
         val moveInterpolator = getFastOutSlowInInterpolator(itemView.context)
 
