@@ -31,15 +31,15 @@ public class Comment implements Parcelable {
 
     public final long id;
     public final String body;
-    public final String body_html;
+    private final String body_html;
     public final Date created_at;
     public final int depth;
     public int vote_count;
     public final long user_id;
     public final String user_display_name;
-    public final String user_portrait_url;
-    public final String user_job;
-    public List<CommentLinks> commentLinks = new ArrayList<>();
+    private final String user_portrait_url;
+    private final String user_job;
+    private List<CommentLinks> commentLinks;
 
     // TODO move this to a decorator
     public Boolean upvoted;
