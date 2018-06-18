@@ -24,12 +24,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-
-import io.plaidapp.activities.R
-import io.plaidapp.ui.recyclerview.SlideInItemAnimator
+import io.plaidapp.base.ui.recyclerview.SlideInItemAnimator
+import io.plaidapp.base.util.AnimUtils.getFastOutSlowInInterpolator
+import io.plaidapp.base.util.AnimUtils.getLinearOutSlowInInterpolator
+import io.plaidapp.designernews.R
 import io.plaidapp.ui.widget.AuthorTextView
-import io.plaidapp.util.AnimUtils.getFastOutSlowInInterpolator
-import io.plaidapp.util.AnimUtils.getLinearOutSlowInInterpolator
 
 internal class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
