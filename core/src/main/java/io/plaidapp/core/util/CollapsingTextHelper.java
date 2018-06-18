@@ -108,7 +108,7 @@ public final class CollapsingTextHelper {
      * A value of {@code 1.0} indicates that the layout is fully collapsed.
      */
     public void setExpansionFraction(@FloatRange(from = 0f, to = 1f) float fraction) {
-        fraction = MathUtils.constrain(fraction, 0f, 1f);
+        fraction = MathUtils.constrain( 0f, 1f, fraction);
         if (fraction != mExpandedFraction) {
             mExpandedFraction = fraction;
             calculateCurrentOffsets();

@@ -299,7 +299,7 @@ public class DesignerNewsStory extends Activity {
             = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//            updateScrollDependentUi();
+            updateScrollDependentUi();
         }
     };
 
@@ -600,6 +600,7 @@ public class DesignerNewsStory extends Activity {
     private void unnestComments(List<Comment> nested, List<Comment> flat) {
         for (Comment comment : nested) {
             flat.add(comment);
+            // TODO for now we only have one level of nesting
 //            if (comment.commentLinks != null && comment.commentLinks.size() > 0) {
 //                unnestComments(comment.commentLinks, flat);
 //            }
