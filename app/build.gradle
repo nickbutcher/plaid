@@ -28,6 +28,9 @@ android {
         versionCode rootProject.gitCommitCount
         versionName rootProject.gitTag
         archivesBaseName = "plaid"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
         resConfig "en"
         buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
         buildConfigField "String", "DESIGNER_NEWS_CLIENT_ID", "\"${designer_news_client_id}\""
@@ -62,4 +65,16 @@ dependencies {
     api project(':base')
     api project(':bypass')
     implementation project(':search')
+
+    testImplementation "junit:junit:${versions.junit}"
+    testImplementation "org.mockito:mockito-core:${versions.mockito}"
+    testImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
+
+    androidTestImplementation "com.android.support.test:runner:${versions.test_runner}"
+    androidTestImplementation "com.android.support.test:rules:${versions.test_rules}"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:${versions.espresso}"
+    androidTestImplementation "org.mockito:mockito-core:${versions.mockito}"
+    androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
+    androidTestImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
+
 }

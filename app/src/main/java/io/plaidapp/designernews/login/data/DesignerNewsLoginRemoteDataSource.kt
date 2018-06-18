@@ -1,6 +1,5 @@
 package io.plaidapp.designernews.login.data
 
-import android.util.Log
 import io.plaidapp.BuildConfig
 import io.plaidapp.designernews.data.api.DesignerNewsAuthTokenHolder
 import io.plaidapp.designernews.data.api.DesignerNewsService
@@ -44,7 +43,6 @@ class DesignerNewsLoginRemoteDataSource(
             }
 
             override fun onFailure(call: Call<AccessToken>, t: Throwable) {
-                Log.e(javaClass.canonicalName, t.message, t)
                 onError("Access token retrieval failed with ${t.message}")
             }
         })
@@ -68,7 +66,6 @@ class DesignerNewsLoginRemoteDataSource(
             }
 
             override fun onFailure(call: Call<List<User>>, t: Throwable) {
-                Log.e(javaClass.canonicalName, t.message, t)
                 onError("Failed to get authed user ${t.message}")
             }
         })
