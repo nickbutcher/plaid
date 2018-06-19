@@ -15,9 +15,9 @@
  *
  */
 
-package io.plaidapp.designernews.data.api
+package io.plaidapp.base.designernews.data.api
 
-import io.plaidapp.designernews.data.api.model.Comment
+import io.plaidapp.base.designernews.data.api.model.Comment
 import kotlinx.coroutines.experimental.async
 
 /**
@@ -53,7 +53,8 @@ class DesignerNewsCommentsRepository(private val service: DesignerNewsService) {
         private var INSTANCE: DesignerNewsCommentsRepository? = null
 
         fun getInstance(service: DesignerNewsService): DesignerNewsCommentsRepository {
-            return INSTANCE ?: synchronized(this) {
+            return INSTANCE
+                    ?: synchronized(this) {
                 INSTANCE
                         ?: DesignerNewsCommentsRepository(service).also { INSTANCE = it }
             }
