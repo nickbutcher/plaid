@@ -1,9 +1,10 @@
 package io.plaidapp.designernews.login.data
 
-import io.plaidapp.designernews.data.api.DesignerNewsAuthTokenHolder
-import io.plaidapp.designernews.data.api.DesignerNewsService
-import io.plaidapp.designernews.data.api.model.AccessToken
-import io.plaidapp.designernews.data.api.model.User
+import io.plaidapp.base.designernews.data.api.DesignerNewsAuthTokenHolder
+import io.plaidapp.base.designernews.data.api.DesignerNewsService
+import io.plaidapp.base.designernews.data.api.model.AccessToken
+import io.plaidapp.base.designernews.data.api.model.User
+import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRemoteDataSource
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
