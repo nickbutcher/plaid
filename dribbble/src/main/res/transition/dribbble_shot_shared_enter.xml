@@ -29,7 +29,7 @@
     </changeBounds>
 
     <transition
-        class="io.plaidapp.ui.transitions.ShotSharedEnter"
+        class="io.plaidapp.base.ui.transitions.ShotSharedEnter"
         android:interpolator="@android:interpolator/fast_out_slow_in">
         <targets>
             <target android:targetId="@id/shot" />

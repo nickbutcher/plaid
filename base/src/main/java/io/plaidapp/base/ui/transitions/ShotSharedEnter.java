@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.transitions;
+package io.plaidapp.base.ui.transitions;
 
 import android.content.Context;
 import android.graphics.Rect;
