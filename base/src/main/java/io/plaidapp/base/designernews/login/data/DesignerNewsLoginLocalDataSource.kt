@@ -28,23 +28,16 @@ import io.plaidapp.base.designernews.data.api.model.User
 class DesignerNewsLoginLocalDataSource(private val prefs: SharedPreferences) {
 
     /**
-     * Auth token used for requests that require authentication
+     * Instance of the logged in user. If missing, null is returned
      */
-    var authToken: String?
-        get() = prefs.getString(KEY_ACCESS_TOKEN, null)
-        set(value) {
-            prefs.edit { putString(KEY_ACCESS_TOKEN, authToken) }
-        }
-
-    /**
-     * Instance of the logged in user. If missing, an empty user is created.
-     * TODO when the user is not logged in, return null, not an empty user
-     */
-    var user: User
+    var user: User?
         get() {
             val userId = prefs.getLong(KEY_USER_ID, 0L)
             val username = prefs.getString(KEY_USER_NAME, null)
             val userAvatar = prefs.getString(KEY_USER_AVATAR, null)
+            if (userId == 0L && username == null && userAvatar == null) {
+                return null
+            }
             return User.Builder()
                     .setId(userId)
                     .setDisplayName(username)
@@ -52,10 +45,12 @@ class DesignerNewsLoginLocalDataSource(private val prefs: SharedPreferences) {
                     .build()
         }
         set(value) {
-            prefs.edit {
-                KEY_USER_ID to value.id
-                KEY_USER_NAME to value.display_name
-                KEY_USER_AVATAR to value.portrait_url
+            if (value != null) {
+                prefs.edit {
+                    KEY_USER_ID to value.id
+                    KEY_USER_NAME to value.display_name
+                    KEY_USER_AVATAR to value.portrait_url
+                }
             }
         }
 
@@ -63,17 +58,15 @@ class DesignerNewsLoginLocalDataSource(private val prefs: SharedPreferences) {
      * Clear all data related to this Designer News instance: user data and access token
      */
     fun clearData() {
-        val editor = prefs.edit()
-        editor.putString(KEY_ACCESS_TOKEN, null)
-        editor.putLong(KEY_USER_ID, 0L)
-        editor.putString(KEY_USER_NAME, null)
-        editor.putString(KEY_USER_AVATAR, null)
-        editor.apply()
+        prefs.edit {
+            KEY_USER_ID to 0L
+            KEY_USER_NAME to null
+            KEY_USER_AVATAR to null
+        }
     }
 
     companion object {
         const val DESIGNER_NEWS_PREF = "DESIGNER_NEWS_PREF"
-        private const val KEY_ACCESS_TOKEN = "KEY_ACCESS_TOKEN"
         private const val KEY_USER_ID = "KEY_USER_ID"
         private const val KEY_USER_NAME = "KEY_USER_NAME"
         private const val KEY_USER_AVATAR = "KEY_USER_AVATAR"
