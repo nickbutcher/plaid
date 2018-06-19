@@ -24,8 +24,10 @@ import com.google.gson.Gson
 import io.plaidapp.base.BuildConfig
 import io.plaidapp.base.data.api.ClientAuthInterceptor
 import io.plaidapp.base.data.api.DenvelopingConverter
+import io.plaidapp.base.designernews.data.api.DesignerNewsAuthTokenHolder
 import io.plaidapp.base.designernews.data.api.DesignerNewsService
-import io.plaidapp.base.designernews.login.data.DesignerNewsLoginLocalStorage
+import io.plaidapp.base.designernews.login.data.DesignerNewsLoginLocalDataSource
+import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRemoteDataSource
 import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

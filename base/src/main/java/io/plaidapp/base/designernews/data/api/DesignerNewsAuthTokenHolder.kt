@@ -1,4 +1,4 @@
-package io.plaidapp.designernews.data.api
+package io.plaidapp.base.designernews.data.api
 
 /**
  * Holder for Designer News auth token. Since some APIs can be triggered without requiring
@@ -10,7 +10,8 @@ class DesignerNewsAuthTokenHolder(var authToken: String? = null) {
         private var INSTANCE: DesignerNewsAuthTokenHolder? = null
 
         fun getInstance(authToken: String?): DesignerNewsAuthTokenHolder {
-            return INSTANCE ?: synchronized(this) {
+            return INSTANCE
+                    ?: synchronized(this) {
                 INSTANCE
                         ?: DesignerNewsAuthTokenHolder(authToken).also { INSTANCE = it }
             }

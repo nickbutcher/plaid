@@ -2,7 +2,8 @@ package io.plaidapp.designernews.login.data
 
 import android.content.Context
 import android.support.test.InstrumentationRegistry.getInstrumentation
-import io.plaidapp.designernews.data.api.model.User
+import io.plaidapp.base.designernews.data.api.model.User
+import io.plaidapp.base.designernews.login.data.DesignerNewsLoginLocalDataSource
 import org.junit.After
 import org.junit.Assert
 import org.junit.Test
