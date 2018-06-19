@@ -16,20 +16,25 @@
   limitations under the License.
   -->
 
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- TODO: remove lint ignore -->
 
     <item
         android:id="@+id/menu_search"
         android:title="@string/search"
         android:icon="@drawable/ic_search_24dp"
-        android:showAsAction="always" />
+        android:showAsAction="always"
+        tools:ignore="AppCompatResource" />
 
     <item
         android:id="@+id/menu_filter"
         android:title="@string/filter"
         android:icon="@drawable/ic_filter"
-        android:showAsAction="always" />
+        android:showAsAction="always"
+        tools:ignore="AppCompatResource" />
 
     <item
         android:id="@+id/menu_dribbble_login"
