@@ -84,7 +84,7 @@ import io.plaidapp.ui.widget.CheckableImageButton;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.FABToggle;
 import io.plaidapp.base.ui.widget.ForegroundImageView;
-import io.plaidapp.ui.widget.ParallaxScrimageView;
+import io.plaidapp.base.ui.widget.ParallaxScrimageView;
 import io.plaidapp.base.util.Activities;
 import io.plaidapp.base.util.ColorUtils;
 import io.plaidapp.base.util.HtmlUtils;

@@ -15,7 +15,7 @@
  *
  */
 
-package io.plaidapp.ui.widget;
+package io.plaidapp.base.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -28,8 +28,7 @@ import android.support.annotation.FloatRange;
 import android.util.AttributeSet;
 import android.util.Property;
 
-import io.plaidapp.R;
-import io.plaidapp.base.ui.widget.FourThreeImageView;
+import io.plaidapp.base.R;
 import io.plaidapp.base.util.AnimUtils;
 import io.plaidapp.base.util.ColorUtils;
 

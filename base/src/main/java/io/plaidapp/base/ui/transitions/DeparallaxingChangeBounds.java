@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.transitions;
+package io.plaidapp.base.ui.transitions;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -26,7 +26,7 @@ import android.transition.TransitionValues;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 
-import io.plaidapp.ui.widget.ParallaxScrimageView;
+import io.plaidapp.base.ui.widget.ParallaxScrimageView;
 
 /**
  * An extension to {@link ChangeBounds} designed to work with {@link ParallaxScrimageView}. This

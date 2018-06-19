@@ -34,7 +34,7 @@
     </transitionSet>
 
     <transition
-        class="io.plaidapp.ui.transitions.DeparallaxingChangeBounds"
+        class="io.plaidapp.base.ui.transitions.DeparallaxingChangeBounds"
         android:interpolator="@android:interpolator/fast_out_slow_in">
         <targets>
             <target android:targetId="@id/shot" />
