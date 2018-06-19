@@ -88,6 +88,11 @@
         <item name="lineHeightHint">24sp</item>
     </style>
 
+    <style name="TextAppearance.Filter" parent="@android:style/TextAppearance.Material.Title">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/filter_text</item>
+    </style>
+
     <style name="TextAppearance.TilePrimary" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:letterSpacing">0.01</item>
         <item name="android:fontFamily">@font/roboto_mono</item>
