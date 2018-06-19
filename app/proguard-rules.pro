@@ -31,11 +31,6 @@
 # A resource is loaded with a relative path so the package of this class must be preserved.
 -keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
 
-# Required for GSON parsing of data coming from network requests to models
--keep class io.plaidapp.data.api.dribbble.model.** { *; }
--keep class io.plaidapp.data.api.designernews.model.**  { *; }
--keep class io.plaidapp.data.api.producthunt.model.**  { *; }
-
 # Required for classes created and used from JNI code (on C/C++ side)
 -keep, includedescriptorclasses class in.uncod.android.bypass.Document { *; }
 -keep, includedescriptorclasses class in.uncod.android.bypass.Element { *; }
@@ -43,4 +38,14 @@
 # A resource is loaded with a relative path so the package of this class must be preserved.
 -keepnames class org.jsoup.nodes.Entities
 
+-keep, includedescriptorclasses class io.plaidapp.ui.widget.ObservableScrollView { *; }
+-keep class io.plaidapp.ui.widget.ObservableScrollView$OnScrollListener { *; }
 
+-dontwarn com.android.org.conscrypt.SSLParametersImpl
+-dontwarn dalvik.system.CloseGuard
+-dontwarn kotlin.internal.**
+-dontwarn kotlin.reflect.jvm.internal.ReflectionFactoryImpl
+-dontwarn org.apache.harmony.xnet.provdier.jsse.SSLParametersImpl
+-dontwarn org.conscrypt.**
+-dontwarn sun.misc.Unsafe
+-dontwarn sun.security.ssl.SSLContext.Impl
