@@ -54,11 +54,6 @@
         <item name="android:letterSpacing">0.2</item>
     </style>
 
-    <style name="TextAppearance.Filter" parent="@android:style/TextAppearance.Material.Title">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/filter_text</item>
-    </style>
-
     <style name="TextAppearance.DialogTitle" parent="@android:style/TextAppearance.Material.Title">
         <item name="android:textColor">@color/text_primary_dark</item>
         <item name="android:fontFamily">sans-serif-medium</item>
