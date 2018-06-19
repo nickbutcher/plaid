@@ -1,6 +1,5 @@
 package io.plaidapp.base.designernews.login.data
 
-import android.util.Log
 import io.plaidapp.base.BuildConfig
 import io.plaidapp.base.designernews.data.api.DesignerNewsAuthTokenLocalDataSource
 import io.plaidapp.base.designernews.data.api.DesignerNewsService
@@ -19,6 +18,9 @@ class DesignerNewsLoginRemoteDataSource(
         val service: DesignerNewsService
 ) {
 
+    /**
+     * Log out by cleaning up the auth token
+     */
     fun logout() {
         tokenLocalDataSource.authToken = null
     }
