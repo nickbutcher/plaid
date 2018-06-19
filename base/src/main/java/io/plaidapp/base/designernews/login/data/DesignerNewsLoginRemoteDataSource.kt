@@ -1,7 +1,8 @@
 package io.plaidapp.base.designernews.login.data
 
+import android.util.Log
 import io.plaidapp.base.BuildConfig
-import io.plaidapp.base.designernews.data.api.DesignerNewsAuthTokenHolder
+import io.plaidapp.base.designernews.data.api.DesignerNewsAuthTokenLocalDataSource
 import io.plaidapp.base.designernews.data.api.DesignerNewsService
 import io.plaidapp.base.designernews.data.api.model.AccessToken
 import io.plaidapp.base.designernews.data.api.model.User
@@ -14,15 +15,12 @@ import retrofit2.Response
  * for login (auth and /me) and updates the auth token after authorizing.
  */
 class DesignerNewsLoginRemoteDataSource(
-        val tokenHolder: DesignerNewsAuthTokenHolder,
+        val tokenLocalDataSource: DesignerNewsAuthTokenLocalDataSource,
         val service: DesignerNewsService
 ) {
-    fun updateAuthToken(authToken: String?) {
-        tokenHolder.authToken = authToken
-    }
 
     fun logout() {
-        tokenHolder.authToken = null
+        tokenLocalDataSource.authToken = null
     }
 
     fun login(
@@ -35,7 +33,8 @@ class DesignerNewsLoginRemoteDataSource(
         login.enqueue(object : Callback<AccessToken> {
             override fun onResponse(call: Call<AccessToken>, response: Response<AccessToken>) {
                 if (response.isSuccessful) {
-                    tokenHolder.authToken = response.body()?.access_token
+                    val token = response.body()?.access_token
+                    tokenLocalDataSource.authToken = token
                     requestUser(onSuccess, onError)
                 } else {
                     onError("Access token retrieval failed")

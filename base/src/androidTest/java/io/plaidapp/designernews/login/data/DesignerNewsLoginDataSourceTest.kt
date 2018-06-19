@@ -5,7 +5,6 @@ import android.support.test.InstrumentationRegistry.getInstrumentation
 import io.plaidapp.base.designernews.data.api.model.User
 import io.plaidapp.base.designernews.login.data.DesignerNewsLoginLocalDataSource
 import org.junit.After
-import org.junit.Assert
 import org.junit.Test
 
 class DesignerNewsLoginDataSourceTest {
@@ -18,18 +17,6 @@ class DesignerNewsLoginDataSourceTest {
     @After
     fun tearDown() {
         sharedPreferences.edit().clear().commit()
-    }
-
-    @Test
-    fun authToken_default() {
-        Assert.assertNull(dataSource.authToken)
-    }
-
-    @Test
-    fun authToken_set() {
-        dataSource.authToken = "my token"
-
-        assert("my token" == dataSource.authToken)
     }
 
     @Test
@@ -59,13 +46,10 @@ class DesignerNewsLoginDataSourceTest {
                 .setPortraitUrl("www")
                 .build()
         dataSource.user = user
-        dataSource.authToken = "token"
 
         dataSource.clearData()
 
         val expectedUser = User.Builder().build()
         assert(expectedUser == dataSource.user)
-        Assert.assertNull(dataSource.authToken)
     }
-
 }

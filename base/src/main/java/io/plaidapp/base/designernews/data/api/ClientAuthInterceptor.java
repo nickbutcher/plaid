@@ -15,7 +15,7 @@
  *
  */
 
-package io.plaidapp.base.data.api;
+package io.plaidapp.base.designernews.data.api;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,7 +23,6 @@ import android.text.TextUtils;
 
 import java.io.IOException;
 
-import io.plaidapp.base.designernews.data.api.DesignerNewsAuthTokenHolder;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -35,20 +34,21 @@ import okhttp3.Response;
  */
 public class ClientAuthInterceptor implements Interceptor {
 
-    private final DesignerNewsAuthTokenHolder tokenHolder;
+    private final DesignerNewsAuthTokenLocalDataSource authTokenDataSource;
     private final String clientId;
 
-    public ClientAuthInterceptor(@Nullable DesignerNewsAuthTokenHolder tokenHolder,
+    public ClientAuthInterceptor(@Nullable DesignerNewsAuthTokenLocalDataSource authTokenDataSource,
             @NonNull String clientId) {
-        this.tokenHolder = tokenHolder;
+        this.authTokenDataSource = authTokenDataSource;
         this.clientId = clientId;
     }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
         final Request.Builder requestBuilder = chain.request().newBuilder();
-        if (!TextUtils.isEmpty(tokenHolder.getAuthToken())) {
-            requestBuilder.addHeader("Authorization", "Bearer " + tokenHolder.getAuthToken());
+        if (!TextUtils.isEmpty(authTokenDataSource.getAuthToken())) {
+            requestBuilder.addHeader("Authorization",
+                    "Bearer " + authTokenDataSource.getAuthToken());
         } else {
             final HttpUrl url = chain.request().url().newBuilder()
                     .addQueryParameter("client_id", clientId).build();
