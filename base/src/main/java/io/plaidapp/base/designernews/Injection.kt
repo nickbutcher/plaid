@@ -20,11 +20,12 @@
 package io.plaidapp.base.designernews
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.google.gson.Gson
 import io.plaidapp.base.BuildConfig
-import io.plaidapp.base.data.api.ClientAuthInterceptor
 import io.plaidapp.base.data.api.DenvelopingConverter
-import io.plaidapp.base.designernews.data.api.DesignerNewsAuthTokenHolder
+import io.plaidapp.base.designernews.data.api.ClientAuthInterceptor
+import io.plaidapp.base.designernews.data.api.DesignerNewsAuthTokenLocalDataSource
 import io.plaidapp.base.designernews.data.api.DesignerNewsService
 import io.plaidapp.base.designernews.login.data.DesignerNewsLoginLocalDataSource
 import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRemoteDataSource
@@ -49,35 +50,49 @@ val debugLevel = if (BuildConfig.DEBUG) {
 val interceptor = HttpLoggingInterceptor().apply { level = debugLevel }
 
 fun provideDesignerNewsLoginLocalDataSource(context: Context): DesignerNewsLoginLocalDataSource {
-    val preferences = context.applicationContext
-            .getSharedPreferences(
-                    DesignerNewsLoginLocalDataSource.DESIGNER_NEWS_PREF,
-                    Context.MODE_PRIVATE
-            )
+    val preferences = provideSharedPreferences(
+            context,
+            DesignerNewsLoginLocalDataSource.DESIGNER_NEWS_PREF)
     return DesignerNewsLoginLocalDataSource(preferences)
+}
+
+private fun provideSharedPreferences(context: Context, name: String): SharedPreferences {
+    return context.applicationContext
+            .getSharedPreferences(name, Context.MODE_PRIVATE)
 }
 
 fun provideDesignerNewsLoginRepository(context: Context): DesignerNewsLoginRepository {
     return DesignerNewsLoginRepository.getInstance(
             provideDesignerNewsLoginLocalDataSource(context),
-            provideDesignerNewsLoginRemoteDataSource())
+            provideDesignerNewsLoginRemoteDataSource(context))
 }
 
-fun provideDesignerNewsLoginRemoteDataSource(): DesignerNewsLoginRemoteDataSource {
+fun provideDesignerNewsLoginRemoteDataSource(context: Context): DesignerNewsLoginRemoteDataSource {
     // using a shared instance of the token holder between the remote data source and the service
     // so the remote data source can update the token without having to recreate the service
     // and at run time, having the service use the latest token
     // TODO right now, the token is held by the DesignerNewsLoginDataSource and updated via the
     // login repository. Preferably, only the remote data source should know how to get and store
     // the auth token
-    val tokenHolder = DesignerNewsAuthTokenHolder.getInstance(null)
+    val tokenHolder = provideDesignerNewsAuthTokenLocalDataSource(context)
     return DesignerNewsLoginRemoteDataSource(tokenHolder, provideDesignerNewsService(tokenHolder))
 }
 
-fun provideDesignerNewsService(tokenHolder: DesignerNewsAuthTokenHolder): DesignerNewsService {
+private fun provideDesignerNewsAuthTokenLocalDataSource(
+        context: Context
+): DesignerNewsAuthTokenLocalDataSource {
+    return DesignerNewsAuthTokenLocalDataSource.getInstance(
+            provideSharedPreferences(
+                    context,
+                    DesignerNewsAuthTokenLocalDataSource.DESIGNER_NEWS_AUTH_PREF))
+}
+
+fun provideDesignerNewsService(
+        authTokenDataSource: DesignerNewsAuthTokenLocalDataSource
+): DesignerNewsService {
     val client = OkHttpClient.Builder()
             .addInterceptor(
-                    ClientAuthInterceptor(tokenHolder, BuildConfig.DESIGNER_NEWS_CLIENT_ID))
+                    ClientAuthInterceptor(authTokenDataSource, BuildConfig.DESIGNER_NEWS_CLIENT_ID))
             .addInterceptor(interceptor)
             .build()
     val gson = Gson()

@@ -38,12 +38,10 @@ class DesignerNewsLoginRepository(
         private set
 
     init {
-        val accessToken = localDataSource.authToken
-        isLoggedIn = !accessToken.isNullOrEmpty()
+        isLoggedIn = localDataSource.user != null
         if (isLoggedIn) {
             user = localDataSource.user
         }
-        remoteDataSource.updateAuthToken(accessToken)
     }
 
     fun logout() {

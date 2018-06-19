@@ -2,7 +2,6 @@ package io.plaidapp.designernews.login.data
 
 import android.content.Context
 import android.support.test.InstrumentationRegistry
-import io.plaidapp.base.designernews.data.api.DesignerNewsAuthTokenHolder
 import io.plaidapp.base.designernews.data.api.DesignerNewsService
 import io.plaidapp.base.designernews.data.api.model.AccessToken
 import io.plaidapp.base.designernews.data.api.model.User
@@ -11,10 +10,8 @@ import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRemoteDataSourc
 import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRepository
 import org.junit.After
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
 import retrofit2.mock.Calls
 import java.io.IOException
 
@@ -37,11 +34,6 @@ class DesignerNewsLoginRepositoryTest {
             service)
 
     private val repository = DesignerNewsLoginRepository(localDataSource, remoteDataSource)
-
-    @Before
-    fun setup() {
-        MockitoAnnotations.initMocks(this)
-    }
 
     @After
     fun tearDown() {

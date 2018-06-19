@@ -1,19 +1,22 @@
 package io.plaidapp.designernews.login.data
 
-import io.plaidapp.base.designernews.data.api.DesignerNewsAuthTokenHolder
+import android.content.Context
+import android.support.test.InstrumentationRegistry
+import io.plaidapp.base.designernews.data.api.DesignerNewsAuthTokenLocalDataSource
 import io.plaidapp.base.designernews.data.api.DesignerNewsService
 import io.plaidapp.base.designernews.data.api.model.AccessToken
 import io.plaidapp.base.designernews.data.api.model.User
 import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRemoteDataSource
+import org.junit.After
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
 import retrofit2.mock.Calls
 import java.io.IOException
 
-
+/**
+ * Tests for DesignerNewsLoginRemoteDataSource.
+ */
 class DesignerNewsLoginRemoteDataSourceTest {
 
     private val user = User.Builder()
@@ -23,21 +26,16 @@ class DesignerNewsLoginRemoteDataSourceTest {
             .build()
 
     private val accessToken = AccessToken("token", "type", "scope")
+    private var sharedPreferences = InstrumentationRegistry.getInstrumentation().context
+            .getSharedPreferences("test", Context.MODE_PRIVATE)
 
     private val service = Mockito.mock(DesignerNewsService::class.java)
-    private val authHolder = DesignerNewsAuthTokenHolder()
+    private val authHolder = DesignerNewsAuthTokenLocalDataSource(sharedPreferences)
     private val dataSource = DesignerNewsLoginRemoteDataSource(authHolder, service)
 
-    @Before
-    fun setup() {
-        MockitoAnnotations.initMocks(this)
-    }
-
-    @Test
-    fun updateAuthToken_updatesToken() {
-        dataSource.updateAuthToken("token")
-
-        assert("token" == authHolder.authToken)
+    @After
+    fun tearDown() {
+        sharedPreferences.edit().clear().commit()
     }
 
     @Test
@@ -66,14 +64,16 @@ class DesignerNewsLoginRemoteDataSourceTest {
         // Given that the auth token retrieval fails
         val failureResponse = Calls.failure<AccessToken>(IOException("test"))
         Mockito.`when`(service.login(Mockito.anyMap())).thenReturn(failureResponse)
+        var callbackCalled = false
 
         // Then the login fails
         dataSource.login(
                 "test",
                 "test",
                 { Assert.fail("login network call failed so login should have failed") },
-                { })
+                { callbackCalled = true })
 
+        assert(callbackCalled)
         Mockito.verify(service, Mockito.never()).getAuthedUser()
     }
 
@@ -84,12 +84,15 @@ class DesignerNewsLoginRemoteDataSourceTest {
         // And the get authed user failed
         val failureResponse = Calls.failure<List<User>>(IOException("test"))
         Mockito.`when`(service.getAuthedUser()).thenReturn(failureResponse)
+        var callbackCalled = false
 
         dataSource.login(
                 "test",
                 "test",
                 { Assert.fail("getAuthedUser failed so login should have failed") },
-                { })
+                { callbackCalled = true })
+
+        assert(callbackCalled)
     }
 
 }
