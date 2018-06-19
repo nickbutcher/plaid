@@ -28,6 +28,10 @@ android {
         buildConfigField "String", "DESIGNER_NEWS_CLIENT_ID", "\"${designer_news_client_id}\""
         buildConfigField "boolean", "DESIGNER_NEWS_V2", "true" // May be overridden by a build type.
 
+        buildConfigField "String", "DESIGNER_NEWS_CLIENT_ID", "\"${designer_news_client_id}\""
+        buildConfigField "String",
+                "DESIGNER_NEWS_CLIENT_SECRET", "\"${designer_news_client_secret}\""
+
         buildConfigField "String", "DRIBBBLE_CLIENT_ID", "\"${dribbble_client_id}\""
         buildConfigField "String", "DRIBBBLE_CLIENT_SECRET", "\"${dribbble_client_secret}\""
         buildConfigField "String",
@@ -75,4 +79,16 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
     api "org.jsoup:jsoup:${versions.jsoup}"
     api project(':bypass')
+
+
+    testImplementation "junit:junit:${versions.junit}"
+    testImplementation "org.mockito:mockito-core:${versions.mockito}"
+    testImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
+
+    androidTestImplementation "com.android.support.test:runner:${versions.test_runner}"
+    androidTestImplementation "com.android.support.test:rules:${versions.test_rules}"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:${versions.espresso}"
+    androidTestImplementation "org.mockito:mockito-core:${versions.mockito}"
+    androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
+    androidTestImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
 }

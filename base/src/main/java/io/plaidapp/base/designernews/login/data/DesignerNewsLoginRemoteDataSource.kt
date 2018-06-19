@@ -1,10 +1,10 @@
-package io.plaidapp.designernews.login.data
+package io.plaidapp.base.designernews.login.data
 
-import io.plaidapp.BuildConfig
-import io.plaidapp.designernews.data.api.DesignerNewsAuthTokenHolder
-import io.plaidapp.designernews.data.api.DesignerNewsService
-import io.plaidapp.designernews.data.api.model.AccessToken
-import io.plaidapp.designernews.data.api.model.User
+import io.plaidapp.base.BuildConfig
+import io.plaidapp.base.designernews.data.api.DesignerNewsAuthTokenHolder
+import io.plaidapp.base.designernews.data.api.DesignerNewsService
+import io.plaidapp.base.designernews.data.api.model.AccessToken
+import io.plaidapp.base.designernews.data.api.model.User
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
