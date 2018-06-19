@@ -17,13 +17,6 @@
 
 <resources>
 
-     <style name="PlaidDarkOverlay" parent="@android:style/ThemeOverlay.Material.Dark.ActionBar">
-        <!-- Used to theme dark elements in light themed screens.
-             Extend the material dark Action Bar overlay as this contains text styling. -->
-    </style>
-
-    <style name="Widget.Plaid" parent="android:Widget" />
-
     <style name="Widget.Plaid.Toolbar">
         <item name="android:titleTextAppearance">@android:style/TextAppearance.Material.Widget.ActionBar.Title</item>
         <item name="android:background">?android:colorPrimary</item>
@@ -53,11 +46,6 @@
 
     <style name="TextAppearance.AccentToolbar" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title.Inverse">
         <item name="android:textColor">@color/text_on_accent</item>
-    </style>
-
-    <style name="TextAppearance.ToolbarTitle" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/text_primary_light</item>
-        <item name="android:fontFamily">@font/roboto_mono</item>
     </style>
 
     <style name="TextAppearance.ToolbarTitleSmallCaps" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
@@ -145,17 +133,6 @@
         <item name="android:textSize">14sp</item>
         <item name="android:fontFeatureSettings">onum, smcp</item>
         <item name="android:letterSpacing">0.02</item>
-    </style>
-
-    <style name="Widget.Plaid.CollapsingTitle">
-        <item name="android:textAppearance">@style/TextAppearance.ToolbarTitle</item>
-        <item name="lineHeightHint">28sp</item>
-        <item name="maxExpandedTextSize">@dimen/display_4_text_size</item>
-        <item name="titleInsetStart">@dimen/keyline_1</item>
-        <item name="titleInsetTop">@dimen/padding_normal</item>
-        <item name="titleInsetEnd">@dimen/padding_normal</item>
-        <item name="titleInsetBottom">@dimen/padding_normal</item>
-        <item name="android:maxLines">5</item>
     </style>
 
     <style name="Widget.Plaid.HintCheckBox" parent="@android:style/Widget.Material.CompoundButton.CheckBox">
