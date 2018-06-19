@@ -9,13 +9,14 @@ import io.plaidapp.base.designernews.data.api.model.User
 import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRemoteDataSource
 import org.junit.After
 import org.junit.Assert
+import org.junit.Assert.assertNull
 import org.junit.Test
 import org.mockito.Mockito
 import retrofit2.mock.Calls
 import java.io.IOException
 
 /**
- * Tests for DesignerNewsLoginRemoteDataSource.
+ * Tests for [DesignerNewsLoginRemoteDataSource].
  */
 class DesignerNewsLoginRemoteDataSourceTest {
 
@@ -35,6 +36,7 @@ class DesignerNewsLoginRemoteDataSourceTest {
 
     @After
     fun tearDown() {
+        // cleanup the shared preferences after every test
         sharedPreferences.edit().clear().commit()
     }
 
@@ -42,7 +44,7 @@ class DesignerNewsLoginRemoteDataSourceTest {
     fun logout_clearsToken() {
         dataSource.logout()
 
-        Assert.assertNull(authHolder.authToken)
+        assertNull(authHolder.authToken)
     }
 
     @Test

@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 
 /**
- * Local storage for auth token
+ * Local storage for auth token.
  */
 class DesignerNewsAuthTokenLocalDataSource(private val prefs: SharedPreferences) {
 
