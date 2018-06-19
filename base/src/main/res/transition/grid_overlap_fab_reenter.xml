@@ -17,7 +17,7 @@
 
 <transition
     xmlns:android="http://schemas.android.com/apk/res/android"
-    class="io.plaidapp.ui.transitions.Pop"
+    class="io.plaidapp.base.ui.transitions.Pop"
     android:fadingMode="fade_in"
     android:startDelay="450"
     android:duration="300"
