@@ -2,6 +2,7 @@ package io.plaidapp.designernews.login.data
 
 import android.content.Context
 import android.support.test.InstrumentationRegistry
+import io.plaidapp.base.designernews.data.api.DesignerNewsAuthTokenLocalDataSource
 import io.plaidapp.base.designernews.data.api.DesignerNewsService
 import io.plaidapp.base.designernews.data.api.model.AccessToken
 import io.plaidapp.base.designernews.data.api.model.User
@@ -30,8 +31,8 @@ class DesignerNewsLoginRepositoryTest {
     private var localDataSource = DesignerNewsLoginLocalDataSource(sharedPreferences)
 
     private val service = Mockito.mock(DesignerNewsService::class.java)
-    private val remoteDataSource = DesignerNewsLoginRemoteDataSource(DesignerNewsAuthTokenHolder(),
-            service)
+    private val remoteDataSource = DesignerNewsLoginRemoteDataSource(
+            DesignerNewsAuthTokenLocalDataSource(sharedPreferences), service)
 
     private val repository = DesignerNewsLoginRepository(localDataSource, remoteDataSource)
 
