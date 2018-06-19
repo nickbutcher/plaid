@@ -11,6 +11,9 @@ import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRemoteDataSourc
 import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRepository
 import org.junit.After
 import org.junit.Assert
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Mockito
 import retrofit2.mock.Calls
@@ -38,43 +41,77 @@ class DesignerNewsLoginRepositoryTest {
 
     @After
     fun tearDown() {
+        // cleanup the shared preferences after every test
         sharedPreferences.edit().clear().commit()
     }
 
     @Test
     fun isNotLoggedIn_byDefault() {
-        Assert.assertFalse(repository.isLoggedIn)
+        assertFalse(repository.isLoggedIn)
     }
 
     @Test
     fun isLoggedIn_afterSuccessfulLogin() {
+        // Given that the login will be successful
         withLoginSuccessful()
+        var callbackCalled = false
 
-        repository.login("user", "pass", { it -> assert(user == it) }, { Assert.fail() })
+        // When logging in
+        repository.login(
+                "user",
+                "pass",
+                { it ->
+                    callbackCalled = true
+                    assert(user == it)
+                },
+                { Assert.fail() })
 
-        Assert.assertTrue(repository.isLoggedIn)
+        // Then the success callback was called
+        assertTrue(callbackCalled)
+        // The user is logged in
+        assertTrue(repository.isLoggedIn)
     }
 
     @Test
-    fun userEmpty_byDefault() {
-        val expected = User.Builder().build()
-        assert(expected == repository.user)
+    fun userNull_byDefault() {
+        assertNull(repository.user)
     }
 
     @Test
     fun logout() {
+        // When logging out
         repository.logout()
 
-        Assert.assertFalse(repository.isLoggedIn)
+        // Then the user is not logged in
+        assertFalse(repository.isLoggedIn)
+    }
+
+    @Test
+    fun logout_afterLogin() {
+        // Given a logged in user
+        withLoginSuccessful()
+        repository.login("user", "pass", { it -> assert(user == it) }, { Assert.fail() })
+
+        // When logging out
+        repository.logout()
+
+        // Then the user is logged out
+        assertFalse(repository.isLoggedIn)
     }
 
     @Test
     fun isNotLoggedIn_afterFailedLogin() {
+        // Given that the login will fail
         withLoginFailed()
+        var callbackCalled = false
 
-        repository.login("user", "pass", { Assert.fail() }, {})
+        // When logging in
+        repository.login("user", "pass", { Assert.fail() }, { callbackCalled = true })
 
-        Assert.assertFalse(repository.isLoggedIn)
+        // Then the error callback was called
+        assertTrue(callbackCalled)
+        // The user is not logged in
+        assertFalse(repository.isLoggedIn)
     }
 
     private fun withLoginSuccessful() {
@@ -86,5 +123,4 @@ class DesignerNewsLoginRepositoryTest {
         Mockito.`when`(service.login(Mockito.anyMap()))
                 .thenReturn(Calls.failure(IOException("test")))
     }
-
 }
