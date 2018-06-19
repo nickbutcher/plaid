@@ -18,7 +18,7 @@
 <transitionSet xmlns:android="http://schemas.android.com/apk/res/android">
 
     <transition
-        class="io.plaidapp.ui.transitions.Pop"
+        class="io.plaidapp.base.ui.transitions.Pop"
         android:startDelay="700"
         android:duration="300"
         android:interpolator="@android:interpolator/linear_out_slow_in">
