@@ -15,9 +15,9 @@
   limitations under the License.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- designer news story -->
-    <dimen name="designer_news_story_comments_max_width">672dp</dimen> <!-- constrain text width (in increments of 56dp) -->
+    <dimen name="designer_news_story_comments_max_width" tools:ignore="MissingDefaultResource">672dp</dimen> <!-- constrain text width (in increments of 56dp) -->
 
 </resources>
