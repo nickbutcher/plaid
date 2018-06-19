@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.util;
+package io.plaidapp.base.util;
 
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;

@@ -87,7 +87,7 @@ import io.plaidapp.base.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.ui.designernews.DesignerNewsLogin;
 import io.plaidapp.ui.drawable.ThreadedCommentDrawable;
 import io.plaidapp.ui.transitions.MorphTransform;
-import io.plaidapp.ui.widget.CollapsingTitleLayout;
+import io.plaidapp.base.ui.widget.CollapsingTitleLayout;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import retrofit2.Call;
