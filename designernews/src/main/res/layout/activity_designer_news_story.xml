@@ -50,7 +50,7 @@
         android:clipToPadding="false"
         android:scrollbars="vertical" />
 
-    <io.plaidapp.ui.widget.CollapsingTitleLayout
+    <io.plaidapp.base.ui.widget.CollapsingTitleLayout
         android:id="@+id/backdrop_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
             android:transitionGroup="true"
             android:theme="@style/PlaidDarkOverlay" />
 
-    </io.plaidapp.ui.widget.CollapsingTitleLayout>
+    </io.plaidapp.base.ui.widget.CollapsingTitleLayout>
 
     <include layout="@layout/designer_news_story_fab" />
 

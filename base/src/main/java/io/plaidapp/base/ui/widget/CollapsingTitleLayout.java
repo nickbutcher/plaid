@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.widget;
+package io.plaidapp.base.ui.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -42,10 +42,10 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import io.plaidapp.R;
-import io.plaidapp.ui.span.TextColorSpan;
+import io.plaidapp.base.R;
+import io.plaidapp.base.ui.span.TextColorSpan;
 import io.plaidapp.base.ui.transitions.ReflowText;
-import io.plaidapp.util.CollapsingTextHelper;
+import io.plaidapp.base.util.CollapsingTextHelper;
 import io.plaidapp.base.util.ViewUtils;
 
 /**

@@ -1,4 +1,4 @@
-package io.plaidapp.ui.span;
+package io.plaidapp.base.ui.span;
 
 import android.support.annotation.ColorInt;
 import android.support.annotation.FloatRange;
