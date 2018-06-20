@@ -23,7 +23,7 @@
         dist:instant="false"
         dist:onDemand="true"
         dist:title="@string/title_about">
-        <dist:fusing include="true" />
+        <dist:fusing dist:include="true" />
     </dist:module>
 
     <application>
