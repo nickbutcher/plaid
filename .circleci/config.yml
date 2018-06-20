@@ -27,8 +27,10 @@ jobs:
       - run:
           name: Run JVM Tests & Lint
           command: ./gradlew check
+      - run:
+          name: Gather Lint results
+          command: ci_scripts/copy_lint_results.sh
       - store_artifacts:
-          path: app/build/reports
-          destination: reports
+          path: ci_results/lint
       - store_test_results:
-          path: app/build/test-results
+          path: ci_results/lint
