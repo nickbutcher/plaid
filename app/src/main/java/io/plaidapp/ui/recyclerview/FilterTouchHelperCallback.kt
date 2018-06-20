@@ -48,6 +48,7 @@ class FilterTouchHelperCallback(
     private val topShadowHeight: Float
     private val bottomShadowHeight: Float
     private val sideShadowWidth: Float
+    private var circleRadiusBeforeAcceleration: Float
 
     // lazily initialized later
     private var initialized = false
@@ -69,6 +70,7 @@ class FilterTouchHelperCallback(
         topShadowHeight = res.getDimension(R.dimen.spacing_micro)
         bottomShadowHeight = topShadowHeight / 2f
         sideShadowWidth = topShadowHeight * 3f / 4f
+        circleRadiusBeforeAcceleration = 0f
     }
 
     // don't support re-ordering
@@ -120,22 +122,27 @@ class FilterTouchHelperCallback(
         val iconPopFinishedThreshold = iconPopThreshold + 0.125f
         var opacity = 1f
         var iconScale = 1f
-        var circleRadius = 0f
-        var iconColor = deleteColor
+        var circleRadius = CIRCLE_INITIAL_RADIUS
+        val iconColor = Color.WHITE
+        val progressValue: Float
         when (progress) {
             in 0f..thirdThreshold -> {
                 // fade in
                 opacity = progress / thirdThreshold
+                progressValue = progress
             }
             in thirdThreshold..swipeThreshold -> {
                 // scale icon down to 0.9
                 iconScale = 1f -
                         (((progress - thirdThreshold) / (swipeThreshold - thirdThreshold)) * 0.1f)
+                // Very slow growing of the circle radius
+                circleRadius = (progress - thirdThreshold) * width * CIRCLE_INITIAL_ACCELERATION + CIRCLE_INITIAL_RADIUS
+                circleRadiusBeforeAcceleration = circleRadius
+                progressValue = progress
             }
             else -> {
-                // draw circle and switch icon color
-                circleRadius = (progress - swipeThreshold) * width * CIRCLE_ACCELERATION
-                iconColor = Color.WHITE
+                // draw circle
+                circleRadius = (progress - swipeThreshold) * width * CIRCLE_ACCELERATION + circleRadiusBeforeAcceleration
                 // scale icon up to 1.2 then back down to 1
                 iconScale = when (progress) {
                     in swipeThreshold..iconPopThreshold -> {
@@ -148,11 +155,14 @@ class FilterTouchHelperCallback(
                     }
                     else -> 1f
                 }
+                progressValue = progress
             }
         }
 
         deleteIcon?.let {
-            val cx = right - iconPadding - it.intrinsicWidth / 2f
+            // calculate the padding to keep the icon in the middle of the swipe
+            val progressivePadding = progressValue * right / 2f - iconPadding
+            val cx = right - progressivePadding - it.intrinsicWidth / 2f
             val cy = top + height / 2f
             val halfIconSize = it.intrinsicWidth * iconScale / 2f
             it.setBounds((cx - halfIconSize).toInt(), (cy - halfIconSize).toInt(),
@@ -207,7 +217,9 @@ class FilterTouchHelperCallback(
     }
 
     companion object {
+        private const val CIRCLE_INITIAL_RADIUS = 60f
+        private const val CIRCLE_INITIAL_ACCELERATION = 0.05f
         // expand the circle rapidly once it shows, don't track swipe 1:1
-        private const val CIRCLE_ACCELERATION = 3f
+        private const val CIRCLE_ACCELERATION = 1.5f
     }
 }
