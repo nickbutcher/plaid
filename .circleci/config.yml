@@ -32,5 +32,3 @@ jobs:
           command: ci_scripts/copy_lint_results.sh
       - store_artifacts:
           path: ci_results/lint
-      - store_test_results:
-          path: ci_results/lint
