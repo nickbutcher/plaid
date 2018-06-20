@@ -36,6 +36,10 @@ import org.mockito.Mockito
 import retrofit2.mock.Calls
 import java.io.IOException
 
+/**
+ * Tests for [DesignerNewsLoginRepository] using shared preferences from instrumentation context
+ * for building the local and remote data sources, and mocked API service.
+ */
 class DesignerNewsLoginRepositoryTest {
 
     private val user = User.Builder()
