@@ -27,7 +27,7 @@
     <dist:module
         dist:onDemand="false"
         dist:title="@string/feature_name_activities">
-        <dist:fusing include="true" />
+        <dist:fusing dist:include="true" />
     </dist:module>
 
     <application
