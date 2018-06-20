@@ -1,3 +1,20 @@
+/*
+ *   Copyright 2018 Google LLC
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ */
+
 package io.plaidapp.designernews.login.data
 
 import android.content.Context
@@ -54,20 +71,20 @@ class DesignerNewsLoginRepositoryTest {
     fun isLoggedIn_afterSuccessfulLogin() {
         // Given that the login will be successful
         withLoginSuccessful()
-        var callbackCalled = false
+        var successCalled = false
 
         // When logging in
         repository.login(
                 "user",
                 "pass",
                 { it ->
-                    callbackCalled = true
-                    assert(user == it)
+                    successCalled = true
+                    assertTrue(User.areUsersEqual(user, it))
                 },
                 { Assert.fail() })
 
         // Then the success callback was called
-        assertTrue(callbackCalled)
+        assertTrue(successCalled)
         // The user is logged in
         assertTrue(repository.isLoggedIn)
     }
@@ -103,13 +120,13 @@ class DesignerNewsLoginRepositoryTest {
     fun isNotLoggedIn_afterFailedLogin() {
         // Given that the login will fail
         withLoginFailed()
-        var callbackCalled = false
+        var errorCalled = false
 
         // When logging in
-        repository.login("user", "pass", { Assert.fail() }, { callbackCalled = true })
+        repository.login("user", "pass", { Assert.fail() }, { errorCalled = true })
 
         // Then the error callback was called
-        assertTrue(callbackCalled)
+        assertTrue(errorCalled)
         // The user is not logged in
         assertFalse(repository.isLoggedIn)
     }

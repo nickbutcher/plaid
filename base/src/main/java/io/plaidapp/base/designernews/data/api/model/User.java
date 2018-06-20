@@ -31,12 +31,12 @@ public class User {
     public final String cover_photo_url;
 
     public User(long id,
-                String first_name,
-                String last_name,
-                String display_name,
-                String job,
-                String portrait_url,
-                String cover_photo_url) {
+            String first_name,
+            String last_name,
+            String display_name,
+            String job,
+            String portrait_url,
+            String cover_photo_url) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -93,5 +93,15 @@ public class User {
         public User build() {
             return new User(id, firstName, lastName, displayName, job, portraitUrl, coverPhotoUrl);
         }
+    }
+
+    /**
+     * Until User is in kotlin, we need to manually check for equals
+     */
+    public static boolean areUsersEqual(User expected, User actual) {
+        return (actual == null) ||
+                (expected.id == actual.id &&
+                        expected.display_name.equals(actual.display_name) &&
+                        expected.portrait_url.equals(actual.portrait_url));
     }
 }

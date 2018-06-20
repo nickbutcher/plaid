@@ -57,7 +57,7 @@ class DesignerNewsLoginLocalDataSource(private val prefs: SharedPreferences) {
     /**
      * Clear all data related to this Designer News instance: user data and access token
      */
-    fun clearData() {
+    fun logout() {
         prefs.edit {
             KEY_USER_ID to 0L
             KEY_USER_NAME to null

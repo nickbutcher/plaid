@@ -1,3 +1,20 @@
+/*
+ *   Copyright 2018 Google LLC
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ */
+
 package io.plaidapp.designernews.login.data
 
 import android.content.Context
@@ -45,11 +62,11 @@ class DesignerNewsLoginDataSourceTest {
         dataSource.user = user
 
         // Then it can then be retrieved
-        assertTrue(areUsersEqual(user, dataSource.user))
+        assertTrue(User.areUsersEqual(user, dataSource.user))
     }
 
     @Test
-    fun clearData() {
+    fun logout() {
         // Given a user set
         val user = User.Builder()
                 .setId(3)
@@ -58,20 +75,11 @@ class DesignerNewsLoginDataSourceTest {
                 .build()
         dataSource.user = user
 
-        // When clearing the data
-        dataSource.clearData()
+        // When logging out
+        dataSource.logout()
 
         // Then the user is null
         assertNull(dataSource.user)
     }
 
-    /**
-     * Until User is in kotlin, we need to manually check for equals
-     */
-    private fun areUsersEqual(expected: User, actual: User?): Boolean {
-        return (actual == null) ||
-                (expected.id == actual.id &&
-                        expected.display_name == actual.display_name &&
-                        expected.portrait_url == actual.portrait_url)
-    }
 }

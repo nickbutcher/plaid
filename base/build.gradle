@@ -82,11 +82,6 @@ dependencies {
     api "org.jsoup:jsoup:${versions.jsoup}"
     api project(':bypass')
 
-
-    testImplementation "junit:junit:${versions.junit}"
-    testImplementation "org.mockito:mockito-core:${versions.mockito}"
-    testImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
-
     androidTestImplementation "com.android.support.test:runner:${versions.test_runner}"
     androidTestImplementation "com.android.support.test:rules:${versions.test_rules}"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:${versions.espresso}"
