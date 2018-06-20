@@ -21,13 +21,14 @@ import android.content.Context
 import android.support.test.InstrumentationRegistry.getInstrumentation
 import io.plaidapp.base.designernews.data.api.model.User
 import io.plaidapp.base.designernews.login.data.DesignerNewsLoginLocalDataSource
-import org.junit.Assert.assertNull
 import org.junit.After
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Tests for [DesignerNewsLoginLocalDataSource].
+ * Tests for [DesignerNewsLoginLocalDataSource] using shared preferences from instrumentation
+ * context
  */
 class DesignerNewsLoginDataSourceTest {
 

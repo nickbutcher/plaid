@@ -34,7 +34,8 @@ import retrofit2.mock.Calls
 import java.io.IOException
 
 /**
- * Tests for [DesignerNewsLoginRemoteDataSource].
+ * Tests for [DesignerNewsLoginRemoteDataSource] using shared preferences from instrumentation
+ * context and mocked API service.
  */
 class DesignerNewsLoginRemoteDataSourceTest {
 
