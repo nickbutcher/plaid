@@ -32,7 +32,7 @@ class DesignerNewsCommentsRepository(private val service: DesignerNewsService) {
             onSuccess: (comments: List<Comment>) -> Unit,
             onError: (error: String) -> Unit
     ) {
-        val requestIds = ids.joinToString()
+        val requestIds = ids.joinToString(",")
         inProgress = true
         async {
             service.getComments(requestIds)
