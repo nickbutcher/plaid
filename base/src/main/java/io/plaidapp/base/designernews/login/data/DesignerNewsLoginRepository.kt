@@ -48,7 +48,7 @@ class DesignerNewsLoginRepository(
         isLoggedIn = false
         user = null
 
-        localDataSource.clearData()
+        localDataSource.logout()
         remoteDataSource.logout()
     }
 
@@ -69,8 +69,8 @@ class DesignerNewsLoginRepository(
     }
 
     private fun setLoggedInUser(user: User?) {
-        user?.apply {
-            localDataSource.user = user
+        user?.let {
+            localDataSource.user = it
             isLoggedIn = true
         }
     }

@@ -3,6 +3,7 @@ package io.plaidapp.base.designernews.data.api
 import android.content.Context
 import android.support.test.InstrumentationRegistry
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 
@@ -32,7 +33,7 @@ class DesignerNewsAuthTokenLocalDataSourceTest {
         dataSource.authToken = "my token"
 
         // Then the retrieved token is the correct one
-        assert("my token" == dataSource.authToken)
+        assertEquals("my token", dataSource.authToken)
     }
 
     @Test

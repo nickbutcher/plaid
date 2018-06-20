@@ -47,7 +47,7 @@ val debugLevel = if (BuildConfig.DEBUG) {
     HttpLoggingInterceptor.Level.NONE
 }
 
-val interceptor = HttpLoggingInterceptor().apply { level = debugLevel }
+val loggingInterceptor = HttpLoggingInterceptor().apply { level = debugLevel }
 
 fun provideDesignerNewsLoginLocalDataSource(context: Context): DesignerNewsLoginLocalDataSource {
     val preferences = provideSharedPreferences(
@@ -93,7 +93,7 @@ fun provideDesignerNewsService(
     val client = OkHttpClient.Builder()
             .addInterceptor(
                     ClientAuthInterceptor(authTokenDataSource, BuildConfig.DESIGNER_NEWS_CLIENT_ID))
-            .addInterceptor(interceptor)
+            .addInterceptor(loggingInterceptor)
             .build()
     val gson = Gson()
     return Retrofit.Builder()

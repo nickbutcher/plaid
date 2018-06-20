@@ -1,3 +1,20 @@
+/*
+ *   Copyright 2018 Google LLC
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ */
+
 package io.plaidapp.designernews.login.data
 
 import android.content.Context
@@ -10,6 +27,7 @@ import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRemoteDataSourc
 import org.junit.After
 import org.junit.Assert
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Mockito
 import retrofit2.mock.Calls
@@ -31,8 +49,8 @@ class DesignerNewsLoginRemoteDataSourceTest {
             .getSharedPreferences("test", Context.MODE_PRIVATE)
 
     private val service = Mockito.mock(DesignerNewsService::class.java)
-    private val authHolder = DesignerNewsAuthTokenLocalDataSource(sharedPreferences)
-    private val dataSource = DesignerNewsLoginRemoteDataSource(authHolder, service)
+    private val authTokenDataSource = DesignerNewsAuthTokenLocalDataSource(sharedPreferences)
+    private val dataSource = DesignerNewsLoginRemoteDataSource(authTokenDataSource, service)
 
     @After
     fun tearDown() {
@@ -42,9 +60,11 @@ class DesignerNewsLoginRemoteDataSourceTest {
 
     @Test
     fun logout_clearsToken() {
+        // When logging out
         dataSource.logout()
 
-        assertNull(authHolder.authToken)
+        // Then the auth token is null
+        assertNull(authTokenDataSource.authToken)
     }
 
     @Test
@@ -52,13 +72,20 @@ class DesignerNewsLoginRemoteDataSourceTest {
         // Given that all API calls are successful
         Mockito.`when`(service.login(Mockito.anyMap())).thenReturn(Calls.response(accessToken))
         Mockito.`when`(service.getAuthedUser()).thenReturn(Calls.response(arrayListOf(user)))
+        var successCalled = false
 
-        // Login is successful
+        // When logging in
         dataSource.login(
                 "test",
                 "test",
-                { it -> assert(user == it) },
+                { it ->
+                    successCalled = true
+                    assertTrue(User.areUsersEqual(user, it))
+                },
                 { Assert.fail() })
+
+        // Then the correct callback is called
+        assertTrue(successCalled)
     }
 
     @Test
@@ -66,16 +93,17 @@ class DesignerNewsLoginRemoteDataSourceTest {
         // Given that the auth token retrieval fails
         val failureResponse = Calls.failure<AccessToken>(IOException("test"))
         Mockito.`when`(service.login(Mockito.anyMap())).thenReturn(failureResponse)
-        var callbackCalled = false
+        var errorCalled = false
 
-        // Then the login fails
+        // When logging in
         dataSource.login(
                 "test",
                 "test",
                 { Assert.fail("login network call failed so login should have failed") },
-                { callbackCalled = true })
+                { errorCalled = true })
 
-        assert(callbackCalled)
+        // Then the login fails
+        assertTrue(errorCalled)
         Mockito.verify(service, Mockito.never()).getAuthedUser()
     }
 
@@ -86,15 +114,16 @@ class DesignerNewsLoginRemoteDataSourceTest {
         // And the get authed user failed
         val failureResponse = Calls.failure<List<User>>(IOException("test"))
         Mockito.`when`(service.getAuthedUser()).thenReturn(failureResponse)
-        var callbackCalled = false
+        var errorCalled = false
 
+        // When logging in
         dataSource.login(
                 "test",
                 "test",
                 { Assert.fail("getAuthedUser failed so login should have failed") },
-                { callbackCalled = true })
+                { errorCalled = true })
 
-        assert(callbackCalled)
+        // Then error is triggered
+        assertTrue(errorCalled)
     }
-
 }
