@@ -62,18 +62,12 @@ fun provideDesignerNewsLoginRepository(context: Context): DesignerNewsLoginRepos
 }
 
 fun provideDesignerNewsLoginRemoteDataSource(context: Context): DesignerNewsLoginRemoteDataSource {
-    // using a shared instance of the token holder between the remote data source and the service
-    // so the remote data source can update the token without having to recreate the service
-    // and at run time, having the service use the latest token
-    // TODO right now, the token is held by the DesignerNewsLoginDataSource and updated via the
-    // login repository. Preferably, only the remote data source should know how to get and store
-    // the auth token
     val tokenHolder = provideDesignerNewsAuthTokenLocalDataSource(context)
     return DesignerNewsLoginRemoteDataSource(tokenHolder, provideDesignerNewsService(tokenHolder))
 }
 
 private fun provideDesignerNewsAuthTokenLocalDataSource(
-    context: Context
+        context: Context
 ): DesignerNewsAuthTokenLocalDataSource {
     return DesignerNewsAuthTokenLocalDataSource.getInstance(
             provideSharedPreferences(
@@ -81,8 +75,13 @@ private fun provideDesignerNewsAuthTokenLocalDataSource(
                     DesignerNewsAuthTokenLocalDataSource.DESIGNER_NEWS_AUTH_PREF))
 }
 
-fun provideDesignerNewsService(
-    authTokenDataSource: DesignerNewsAuthTokenLocalDataSource
+fun provideDesignerNewsService(context: Context): DesignerNewsService {
+    val tokenHolder = provideDesignerNewsAuthTokenLocalDataSource(context)
+    return provideDesignerNewsService(tokenHolder)
+}
+
+private fun provideDesignerNewsService(
+        authTokenDataSource: DesignerNewsAuthTokenLocalDataSource
 ): DesignerNewsService {
     val client = OkHttpClient.Builder()
             .addInterceptor(
@@ -108,9 +107,12 @@ fun provideDesignerNewsRepository(service: DesignerNewsService): io.plaidapp.cor
     return io.plaidapp.core.designernews.data.api.DesignerNewsRepository.getInstance(service)
 }
 
-fun provideDesignerNewsCommentsRepository() =
-        DesignerNewsCommentsRepository.getInstance(provideDesignerNewsCommentsRemoteDataSource())
+fun provideDesignerNewsCommentsRepository(context: Context): DesignerNewsCommentsRepository {
+    val service = provideDesignerNewsService(context)
+    return DesignerNewsCommentsRepository.getInstance(
+            provideDesignerNewsCommentsRemoteDataSource(service))
+}
 
 
-fun provideDesignerNewsCommentsRemoteDataSource() =
-        DesignerNewsCommentsRemoteDataSource.getInstance(provideDesignerNewsService())
+fun provideDesignerNewsCommentsRemoteDataSource(service: DesignerNewsService) =
+        DesignerNewsCommentsRemoteDataSource.getInstance(service)
