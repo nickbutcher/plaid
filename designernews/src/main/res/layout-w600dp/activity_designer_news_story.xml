@@ -17,7 +17,7 @@
 
 <io.plaidapp.ui.widget.ElasticDragDismissFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/io.plaidapp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/comments_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

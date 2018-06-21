@@ -19,7 +19,7 @@
 <io.plaidapp.ui.widget.ElasticDragDismissFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/io.plaidapp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/comments_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -50,6 +50,9 @@
         android:clipToPadding="false"
         android:scrollbars="vertical" />
 
+    <!-- Explicit style should not be necessary as the theme supplies the widget's default style.
+         Bug with aapt/modularization is breaking this so setting here to work around.
+         TODO remove this. -->
     <io.plaidapp.base.ui.widget.CollapsingTitleLayout
         android:id="@+id/backdrop_toolbar"
         android:layout_width="match_parent"
@@ -58,7 +61,8 @@
         android:textAppearance="@style/TextAppearance.ToolbarTitle"
         android:transitionName="@string/transition_story_title"
         android:transitionGroup="false"
-        android:theme="@style/PlaidDarkOverlay">
+        android:theme="@style/PlaidDarkOverlay"
+        style="@style/Widget.Plaid.CollapsingTitle">
 
         <io.plaidapp.ui.widget.PinnedOffsetView
             android:id="@+id/story_title_background"
