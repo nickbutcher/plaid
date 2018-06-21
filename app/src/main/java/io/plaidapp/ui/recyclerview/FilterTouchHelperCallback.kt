@@ -1,15 +1,17 @@
 /*
- *  Copyright 2017 Google Inc.
+ * Copyright 2018 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package io.plaidapp.ui.recyclerview
@@ -37,8 +39,8 @@ import io.plaidapp.util.setTranslation
  * Callback for swiping a custom search filter to delete it.
  */
 class FilterTouchHelperCallback(
-        private val listener: FilterSwipeDismissListener,
-        context: Context
+    private val listener: FilterSwipeDismissListener,
+    context: Context
 ) : ItemTouchHelper.SimpleCallback(0, START) {
 
     private val backgroundColor: Int
@@ -89,8 +91,15 @@ class FilterTouchHelperCallback(
 
     override fun isLongPressDragEnabled() = false
 
-    override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: ViewHolder,
-                             dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+    override fun onChildDraw(
+        c: Canvas,
+        recyclerView: RecyclerView,
+        viewHolder: ViewHolder,
+        dX: Float,
+        dY: Float,
+        actionState: Int,
+        isCurrentlyActive: Boolean
+    ) {
         // bail fast if there isn't a swipe
         if (dX == 0f) {
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
@@ -169,15 +178,15 @@ class FilterTouchHelperCallback(
         }
 
         // draw shadows to fake elevation of surrounding views
-        topShadowPaint?.let{
+        topShadowPaint?.let {
             it.shader?.setTranslation(y = top)
             c.drawRect(left, top, right, top + topShadowHeight, it)
         }
-        bottomShadowPaint?.let{
+        bottomShadowPaint?.let {
             it.shader?.setTranslation(y = bottom - bottomShadowHeight)
             c.drawRect(left, bottom - bottomShadowHeight, right, bottom, it)
         }
-        leftShadowPaint?.let{
+        leftShadowPaint?.let {
             val shadowLeft = right + dX
             it.shader?.setTranslation(x = shadowLeft)
             c.drawRect(shadowLeft, top, shadowLeft + sideShadowWidth, bottom, it)
