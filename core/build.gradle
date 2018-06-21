@@ -81,6 +81,7 @@ dependencies {
     api "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
     api "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:" +
             "${versions.retrofitCoroutines}"
     api "org.jsoup:jsoup:${versions.jsoup}"
@@ -92,4 +93,9 @@ dependencies {
     androidTestImplementation "org.mockito:mockito-core:${versions.mockito}"
     androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
     androidTestImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
+}
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
 }

@@ -72,6 +72,7 @@ import java.util.List;
 
 import in.uncod.android.bypass.Bypass;
 import io.plaidapp.core.designernews.Injection;
+import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRepository;
 import io.plaidapp.core.designernews.data.api.model.User;
 import io.plaidapp.core.util.HtmlUtils;
 import io.plaidapp.core.util.ViewUtils;
@@ -143,7 +144,7 @@ public class DesignerNewsStory extends Activity {
 
         commentsRepository.getComments(story.links.getComments(),
                 comments -> {
-                    setupComments(enterCommentView, (List<Comment>) comments);
+                    setupComments((List<Comment>) comments);
                     return Unit.INSTANCE;
                 }, error -> Unit.INSTANCE);
 
@@ -204,13 +205,13 @@ public class DesignerNewsStory extends Activity {
         customTab.setConnectionCallback(customTabConnect);
     }
 
-    private void setupComments(View enterCommentView, List<Comment> comments) {
+    private void setupComments(List<Comment> comments) {
         if (comments.size() > 0) {
             // flatten the comments from a nested structure {@see Comment#comments} to a
             // list appropriate for our adapter (using the depth attribute).
             List<Comment> flattened = new ArrayList<>(story.comment_count);
             unnestComments(comments, flattened);
-            commentsAdapter.updateList(comments);
+            commentsAdapter.updateList(flattened);
             commentsList.setAdapter(commentsAdapter);
         }
     }
@@ -601,10 +602,9 @@ public class DesignerNewsStory extends Activity {
     private void unnestComments(List<Comment> nested, List<Comment> flat) {
         for (Comment comment : nested) {
             flat.add(comment);
-            // TODO for now we only have one level of nesting
-//            if (comment.commentLinks != null && comment.commentLinks.size() > 0) {
-//                unnestComments(comment.commentLinks, flat);
-//            }
+            if (comment.getComments() != null && comment.getComments().size() > 0) {
+                unnestComments(comment.getComments(), flat);
+            }
         }
     }
 
