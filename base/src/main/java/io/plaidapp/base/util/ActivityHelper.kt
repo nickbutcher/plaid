@@ -1,18 +1,17 @@
 /*
- *   Copyright 2018 Google LLC
+ * Copyright 2018 Google, Inc.
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 @file:JvmName("ActivityHelper")
@@ -90,9 +89,9 @@ object Activities {
              * Create the intent for this Activity's custom tab.
              */
             fun customTabIntent(
-                    context: Context,
-                    story: io.plaidapp.base.designernews.data.api.model.Story,
-                    session: CustomTabsSession?
+                context: Context,
+                story: io.plaidapp.base.designernews.data.api.model.Story,
+                session: CustomTabsSession?
             ): CustomTabsIntent.Builder {
                 val upvoteStory = Intent(context, UpvoteStoryService::class.java)
                 upvoteStory.action = UpvoteStoryService.ACTION_UPVOTE
@@ -104,7 +103,7 @@ object Activities {
                         .setActionButton(drawableToBitmap(context,
                                 R.drawable.ic_upvote_filled_24dp_white)!!,
                                 context.getString(R.string.upvote_story),
-                               pendingIntent,
+                                pendingIntent,
                                 false)
                         .setShowTitle(true)
                         .enableUrlBarHiding()
@@ -168,5 +167,4 @@ object Activities {
         const val EXTRA_SAVE_DESIGNER_NEWS = "EXTRA_SAVE_DESIGNER_NEWS"
         const val RESULT_CODE_SAVE = 7
     }
-
 }

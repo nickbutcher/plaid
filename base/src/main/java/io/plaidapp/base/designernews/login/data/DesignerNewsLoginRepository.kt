@@ -1,18 +1,17 @@
 /*
- *   Copyright 2018 Google LLC
+ * Copyright 2018 Google, Inc.
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package io.plaidapp.base.designernews.login.data
@@ -25,8 +24,8 @@ import io.plaidapp.base.designernews.data.api.model.User
  * triggered to login and where to store the data, once the user was logged in.
  */
 class DesignerNewsLoginRepository(
-        private val localDataSource: DesignerNewsLoginLocalDataSource,
-        private val remoteDataSource: DesignerNewsLoginRemoteDataSource
+    private val localDataSource: DesignerNewsLoginLocalDataSource,
+    private val remoteDataSource: DesignerNewsLoginRemoteDataSource
 ) {
 
     var isLoggedIn: Boolean = false
@@ -53,10 +52,10 @@ class DesignerNewsLoginRepository(
     }
 
     fun login(
-            username: String,
-            password: String,
-            onSuccess: (user: User) -> Unit,
-            onError: (error: String) -> Unit
+        username: String,
+        password: String,
+        onSuccess: (user: User) -> Unit,
+        onError: (error: String) -> Unit
     ) {
         remoteDataSource.login(
                 username,
@@ -85,8 +84,8 @@ class DesignerNewsLoginRepository(
         private var INSTANCE: DesignerNewsLoginRepository? = null
 
         fun getInstance(
-                localDataSource: DesignerNewsLoginLocalDataSource,
-                remoteDataSource: DesignerNewsLoginRemoteDataSource
+            localDataSource: DesignerNewsLoginLocalDataSource,
+            remoteDataSource: DesignerNewsLoginRemoteDataSource
         ): DesignerNewsLoginRepository {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: DesignerNewsLoginRepository(
