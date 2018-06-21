@@ -146,6 +146,9 @@ public class CollapsingTitleLayout extends FrameLayout implements ReflowText.Ref
                     android.R.style.TextAppearance);
             TypedArray ta = getContext().obtainStyledAttributes(textAppearanceId,
                     R.styleable.CollapsingTitleLayout);
+            // default collapsedTextSize to regular android:textSize in the TextAppearance
+            collapsedTextSize = ta.getDimensionPixelSize(
+                    R.styleable.CollapsingTitleLayout_android_textSize, 0);
             parseTextAttrs(ta);
             ta.recycle();
         }
