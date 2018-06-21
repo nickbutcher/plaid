@@ -31,6 +31,8 @@ import io.plaidapp.core.designernews.login.data.DesignerNewsLoginLocalDataSource
 import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRemoteDataSource
 import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRepository
 import io.plaidapp.core.loggingInterceptor
+import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRemoteDataSource
+import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRepository
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -106,6 +108,9 @@ fun provideDesignerNewsRepository(service: DesignerNewsService): io.plaidapp.cor
     return io.plaidapp.core.designernews.data.api.DesignerNewsRepository.getInstance(service)
 }
 
-fun provideDesignerNewsCommentsRepository(): DesignerNewsCommentsRepository {
-    return DesignerNewsCommentsRepository.getInstance(provideDesignerNewsService())
-}
+fun provideDesignerNewsCommentsRepository() =
+        DesignerNewsCommentsRepository.getInstance(provideDesignerNewsCommentsRemoteDataSource())
+
+
+fun provideDesignerNewsCommentsRemoteDataSource() =
+        DesignerNewsCommentsRemoteDataSource.getInstance(provideDesignerNewsService())

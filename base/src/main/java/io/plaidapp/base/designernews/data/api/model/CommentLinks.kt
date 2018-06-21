@@ -26,28 +26,33 @@ import com.google.gson.annotations.SerializedName
  */
 data class CommentLinks(val user: String,
                         val story: String,
+                        @SerializedName("parent_comment")
+                        val parentComment: Long?,
                         val comments: List<String>,
                         @SerializedName("comment_upvotes")
                         private val commentUpvotes: List<String>,
                         @SerializedName("comment_downvotes")
                         private val commentDownvotes: List<String>) : Parcelable {
 
-
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
+            parcel.readValue(Long::class.java.classLoader) as? Long,
             parcel.createStringArrayList(),
             parcel.createStringArrayList(),
             parcel.createStringArrayList())
 
-    override fun describeContents() = 0
-
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(user)
         parcel.writeString(story)
+        parcel.writeValue(parentComment)
         parcel.writeStringList(comments)
         parcel.writeStringList(commentUpvotes)
         parcel.writeStringList(commentDownvotes)
+    }
+
+    override fun describeContents(): Int {
+        return 0
     }
 
     companion object CREATOR : Parcelable.Creator<CommentLinks> {
@@ -59,4 +64,5 @@ data class CommentLinks(val user: String,
             return arrayOfNulls(size)
         }
     }
+
 }
