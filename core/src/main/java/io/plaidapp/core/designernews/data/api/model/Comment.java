@@ -20,7 +20,10 @@ package io.plaidapp.core.designernews.data.api.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -39,22 +42,25 @@ public class Comment implements Parcelable {
     public final String user_display_name;
     private final String user_portrait_url;
     private final String user_job;
-    private List<CommentLinks> commentLinks;
+    @SerializedName("links")
+    private CommentLinks links;
+    private List<Comment> comments = Collections.emptyList();
 
     // TODO move this to a decorator
     public Boolean upvoted;
 
     public Comment(long id,
-                   String body,
-                   String body_html,
-                   Date created_at,
-                   int depth,
-                   int vote_count,
-                   long user_id,
-                   String user_display_name,
-                   String user_portrait_url,
-                   String user_job,
-                   List<CommentLinks> commentLinks) {
+            String body,
+            String body_html,
+            Date created_at,
+            int depth,
+            int vote_count,
+            long user_id,
+            String user_display_name,
+            String user_portrait_url,
+            String user_job,
+            CommentLinks links,
+            List<Comment> comments) {
         this.id = id;
         this.body = body;
         this.body_html = body_html;
@@ -65,7 +71,21 @@ public class Comment implements Parcelable {
         this.user_display_name = user_display_name;
         this.user_portrait_url = user_portrait_url;
         this.user_job = user_job;
-        this.commentLinks = commentLinks;
+        this.links = links;
+        this.comments = comments;
+    }
+
+    public CommentLinks getLinks() {
+        return links;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void addComment(Comment comment){
+        if(comments == null) comments = new ArrayList<>();
+        comments.add(comment);
     }
 
     public static class Builder {
@@ -132,7 +152,7 @@ public class Comment implements Parcelable {
 
         public Comment build() {
             return new Comment(id, body, body_html, created_at, depth, vote_count, user_id,
-                    user_display_name, user_portrait_url, user_job, null);
+                    user_display_name, user_portrait_url, user_job, null, Collections.emptyList());
         }
     }
 
@@ -150,12 +170,7 @@ public class Comment implements Parcelable {
         user_display_name = in.readString();
         user_portrait_url = in.readString();
         user_job = in.readString();
-        if (in.readByte() == 0x01) {
-            commentLinks = new ArrayList<>();
-            in.readList(commentLinks, Comment.class.getClassLoader());
-        } else {
-            commentLinks = null;
-        }
+        links = in.readTypedObject(CommentLinks.CREATOR);
     }
 
     @Override
@@ -175,12 +190,7 @@ public class Comment implements Parcelable {
         dest.writeString(user_display_name);
         dest.writeString(user_portrait_url);
         dest.writeString(user_job);
-        if (commentLinks == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(commentLinks);
-        }
+        dest.writeTypedObject(links, flags);
     }
 
     @SuppressWarnings("unused")
@@ -209,7 +219,7 @@ public class Comment implements Parcelable {
                 ", user_display_name='" + user_display_name + '\'' +
                 ", user_portrait_url='" + user_portrait_url + '\'' +
                 ", user_job='" + user_job + '\'' +
-                ", commentLinks=" + commentLinks +
+                ", links=" + links +
                 ", upvoted=" + upvoted +
                 '}';
     }
