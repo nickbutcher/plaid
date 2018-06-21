@@ -137,7 +137,7 @@ public class DesignerNewsStory extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_story);
 
-        commentsRepository = Injection.provideDesignerNewsCommentsRepository();
+        commentsRepository = Injection.provideDesignerNewsCommentsRepository(this);
         bindResources();
 
         story = getIntent().getParcelableExtra(Activities.DesignerNews.Story.EXTRA_STORY);
