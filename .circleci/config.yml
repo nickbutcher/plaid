@@ -29,6 +29,6 @@ jobs:
           command: ./gradlew check
       - run:
           name: Gather Lint results
-          command: ci_scripts/copy_lint_results.sh
+          command: scripts/copy_lint_results.sh
       - store_artifacts:
           path: ci_results/lint
