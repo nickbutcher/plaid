@@ -25,33 +25,36 @@ import okhttp3.ResponseBody
  * Test data for comments
  */
 
-val links = CommentLinks("userid", "storyid", 1L)
+const val parentId = 1L
 
-val childComment1 = Comment.Builder()
+val links = CommentLinks(user = "userid", story = "storyid", parentComment = parentId)
+
+val reply1 = Comment.Builder()
         .setId(11L)
         .setCommentLinks(links)
         .setBody("commenty comment")
         .build()
 
-val childComment2 = Comment.Builder()
+val reply2 = Comment.Builder()
         .setId(12L)
         .setCommentLinks(links)
         .setBody("commenty comment")
         .build()
 
-val childrenComments = listOf(childComment1, childComment2)
+val replies = listOf(reply1, reply2)
 
 val parentLinks = CommentLinks("userid", "storyid", 1L, arrayListOf(11L, 12L))
 
-val parentComment = Comment.Builder()
-        .setId(1L)
+
+val parentCommentWithReplies = Comment.Builder()
+        .setId(parentId)
         .setBody("commenty comment")
         .setCommentLinks(parentLinks)
-        .setComments(childrenComments)
+        .setComments(replies)
         .build()
 
-val parentCommentWithoutChildren = Comment.Builder()
-        .setId(1L)
+val parentCommentWithoutReplies = Comment.Builder()
+        .setId(parentId)
         .setBody("commenty comment")
         .setCommentLinks(parentLinks)
         .build()
