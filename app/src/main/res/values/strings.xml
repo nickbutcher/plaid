@@ -69,11 +69,4 @@
         <item quantity="other">%s followers</item>
     </plurals>
 
-    <!-- dribbble player sheet -->
-    <plurals name="fans">
-        <item quantity="zero">No Fans</item>
-        <item quantity="one">%s Fan</item>
-        <item quantity="other">%s Fans</item>
-    </plurals>
-
 </resources>

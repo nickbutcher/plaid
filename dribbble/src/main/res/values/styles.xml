@@ -49,11 +49,6 @@
         <item name="initialBadgeColor">@color/gif_badge_light_image</item>
     </style>
 
-    <style name="Plaid.Translucent.Dribbble.PlayerSheet">
-        <item name="android:windowEnterTransition">@transition/dribbble_player_sheet_enter</item>
-        <item name="android:windowReturnTransition">@transition/dribbble_player_sheet_return</item>
-    </style>
-
     <style name="Plaid.Translucent.Dribbble.Shot">
         <item name="android:windowSharedElementEnterTransition">@transition/dribbble_shot_shared_enter</item>
         <item name="android:windowSharedElementReturnTransition">@transition/dribbble_shot_shared_return</item>
