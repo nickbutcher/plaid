@@ -17,52 +17,21 @@
 
 package io.plaidapp.base.designernews.data.api.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 /**
- * Models story links received from DesignerNews v2 API
+ * Models comment links received from DesignerNews v2 API
  */
+@Parcelize
 data class CommentLinks(val user: String,
                         val story: String,
                         @SerializedName("parent_comment")
-                        val parentComment: Long?,
-                        val comments: List<String>,
+                        val parentComment: Long? = null,
+                        val comments: List<Long> = emptyList(),
                         @SerializedName("comment_upvotes")
-                        private val commentUpvotes: List<String>,
+                        private val commentUpvotes: List<String> = emptyList(),
                         @SerializedName("comment_downvotes")
-                        private val commentDownvotes: List<String>) : Parcelable {
-
-    constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readValue(Long::class.java.classLoader) as? Long,
-            parcel.createStringArrayList(),
-            parcel.createStringArrayList(),
-            parcel.createStringArrayList())
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(user)
-        parcel.writeString(story)
-        parcel.writeValue(parentComment)
-        parcel.writeStringList(comments)
-        parcel.writeStringList(commentUpvotes)
-        parcel.writeStringList(commentDownvotes)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<CommentLinks> {
-        override fun createFromParcel(parcel: Parcel): CommentLinks {
-            return CommentLinks(parcel)
-        }
-
-        override fun newArray(size: Int): Array<CommentLinks?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-}
+                        private val commentDownvotes: List<String> = emptyList()
+) : Parcelable
