@@ -69,7 +69,6 @@ import io.plaidapp.base.R;
 import io.plaidapp.base.data.DataLoadingSubject;
 import io.plaidapp.base.data.PlaidItem;
 import io.plaidapp.base.data.PlaidItemSorting;
-import io.plaidapp.base.data.api.dribbble.PlayerShotsDataManager;
 import io.plaidapp.base.data.api.dribbble.ShotWeigher;
 import io.plaidapp.base.data.api.dribbble.model.Shot;
 import io.plaidapp.base.data.api.producthunt.PostWeigher;
@@ -491,8 +490,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             case SourceManager.SOURCE_DRIBBBLE_USER_SHOTS:
             case SourceManager.SOURCE_DRIBBBLE_USER_LIKES:
             case SourceManager.SOURCE_PRODUCT_HUNT:
-            case PlayerShotsDataManager.SOURCE_PLAYER_SHOTS:
-            case PlayerShotsDataManager.SOURCE_TEAM_SHOTS:
                 if (naturalOrderWeigher == null) {
                     naturalOrderWeigher = new PlaidItemSorting.NaturalOrderWeigher();
                 }

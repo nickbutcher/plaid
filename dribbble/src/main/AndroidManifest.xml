@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~   Copyright 2018 Google LLC
   ~
@@ -27,6 +28,7 @@
     </dist:module>
 
     <application>
+
         <activity
             android:name="io.plaidapp.ui.dribbble.DribbbleShot"
             android:parentActivityName="io.plaidapp.ui.HomeActivity"
@@ -57,10 +59,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="io.plaidapp.ui.dribbble.PlayerActivity"
-            android:theme="@style/Plaid.Translucent.Dribbble.Player" />
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${filesAuthority}"
@@ -72,5 +70,5 @@
         </provider>
 
     </application>
-</manifest>
 
+</manifest>
