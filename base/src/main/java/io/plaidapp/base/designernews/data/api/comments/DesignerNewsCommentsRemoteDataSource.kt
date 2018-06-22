@@ -35,13 +35,15 @@ class DesignerNewsCommentsRemoteDataSource(
      * Get a list of comments based on ids from Designer News API.
      * If the response is not successful or missing, then return a null list.
      */
-    fun getComments(ids: List<Long>): Deferred<List<Comment>?> = async(ioContext) {
-        val requestIds = ids.joinToString(",")
-        val response = service.getComments(requestIds).await()
-        if (response.isSuccessful && response.body() != null) {
-            response.body().orEmpty()
-        } else {
-            null
+    fun getComments(ids: List<Long>): Deferred<List<Comment>?> {
+        return async(ioContext) {
+            val requestIds = ids.joinToString(",")
+            val response = service.getComments(requestIds).await()
+            if (response.isSuccessful && response.body() != null) {
+                response.body().orEmpty()
+            } else {
+                null
+            }
         }
     }
 

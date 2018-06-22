@@ -27,55 +27,59 @@ import kotlin.coroutines.experimental.CoroutineContext
  * Repository for Designer News comments. Works with the service to get the data.
  */
 class DesignerNewsCommentsRepository(
-    private val remoteDataSource: DesignerNewsCommentsRemoteDataSource,
-    private val uiContext: CoroutineContext = UI,
-    private val ioContext: CoroutineContext = CommonPool
+        private val remoteDataSource: DesignerNewsCommentsRemoteDataSource,
+        private val uiContext: CoroutineContext = UI,
+        private val ioContext: CoroutineContext = CommonPool
 ) {
 
     /**
-     * Gets comments, together will all the replies from the API. The result is delivered on
-     * [onSuccess] and the error on [onError], on the UI thread.
+     * Gets comments, together will all the replies from the API. The result is delivered to
+     * [onSuccess] and the error to [onError], on the [uiContext].
      */
     fun getComments(
-        ids: List<Long>,
-        onSuccess: (comments: List<Comment>) -> Unit,
-        onError: (error: String) -> Unit
-    ) = launch(uiContext) {
-        // request comments and await until the result is received.
-        val generations = getAllComments(ids)
-        if (generations != null && generations.isNotEmpty()) {
-            for (index: Int in generations.size - 1 downTo 1) {
-                matchParentsWithChildren(generations[index - 1], generations[index])
+            ids: List<Long>,
+            onSuccess: (comments: List<Comment>) -> Unit,
+            onError: (error: String) -> Unit
+    ) {
+        launch(uiContext) {
+            // request comments and await until the result is received.
+            val generations = getAllComments(ids)
+            if (generations != null && generations.isNotEmpty()) {
+                for (index: Int in generations.size - 1 downTo 1) {
+                    matchParentsWithChildren(generations[index - 1], generations[index])
+                }
+                onSuccess(generations[0])
+            } else {
+                onError("Unable to get comments")
             }
-            onSuccess(generations[0])
-        } else {
-            onError("Unable to get comments")
         }
     }
 
     /**
-     * Get all comments and their replies, on the ioContext.
+     * Get all comments and their replies, on the [ioContext].
      */
     private suspend fun getAllComments(
-        parentIds: List<Long>
-    ): List<List<Comment>>? = withContext(ioContext) {
-        val children = mutableListOf<List<Comment>>()
-        var newGeneration = remoteDataSource.getComments(parentIds).await()
-        while (newGeneration != null) {
-            children.add(newGeneration)
-            val nextGenerationIds = newGeneration.flatMap { comment -> comment.links.comments }
-            newGeneration = if (!nextGenerationIds.isEmpty()) {
-                remoteDataSource.getComments(nextGenerationIds).await()
-            } else {
-                null
+            parentIds: List<Long>
+    ): List<List<Comment>>? {
+        return withContext(ioContext) {
+            val children = mutableListOf<List<Comment>>()
+            var newGeneration = remoteDataSource.getComments(parentIds).await()
+            while (newGeneration != null) {
+                children.add(newGeneration)
+                val nextGenerationIds = newGeneration.flatMap { comment -> comment.links.comments }
+                newGeneration = if (!nextGenerationIds.isEmpty()) {
+                    remoteDataSource.getComments(nextGenerationIds).await()
+                } else {
+                    null
+                }
             }
+            children
         }
-        children
     }
 
     private fun matchParentsWithChildren(
-        parents: List<Comment>,
-        children: List<Comment>
+            parents: List<Comment>,
+            children: List<Comment>
     ): List<Comment> {
         children.map { child ->
             parents.filter { parent -> parent.id == child.links.parentComment }
@@ -89,7 +93,7 @@ class DesignerNewsCommentsRepository(
         private var INSTANCE: DesignerNewsCommentsRepository? = null
 
         fun getInstance(
-            remoteDataSource: DesignerNewsCommentsRemoteDataSource
+                remoteDataSource: DesignerNewsCommentsRemoteDataSource
         ): DesignerNewsCommentsRepository {
             return INSTANCE
                     ?: synchronized(this) {

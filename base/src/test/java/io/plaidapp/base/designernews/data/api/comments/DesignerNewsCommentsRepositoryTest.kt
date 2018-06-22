@@ -39,26 +39,17 @@ class DesignerNewsCommentsRepositoryTest {
     @Test
     fun getComments_noReplies_whenRequestSuccessful() {
         // Given that the service responds with success
-        val apiResult = Response.success(listOf(childComment1))
+        val apiResult = Response.success(listOf(reply1))
         Mockito.`when`(service.getComments("11")).thenReturn(CompletableDeferred(apiResult))
-        var successCalled = false
         var result = emptyList<Comment>()
 
-        // When getting the childrenComments
-        repository.getComments(
-                listOf(11L),
-                { list ->
-                    result = list
-                    successCalled = true
-                },
-                { Assert.fail() })
+        // When getting the replies
+        repository.getComments(listOf(11L), { list -> result = list }, { Assert.fail() })
 
         // Then the correct list of comments was requested from the API
         Mockito.verify(service).getComments("11")
-        // The success lambda is called
-        assertTrue(successCalled)
         // Then the correct list is received
-        Assert.assertEquals(listOf(childComment1), result)
+        assertEquals(listOf(reply1), result)
     }
 
     @Test
@@ -68,7 +59,7 @@ class DesignerNewsCommentsRepositoryTest {
         Mockito.`when`(service.getComments("11")).thenReturn(CompletableDeferred(apiResult))
         var errorCalled = false
 
-        // When getting the childrenComments
+        // When getting the comments
         repository.getComments(listOf(11L), { Assert.fail() }, { errorCalled = true })
 
         // Then the error lambda is called
@@ -78,12 +69,12 @@ class DesignerNewsCommentsRepositoryTest {
     @Test
     fun getComments_multipleReplies_whenRequestSuccessful() {
         // Given that:
-        // When requesting childrenComments for ids 1 from service we get the parent comment but
-        // without replies
-        val resultParent = Response.success(listOf(parentCommentWithoutChildren))
+        // When requesting replies for ids 1 from service we get the parent comment but
+        // without replies embedded (since that's what the next call is doing)
+        val resultParent = Response.success(listOf(parentCommentWithoutReplies))
         Mockito.`when`(service.getComments("1")).thenReturn(CompletableDeferred(resultParent))
-        // When requesting childrenComments for ids 11 and 12 from service we get the children
-        val resultChildren = Response.success(childrenComments)
+        // When requesting replies for ids 11 and 12 from service we get the children
+        val resultChildren = Response.success(replies)
         Mockito.`when`(service.getComments("11,12"))
                 .thenReturn(CompletableDeferred(resultChildren))
         var result = emptyList<Comment>()
@@ -95,36 +86,28 @@ class DesignerNewsCommentsRepositoryTest {
         Mockito.verify(service).getComments("1")
         Mockito.verify(service).getComments("11,12")
         // Then the correct result is received
-        assertEquals(arrayListOf(parentComment), result)
+        assertEquals(arrayListOf(parentCommentWithReplies), result)
     }
 
     @Test
     fun getComments_multipleReplies_whenRepliesRequestFailed() {
         // Given that
-        // When requesting childrenComments for ids 1 from service we get the parent comment
-        val resultParent = Response.success(listOf(parentComment))
+        // When requesting replies for ids 1 from service we get the parent comment
+        val resultParent = Response.success(listOf(parentCommentWithReplies))
         Mockito.`when`(service.getComments("1")).thenReturn(CompletableDeferred(resultParent))
-        // When requesting childrenComments for ids 11 and 12 from service we get an error
+        // When requesting replies for ids 11 and 12 from service we get an error
         val resultChildrenError = Response.error<List<Comment>>(400, errorResponseBody)
         Mockito.`when`(service.getComments("11,12"))
                 .thenReturn(CompletableDeferred(resultChildrenError))
-        var successCalled = false
         var result = emptyList<Comment>()
 
         // When getting the comments from the repository
-        repository.getComments(listOf(1L), { list ->
-            result = list
-            // Then the correct list is received
-            Assert.assertEquals(list.size, 1)
-            successCalled = true
-        }, { Assert.fail() })
+        repository.getComments(listOf(1L), { list -> result = list }, { Assert.fail() })
 
         // Then  API requests were triggered
         Mockito.verify(service).getComments("1")
         Mockito.verify(service).getComments("11,12")
-        // Then the success lambda is called
-        assertTrue(successCalled)
         // Then the correct result is received
-        assertEquals(arrayListOf(parentComment), result)
+        assertEquals(arrayListOf(parentCommentWithReplies), result)
     }
 }
