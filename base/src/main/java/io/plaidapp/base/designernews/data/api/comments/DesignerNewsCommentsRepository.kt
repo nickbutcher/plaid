@@ -27,9 +27,9 @@ import kotlin.coroutines.experimental.CoroutineContext
  * Repository for Designer News comments. Works with the service to get the data.
  */
 class DesignerNewsCommentsRepository(
-        private val remoteDataSource: DesignerNewsCommentsRemoteDataSource,
-        private val uiContext: CoroutineContext = UI,
-        private val ioContext: CoroutineContext = CommonPool
+    private val remoteDataSource: DesignerNewsCommentsRemoteDataSource,
+    private val uiContext: CoroutineContext = UI,
+    private val ioContext: CoroutineContext = CommonPool
 ) {
 
     /**
@@ -37,9 +37,9 @@ class DesignerNewsCommentsRepository(
      * [onSuccess] and the error to [onError], on the [uiContext].
      */
     fun getComments(
-            ids: List<Long>,
-            onSuccess: (comments: List<Comment>) -> Unit,
-            onError: (error: String) -> Unit
+        ids: List<Long>,
+        onSuccess: (comments: List<Comment>) -> Unit,
+        onError: (error: String) -> Unit
     ) {
         launch(uiContext) {
             // request comments and await until the result is received.
@@ -59,7 +59,7 @@ class DesignerNewsCommentsRepository(
      * Get all comments and their replies, on the [ioContext].
      */
     private suspend fun getAllComments(
-            parentIds: List<Long>
+        parentIds: List<Long>
     ): List<List<Comment>>? {
         return withContext(ioContext) {
             val children = mutableListOf<List<Comment>>()
@@ -78,8 +78,8 @@ class DesignerNewsCommentsRepository(
     }
 
     private fun matchParentsWithChildren(
-            parents: List<Comment>,
-            children: List<Comment>
+        parents: List<Comment>,
+        children: List<Comment>
     ): List<Comment> {
         children.map { child ->
             parents.filter { parent -> parent.id == child.links.parentComment }
@@ -93,7 +93,7 @@ class DesignerNewsCommentsRepository(
         private var INSTANCE: DesignerNewsCommentsRepository? = null
 
         fun getInstance(
-                remoteDataSource: DesignerNewsCommentsRemoteDataSource
+            remoteDataSource: DesignerNewsCommentsRemoteDataSource
         ): DesignerNewsCommentsRepository {
             return INSTANCE
                     ?: synchronized(this) {
