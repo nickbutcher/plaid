@@ -67,7 +67,7 @@ fun provideDesignerNewsLoginRemoteDataSource(context: Context): DesignerNewsLogi
 }
 
 private fun provideDesignerNewsAuthTokenLocalDataSource(
-        context: Context
+    context: Context
 ): DesignerNewsAuthTokenLocalDataSource {
     return DesignerNewsAuthTokenLocalDataSource.getInstance(
             provideSharedPreferences(
@@ -81,7 +81,7 @@ fun provideDesignerNewsService(context: Context): DesignerNewsService {
 }
 
 private fun provideDesignerNewsService(
-        authTokenDataSource: DesignerNewsAuthTokenLocalDataSource
+    authTokenDataSource: DesignerNewsAuthTokenLocalDataSource
 ): DesignerNewsService {
     val client = OkHttpClient.Builder()
             .addInterceptor(

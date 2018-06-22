@@ -24,8 +24,8 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class StoryLinks(
-        val user: String,
-        val comments: List<Long>,
-        val upvotes: List<String>,
-        val downvotes: List<String>
+    val user: String,
+    val comments: List<Long>,
+    val upvotes: List<String>,
+    val downvotes: List<String>
 ) : Parcelable

@@ -27,8 +27,8 @@ import kotlin.coroutines.experimental.CoroutineContext
  * Work with the Designer News API to get comments. The class knows how to construct the requests.
  */
 class DesignerNewsCommentsRemoteDataSource(
-        private val service: DesignerNewsService,
-        private val ioContext: CoroutineContext = CommonPool
+    private val service: DesignerNewsService,
+    private val ioContext: CoroutineContext = CommonPool
 ) {
 
     /**
