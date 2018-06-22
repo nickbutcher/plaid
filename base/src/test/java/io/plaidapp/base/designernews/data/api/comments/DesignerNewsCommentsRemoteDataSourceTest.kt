@@ -38,7 +38,7 @@ class DesignerNewsCommentsRemoteDataSourceTest {
     @Test
     fun getComments_whenRequestSuccessful() {
         // Given that the service responds with success
-        val result = Response.success(childrenComments)
+        val result = Response.success(replies)
         Mockito.`when`(service.getComments("1")).thenReturn(CompletableDeferred(result))
 
         runBlocking {
@@ -47,28 +47,30 @@ class DesignerNewsCommentsRemoteDataSourceTest {
 
             // Then the response is the expected one
             assertNotNull(response)
-            assertEquals(childrenComments.size, response?.size)
-            for (i: Int in 0 until childrenComments.size - 1) {
-                assertEquals(childrenComments[i], response?.get(i)!!)
+            assertEquals(replies.size, response?.size)
+            replies.forEachIndexed { index,
+                                     comment ->
+                assertEquals(comment, response?.get(index))
             }
         }
     }
 
     @Test
-    fun getComments_forMultipleComments_whenRequestSuccessful() {
+    fun getComments_forMultipleComments() {
         // Given that the service responds with success for specific ids
-        val result = Response.success(childrenComments)
-        Mockito.`when`(service.getComments("1,2")).thenReturn(CompletableDeferred(result))
+        val result = Response.success(replies)
+        Mockito.`when`(service.getComments("11,12")).thenReturn(CompletableDeferred(result))
 
         runBlocking {
             // When getting the list of comments for specific list of ids
-            val response = dataSource.getComments(listOf(1L, 2L)).await()
+            val response = dataSource.getComments(listOf(11L, 12L)).await()
 
             // Then the response is the expected one
             assertNotNull(response)
-            assertEquals(childrenComments.size, response?.size)
-            for (i: Int in 0 until childrenComments.size - 1) {
-                assertEquals(childrenComments[i], response?.get(i)!!)
+            assertEquals(replies.size, response?.size)
+            replies.forEachIndexed { index,
+                                     comment ->
+                assertEquals(comment, response?.get(index))
             }
         }
     }
@@ -89,8 +91,8 @@ class DesignerNewsCommentsRemoteDataSourceTest {
     }
 
     @Test
-    fun getComments_whenNullBody() {
-        // Given that the service responds with failure
+    fun getComments_whenResponseEmpty() {
+        // Given that the service responds with success but with an empty response
         val result = Response.success<List<Comment>>(null)
         Mockito.`when`(service.getComments("1")).thenReturn(CompletableDeferred(result))
 
