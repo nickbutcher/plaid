@@ -23,9 +23,9 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Models a comment on a designer news story.
@@ -44,7 +44,7 @@ public class Comment implements Parcelable {
     private final String user_job;
     @SerializedName("links")
     private CommentLinks links;
-    private List<Comment> comments = Collections.emptyList();
+    private List<Comment> comments = new ArrayList<>();
 
     // TODO move this to a decorator
     public Boolean upvoted;
@@ -83,8 +83,7 @@ public class Comment implements Parcelable {
         return comments;
     }
 
-    public void addComment(Comment comment){
-        if(comments == null) comments = new ArrayList<>();
+    public void addComment(Comment comment) {
         comments.add(comment);
     }
 
@@ -99,6 +98,8 @@ public class Comment implements Parcelable {
         private String user_display_name;
         private String user_portrait_url;
         private String user_job;
+        private CommentLinks commentLinks;
+        private List<Comment> comments = new ArrayList<>();
 
         public Builder setId(long id) {
             this.id = id;
@@ -150,10 +151,48 @@ public class Comment implements Parcelable {
             return this;
         }
 
+        public Builder setCommentLinks(CommentLinks commentLinks) {
+            this.commentLinks = commentLinks;
+            return this;
+        }
+
+        public Builder setComments(List<Comment> comments) {
+            this.comments = comments;
+            return this;
+        }
+
         public Comment build() {
             return new Comment(id, body, body_html, created_at, depth, vote_count, user_id,
-                    user_display_name, user_portrait_url, user_job, null, Collections.emptyList());
+                    user_display_name, user_portrait_url, user_job, commentLinks,
+                    comments);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return id == comment.id &&
+                depth == comment.depth &&
+                vote_count == comment.vote_count &&
+                user_id == comment.user_id &&
+                Objects.equals(body, comment.body) &&
+                Objects.equals(body_html, comment.body_html) &&
+                Objects.equals(created_at, comment.created_at) &&
+                Objects.equals(user_display_name, comment.user_display_name) &&
+                Objects.equals(user_portrait_url, comment.user_portrait_url) &&
+                Objects.equals(user_job, comment.user_job) &&
+                Objects.equals(links, comment.links) &&
+                Objects.equals(comments, comment.comments) &&
+                Objects.equals(upvoted, comment.upvoted);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, body, body_html, created_at, depth, vote_count, user_id,
+                user_display_name, user_portrait_url, user_job, links, comments, upvoted);
     }
 
     /* parcelable */
@@ -170,7 +209,7 @@ public class Comment implements Parcelable {
         user_display_name = in.readString();
         user_portrait_url = in.readString();
         user_job = in.readString();
-        links = in.readTypedObject(CommentLinks.CREATOR);
+        links = in.readParcelable(CommentLinks.class.getClassLoader());
     }
 
     @Override
@@ -190,7 +229,7 @@ public class Comment implements Parcelable {
         dest.writeString(user_display_name);
         dest.writeString(user_portrait_url);
         dest.writeString(user_job);
-        dest.writeTypedObject(links, flags);
+        dest.writeParcelable(links, flags);
     }
 
     @SuppressWarnings("unused")
