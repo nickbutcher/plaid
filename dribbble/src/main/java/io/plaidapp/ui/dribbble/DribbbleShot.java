@@ -366,23 +366,6 @@ public class DribbbleShot extends Activity {
                     .override(largeAvatarSize, largeAvatarSize)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(playerAvatar);
-            View.OnClickListener playerClick = v -> {
-                Intent player = new Intent(DribbbleShot.this, PlayerActivity.class);
-                if (shot.user.shots_count > 0) { // legit user object
-                    player.putExtra(Activities.Player.EXTRA_PLAYER, shot.user);
-                } else {
-                    // search doesn't fully populate the user object,
-                    // in this case send the ID not the full user
-                    player.putExtra(Activities.Player.EXTRA_PLAYER_NAME, shot.user.username);
-                    player.putExtra(Activities.Player.EXTRA_PLAYER_ID, shot.user.id);
-                }
-                ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this,
-                                playerAvatar, getString(io.plaidapp.R.string.transition_player_avatar));
-                startActivity(player, options.toBundle());
-            };
-            playerAvatar.setOnClickListener(playerClick);
-            playerName.setOnClickListener(playerClick);
             if (shot.created_at != null) {
                 shotTimeAgo.setText(DateUtils.getRelativeTimeSpanString(shot.created_at.getTime(),
                         System.currentTimeMillis(),
@@ -865,22 +848,6 @@ public class DribbbleShot extends Activity {
                 } else {
                     expandedCommentPosition = RecyclerView.NO_POSITION;
                 }
-            });
-
-            holder.avatar.setOnClickListener(v -> {
-                final int position = holder.getAdapterPosition();
-                if (position == RecyclerView.NO_POSITION) return;
-
-                final Comment comment = getComment(position);
-                final Intent player = new Intent(DribbbleShot.this, PlayerActivity.class);
-                player.putExtra(Activities.Player.EXTRA_PLAYER, comment.user);
-                ActivityOptions options =
-                        ActivityOptions.makeSceneTransitionAnimation(DribbbleShot.this,
-                                Pair.create(holder.itemView,
-                                        getString(io.plaidapp.R.string.transition_player_background)),
-                                Pair.create((View) holder.avatar,
-                                        getString(io.plaidapp.R.string.transition_player_avatar)));
-                startActivity(player, options.toBundle());
             });
 
             holder.reply.setOnClickListener(v -> {

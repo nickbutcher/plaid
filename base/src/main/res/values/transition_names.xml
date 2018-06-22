@@ -27,7 +27,5 @@
     <string name="transition_dribbble_login" translatable="false">dribbble_login</string>
     <string name="transition_designer_news_login" translatable="false">transition_designer_news_login</string>
     <string name="transition_new_designer_news_post" translatable="false">new_designer_news_post</string>
-    <string name="transition_player_avatar" translatable="false">transition_player_avatar</string>
-    <string name="transition_player_background" translatable="false">transition_player_background</string>
     <string name="transition_search_back" translatable="false">transition_search_back</string>
 </resources>

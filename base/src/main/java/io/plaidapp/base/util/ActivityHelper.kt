@@ -145,18 +145,6 @@ object Activities {
     }
 
     /**
-     * PlayerActivity
-     */
-    object Player : AddressableActivity {
-        override val className = "$PACKAGE_NAME.dribbble.PlayerActivity"
-
-        const val EXTRA_PLAYER = "EXTRA_PLAYER"
-        const val EXTRA_PLAYER_NAME = "EXTRA_PLAYER_NAME"
-        const val EXTRA_PLAYER_ID = "EXTRA_PLAYER_ID"
-        const val EXTRA_PLAYER_USERNAME = "EXTRA_PLAYER_USERNAME"
-    }
-
-    /**
      * SearchActivity
      */
     object Search : AddressableActivity {

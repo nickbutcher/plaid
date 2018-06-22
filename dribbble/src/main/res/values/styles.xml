@@ -34,21 +34,6 @@
         <item name="android:colorControlHighlight">@color/ripple_light</item>
     </style>
 
-    <style name="Plaid.Translucent.Dribbble.Player">
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@color/light_status_bar</item>
-        <item name="android:navigationBarColor">@color/light_nav_bar</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowAllowEnterTransitionOverlap">true</item>
-        <item name="android:windowAllowReturnTransitionOverlap">true</item>
-        <item name="android:windowSharedElementEnterTransition">@transition/dribbble_player_shared_enter</item>
-        <item name="android:windowEnterTransition">@transition/dribbble_player_enter</item>
-        <item name="android:windowReturnTransition">@transition/dribbble_player_return</item>
-        <item name="android:windowTransitionBackgroundFadeDuration">200</item>
-        <item name="shotLoadingPlaceholderColors">@array/loading_placeholders_light</item>
-        <item name="initialBadgeColor">@color/gif_badge_light_image</item>
-    </style>
-
     <style name="Plaid.Translucent.Dribbble.Shot">
         <item name="android:windowSharedElementEnterTransition">@transition/dribbble_shot_shared_enter</item>
         <item name="android:windowSharedElementReturnTransition">@transition/dribbble_shot_shared_return</item>

@@ -55,18 +55,4 @@
     <string name="prospects_cant_post">Sorry but prospects cannot comment :(</string>
     <string name="bad_dribbble_shot_url">Can\'t open that link :(</string>
 
-    <!-- dribbble player -->
-    <string name="follow">Follow</string>
-    <string name="following">Following</string>
-    <plurals name="shots">
-        <item quantity="zero">no shots</item>
-        <item quantity="one">%s shot</item>
-        <item quantity="other">%s shots</item>
-    </plurals>
-    <plurals name="follower_count">
-        <item quantity="zero">no followers</item>
-        <item quantity="one">%s follower</item>
-        <item quantity="other">%s followers</item>
-    </plurals>
-
 </resources>
