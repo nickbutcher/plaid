@@ -373,11 +373,6 @@ public class PlayerActivity extends Activity {
 
     void playerActionClick(TextView view) {
         ((AnimatedVectorDrawable) view.getCompoundDrawables()[1]).start();
-        switch (view.getId()) {
-            case R.id.followers_count:
-                PlayerSheet.start(PlayerActivity.this, player);
-                break;
-        }
     }
 
     private void loadPlayer(long userId) {

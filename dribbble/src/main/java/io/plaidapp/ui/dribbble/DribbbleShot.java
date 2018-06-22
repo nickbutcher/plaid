@@ -344,9 +344,6 @@ public class DribbbleShot extends Activity {
                         nf.format(shot.likes_count)));
         likeCount.setOnClickListener(v -> {
             ((AnimatedVectorDrawable) likeCount.getCompoundDrawables()[1]).start();
-            if (shot.likes_count > 0) {
-                PlayerSheet.start(DribbbleShot.this, shot);
-            }
         });
         if (shot.likes_count == 0) {
             likeCount.setBackground(null); // clear touch ripple if doesn't do anything
