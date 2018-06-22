@@ -134,55 +134,11 @@ public interface DribbbleService {
 
     /* Users */
 
-    @GET("v1/users/{user}")
-    Call<User> getUser(@Path("user") long userId);
-
-    @GET("v1/users/{user}")
-    Call<User> getUser(@Path("user") String username);
-
     @GET("v1/user")
     Call<User> getAuthenticatedUser();
 
-    @GET("v1/users/{user}/shots")
-    Call<List<Shot>> getUsersShots(@Path("user") long userId,
-                                   @Query("page") Integer page,
-                                   @Query("per_page") Integer pageSize);
-
-    @GET("v1/users/{user}/shots")
-    Call<List<Shot>> getUsersShots(@Path("user") String username,
-                                   @Query("page") Integer page,
-                                   @Query("per_page") Integer pageSize);
-
-    @GET("v1/user/following/{user}")
-    Call<Void> following(@Path("user") long userId);
-
-    @GET("v1/user/following/{user}")
-    Call<Void> following(@Path("user") String username);
-
-    @PUT("v1/users/{user}/follow")
-    Call<Void> follow(@Path("user") long userId);
-
-    @PUT("v1/users/{user}/follow")
-    Call<Void> follow(@Path("user") String username);
-
-    @DELETE("v1/users/{user}/follow")
-    Call<Void> unfollow(@Path("user") long userId);
-
-    @DELETE("v1/users/{user}/follow")
-    Call<Void> unfollow(@Path("user") String username);
-
 
     /* Teams */
-
-    @GET("v1/teams/{team}/shots")
-    Call<List<Shot>> getTeamShots(@Path("team") long teamId,
-                                  @Query("page") Integer page,
-                                  @Query("per_page") Integer pageSize);
-
-    @GET("v1/teams/{team}/shots")
-    Call<List<Shot>> getTeamShots(@Path("team") String teamName,
-                                  @Query("page") Integer page,
-                                  @Query("per_page") Integer pageSize);
 
     @GET("v1/teams/{team}/members")
     Call<List<User>> getTeamMembers(@Path("team") long teamId,
