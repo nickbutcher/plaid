@@ -1,18 +1,17 @@
 /*
- *   Copyright 2018 Google LLC
+ * Copyright 2018 Google, Inc.
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package io.plaidapp.base.designernews.data.api.comments
@@ -28,9 +27,9 @@ import kotlin.coroutines.experimental.CoroutineContext
  * Repository for Designer News comments. Works with the service to get the data.
  */
 class DesignerNewsCommentsRepository(
-        private val remoteDataSource: DesignerNewsCommentsRemoteDataSource,
-        private val uiContext: CoroutineContext = UI,
-        private val ioContext: CoroutineContext = CommonPool
+    private val remoteDataSource: DesignerNewsCommentsRemoteDataSource,
+    private val uiContext: CoroutineContext = UI,
+    private val ioContext: CoroutineContext = CommonPool
 ) {
 
     /**
@@ -38,9 +37,9 @@ class DesignerNewsCommentsRepository(
      * [onSuccess] and the error on [onError], on the UI thread.
      */
     fun getComments(
-            ids: List<Long>,
-            onSuccess: (comments: List<Comment>) -> Unit,
-            onError: (error: String) -> Unit
+        ids: List<Long>,
+        onSuccess: (comments: List<Comment>) -> Unit,
+        onError: (error: String) -> Unit
     ) = launch(uiContext) {
         // request comments and await until the result is received.
         val generations = getAllComments(ids)
@@ -58,7 +57,7 @@ class DesignerNewsCommentsRepository(
      * Get all comments and their replies, on the ioContext.
      */
     private suspend fun getAllComments(
-            parentIds: List<Long>
+        parentIds: List<Long>
     ): List<List<Comment>>? = withContext(ioContext) {
         val children = mutableListOf<List<Comment>>()
         var newGeneration = remoteDataSource.getComments(parentIds).await()
@@ -75,8 +74,8 @@ class DesignerNewsCommentsRepository(
     }
 
     private fun matchParentsWithChildren(
-            parents: List<Comment>,
-            children: List<Comment>
+        parents: List<Comment>,
+        children: List<Comment>
     ): List<Comment> {
         children.map { child ->
             parents.filter { parent -> parent.id == child.links.parentComment }
@@ -90,7 +89,7 @@ class DesignerNewsCommentsRepository(
         private var INSTANCE: DesignerNewsCommentsRepository? = null
 
         fun getInstance(
-                remoteDataSource: DesignerNewsCommentsRemoteDataSource
+            remoteDataSource: DesignerNewsCommentsRemoteDataSource
         ): DesignerNewsCommentsRepository {
             return INSTANCE
                     ?: synchronized(this) {
