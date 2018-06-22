@@ -89,11 +89,6 @@ public interface DribbbleService {
 
     /* Shot likes */
 
-    @GET("v1/shots/{id}/likes")
-    Call<List<Like>> getShotLikes(@Path("id") long shotId,
-                                  @Query("page") Integer page,
-                                  @Query("per_page") Integer pageSize);
-
     @GET("v1/shots/{id}/like")
     Call<Like> liked(@Path("id") long shotId);
 
@@ -175,11 +170,6 @@ public interface DribbbleService {
 
     @DELETE("v1/users/{user}/follow")
     Call<Void> unfollow(@Path("user") String username);
-
-    @GET("v1/users/{user}/followers")
-    Call<List<Follow>> getUserFollowers(@Path("user") long userId,
-                                        @Query("page") Integer page,
-                                        @Query("per_page") Integer pageSize);
 
 
     /* Teams */
