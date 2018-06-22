@@ -84,6 +84,9 @@ public class Comment implements Parcelable {
     }
 
     public void addComment(Comment comment) {
+        if(comments == null){
+            comments = new ArrayList<>();
+        }
         comments.add(comment);
     }
 

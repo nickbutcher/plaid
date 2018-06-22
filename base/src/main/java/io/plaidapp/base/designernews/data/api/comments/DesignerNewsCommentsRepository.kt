@@ -30,7 +30,8 @@ import kotlin.coroutines.experimental.CoroutineContext
 class DesignerNewsCommentsRepository(
         private val remoteDataSource: DesignerNewsCommentsRemoteDataSource,
         private val uiContext: CoroutineContext = UI,
-        private val ioContext: CoroutineContext = CommonPool) {
+        private val ioContext: CoroutineContext = CommonPool
+) {
 
     /**
      * Gets comments, together will all the replies from the API. The result is delivered on
