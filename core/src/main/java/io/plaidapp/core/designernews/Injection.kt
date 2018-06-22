@@ -113,6 +113,5 @@ fun provideDesignerNewsCommentsRepository(context: Context): DesignerNewsComment
             provideDesignerNewsCommentsRemoteDataSource(service))
 }
 
-
 fun provideDesignerNewsCommentsRemoteDataSource(service: DesignerNewsService) =
         DesignerNewsCommentsRemoteDataSource.getInstance(service)
