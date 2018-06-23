@@ -487,8 +487,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         switch (items.get(0).dataSource) {
             // some sources should just use the natural order i.e. as returned by the API as users
             // have an expectation about the order they appear in
-            case SourceManager.SOURCE_DRIBBBLE_USER_SHOTS:
-            case SourceManager.SOURCE_DRIBBBLE_USER_LIKES:
             case SourceManager.SOURCE_PRODUCT_HUNT:
                 if (naturalOrderWeigher == null) {
                     naturalOrderWeigher = new PlaidItemSorting.NaturalOrderWeigher();

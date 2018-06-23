@@ -37,13 +37,6 @@ public class SourceManager {
 
     public static final String SOURCE_DESIGNER_NEWS_POPULAR = "SOURCE_DESIGNER_NEWS_POPULAR";
     public static final String SOURCE_DESIGNER_NEWS_RECENT = "SOURCE_DESIGNER_NEWS_RECENT";
-    public static final String SOURCE_DRIBBBLE_POPULAR = "SOURCE_DRIBBBLE_POPULAR";
-    public static final String SOURCE_DRIBBBLE_FOLLOWING = "SOURCE_DRIBBBLE_FOLLOWING";
-    public static final String SOURCE_DRIBBBLE_USER_LIKES = "SOURCE_DRIBBBLE_USER_LIKES";
-    public static final String SOURCE_DRIBBBLE_USER_SHOTS = "SOURCE_DRIBBBLE_USER_SHOTS";
-    public static final String SOURCE_DRIBBBLE_RECENT = "SOURCE_DRIBBBLE_RECENT";
-    public static final String SOURCE_DRIBBBLE_DEBUTS = "SOURCE_DRIBBBLE_DEBUTS";
-    public static final String SOURCE_DRIBBBLE_ANIMATED = "SOURCE_DRIBBBLE_ANIMATED";
     public static final String SOURCE_PRODUCT_HUNT = "SOURCE_PRODUCT_HUNT";
     private static final String SOURCES_PREF = "SOURCES_PREF";
     private static final String KEY_SOURCES = "KEY_SOURCES";
@@ -132,20 +125,6 @@ public class SourceManager {
         defaultSources.add(new Source.DesignerNewsSource(SOURCE_DESIGNER_NEWS_RECENT, 101,
                 context.getString(R.string.source_designer_news_recent), false));
         // 200 sort order range left for DN searches
-        defaultSources.add(new Source.DribbbleSource(SOURCE_DRIBBBLE_POPULAR, 300,
-                context.getString(R.string.source_dribbble_popular), true));
-        defaultSources.add(new Source.DribbbleSource(SOURCE_DRIBBBLE_FOLLOWING, 301,
-                context.getString(R.string.source_dribbble_following), false));
-        defaultSources.add(new Source.DribbbleSource(SOURCE_DRIBBBLE_USER_SHOTS, 302,
-                context.getString(R.string.source_dribbble_user_shots), false));
-        defaultSources.add(new Source.DribbbleSource(SOURCE_DRIBBBLE_USER_LIKES, 303,
-                context.getString(R.string.source_dribbble_user_likes), false));
-        defaultSources.add(new Source.DribbbleSource(SOURCE_DRIBBBLE_RECENT, 304,
-                context.getString(R.string.source_dribbble_recent), false));
-        defaultSources.add(new Source.DribbbleSource(SOURCE_DRIBBBLE_DEBUTS, 305,
-                context.getString(R.string.source_dribbble_debuts), false));
-        defaultSources.add(new Source.DribbbleSource(SOURCE_DRIBBBLE_ANIMATED, 306,
-                context.getString(R.string.source_dribbble_animated), false));
         defaultSources.add(new Source.DribbbleSearchSource(context.getString(R.string
                 .source_dribbble_search_material_design), true));
         // 400 sort order range left for dribbble searches
