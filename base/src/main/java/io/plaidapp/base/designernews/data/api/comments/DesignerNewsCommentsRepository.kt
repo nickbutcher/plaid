@@ -24,7 +24,8 @@ import kotlinx.coroutines.experimental.withContext
 import kotlin.coroutines.experimental.CoroutineContext
 
 /**
- * Repository for Designer News comments. Works with the service to get the data.
+ * Repository for Designer News comments. Works with the [DesignerNewsCommentsRemoteDataSource] to
+ * get the data.
  */
 class DesignerNewsCommentsRepository(
     private val remoteDataSource: DesignerNewsCommentsRemoteDataSource,
@@ -33,8 +34,9 @@ class DesignerNewsCommentsRepository(
 ) {
 
     /**
-     * Gets comments, together will all the replies from the API. The result is delivered to
-     * [onSuccess] and the error to [onError], on the [uiContext].
+     * Gets comments, together will all the replies from the API. The successful result is
+     * delivered to [onSuccess]. In case of failure the error is delivered to [onError], on the
+     * [uiContext].
      */
     fun getComments(
         ids: List<Long>,
@@ -43,12 +45,12 @@ class DesignerNewsCommentsRepository(
     ) {
         launch(uiContext) {
             // request comments and await until the result is received.
-            val generations = getAllComments(ids)
-            if (generations != null && generations.isNotEmpty()) {
-                for (index: Int in generations.size - 1 downTo 1) {
-                    matchParentsWithChildren(generations[index - 1], generations[index])
+            val comments = getAllComments(ids)
+            if (comments != null && comments.isNotEmpty()) {
+                for (index: Int in comments.size - 1 downTo 1) {
+                    matchCommentsWithReplies(comments[index - 1], comments[index])
                 }
-                onSuccess(generations[0])
+                onSuccess(comments[0])
             } else {
                 onError("Unable to get comments")
             }
@@ -62,30 +64,30 @@ class DesignerNewsCommentsRepository(
         parentIds: List<Long>
     ): List<List<Comment>>? {
         return withContext(ioContext) {
-            val children = mutableListOf<List<Comment>>()
-            var newGeneration = remoteDataSource.getComments(parentIds).await()
-            while (newGeneration != null) {
-                children.add(newGeneration)
-                val nextGenerationIds = newGeneration.flatMap { comment -> comment.links.comments }
-                newGeneration = if (!nextGenerationIds.isEmpty()) {
-                    remoteDataSource.getComments(nextGenerationIds).await()
+            val replies = mutableListOf<List<Comment>>()
+            var newReplies = remoteDataSource.getComments(parentIds).await()
+            while (newReplies != null) {
+                replies.add(newReplies)
+                val nextRepliesIds = newReplies.flatMap { comment -> comment.links.comments }
+                newReplies = if (!nextRepliesIds.isEmpty()) {
+                    remoteDataSource.getComments(nextRepliesIds).await()
                 } else {
                     null
                 }
             }
-            children
+            replies
         }
     }
 
-    private fun matchParentsWithChildren(
-        parents: List<Comment>,
-        children: List<Comment>
+    private fun matchCommentsWithReplies(
+        comments: List<Comment>,
+        replies: List<Comment>
     ): List<Comment> {
-        children.map { child ->
-            parents.filter { parent -> parent.id == child.links.parentComment }
-                    .map { parent -> parent.addComment(child) }
+        replies.map { reply ->
+            comments.filter { comment -> comment.id == reply.links.parentComment }
+                    .map { comment -> comment.addComment(reply) }
         }
-        return parents
+        return comments
     }
 
     companion object {

@@ -43,7 +43,8 @@ val reply2 = Comment.Builder()
 
 val replies = listOf(reply1, reply2)
 
-val parentLinks = CommentLinks("userid", "storyid", 1L, arrayListOf(11L, 12L))
+val parentLinks = CommentLinks(user = "userid", story = "storyid", parentComment = 1L,
+        comments = arrayListOf(11L, 12L))
 
 val parentCommentWithReplies = Comment.Builder()
         .setId(parentId)
