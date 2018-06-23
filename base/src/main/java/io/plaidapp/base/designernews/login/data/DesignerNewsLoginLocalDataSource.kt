@@ -28,7 +28,7 @@ class DesignerNewsLoginLocalDataSource(private val prefs: SharedPreferences) {
     /**
      * Instance of the logged in user. If missing, null is returned
      */
-    var user: User? = null
+    var user: User?
         get() {
             val userId = prefs.getLong(KEY_USER_ID, 0L)
             val username = prefs.getString(KEY_USER_NAME, null)
@@ -41,12 +41,11 @@ class DesignerNewsLoginLocalDataSource(private val prefs: SharedPreferences) {
         set(value) {
             if (value != null) {
                 prefs.edit {
-                    KEY_USER_ID to value.id
-                    KEY_USER_NAME to value.displayName
-                    KEY_USER_AVATAR to value.portraitUrl
+                    putLong(KEY_USER_ID, value.id)
+                    putString(KEY_USER_NAME, value.displayName)
+                    putString(KEY_USER_AVATAR, value.portraitUrl)
                 }
             }
-            field = value
         }
 
     /**
@@ -54,9 +53,9 @@ class DesignerNewsLoginLocalDataSource(private val prefs: SharedPreferences) {
      */
     fun logout() {
         prefs.edit {
-            KEY_USER_ID to 0L
-            KEY_USER_NAME to null
-            KEY_USER_AVATAR to null
+            putLong(KEY_USER_ID, 0L)
+            putString(KEY_USER_NAME, null)
+            putString(KEY_USER_AVATAR, null)
         }
     }
 
