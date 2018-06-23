@@ -145,20 +145,8 @@ public class HomeActivity extends Activity {
         }
         setExitSharedElementCallback(FeedAdapter.createSharedElementReenterCallback(this));
 
-        dribbblePrefs = DribbblePrefs.get(this);
         designerNewsPrefs = DesignerNewsPrefs.get(this);
-        filtersAdapter = new FilterAdapter(this, SourceManager.getSources(this),
-                (sharedElement, forSource) -> {
-                    Intent login = ActivityHelper.intentTo(Activities.Dribbble.Login.INSTANCE);
-                    MorphTransform.addExtras(login,
-                            ContextCompat.getColor(HomeActivity.this, R.color.background_dark),
-                            sharedElement.getHeight() / 2);
-                    ActivityOptions options =
-                            ActivityOptions.makeSceneTransitionAnimation(HomeActivity.this,
-                                    sharedElement, getString(R.string.transition_dribbble_login));
-                    startActivityForResult(login,
-                            getAuthSourceRequestCode(forSource), options.toBundle());
-                });
+        filtersAdapter = new FilterAdapter(this, SourceManager.getSources(this));
         dataManager = new DataManager(this, filtersAdapter) {
             @Override
             public void onDataLoaded(List<? extends PlaidItem> data) {
@@ -276,13 +264,11 @@ public class HomeActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        dribbblePrefs.addLoginStatusListener(filtersAdapter);
         checkConnectivity();
     }
 
     @Override
     protected void onPause() {
-        dribbblePrefs.removeLoginStatusListener(filtersAdapter);
         if (monitoringConnectivity) {
             final ConnectivityManager connectivityManager
                     = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -330,11 +316,6 @@ public class HomeActivity extends Activity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        final MenuItem dribbbleLogin = menu.findItem(R.id.menu_dribbble_login);
-        if (dribbbleLogin != null) {
-            dribbbleLogin.setTitle(dribbblePrefs.isLoggedIn() ?
-                    R.string.dribbble_log_out : R.string.dribbble_login);
-        }
         final MenuItem designerNewsLogin = menu.findItem(R.id.menu_designer_news_login);
         if (designerNewsLogin != null) {
             designerNewsLogin.setTitle(designerNewsPrefs.isLoggedIn() ?
@@ -354,16 +335,6 @@ public class HomeActivity extends Activity {
                 Bundle options = ActivityOptions.makeSceneTransitionAnimation(this, searchMenuView,
                         getString(R.string.transition_search_back)).toBundle();
                 startActivityForResult(ActivityHelper.intentTo(Activities.Search.INSTANCE), RC_SEARCH, options);
-                return true;
-            case R.id.menu_dribbble_login:
-                if (!dribbblePrefs.isLoggedIn()) {
-                    dribbblePrefs.login(HomeActivity.this);
-                } else {
-                    dribbblePrefs.logout();
-                    // TODO something better than a toast!!
-                    Toast.makeText(getApplicationContext(), R.string.dribbble_logged_out, Toast
-                            .LENGTH_SHORT).show();
-                }
                 return true;
             case R.id.menu_designer_news_login:
                 if (!designerNewsPrefs.isLoggedIn()) {

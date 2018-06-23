@@ -302,71 +302,56 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
     }
 
     private void loadDribbbleUserLikes(final int page) {
-        if (getDribbblePrefs().isLoggedIn()) {
-            final Call<List<Like>> userLikesCall = getDribbbleApi()
-                    .getUserLikes(page, DribbbleService.PER_PAGE_DEFAULT);
-            userLikesCall.enqueue(new Callback<List<Like>>() {
-                @Override
-                public void onResponse(Call<List<Like>> call, Response<List<Like>> response) {
-                    if (response.isSuccessful()) {
-                        // API returns Likes but we just want the Shots
-                        final List<Like> likes = response.body();
-                        List<Shot> likedShots = null;
-                        if (likes != null && !likes.isEmpty()) {
-                            likedShots = new ArrayList<>(likes.size());
-                            for (Like like : likes) {
-                                likedShots.add(like.shot);
-                            }
+        final Call<List<Like>> userLikesCall = getDribbbleApi()
+                .getUserLikes(page, DribbbleService.PER_PAGE_DEFAULT);
+        userLikesCall.enqueue(new Callback<List<Like>>() {
+            @Override
+            public void onResponse(Call<List<Like>> call, Response<List<Like>> response) {
+                if (response.isSuccessful()) {
+                    // API returns Likes but we just want the Shots
+                    final List<Like> likes = response.body();
+                    List<Shot> likedShots = null;
+                    if (likes != null && !likes.isEmpty()) {
+                        likedShots = new ArrayList<>(likes.size());
+                        for (Like like : likes) {
+                            likedShots.add(like.shot);
                         }
-                        sourceLoaded(likedShots, page, SourceManager.SOURCE_DRIBBBLE_USER_LIKES);
-                    } else {
-                        loadFailed(SourceManager.SOURCE_DRIBBBLE_USER_LIKES);
                     }
-                }
-
-                @Override
-                public void onFailure(Call<List<Like>> call, Throwable t) {
+                    sourceLoaded(likedShots, page, SourceManager.SOURCE_DRIBBBLE_USER_LIKES);
+                } else {
                     loadFailed(SourceManager.SOURCE_DRIBBBLE_USER_LIKES);
                 }
-            });
-            inflight.put(SourceManager.SOURCE_DRIBBBLE_USER_LIKES, userLikesCall);
-        } else {
-            loadFinished();
-        }
+            }
+
+            @Override
+            public void onFailure(Call<List<Like>> call, Throwable t) {
+                loadFailed(SourceManager.SOURCE_DRIBBBLE_USER_LIKES);
+            }
+        });
+        inflight.put(SourceManager.SOURCE_DRIBBBLE_USER_LIKES, userLikesCall);
     }
 
     private void loadDribbbleUserShots(final int page) {
-        if (getDribbblePrefs().isLoggedIn()) {
-            final Call<List<Shot>> userShotsCall = getDribbbleApi()
-                    .getUserShots(page, DribbbleService.PER_PAGE_DEFAULT);
-            userShotsCall.enqueue(new Callback<List<Shot>>() {
-                @Override
-                public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
-                    if (response.isSuccessful()) {
-                        loadFinished();
-                        final List<Shot> shots = response.body();
-                        if (shots != null && !shots.isEmpty()) {
-                            // this api call doesn't populate the shot user field but we need it
-                            final User user = getDribbblePrefs().getUser();
-                            for (Shot shot : shots) {
-                                shot.user = user;
-                            }
-                        }
-                        sourceLoaded(shots, page, SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
-                    } else {
-                        loadFailed(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<Shot>> call, Throwable t) {
+        final Call<List<Shot>> userShotsCall = getDribbbleApi()
+                .getUserShots(page, DribbbleService.PER_PAGE_DEFAULT);
+        userShotsCall.enqueue(new Callback<List<Shot>>() {
+            @Override
+            public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
+                if (response.isSuccessful()) {
+                    loadFinished();
+                    final List<Shot> shots = response.body();
+                    sourceLoaded(shots, page, SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
+                } else {
                     loadFailed(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
                 }
-            });
-            inflight.put(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS, userShotsCall);
-        } else {
-            loadFinished();
-        }
+            }
+
+            @Override
+            public void onFailure(Call<List<Shot>> call, Throwable t) {
+                loadFailed(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
+            }
+        });
+        inflight.put(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS, userShotsCall);
     }
 
 

@@ -58,8 +58,10 @@ import com.bumptech.glide.request.target.Target;
 
 import java.text.NumberFormat;
 
+import io.plaidapp.base.data.api.dribbble.DribbbleService;
 import io.plaidapp.base.data.api.dribbble.model.Shot;
 import io.plaidapp.base.data.prefs.DribbblePrefs;
+import io.plaidapp.base.dribbble.Injection;
 import io.plaidapp.base.util.glide.GlideUtils;
 import io.plaidapp.dribbble.R;
 import io.plaidapp.ui.recyclerview.InsetDividerDecoration;
@@ -100,7 +102,6 @@ public class DribbbleShot extends Activity {
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
 
     Shot shot;
-    DribbblePrefs dribbblePrefs;
     CommentsAdapter adapter;
     private int largeAvatarSize;
 
@@ -108,7 +109,6 @@ public class DribbbleShot extends Activity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_shot);
-        dribbblePrefs = DribbblePrefs.get(this);
         bindResources();
         shotDescription = getLayoutInflater().inflate(R.layout.dribbble_shot_description,
                 commentsList, false);
@@ -143,7 +143,8 @@ public class DribbbleShot extends Activity {
                     final String shotPath = url.pathSegments().get(1);
                     final long id = Long.parseLong(shotPath.substring(0, shotPath.indexOf("-")));
 
-                    final Call<Shot> shotCall = dribbblePrefs.getApi().getShot(id);
+                    final DribbbleService api = Injection.provideDribbbleService();
+                    final Call<Shot> shotCall = api.getShot(id);
                     shotCall.enqueue(new Callback<Shot>() {
                         @Override
                         public void onResponse(Call<Shot> call, Response<Shot> response) {

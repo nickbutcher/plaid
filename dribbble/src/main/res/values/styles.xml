@@ -26,14 +26,6 @@
         <item name="android:windowAllowReturnTransitionOverlap">false</item>
     </style>
 
-    <style name="Plaid.Translucent.Dribbble.Login">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowAnimationStyle">@null</item>
-        <item name="android:colorButtonNormal">@color/dribbble_button</item>
-        <item name="android:colorControlHighlight">@color/ripple_light</item>
-    </style>
-
     <style name="Plaid.Translucent.Dribbble.Shot">
         <item name="android:windowSharedElementEnterTransition">@transition/dribbble_shot_shared_enter</item>
         <item name="android:windowSharedElementReturnTransition">@transition/dribbble_shot_shared_return</item>
