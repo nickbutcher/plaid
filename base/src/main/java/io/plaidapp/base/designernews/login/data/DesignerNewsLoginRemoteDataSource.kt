@@ -30,8 +30,8 @@ import retrofit2.Response
  * for login (auth and /me) and updates the auth token after authorizing.
  */
 class DesignerNewsLoginRemoteDataSource(
-        val tokenLocalDataSource: DesignerNewsAuthTokenLocalDataSource,
-        val service: DesignerNewsService
+    val tokenLocalDataSource: DesignerNewsAuthTokenLocalDataSource,
+    val service: DesignerNewsService
 ) {
 
     /**
@@ -42,10 +42,10 @@ class DesignerNewsLoginRemoteDataSource(
     }
 
     fun login(
-            username: String,
-            password: String,
-            onSuccess: (user: User) -> Unit,
-            onError: (error: String) -> Unit
+        username: String,
+        password: String,
+        onSuccess: (user: User) -> Unit,
+        onError: (error: String) -> Unit
     ) {
         val login = service.login(buildLoginParams(username, password))
         login.enqueue(object : Callback<AccessToken> {
