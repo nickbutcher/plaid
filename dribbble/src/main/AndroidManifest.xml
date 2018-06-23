@@ -44,21 +44,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="io.plaidapp.ui.dribbble.DribbbleLogin"
-            android:exported="true"
-            android:launchMode="singleTop"
-            android:theme="@style/Plaid.Translucent.Dribbble.Login">
-            <intent-filter>
-                <data
-                    android:host="dribbble-auth-callback"
-                    android:scheme="plaid" />
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
-        </activity>
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${filesAuthority}"

@@ -127,13 +127,6 @@ object Activities {
      */
     object Dribbble {
         /**
-         * DribbbleLogin Activity
-         */
-        object Login : AddressableActivity {
-            override val className = "$PACKAGE_NAME.dribbble.DribbbleLogin"
-        }
-
-        /**
          * DribbbleShot Activity
          */
         object Shot : AddressableActivity {

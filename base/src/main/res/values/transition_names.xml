@@ -24,7 +24,6 @@
     <string name="transition_story_title" translatable="false">story_title</string>
     <string name="transition_story_title_background" translatable="false">story_title_background</string>
     <string name="transition_story_background" translatable="false">transition_story_background</string>
-    <string name="transition_dribbble_login" translatable="false">dribbble_login</string>
     <string name="transition_designer_news_login" translatable="false">transition_designer_news_login</string>
     <string name="transition_new_designer_news_post" translatable="false">new_designer_news_post</string>
     <string name="transition_search_back" translatable="false">transition_search_back</string>
