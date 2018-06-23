@@ -35,7 +35,28 @@
         android:layout_columnSpan="3"
         android:background="@drawable/mid_grey_bounded_ripple" />
 
-    <include layout="@layout/dribbble_shot_title" />
+    <io.plaidapp.base.ui.widget.BaselineGridTextView
+        android:id="@+id/shot_title"
+        android:layout_width="match_parent"
+        android:layout_columnSpan="3"
+        android:layout_marginBottom="@dimen/spacing_large"
+        android:background="@color/light_grey"
+        android:paddingBottom="@dimen/padding_normal"
+        android:paddingEnd="@dimen/padding_room_for_fab"
+        android:paddingStart="@dimen/padding_normal"
+        android:paddingTop="@dimen/padding_normal"
+        android:textAppearance="@style/TextAppearance.DribbbleShotTitle"
+        tools:text="Dribbble shot title" />
+
+    <io.plaidapp.base.ui.widget.BaselineGridTextView
+        android:id="@+id/shot_description"
+        android:layout_columnSpan="3"
+        android:paddingEnd="@dimen/padding_normal"
+        android:paddingStart="@dimen/padding_normal"
+        android:textAppearance="@style/TextAppearance.DribbbleShotDescription"
+        android:textColorHighlight="@color/dribbble_link_highlight"
+        android:textColorLink="@color/dribbble_links"
+        tools:text="Check out this sweet eye candy!" />
 
     <LinearLayout
         android:id="@+id/shot_actions"
