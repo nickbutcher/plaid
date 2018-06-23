@@ -37,11 +37,6 @@
         tools:ignore="AppCompatResource" />
 
     <item
-        android:id="@+id/menu_dribbble_login"
-        android:title="@string/dribbble_login"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/menu_designer_news_login"
         android:title="@string/designer_news_login"
         app:showAsAction="never" />

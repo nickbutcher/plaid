@@ -21,8 +21,7 @@
     android:id="@+id/scrim"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="150dp"
-    tools:context=".ui.dribbble.ui.DribbbleLogin">
+    android:paddingTop="150dp">
 
     <GridLayout
         android:layout_width="wrap_content"
@@ -46,7 +45,7 @@
         <io.plaidapp.base.ui.widget.BaselineGridTextView
             android:layout_marginEnd="@dimen/padding_normal"
             android:paddingTop="@dimen/spacing_micro"
-            android:text="@string/dribbble_logged_in_as"
+            android:text="@string/logged_in_as"
             android:textAppearance="@style/TextAppearance.Comment" />
 
         <io.plaidapp.base.ui.widget.BaselineGridTextView

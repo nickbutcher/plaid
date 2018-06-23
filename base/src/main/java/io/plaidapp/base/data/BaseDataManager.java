@@ -33,7 +33,7 @@ import io.plaidapp.base.data.api.dribbble.DribbbleSearchConverter;
 import io.plaidapp.base.data.api.dribbble.DribbbleSearchService;
 import io.plaidapp.base.data.api.dribbble.DribbbleService;
 import io.plaidapp.base.data.api.producthunt.ProductHuntService;
-import io.plaidapp.base.data.prefs.DribbblePrefs;
+import io.plaidapp.base.dribbble.Injection;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import okhttp3.logging.HttpLoggingInterceptor.Level;
@@ -48,14 +48,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public abstract class BaseDataManager<T> implements DataLoadingSubject {
 
     private final AtomicInteger loadingCount;
-    private final DribbblePrefs dribbblePrefs;
+    private DribbbleService dribbbleService;
     private DribbbleSearchService dribbbleSearchApi;
     private ProductHuntService productHuntApi;
     private List<DataLoadingCallbacks> loadingCallbacks;
 
     public BaseDataManager(@NonNull Context context) {
         loadingCount = new AtomicInteger(0);
-        dribbblePrefs = DribbblePrefs.get(context);
     }
 
     public abstract void onDataLoaded(T data);
@@ -67,12 +66,11 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
         return loadingCount.get() > 0;
     }
 
-    public DribbblePrefs getDribbblePrefs() {
-        return dribbblePrefs;
-    }
-
     public DribbbleService getDribbbleApi() {
-        return dribbblePrefs.getApi();
+        if (dribbbleService == null) {
+            dribbbleService = Injection.provideDribbbleService();
+        }
+        return dribbbleService;
     }
 
     public ProductHuntService getProductHuntApi() {

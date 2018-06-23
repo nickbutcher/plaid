@@ -39,7 +39,6 @@ import java.util.List;
 
 import io.plaidapp.base.R;
 import io.plaidapp.base.data.Source;
-import io.plaidapp.base.data.prefs.DribbblePrefs;
 import io.plaidapp.base.data.prefs.SourceManager;
 import io.plaidapp.base.ui.recyclerview.FilterSwipeDismissListener;
 import io.plaidapp.base.util.AnimUtils;
@@ -50,26 +49,20 @@ import io.plaidapp.base.util.ViewUtils;
  * Adapter for showing the list of data sources used as filters for the home grid.
  */
 public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterViewHolder>
-        implements FilterSwipeDismissListener, DribbblePrefs.DribbbleLoginStatusListener {
-
-    public interface FilterAuthoriser {
-        void requestDribbbleAuthorisation(View sharedElement, Source forSource);
-    }
+        implements FilterSwipeDismissListener {
 
     private static final int FILTER_ICON_ENABLED_ALPHA = 179; // 70%
     private static final int FILTER_ICON_DISABLED_ALPHA = 51; // 20%
 
     final List<Source> filters;
-    final FilterAuthoriser authoriser;
     private final Context context;
-    private @Nullable List<FiltersChangedCallbacks> callbacks;
+    private @Nullable
+    List<FiltersChangedCallbacks> callbacks;
 
     public FilterAdapter(@NonNull Context context,
-                         @NonNull List<Source> filters,
-                         @NonNull FilterAuthoriser authoriser) {
+                         @NonNull List<Source> filters) {
         this.context = context.getApplicationContext();
         this.filters = filters;
-        this.authoriser = authoriser;
         setHasStableIds(true);
     }
 
@@ -142,49 +135,27 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
         notifyItemChanged(adapterPosition, FilterAnimator.HIGHLIGHT);
     }
 
+    @NonNull
     @Override
-    public void onDribbbleLogin() {
-        // no-op
-    }
-
-    @Override
-    public void onDribbbleLogout() {
-        for (int i = 0; i < filters.size(); i++) {
-            Source filter = filters.get(i);
-            if (filter.active && isAuthorisedDribbbleSource(filter)) {
-                filter.active = false;
-                SourceManager.updateSource(filter, context);
-                dispatchFiltersChanged(filter);
-                notifyItemChanged(i, FilterAnimator.FILTER_DISABLED);
-            }
-        }
-    }
-
-    @Override
-    public FilterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public FilterViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         final FilterViewHolder holder = new FilterViewHolder(LayoutInflater.from(viewGroup
                 .getContext()).inflate(R.layout.filter_item, viewGroup, false));
         holder.itemView.setOnClickListener(v -> {
             final int position = holder.getAdapterPosition();
             if (position == RecyclerView.NO_POSITION) return;
             final Source filter = filters.get(position);
-            if (isAuthorisedDribbbleSource(filter) &&
-                    !DribbblePrefs.get(holder.itemView.getContext()).isLoggedIn()) {
-                authoriser.requestDribbbleAuthorisation(holder.filterIcon, filter);
-            } else {
-                filter.active = !filter.active;
-                holder.filterName.setEnabled(filter.active);
-                notifyItemChanged(position, filter.active ? FilterAnimator.FILTER_ENABLED
-                        : FilterAnimator.FILTER_DISABLED);
-                SourceManager.updateSource(filter, holder.itemView.getContext());
-                dispatchFiltersChanged(filter);
-            }
+            filter.active = !filter.active;
+            holder.filterName.setEnabled(filter.active);
+            notifyItemChanged(position, filter.active ? FilterAnimator.FILTER_ENABLED
+                    : FilterAnimator.FILTER_DISABLED);
+            SourceManager.updateSource(filter, holder.itemView.getContext());
+            dispatchFiltersChanged(filter);
         });
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(final FilterViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final FilterViewHolder holder, int position) {
         final Source filter = filters.get(position);
         holder.isSwipeable = filter.isSwipeDismissable();
         holder.filterName.setText(filter.name);
@@ -198,9 +169,9 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
     }
 
     @Override
-    public void onBindViewHolder(FilterViewHolder holder,
+    public void onBindViewHolder(@NonNull FilterViewHolder holder,
                                  int position,
-                                 List<Object> partialChangePayloads) {
+                                 @NonNull List<Object> partialChangePayloads) {
         if (!partialChangePayloads.isEmpty()) {
             // if we're doing a partial re-bind i.e. an item is enabling/disabling or being
             // highlighted then data hasn't changed. Just set state based on the payload
@@ -257,12 +228,6 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
         }
     }
 
-    boolean isAuthorisedDribbbleSource(Source source) {
-        return source.key.equals(SourceManager.SOURCE_DRIBBBLE_FOLLOWING)
-                || source.key.equals(SourceManager.SOURCE_DRIBBBLE_USER_LIKES)
-                || source.key.equals(SourceManager.SOURCE_DRIBBBLE_USER_SHOTS);
-    }
-
     void dispatchFiltersChanged(Source filter) {
         if (callbacks != null && !callbacks.isEmpty()) {
             for (FiltersChangedCallbacks callback : callbacks) {
@@ -280,8 +245,11 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
     }
 
     public static abstract class FiltersChangedCallbacks {
-        public void onFiltersChanged(Source changedFilter) { }
-        public void onFilterRemoved(Source removed) { }
+        public void onFiltersChanged(Source changedFilter) {
+        }
+
+        public void onFilterRemoved(Source removed) {
+        }
     }
 
     public static class FilterViewHolder extends RecyclerView.ViewHolder {
@@ -346,9 +314,9 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
 
                 if (info.doEnable || info.doDisable) {
                     ObjectAnimator iconAlpha = ObjectAnimator.ofInt(holder.filterIcon,
-                                    ViewUtils.IMAGE_ALPHA,
-                                    info.doEnable ? FILTER_ICON_ENABLED_ALPHA :
-                                            FILTER_ICON_DISABLED_ALPHA);
+                            ViewUtils.IMAGE_ALPHA,
+                            info.doEnable ? FILTER_ICON_ENABLED_ALPHA :
+                                    FILTER_ICON_DISABLED_ALPHA);
                     iconAlpha.setDuration(300L);
                     iconAlpha.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(holder
                             .itemView.getContext()));
