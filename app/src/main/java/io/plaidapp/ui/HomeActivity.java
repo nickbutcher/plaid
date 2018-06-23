@@ -69,42 +69,37 @@ import android.widget.Toolbar;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import io.plaidapp.R;
-import io.plaidapp.base.ui.FeedAdapter;
-import io.plaidapp.base.ui.FilterAdapter;
-import io.plaidapp.base.ui.HomeGridItemAnimator;
-import io.plaidapp.base.util.ActivityHelper;
 import io.plaidapp.base.data.DataManager;
 import io.plaidapp.base.data.PlaidItem;
 import io.plaidapp.base.data.Source;
-import io.plaidapp.base.util.DrawableUtils;
-import io.plaidapp.base.designernews.data.api.PostStoryService;
-import io.plaidapp.base.designernews.data.api.model.Story;
 import io.plaidapp.base.data.api.dribbble.model.Shot;
 import io.plaidapp.base.data.pocket.PocketUtils;
-import io.plaidapp.base.designernews.DesignerNewsPrefs;
 import io.plaidapp.base.data.prefs.DribbblePrefs;
 import io.plaidapp.base.data.prefs.SourceManager;
+import io.plaidapp.base.designernews.DesignerNewsPrefs;
+import io.plaidapp.base.designernews.data.api.PostStoryService;
+import io.plaidapp.base.designernews.data.api.model.Story;
+import io.plaidapp.base.ui.FeedAdapter;
+import io.plaidapp.base.ui.FilterAdapter;
+import io.plaidapp.base.ui.HomeGridItemAnimator;
+import io.plaidapp.base.ui.recyclerview.InfiniteScrollListener;
+import io.plaidapp.base.util.Activities;
+import io.plaidapp.base.util.ActivityHelper;
+import io.plaidapp.base.util.AnimUtils;
+import io.plaidapp.base.util.DrawableUtils;
+import io.plaidapp.base.util.ViewUtils;
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
-import io.plaidapp.base.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.ui.transitions.FabTransform;
-import io.plaidapp.ui.transitions.MorphTransform;
-import io.plaidapp.base.util.Activities;
-import io.plaidapp.base.util.AnimUtils;
-import io.plaidapp.base.util.ViewUtils;
 
 public class HomeActivity extends Activity {
 
     private static final int RC_SEARCH = 0;
-    private static final int RC_AUTH_DRIBBBLE_FOLLOWING = 1;
-    private static final int RC_AUTH_DRIBBBLE_USER_LIKES = 2;
-    private static final int RC_AUTH_DRIBBBLE_USER_SHOTS = 3;
     private static final int RC_NEW_DESIGNER_NEWS_STORY = 4;
     private static final int RC_NEW_DESIGNER_NEWS_LOGIN = 5;
 
@@ -411,23 +406,6 @@ public class HomeActivity extends Activity {
                     showFab();
                 }
                 break;
-            case RC_AUTH_DRIBBBLE_FOLLOWING:
-                if (resultCode == RESULT_OK) {
-                    filtersAdapter.enableFilterByKey(SourceManager.SOURCE_DRIBBBLE_FOLLOWING, this);
-                }
-                break;
-            case RC_AUTH_DRIBBBLE_USER_LIKES:
-                if (resultCode == RESULT_OK) {
-                    filtersAdapter.enableFilterByKey(
-                            SourceManager.SOURCE_DRIBBBLE_USER_LIKES, this);
-                }
-                break;
-            case RC_AUTH_DRIBBBLE_USER_SHOTS:
-                if (resultCode == RESULT_OK) {
-                    filtersAdapter.enableFilterByKey(
-                            SourceManager.SOURCE_DRIBBBLE_USER_SHOTS, this);
-                }
-                break;
         }
     }
 
@@ -596,18 +574,6 @@ public class HomeActivity extends Activity {
             loading.setVisibility(View.GONE);
             setNoFiltersEmptyTextVisibility(View.GONE);
         }
-    }
-
-    int getAuthSourceRequestCode(Source filter) {
-        switch (filter.key) {
-            case SourceManager.SOURCE_DRIBBBLE_FOLLOWING:
-                return RC_AUTH_DRIBBBLE_FOLLOWING;
-            case SourceManager.SOURCE_DRIBBBLE_USER_LIKES:
-                return RC_AUTH_DRIBBBLE_USER_LIKES;
-            case SourceManager.SOURCE_DRIBBBLE_USER_SHOTS:
-                return RC_AUTH_DRIBBBLE_USER_SHOTS;
-        }
-        throw new InvalidParameterException();
     }
 
     private void showPostingProgress() {
