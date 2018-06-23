@@ -47,11 +47,7 @@ class DesignerNewsCommentsRemoteDataSourceTest {
 
             // Then the response is the expected one
             assertNotNull(response)
-            assertEquals(replies.size, response?.size)
-            replies.forEachIndexed { index,
-                                     comment ->
-                assertEquals(comment, response?.get(index))
-            }
+            assertEquals(replies, response)
         }
     }
 
@@ -67,11 +63,7 @@ class DesignerNewsCommentsRemoteDataSourceTest {
 
             // Then the response is the expected one
             assertNotNull(response)
-            assertEquals(replies.size, response?.size)
-            replies.forEachIndexed { index,
-                                     comment ->
-                assertEquals(comment, response?.get(index))
-            }
+            assertEquals(replies, response)
         }
     }
 

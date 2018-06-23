@@ -29,6 +29,7 @@ import java.util.Objects;
 
 /**
  * Models a comment on a designer news story.
+ * // TODO separate the request object to the business object
  */
 public class Comment implements Parcelable {
 
@@ -213,6 +214,7 @@ public class Comment implements Parcelable {
         user_portrait_url = in.readString();
         user_job = in.readString();
         links = in.readParcelable(CommentLinks.class.getClassLoader());
+        comments = new ArrayList<>();
     }
 
     @Override
