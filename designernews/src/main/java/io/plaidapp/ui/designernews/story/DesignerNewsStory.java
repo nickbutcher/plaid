@@ -980,9 +980,9 @@ public class DesignerNewsStory extends Activity {
                                     .setBody(holder.getCommentReply().getText().toString())
                                     .setCreatedAt(new Date())
                                     .setDepth(replyDepth)
-                                    .setUserId(user.id)
-                                    .setUserDisplayName(user.display_name)
-                                    .setUserPortraitUrl(user.portrait_url)
+                                    .setUserId(user.getId())
+                                    .setUserDisplayName(user.getDisplayName())
+                                    .setUserPortraitUrl(user.getPortraitUrl())
                                     .build(),
                             inReplyToCommentPosition);
 

@@ -27,6 +27,7 @@ import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRemoteDataSourc
 import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRepository
 import org.junit.After
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -41,13 +42,8 @@ import java.io.IOException
  */
 class DesignerNewsLoginRepositoryTest {
 
-    private val user = User.Builder()
-            .setId(1)
-            .setDisplayName("Name")
-            .setPortraitUrl("www")
-            .build()
-
-    private val accessToken = AccessToken("token", "type", "scope")
+    private val user = User(id = 3, displayName = "Plaida Plaidich", portraitUrl = "www")
+    private val accessToken = AccessToken("token")
 
     private var sharedPreferences = InstrumentationRegistry.getInstrumentation().context
             .getSharedPreferences("test", Context.MODE_PRIVATE)
@@ -74,20 +70,13 @@ class DesignerNewsLoginRepositoryTest {
     fun isLoggedIn_afterSuccessfulLogin() {
         // Given that the login will be successful
         withLoginSuccessful()
-        var successCalled = false
+        var actualUser: User? = null
 
         // When logging in
-        repository.login(
-                "user",
-                "pass",
-                { it ->
-                    successCalled = true
-                    assertTrue(User.areUsersEqual(user, it))
-                },
-                { Assert.fail() })
+        repository.login("user", "pass", { it -> actualUser = it }, { Assert.fail() })
 
         // Then the success callback was called
-        assertTrue(successCalled)
+        assertEquals(user, actualUser)
         // The user is logged in
         assertTrue(repository.isLoggedIn)
     }
@@ -110,7 +99,7 @@ class DesignerNewsLoginRepositoryTest {
     fun logout_afterLogin() {
         // Given a logged in user
         withLoginSuccessful()
-        repository.login("user", "pass", { it -> assert(user == it) }, { Assert.fail() })
+        repository.login("user", "pass", { it -> assertEquals(user, it) }, { Assert.fail() })
 
         // When logging out
         repository.logout()

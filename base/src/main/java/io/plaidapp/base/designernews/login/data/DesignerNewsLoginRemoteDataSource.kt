@@ -51,7 +51,7 @@ class DesignerNewsLoginRemoteDataSource(
         login.enqueue(object : Callback<AccessToken> {
             override fun onResponse(call: Call<AccessToken>, response: Response<AccessToken>) {
                 if (response.isSuccessful && response.body() != null) {
-                    val token = response.body()?.access_token
+                    val token = response.body()?.accessToken
                     tokenLocalDataSource.authToken = token
                     requestUser(onSuccess, onError)
                 } else {
