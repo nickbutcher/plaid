@@ -19,16 +19,18 @@ package io.plaidapp.base.designernews.data.api;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
 import java.util.List;
 
+import io.plaidapp.base.designernews.DesignerNewsPrefs;
 import io.plaidapp.base.designernews.data.api.model.NewStoryRequest;
 import io.plaidapp.base.designernews.data.api.model.Story;
 import io.plaidapp.base.designernews.data.api.model.User;
-import io.plaidapp.base.designernews.DesignerNewsPrefs;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -67,55 +69,83 @@ public class PostStoryService extends IntentService {
             final String url = intent.getStringExtra(EXTRA_STORY_URL);
             final String comment = intent.getStringExtra(EXTRA_STORY_COMMENT);
             if (TextUtils.isEmpty(title)) return;
-            NewStoryRequest storyToPost = null;
-            if (!TextUtils.isEmpty(url)) {
-                storyToPost = NewStoryRequest.createWithUrl(title, url);
-            } else if (!TextUtils.isEmpty(comment)) {
-                storyToPost = NewStoryRequest.createWithComment(title, comment);
-            }
+
+            NewStoryRequest storyToPost = getNewStoryRequest(title, url, comment);
             if (storyToPost == null) return;
 
-            final Call<List<Story>> postStoryCall =
-                    designerNewsPrefs.getApi().postStory(storyToPost);
-            try {
-                final Response<List<Story>> response = postStoryCall.execute();
-                final List<Story> stories = response.body();
-                if (stories != null && !stories.isEmpty()) {
-                    if (broadcastResult) {
-                        final Intent success = new Intent(BROADCAST_ACTION_SUCCESS);
-                        // API doesn't fill in author details so add them here
-                        final Story returnedStory = stories.get(0);
-                        final User user = designerNewsPrefs.getUser();
-                        final Story.Builder builder = Story.Builder.from(returnedStory)
-                                .setUserId(user.id)
-                                .setUserDisplayName(user.display_name)
-                                .setUserPortraitUrl(user.portrait_url);
-                        // API doesn't add a self URL, so potentially add one for consistency
-                        if (TextUtils.isEmpty(returnedStory.url)) {
-                            builder.setDefaultUrl(returnedStory.id);
-                        }
-                        final Story newStory = builder.build();
-                        newStory.dataSource = SOURCE_NEW_DN_POST;
-                        success.putExtra(EXTRA_NEW_STORY, newStory);
-                        LocalBroadcastManager.getInstance(getApplicationContext())
-                                .sendBroadcast(success);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Story posted",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-            } catch (Exception e) {
-                final String reason = e.getMessage();
+            postStory(broadcastResult, designerNewsPrefs.getApi(), designerNewsPrefs.getUser(),
+                    storyToPost);
+        }
+    }
+
+    @Nullable
+    private NewStoryRequest getNewStoryRequest(String title, String url, String comment) {
+        NewStoryRequest storyToPost = null;
+        if (!TextUtils.isEmpty(url)) {
+            storyToPost = NewStoryRequest.Companion.createWithUrl(title, url);
+        } else if (!TextUtils.isEmpty(comment)) {
+            storyToPost = NewStoryRequest.Companion.createWithComment(title, comment);
+        }
+        return storyToPost;
+    }
+
+    private void postStory(
+            boolean broadcastResult,
+            DesignerNewsService service,
+            User user,
+            NewStoryRequest storyToPost) {
+        final Call<List<Story>> postStoryCall =
+                service.postStory(storyToPost);
+        try {
+            final Response<List<Story>> response = postStoryCall.execute();
+            final List<Story> stories = response.body();
+            if (stories != null && !stories.isEmpty()) {
                 if (broadcastResult) {
-                    final Intent failure = new Intent(BROADCAST_ACTION_FAILURE);
-                    failure.putExtra(BROADCAST_ACTION_FAILURE_REASON, reason);
-                    LocalBroadcastManager.getInstance(getApplicationContext())
-                            .sendBroadcast(failure);
+                    broadcastSuccess(stories, user);
                 } else {
-                    Toast.makeText(getApplicationContext(), reason, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Story posted",
+                            Toast.LENGTH_SHORT).show();
                 }
+            }
+        } catch (Exception e) {
+            final String reason = e.getMessage();
+            if (broadcastResult) {
+                broadcastFailure(reason);
+            } else {
+                Toast.makeText(getApplicationContext(), reason, Toast.LENGTH_SHORT).show();
             }
         }
     }
 
+    private void broadcastSuccess(List<Story> stories, User user) {
+        final Intent success = new Intent(BROADCAST_ACTION_SUCCESS);
+        // API doesn't fill in author details so add them here
+        final Story newStory = getStory(stories, user);
+        success.putExtra(EXTRA_NEW_STORY, newStory);
+        LocalBroadcastManager.getInstance(getApplicationContext())
+                .sendBroadcast(success);
+    }
+
+    private void broadcastFailure(String reason) {
+        final Intent failure = new Intent(BROADCAST_ACTION_FAILURE);
+        failure.putExtra(BROADCAST_ACTION_FAILURE_REASON, reason);
+        LocalBroadcastManager.getInstance(getApplicationContext())
+                .sendBroadcast(failure);
+    }
+
+    @NonNull
+    private Story getStory(List<Story> stories, User user) {
+        final Story returnedStory = stories.get(0);
+        final Story.Builder builder = Story.Builder.from(returnedStory)
+                .setUserId(user.id)
+                .setUserDisplayName(user.display_name)
+                .setUserPortraitUrl(user.portrait_url);
+        // API doesn't add a self URL, so potentially add one for consistency
+        if (TextUtils.isEmpty(returnedStory.url)) {
+            builder.setDefaultUrl(returnedStory.id);
+        }
+        final Story newStory = builder.build();
+        newStory.dataSource = SOURCE_NEW_DN_POST;
+        return newStory;
+    }
 }
