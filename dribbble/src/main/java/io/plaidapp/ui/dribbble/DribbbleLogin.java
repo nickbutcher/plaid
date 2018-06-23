@@ -24,7 +24,6 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.transition.TransitionManager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,20 +36,23 @@ import android.widget.Toast;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 import io.plaidapp.base.BuildConfig;
-import io.plaidapp.dribbble.R;
 import io.plaidapp.base.data.api.dribbble.DribbbleAuthService;
 import io.plaidapp.base.data.api.dribbble.model.AccessToken;
 import io.plaidapp.base.data.api.dribbble.model.User;
 import io.plaidapp.base.data.prefs.DribbblePrefs;
+import io.plaidapp.base.util.glide.GlideApp;
+import io.plaidapp.dribbble.R;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.util.ScrimUtil;
-import io.plaidapp.base.util.glide.GlideApp;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static android.view.Gravity.BOTTOM;
+import static android.view.Gravity.FILL_HORIZONTAL;
 
 public class DribbbleLogin extends Activity {
 
@@ -151,18 +153,20 @@ public class DribbbleLogin extends Activity {
                         .placeholder(io.plaidapp.R.drawable.ic_player)
                         .circleCrop()
                         .transition(DrawableTransitionOptions.withCrossFade())
-                        .into((ImageView) v.findViewById(R.id.avatar));
+                        .into((ImageView) v.findViewById(io.plaidapp.R.id.avatar));
                 v.findViewById(io.plaidapp.R.id.scrim)
-                        .setBackground(ScrimUtil.makeCubicGradientScrimDrawable
-                        (ContextCompat.getColor(DribbbleLogin.this, io.plaidapp.R.color.scrim),
-                                5, Gravity.BOTTOM));
+                        .setBackground(ScrimUtil.makeCubicGradientScrimDrawable(
+                                ContextCompat.getColor(
+                                        DribbbleLogin.this, io.plaidapp.R.color.scrim), 5, BOTTOM));
                 confirmLogin.setView(v);
-                confirmLogin.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
+                confirmLogin.setGravity(BOTTOM | FILL_HORIZONTAL, 0, 0);
                 confirmLogin.setDuration(Toast.LENGTH_LONG);
                 confirmLogin.show();
             }
 
-            @Override public void onFailure(Call<User> call, Throwable t) { }
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+            }
         });
     }
 

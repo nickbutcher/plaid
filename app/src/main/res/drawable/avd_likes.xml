@@ -30,7 +30,7 @@
                 android:pivotX="12"
                 android:pivotY="12">
                 <path
-                    android:pathData="@string/heart_full_path_24dp"
+                    android:pathData="M12,21 L10.695,19.853406 C6.06,15.7771117 3,13.0871935 3,9.79564033 C3,7.10572207 5.1735,5 7.95,5 C9.516,5 11.019,5.70626703 12,6.81798365 C12.981,5.70626703 14.484,5 16.05,5 C18.8265,5 21,7.10572207 21,9.79564033 C21,13.0871935 17.94,15.7771117 13.305,19.853406 L12,21 L12,21 Z"
                     android:fillColor="@color/inline_action_icon" />
             </group>
         </vector>

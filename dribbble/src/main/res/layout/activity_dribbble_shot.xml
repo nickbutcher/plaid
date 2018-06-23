@@ -76,13 +76,6 @@
 
     </FrameLayout>
 
-    <!-- dummy view stopping the below RecyclerView from capturing focus which messes up layout -->
-    <View
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:focusableInTouchMode="true"
-        android:importantForAccessibility="no" />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/dribbble_comments"
         android:layout_width="match_parent"
@@ -93,16 +86,5 @@
         android:scrollbars="vertical"
         android:scrollbarStyle="insideOverlay"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
-
-    <io.plaidapp.ui.widget.FABToggle
-        android:id="@+id/fab_heart"
-        android:layout_width="@dimen/fab_size"
-        android:layout_height="@dimen/fab_size"
-        android:elevation="@dimen/z_fab_over_touchable_app_bar"
-        android:background="@drawable/fab_dribbble_fav"
-        android:layout_gravity="end"
-        android:layout_marginEnd="@dimen/padding_normal"
-        android:stateListAnimator="@animator/raise"
-        android:src="@drawable/asl_fab_heart" />
 
 </io.plaidapp.ui.widget.ElasticDragDismissFrameLayout>
