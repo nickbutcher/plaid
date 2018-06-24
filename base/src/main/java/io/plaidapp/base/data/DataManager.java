@@ -27,11 +27,14 @@ import java.util.Map;
 
 import io.plaidapp.base.data.api.dribbble.DribbbleSearchService;
 import io.plaidapp.base.data.api.dribbble.model.Shot;
-import io.plaidapp.base.data.api.producthunt.model.Post;
+import io.plaidapp.base.data.api.dribbble.model.User;
 import io.plaidapp.base.data.prefs.SourceManager;
 import io.plaidapp.base.designernews.Injection;
 import io.plaidapp.base.designernews.data.api.DesignerNewsRepository;
+import io.plaidapp.base.producthunt.data.api.ProductHuntInjection;
+import io.plaidapp.base.producthunt.data.api.ProductHuntRepository;
 import io.plaidapp.base.ui.FilterAdapter;
+import kotlin.Unit;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,6 +47,7 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
         implements LoadSourceCallback {
 
     private final DesignerNewsRepository designerNewsRepository;
+    private final ProductHuntRepository productHuntRepository;
     private final FilterAdapter filterAdapter;
     private Map<String, Integer> pageIndexes;
     private Map<String, Call> inflight;
@@ -51,6 +55,8 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
     public DataManager(Context context, FilterAdapter filterAdapter) {
         super(context);
         designerNewsRepository = Injection.provideDesignerNewsRepository(context);
+        productHuntRepository = ProductHuntInjection.provideProductHuntRepository();
+
         this.filterAdapter = filterAdapter;
         filterAdapter.registerFilterChangedCallback(filterListener);
         setupPageIndexes();
@@ -72,6 +78,7 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
             inflight.clear();
         }
         designerNewsRepository.cancelAllRequests();
+        productHuntRepository.cancelAllRequests();
     }
 
     private final FilterAdapter.FiltersChangedCallbacks filterListener =
@@ -194,22 +201,15 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
 
     private void loadProductHunt(final int page) {
         // this API's paging is 0 based but this class (& sorting) is 1 based so adjust locally
-        final Call<List<Post>> postsCall = getProductHuntApi().getPosts(page - 1);
-        postsCall.enqueue(new Callback<List<Post>>() {
-            @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                if (response.isSuccessful()) {
-                    sourceLoaded(response.body(), page, SourceManager.SOURCE_PRODUCT_HUNT);
-                } else {
+        productHuntRepository.loadProductHuntData(
+                page - 1,
+                it -> {
+                    sourceLoaded(it, page, SourceManager.SOURCE_PRODUCT_HUNT);
+                    return Unit.INSTANCE;
+                },
+                error -> {
                     loadFailed(SourceManager.SOURCE_PRODUCT_HUNT);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Post>> call, Throwable t) {
-                loadFailed(SourceManager.SOURCE_PRODUCT_HUNT);
-            }
-        });
-        inflight.put(SourceManager.SOURCE_PRODUCT_HUNT, postsCall);
+                    return Unit.INSTANCE;
+                });
     }
 }

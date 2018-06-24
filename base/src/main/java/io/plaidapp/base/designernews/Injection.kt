@@ -29,6 +29,7 @@ import io.plaidapp.base.designernews.data.api.DesignerNewsService
 import io.plaidapp.base.designernews.login.data.DesignerNewsLoginLocalDataSource
 import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRemoteDataSource
 import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRepository
+import io.plaidapp.base.loggingInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -39,14 +40,6 @@ import retrofit2.converter.gson.GsonConverterFactory
  *
  * Once we have a dependency injection framework or a service locator, this should be removed.
  */
-
-val debugLevel = if (BuildConfig.DEBUG) {
-    HttpLoggingInterceptor.Level.BODY
-} else {
-    HttpLoggingInterceptor.Level.NONE
-}
-
-val loggingInterceptor = HttpLoggingInterceptor().apply { level = debugLevel }
 
 fun provideDesignerNewsLoginLocalDataSource(context: Context): DesignerNewsLoginLocalDataSource {
     val preferences = provideSharedPreferences(

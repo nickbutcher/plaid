@@ -23,4 +23,4 @@
 # Required for GSON parsing of data coming from network requests to models
 -keep class io.plaidapp.base.data.api.dribbble.model.** { *; }
 -keep class io.plaidapp.base.data.api.designernews.model.**  { *; }
--keep class io.plaidapp.base.data.api.producthunt.model.**  { *; }
+-keep class io.plaidapp.base.producthunt.data.api.model.**  { *; }
