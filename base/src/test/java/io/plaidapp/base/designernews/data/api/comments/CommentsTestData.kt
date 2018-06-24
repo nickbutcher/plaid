@@ -50,7 +50,7 @@ val parentCommentWithReplies = Comment.Builder()
         .setId(parentId)
         .setBody("commenty comment")
         .setCommentLinks(parentLinks)
-        .setComments(replies)
+        .setReplies(replies)
         .build()
 
 val parentCommentWithoutReplies = Comment.Builder()

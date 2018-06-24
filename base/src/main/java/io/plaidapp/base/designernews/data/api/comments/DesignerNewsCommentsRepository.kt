@@ -85,7 +85,7 @@ class DesignerNewsCommentsRepository(
     ): List<Comment> {
         replies.map { reply ->
             comments.filter { comment -> comment.id == reply.links.parentComment }
-                    .map { comment -> comment.addComment(reply) }
+                    .map { comment -> comment.addReply(reply) }
         }
         return comments
     }
