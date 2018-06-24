@@ -15,12 +15,12 @@
  *
  */
 
-package io.plaidapp.base.data.api.producthunt;
+package io.plaidapp.base.producthunt.data.api;
 
 import java.util.List;
 
 import io.plaidapp.base.data.api.EnvelopePayload;
-import io.plaidapp.base.data.api.producthunt.model.Post;
+import io.plaidapp.base.producthunt.data.api.model.Post;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

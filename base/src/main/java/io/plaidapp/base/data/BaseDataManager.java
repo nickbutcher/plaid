@@ -20,25 +20,21 @@ package io.plaidapp.base.data;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import io.plaidapp.base.BuildConfig;
-import io.plaidapp.base.data.api.AuthInterceptor;
-import io.plaidapp.base.data.api.DenvelopingConverter;
 import io.plaidapp.base.data.api.dribbble.DribbbleSearchConverter;
 import io.plaidapp.base.data.api.dribbble.DribbbleSearchService;
 import io.plaidapp.base.data.api.dribbble.DribbbleService;
-import io.plaidapp.base.data.api.producthunt.ProductHuntService;
 import io.plaidapp.base.dribbble.Injection;
+import io.plaidapp.base.producthunt.data.api.ProductHuntInjection;
+import io.plaidapp.base.producthunt.data.api.ProductHuntService;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import okhttp3.logging.HttpLoggingInterceptor.Level;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Base class for loading data; extending types are responsible for providing implementations of
@@ -74,7 +70,9 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
     }
 
     public ProductHuntService getProductHuntApi() {
-        if (productHuntApi == null) createProductHuntApi();
+        if (productHuntApi == null) {
+            productHuntApi = ProductHuntInjection.provideProductHuntService();
+        }
         return productHuntApi;
     }
 
@@ -151,21 +149,6 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
                 .client(client)
                 .build()
                 .create((DribbbleSearchService.class));
-    }
-
-    private void createProductHuntApi() {
-        final OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(new AuthInterceptor(BuildConfig.PRODUCT_HUNT_DEVELOPER_TOKEN))
-                .addInterceptor(getHttpLoggingInterceptor())
-                .build();
-        final Gson gson = new Gson();
-        productHuntApi = new Retrofit.Builder()
-                .baseUrl(ProductHuntService.ENDPOINT)
-                .client(client)
-                .addConverterFactory(new DenvelopingConverter(gson))
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build()
-                .create(ProductHuntService.class);
     }
 
     @NonNull

@@ -15,12 +15,12 @@
  *
  */
 
-package io.plaidapp.base.data.api.producthunt;
+package io.plaidapp.base.producthunt.data.api;
 
 import java.util.List;
 
 import io.plaidapp.base.data.PlaidItemSorting;
-import io.plaidapp.base.data.api.producthunt.model.Post;
+import io.plaidapp.base.producthunt.data.api.model.Post;
 
 /**
  * Utility class for applying weights to a group of {@link Post}s for sorting. Weighs posts relative
