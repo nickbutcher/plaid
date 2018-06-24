@@ -49,4 +49,3 @@ fun provideProductHuntService(): ProductHuntService {
 }
 
 fun provideProductHuntRepository() = ProductHuntRepository.getInstance(provideProductHuntService())
-
