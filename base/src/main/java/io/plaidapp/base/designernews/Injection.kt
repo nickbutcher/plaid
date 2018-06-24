@@ -31,7 +31,6 @@ import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRemoteDataSourc
 import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRepository
 import io.plaidapp.base.loggingInterceptor
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
