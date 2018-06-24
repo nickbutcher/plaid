@@ -602,8 +602,8 @@ public class DesignerNewsStory extends Activity {
     private void unnestComments(List<Comment> nested, List<Comment> flat) {
         for (Comment comment : nested) {
             flat.add(comment);
-            if (comment.getComments() != null && comment.getComments().size() > 0) {
-                unnestComments(comment.getComments(), flat);
+            if (comment.getReplies() != null && comment.getReplies().size() > 0) {
+                unnestComments(comment.getReplies(), flat);
             }
         }
     }
