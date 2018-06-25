@@ -29,6 +29,12 @@ import okhttp3.logging.HttpLoggingInterceptor.Level.NONE
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+/**
+ * File providing Dribbble related dependencies.
+ *
+ * Once we have a dependency injection framework or a service locator, this should be removed.
+ */
+
 private val loggingInterceptor = HttpLoggingInterceptor().apply {
     level = if (BuildConfig.DEBUG) {
         BODY

@@ -56,8 +56,7 @@ public class FilterAdapter extends RecyclerView.Adapter<FilterAdapter.FilterView
 
     final List<Source> filters;
     private final Context context;
-    private @Nullable
-    List<FiltersChangedCallbacks> callbacks;
+    @Nullable private List<FiltersChangedCallbacks> callbacks;
 
     public FilterAdapter(@NonNull Context context,
                          @NonNull List<Source> filters) {

@@ -73,6 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableTop="@drawable/avd_likes"
+            android:background="@null"
             tools:text="33 likes"
             style="@style/Widget.Plaid.InlineActionButton" />
 
