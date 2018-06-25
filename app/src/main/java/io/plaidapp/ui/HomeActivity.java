@@ -79,7 +79,6 @@ import io.plaidapp.base.data.PlaidItem;
 import io.plaidapp.base.data.Source;
 import io.plaidapp.base.data.api.dribbble.model.Shot;
 import io.plaidapp.base.data.pocket.PocketUtils;
-import io.plaidapp.base.data.prefs.DribbblePrefs;
 import io.plaidapp.base.data.prefs.SourceManager;
 import io.plaidapp.base.designernews.DesignerNewsPrefs;
 import io.plaidapp.base.designernews.data.api.PostStoryService;
@@ -122,7 +121,6 @@ public class HomeActivity extends Activity {
     FeedAdapter adapter;
     FilterAdapter filtersAdapter;
     private DesignerNewsPrefs designerNewsPrefs;
-    private DribbblePrefs dribbblePrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
