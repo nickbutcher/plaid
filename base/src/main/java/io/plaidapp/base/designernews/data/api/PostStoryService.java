@@ -137,9 +137,9 @@ public class PostStoryService extends IntentService {
     private Story getStory(List<Story> stories, User user) {
         final Story returnedStory = stories.get(0);
         final Story.Builder builder = Story.Builder.from(returnedStory)
-                .setUserId(user.id)
-                .setUserDisplayName(user.display_name)
-                .setUserPortraitUrl(user.portrait_url);
+                .setUserId(user.getId())
+                .setUserDisplayName(user.getDisplayName())
+                .setUserPortraitUrl(user.getPortraitUrl());
         // API doesn't add a self URL, so potentially add one for consistency
         if (TextUtils.isEmpty(returnedStory.url)) {
             builder.setDefaultUrl(returnedStory.id);
