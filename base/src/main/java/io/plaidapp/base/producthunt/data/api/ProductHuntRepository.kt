@@ -30,7 +30,7 @@ class ProductHuntRepository(private val service: ProductHuntService) {
         onSuccess: (List<Post>) -> Unit,
         onError: (String) -> Unit
     ) {
-        val postsCall = service.getPosts(page - 1)
+        val postsCall = service.getPosts(page)
         postsCall.enqueue(object : Callback<List<Post>> {
             override fun onResponse(call: Call<List<Post>>, response: Response<List<Post>>) {
                 val result = response.body()
@@ -57,12 +57,12 @@ class ProductHuntRepository(private val service: ProductHuntService) {
 
     companion object {
         @Volatile
-        private var sINSTANCE: ProductHuntRepository? = null
+        private var INSTANCE: ProductHuntRepository? = null
 
         fun getInstance(service: ProductHuntService): ProductHuntRepository {
-            return sINSTANCE ?: synchronized(this) {
-                sINSTANCE
-                        ?: ProductHuntRepository(service).also { sINSTANCE = it }
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE
+                        ?: ProductHuntRepository(service).also { INSTANCE = it }
             }
         }
     }
