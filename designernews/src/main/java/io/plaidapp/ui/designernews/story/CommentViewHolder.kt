@@ -37,14 +37,14 @@ internal class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     val comment: TextView = itemView.findViewById(R.id.comment_text)
 
     private fun getExpandedAuthorCommentOffset(): Float {
-        return (-(threadDepth.width
-                + (threadDepth.layoutParams as ViewGroup.MarginLayoutParams)
+        return (-(threadDepth.width +
+                (threadDepth.layoutParams as ViewGroup.MarginLayoutParams)
                 .marginEnd)).toFloat()
     }
 
     private fun getExpandedThreadOffset(): Float {
-        return (-(threadDepth.width
-                + (threadDepth.layoutParams as ViewGroup.MarginLayoutParams)
+        return (-(threadDepth.width +
+                (threadDepth.layoutParams as ViewGroup.MarginLayoutParams)
                 .marginStart)).toFloat()
     }
 
