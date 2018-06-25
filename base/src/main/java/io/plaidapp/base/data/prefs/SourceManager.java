@@ -61,6 +61,8 @@ public class SourceManager {
                         sourceKey.replace(Source.DesignerNewsSearchSource
                                 .DESIGNER_NEWS_QUERY_PREFIX, ""),
                         prefs.getBoolean(sourceKey, false)));
+            } else if (DribbbleV1Migrator.isDribbbleV1Source(sourceKey)) {
+                DribbbleV1Migrator.migrate(sourceKey, prefs);
             } else {
                 // TODO improve this O(n2) search
                 sources.add(getSource(context, sourceKey, prefs.getBoolean(sourceKey, false)));
