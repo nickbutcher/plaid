@@ -22,6 +22,7 @@ import androidx.core.content.edit
 import io.plaidapp.base.data.prefs.checkAndRemove
 import io.plaidapp.base.data.prefs.isDribbbleV1Source
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -53,7 +54,7 @@ class DribbbleV1SourceRemoverTest {
 
     @After
     fun tearDown() {
-        // cleanup the shared preferences after every test
+        // Cleanup the shared preferences after every test
         sharedPreferences.edit().clear().commit()
     }
 
@@ -86,13 +87,19 @@ class DribbbleV1SourceRemoverTest {
                 putBoolean(key, true)
             }
         }
+        // Hold the return value for later verification
+        val wasRemoved = BooleanArray(mixedSourceKeys.size)
 
         // When [DribbbleV1SourceRemover] visits each entry
-        mixedSourceKeys.forEach { key ->
-            checkAndRemove(key, sharedPreferences)
+        mixedSourceKeys.forEachIndexed { index, key ->
+            wasRemoved[index] = checkAndRemove(key, sharedPreferences)
         }
 
-        // Then it removes all v1 sources
+        // Then it correctly returns whether it was a v1 source
+        wasRemoved.forEachIndexed { index, removed ->
+            assertEquals(removed, dribbbleV1Sources.contains(mixedSourceKeys[index]))
+        }
+        // And removes all v1 sources from [sharedPreferences]
         dribbbleV1Sources.forEach { key ->
             assertFalse(sharedPreferences.contains(key))
         }
