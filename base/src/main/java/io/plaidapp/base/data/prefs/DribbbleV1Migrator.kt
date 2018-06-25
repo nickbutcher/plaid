@@ -26,5 +26,5 @@ private const val V1_SOURCE_KEY_PREFIX = "SOURCE_DRIBBBLE_"
 fun isDribbbleV1Source(key: String) = key.startsWith(V1_SOURCE_KEY_PREFIX)
 
 fun migrate(key: String, prefs: SharedPreferences) {
-  prefs.edit { remove(key) }
+    prefs.edit { remove(key) }
 }
