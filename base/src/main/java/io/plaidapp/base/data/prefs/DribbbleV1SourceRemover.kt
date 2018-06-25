@@ -14,17 +14,28 @@
  * limitations under the License.
  */
 
-@file:JvmName("DribbbleV1Migrator")
+@file:JvmName("DribbbleV1SourceRemover")
 
 package io.plaidapp.base.data.prefs
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
 
+/**
+ * When Dribbble updated from v1 to v2 of their API, they removed a number of data sources. This
+ * file checks/removes data source keys from [SharedPreferences] referring to any of the removed
+ * API sources.
+ */
+
 private const val V1_SOURCE_KEY_PREFIX = "SOURCE_DRIBBBLE_"
 
-fun isDribbbleV1Source(key: String) = key.startsWith(V1_SOURCE_KEY_PREFIX)
-
-fun migrate(key: String, prefs: SharedPreferences) {
-    prefs.edit { remove(key) }
+fun checkAndRemove(key: String, prefs: SharedPreferences): Boolean {
+    var removed = false
+    if (isDribbbleV1Source(key)) {
+        prefs.edit { remove(key) }
+        removed = true
+    }
+    return removed
 }
+
+fun isDribbbleV1Source(key: String) = key.startsWith(V1_SOURCE_KEY_PREFIX)
