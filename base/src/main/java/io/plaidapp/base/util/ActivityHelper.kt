@@ -26,7 +26,6 @@ import android.support.customtabs.CustomTabsSession
 import android.support.v4.content.ContextCompat
 import io.plaidapp.base.R
 import io.plaidapp.base.designernews.data.api.UpvoteStoryService
-import io.plaidapp.base.designernews.data.api.model.Story
 
 /**
  * Helpers to start activities in a modularized world.
