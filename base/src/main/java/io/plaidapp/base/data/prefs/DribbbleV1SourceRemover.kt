@@ -29,6 +29,10 @@ import androidx.core.content.edit
 
 private const val V1_SOURCE_KEY_PREFIX = "SOURCE_DRIBBBLE_"
 
+/**
+ * Checks if [key] is a Dribbble v1 API data source and if so, removes it from [prefs].
+ * @return `true` if [key] is a Dribbble v1 data source & was removed, otherwise `false`.
+ */
 fun checkAndRemove(key: String, prefs: SharedPreferences): Boolean {
     var removed = false
     if (isDribbbleV1Source(key)) {
