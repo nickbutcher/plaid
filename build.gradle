@@ -34,7 +34,7 @@ buildscript {
             'test_rules'      : '1.0.2',
             'espresso'        : '3.0.2',
             'mockito'         : '2.19.0',
-            'ktlint'          : '0.19.0'
+            'ktlint'          : '0.24.0'
     ]
 
     repositories {
