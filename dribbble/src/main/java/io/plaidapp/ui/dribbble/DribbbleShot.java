@@ -60,12 +60,7 @@ import java.text.NumberFormat;
 
 import io.plaidapp.base.data.api.dribbble.DribbbleService;
 import io.plaidapp.base.data.api.dribbble.model.Shot;
-import io.plaidapp.base.data.prefs.DribbblePrefs;
 import io.plaidapp.base.dribbble.Injection;
-import io.plaidapp.base.util.glide.GlideUtils;
-import io.plaidapp.dribbble.R;
-import io.plaidapp.ui.recyclerview.InsetDividerDecoration;
-import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.base.ui.widget.ParallaxScrimageView;
 import io.plaidapp.base.util.Activities;
 import io.plaidapp.base.util.ColorUtils;
@@ -73,12 +68,15 @@ import io.plaidapp.base.util.HtmlUtils;
 import io.plaidapp.base.util.ViewUtils;
 import io.plaidapp.base.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.base.util.glide.GlideApp;
+import io.plaidapp.base.util.glide.GlideUtils;
+import io.plaidapp.dribbble.R;
+import io.plaidapp.ui.recyclerview.InsetDividerDecoration;
+import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 import okhttp3.HttpUrl;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 import static io.plaidapp.base.util.AnimUtils.getFastOutSlowInInterpolator;
 
 public class DribbbleShot extends Activity {
