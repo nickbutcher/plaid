@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.plaidapp.base.ui.recyclerview
 
 import android.support.v7.widget.LinearLayoutManager
