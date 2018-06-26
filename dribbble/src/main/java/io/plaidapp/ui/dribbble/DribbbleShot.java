@@ -32,7 +32,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
@@ -58,9 +57,7 @@ import com.bumptech.glide.request.target.Target;
 
 import java.text.NumberFormat;
 
-import io.plaidapp.base.data.api.dribbble.DribbbleService;
 import io.plaidapp.base.data.api.dribbble.model.Shot;
-import io.plaidapp.base.dribbble.Injection;
 import io.plaidapp.base.ui.widget.ParallaxScrimageView;
 import io.plaidapp.base.util.Activities;
 import io.plaidapp.base.util.ColorUtils;
@@ -72,10 +69,6 @@ import io.plaidapp.base.util.glide.GlideUtils;
 import io.plaidapp.dribbble.R;
 import io.plaidapp.ui.recyclerview.InsetDividerDecoration;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
-import okhttp3.HttpUrl;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static io.plaidapp.base.util.AnimUtils.getFastOutSlowInInterpolator;
 
@@ -134,33 +127,8 @@ public class DribbbleShot extends Activity {
         if (intent.hasExtra(Activities.Dribbble.Shot.EXTRA_SHOT)) {
             shot = intent.getParcelableExtra(Activities.Dribbble.Shot.EXTRA_SHOT);
             bindShot(true);
-        } else if (intent.getData() != null) {
-            final HttpUrl url = HttpUrl.parse(intent.getDataString());
-            if (url.pathSize() == 2 && url.pathSegments().get(0).equals("shots")) {
-                try {
-                    final String shotPath = url.pathSegments().get(1);
-                    final long id = Long.parseLong(shotPath.substring(0, shotPath.indexOf("-")));
-
-                    final DribbbleService api = Injection.provideDribbbleService();
-                    final Call<Shot> shotCall = api.getShot(id);
-                    shotCall.enqueue(new Callback<Shot>() {
-                        @Override
-                        public void onResponse(Call<Shot> call, Response<Shot> response) {
-                            shot = response.body();
-                            bindShot(false);
-                        }
-
-                        @Override
-                        public void onFailure(Call<Shot> call, Throwable t) {
-                            reportUrlError();
-                        }
-                    });
-                } catch (NumberFormatException | StringIndexOutOfBoundsException ex) {
-                    reportUrlError();
-                }
-            } else {
-                reportUrlError();
-            }
+        } else {
+            finishAfterTransition();
         }
     }
 
@@ -285,14 +253,6 @@ public class DribbbleShot extends Activity {
                 res.getDimensionPixelSize(io.plaidapp.R.dimen.divider_height),
                 res.getDimensionPixelSize(io.plaidapp.R.dimen.keyline_1),
                 ContextCompat.getColor(this, io.plaidapp.R.color.divider)));
-    }
-
-    void reportUrlError() {
-        Snackbar.make(draggableFrame,
-                io.plaidapp.R.string.bad_dribbble_shot_url,
-                Snackbar.LENGTH_SHORT)
-                .show();
-        draggableFrame.postDelayed(this::finishAfterTransition, 3000L);
     }
 
     private View.OnClickListener shotClick = new View.OnClickListener() {

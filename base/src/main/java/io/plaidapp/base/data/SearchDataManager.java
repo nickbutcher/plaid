@@ -47,9 +47,8 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
     private List<Call> inflight;
 
     public SearchDataManager(Context context) {
-        super(context);
+        super();
         designerNewsRepository = Injection.provideDesignerNewsRepository(context);
-
         inflight = new ArrayList<>();
     }
 

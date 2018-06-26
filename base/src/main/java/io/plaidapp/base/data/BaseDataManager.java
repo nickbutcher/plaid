@@ -17,7 +17,6 @@
 
 package io.plaidapp.base.data;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -27,10 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import io.plaidapp.base.BuildConfig;
 import io.plaidapp.base.data.api.dribbble.DribbbleSearchConverter;
 import io.plaidapp.base.data.api.dribbble.DribbbleSearchService;
-import io.plaidapp.base.data.api.dribbble.DribbbleService;
-import io.plaidapp.base.dribbble.Injection;
-import io.plaidapp.base.producthunt.data.api.ProductHuntInjection;
-import io.plaidapp.base.producthunt.data.api.ProductHuntService;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import okhttp3.logging.HttpLoggingInterceptor.Level;
@@ -44,12 +39,10 @@ import retrofit2.Retrofit;
 public abstract class BaseDataManager<T> implements DataLoadingSubject {
 
     private final AtomicInteger loadingCount;
-    private DribbbleService dribbbleService;
     private DribbbleSearchService dribbbleSearchApi;
-    private ProductHuntService productHuntApi;
     private List<DataLoadingCallbacks> loadingCallbacks;
 
-    public BaseDataManager(@NonNull Context context) {
+    public BaseDataManager() {
         loadingCount = new AtomicInteger(0);
     }
 
@@ -60,20 +53,6 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
     @Override
     public boolean isDataLoading() {
         return loadingCount.get() > 0;
-    }
-
-    public DribbbleService getDribbbleApi() {
-        if (dribbbleService == null) {
-            dribbbleService = Injection.provideDribbbleService();
-        }
-        return dribbbleService;
-    }
-
-    public ProductHuntService getProductHuntApi() {
-        if (productHuntApi == null) {
-            productHuntApi = ProductHuntInjection.provideProductHuntService();
-        }
-        return productHuntApi;
     }
 
     public DribbbleSearchService getDribbbleSearchApi() {
