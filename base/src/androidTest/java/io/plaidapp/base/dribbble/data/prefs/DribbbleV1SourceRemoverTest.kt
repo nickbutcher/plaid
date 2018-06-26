@@ -20,7 +20,6 @@ import android.content.Context
 import android.support.test.InstrumentationRegistry
 import androidx.core.content.edit
 import io.plaidapp.base.data.prefs.checkAndRemove
-import io.plaidapp.base.data.prefs.isDribbbleV1Source
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -56,26 +55,6 @@ class DribbbleV1SourceRemoverTest {
     fun tearDown() {
         // Cleanup the shared preferences after every test
         sharedPreferences.edit().clear().commit()
-    }
-
-    @Test
-    fun identifies_dribbbleV1Sources() {
-        // Given a list of data sources from the Dribbble v1 API
-        // When checking if the data source is from v1
-        // Then it is correctly identified
-        dribbbleV1Sources.forEach { key ->
-            assertTrue(isDribbbleV1Source(key))
-        }
-    }
-
-    @Test
-    fun doesNotIdentify_nonDribbbleV1Sources() {
-        // Given a list of data sources *not* from the Dribbble v1 API
-        // When checking the data source
-        // Then it is correctly identified
-        nonDribbbleV1Sources.forEach { key ->
-            assertFalse(isDribbbleV1Source(key))
-        }
     }
 
     @Test
