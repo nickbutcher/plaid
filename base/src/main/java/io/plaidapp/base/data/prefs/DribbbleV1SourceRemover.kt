@@ -42,4 +42,4 @@ fun checkAndRemove(key: String, prefs: SharedPreferences): Boolean {
     return removed
 }
 
-fun isDribbbleV1Source(key: String) = key.startsWith(V1_SOURCE_KEY_PREFIX)
+private fun isDribbbleV1Source(key: String) = key.startsWith(V1_SOURCE_KEY_PREFIX)
