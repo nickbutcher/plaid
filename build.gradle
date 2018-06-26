@@ -34,18 +34,24 @@ buildscript {
             'test_rules'      : '1.0.2',
             'espresso'        : '3.0.2',
             'mockito'         : '2.19.0',
-            'ktlint'          : '0.24.0'
+            'ktlint'          : '0.24.0',
+            'chrashlytics'    : '2.9.4',
+            'googleServices'  : '4.0.1',
+            'fabric'          : '1.25.4'
     ]
 
     repositories {
         google()
         mavenCentral()
         jcenter()
+        maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.0-alpha18'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+        classpath "com.google.gms:google-services:${versions.googleServices}"
+        classpath "io.fabric.tools:gradle:${versions.fabric}"
     }
 
 }
