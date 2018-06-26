@@ -23,6 +23,21 @@ All of these problems are encountered by many projects in the Android community 
 ### Non-Goals
 Changes to the styles, themes, icons, animations, transitions or any other UI elements that were the initial focus of Plaid, are outside the scope of this refactoring. 
 
+### Android Studio IDE setup
+
+Plaid uses [ktlint](https://ktlint.github.io/) to enforce Kotlin coding styles.
+Here's how to configure it for use with Android Studio (instructions adapted
+from the ktlint [README](https://github.com/shyiko/ktlint/blob/master/README.md)):
+
+- Close Android Studio if it's open
+- Download ktlint
+  `curl -sSLO https://github.com/shyiko/ktlint/releases/download/0.24.0/ktlint && chmod a+x ktlint`
+- Inside the project root directory run:
+  `ktlint --apply-to-idea-project --android`
+- Remove ktlint if desired
+  `rm ktlint`
+- Start Android Studio
+
 ---
 
 # Plaid 1.0
