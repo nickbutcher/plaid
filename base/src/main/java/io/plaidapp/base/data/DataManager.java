@@ -53,7 +53,7 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
     private Map<String, Call> inflight;
 
     public DataManager(Context context, FilterAdapter filterAdapter) {
-        super(context);
+        super();
         designerNewsRepository = Injection.provideDesignerNewsRepository(context);
         productHuntRepository = ProductHuntInjection.provideProductHuntRepository();
 

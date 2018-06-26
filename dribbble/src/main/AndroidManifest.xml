@@ -32,17 +32,7 @@
         <activity
             android:name="io.plaidapp.ui.dribbble.DribbbleShot"
             android:parentActivityName="io.plaidapp.ui.HomeActivity"
-            android:theme="@style/Plaid.Translucent.Dribbble.Shot">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="https"
-                    android:host="dribbble.com"
-                    android:pathPrefix="/shots/"/>
-            </intent-filter>
-        </activity>
+            android:theme="@style/Plaid.Translucent.Dribbble.Shot" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
