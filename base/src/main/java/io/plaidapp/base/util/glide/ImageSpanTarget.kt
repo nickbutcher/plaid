@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.plaidapp.base.util.glide
 
 import `in`.uncod.android.bypass.style.ImageLoadingSpan
