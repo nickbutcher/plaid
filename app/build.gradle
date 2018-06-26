@@ -17,6 +17,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -56,10 +57,14 @@ android {
 repositories {
     google()
     jcenter()
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 dependencies {
     api project(':base')
     api project(':bypass')
     implementation project(':search')
+    implementation "com.crashlytics.sdk.android:crashlytics:${versions.chrashlytics}"
 }
+
+apply plugin: 'com.google.gms.google-services'
