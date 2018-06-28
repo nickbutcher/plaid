@@ -17,6 +17,8 @@
 
 package io.plaidapp.base.ui;
 
+import static io.plaidapp.base.util.AnimUtils.getFastOutSlowInInterpolator;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -45,9 +47,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
@@ -71,16 +71,16 @@ import io.plaidapp.base.data.PlaidItem;
 import io.plaidapp.base.data.PlaidItemSorting;
 import io.plaidapp.base.data.api.dribbble.ShotWeigher;
 import io.plaidapp.base.data.api.dribbble.model.Shot;
-import io.plaidapp.base.producthunt.data.api.PostWeigher;
-import io.plaidapp.base.producthunt.data.api.model.Post;
 import io.plaidapp.base.data.pocket.PocketUtils;
 import io.plaidapp.base.data.prefs.SourceManager;
 import io.plaidapp.base.designernews.data.api.StoryWeigher;
 import io.plaidapp.base.designernews.data.api.model.Story;
-import io.plaidapp.base.ui.recyclerview.Divided;
+import io.plaidapp.base.designernews.ui.DesignerNewsStoryHolder;
+import io.plaidapp.base.producthunt.data.api.PostWeigher;
+import io.plaidapp.base.producthunt.data.api.model.Post;
+import io.plaidapp.base.producthunt.ui.ProductHuntPostHolder;
 import io.plaidapp.base.ui.transitions.ReflowText;
 import io.plaidapp.base.ui.widget.BadgedFourThreeImageView;
-import io.plaidapp.base.ui.widget.BaselineGridTextView;
 import io.plaidapp.base.util.Activities;
 import io.plaidapp.base.util.ActivityHelper;
 import io.plaidapp.base.util.ObservableColorMatrix;
@@ -89,15 +89,14 @@ import io.plaidapp.base.util.ViewUtils;
 import io.plaidapp.base.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.base.util.glide.DribbbleTarget;
 import io.plaidapp.base.util.glide.GlideApp;
-
-import static io.plaidapp.base.util.AnimUtils.getFastOutSlowInInterpolator;
+import kotlin.Unit;
 
 /**
  * Adapter for displaying a grid of {@link PlaidItem}s.
  */
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-                         implements DataLoadingSubject.DataLoadingCallbacks,
-                                    ListPreloader.PreloadModelProvider<Shot> {
+        implements DataLoadingSubject.DataLoadingCallbacks,
+        ListPreloader.PreloadModelProvider<Shot> {
 
     public static final int REQUEST_CODE_VIEW_SHOT = 5407;
 
@@ -111,12 +110,14 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final LayoutInflater layoutInflater;
     private final PlaidItemSorting.PlaidItemComparator comparator;
     private final boolean pocketIsInstalled;
-    private final @Nullable DataLoadingSubject dataLoading;
+    private final @Nullable
+    DataLoadingSubject dataLoading;
     private final int columns;
     private final ColorDrawable[] shotLoadingPlaceholders;
     private final ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider;
 
-    private final @ColorInt int initialGifBadgeColor;
+    private final @ColorInt
+    int initialGifBadgeColor;
     private List<PlaidItem> items;
     private boolean showLoadingMore = false;
     private PlaidItemSorting.NaturalOrderWeigher naturalOrderWeigher;
@@ -125,9 +126,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private PostWeigher postWeigher;
 
     public FeedAdapter(Activity hostActivity,
-                       @Nullable DataLoadingSubject dataLoading,
-                       int columns,
-                       boolean pocketInstalled, ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider) {
+            @Nullable DataLoadingSubject dataLoading,
+            int columns,
+            boolean pocketInstalled, ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider) {
         this.host = hostActivity;
         this.dataLoading = dataLoading;
         if (dataLoading != null) {
@@ -152,7 +153,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 shotLoadingPlaceholders[i] = new ColorDrawable(placeholderColors[i]);
             }
         } else {
-            shotLoadingPlaceholders = new ColorDrawable[] { new ColorDrawable(Color.DKGRAY) };
+            shotLoadingPlaceholders = new ColorDrawable[]{new ColorDrawable(Color.DKGRAY)};
         }
         final int initialGifBadgeColorId =
                 a.getResourceId(R.styleable.DribbbleFeed_initialBadgeColor, 0);
@@ -181,14 +182,14 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case TYPE_DESIGNER_NEWS_STORY:
-                bindDesignerNewsStory((Story) getItem(position), (DesignerNewsStoryHolder) holder);
+                ((DesignerNewsStoryHolder) holder).bind((Story) getItem(position));
                 break;
             case TYPE_DRIBBBLE_SHOT:
                 bindDribbbleShotHolder(
                         (Shot) getItem(position), (DribbbleShotHolder) holder, position);
                 break;
             case TYPE_PRODUCT_HUNT_POST:
-                bindProductHuntPostView((Post) getItem(position), (ProductHuntStoryHolder) holder);
+                ((ProductHuntPostHolder) holder).bind((Post) getItem(position));
                 break;
             case TYPE_LOADING_MORE:
                 bindLoadingViewHolder((LoadingMoreHolder) holder, position);
@@ -211,26 +212,26 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @NonNull
     private DesignerNewsStoryHolder createDesignerNewsStoryHolder(ViewGroup parent) {
         final DesignerNewsStoryHolder holder = new DesignerNewsStoryHolder(layoutInflater.inflate(
-                R.layout.designer_news_story_item, parent, false), pocketIsInstalled);
-        // TODO add click listeners again
-        // removing click listeners for now, until we're calling the needed APIs
-        // with DN v2 APIs these lead to crashes
+                R.layout.designer_news_story_item, parent, false), pocketIsInstalled,
+                (story, position) -> {
+                    PocketUtils.addToPocket(host, story.url);
+                    // notify changed with a payload asking RV to run the anim
+                    notifyItemChanged(position, HomeGridItemAnimator.ADD_TO_POCKET);
+                    return Unit.INSTANCE;
+                });
         holder.itemView.setOnClickListener(
                 v -> {
                     final Story story = (Story) getItem(holder.getAdapterPosition());
                     if (story.url != null) {
-                        CustomTabActivityHelper.openCustomTab(host,
-                                Activities.DesignerNews.Story.INSTANCE
-                                        .customTabIntent(host, story, null).build(),
-                                Uri.parse(story.url));
+                        openTabDesignerNews(story);
                     }
                 }
         );
-        holder.comments.setOnClickListener(commentsView -> {
+        holder.getComments().setOnClickListener(commentsView -> {
             final Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.Story.INSTANCE);
             intent.putExtra(Activities.DesignerNews.Story.EXTRA_STORY,
                     (Story) getItem(holder.getAdapterPosition()));
-            ReflowText.addExtras(intent, new ReflowText.ReflowableTextView(holder.title));
+            ReflowText.addExtras(intent, new ReflowText.ReflowableTextView(holder.getTitle()));
             setGridItemContentTransitions(holder.itemView);
 
             // on return, fade the pocket & comments buttons in
@@ -246,7 +247,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             final ActivityOptions options =
                     ActivityOptions.makeSceneTransitionAnimation(host,
-                            Pair.create((View) holder.title,
+                            Pair.create((View) holder.getTitle(),
                                     host.getString(R.string.transition_story_title)),
                             Pair.create(holder.itemView,
                                     host.getString(R.string.transition_story_title_background)),
@@ -254,24 +255,15 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                     host.getString(R.string.transition_story_background)));
             host.startActivity(intent, options.toBundle());
         });
-        if (pocketIsInstalled) {
-            holder.pocket.setImageAlpha(178); // grumble... no xml setter, grumble...
-            holder.pocket.setOnClickListener(view -> {
-                PocketUtils.addToPocket(host,
-                        ((Story) getItem(holder.getAdapterPosition())).url);
-                // notify changed with a payload asking RV to run the anim
-                notifyItemChanged(holder.getAdapterPosition(),
-                        HomeGridItemAnimator.ADD_TO_POCKET);
-            });
-        }
+
         return holder;
     }
 
-    private void bindDesignerNewsStory(final Story story, final DesignerNewsStoryHolder holder) {
-        holder.title.setText(story.title);
-        holder.title.setAlpha(1f); // interrupted add to pocket anim can mangle
-        holder.comments.setText(String.valueOf(story.comment_count));
-        holder.itemView.setTransitionName(story.url);
+    private void openTabDesignerNews(Story story) {
+        CustomTabActivityHelper.openCustomTab(host,
+                Activities.DesignerNews.Story.INSTANCE
+                        .customTabIntent(host, story, null).build(),
+                Uri.parse(story.url));
     }
 
     @NonNull
@@ -297,7 +289,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             final int action = event.getAction();
             if (!(action == MotionEvent.ACTION_DOWN
                     || action == MotionEvent.ACTION_UP
-                    || action == MotionEvent.ACTION_CANCEL)) return false;
+                    || action == MotionEvent.ACTION_CANCEL)) {
+                return false;
+            }
 
             // get the image and check if it's an animated GIF
             final Drawable drawable = holder.image.getDrawable();
@@ -332,8 +326,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private void bindDribbbleShotHolder(final Shot shot,
-                                        final DribbbleShotHolder holder,
-                                        int position) {
+            final DribbbleShotHolder holder,
+            int position) {
         final int[] imageSize = shot.images.bestSize();
         GlideApp.with(host)
                 .load(shot.images.best())
@@ -341,8 +335,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model,
-                                                   Target<Drawable> target, DataSource dataSource,
-                                                   boolean isFirstResource) {
+                            Target<Drawable> target, DataSource dataSource,
+                            boolean isFirstResource) {
                         if (!shot.hasFadedIn) {
                             holder.image.setHasTransientState(true);
                             final ObservableColorMatrix cm = new ObservableColorMatrix();
@@ -371,7 +365,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model,
-                                                Target<Drawable> target, boolean isFirstResource) {
+                            Target<Drawable> target, boolean isFirstResource) {
                         return false;
                     }
                 })
@@ -391,30 +385,28 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     @NonNull
-    private ProductHuntStoryHolder createProductHuntStoryHolder(ViewGroup parent) {
-        final ProductHuntStoryHolder holder = new ProductHuntStoryHolder(
-                layoutInflater.inflate(R.layout.product_hunt_item, parent, false));
-        holder.comments.setOnClickListener(v -> CustomTabActivityHelper.openCustomTab(
-                host,
-                new CustomTabsIntent.Builder()
-                        .setToolbarColor(ContextCompat.getColor(host, R.color.product_hunt))
-                        .addDefaultShareMenuItem()
-                        .build(),
-                Uri.parse(((Post) getItem(holder.getAdapterPosition())).discussion_url)));
-        holder.itemView.setOnClickListener(v -> CustomTabActivityHelper.openCustomTab(
-                host,
-                new CustomTabsIntent.Builder()
-                        .setToolbarColor(ContextCompat.getColor(host, R.color.product_hunt))
-                        .addDefaultShareMenuItem()
-                        .build(),
-                Uri.parse(((Post) getItem(holder.getAdapterPosition())).redirect_url)));
+    private ProductHuntPostHolder createProductHuntStoryHolder(ViewGroup parent) {
+        final ProductHuntPostHolder holder = new ProductHuntPostHolder(
+                layoutInflater.inflate(R.layout.product_hunt_item, parent, false),
+                post -> {
+                    openTabForProductHunt(post.discussion_url);
+                    return Unit.INSTANCE;
+                },
+                post -> {
+                    openTabForProductHunt(post.redirect_url);
+                    return Unit.INSTANCE;
+                });
         return holder;
     }
 
-    private void bindProductHuntPostView(final Post item, ProductHuntStoryHolder holder) {
-        holder.title.setText(item.name);
-        holder.tagline.setText(item.tagline);
-        holder.comments.setText(String.valueOf(item.comments_count));
+    private void openTabForProductHunt(String uri) {
+        CustomTabActivityHelper.openCustomTab(
+                host,
+                new CustomTabsIntent.Builder()
+                        .setToolbarColor(ContextCompat.getColor(host, R.color.product_hunt))
+                        .addDefaultShareMenuItem()
+                        .build(),
+                Uri.parse(uri));
     }
 
     private void bindLoadingViewHolder(LoadingMoreHolder holder, int position) {
@@ -700,35 +692,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             image = (BadgedFourThreeImageView) itemView;
         }
 
-    }
-
-    static class DesignerNewsStoryHolder extends RecyclerView.ViewHolder implements Divided {
-
-        BaselineGridTextView title;
-        TextView comments;
-        ImageButton pocket;
-
-        DesignerNewsStoryHolder(View itemView, boolean pocketIsInstalled) {
-            super(itemView);
-            title = itemView.findViewById(R.id.story_title);
-            comments = itemView.findViewById(R.id.story_comments);
-            pocket = itemView.findViewById(R.id.pocket);
-            pocket.setVisibility(pocketIsInstalled ? View.VISIBLE : View.GONE);
-        }
-    }
-
-    static class ProductHuntStoryHolder extends RecyclerView.ViewHolder implements Divided {
-
-        TextView title;
-        TextView tagline;
-        TextView comments;
-
-        ProductHuntStoryHolder(View itemView) {
-            super(itemView);
-            title = itemView.findViewById(R.id.hunt_title);
-            tagline = itemView.findViewById(R.id.tagline);
-            comments = itemView.findViewById(R.id.story_comments);
-        }
     }
 
     static class LoadingMoreHolder extends RecyclerView.ViewHolder {
