@@ -88,7 +88,7 @@ internal class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     }
 
     fun collapse(
-            animator: SlideInItemAnimator
+        animator: SlideInItemAnimator
     ) {
         val expandedThreadOffset = getExpandedThreadOffset()
         val expandedAuthorCommentOffset = getExpandedAuthorCommentOffset()

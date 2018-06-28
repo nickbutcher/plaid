@@ -211,52 +211,49 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @NonNull
     private DesignerNewsStoryHolder createDesignerNewsStoryHolder(ViewGroup parent) {
-        final DesignerNewsStoryHolder holder = new DesignerNewsStoryHolder(layoutInflater.inflate(
-                R.layout.designer_news_story_item, parent, false), pocketIsInstalled,
+        final DesignerNewsStoryHolder holder = new DesignerNewsStoryHolder(
+                layoutInflater.inflate(R.layout.designer_news_story_item, parent, false),
+                pocketIsInstalled,
                 (story, position) -> {
                     PocketUtils.addToPocket(host, story.url);
                     // notify changed with a payload asking RV to run the anim
                     notifyItemChanged(position, HomeGridItemAnimator.ADD_TO_POCKET);
                     return Unit.INSTANCE;
-                });
-        holder.itemView.setOnClickListener(
-                v -> {
-                    final Story story = (Story) getItem(holder.getAdapterPosition());
+                },
+                data -> {
+                    openDesignerNewsStory(data);
+                    return Unit.INSTANCE;
+                },
+                story -> {
                     if (story.url != null) {
                         openTabDesignerNews(story);
                     }
+                    return Unit.INSTANCE;
                 }
         );
-        holder.getComments().setOnClickListener(commentsView -> {
-            final Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.Story.INSTANCE);
-            intent.putExtra(Activities.DesignerNews.Story.EXTRA_STORY,
-                    (Story) getItem(holder.getAdapterPosition()));
-            ReflowText.addExtras(intent, new ReflowText.ReflowableTextView(holder.getTitle()));
-            setGridItemContentTransitions(holder.itemView);
-
-            // on return, fade the pocket & comments buttons in
-            host.setExitSharedElementCallback(new SharedElementCallback() {
-                @Override
-                public void onSharedElementStart(List<String> sharedElementNames, List<View>
-                        sharedElements, List<View> sharedElementSnapshots) {
-                    host.setExitSharedElementCallback(null);
-                    notifyItemChanged(holder.getAdapterPosition(),
-                            HomeGridItemAnimator.STORY_COMMENTS_RETURN);
-                }
-            });
-
-            final ActivityOptions options =
-                    ActivityOptions.makeSceneTransitionAnimation(host,
-                            Pair.create((View) holder.getTitle(),
-                                    host.getString(R.string.transition_story_title)),
-                            Pair.create(holder.itemView,
-                                    host.getString(R.string.transition_story_title_background)),
-                            Pair.create(holder.itemView,
-                                    host.getString(R.string.transition_story_background)));
-            host.startActivity(intent, options.toBundle());
-        });
 
         return holder;
+    }
+
+    private void openDesignerNewsStory(DesignerNewsStoryHolder.TransitionData data) {
+        final Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.Story.INSTANCE);
+        intent.putExtra(Activities.DesignerNews.Story.EXTRA_STORY, data.getStory());
+        ReflowText.addExtras(intent, new ReflowText.ReflowableTextView(data.getTitle()));
+        setGridItemContentTransitions(data.getItemView());
+
+        // on return, fade the pocket & comments buttons in
+        host.setExitSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onSharedElementStart(List<String> sharedElementNames, List<View>
+                    sharedElements, List<View> sharedElementSnapshots) {
+                host.setExitSharedElementCallback(null);
+                notifyItemChanged(data.getPosition(), HomeGridItemAnimator.STORY_COMMENTS_RETURN);
+            }
+        });
+
+        final ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(host,
+                data.getSharedElements());
+        host.startActivity(intent, options.toBundle());
     }
 
     private void openTabDesignerNews(Story story) {
