@@ -28,6 +28,8 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.animation.doOnCancel
+import androidx.core.animation.doOnEnd
 import io.plaidapp.base.R
 import io.plaidapp.base.designernews.data.api.model.Story
 import io.plaidapp.base.ui.recyclerview.Divided
@@ -38,11 +40,11 @@ import io.plaidapp.base.util.ViewUtils
 import java.util.Arrays
 
 class DesignerNewsStoryHolder(
-    itemView: View,
-    pocketIsInstalled: Boolean,
-    private val onPocketClicked: (story: Story, adapterPosition: Int) -> Unit,
-    private val onCommentsClicked: (data: TransitionData) -> Unit,
-    private val onItemClicked: (story: Story) -> Unit
+        itemView: View,
+        pocketIsInstalled: Boolean,
+        private val onPocketClicked: (story: Story, adapterPosition: Int) -> Unit,
+        private val onCommentsClicked: (data: TransitionData) -> Unit,
+        private val onItemClicked: (story: Story) -> Unit
 ) : RecyclerView.ViewHolder(itemView), Divided {
     private var story: Story? = null
     private val title: BaselineGridTextView = itemView.findViewById(R.id.story_title)
@@ -137,18 +139,11 @@ class DesignerNewsStoryHolder(
             interpolator = AnimUtils.getFastOutSlowInInterpolator(itemView.context)
         }
 
-        val addToPocketAnim = AnimatorSet()
-        addToPocketAnim.playSequentially(up, down)
+        return AnimatorSet().apply {
+            playSequentially(up, down)
 
-        addToPocketAnim.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationStart(animation: Animator) {
-            }
-
-            override fun onAnimationEnd(animation: Animator) {
-                (pocket.parent.parent as ViewGroup).clipChildren = true
-            }
-
-            override fun onAnimationCancel(animation: Animator) {
+            doOnEnd { (pocket.parent.parent as ViewGroup).clipChildren = true }
+            doOnCancel {
                 title.apply {
                     alpha = 1f
                     translationY = 0f
@@ -162,8 +157,7 @@ class DesignerNewsStoryHolder(
                     imageAlpha = 178
                 }
             }
-        })
-        return addToPocketAnim
+        }
     }
 
     fun createStoryCommentReturnAnimator(): Animator {
@@ -172,19 +166,11 @@ class DesignerNewsStoryHolder(
                 ObjectAnimator.ofFloat(pocket, View.ALPHA, 0f, 1f),
                 ObjectAnimator.ofFloat(comments, View.ALPHA, 0f, 1f))
         animator.duration = 120L
-        animator.interpolator = AnimUtils.getLinearOutSlowInInterpolator(itemView.getContext())
-        animator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationStart(animation: Animator) {
-            }
-
-            override fun onAnimationEnd(animation: Animator) {
-            }
-
-            override fun onAnimationCancel(animation: Animator) {
-                pocket.alpha = 1f
-                comments.alpha = 1f
-            }
-        })
+        animator.interpolator = AnimUtils.getLinearOutSlowInInterpolator(itemView.context)
+        animator.doOnCancel {
+            pocket.alpha = 1f
+            comments.alpha = 1f
+        }
         return animator
     }
 
@@ -192,11 +178,11 @@ class DesignerNewsStoryHolder(
      * Data needed for creating transitions from this view to the story view.
      */
     data class TransitionData(
-        val story: Story,
-        val position: Int,
-        val title: BaselineGridTextView,
-        val sharedElements: Array<Pair<View, String>>,
-        val itemView: View
+            val story: Story,
+            val position: Int,
+            val title: BaselineGridTextView,
+            val sharedElements: Array<Pair<View, String>>,
+            val itemView: View
     ) {
 
         override fun equals(other: Any?): Boolean {
