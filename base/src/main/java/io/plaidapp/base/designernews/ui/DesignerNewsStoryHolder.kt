@@ -17,7 +17,6 @@
 package io.plaidapp.base.designernews.ui
 
 import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
@@ -40,11 +39,11 @@ import io.plaidapp.base.util.ViewUtils
 import java.util.Arrays
 
 class DesignerNewsStoryHolder(
-        itemView: View,
-        pocketIsInstalled: Boolean,
-        private val onPocketClicked: (story: Story, adapterPosition: Int) -> Unit,
-        private val onCommentsClicked: (data: TransitionData) -> Unit,
-        private val onItemClicked: (story: Story) -> Unit
+    itemView: View,
+    pocketIsInstalled: Boolean,
+    private val onPocketClicked: (story: Story, adapterPosition: Int) -> Unit,
+    private val onCommentsClicked: (data: TransitionData) -> Unit,
+    private val onItemClicked: (story: Story) -> Unit
 ) : RecyclerView.ViewHolder(itemView), Divided {
     private var story: Story? = null
     private val title: BaselineGridTextView = itemView.findViewById(R.id.story_title)
@@ -178,11 +177,11 @@ class DesignerNewsStoryHolder(
      * Data needed for creating transitions from this view to the story view.
      */
     data class TransitionData(
-            val story: Story,
-            val position: Int,
-            val title: BaselineGridTextView,
-            val sharedElements: Array<Pair<View, String>>,
-            val itemView: View
+        val story: Story,
+        val position: Int,
+        val title: BaselineGridTextView,
+        val sharedElements: Array<Pair<View, String>>,
+        val itemView: View
     ) {
 
         override fun equals(other: Any?): Boolean {
