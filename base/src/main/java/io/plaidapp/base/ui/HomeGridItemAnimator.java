@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import io.plaidapp.base.designernews.ui.DesignerNewsStoryHolder;
 import io.plaidapp.base.ui.recyclerview.SlideInItemAnimator;
 import io.plaidapp.base.ui.transitions.GravityArcMotion;
 import io.plaidapp.base.util.AnimUtils;
@@ -47,12 +48,12 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
     public static final int STORY_COMMENTS_RETURN = 2;
 
     // Pending animations
-    private FeedAdapter.DesignerNewsStoryHolder pendingAddToPocket;
-    private FeedAdapter.DesignerNewsStoryHolder pendingStoryCommentsReturn;
+    private DesignerNewsStoryHolder pendingAddToPocket;
+    private DesignerNewsStoryHolder pendingStoryCommentsReturn;
 
     // Currently running animations
-    private Pair<FeedAdapter.DesignerNewsStoryHolder, AnimatorSet> runningAddToPocket;
-    private Pair<FeedAdapter.DesignerNewsStoryHolder, AnimatorSet> runningStoryCommentsReturn;
+    private Pair<DesignerNewsStoryHolder, AnimatorSet> runningAddToPocket;
+    private Pair<DesignerNewsStoryHolder, AnimatorSet> runningStoryCommentsReturn;
 
     @Override
     public boolean canReuseUpdatedViewHolder(@NonNull RecyclerView.ViewHolder viewHolder) {
@@ -92,11 +93,11 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
         if (preInfo instanceof HomeGridItemHolderInfo) {
             HomeGridItemHolderInfo info = (HomeGridItemHolderInfo) preInfo;
             if (info.animateAddToPocket) {
-                pendingAddToPocket = (FeedAdapter.DesignerNewsStoryHolder) newHolder;
+                pendingAddToPocket = (DesignerNewsStoryHolder) newHolder;
                 runPending = true;
             }
             if (info.returnFromComments) {
-                pendingStoryCommentsReturn = (FeedAdapter.DesignerNewsStoryHolder) newHolder;
+                pendingStoryCommentsReturn = (DesignerNewsStoryHolder) newHolder;
                 runPending = true;
             }
         }
@@ -162,32 +163,32 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
                 && runningStoryCommentsReturn.second.isRunning());
     }
 
-    private void animateAddToPocket(final FeedAdapter.DesignerNewsStoryHolder holder) {
+    private void animateAddToPocket(final DesignerNewsStoryHolder holder) {
         endAnimation(holder);
 
         // setup for anim
-        ((ViewGroup) holder.pocket.getParent().getParent()).setClipChildren(false);
-        final int initialLeft = holder.pocket.getLeft();
-        final int initialTop = holder.pocket.getTop();
+        ((ViewGroup) holder.getPocket().getParent().getParent()).setClipChildren(false);
+        final int initialLeft = holder.getPocket().getLeft();
+        final int initialTop = holder.getPocket().getTop();
         final int translatedLeft =
-                (holder.itemView.getWidth() - holder.pocket.getWidth()) / 2;
+                (holder.itemView.getWidth() - holder.getPocket().getWidth()) / 2;
         final int translatedTop =
-                initialTop - ((holder.itemView.getHeight() - holder.pocket.getHeight()) / 2);
+                initialTop - ((holder.itemView.getHeight() - holder.getPocket().getHeight()) / 2);
         final GravityArcMotion arc = new GravityArcMotion();
 
         // animate the title & pocket icon up, scale the pocket icon up
-        Animator titleMoveFadeOut = ObjectAnimator.ofPropertyValuesHolder(holder.title,
+        Animator titleMoveFadeOut = ObjectAnimator.ofPropertyValuesHolder(holder.getTitle(),
                 PropertyValuesHolder.ofFloat(View.TRANSLATION_Y,
                         -(holder.itemView.getHeight() / 5)),
                 PropertyValuesHolder.ofFloat(View.ALPHA, 0.54f));
 
-        Animator pocketMoveUp = ObjectAnimator.ofFloat(holder.pocket,
+        Animator pocketMoveUp = ObjectAnimator.ofFloat(holder.getPocket(),
                 View.TRANSLATION_X, View.TRANSLATION_Y,
                 arc.getPath(initialLeft, initialTop, translatedLeft, translatedTop));
-        Animator pocketScaleUp = ObjectAnimator.ofPropertyValuesHolder(holder.pocket,
+        Animator pocketScaleUp = ObjectAnimator.ofPropertyValuesHolder(holder.getPocket(),
                 PropertyValuesHolder.ofFloat(View.SCALE_X, 3f),
                 PropertyValuesHolder.ofFloat(View.SCALE_Y, 3f));
-        ObjectAnimator pocketFadeUp = ObjectAnimator.ofInt(holder.pocket,
+        ObjectAnimator pocketFadeUp = ObjectAnimator.ofInt(holder.getPocket(),
                 ViewUtils.IMAGE_ALPHA, 255);
 
         AnimatorSet up = new AnimatorSet();
@@ -196,16 +197,16 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
         up.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(holder.itemView.getContext()));
 
         // animate everything back into place
-        Animator titleMoveFadeIn = ObjectAnimator.ofPropertyValuesHolder(holder.title,
+        Animator titleMoveFadeIn = ObjectAnimator.ofPropertyValuesHolder(holder.getTitle(),
                 PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0f),
                 PropertyValuesHolder.ofFloat(View.ALPHA, 1f));
-        Animator pocketMoveDown = ObjectAnimator.ofFloat(holder.pocket,
+        Animator pocketMoveDown = ObjectAnimator.ofFloat(holder.getPocket(),
                 View.TRANSLATION_X, View.TRANSLATION_Y,
                 arc.getPath(translatedLeft, translatedTop, 0, 0));
-        Animator pvhPocketScaleDown = ObjectAnimator.ofPropertyValuesHolder(holder.pocket,
+        Animator pvhPocketScaleDown = ObjectAnimator.ofPropertyValuesHolder(holder.getPocket(),
                 PropertyValuesHolder.ofFloat(View.SCALE_X, 1f),
                 PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f));
-        ObjectAnimator pocketFadeDown = ObjectAnimator.ofInt(holder.pocket,
+        ObjectAnimator pocketFadeDown = ObjectAnimator.ofInt(holder.getPocket(),
                 ViewUtils.IMAGE_ALPHA, 178);
 
         AnimatorSet down = new AnimatorSet();
@@ -225,20 +226,20 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                ((ViewGroup) holder.pocket.getParent().getParent()).setClipChildren(true);
+                ((ViewGroup) holder.getPocket().getParent().getParent()).setClipChildren(true);
                 runningAddToPocket = null;
                 dispatchChangeFinished(holder, false);
             }
 
             @Override
             public void onAnimationCancel(Animator animation) {
-                holder.title.setAlpha(1f);
-                holder.title.setTranslationY(0f);
-                holder.pocket.setTranslationX(0f);
-                holder.pocket.setTranslationY(0f);
-                holder.pocket.setScaleX(1f);
-                holder.pocket.setScaleY(1f);
-                holder.pocket.setImageAlpha(178);
+                holder.getTitle().setAlpha(1f);
+                holder.getTitle().setTranslationY(0f);
+                holder.getPocket().setTranslationX(0f);
+                holder.getPocket().setTranslationY(0f);
+                holder.getPocket().setScaleX(1f);
+                holder.getPocket().setScaleY(1f);
+                holder.getPocket().setImageAlpha(178);
                 runningAddToPocket = null;
                 dispatchChangeFinished(holder, false);
             }
@@ -247,13 +248,13 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
         addToPocketAnim.start();
     }
 
-    private void animateStoryCommentReturn(final FeedAdapter.DesignerNewsStoryHolder holder) {
+    private void animateStoryCommentReturn(final DesignerNewsStoryHolder holder) {
         endAnimation(holder);
 
         AnimatorSet commentsReturnAnim = new AnimatorSet();
         commentsReturnAnim.playTogether(
-                ObjectAnimator.ofFloat(holder.pocket, View.ALPHA, 0f, 1f),
-                ObjectAnimator.ofFloat(holder.comments, View.ALPHA, 0f, 1f));
+                ObjectAnimator.ofFloat(holder.getPocket(), View.ALPHA, 0f, 1f),
+                ObjectAnimator.ofFloat(holder.getComments(), View.ALPHA, 0f, 1f));
         commentsReturnAnim.setDuration(120L);
         commentsReturnAnim.setInterpolator(
                 AnimUtils.getLinearOutSlowInInterpolator(holder.itemView.getContext()));
@@ -271,8 +272,8 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
 
             @Override
             public void onAnimationCancel(Animator animation) {
-                holder.pocket.setAlpha(1f);
-                holder.comments.setAlpha(1f);
+                holder.getPocket().setAlpha(1f);
+                holder.getComments().setAlpha(1f);
                 runningStoryCommentsReturn = null;
                 dispatchChangeFinished(holder, false);
             }

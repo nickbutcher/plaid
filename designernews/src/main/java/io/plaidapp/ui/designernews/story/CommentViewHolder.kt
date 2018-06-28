@@ -39,18 +39,16 @@ internal class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     private fun getExpandedAuthorCommentOffset(): Float {
         return (-(threadDepth.width +
                 (threadDepth.layoutParams as ViewGroup.MarginLayoutParams)
-                .marginEnd)).toFloat()
+                        .marginEnd)).toFloat()
     }
 
     private fun getExpandedThreadOffset(): Float {
         return (-(threadDepth.width +
                 (threadDepth.layoutParams as ViewGroup.MarginLayoutParams)
-                .marginStart)).toFloat()
+                        .marginStart)).toFloat()
     }
 
-    fun expand(
-        animator: SlideInItemAnimator
-    ) {
+    fun expand(animator: SlideInItemAnimator) {
         val expandedThreadOffset = getExpandedThreadOffset()
         val expandedAuthorCommentOffset = getExpandedAuthorCommentOffset()
         val moveInterpolator = getFastOutSlowInInterpolator(itemView.context)
@@ -90,7 +88,7 @@ internal class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     }
 
     fun collapse(
-        animator: SlideInItemAnimator
+            animator: SlideInItemAnimator
     ) {
         val expandedThreadOffset = getExpandedThreadOffset()
         val expandedAuthorCommentOffset = getExpandedAuthorCommentOffset()
