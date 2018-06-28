@@ -7,19 +7,20 @@ import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import java.security.InvalidParameterException;
 
 import io.plaidapp.about.R;
 import io.plaidapp.base.util.customtabs.CustomTabActivityHelper;
+import kotlin.Unit;
 
 class LibraryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int VIEW_TYPE_INTRO = 0;
     private static final int VIEW_TYPE_LIBRARY = 1;
-    static final Library[] libs = {
+
+    private static final Library[] libs = {
             new Library("Android support libraries",
                     "The Android support libraries offer a number of features that are not built "
                             + "into the framework.",
@@ -52,7 +53,7 @@ class LibraryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     "https://avatars.githubusercontent.com/u/82592",
                     false)};
 
-    final Activity host;
+    private final Activity host;
 
     LibraryAdapter(Activity host) {
         this.host = host;
@@ -73,22 +74,23 @@ class LibraryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private @NonNull
     LibraryHolder createLibraryHolder(ViewGroup parent) {
         final LibraryHolder holder = new LibraryHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.library, parent, false));
-        View.OnClickListener clickListener = v -> {
-            int position = holder.getAdapterPosition();
-            if (position == RecyclerView.NO_POSITION) return;
-            CustomTabActivityHelper.openCustomTab(
-                    host,
-                    new CustomTabsIntent.Builder()
-                            .setToolbarColor(ContextCompat.getColor(host,
-                                    io.plaidapp.R.color.primary))
-                            .addDefaultShareMenuItem()
-                            .build(), Uri.parse(libs[position - 1].getLink()));
-
-        };
-        holder.itemView.setOnClickListener(clickListener);
-        holder.getLink().setOnClickListener(clickListener);
+                .inflate(R.layout.library, parent, false),
+                (link, position) -> {
+                    if (position == RecyclerView.NO_POSITION) return Unit.INSTANCE;
+                    openLink(link);
+                    return Unit.INSTANCE;
+                });
         return holder;
+    }
+
+    private void openLink(String link) {
+        CustomTabActivityHelper.openCustomTab(
+                host,
+                new CustomTabsIntent.Builder()
+                        .setToolbarColor(ContextCompat.getColor(host,
+                                io.plaidapp.R.color.primary))
+                        .addDefaultShareMenuItem()
+                        .build(), Uri.parse(link));
     }
 
     @Override

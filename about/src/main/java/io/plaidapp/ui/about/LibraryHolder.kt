@@ -26,14 +26,27 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withC
 import io.plaidapp.about.R
 import io.plaidapp.base.util.glide.GlideApp
 
-internal class LibraryHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+typealias OnClick = (link: String, position: Int) -> Unit
 
-    var image: ImageView = itemView.findViewById(R.id.library_image)
-    var name: TextView = itemView.findViewById(R.id.library_name)
-    var description: TextView = itemView.findViewById(R.id.library_description)
-    var link: Button = itemView.findViewById(R.id.library_link)
+internal class LibraryHolder(
+    itemView: View,
+    private val onClicked: OnClick
+) : RecyclerView.ViewHolder(itemView) {
+
+    private var library: Library? = null
+
+    private var image: ImageView = itemView.findViewById(R.id.library_image)
+    private var name: TextView = itemView.findViewById(R.id.library_name)
+    private var description: TextView = itemView.findViewById(R.id.library_description)
+    private var link: Button = itemView.findViewById(R.id.library_link)
+
+    init {
+        itemView.setOnClickListener { library?.let { onClicked(it.link, adapterPosition) } }
+        link.setOnClickListener { library?.let { onClicked(it.link, adapterPosition) } }
+    }
 
     fun bind(lib: Library) {
+        library = lib
         name.text = lib.name
         description.text = lib.description
         val request = GlideApp.with(image.context)

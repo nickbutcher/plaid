@@ -26,13 +26,13 @@ class AboutPagerAdapter extends PagerAdapter {
 
     private View aboutPlaid;
     @Nullable
-    TextView plaidDescription;
+    private TextView plaidDescription;
     private View aboutIcon;
     @Nullable
-    TextView iconDescription;
+    private TextView iconDescription;
     private View aboutLibs;
     @Nullable
-    RecyclerView libsList;
+    private RecyclerView libsList;
 
     private final LayoutInflater layoutInflater;
     private final Bypass markdown;
@@ -73,50 +73,70 @@ class AboutPagerAdapter extends PagerAdapter {
         switch (position) {
             case 0:
                 if (aboutPlaid == null) {
-                    aboutPlaid = layoutInflater.inflate(R.layout.about_plaid, parent, false);
-                    bindViews(aboutPlaid);
-                    // fun with spans & markdown
-                    CharSequence about0 = markdown.markdownToSpannable(resources
-                            .getString(R.string.about_plaid_0), plaidDescription, null);
-                    SpannableString about1 = new SpannableString(
-                            resources.getString(R.string.about_plaid_1));
-                    about1.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                            0, about1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    SpannableString about2 = new SpannableString(markdown.markdownToSpannable
-                            (resources.getString(R.string.about_plaid_2),
-                                    plaidDescription, null));
-                    about2.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                            0, about2.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    SpannableString about3 = new SpannableString(markdown.markdownToSpannable
-                            (resources.getString(R.string.about_plaid_3),
-                                    plaidDescription, null));
-                    about3.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                            0, about3.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    CharSequence desc = TextUtils.concat(about0, "\n\n", about1, "\n", about2,
-                            "\n\n", about3);
-                    HtmlUtils.setTextWithNiceLinks(plaidDescription, desc);
+                    buildAppAboutPage(parent);
                 }
                 return aboutPlaid;
             case 1:
                 if (aboutIcon == null) {
-                    aboutIcon = layoutInflater.inflate(R.layout.about_icon, parent, false);
-                    bindViews(aboutIcon);
-                    CharSequence icon0 = resources.getString(R.string.about_icon_0);
-                    CharSequence icon1 = markdown.markdownToSpannable(resources
-                            .getString(R.string.about_icon_1), iconDescription, null);
-                    CharSequence iconDesc = TextUtils.concat(icon0, "\n", icon1);
-                    HtmlUtils.setTextWithNiceLinks(iconDescription, iconDesc);
+                    buildIconAboutPage(parent);
                 }
                 return aboutIcon;
             case 2:
                 if (aboutLibs == null) {
-                    aboutLibs = layoutInflater.inflate(R.layout.about_libs, parent, false);
-                    bindViews(aboutLibs);
-                    libsList.setAdapter(new LibraryAdapter(host));
+                    buildLibsAboutPage(parent);
                 }
                 return aboutLibs;
         }
         throw new InvalidParameterException();
+    }
+
+    private void buildLibsAboutPage(ViewGroup parent) {
+        aboutLibs = layoutInflater.inflate(R.layout.about_libs, parent, false);
+        bindViews(aboutLibs);
+        libsList.setAdapter(new LibraryAdapter(host));
+    }
+
+    private void buildIconAboutPage(ViewGroup parent) {
+        aboutIcon = layoutInflater.inflate(R.layout.about_icon, parent, false);
+        bindViews(aboutIcon);
+        HtmlUtils.setTextWithNiceLinks(iconDescription, getIconAboutText());
+    }
+
+    private void buildAppAboutPage(ViewGroup parent) {
+        aboutPlaid = layoutInflater.inflate(R.layout.about_plaid, parent, false);
+        bindViews(aboutPlaid);
+        CharSequence desc = getAppAboutText();
+
+        HtmlUtils.setTextWithNiceLinks(plaidDescription, desc);
+    }
+
+    private CharSequence getAppAboutText() {
+        // fun with spans & markdown
+        CharSequence about0 = markdown.markdownToSpannable(resources
+                .getString(R.string.about_plaid_0), plaidDescription, null);
+        SpannableString about1 = new SpannableString(
+                resources.getString(R.string.about_plaid_1));
+        about1.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                0, about1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        SpannableString about2 = new SpannableString(markdown.markdownToSpannable
+                (resources.getString(R.string.about_plaid_2),
+                        plaidDescription, null));
+        about2.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                0, about2.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        SpannableString about3 = new SpannableString(markdown.markdownToSpannable
+                (resources.getString(R.string.about_plaid_3),
+                        plaidDescription, null));
+        about3.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                0, about3.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return TextUtils.concat(about0, "\n\n", about1, "\n", about2,
+                "\n\n", about3);
+    }
+
+    private CharSequence getIconAboutText() {
+        CharSequence icon0 = resources.getString(R.string.about_icon_0);
+        CharSequence icon1 = markdown.markdownToSpannable(resources
+                .getString(R.string.about_icon_1), iconDescription, null);
+        return TextUtils.concat(icon0, "\n", icon1);
     }
 
     private void bindViews(View parent) {
