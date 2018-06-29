@@ -23,7 +23,7 @@ android {
     compileSdkVersion versions.compileSdk
 
     defaultConfig {
-        applicationId "io.plaidapp"
+        applicationId names.applicationId
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         versionCode rootProject.gitCommitCount
@@ -34,13 +34,9 @@ android {
 
         resConfig "en"
         buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
-
-        def filesAuthorityValue = applicationId + ".shareprovider"
-        buildConfigField "String", "FILES_AUTHORITY", "\"${filesAuthorityValue}\""
-        manifestPlaceholders += [
-                filesAuthority: filesAuthorityValue,
-                crashlyticsEnabled: false
-        ]
+         manifestPlaceholders += [
+                 crashlyticsEnabled: false
+         ]
     }
     buildTypes {
         release {
