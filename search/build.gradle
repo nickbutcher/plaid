@@ -32,6 +32,7 @@ android {
     buildTypes {
         release {
             proguardFiles 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules.pro'
         }
     }
 }

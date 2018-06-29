@@ -16,5 +16,5 @@
 
 ## Only keep module specific configuration here. Project specifics should be declared in `base`.
 
--keep class io.plaidapp.ui.designernews.DesignerNewsLogin { *; }
--keep class io.plaidapp.ui.designernews.PostNewDesignerNewsStory { *; }
+-keep class io.plaidapp.ui.search.SearchActivity { *; }
+-keep class io.plaidapp.ui.search.transitions.CircularReveal { *; }
