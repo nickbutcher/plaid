@@ -39,6 +39,9 @@ buildscript {
             'googleServices'  : '4.0.1',
             'fabric'          : '1.25.4'
     ]
+    ext.names = [
+            'applicationId'   : 'io.plaidapp'
+    ]
 
     repositories {
         google()
