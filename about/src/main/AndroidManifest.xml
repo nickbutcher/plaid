@@ -21,7 +21,7 @@
 
     <dist:module
         dist:instant="false"
-        dist:onDemand="true"
+        dist:onDemand="false"
         dist:title="@string/title_about">
         <dist:fusing dist:include="true" />
     </dist:module>
