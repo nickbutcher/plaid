@@ -20,6 +20,30 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+# For stack traces
+-keepattributes SourceFile, LineNumberTable
+
+# Get rid of package names, makes file smaller
+-repackageclasses
+
+# Required for Retrofit/OkHttp
+-dontwarn javax.annotation.**
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+-keepattributes *Annotation*, Signature, Exceptions
+
+# This optimization conflicts with how Retrofit uses proxy objects without concrete implementations
+-optimizations !method/removal/parameter
+
+# A resource is loaded with a relative path so the package of this class must be preserved.
+-keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
+
+# Required for classes created and used from JNI code (on C/C++ side)
+-keep, includedescriptorclasses class in.uncod.android.bypass.Document { *; }
+-keep, includedescriptorclasses class in.uncod.android.bypass.Element { *; }
+
+# A resource is loaded with a relative path so the package of this class must be preserved.
+-keepnames class org.jsoup.nodes.Entities
+
 # Required for GSON parsing of data coming from network requests to models
 -keep class io.plaidapp.base.data.api.dribbble.model.** { *; }
 -keep class io.plaidapp.base.data.api.designernews.model.**  { *; }
