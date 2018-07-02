@@ -38,64 +38,56 @@ class DesignerNewsCommentsRemoteDataSourceTest {
     private val dataSource = DesignerNewsCommentsRemoteDataSource(service)
 
     @Test
-    fun getComments_whenRequestSuccessful() {
+    fun getComments_whenRequestSuccessful() = runBlocking {
         // Given that the service responds with success
         val result = Response.success(replies)
         Mockito.`when`(service.getComments("1")).thenReturn(CompletableDeferred(result))
 
-        runBlocking {
-            // When getting the list of comments
-            val response = dataSource.getComments(listOf(1L))
+        // When getting the list of comments
+        val response = dataSource.getComments(listOf(1L))
 
-            // Then the response is the expected one
-            assertNotNull(response)
-            assertEquals(Result.Success(replies), response)
-        }
+        // Then the response is the expected one
+        assertNotNull(response)
+        assertEquals(Result.Success(replies), response)
     }
 
     @Test
-    fun getComments_forMultipleComments() {
+    fun getComments_forMultipleComments() = runBlocking {
         // Given that the service responds with success for specific ids
         val result = Response.success(replies)
         Mockito.`when`(service.getComments("11,12")).thenReturn(CompletableDeferred(result))
 
-        runBlocking {
-            // When getting the list of comments for specific list of ids
-            val response = dataSource.getComments(listOf(11L, 12L))
+        // When getting the list of comments for specific list of ids
+        val response = dataSource.getComments(listOf(11L, 12L))
 
-            // Then the response is the expected one
-            assertNotNull(response)
-            assertEquals(Result.Success(replies), response)
-        }
+        // Then the response is the expected one
+        assertNotNull(response)
+        assertEquals(Result.Success(replies), response)
     }
 
     @Test
-    fun getComments_whenRequestFailed() {
+    fun getComments_whenRequestFailed() = runBlocking {
         // Given that the service responds with failure
         val result = Response.error<List<Comment>>(400, errorResponseBody)
         Mockito.`when`(service.getComments("1")).thenReturn(CompletableDeferred(result))
 
-        runBlocking {
-            // When getting the list of comments
-            val response = dataSource.getComments(listOf(1L))
+        // When getting the list of comments
+        val response = dataSource.getComments(listOf(1L))
 
-            // Then the response is not successful
-            assertFalse(response.isSuccessful())
-        }
+        // Then the response is not successful
+        assertFalse(response.isSuccessful())
     }
 
     @Test
-    fun getComments_whenResponseEmpty() {
+    fun getComments_whenResponseEmpty() = runBlocking {
         // Given that the service responds with success but with an empty response
         val result = Response.success<List<Comment>>(null)
         Mockito.`when`(service.getComments("1")).thenReturn(CompletableDeferred(result))
 
-        runBlocking {
-            // When getting the list of comments
-            val response = dataSource.getComments(listOf(1L))
+        // When getting the list of comments
+        val response = dataSource.getComments(listOf(1L))
 
-            // Then the response is not successful
-            assertFalse(response.isSuccessful())
-        }
+        // Then the response is not successful
+        assertFalse(response.isSuccessful())
     }
 }
