@@ -28,16 +28,18 @@ import kotlinx.coroutines.experimental.withContext
  * get the data.
  */
 class DesignerNewsCommentsRepository(
-        private val remoteDataSource: DesignerNewsCommentsRemoteDataSource,
-        private val contextProvider: CoroutinesContextProvider
+    private val remoteDataSource: DesignerNewsCommentsRemoteDataSource,
+    private val contextProvider: CoroutinesContextProvider
 ) {
 
     /**
      * Gets comments, together will all the replies from the API. The result is
      * delivered to [onResult].
      */
-    fun getComments(ids: List<Long>,
-                    onResult: (result: Result<List<Comment>?>) -> Unit) =
+    fun getComments(
+        ids: List<Long>,
+        onResult: (result: Result<List<Comment>?>) -> Unit
+    ) =
             launch(contextProvider.main) {
                 // request comments and await until the result is received.
                 val result = withContext(contextProvider.io) { getAllComments(ids) }
@@ -49,7 +51,7 @@ class DesignerNewsCommentsRepository(
      * and just use the comments retrieved until that point.
      */
     private suspend fun getAllComments(
-            parentIds: List<Long>
+        parentIds: List<Long>
     ): Result<List<Comment>?> {
         val replies = mutableListOf<List<Comment>>()
         var result = remoteDataSource.getComments(parentIds)
@@ -83,8 +85,8 @@ class DesignerNewsCommentsRepository(
     }
 
     private fun matchCommentsWithReplies(
-            comments: List<Comment>,
-            replies: List<Comment>
+        comments: List<Comment>,
+        replies: List<Comment>
     ): List<Comment> {
         replies.map { reply ->
             comments.filter { comment -> comment.id == reply.links.parentComment }
@@ -98,8 +100,8 @@ class DesignerNewsCommentsRepository(
         private var INSTANCE: DesignerNewsCommentsRepository? = null
 
         fun getInstance(
-                remoteDataSource: DesignerNewsCommentsRemoteDataSource,
-                contextProvider: CoroutinesContextProvider
+            remoteDataSource: DesignerNewsCommentsRemoteDataSource,
+            contextProvider: CoroutinesContextProvider
         ): DesignerNewsCommentsRepository {
             return INSTANCE
                     ?: synchronized(this) {
