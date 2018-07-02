@@ -143,10 +143,15 @@ public class DesignerNewsStory extends Activity {
         story = getIntent().getParcelableExtra(Activities.DesignerNews.Story.EXTRA_STORY);
 
         commentsRepository.getComments(story.links.getComments(),
-                comments -> {
-                    setupComments((List<Comment>) comments);
+                result -> {
+                    if (ResultKt.isSuccessful(result)) {
+                        Result.Success<List<Comment>> success =
+                                (Result.Success<List<Comment>>) result;
+                        List<Comment> data = success.getData();
+                        setupComments(data);
+                    }
                     return Unit.INSTANCE;
-                }, error -> Unit.INSTANCE);
+                });
 
         fab.setOnClickListener(fabClick);
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this);

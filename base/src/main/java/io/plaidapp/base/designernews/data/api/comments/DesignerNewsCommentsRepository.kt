@@ -16,72 +16,75 @@
 
 package io.plaidapp.base.designernews.data.api.comments
 
+import io.plaidapp.base.data.CoroutinesContextProvider
+import io.plaidapp.base.data.api.Result
+import io.plaidapp.base.data.api.isSuccessful
 import io.plaidapp.base.designernews.data.api.model.Comment
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
-import kotlin.coroutines.experimental.CoroutineContext
 
 /**
  * Repository for Designer News comments. Works with the [DesignerNewsCommentsRemoteDataSource] to
  * get the data.
  */
 class DesignerNewsCommentsRepository(
-    private val remoteDataSource: DesignerNewsCommentsRemoteDataSource,
-    private val uiContext: CoroutineContext = UI,
-    private val ioContext: CoroutineContext = CommonPool
+        private val remoteDataSource: DesignerNewsCommentsRemoteDataSource,
+        private val contextProvider: CoroutinesContextProvider
 ) {
 
     /**
-     * Gets comments, together will all the replies from the API. The successful result is
-     * delivered to [onSuccess]. In case of failure the error is delivered to [onError], on the
-     * [uiContext].
+     * Gets comments, together will all the replies from the API. The result is
+     * delivered to [onResult].
      */
-    fun getComments(
-        ids: List<Long>,
-        onSuccess: (comments: List<Comment>) -> Unit,
-        onError: (error: String) -> Unit
-    ) {
-        launch(uiContext) {
-            // request comments and await until the result is received.
-            val comments = getAllComments(ids)
-            if (comments != null && comments.isNotEmpty()) {
-                for (index: Int in comments.size - 1 downTo 1) {
-                    matchCommentsWithReplies(comments[index - 1], comments[index])
-                }
-                onSuccess(comments[0])
-            } else {
-                onError("Unable to get comments")
+    fun getComments(ids: List<Long>,
+                    onResult: (result: Result<List<Comment>?>) -> Unit) =
+            launch(contextProvider.main) {
+                // request comments and await until the result is received.
+                val result = withContext(contextProvider.io) { getAllComments(ids) }
+                onResult(result)
             }
+
+    /**
+     * Get all comments and their replies. If we get an error on any reply depth level, ignore it
+     * and just use the comments retrieved until that point.
+     */
+    private suspend fun getAllComments(
+            parentIds: List<Long>
+    ): Result<List<Comment>?> {
+        val replies = mutableListOf<List<Comment>>()
+        var result = remoteDataSource.getComments(parentIds)
+        while (result.isSuccessful()) {
+            val newReplies = (result as Result.Success).data
+            if (newReplies != null) {
+                replies.add(newReplies)
+                val nextRepliesIds = newReplies.flatMap { comment -> comment.links.comments }
+                if (!nextRepliesIds.isEmpty()) {
+                    result = remoteDataSource.getComments(nextRepliesIds)
+                } else {
+                    if (replies.isEmpty()) {
+                        return result
+                    }
+                    matchComments(replies)
+                    return Result.Success(replies[0])
+                }
+            }
+        }
+        return if (result.isSuccessful() && replies.size > 0) {
+            Result.Success(replies[0])
+        } else {
+            result
         }
     }
 
-    /**
-     * Get all comments and their replies, on the [ioContext].
-     */
-    private suspend fun getAllComments(
-        parentIds: List<Long>
-    ): List<List<Comment>>? {
-        return withContext(ioContext) {
-            val replies = mutableListOf<List<Comment>>()
-            var newReplies = remoteDataSource.getComments(parentIds).await()
-            while (newReplies != null) {
-                replies.add(newReplies)
-                val nextRepliesIds = newReplies.flatMap { comment -> comment.links.comments }
-                newReplies = if (!nextRepliesIds.isEmpty()) {
-                    remoteDataSource.getComments(nextRepliesIds).await()
-                } else {
-                    null
-                }
-            }
-            replies
+    private fun matchComments(comments: List<List<Comment>>) {
+        for (index: Int in comments.size - 1 downTo 1) {
+            matchCommentsWithReplies(comments[index - 1], comments[index])
         }
     }
 
     private fun matchCommentsWithReplies(
-        comments: List<Comment>,
-        replies: List<Comment>
+            comments: List<Comment>,
+            replies: List<Comment>
     ): List<Comment> {
         replies.map { reply ->
             comments.filter { comment -> comment.id == reply.links.parentComment }
@@ -95,13 +98,15 @@ class DesignerNewsCommentsRepository(
         private var INSTANCE: DesignerNewsCommentsRepository? = null
 
         fun getInstance(
-            remoteDataSource: DesignerNewsCommentsRemoteDataSource
+                remoteDataSource: DesignerNewsCommentsRemoteDataSource,
+                contextProvider: CoroutinesContextProvider
         ): DesignerNewsCommentsRepository {
             return INSTANCE
                     ?: synchronized(this) {
                         INSTANCE
                                 ?: DesignerNewsCommentsRepository(
-                                        remoteDataSource
+                                        remoteDataSource,
+                                        contextProvider
                                 ).also { INSTANCE = it }
                     }
         }
