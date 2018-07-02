@@ -16,13 +16,17 @@
 
 package io.plaidapp.base.designernews.data.api.comments
 
+import io.plaidapp.base.data.api.Result
+import io.plaidapp.base.data.api.isSuccessful
 import io.plaidapp.base.designernews.data.api.DesignerNewsService
 import io.plaidapp.base.designernews.data.api.model.Comment
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Mockito
 import retrofit2.Response
@@ -43,11 +47,11 @@ class DesignerNewsCommentsRemoteDataSourceTest {
 
         runBlocking {
             // When getting the list of comments
-            val response = dataSource.getComments(listOf(1L)).await()
+            val response = dataSource.getComments(listOf(1L))
 
             // Then the response is the expected one
             assertNotNull(response)
-            assertEquals(replies, response)
+            assertEquals(Result.Success(replies), response)
         }
     }
 
@@ -59,11 +63,11 @@ class DesignerNewsCommentsRemoteDataSourceTest {
 
         runBlocking {
             // When getting the list of comments for specific list of ids
-            val response = dataSource.getComments(listOf(11L, 12L)).await()
+            val response = dataSource.getComments(listOf(11L, 12L))
 
             // Then the response is the expected one
             assertNotNull(response)
-            assertEquals(replies, response)
+            assertEquals(Result.Success(replies), response)
         }
     }
 
@@ -75,10 +79,10 @@ class DesignerNewsCommentsRemoteDataSourceTest {
 
         runBlocking {
             // When getting the list of comments
-            val response = dataSource.getComments(listOf(1L)).await()
+            val response = dataSource.getComments(listOf(1L))
 
-            // Then the response is null
-            assertNull(response)
+            // Then the response is not successful
+            assertFalse(response.isSuccessful())
         }
     }
 
@@ -90,10 +94,10 @@ class DesignerNewsCommentsRemoteDataSourceTest {
 
         runBlocking {
             // When getting the list of comments
-            val response = dataSource.getComments(listOf(1L)).await()
+            val response = dataSource.getComments(listOf(1L))
 
-            // Then the response is null
-            assertNull(response)
+            // Then the response is not successful
+            assertFalse(response.isSuccessful())
         }
     }
 }

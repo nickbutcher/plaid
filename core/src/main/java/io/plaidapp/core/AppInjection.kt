@@ -18,6 +18,9 @@
 
 package io.plaidapp.core
 
+import android.content.Context
+import android.content.SharedPreferences
+import io.plaidapp.base.data.CoroutinesContextProvider
 import okhttp3.logging.HttpLoggingInterceptor
 
 /**
@@ -33,3 +36,10 @@ val debugLevel = if (BuildConfig.DEBUG) {
 }
 
 val loggingInterceptor = HttpLoggingInterceptor().apply { level = debugLevel }
+
+fun provideSharedPreferences(context: Context, name: String): SharedPreferences {
+    return context.applicationContext
+            .getSharedPreferences(name, Context.MODE_PRIVATE)
+}
+
+fun provideCoroutinesContextProvider(): CoroutinesContextProvider = CoroutinesContextProvider()
