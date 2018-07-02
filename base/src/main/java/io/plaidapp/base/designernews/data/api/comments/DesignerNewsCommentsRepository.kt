@@ -35,49 +35,62 @@ class DesignerNewsCommentsRepository(
     /**
      * Gets comments, together will all the replies from the API. The result is
      * delivered to [onResult].
+     * TODO since this method is called from java, for now, let this method handle the context
+     * switching. This should be moved to a point closer to the UI, ensuring that all the
+     * business logic is away from the main context
      */
     fun getComments(
         ids: List<Long>,
         onResult: (result: Result<List<Comment>?>) -> Unit
-    ) =
-            launch(contextProvider.main) {
-                // request comments and await until the result is received.
-                val result = withContext(contextProvider.io) { getAllComments(ids) }
-                onResult(result)
-            }
+    ) = launch(contextProvider.main) {
+        // request comments and await until the result is received.
+        val result = withContext(contextProvider.io) { getAllComments(ids) }
+        onResult(result)
+    }
 
     /**
      * Get all comments and their replies. If we get an error on any reply depth level, ignore it
      * and just use the comments retrieved until that point.
      */
-    private suspend fun getAllComments(
-        parentIds: List<Long>
-    ): Result<List<Comment>?> {
+    private suspend fun getAllComments(parentIds: List<Long>): Result<List<Comment>?> {
         val replies = mutableListOf<List<Comment>>()
+        // get the first level of comments
         var result = remoteDataSource.getComments(parentIds)
+        // as long as we could get comments or replies to comments
         while (result.isSuccessful()) {
             val newReplies = (result as Result.Success).data
+            // if we have replies
             if (newReplies != null) {
                 replies.add(newReplies)
+                // check if we have another level of replies
                 val nextRepliesIds = newReplies.flatMap { comment -> comment.links.comments }
                 if (!nextRepliesIds.isEmpty()) {
                     result = remoteDataSource.getComments(nextRepliesIds)
                 } else {
-                    if (replies.isEmpty()) {
-                        return result
+                    // we don't have any other level of replies match the replies to the comments
+                    // they belong to and return the first level of comments.
+                    if (replies.isNotEmpty()) {
+                        matchComments(replies)
+                        return Result.Success(replies[0])
                     }
-                    matchComments(replies)
-                    return Result.Success(replies[0])
                 }
             }
         }
-        return if (result.isSuccessful() && replies.size > 0) {
+        // the last request was unsuccessful
+        // if we already got some comments and replies, then use that data and ignore the error
+        return if (replies.isNotEmpty()) {
+            matchComments(replies)
             Result.Success(replies[0])
         } else {
+            // if we never got data, then return the error
             result
         }
     }
 
+    /**
+     * Build up the replies tree, by matching the replies from lower levels to the level above they
+     * belong to
+     */
     private fun matchComments(comments: List<List<Comment>>) {
         for (index: Int in comments.size - 1 downTo 1) {
             matchCommentsWithReplies(comments[index - 1], comments[index])
