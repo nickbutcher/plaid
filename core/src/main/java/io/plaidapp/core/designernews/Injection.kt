@@ -19,7 +19,6 @@
 package io.plaidapp.core.designernews
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import io.plaidapp.core.BuildConfig
@@ -98,17 +97,14 @@ fun provideDesignerNewsRepository(context: Context): io.plaidapp.core.designerne
     return provideDesignerNewsRepository(DesignerNewsPrefs.get(context).api)
 }
 
-fun provideDesignerNewsRepository(service: DesignerNewsService): io.plaidapp.core.designernews.data.api.DesignerNewsRepository {
-    return io.plaidapp.core.designernews.data.api.DesignerNewsRepository.getInstance(service)
+fun provideDesignerNewsRepository(service: DesignerNewsService): io.plaidapp.base.designernews.data.api.DesignerNewsRepository {
+    return DesignerNewsRepository.getInstance(service)
 }
 
-fun provideDesignerNewsCommentsRepository(
-    context: Context,
-    contextProvider: CoroutinesContextProvider
-): DesignerNewsCommentsRepository {
+fun provideDesignerNewsCommentsRepository(context: Context): DesignerNewsCommentsRepository {
     return provideDesignerNewsCommentsRepository(
             provideDesignerNewsCommentsRemoteDataSource(provideDesignerNewsService(context)),
-            contextProvider)
+            provideCoroutinesContextProvider())
 }
 
 fun provideDesignerNewsCommentsRepository(
