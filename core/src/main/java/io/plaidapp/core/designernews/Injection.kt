@@ -50,11 +50,6 @@ fun provideDesignerNewsLoginLocalDataSource(context: Context): DesignerNewsLogin
     return DesignerNewsLoginLocalDataSource(preferences)
 }
 
-private fun provideSharedPreferences(context: Context, name: String): SharedPreferences {
-    return context.applicationContext
-            .getSharedPreferences(name, Context.MODE_PRIVATE)
-}
-
 fun provideDesignerNewsLoginRepository(context: Context): DesignerNewsLoginRepository {
     return DesignerNewsLoginRepository.getInstance(
             provideDesignerNewsLoginLocalDataSource(context),
@@ -67,7 +62,7 @@ fun provideDesignerNewsLoginRemoteDataSource(context: Context): DesignerNewsLogi
 }
 
 private fun provideDesignerNewsAuthTokenLocalDataSource(
-    context: Context
+        context: Context
 ): DesignerNewsAuthTokenLocalDataSource {
     return DesignerNewsAuthTokenLocalDataSource.getInstance(
             provideSharedPreferences(
@@ -81,7 +76,7 @@ fun provideDesignerNewsService(context: Context): DesignerNewsService {
 }
 
 private fun provideDesignerNewsService(
-    authTokenDataSource: DesignerNewsAuthTokenLocalDataSource
+        authTokenDataSource: DesignerNewsAuthTokenLocalDataSource
 ): DesignerNewsService {
     val client = OkHttpClient.Builder()
             .addInterceptor(
@@ -107,10 +102,20 @@ fun provideDesignerNewsRepository(service: DesignerNewsService): io.plaidapp.cor
     return io.plaidapp.core.designernews.data.api.DesignerNewsRepository.getInstance(service)
 }
 
-fun provideDesignerNewsCommentsRepository(context: Context): DesignerNewsCommentsRepository {
-    val service = provideDesignerNewsService(context)
-    return DesignerNewsCommentsRepository.getInstance(
-            provideDesignerNewsCommentsRemoteDataSource(service))
+fun provideDesignerNewsCommentsRepository(
+        context: Context,
+        contextProvider: CoroutinesContextProvider
+): DesignerNewsCommentsRepository {
+    return provideDesignerNewsCommentsRepository(
+            provideDesignerNewsCommentsRemoteDataSource(provideDesignerNewsService(context)),
+            contextProvider)
+}
+
+fun provideDesignerNewsCommentsRepository(
+        remoteDataSource: DesignerNewsCommentsRemoteDataSource,
+        contextProvider: CoroutinesContextProvider
+): DesignerNewsCommentsRepository {
+    return DesignerNewsCommentsRepository.getInstance(remoteDataSource, contextProvider)
 }
 
 fun provideDesignerNewsCommentsRemoteDataSource(service: DesignerNewsService) =

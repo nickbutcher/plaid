@@ -16,13 +16,14 @@
 
 package io.plaidapp.base.designernews.data.api.comments
 
+import io.plaidapp.base.data.api.Result
+import io.plaidapp.base.data.api.isSuccessful
 import io.plaidapp.base.designernews.data.api.DesignerNewsService
 import io.plaidapp.base.designernews.data.api.model.Comment
 import kotlinx.coroutines.experimental.CompletableDeferred
-import kotlinx.coroutines.experimental.Unconfined
-import org.junit.Assert
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.mockito.Mockito
 import retrofit2.Response
@@ -33,23 +34,26 @@ import retrofit2.Response
 class DesignerNewsCommentsRepositoryTest {
 
     private val service = Mockito.mock(DesignerNewsService::class.java)
-    private val dataSource = DesignerNewsCommentsRemoteDataSource(service, Unconfined)
-    private val repository = DesignerNewsCommentsRepository(dataSource, Unconfined, Unconfined)
+    private val dataSource = DesignerNewsCommentsRemoteDataSource(service)
+    private val repository = DesignerNewsCommentsRepository(
+            dataSource,
+            provideFakeCoroutinesContextProvider()
+    )
 
     @Test
     fun getComments_noReplies_whenRequestSuccessful() {
         // Given that the service responds with success
         val apiResult = Response.success(listOf(reply1))
         Mockito.`when`(service.getComments("11")).thenReturn(CompletableDeferred(apiResult))
-        var result = emptyList<Comment>()
+        var result: Result<List<Comment>?>? = null
 
         // When getting the replies
-        repository.getComments(listOf(11L), { list -> result = list }, { Assert.fail() })
+        repository.getComments(listOf(11L)) { it -> result = it }
 
         // Then the correct list of comments was requested from the API
         Mockito.verify(service).getComments("11")
         // Then the correct list is received
-        assertEquals(listOf(reply1), result)
+        assertEquals(listOf(reply1), (result as Result.Success).data)
     }
 
     @Test
@@ -57,13 +61,14 @@ class DesignerNewsCommentsRepositoryTest {
         // Given that the service responds with failure
         val apiResult = Response.error<List<Comment>>(400, errorResponseBody)
         Mockito.`when`(service.getComments("11")).thenReturn(CompletableDeferred(apiResult))
-        var errorCalled = false
+        var result: Result<List<Comment>?>? = null
 
         // When getting the comments
-        repository.getComments(listOf(11L), { Assert.fail() }, { errorCalled = true })
+        repository.getComments(listOf(11L)) { it -> result = it }
 
-        // Then the error lambda is called
-        assertTrue(errorCalled)
+        // Then the result is not successful
+        assertNotNull(result)
+        assertFalse(result!!.isSuccessful())
     }
 
     @Test
@@ -77,16 +82,16 @@ class DesignerNewsCommentsRepositoryTest {
         val resultChildren = Response.success(replies)
         Mockito.`when`(service.getComments("11,12"))
                 .thenReturn(CompletableDeferred(resultChildren))
-        var result = emptyList<Comment>()
+        var result: Result<List<Comment>?>? = null
 
         // When getting the comments from the repository
-        repository.getComments(listOf(1L), { list -> result = list }, { Assert.fail() })
+        repository.getComments(listOf(1L)) { it -> result = it }
 
         // Then  API requests were triggered
         Mockito.verify(service).getComments("1")
         Mockito.verify(service).getComments("11,12")
         // Then the correct result is received
-        assertEquals(arrayListOf(parentCommentWithReplies), result)
+        assertEquals(arrayListOf(parentCommentWithReplies), (result as Result.Success).data)
     }
 
     @Test
@@ -99,15 +104,15 @@ class DesignerNewsCommentsRepositoryTest {
         val resultChildrenError = Response.error<List<Comment>>(400, errorResponseBody)
         Mockito.`when`(service.getComments("11,12"))
                 .thenReturn(CompletableDeferred(resultChildrenError))
-        var result = emptyList<Comment>()
+        var result: Result<List<Comment>?>? = null
 
         // When getting the comments from the repository
-        repository.getComments(listOf(1L), { list -> result = list }, { Assert.fail() })
+        repository.getComments(listOf(1L)) { it -> result = it }
 
         // Then  API requests were triggered
         Mockito.verify(service).getComments("1")
         Mockito.verify(service).getComments("11,12")
         // Then the correct result is received
-        assertEquals(arrayListOf(parentCommentWithReplies), result)
+        assertEquals(arrayListOf(parentCommentWithReplies), (result as Result.Success).data)
     }
 }
