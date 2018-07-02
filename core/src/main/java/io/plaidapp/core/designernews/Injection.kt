@@ -107,12 +107,12 @@ fun provideDesignerNewsCommentsRepository(context: Context): DesignerNewsComment
             provideCoroutinesContextProvider())
 }
 
-fun provideDesignerNewsCommentsRepository(
+private fun provideDesignerNewsCommentsRepository(
     remoteDataSource: DesignerNewsCommentsRemoteDataSource,
     contextProvider: CoroutinesContextProvider
 ): DesignerNewsCommentsRepository {
     return DesignerNewsCommentsRepository.getInstance(remoteDataSource, contextProvider)
 }
 
-fun provideDesignerNewsCommentsRemoteDataSource(service: DesignerNewsService) =
+private fun provideDesignerNewsCommentsRemoteDataSource(service: DesignerNewsService) =
         DesignerNewsCommentsRemoteDataSource.getInstance(service)
