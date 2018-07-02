@@ -36,6 +36,6 @@ sealed class Result<out R> {
 }
 
 /**
- * `true` if [Result] is of type [Success] & holds non-null [Success.data].
+ * `true` if [Result] is of type [Success] and holds non-null [Success.data].
  */
 fun Result<*>.isSuccessful() = this is Result.Success && data != null

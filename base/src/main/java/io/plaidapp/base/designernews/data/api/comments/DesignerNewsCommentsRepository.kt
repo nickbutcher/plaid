@@ -101,6 +101,8 @@ class DesignerNewsCommentsRepository(
         comments: List<Comment>,
         replies: List<Comment>
     ): List<Comment> {
+        // for every reply, get the comment to which the reply belongs to and add it to the list
+        // of replies for that comment
         replies.map { reply ->
             comments.filter { comment -> comment.id == reply.links.parentComment }
                     .map { comment -> comment.addReply(reply) }
