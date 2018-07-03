@@ -91,7 +91,7 @@ import io.plaidapp.core.util.glide.ImageSpanTarget;
 import io.plaidapp.designernews.R;
 import io.plaidapp.ui.designernews.DesignerNewsLogin;
 import io.plaidapp.ui.drawable.ThreadedCommentDrawable;
-import io.plaidapp.ui.transitions.MorphTransform;
+import io.plaidapp.core.ui.transitions.MorphTransform;
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import kotlin.Unit;
@@ -465,7 +465,7 @@ public class DesignerNewsStory extends Activity {
         if (!TextUtils.isEmpty(story.comment)) {
 
             ColorStateList linksColor = ContextCompat.getColorStateList(this,
-                    io.plaidapp.R.color.designer_news_links);
+                    R.color.designer_news_links);
             int highlightColor = ContextCompat.getColor(this,
                     io.plaidapp.R.color.designer_news_link_highlight);
 
@@ -828,7 +828,7 @@ public class DesignerNewsStory extends Activity {
                 final Comment comment = getComment(holder.getAdapterPosition());
 
                 ColorStateList linksColor = ContextCompat.getColorStateList(getApplicationContext(),
-                        io.plaidapp.R.color.designer_news_links);
+                        R.color.designer_news_links);
                 int highlightColor = ContextCompat.getColor(getApplicationContext(),
                         io.plaidapp.R.color.designer_news_link_highlight);
 
