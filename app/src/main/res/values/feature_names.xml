@@ -17,5 +17,8 @@
   -->
 
 <resources>
-    <string name="feature_name_activities" value="activities" />
+    <string name="feature_name_app" value="app" />
+    <string name="feature_name_designernews" value="designernews" />
+    <string name="feature_name_dribbble" value="dribbble" />
+    <string name="feature_name_about" value="about" />
 </resources>
