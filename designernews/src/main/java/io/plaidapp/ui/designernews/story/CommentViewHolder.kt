@@ -27,7 +27,7 @@ import io.plaidapp.core.ui.recyclerview.SlideInItemAnimator
 import io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator
 import io.plaidapp.core.util.AnimUtils.getLinearOutSlowInInterpolator
 import io.plaidapp.designernews.R
-import io.plaidapp.ui.widget.AuthorTextView
+import io.plaidapp.core.ui.widget.AuthorTextView
 
 internal class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
