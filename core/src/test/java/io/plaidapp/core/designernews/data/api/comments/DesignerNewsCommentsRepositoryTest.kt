@@ -17,13 +17,12 @@
 package io.plaidapp.core.designernews.data.api.comments
 
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.data.isSuccessful
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.api.model.Comment
 import kotlinx.coroutines.experimental.CompletableDeferred
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Mockito
 import retrofit2.Response
@@ -45,7 +44,7 @@ class DesignerNewsCommentsRepositoryTest {
         // Given that the service responds with success
         val apiResult = Response.success(listOf(reply1))
         Mockito.`when`(service.getComments("11")).thenReturn(CompletableDeferred(apiResult))
-        var result: Result<List<Comment>?>? = null
+        var result: Result<List<Comment>>? = null
 
         // When getting the replies
         repository.getComments(listOf(11L)) { it -> result = it }
@@ -61,14 +60,14 @@ class DesignerNewsCommentsRepositoryTest {
         // Given that the service responds with failure
         val apiResult = Response.error<List<Comment>>(400, errorResponseBody)
         Mockito.`when`(service.getComments("11")).thenReturn(CompletableDeferred(apiResult))
-        var result: Result<List<Comment>?>? = null
+        var result: Result<List<Comment>>? = null
 
         // When getting the comments
         repository.getComments(listOf(11L)) { it -> result = it }
 
         // Then the result is not successful
         assertNotNull(result)
-        assertFalse(result!!.isSuccessful())
+        assertTrue(result is Result.Error)
     }
 
     @Test
@@ -82,7 +81,7 @@ class DesignerNewsCommentsRepositoryTest {
         val resultChildren = Response.success(replies)
         Mockito.`when`(service.getComments("11,12"))
                 .thenReturn(CompletableDeferred(resultChildren))
-        var result: Result<List<Comment>?>? = null
+        var result: Result<List<Comment>>? = null
 
         // When getting the comments from the repository
         repository.getComments(listOf(1L)) { it -> result = it }
@@ -104,7 +103,7 @@ class DesignerNewsCommentsRepositoryTest {
         val resultChildrenError = Response.error<List<Comment>>(400, errorResponseBody)
         Mockito.`when`(service.getComments("11,12"))
                 .thenReturn(CompletableDeferred(resultChildrenError))
-        var result: Result<List<Comment>?>? = null
+        var result: Result<List<Comment>>? = null
 
         // When getting the comments from the repository
         repository.getComments(listOf(1L)) { it -> result = it }
