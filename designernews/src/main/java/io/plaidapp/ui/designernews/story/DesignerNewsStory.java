@@ -443,13 +443,13 @@ public class DesignerNewsStory extends Activity {
         final TextView storyComment = header.findViewById(R.id.story_comment);
         if (!TextUtils.isEmpty(story.comment)) {
 
-            ColorStateList stateList = ContextCompat.getColorStateList(this,
+            ColorStateList linksColor = ContextCompat.getColorStateList(this,
                     io.plaidapp.R.color.designer_news_links);
             int highlightColor = ContextCompat.getColor(this,
                     io.plaidapp.R.color.designer_news_link_highlight);
 
             HtmlUtils.parseMarkdownAndSetText(storyComment, story.comment, markdown,
-                    stateList, highlightColor,
+                    linksColor, highlightColor,
                     (src, loadingSpan) -> GlideApp.with(DesignerNewsStory.this)
                             .asBitmap()
                             .load(src)
@@ -801,7 +801,7 @@ public class DesignerNewsStory extends Activity {
 
                 final Comment comment = getComment(holder.getAdapterPosition());
 
-                ColorStateList stateList = ContextCompat.getColorStateList(getApplicationContext(),
+                ColorStateList linksColor = ContextCompat.getColorStateList(getApplicationContext(),
                         io.plaidapp.R.color.designer_news_links);
                 int highlightColor = ContextCompat.getColor(getApplicationContext(),
                         io.plaidapp.R.color.designer_news_link_highlight);
@@ -810,7 +810,7 @@ public class DesignerNewsStory extends Activity {
                         holder.getComment(),
                         comment.body,
                         markdown,
-                        stateList,
+                        linksColor,
                         highlightColor,
                         (src, loadingSpan) -> GlideApp.with(DesignerNewsStory.this)
                                 .asBitmap()

@@ -17,15 +17,20 @@
 
 package io.plaidapp.core.util;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.AttrRes;
 import android.support.annotation.CheckResult;
 import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.graphics.Palette;
+import android.util.TypedValue;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -143,9 +148,27 @@ public class ColorUtils {
         return scrimify(color, isDark(color), lightnessMultiplier);
     }
 
+    /**
+     * Queries the theme of the given {@code context} for a theme color.
+     *
+     * @param context            the context holding the current theme.
+     * @param attrResId          the theme color attribute to resolve.
+     * @param fallbackColorResId a color resource id tto fallback to if the theme color cannot be
+     *                           resolved.
+     * @return the theme color or the fallback color.
+     */
+    @ColorInt
+    public static int getThemeColor(@NonNull Context context, @AttrRes int attrResId,
+            @ColorRes int fallbackColorResId) {
+        final TypedValue tv = new TypedValue();
+        if (context.getTheme().resolveAttribute(attrResId, tv, true)) {
+            return tv.data;
+        }
+        return ContextCompat.getColor(context, fallbackColorResId);
+    }
+
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({IS_LIGHT, IS_DARK, LIGHTNESS_UNKNOWN})
     public @interface Lightness {
     }
-
 }

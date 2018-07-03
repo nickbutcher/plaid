@@ -17,12 +17,9 @@
 package io.plaidapp.ui.about;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.support.annotation.AttrRes;
 import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -34,7 +31,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AlignmentSpan;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +40,7 @@ import java.security.InvalidParameterException;
 
 import in.uncod.android.bypass.Bypass;
 import io.plaidapp.about.R;
+import io.plaidapp.core.util.ColorUtils;
 import io.plaidapp.core.util.HtmlUtils;
 
 class AboutPagerAdapter extends PagerAdapter {
@@ -124,71 +121,52 @@ class AboutPagerAdapter extends PagerAdapter {
         aboutIcon = layoutInflater.inflate(R.layout.about_icon, parent, false);
         bindViews(aboutIcon);
 
-        ColorStateList colorStateList = ContextCompat.getColorStateList(host,
+        ColorStateList linksColor = ContextCompat.getColorStateList(host,
                 io.plaidapp.R.color.plaid_links);
-        int highlightColor = getThemeColor(host, io.plaidapp.R.attr.colorPrimary,
+        int highlightColor = ColorUtils.getThemeColor(host, io.plaidapp.R.attr.colorPrimary,
                 io.plaidapp.R.color.primary);
         HtmlUtils.setTextWithNiceLinks(iconDescription,
-                getIconAboutText(colorStateList, highlightColor));
+                getIconAboutText(linksColor, highlightColor));
     }
 
     private void buildAppAboutPage(ViewGroup parent) {
         aboutPlaid = layoutInflater.inflate(R.layout.about_plaid, parent, false);
         bindViews(aboutPlaid);
 
-        ColorStateList colorStateList = ContextCompat.getColorStateList(host,
+        ColorStateList linksColor = ContextCompat.getColorStateList(host,
                 io.plaidapp.R.color.plaid_links);
-        int highlightColor = getThemeColor(host, io.plaidapp.R.attr.colorPrimary,
+        int highlightColor = ColorUtils.getThemeColor(host, io.plaidapp.R.attr.colorPrimary,
                 io.plaidapp.R.color.primary);
-        CharSequence desc = getAppAboutText(colorStateList, highlightColor);
+        CharSequence desc = getAppAboutText(linksColor, highlightColor);
 
         HtmlUtils.setTextWithNiceLinks(plaidDescription, desc);
     }
 
-    /**
-     * Queries the theme of the given {@code context} for a theme color.
-     *
-     * @param context            the context holding the current theme.
-     * @param attrResId          the theme color attribute to resolve.
-     * @param fallbackColorResId a color resource id tto fallback to if the theme color cannot be
-     *                           resolved.
-     * @return the theme color or the fallback color.
-     */
-    @ColorInt
-    public static int getThemeColor(@NonNull Context context, @AttrRes int attrResId,
-            @ColorRes int fallbackColorResId) {
-        final TypedValue tv = new TypedValue();
-        if (context.getTheme().resolveAttribute(attrResId, tv, true)) {
-            return tv.data;
-        }
-        return ContextCompat.getColor(context, fallbackColorResId);
-    }
-
     private CharSequence getSpannableFromMarkdown(
             @StringRes int stringId,
-            ColorStateList colorStateList,
+            ColorStateList linksColor,
             @ColorInt int highlightColor) {
-        return markdown.markdownToSpannable(resources.getString(stringId), colorStateList,
+        return markdown.markdownToSpannable(resources.getString(stringId), linksColor,
                 highlightColor, null);
     }
 
     private CharSequence getAppAboutText(
-            ColorStateList colorStateList,
+            ColorStateList linksColor,
             @ColorInt int highlightColor
     ) {
         // fun with spans & markdown
-        CharSequence about0 = getSpannableFromMarkdown(R.string.about_plaid_0, colorStateList,
+        CharSequence about0 = getSpannableFromMarkdown(R.string.about_plaid_0, linksColor,
                 highlightColor);
         SpannableString about1 = new SpannableString(
                 resources.getString(R.string.about_plaid_1));
         about1.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
                 0, about1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         SpannableString about2 = new SpannableString(
-                getSpannableFromMarkdown(R.string.about_plaid_2, colorStateList, highlightColor));
+                getSpannableFromMarkdown(R.string.about_plaid_2, linksColor, highlightColor));
         about2.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
                 0, about2.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         SpannableString about3 = new SpannableString(
-                getSpannableFromMarkdown(R.string.about_plaid_3, colorStateList, highlightColor));
+                getSpannableFromMarkdown(R.string.about_plaid_3, linksColor, highlightColor));
         about3.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
                 0, about3.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return TextUtils.concat(about0, "\n\n", about1, "\n", about2,
@@ -196,11 +174,11 @@ class AboutPagerAdapter extends PagerAdapter {
     }
 
     private CharSequence getIconAboutText(
-            ColorStateList colorStateList,
+            ColorStateList linksColor,
             @ColorInt int highlightColor
     ) {
         CharSequence icon0 = resources.getString(R.string.about_icon_0);
-        CharSequence icon1 = getSpannableFromMarkdown(R.string.about_icon_1, colorStateList,
+        CharSequence icon1 = getSpannableFromMarkdown(R.string.about_icon_1, linksColor,
                 highlightColor);
         return TextUtils.concat(icon0, "\n", icon1);
     }
