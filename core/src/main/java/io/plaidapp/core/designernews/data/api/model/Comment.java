@@ -14,12 +14,10 @@
  *   limitations under the License.
  *
  */
-
 package io.plaidapp.core.designernews.data.api.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -86,7 +84,7 @@ public class Comment implements Parcelable {
     }
 
     public void addReply(Comment comment) {
-        if(replies == null){
+        if (replies == null) {
             replies = new ArrayList<>();
         }
         replies.add(comment);
@@ -195,7 +193,6 @@ public class Comment implements Parcelable {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(id, body, body_html, created_at, depth, vote_count, user_id,
                 user_display_name, user_portrait_url, user_job, links, replies, upvoted);
     }

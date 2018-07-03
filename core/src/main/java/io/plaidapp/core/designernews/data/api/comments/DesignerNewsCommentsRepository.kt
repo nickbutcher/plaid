@@ -82,7 +82,7 @@ class DesignerNewsCommentsRepository(
             matchComments(replies)
             Result.Success(replies[0])
         } else {
-            // if we never got data, then return the error
+            // if we never get any data, then return the error
             result
         }
     }
@@ -104,8 +104,7 @@ class DesignerNewsCommentsRepository(
         // for every reply, get the comment to which the reply belongs to and add it to the list
         // of replies for that comment
         replies.map { reply ->
-            comments.filter { comment -> comment.id == reply.links.parentComment }
-                    .map { comment -> comment.addReply(reply) }
+            comments.find { comment -> comment.id == reply.links.parentComment }?.addReply(reply)
         }
         return comments
     }

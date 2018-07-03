@@ -25,13 +25,10 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class CommentLinks(
-    val user: String,
-    val story: String,
-    @SerializedName("parent_comment")
-    val parentComment: Long? = null,
-    val comments: List<Long> = emptyList(),
-    @SerializedName("comment_upvotes")
-    private val commentUpvotes: List<String> = emptyList(),
-    @SerializedName("comment_downvotes")
-    private val commentDownvotes: List<String> = emptyList()
+    @SerializedName("user") val user: String,
+    @SerializedName("story") val story: String,
+    @SerializedName("parent_comment") val parentComment: Long? = null,
+    @SerializedName("comments") val comments: List<Long> = emptyList(),
+    @SerializedName("comment_upvotes") private val commentUpvotes: List<String> = emptyList(),
+    @SerializedName("comment_downvotes") private val commentDownvotes: List<String> = emptyList()
 ) : Parcelable
