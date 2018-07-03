@@ -37,7 +37,8 @@ import in.uncod.android.bypass.style.TouchableUrlSpan;
  */
 public class HtmlUtils {
 
-    private HtmlUtils() { }
+    private HtmlUtils() {
+    }
 
     /**
      * Work around some 'features' of TextView and URLSpans. i.e. vanilla URLSpans do not react to
@@ -124,13 +125,15 @@ public class HtmlUtils {
      * Best of both worlds.
      */
     public static CharSequence parseMarkdownAndPlainLinks(
-            TextView textView,
             String input,
             Bypass markdown,
+            ColorStateList linkTextColors,
+            int highlightColor,
             Bypass.LoadImageCallback loadImageCallback) {
-        CharSequence markedUp = markdown.markdownToSpannable(input, textView, loadImageCallback);
+        CharSequence markedUp = markdown.markdownToSpannable(input, linkTextColors, highlightColor,
+                loadImageCallback);
         return linkifyPlainLinks(
-                markedUp, textView.getLinkTextColors(), textView.getHighlightColor());
+                markedUp, linkTextColors, highlightColor);
     }
 
     /**
@@ -141,10 +144,14 @@ public class HtmlUtils {
             TextView textView,
             String input,
             Bypass markdown,
+            ColorStateList linkTextColors,
+            int highlightColor,
             Bypass.LoadImageCallback loadImageCallback) {
         if (TextUtils.isEmpty(input)) return;
-        setTextWithNiceLinks(textView,
-                parseMarkdownAndPlainLinks(textView, input, markdown, loadImageCallback));
+        setTextWithNiceLinks(
+                textView,
+                parseMarkdownAndPlainLinks(input, markdown, linkTextColors, highlightColor,
+                        loadImageCallback));
     }
 
 }

@@ -1,6 +1,7 @@
 package in.uncod.android.bypass;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
@@ -17,17 +18,15 @@ import android.text.style.TypefaceSpan;
 import android.util.DisplayMetrics;
 import android.util.Patterns;
 import android.util.TypedValue;
-import android.widget.TextView;
-
-import in.uncod.android.bypass.style.FancyQuoteSpan;
-import in.uncod.android.bypass.style.ImageLoadingSpan;
-
-import in.uncod.android.bypass.Element.Type;
-import in.uncod.android.bypass.style.HorizontalLineSpan;
-import in.uncod.android.bypass.style.TouchableUrlSpan;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import in.uncod.android.bypass.Element.Type;
+import in.uncod.android.bypass.style.FancyQuoteSpan;
+import in.uncod.android.bypass.style.HorizontalLineSpan;
+import in.uncod.android.bypass.style.ImageLoadingSpan;
+import in.uncod.android.bypass.style.TouchableUrlSpan;
 
 public class Bypass {
     static {
@@ -93,14 +92,16 @@ public class Bypass {
         builder.setSpan(new AbsoluteSizeSpan(height, true), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
-    public CharSequence markdownToSpannable(String markdown, TextView textView, LoadImageCallback loadImageCallback) {
+    public CharSequence markdownToSpannable(String markdown, ColorStateList linksColors,
+            int highlightColor, LoadImageCallback loadImageCallback) {
         Document document = processMarkdown(markdown);
 
         int size = document.getElementCount();
         CharSequence[] spans = new CharSequence[size];
 
         for (int i = 0; i < size; i++) {
-            spans[i] = recurseElement(document.getElement(i), i, size, textView, loadImageCallback);
+            spans[i] = recurseElement(document.getElement(i), i, size, linksColors, highlightColor,
+                    loadImageCallback);
         }
 
         return TextUtils.concat(spans);
@@ -111,8 +112,13 @@ public class Bypass {
     // The 'numberOfSiblings' parameters refers to the number of siblings within the parent, including
     // the 'element' parameter, as in "How many siblings are you?" rather than "How many siblings do
     // you have?".
-    private CharSequence recurseElement(Element element, int indexWithinParent, int numberOfSiblings,
-                                        TextView textView, LoadImageCallback loadImageCallback) {
+    private CharSequence recurseElement(
+            Element element,
+            int indexWithinParent,
+            int numberOfSiblings,
+            ColorStateList linksColors,
+            int highlightColor,
+            LoadImageCallback loadImageCallback) {
 
         Type type = element.getType();
 
@@ -132,7 +138,8 @@ public class Bypass {
         CharSequence[] spans = new CharSequence[size];
 
         for (int i = 0; i < size; i++) {
-            spans[i] = recurseElement(element.children[i], i, size, textView, loadImageCallback);
+            spans[i] = recurseElement(element.children[i], i, size, linksColors,
+                    highlightColor, loadImageCallback);
         }
 
         // Clean up after we're done
@@ -263,8 +270,7 @@ public class Bypass {
                 if (!TextUtils.isEmpty(link) && Patterns.EMAIL_ADDRESS.matcher(link).matches()) {
                     link = "mailto:" + link;
                 }
-                setSpan(builder, new TouchableUrlSpan(link, textView.getLinkTextColors(),
-                                                        textView.getHighlightColor()));
+                setSpan(builder, new TouchableUrlSpan(link, linksColors, highlightColor));
                 break;
             case BLOCK_QUOTE:
                 // We add two leading margin spans so that when the order is reversed,
@@ -289,7 +295,9 @@ public class Bypass {
                     ImageLoadingSpan loadingSpan = new ImageLoadingSpan();
                     setSpanWithPrependedNewline(builder, loadingSpan);
                     // make the (eventually loaded) image span clickable to open in browser
-                    setSpanWithPrependedNewline(builder, new TouchableUrlSpan(url, textView.getLinkTextColors(), textView.getHighlightColor()));
+                    setSpanWithPrependedNewline(builder, new TouchableUrlSpan(url,
+                            linksColors,
+                            highlightColor));
                     loadImageCallback.loadImage(url, loadingSpan);
                 }
                 break;
