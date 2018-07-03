@@ -24,10 +24,10 @@ import android.graphics.drawable.PaintDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.support.annotation.ColorInt;
+import android.support.v4.math.MathUtils;
 import android.view.Gravity;
 
 import io.plaidapp.core.util.ColorUtils;
-import io.plaidapp.core.util.MathUtils;
 
 /**
  * * Borrowed from github.com/romannurik/muzei
@@ -55,7 +55,7 @@ public class ScrimUtil {
 
         for (int i = 0; i < numStops; i++) {
             float x = i * 1f / (numStops - 1);
-            float opacity = MathUtils.constrain(0, 1, (float) Math.pow(x, 3));
+            float opacity = MathUtils.clamp((float) Math.pow(x, 3),0, 1);
             stopColors[i] = ColorUtils.modifyAlpha(baseColor, (int) (alpha * opacity));
         }
 

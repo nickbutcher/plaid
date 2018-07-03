@@ -29,6 +29,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.math.MathUtils;
 import android.support.v7.graphics.Palette;
 import android.util.TypedValue;
 
@@ -139,7 +140,7 @@ public class ColorUtils {
             lightnessMultiplier = 1f - lightnessMultiplier;
         }
 
-        hsl[2] = MathUtils.constrain(0f, 1f, hsl[2] * lightnessMultiplier);
+        hsl[2] = MathUtils.clamp(hsl[2] * lightnessMultiplier,0f, 1f);
         return android.support.v4.graphics.ColorUtils.HSLToColor(hsl);
     }
 
