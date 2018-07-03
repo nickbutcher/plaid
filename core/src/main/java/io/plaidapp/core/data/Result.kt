@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.base.data.api
+package io.plaidapp.core.data
 
 /**
  * A generic class that holds a value with its loading status.
