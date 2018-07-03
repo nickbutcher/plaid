@@ -58,10 +58,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.plaidapp.base.designernews.Injection;
-import io.plaidapp.base.designernews.data.api.model.User;
-import io.plaidapp.base.designernews.login.data.DesignerNewsLoginRepository;
-import io.plaidapp.base.util.glide.GlideApp;
+import io.plaidapp.core.designernews.Injection;
+import io.plaidapp.core.designernews.data.api.model.User;
+import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRepository;
+import io.plaidapp.core.util.glide.GlideApp;
 import io.plaidapp.designernews.R;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;

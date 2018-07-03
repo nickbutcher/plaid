@@ -35,7 +35,7 @@
         android:orientation="vertical"
         android:transitionName="@string/transition_new_designer_news_post">
 
-        <io.plaidapp.base.ui.widget.BaselineGridTextView
+        <io.plaidapp.core.ui.widget.BaselineGridTextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <io.plaidapp.base.ui.widget.BaselineGridTextView
+                <io.plaidapp.core.ui.widget.BaselineGridTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="@dimen/padding_normal"
@@ -88,7 +88,7 @@
 
                 </android.support.design.widget.TextInputLayout>
 
-                <io.plaidapp.base.ui.widget.BaselineGridTextView
+                <io.plaidapp.core.ui.widget.BaselineGridTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_normal"

@@ -38,18 +38,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import io.plaidapp.base.util.ActivityHelper;
+import io.plaidapp.core.util.ActivityHelper;
 import io.plaidapp.designernews.R;
-import io.plaidapp.base.designernews.data.api.PostStoryService;
-import io.plaidapp.base.designernews.DesignerNewsPrefs;
+import io.plaidapp.core.designernews.data.api.PostStoryService;
+import io.plaidapp.core.designernews.DesignerNewsPrefs;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.ui.widget.BottomSheet;
 import io.plaidapp.ui.widget.ObservableScrollView;
-import io.plaidapp.base.util.Activities;
-import io.plaidapp.base.util.AnimUtils;
-import io.plaidapp.base.util.ImeUtils;
-import io.plaidapp.base.util.ShortcutHelper;
+import io.plaidapp.core.util.Activities;
+import io.plaidapp.core.util.AnimUtils;
+import io.plaidapp.core.util.ImeUtils;
+import io.plaidapp.core.util.ShortcutHelper;
 
 public class PostNewDesignerNewsStory extends Activity {
 

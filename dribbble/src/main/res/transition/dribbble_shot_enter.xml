@@ -42,7 +42,7 @@
     <!-- As this overlaps the shared element transition, content can be outside of the
          growing background, fade in the title background to make this less noticeable. -->
     <transition
-        class="io.plaidapp.base.ui.transitions.BackgroundFade"
+        class="io.plaidapp.core.ui.transitions.BackgroundFade"
         android:startDelay="300"
         android:duration="150"
         android:interpolator="@android:interpolator/linear">

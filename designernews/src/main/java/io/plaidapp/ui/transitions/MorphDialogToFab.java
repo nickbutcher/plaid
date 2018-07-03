@@ -31,8 +31,8 @@ import android.view.ViewGroup;
 
 import io.plaidapp.ui.drawable.MorphDrawable;
 
-import static io.plaidapp.base.util.AnimUtils.getFastOutLinearInInterpolator;
-import static io.plaidapp.base.util.AnimUtils.getFastOutSlowInInterpolator;
+import static io.plaidapp.core.util.AnimUtils.getFastOutLinearInInterpolator;
+import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
 
 /**
  * A transition that morphs a rectangle into a circle, changing it's background color.

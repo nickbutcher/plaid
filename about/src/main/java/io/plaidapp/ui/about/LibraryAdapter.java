@@ -28,7 +28,7 @@ import android.view.ViewGroup;
 import java.security.InvalidParameterException;
 
 import io.plaidapp.about.R;
-import io.plaidapp.base.util.customtabs.CustomTabActivityHelper;
+import io.plaidapp.core.util.customtabs.CustomTabActivityHelper;
 import kotlin.Unit;
 
 class LibraryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

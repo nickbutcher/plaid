@@ -55,18 +55,18 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import java.util.List;
 
 import io.plaidapp.search.R;
-import io.plaidapp.base.data.PlaidItem;
-import io.plaidapp.base.data.SearchDataManager;
-import io.plaidapp.base.data.api.dribbble.model.Shot;
-import io.plaidapp.base.data.pocket.PocketUtils;
-import io.plaidapp.base.ui.FeedAdapter;
-import io.plaidapp.base.ui.recyclerview.InfiniteScrollListener;
-import io.plaidapp.base.ui.recyclerview.SlideInItemAnimator;
+import io.plaidapp.core.data.PlaidItem;
+import io.plaidapp.core.data.SearchDataManager;
+import io.plaidapp.core.data.api.dribbble.model.Shot;
+import io.plaidapp.core.data.pocket.PocketUtils;
+import io.plaidapp.core.ui.FeedAdapter;
+import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener;
+import io.plaidapp.core.ui.recyclerview.SlideInItemAnimator;
 import io.plaidapp.ui.search.transitions.CircularReveal;
-import io.plaidapp.base.util.Activities;
-import io.plaidapp.base.util.ImeUtils;
-import io.plaidapp.base.util.ShortcutHelper;
-import io.plaidapp.base.util.TransitionUtils;
+import io.plaidapp.core.util.Activities;
+import io.plaidapp.core.util.ImeUtils;
+import io.plaidapp.core.util.ShortcutHelper;
+import io.plaidapp.core.util.TransitionUtils;
 
 public class SearchActivity extends Activity {
 
@@ -115,7 +115,7 @@ public class SearchActivity extends Activity {
                     adapter.addAndResort(data);
                 } else {
                     TransitionManager.beginDelayedTransition(
-                            container, getTransition(io.plaidapp.base.R.transition.auto));
+                            container, getTransition(io.plaidapp.core.R.transition.auto));
                     progress.setVisibility(View.GONE);
                     setNoResultsVisibility(View.VISIBLE);
                 }
@@ -177,8 +177,8 @@ public class SearchActivity extends Activity {
         resultsScrim = findViewById(R.id.results_scrim);
         resultsScrim.setOnClickListener(view -> hideSaveConfirmation());
         Resources res = getResources();
-        columns = res.getInteger(io.plaidapp.base.R.integer.num_columns);
-        appBarElevation = res.getDimensionPixelSize(io.plaidapp.base.R.dimen.z_app_bar);
+        columns = res.getInteger(io.plaidapp.core.R.integer.num_columns);
+        appBarElevation = res.getDimensionPixelSize(io.plaidapp.core.R.dimen.z_app_bar);
     }
 
     @Override
@@ -274,7 +274,7 @@ public class SearchActivity extends Activity {
 
     void clearResults() {
         TransitionManager.beginDelayedTransition(container,
-                getTransition(io.plaidapp.base.R.transition.auto));
+                getTransition(io.plaidapp.core.R.transition.auto));
         adapter.clear();
         dataManager.clear();
         results.setVisibility(View.GONE);

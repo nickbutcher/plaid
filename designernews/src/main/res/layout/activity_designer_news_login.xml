@@ -40,7 +40,7 @@
         android:clickable="true"
         android:transitionName="@string/transition_designer_news_login">
 
-        <io.plaidapp.base.ui.widget.BaselineGridTextView
+        <io.plaidapp.core.ui.widget.BaselineGridTextView
             android:id="@+id/dialog_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

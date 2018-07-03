@@ -17,7 +17,7 @@
 package io.plaidapp.ui.designernews.story
 
 import android.support.v7.widget.RecyclerView
-import io.plaidapp.base.ui.recyclerview.SlideInItemAnimator
+import io.plaidapp.core.ui.recyclerview.SlideInItemAnimator
 
 /**
  * Slide in animator for Designer News comments

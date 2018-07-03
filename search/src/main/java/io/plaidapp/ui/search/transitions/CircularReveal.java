@@ -30,7 +30,7 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 
-import io.plaidapp.base.util.AnimUtils;
+import io.plaidapp.core.util.AnimUtils;
 import io.plaidapp.search.R;
 
 /**
