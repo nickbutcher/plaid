@@ -74,12 +74,6 @@ public class HtmlUtils {
         return linkifyPlainLinks(spanned, linkTextColor, linkHighlightColor);
     }
 
-    public static void parseAndSetText(TextView textView, String input) {
-        if (TextUtils.isEmpty(input)) return;
-        setTextWithNiceLinks(textView, parseHtml(input, textView.getLinkTextColors(),
-                textView.getHighlightColor()));
-    }
-
     private static SpannableStringBuilder linkifyPlainLinks(
             CharSequence input,
             ColorStateList linkTextColor,
@@ -128,12 +122,11 @@ public class HtmlUtils {
             String input,
             Bypass markdown,
             ColorStateList linkTextColors,
-            int highlightColor,
+            @ColorInt int highlightColor,
             Bypass.LoadImageCallback loadImageCallback) {
         CharSequence markedUp = markdown.markdownToSpannable(input, linkTextColors, highlightColor,
                 loadImageCallback);
-        return linkifyPlainLinks(
-                markedUp, linkTextColors, highlightColor);
+        return linkifyPlainLinks(markedUp, linkTextColors, highlightColor);
     }
 
     /**
@@ -145,13 +138,11 @@ public class HtmlUtils {
             String input,
             Bypass markdown,
             ColorStateList linkTextColors,
-            int highlightColor,
+            @ColorInt int highlightColor,
             Bypass.LoadImageCallback loadImageCallback) {
         if (TextUtils.isEmpty(input)) return;
-        setTextWithNiceLinks(
-                textView,
+        setTextWithNiceLinks(textView,
                 parseMarkdownAndPlainLinks(input, markdown, linkTextColors, highlightColor,
                         loadImageCallback));
     }
-
 }
