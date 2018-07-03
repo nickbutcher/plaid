@@ -16,7 +16,7 @@
   ~
   -->
 
-<io.plaidapp.ui.widget.BottomSheet
+<io.plaidapp.core.ui.widget.BottomSheet
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -157,4 +157,4 @@
 
     </LinearLayout>
 
-</io.plaidapp.ui.widget.BottomSheet>
+</io.plaidapp.core.ui.widget.BottomSheet>

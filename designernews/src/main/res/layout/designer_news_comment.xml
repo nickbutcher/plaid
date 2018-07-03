@@ -48,7 +48,7 @@
         android:textAppearance="@style/TextAppearance.CommentTimestamp"
         tools:text="3 hours ago" />
 
-    <io.plaidapp.ui.widget.AuthorTextView
+    <io.plaidapp.core.ui.widget.AuthorTextView
         android:id="@+id/comment_author"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
