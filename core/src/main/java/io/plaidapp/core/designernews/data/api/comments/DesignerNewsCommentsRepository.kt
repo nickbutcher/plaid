@@ -92,7 +92,7 @@ class DesignerNewsCommentsRepository(
      * belong to
      */
     private fun matchComments(comments: List<List<Comment>>) {
-        for (index: Int in comments.size - 1 downTo 1) {
+        for (index in comments.size - 1 downTo 1) {
             matchCommentsWithReplies(comments[index - 1], comments[index])
         }
     }
@@ -104,7 +104,7 @@ class DesignerNewsCommentsRepository(
         // for every reply, get the comment to which the reply belongs to and add it to the list
         // of replies for that comment
         replies.map { reply ->
-            comments.find { comment -> comment.id == reply.links.parentComment }?.addReply(reply)
+            comments.find { it -> it.id == reply.links.parentComment }?.addReply(reply)
         }
         return comments
     }

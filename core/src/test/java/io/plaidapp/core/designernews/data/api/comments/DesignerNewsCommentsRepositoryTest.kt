@@ -91,7 +91,7 @@ class DesignerNewsCommentsRepositoryTest {
         Mockito.verify(service).getComments("1")
         Mockito.verify(service).getComments("11,12")
         // Then the correct result is received
-        assertEquals(arrayListOf(parentCommentWithReplies), (result as Result.Success).data)
+        assertEquals(Result.Success(arrayListOf(parentCommentWithReplies)), result)
     }
 
     @Test
@@ -113,6 +113,6 @@ class DesignerNewsCommentsRepositoryTest {
         Mockito.verify(service).getComments("1")
         Mockito.verify(service).getComments("11,12")
         // Then the correct result is received
-        assertEquals(arrayListOf(parentCommentWithReplies), (result as Result.Success).data)
+        assertEquals(Result.Success(arrayListOf(parentCommentWithReplies)), result)
     }
 }
