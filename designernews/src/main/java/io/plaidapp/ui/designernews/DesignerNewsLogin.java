@@ -65,7 +65,7 @@ import io.plaidapp.core.util.glide.GlideApp;
 import io.plaidapp.designernews.R;
 import io.plaidapp.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
-import io.plaidapp.util.ScrimUtil;
+import io.plaidapp.core.util.ScrimUtil;
 import kotlin.Unit;
 
 public class DesignerNewsLogin extends Activity {
