@@ -16,7 +16,7 @@
   ~
   -->
 
-<io.plaidapp.ui.widget.ElasticDragDismissFrameLayout
+<io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -88,4 +88,4 @@
 
     <include layout="@layout/designer_news_story_fab" />
 
-</io.plaidapp.ui.widget.ElasticDragDismissFrameLayout>
+</io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout>

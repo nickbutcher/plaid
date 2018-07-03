@@ -22,7 +22,7 @@ import android.support.v4.view.ViewPager
 import android.transition.TransitionInflater
 import io.plaidapp.about.R
 import io.plaidapp.ui.about.widget.InkPageIndicator
-import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout
+import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
 
 /**
  * About screen. This displays 3 pages in a ViewPager:
