@@ -20,7 +20,7 @@ package io.plaidapp.core
 
 import android.content.Context
 import android.content.SharedPreferences
-import io.plaidapp.base.data.CoroutinesContextProvider
+import io.plaidapp.core.data.CoroutinesContextProvider
 import okhttp3.logging.HttpLoggingInterceptor
 
 /**

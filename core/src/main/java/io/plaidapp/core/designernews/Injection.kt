@@ -22,9 +22,11 @@ import android.content.Context
 import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import io.plaidapp.core.BuildConfig
+import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.api.DenvelopingConverter
 import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.core.designernews.data.api.DesignerNewsAuthTokenLocalDataSource
+import io.plaidapp.core.designernews.data.api.DesignerNewsRepository
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.login.data.DesignerNewsLoginLocalDataSource
 import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRemoteDataSource
@@ -32,6 +34,8 @@ import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRepository
 import io.plaidapp.core.loggingInterceptor
 import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRemoteDataSource
 import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRepository
+import io.plaidapp.core.provideCoroutinesContextProvider
+import io.plaidapp.core.provideSharedPreferences
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -93,11 +97,11 @@ private fun provideDesignerNewsService(
             .create(DesignerNewsService::class.java)
 }
 
-fun provideDesignerNewsRepository(context: Context): io.plaidapp.core.designernews.data.api.DesignerNewsRepository {
+fun provideDesignerNewsRepository(context: Context): DesignerNewsRepository {
     return provideDesignerNewsRepository(DesignerNewsPrefs.get(context).api)
 }
 
-fun provideDesignerNewsRepository(service: DesignerNewsService): io.plaidapp.base.designernews.data.api.DesignerNewsRepository {
+fun provideDesignerNewsRepository(service: DesignerNewsService): DesignerNewsRepository {
     return DesignerNewsRepository.getInstance(service)
 }
 
