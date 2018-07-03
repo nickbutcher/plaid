@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.base.designernews.data.api.model
+package io.plaidapp.core.designernews.data.api.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package io.plaidapp.base.designernews.data.api.comments
+package io.plaidapp.core.designernews.data.api.comments
 
-import io.plaidapp.base.data.CoroutinesContextProvider
-import io.plaidapp.base.data.api.Result
-import io.plaidapp.base.data.api.isSuccessful
-import io.plaidapp.base.designernews.data.api.model.Comment
+import io.plaidapp.core.data.CoroutinesContextProvider
+import io.plaidapp.core.data.Result
+import io.plaidapp.core.data.isSuccessful
+import io.plaidapp.core.designernews.data.api.model.Comment
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 

@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-package io.plaidapp.base.designernews.data.api.comments
+package io.plaidapp.core.data
 
-import io.plaidapp.base.data.CoroutinesContextProvider
-import kotlinx.coroutines.experimental.Unconfined
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlin.coroutines.experimental.CoroutineContext
 
-fun provideFakeCoroutinesContextProvider(): CoroutinesContextProvider =
-        CoroutinesContextProvider(Unconfined, Unconfined)
+/**
+ * Provide coroutines context.
+ */
+data class CoroutinesContextProvider(
+    val main: CoroutineContext = UI,
+    val io: CoroutineContext = CommonPool
+)
