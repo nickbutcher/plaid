@@ -21,9 +21,11 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.support.annotation.AttrRes;
+import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.RecyclerView;
@@ -121,13 +123,24 @@ class AboutPagerAdapter extends PagerAdapter {
     private void buildIconAboutPage(ViewGroup parent) {
         aboutIcon = layoutInflater.inflate(R.layout.about_icon, parent, false);
         bindViews(aboutIcon);
-        HtmlUtils.setTextWithNiceLinks(iconDescription, getIconAboutText());
+
+        ColorStateList colorStateList = ContextCompat.getColorStateList(host,
+                io.plaidapp.R.color.plaid_links);
+        int highlightColor = getThemeColor(host, io.plaidapp.R.attr.colorPrimary,
+                io.plaidapp.R.color.primary);
+        HtmlUtils.setTextWithNiceLinks(iconDescription,
+                getIconAboutText(colorStateList, highlightColor));
     }
 
     private void buildAppAboutPage(ViewGroup parent) {
         aboutPlaid = layoutInflater.inflate(R.layout.about_plaid, parent, false);
         bindViews(aboutPlaid);
-        CharSequence desc = getAppAboutText();
+
+        ColorStateList colorStateList = ContextCompat.getColorStateList(host,
+                io.plaidapp.R.color.plaid_links);
+        int highlightColor = getThemeColor(host, io.plaidapp.R.attr.colorPrimary,
+                io.plaidapp.R.color.primary);
+        CharSequence desc = getAppAboutText(colorStateList, highlightColor);
 
         HtmlUtils.setTextWithNiceLinks(plaidDescription, desc);
     }
@@ -141,6 +154,7 @@ class AboutPagerAdapter extends PagerAdapter {
      *                           resolved.
      * @return the theme color or the fallback color.
      */
+    @ColorInt
     public static int getThemeColor(@NonNull Context context, @AttrRes int attrResId,
             @ColorRes int fallbackColorResId) {
         final TypedValue tv = new TypedValue();
@@ -150,55 +164,44 @@ class AboutPagerAdapter extends PagerAdapter {
         return ContextCompat.getColor(context, fallbackColorResId);
     }
 
-    private CharSequence getAppAboutText() {
-        // fun with spans & markdown
-        ColorStateList stateList = ContextCompat.getColorStateList(host,
-                io.plaidapp.R.color.plaid_links);
-        int highlightColor = getThemeColor(
-                host,
-                io.plaidapp.R.attr.colorPrimary,
-                io.plaidapp.R.color.primary);
+    private CharSequence getSpannableFromMarkdown(
+            @StringRes int stringId,
+            ColorStateList colorStateList,
+            @ColorInt int highlightColor) {
+        return markdown.markdownToSpannable(resources.getString(stringId), colorStateList,
+                highlightColor, null);
+    }
 
-        CharSequence about0 = markdown.markdownToSpannable(
-                resources.getString(R.string.about_plaid_0),
-                stateList,
-                highlightColor,
-                null);
+    private CharSequence getAppAboutText(
+            ColorStateList colorStateList,
+            @ColorInt int highlightColor
+    ) {
+        // fun with spans & markdown
+        CharSequence about0 = getSpannableFromMarkdown(R.string.about_plaid_0, colorStateList,
+                highlightColor);
         SpannableString about1 = new SpannableString(
                 resources.getString(R.string.about_plaid_1));
         about1.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
                 0, about1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         SpannableString about2 = new SpannableString(
-                markdown.markdownToSpannable(
-                        resources.getString(R.string.about_plaid_2),
-                        stateList,
-                        highlightColor,
-                        null));
+                getSpannableFromMarkdown(R.string.about_plaid_2, colorStateList, highlightColor));
         about2.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
                 0, about2.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         SpannableString about3 = new SpannableString(
-                markdown.markdownToSpannable(resources.getString(R.string.about_plaid_3),
-                        stateList,
-                        highlightColor,
-                        null));
+                getSpannableFromMarkdown(R.string.about_plaid_3, colorStateList, highlightColor));
         about3.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
                 0, about3.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return TextUtils.concat(about0, "\n\n", about1, "\n", about2,
                 "\n\n", about3);
     }
 
-    private CharSequence getIconAboutText() {
-        ColorStateList stateList = ContextCompat.getColorStateList(host,
-                io.plaidapp.R.color.plaid_links);
-        int highlightColor = getThemeColor(
-                        host,
-                        io.plaidapp.R.attr.colorPrimary,
-                        io.plaidapp.R.color.primary);
-
+    private CharSequence getIconAboutText(
+            ColorStateList colorStateList,
+            @ColorInt int highlightColor
+    ) {
         CharSequence icon0 = resources.getString(R.string.about_icon_0);
-        CharSequence icon1 = markdown.markdownToSpannable(
-                resources.getString(R.string.about_icon_1),
-                stateList, highlightColor, null);
+        CharSequence icon1 = getSpannableFromMarkdown(R.string.about_icon_1, colorStateList,
+                highlightColor);
         return TextUtils.concat(icon0, "\n", icon1);
     }
 
