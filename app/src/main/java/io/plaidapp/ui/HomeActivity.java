@@ -94,7 +94,7 @@ import io.plaidapp.core.util.DrawableUtils;
 import io.plaidapp.core.util.ViewUtils;
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
-import io.plaidapp.ui.transitions.FabTransform;
+import io.plaidapp.core.ui.transitions.FabTransform;
 
 public class HomeActivity extends Activity {
 

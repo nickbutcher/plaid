@@ -33,7 +33,7 @@ import android.widget.FrameLayout;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import io.plaidapp.util.ViewOffsetHelper;
+import io.plaidapp.core.util.ViewOffsetHelper;
 
 /**
  * A {@link FrameLayout} whose content can be dragged downward to be dismissed (either directly or

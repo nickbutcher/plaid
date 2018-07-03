@@ -42,7 +42,7 @@ import io.plaidapp.core.util.ActivityHelper;
 import io.plaidapp.designernews.R;
 import io.plaidapp.core.designernews.data.api.PostStoryService;
 import io.plaidapp.core.designernews.DesignerNewsPrefs;
-import io.plaidapp.ui.transitions.FabTransform;
+import io.plaidapp.core.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.ui.widget.BottomSheet;
 import io.plaidapp.core.ui.widget.ObservableScrollView;
