@@ -18,7 +18,6 @@ package io.plaidapp.core.designernews.data.api.comments
 
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.data.isSuccessful
 import io.plaidapp.core.designernews.data.api.model.Comment
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
@@ -41,7 +40,7 @@ class DesignerNewsCommentsRepository(
      */
     fun getComments(
         ids: List<Long>,
-        onResult: (result: Result<List<Comment>?>) -> Unit
+        onResult: (result: Result<List<Comment>>) -> Unit
     ) = launch(contextProvider.main) {
         // request comments and await until the result is received.
         val result = withContext(contextProvider.io) { getAllComments(ids) }
@@ -52,27 +51,25 @@ class DesignerNewsCommentsRepository(
      * Get all comments and their replies. If we get an error on any reply depth level, ignore it
      * and just use the comments retrieved until that point.
      */
-    private suspend fun getAllComments(parentIds: List<Long>): Result<List<Comment>?> {
+    private suspend fun getAllComments(parentIds: List<Long>): Result<List<Comment>> {
         val replies = mutableListOf<List<Comment>>()
         // get the first level of comments
         var result = remoteDataSource.getComments(parentIds)
         // as long as we could get comments or replies to comments
-        while (result.isSuccessful()) {
-            val newReplies = (result as Result.Success).data
-            // if we have replies
-            if (newReplies != null) {
-                replies.add(newReplies)
-                // check if we have another level of replies
-                val nextRepliesIds = newReplies.flatMap { comment -> comment.links.comments }
-                if (!nextRepliesIds.isEmpty()) {
-                    result = remoteDataSource.getComments(nextRepliesIds)
-                } else {
-                    // we don't have any other level of replies match the replies to the comments
-                    // they belong to and return the first level of comments.
-                    if (replies.isNotEmpty()) {
-                        matchComments(replies)
-                        return Result.Success(replies[0])
-                    }
+        while (result is Result.Success) {
+            val newReplies = result.data
+            // add the replies
+            replies.add(newReplies)
+            // check if we have another level of replies
+            val nextRepliesIds = newReplies.flatMap { comment -> comment.links.comments }
+            if (!nextRepliesIds.isEmpty()) {
+                result = remoteDataSource.getComments(nextRepliesIds)
+            } else {
+                // we don't have any other level of replies match the replies to the comments
+                // they belong to and return the first level of comments.
+                if (replies.isNotEmpty()) {
+                    matchComments(replies)
+                    return Result.Success(replies[0])
                 }
             }
         }

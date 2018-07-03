@@ -17,14 +17,13 @@
 package io.plaidapp.core.designernews.data.api.comments
 
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.data.isSuccessful
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.api.model.Comment
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Mockito
 import retrofit2.Response
@@ -75,7 +74,7 @@ class DesignerNewsCommentsRemoteDataSourceTest {
         val response = dataSource.getComments(listOf(1L))
 
         // Then the response is not successful
-        assertFalse(response.isSuccessful())
+        assertTrue(response is Result.Error)
     }
 
     @Test
@@ -88,6 +87,6 @@ class DesignerNewsCommentsRemoteDataSourceTest {
         val response = dataSource.getComments(listOf(1L))
 
         // Then the response is not successful
-        assertFalse(response.isSuccessful())
+        assertTrue(response is Result.Error)
     }
 }

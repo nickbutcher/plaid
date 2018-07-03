@@ -20,7 +20,7 @@ package io.plaidapp.core.data
  * A generic class that holds a value with its loading status.
  * @param <T>
  */
-sealed class Result<out Any> {
+sealed class Result<out R : Any> {
 
     data class Success<out T : Any>(val data: T) : Result<T>()
     data class Error(val exception: Exception) : Result<Nothing>()
@@ -34,8 +34,3 @@ sealed class Result<out Any> {
         }
     }
 }
-
-/**
- * `true` if [Result] is of type [Success] and holds non-null [Success.data].
- */
-fun Result<*>.isSuccessful() = this is Result.Success && data != null
