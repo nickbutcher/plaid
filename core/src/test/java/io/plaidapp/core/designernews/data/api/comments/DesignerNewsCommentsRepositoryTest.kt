@@ -53,7 +53,7 @@ class DesignerNewsCommentsRepositoryTest {
         // Then the correct list of comments was requested from the API
         Mockito.verify(service).getComments("11")
         // Then the correct list is received
-        assertEquals(listOf(reply1), (result as Result.Success).data)
+        assertEquals(Result.Success(listOf(reply1)), result)
     }
 
     @Test
