@@ -29,7 +29,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-import io.plaidapp.ui.drawable.MorphDrawable;
+import io.plaidapp.core.ui.drawable.MorphDrawable;
 
 import static io.plaidapp.core.util.AnimUtils.getFastOutLinearInInterpolator;
 import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
