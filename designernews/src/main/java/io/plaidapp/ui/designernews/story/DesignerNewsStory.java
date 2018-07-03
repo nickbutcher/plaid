@@ -92,7 +92,7 @@ import io.plaidapp.designernews.R;
 import io.plaidapp.ui.designernews.DesignerNewsLogin;
 import io.plaidapp.ui.drawable.ThreadedCommentDrawable;
 import io.plaidapp.ui.transitions.MorphTransform;
-import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
+import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import kotlin.Unit;
 import retrofit2.Call;

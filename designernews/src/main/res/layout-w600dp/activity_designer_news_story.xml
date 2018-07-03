@@ -15,7 +15,7 @@
   limitations under the License.
   -->
 
-<io.plaidapp.ui.widget.ElasticDragDismissFrameLayout
+<io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/comments_container"
@@ -76,4 +76,4 @@
 
     <include layout="@layout/designer_news_story_fab"/>
 
-</io.plaidapp.ui.widget.ElasticDragDismissFrameLayout>
+</io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout>
