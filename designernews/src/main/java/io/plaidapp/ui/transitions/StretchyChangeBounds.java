@@ -40,7 +40,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 
 import io.plaidapp.designernews.R;
-import io.plaidapp.base.util.AnimUtils;
+import io.plaidapp.core.util.AnimUtils;
 
 /**
  * A transition for animating a move/resize of a solid color rectangle. The target view's background

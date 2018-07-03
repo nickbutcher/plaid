@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2015 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<io.plaidapp.core.ui.widget.FourThreeLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/story_title_background"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:background="@color/designer_news"
+    android:foreground="@drawable/light_ripple"
+    android:orientation="vertical"
+    android:elevation="@dimen/z_card"
+    android:stateListAnimator="@animator/raise"
+    android:theme="@style/PlaidDarkOverlay">
+
+    <io.plaidapp.core.ui.widget.BaselineGridTextView
+        android:id="@+id/story_title"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/padding_normal"
+        android:layout_marginTop="@dimen/padding_normal"
+        android:layout_marginEnd="@dimen/padding_normal"
+        android:layout_weight="1"
+        android:breakStrategy="simple"
+        android:ellipsize="end"
+        android:textAppearance="@style/TextAppearance.TilePrimary"
+        app:maxLinesByHeight="true"
+        tools:text="Amazing designer news story" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Needs a concrete height/width as we animate the icon's scale so the asset
+             needs to be larger to stay crisp.  Thus can't wrap height. -->
+        <ImageButton
+            android:id="@+id/pocket"
+            android:layout_width="@dimen/grid_icon_with_padding"
+            android:layout_height="@dimen/grid_icon_with_padding"
+            android:layout_gravity="bottom|start"
+            android:layout_margin="@dimen/spacing_micro"
+            android:background="@drawable/light_ripple"
+            android:padding="@dimen/spacing_normal"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_pocket"/>
+
+        <!-- Using a TextView rather than a button to have better control over the padding -->
+        <io.plaidapp.core.ui.widget.BaselineGridTextView
+            android:id="@+id/story_comments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/spacing_micro"
+            android:background="@drawable/light_ripple"
+            android:drawablePadding="@dimen/spacing_normal"
+            android:drawableStart="@drawable/ic_comment_light"
+            android:gravity="center_vertical"
+            android:padding="@dimen/spacing_normal"
+            android:paddingTop="@dimen/spacing_normal"
+            android:textAppearance="@style/TextAppearance.TileSecondary"
+            tools:text="7" />
+
+    </FrameLayout>
+
+</io.plaidapp.core.ui.widget.FourThreeLinearLayout>

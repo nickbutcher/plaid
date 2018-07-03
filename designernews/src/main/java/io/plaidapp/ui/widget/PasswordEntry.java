@@ -35,9 +35,9 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
 import android.view.animation.Interpolator;
 
-import io.plaidapp.base.util.AnimUtils;
+import io.plaidapp.core.util.AnimUtils;
 
-import static io.plaidapp.base.util.AnimUtils.lerp;
+import static io.plaidapp.core.util.AnimUtils.lerp;
 
 /**
  * A password entry widget which animates switching between masked and visible text.

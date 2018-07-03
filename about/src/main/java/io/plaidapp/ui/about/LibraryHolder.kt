@@ -24,7 +24,7 @@ import android.widget.TextView
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 
 import io.plaidapp.about.R
-import io.plaidapp.base.util.glide.GlideApp
+import io.plaidapp.core.util.glide.GlideApp
 
 typealias OnClick = (link: String, position: Int) -> Unit
 

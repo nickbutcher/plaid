@@ -15,7 +15,7 @@
   limitations under the License.
   -->
 
-<io.plaidapp.base.ui.widget.ForegroundRelativeLayout
+<io.plaidapp.core.ui.widget.ForegroundRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -37,7 +37,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignBottom="@+id/comment_text" />
 
-    <io.plaidapp.base.ui.widget.BaselineGridTextView
+    <io.plaidapp.core.ui.widget.BaselineGridTextView
         android:id="@+id/comment_time_ago"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
         android:textAppearance="@style/TextAppearance.CommentAuthor.DesignerNews"
         tools:text="Nick B" />
 
-    <io.plaidapp.base.ui.widget.BaselineGridTextView
+    <io.plaidapp.core.ui.widget.BaselineGridTextView
         android:id="@+id/comment_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -73,4 +73,4 @@
         android:textColorLink="@color/designer_news_links"
         tools:text="Dude do you use sketch? You should totally use sketch. Should designers code??" />
 
-</io.plaidapp.base.ui.widget.ForegroundRelativeLayout>
+</io.plaidapp.core.ui.widget.ForegroundRelativeLayout>

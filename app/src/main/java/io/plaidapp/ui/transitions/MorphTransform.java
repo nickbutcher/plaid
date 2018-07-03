@@ -31,9 +31,9 @@ import android.transition.TransitionValues;
 import android.view.View;
 import android.view.ViewGroup;
 
-import io.plaidapp.base.ui.transitions.GravityArcMotion;
+import io.plaidapp.core.ui.transitions.GravityArcMotion;
 import io.plaidapp.ui.drawable.MorphDrawable;
-import io.plaidapp.base.util.AnimUtils;
+import io.plaidapp.core.util.AnimUtils;
 
 /**
  * An extension to {@link ChangeBounds} that also morphs the views background (color & corner

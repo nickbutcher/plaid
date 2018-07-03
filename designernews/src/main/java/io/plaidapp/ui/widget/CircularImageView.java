@@ -3,8 +3,8 @@ package io.plaidapp.ui.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import io.plaidapp.base.ui.widget.ForegroundImageView;
-import io.plaidapp.base.util.ViewUtils;
+import io.plaidapp.core.ui.widget.ForegroundImageView;
+import io.plaidapp.core.util.ViewUtils;
 
 /**
  * An extension to image view that has a circular outline.

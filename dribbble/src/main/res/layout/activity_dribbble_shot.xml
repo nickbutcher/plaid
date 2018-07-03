@@ -39,7 +39,7 @@
         android:background="@color/background_light"
         android:transitionName="@string/transition_shot_background" />
 
-    <io.plaidapp.base.ui.widget.ParallaxScrimageView
+    <io.plaidapp.core.ui.widget.ParallaxScrimageView
         android:id="@+id/shot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

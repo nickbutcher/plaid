@@ -53,7 +53,7 @@
     <!-- Explicit style should not be necessary as the theme supplies the widget's default style.
          Bug with aapt/modularization is breaking this so setting here to work around.
          TODO remove this. -->
-    <io.plaidapp.base.ui.widget.CollapsingTitleLayout
+    <io.plaidapp.core.ui.widget.CollapsingTitleLayout
         android:id="@+id/backdrop_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
             android:transitionGroup="true"
             android:theme="@style/PlaidDarkOverlay" />
 
-    </io.plaidapp.base.ui.widget.CollapsingTitleLayout>
+    </io.plaidapp.core.ui.widget.CollapsingTitleLayout>
 
     <include layout="@layout/designer_news_story_fab" />
 

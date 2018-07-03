@@ -36,7 +36,7 @@ import android.view.animation.Interpolator;
 import java.util.Arrays;
 
 import io.plaidapp.about.R;
-import io.plaidapp.base.util.AnimUtils;
+import io.plaidapp.core.util.AnimUtils;
 
 /**
  * An ink inspired widget for indicating pages in a {@link ViewPager}.
