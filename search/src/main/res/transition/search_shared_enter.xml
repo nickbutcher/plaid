@@ -26,7 +26,7 @@
     </targets>
     <changeBounds android:interpolator="@android:interpolator/fast_out_slow_in" />
     <transition
-        class="io.plaidapp.base.ui.transitions.StartAnimatable"
+        class="io.plaidapp.core.ui.transitions.StartAnimatable"
         android:src="@drawable/avd_search_to_back" />
 
 </transitionSet>

@@ -22,8 +22,8 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 
 import io.plaidapp.R;
-import io.plaidapp.base.ui.widget.BaselineGridTextView;
-import io.plaidapp.base.util.ViewUtils;
+import io.plaidapp.core.ui.widget.BaselineGridTextView;
+import io.plaidapp.core.util.ViewUtils;
 
 /**
  * An extension to {@link android.widget.TextView} which sizes text to grow up to a specified

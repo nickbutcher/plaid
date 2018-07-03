@@ -34,7 +34,7 @@
         android:padding="@dimen/padding_normal"
         android:rowCount="2">
 
-        <io.plaidapp.base.ui.widget.ForegroundImageView
+        <io.plaidapp.core.ui.widget.ForegroundImageView
             android:id="@+id/avatar"
             android:layout_width="56dp"
             android:layout_height="56dp"
@@ -42,13 +42,13 @@
             android:layout_rowSpan="2"
             android:src="@drawable/avatar_placeholder" />
 
-        <io.plaidapp.base.ui.widget.BaselineGridTextView
+        <io.plaidapp.core.ui.widget.BaselineGridTextView
             android:layout_marginEnd="@dimen/padding_normal"
             android:paddingTop="@dimen/spacing_micro"
             android:text="@string/logged_in_as"
             android:textAppearance="@style/TextAppearance.Comment" />
 
-        <io.plaidapp.base.ui.widget.BaselineGridTextView
+        <io.plaidapp.core.ui.widget.BaselineGridTextView
             android:id="@+id/name"
             android:layout_marginEnd="@dimen/padding_normal"
             android:paddingTop="@dimen/spacing_micro"

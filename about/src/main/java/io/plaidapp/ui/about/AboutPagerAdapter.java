@@ -36,7 +36,7 @@ import java.security.InvalidParameterException;
 
 import in.uncod.android.bypass.Bypass;
 import io.plaidapp.about.R;
-import io.plaidapp.base.util.HtmlUtils;
+import io.plaidapp.core.util.HtmlUtils;
 
 class AboutPagerAdapter extends PagerAdapter {
 

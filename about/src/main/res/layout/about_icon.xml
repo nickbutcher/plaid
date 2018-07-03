@@ -40,7 +40,7 @@
             android:scaleType="centerInside"
             android:src="@drawable/ic_launcher_512px" />
 
-        <io.plaidapp.base.ui.widget.BaselineGridTextView
+        <io.plaidapp.core.ui.widget.BaselineGridTextView
             android:id="@+id/icon_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

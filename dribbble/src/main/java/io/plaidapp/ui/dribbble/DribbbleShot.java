@@ -57,20 +57,20 @@ import com.bumptech.glide.request.target.Target;
 
 import java.text.NumberFormat;
 
-import io.plaidapp.base.data.api.dribbble.model.Shot;
-import io.plaidapp.base.ui.widget.ParallaxScrimageView;
-import io.plaidapp.base.util.Activities;
-import io.plaidapp.base.util.ColorUtils;
-import io.plaidapp.base.util.HtmlUtils;
-import io.plaidapp.base.util.ViewUtils;
-import io.plaidapp.base.util.customtabs.CustomTabActivityHelper;
-import io.plaidapp.base.util.glide.GlideApp;
-import io.plaidapp.base.util.glide.GlideUtils;
+import io.plaidapp.core.data.api.dribbble.model.Shot;
+import io.plaidapp.core.ui.widget.ParallaxScrimageView;
+import io.plaidapp.core.util.Activities;
+import io.plaidapp.core.util.ColorUtils;
+import io.plaidapp.core.util.HtmlUtils;
+import io.plaidapp.core.util.ViewUtils;
+import io.plaidapp.core.util.customtabs.CustomTabActivityHelper;
+import io.plaidapp.core.util.glide.GlideApp;
+import io.plaidapp.core.util.glide.GlideUtils;
 import io.plaidapp.dribbble.R;
 import io.plaidapp.ui.recyclerview.InsetDividerDecoration;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 
-import static io.plaidapp.base.util.AnimUtils.getFastOutSlowInInterpolator;
+import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
 
 public class DribbbleShot extends Activity {
 

@@ -19,7 +19,7 @@ package io.plaidapp.ui.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import io.plaidapp.base.ui.widget.ForegroundLinearLayout;
+import io.plaidapp.core.ui.widget.ForegroundLinearLayout;
 
 /**
  * An extension to ForegroundLinearLayout that is always square.

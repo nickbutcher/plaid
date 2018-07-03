@@ -56,13 +56,13 @@
             <target android:targetId="@id/backdrop_toolbar" />
         </targets>
         <transition
-            class="io.plaidapp.base.ui.transitions.ReflowText"
+            class="io.plaidapp.core.ui.transitions.ReflowText"
             app:velocity="1000dp"
             app:minDuration="230"
             app:maxDuration="230"
             app:staggerDelay="10"
             app:freezeFrame="true">
-            <pathMotion class="io.plaidapp.base.ui.transitions.GravityArcMotion" />
+            <pathMotion class="io.plaidapp.core.ui.transitions.GravityArcMotion" />
         </transition>
         <transition
             class="io.plaidapp.ui.transitions.LiftOff"

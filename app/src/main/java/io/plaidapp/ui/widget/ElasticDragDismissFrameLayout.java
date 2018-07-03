@@ -29,9 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.plaidapp.R;
-import io.plaidapp.base.util.AnimUtils;
-import io.plaidapp.base.util.ColorUtils;
-import io.plaidapp.base.util.ViewUtils;
+import io.plaidapp.core.util.AnimUtils;
+import io.plaidapp.core.util.ColorUtils;
+import io.plaidapp.core.util.ViewUtils;
 
 /**
  * A {@link FrameLayout} which responds to nested scrolls to create drag-dismissable layouts.

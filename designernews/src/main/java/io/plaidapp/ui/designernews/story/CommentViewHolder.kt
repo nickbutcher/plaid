@@ -23,9 +23,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import io.plaidapp.base.ui.recyclerview.SlideInItemAnimator
-import io.plaidapp.base.util.AnimUtils.getFastOutSlowInInterpolator
-import io.plaidapp.base.util.AnimUtils.getLinearOutSlowInInterpolator
+import io.plaidapp.core.ui.recyclerview.SlideInItemAnimator
+import io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator
+import io.plaidapp.core.util.AnimUtils.getLinearOutSlowInInterpolator
 import io.plaidapp.designernews.R
 import io.plaidapp.ui.widget.AuthorTextView
 

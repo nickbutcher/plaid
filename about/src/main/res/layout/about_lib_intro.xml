@@ -16,7 +16,7 @@
   ~
   -->
 
-<io.plaidapp.base.ui.widget.BaselineGridTextView
+<io.plaidapp.core.ui.widget.BaselineGridTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/libraries_intro"
