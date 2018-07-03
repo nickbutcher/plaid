@@ -67,7 +67,7 @@ import io.plaidapp.core.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.core.util.glide.GlideApp;
 import io.plaidapp.core.util.glide.GlideUtils;
 import io.plaidapp.dribbble.R;
-import io.plaidapp.ui.recyclerview.InsetDividerDecoration;
+import io.plaidapp.core.ui.recyclerview.InsetDividerDecoration;
 import io.plaidapp.ui.widget.ElasticDragDismissFrameLayout;
 
 import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
