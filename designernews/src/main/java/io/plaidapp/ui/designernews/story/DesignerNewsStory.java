@@ -72,7 +72,6 @@ import java.util.List;
 
 import in.uncod.android.bypass.Bypass;
 import io.plaidapp.core.data.Result;
-import io.plaidapp.core.data.ResultKt;
 import io.plaidapp.core.designernews.DesignerNewsPrefs;
 import io.plaidapp.core.designernews.Injection;
 import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRepository;
@@ -146,7 +145,7 @@ public class DesignerNewsStory extends Activity {
 
         commentsRepository.getComments(story.links.getComments(),
                 result -> {
-                    if (ResultKt.isSuccessful(result)) {
+                    if (result instanceof Result.Success) {
                         Result.Success<List<Comment>> success =
                                 (Result.Success<List<Comment>>) result;
                         List<Comment> data = success.getData();
