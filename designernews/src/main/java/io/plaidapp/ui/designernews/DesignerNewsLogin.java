@@ -63,7 +63,7 @@ import io.plaidapp.core.designernews.data.api.model.User;
 import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRepository;
 import io.plaidapp.core.util.glide.GlideApp;
 import io.plaidapp.designernews.R;
-import io.plaidapp.ui.transitions.FabTransform;
+import io.plaidapp.core.ui.transitions.FabTransform;
 import io.plaidapp.ui.transitions.MorphTransform;
 import io.plaidapp.core.util.ScrimUtil;
 import kotlin.Unit;
