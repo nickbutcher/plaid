@@ -200,7 +200,7 @@ public class DribbbleShot extends Activity {
         ((TextView) title).setText(shot.title);
         if (!TextUtils.isEmpty(shot.description)) {
             final Spanned descText = shot.getParsedDescription(
-                    ContextCompat.getColorStateList(this, io.plaidapp.R.color.dribbble_links),
+                    ContextCompat.getColorStateList(this, R.color.dribbble_links),
                     ContextCompat.getColor(this, io.plaidapp.R.color.dribbble_link_highlight));
             HtmlUtils.setTextWithNiceLinks((TextView) description, descText);
         } else {
