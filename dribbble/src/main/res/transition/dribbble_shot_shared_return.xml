@@ -28,7 +28,7 @@
         <changeBounds android:interpolator="@android:interpolator/fast_out_slow_in" />
         <!-- compensate for the diff in elevation of this element in the two activities -->
         <transition
-            class="io.plaidapp.ui.transitions.LiftOff"
+            class="io.plaidapp.core.ui.transitions.LiftOff"
             app:initialElevation="-4dp"
             app:finalElevation="-2dp" />
     </transitionSet>
