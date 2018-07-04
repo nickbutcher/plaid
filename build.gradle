@@ -23,7 +23,7 @@ buildscript {
             'supportLibrary'  : '27.1.1',
             'constraintLayout': '1.1.1',
             'glide'           : '4.7.1',
-            'kotlin'          : '1.2.50',
+            'kotlin'          : '1.2.51',
             'retrofit'        : '2.4.0',
             'okhttp'          : '3.10.0',
             'gson'            : '2.8.5',
