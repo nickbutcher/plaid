@@ -47,6 +47,7 @@ android {
 
     buildTypes {
         release {
+            buildConfigField "boolean", "DESIGNER_NEWS_V2", "false"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
