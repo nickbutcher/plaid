@@ -25,8 +25,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.plaidapp.core.data.api.dribbble.DribbbleSearchService;
-import io.plaidapp.core.data.api.dribbble.model.Shot;
+import io.plaidapp.core.dribbble.data.search.DribbbleSearchService;
+import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.designernews.Injection;
 import io.plaidapp.core.designernews.data.api.DesignerNewsRepository;
 import retrofit2.Call;

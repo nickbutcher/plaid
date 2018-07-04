@@ -20,24 +20,21 @@ package io.plaidapp.core.data;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import io.plaidapp.core.data.api.dribbble.DribbbleSearchService;
-import io.plaidapp.core.data.api.dribbble.model.Shot;
-import io.plaidapp.core.data.api.dribbble.model.User;
 import io.plaidapp.core.data.prefs.SourceManager;
 import io.plaidapp.core.designernews.Injection;
 import io.plaidapp.core.designernews.data.api.DesignerNewsRepository;
+import io.plaidapp.core.dribbble.DribbbleInjection;
+import io.plaidapp.core.dribbble.data.DribbbleRepository;
+import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.producthunt.data.api.ProductHuntInjection;
 import io.plaidapp.core.producthunt.data.api.ProductHuntRepository;
 import io.plaidapp.core.ui.FilterAdapter;
 import kotlin.Unit;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Responsible for loading data from the various sources. Instantiating classes are responsible for
@@ -46,6 +43,7 @@ import retrofit2.Response;
 public abstract class DataManager extends BaseDataManager<List<? extends PlaidItem>>
         implements LoadSourceCallback {
 
+    private final DribbbleRepository dribbbleRepository;
     private final DesignerNewsRepository designerNewsRepository;
     private final ProductHuntRepository productHuntRepository;
     private final FilterAdapter filterAdapter;
@@ -54,6 +52,7 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
 
     public DataManager(Context context, FilterAdapter filterAdapter) {
         super();
+        dribbbleRepository = DribbbleInjection.provideDribbbleRepository();
         designerNewsRepository = Injection.provideDesignerNewsRepository(context);
         productHuntRepository = ProductHuntInjection.provideProductHuntRepository();
 
@@ -179,24 +178,15 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
     }
 
     private void loadDribbbleSearch(final Source.DribbbleSearchSource source, final int page) {
-        final Call<List<Shot>> searchCall = getDribbbleSearchApi().search(source.query, page,
-                DribbbleSearchService.PER_PAGE_DEFAULT, DribbbleSearchService.SORT_RECENT);
-        searchCall.enqueue(new Callback<List<Shot>>() {
-            @Override
-            public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
-                if (response.isSuccessful()) {
-                    sourceLoaded(response.body(), page, source.key);
-                } else {
-                    loadFailed(source.key);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Shot>> call, Throwable t) {
+        dribbbleRepository.search(source.query, page, result -> {
+            if (result instanceof Result.Success) {
+                Result.Success<List<Shot>> success = (Result.Success<List<Shot>>) result;
+                sourceLoaded(success.getData(), page, source.key);
+            } else {
                 loadFailed(source.key);
             }
+            return Unit.INSTANCE;
         });
-        inflight.put(source.key, searchCall);
     }
 
     private void loadProductHunt(final int page) {
