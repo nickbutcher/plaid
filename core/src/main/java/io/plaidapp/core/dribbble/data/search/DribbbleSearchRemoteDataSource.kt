@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.comments
+package io.plaidapp.core.dribbble.data.search
 
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.api.model.CommentResponse
+import io.plaidapp.core.dribbble.data.api.model.Shot
+import io.plaidapp.core.dribbble.data.search.DribbbleSearchRemoteDataSource.SortOrder.RECENT
+import io.plaidapp.core.dribbble.data.search.DribbbleSearchService.Companion.PER_PAGE_DEFAULT
 import java.io.IOException
 
-/**
- * Work with the Designer News API to get comments. The class knows how to construct the requests.
- */
-class DesignerNewsCommentsRemoteDataSource(private val service: DesignerNewsService) {
+class DribbbleSearchRemoteDataSource(private val service: DribbbleSearchService) {
 
-    /**
-     * Get a list of comments based on ids from Designer News API.
-     */
-    suspend fun getComments(ids: List<Long>): Result<List<CommentResponse>> {
-        val requestIds = ids.joinToString(",")
-        val response = service.getComments(requestIds).await()
+    suspend fun search(
+        query: String,
+        page: Int,
+        sortOrder: SortOrder = RECENT,
+        pageSize: Int = PER_PAGE_DEFAULT
+    ): Result<List<Shot>> {
+        val response = service.searchDeferred(query, page, sortOrder.sort, pageSize).await()
         if (response.isSuccessful) {
             val body = response.body()
             if (body != null) {
@@ -41,12 +40,17 @@ class DesignerNewsCommentsRemoteDataSource(private val service: DesignerNewsServ
         return Result.Error(IOException("Error getting comments ${response.code()} ${response.message()}"))
     }
 
-    companion object {
-        @Volatile private var INSTANCE: DesignerNewsCommentsRemoteDataSource? = null
+    enum class SortOrder(val sort: String) {
+        POPULAR(""),
+        RECENT("latest")
+    }
 
-        fun getInstance(service: DesignerNewsService): DesignerNewsCommentsRemoteDataSource {
+    companion object {
+        @Volatile private var INSTANCE: DribbbleSearchRemoteDataSource? = null
+
+        fun getInstance(service: DribbbleSearchService): DribbbleSearchRemoteDataSource {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: DesignerNewsCommentsRemoteDataSource(service).also { INSTANCE = it }
+                INSTANCE ?: DribbbleSearchRemoteDataSource(service).also { INSTANCE = it }
             }
         }
     }

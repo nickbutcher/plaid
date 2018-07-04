@@ -51,7 +51,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import io.plaidapp.core.data.api.dribbble.model.Shot;
+import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.core.ui.widget.ParallaxScrimageView;
 import io.plaidapp.core.util.Activities;
@@ -163,9 +163,9 @@ public class DribbbleShot extends Activity {
         final Resources res = getResources();
 
         // load the main image
-        final int[] imageSize = shot.images.bestSize();
+        final int[] imageSize = shot.getImages().bestSize();
         GlideApp.with(this)
-                .load(shot.images.best())
+                .load(shot.getImages().best())
                 .listener(shotLoadListener)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .priority(Priority.IMMEDIATE)
@@ -187,7 +187,7 @@ public class DribbbleShot extends Activity {
                 });
 
         title.setText(shot.getTitle());
-        if (!TextUtils.isEmpty(shot.description)) {
+        if (!TextUtils.isEmpty(shot.getDescription())) {
             final Spanned descText = shot.getParsedDescription(
                     ContextCompat.getColorStateList(this, R.color.dribbble_links),
                     ContextCompat.getColor(this, io.plaidapp.R.color.dribbble_link_highlight));
@@ -198,34 +198,33 @@ public class DribbbleShot extends Activity {
         NumberFormat nf = NumberFormat.getInstance();
         likeCount.setText(
                 res.getQuantityString(io.plaidapp.R.plurals.likes,
-                        (int) shot.likes_count,
-                        nf.format(shot.likes_count)));
-        likeCount.setOnClickListener(v ->
-                ((AnimatedVectorDrawable) likeCount.getCompoundDrawables()[1]).start());
-        if (shot.likes_count == 0) {
-            likeCount.setBackground(null); // clear touch ripple if doesn't do anything
-        }
+                        (int) shot.getLikesCount(),
+                        nf.format(shot.getLikesCount())));
+        likeCount.setOnClickListener(v -> {
+            ((AnimatedVectorDrawable) likeCount.getCompoundDrawables()[1]).start();
+        });
         viewCount.setText(
                 res.getQuantityString(io.plaidapp.R.plurals.views,
-                        (int) shot.views_count,
-                        nf.format(shot.views_count)));
+                        (int) shot.getViewsCount(),
+                        nf.format(shot.getViewsCount())));
         viewCount.setOnClickListener(v -> (
                 (AnimatedVectorDrawable) viewCount.getCompoundDrawables()[1]).start());
         share.setOnClickListener(v -> {
             ((AnimatedVectorDrawable) share.getCompoundDrawables()[1]).start();
             new ShareDribbbleImageTask(DribbbleShot.this, shot).execute();
         });
-        if (shot.user != null) {
-            playerName.setText(shot.user.name.toLowerCase());
+        if (shot.getUser() != null) {
+            playerName.setText(shot.getUser().getName().toLowerCase());
             GlideApp.with(this)
-                    .load(shot.user.getHighQualityAvatarUrl())
+                    .load(shot.getUser().getHighQualityAvatarUrl())
                     .circleCrop()
                     .placeholder(io.plaidapp.R.drawable.avatar_placeholder)
                     .override(largeAvatarSize, largeAvatarSize)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(playerAvatar);
-            if (shot.created_at != null) {
-                shotTimeAgo.setText(DateUtils.getRelativeTimeSpanString(shot.created_at.getTime(),
+            if (shot.getCreatedAt() != null) {
+                shotTimeAgo.setText(DateUtils.getRelativeTimeSpanString(
+                        shot.getCreatedAt().getTime(),
                         System.currentTimeMillis(),
                         DateUtils.SECOND_IN_MILLIS).toString().toLowerCase());
             }
