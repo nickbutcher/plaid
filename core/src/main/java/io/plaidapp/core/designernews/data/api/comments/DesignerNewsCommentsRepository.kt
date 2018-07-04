@@ -101,7 +101,7 @@ class DesignerNewsCommentsRepository(
         // for every reply, get the comment to which the reply belongs to and add it to the list
         // of replies for that comment
         replies.map { reply ->
-            comments.find { it -> it.id == reply.links.parentComment }?.addReply(reply)
+            comments.find { it.id == reply.links.parentComment }?.addReply(reply)
         }
         return comments
     }
