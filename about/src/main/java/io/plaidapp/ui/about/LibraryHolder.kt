@@ -22,9 +22,9 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
-
 import io.plaidapp.about.R
 import io.plaidapp.core.util.glide.GlideApp
+import io.plaidapp.R as appR
 
 typealias OnClick = (link: String, position: Int) -> Unit
 
@@ -52,7 +52,7 @@ internal class LibraryHolder(
         val request = GlideApp.with(image.context)
                 .load(lib.imageUrl)
                 .transition(withCrossFade())
-                .placeholder(io.plaidapp.R.drawable.avatar_placeholder)
+                .placeholder(appR.drawable.avatar_placeholder)
         if (lib.circleCrop) {
             request.circleCrop()
         }
