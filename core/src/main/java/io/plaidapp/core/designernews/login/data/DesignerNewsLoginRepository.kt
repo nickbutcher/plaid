@@ -37,7 +37,7 @@ class DesignerNewsLoginRepository(
         get() = user != null
 
     init {
-            user = localDataSource.user
+        user = localDataSource.user
     }
 
     fun logout() {
@@ -64,10 +64,8 @@ class DesignerNewsLoginRepository(
     }
 
     private fun setLoggedInUser(loggedInUser: User) {
-        loggedInUser.let {
-            localDataSource.user = it
-            user = loggedInUser
-        }
+        user = loggedInUser
+        localDataSource.user = user
     }
 
     // exposing this for now, until we can remove the API usage from the DesignerNewsPrefs
