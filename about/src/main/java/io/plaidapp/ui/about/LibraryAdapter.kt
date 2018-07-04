@@ -23,16 +23,15 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-
-import java.security.InvalidParameterException
-
 import io.plaidapp.about.R
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
+import java.security.InvalidParameterException
+import io.plaidapp.R as appR
 
 /**
  * Adapter that holds libraries.
  */
-internal class LibraryAdapter(private val host: Activity
+internal class LibraryAdapter(private val libraries: List<Library>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -49,60 +48,37 @@ internal class LibraryAdapter(private val host: Activity
                 .inflate(R.layout.library, parent, false)
         ) { link, position ->
             if (position != RecyclerView.NO_POSITION)
-                openLink(link)
+                if (parent.context is Activity) {
+                    openLink(link, parent.context as Activity)
+                }
         }
     }
 
-    private fun openLink(link: String) {
+    private fun openLink(link: String, context: Activity) {
         CustomTabActivityHelper.openCustomTab(
-                host,
+                context,
                 CustomTabsIntent.Builder()
-                        .setToolbarColor(ContextCompat.getColor(host, io.plaidapp.R.color.primary))
+                        .setToolbarColor(ContextCompat.getColor(context,
+                                appR.color.primary))
                         .addDefaultShareMenuItem()
                         .build(), Uri.parse(link))
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == VIEW_TYPE_LIBRARY) {
-            (holder as LibraryHolder).bind(libs[position - 1]) // adjust for intro
+            (holder as LibraryHolder).bind(libraries[position - 1]) // adjust for intro
         }
     }
 
     override fun getItemViewType(position: Int) =
             if (position == 0) VIEW_TYPE_INTRO else VIEW_TYPE_LIBRARY
 
-    override fun getItemCount() = libs.size + 1 // + 1 for the static intro view
+    override fun getItemCount() = libraries.size + 1 // + 1 for the static intro view
 
     companion object {
 
         private const val VIEW_TYPE_INTRO = 0
         private const val VIEW_TYPE_LIBRARY = 1
-
-        private val libs = arrayOf(Library("Android support libraries",
-                "The Android support libraries offer a number of features that are not built " + "into the framework.",
-                "https://developer.android.com/topic/libraries/support-library",
-                "https://developer.android.com/images/android_icon_125.png",
-                false), Library("Bypass",
-                "Skip the HTML, Bypass takes markdown and renders it directly.",
-                "https://github.com/Uncodin/bypass",
-                "https://avatars.githubusercontent.com/u/1072254",
-                true), Library("Glide",
-                "An image loading and caching library for Android focused on smooth scrolling.",
-                "https://github.com/bumptech/glide",
-                "https://avatars.githubusercontent.com/u/423539",
-                false), Library("JSoup",
-                "Java HTML Parser, with best of DOM, CSS, and jquery.",
-                "https://github.com/jhy/jsoup/",
-                "https://avatars.githubusercontent.com/u/76934",
-                true), Library("OkHttp",
-                "An HTTP & HTTP/2 client for Android and Java applications.",
-                "http://square.github.io/okhttp/",
-                "https://avatars.githubusercontent.com/u/82592",
-                false), Library("Retrofit",
-                "A type-safe HTTP client for Android and Java.",
-                "http://square.github.io/retrofit/",
-                "https://avatars.githubusercontent.com/u/82592",
-                false))
     }
 
 }

@@ -16,13 +16,17 @@
 
 package io.plaidapp.ui.about
 
-import android.app.Activity
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat.finishAfterTransition
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AppCompatActivity
 import android.transition.TransitionInflater
 import io.plaidapp.about.R
-import io.plaidapp.ui.about.widget.InkPageIndicator
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
+import io.plaidapp.ui.about.widget.InkPageIndicator
+import io.plaidapp.R as appR
 
 /**
  * About screen. This displays 3 pages in a ViewPager:
@@ -30,23 +34,23 @@ import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
  * – Credit Roman for the awesome icon
  * – Credit libraries
  */
-class AboutActivity : Activity() {
-
-    private var draggableFrame: ElasticDragDismissFrameLayout? = null
-    private var pager: ViewPager? = null
-    private var pageIndicator: InkPageIndicator? = null
+class AboutActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
-        draggableFrame = findViewById(R.id.draggable_frame)
-        pager = findViewById(R.id.pager)
-        pageIndicator = findViewById(R.id.indicator)
 
-        pager?.apply {
-            adapter = AboutPagerAdapter(this@AboutActivity)
-            pageMargin = resources.getDimensionPixelSize(io.plaidapp.R.dimen.spacing_normal)
+        val draggableFrame = findViewById<ElasticDragDismissFrameLayout>(R.id.draggable_frame)
+        val pager = findViewById<ViewPager>(R.id.pager)
+        val pageIndicator = findViewById<InkPageIndicator>(R.id.indicator)
+
+        val aboutViewModel = ViewModelProviders.of(this).get(AboutViewModel::class.java)
+
+        pager.apply {
+            adapter = AboutPagerAdapter(aboutViewModel)
+            pageMargin = resources.getDimensionPixelSize(appR.dimen.spacing_normal)
         }
+
         pageIndicator?.setViewPager(pager)
 
         draggableFrame?.addListener(
@@ -54,7 +58,7 @@ class AboutActivity : Activity() {
                     override fun onDragDismissed() {
                         // if we drag dismiss downward then the default reversal of the enter
                         // transition would slide content upward which looks weird. So reverse it.
-                        if (draggableFrame!!.translationY > 0) {
+                        if (draggableFrame.translationY > 0) {
                             window.returnTransition = TransitionInflater.from(this@AboutActivity)
                                     .inflateTransition(R.transition.about_return_downward)
                         }
