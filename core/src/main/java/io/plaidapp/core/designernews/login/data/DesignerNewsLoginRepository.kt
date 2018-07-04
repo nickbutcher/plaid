@@ -67,10 +67,11 @@ class DesignerNewsLoginRepository(
                 { error -> onError(error) })
     }
 
-    private fun setLoggedInUser(user: User?) {
-        user?.let {
+    private fun setLoggedInUser(loggedInUser: User?) {
+        loggedInUser?.let {
             localDataSource.user = it
             isLoggedIn = true
+            user = loggedInUser
         }
     }
 
