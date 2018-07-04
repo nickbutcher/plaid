@@ -22,6 +22,7 @@ import io.plaidapp.core.designernews.data.api.model.Comment
 import io.plaidapp.core.designernews.data.api.model.NewStoryRequest
 import io.plaidapp.core.designernews.data.api.model.Story
 import io.plaidapp.core.designernews.data.api.model.User
+import io.plaidapp.core.designernews.data.api.votes.model.UpvoteRequest
 import kotlinx.coroutines.experimental.Deferred
 import retrofit2.Call
 import retrofit2.Response
@@ -72,8 +73,13 @@ interface DesignerNewsService {
     fun login(@FieldMap loginParams: Map<String, String>): Call<AccessToken>
 
     @EnvelopePayload("story")
-    @POST("api/v1/stories/{id}/upvote")
+    @POST("api/v2/stories/{id}/upvote")
     fun upvoteStory(@Path("id") storyId: Long): Call<Story>
+
+    @EnvelopePayload("story")
+    @Headers("Content-Type: application/vnd.api+json")
+    @POST("api/v2/upvotes")
+    fun upvoteStoryV2(@Body request: UpvoteRequest): Deferred<Response<Unit>>
 
     @EnvelopePayload("stories")
     @Headers("Content-Type: application/vnd.api+json")
