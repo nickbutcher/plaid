@@ -78,6 +78,7 @@ import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRepos
 import io.plaidapp.core.designernews.data.api.model.Comment;
 import io.plaidapp.core.designernews.data.api.model.Story;
 import io.plaidapp.core.designernews.data.api.model.User;
+import io.plaidapp.core.designernews.data.api.votes.DesignerNewsVotesRepository;
 import io.plaidapp.core.ui.transitions.GravityArcMotion;
 import io.plaidapp.core.ui.transitions.ReflowText;
 import io.plaidapp.core.ui.widget.CollapsingTitleLayout;
@@ -128,6 +129,7 @@ public class DesignerNewsStory extends Activity {
     private Story story;
 
     private DesignerNewsCommentsRepository commentsRepository;
+    private DesignerNewsVotesRepository votesRepository;
 
     private DesignerNewsPrefs designerNewsPrefs;
     private Bypass markdown;
@@ -139,6 +141,8 @@ public class DesignerNewsStory extends Activity {
         setContentView(R.layout.activity_designer_news_story);
 
         commentsRepository = Injection.provideDesignerNewsCommentsRepository(this);
+        votesRepository = Injection.provideDesignerNewsVotesRepository(this);
+
         bindResources();
 
         story = getIntent().getParcelableExtra(Activities.DesignerNews.Story.EXTRA_STORY);
@@ -482,9 +486,7 @@ public class DesignerNewsStory extends Activity {
         }
 
         upvoteStory = header.findViewById(R.id.story_vote_action);
-        upvoteStory.setText(
-                getResources().getQuantityString(io.plaidapp.R.plurals.upvotes, story.vote_count,
-                        NumberFormat.getInstance().format(story.vote_count)));
+        storyUpvoted(story.vote_count);
         upvoteStory.setOnClickListener(v -> upvoteStory());
 
         final TextView share = header.findViewById(R.id.story_share_action);
@@ -536,25 +538,7 @@ public class DesignerNewsStory extends Activity {
                 if (TextUtils.isEmpty(enterComment.getText())) return;
                 enterComment.setEnabled(false);
                 postComment.setEnabled(false);
-                final Call<Comment> comment = designerNewsPrefs.getApi()
-                        .comment(story.id, enterComment.getText().toString());
-                comment.enqueue(new Callback<Comment>() {
-                    @Override
-                    public void onResponse(Call<Comment> call, Response<Comment> response) {
-                        enterComment.getText().clear();
-                        enterComment.setEnabled(true);
-                        postComment.setEnabled(true);
-                        commentsAdapter.addComment(response.body());
-                    }
-
-                    @Override
-                    public void onFailure(Call<Comment> call, Throwable t) {
-                        Toast.makeText(getApplicationContext(),
-                                "Failed to post comment :(", Toast.LENGTH_SHORT).show();
-                        enterComment.setEnabled(true);
-                        postComment.setEnabled(true);
-                    }
-                });
+                addComment();
             } else {
                 needsLogin(postComment, 0);
             }
@@ -564,25 +548,53 @@ public class DesignerNewsStory extends Activity {
         return enterCommentView;
     }
 
+    private void addComment() {
+        final Call<Comment> comment = designerNewsPrefs.getApi()
+                .comment(story.id, enterComment.getText().toString());
+        comment.enqueue(new Callback<Comment>() {
+            @Override
+            public void onResponse(Call<Comment> call, Response<Comment> response) {
+                Comment responseComment = response.body();
+                commentAdded(responseComment);
+            }
+
+            @Override
+            public void onFailure(Call<Comment> call, Throwable t) {
+                commentAddingFailed();
+            }
+        });
+    }
+
+    private void commentAddingFailed() {
+        Toast.makeText(getApplicationContext(),
+                "Failed to post comment :(", Toast.LENGTH_SHORT).show();
+        enterComment.setEnabled(true);
+        postComment.setEnabled(true);
+    }
+
+    private void commentAdded(Comment comment) {
+        enterComment.getText().clear();
+        enterComment.setEnabled(true);
+        postComment.setEnabled(true);
+        commentsAdapter.addComment(comment);
+    }
+
     private void upvoteStory() {
         if (designerNewsPrefs.isLoggedIn()) {
             if (!upvoteStory.isActivated()) {
                 upvoteStory.setActivated(true);
-                final Call<Story> upvoteStory
-                        = designerNewsPrefs.getApi().upvoteStory(story.id);
-                upvoteStory.enqueue(new Callback<Story>() {
-                    @Override
-                    public void onResponse(Call<Story> call, Response<Story> response) {
-                        final int newUpvoteCount = response.body().vote_count;
-                        DesignerNewsStory.this.upvoteStory.setText(getResources().getQuantityString(
-                                io.plaidapp.R.plurals.upvotes, newUpvoteCount,
-                                NumberFormat.getInstance().format(newUpvoteCount)));
-                    }
+                votesRepository.upvoteStory(story.id,
+                        it -> {
+                            if (it instanceof Result.Success) {
+                                storyUpvoted(story.vote_count + 1);
+                            } else {
+                                Toast.makeText(this, "Unable to upvote story", Toast.LENGTH_LONG)
+                                        .show();
+                                upvoteStory.setActivated(false);
+                            }
+                            return Unit.INSTANCE;
+                        });
 
-                    @Override
-                    public void onFailure(Call<Story> call, Throwable t) {
-                    }
-                });
             } else {
                 upvoteStory.setActivated(false);
                 // TODO delete upvote. Not available in v1 API.
@@ -591,6 +603,12 @@ public class DesignerNewsStory extends Activity {
         } else {
             needsLogin(upvoteStory, RC_LOGIN_UPVOTE);
         }
+    }
+
+    private void storyUpvoted(int newUpvoteCount) {
+        upvoteStory.setText(getResources().getQuantityString(
+                io.plaidapp.R.plurals.upvotes, newUpvoteCount,
+                NumberFormat.getInstance().format(newUpvoteCount)));
     }
 
     private void needsLogin(View triggeringView, int requestCode) {

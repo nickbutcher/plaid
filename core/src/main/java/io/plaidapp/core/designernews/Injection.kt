@@ -28,12 +28,13 @@ import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.core.designernews.data.api.DesignerNewsAuthTokenLocalDataSource
 import io.plaidapp.core.designernews.data.api.DesignerNewsRepository
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
+import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRemoteDataSource
+import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRepository
+import io.plaidapp.core.designernews.data.api.votes.DesignerNewsVotesRepository
 import io.plaidapp.core.designernews.login.data.DesignerNewsLoginLocalDataSource
 import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRemoteDataSource
 import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRepository
 import io.plaidapp.core.loggingInterceptor
-import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRemoteDataSource
-import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRepository
 import io.plaidapp.core.provideCoroutinesContextProvider
 import io.plaidapp.core.provideSharedPreferences
 import okhttp3.OkHttpClient
@@ -65,7 +66,7 @@ fun provideDesignerNewsLoginRemoteDataSource(context: Context): DesignerNewsLogi
 }
 
 private fun provideDesignerNewsAuthTokenLocalDataSource(
-    context: Context
+        context: Context
 ): DesignerNewsAuthTokenLocalDataSource {
     return DesignerNewsAuthTokenLocalDataSource.getInstance(
             provideSharedPreferences(
@@ -79,7 +80,7 @@ fun provideDesignerNewsService(context: Context): DesignerNewsService {
 }
 
 private fun provideDesignerNewsService(
-    authTokenDataSource: DesignerNewsAuthTokenLocalDataSource
+        authTokenDataSource: DesignerNewsAuthTokenLocalDataSource
 ): DesignerNewsService {
     val client = OkHttpClient.Builder()
             .addInterceptor(
@@ -101,7 +102,7 @@ fun provideDesignerNewsRepository(context: Context): DesignerNewsRepository {
     return provideDesignerNewsRepository(DesignerNewsPrefs.get(context).api)
 }
 
-fun provideDesignerNewsRepository(service: DesignerNewsService): DesignerNewsRepository {
+private fun provideDesignerNewsRepository(service: DesignerNewsService): DesignerNewsRepository {
     return DesignerNewsRepository.getInstance(service)
 }
 
@@ -112,11 +113,26 @@ fun provideDesignerNewsCommentsRepository(context: Context): DesignerNewsComment
 }
 
 private fun provideDesignerNewsCommentsRepository(
-    remoteDataSource: DesignerNewsCommentsRemoteDataSource,
-    contextProvider: CoroutinesContextProvider
+        remoteDataSource: DesignerNewsCommentsRemoteDataSource,
+        contextProvider: CoroutinesContextProvider
 ): DesignerNewsCommentsRepository {
     return DesignerNewsCommentsRepository.getInstance(remoteDataSource, contextProvider)
 }
 
 private fun provideDesignerNewsCommentsRemoteDataSource(service: DesignerNewsService) =
         DesignerNewsCommentsRemoteDataSource.getInstance(service)
+
+fun provideDesignerNewsVotesRepository(context: Context): DesignerNewsVotesRepository {
+    return provideDesignerNewsVotesRepository(
+            provideDesignerNewsService(context),
+            provideDesignerNewsLoginRepository(context),
+            provideCoroutinesContextProvider()
+    )
+}
+
+private fun provideDesignerNewsVotesRepository(
+        service: DesignerNewsService,
+        loginRepository: DesignerNewsLoginRepository,
+        contextProvider: CoroutinesContextProvider): DesignerNewsVotesRepository {
+    return DesignerNewsVotesRepository.getInstance(service, loginRepository, contextProvider)
+}
