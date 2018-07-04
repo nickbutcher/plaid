@@ -25,6 +25,9 @@ import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 import java.io.IOException
 
+/**
+ * Repository for Designer News votes.
+ */
 class DesignerNewsVotesRepository(
     private val service: DesignerNewsService,
     private val loginRepository: DesignerNewsLoginRepository,
@@ -37,6 +40,8 @@ class DesignerNewsVotesRepository(
         val user = loginRepository.user
         if (user != null) {
             val request = UpvoteRequest(id, user.id)
+            // right now we just care whether the response is successful or not.
+            // TODO save the response in the database
             val response = withContext(contextProvider.io) { service.upvoteStoryV2(request) }.await()
             if (response.isSuccessful) {
                 onResult(Result.Success(Unit))
