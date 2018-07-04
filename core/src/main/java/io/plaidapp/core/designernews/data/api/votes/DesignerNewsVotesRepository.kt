@@ -1,24 +1,39 @@
+/*
+ * Copyright 2018 Google, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.plaidapp.core.designernews.data.api.votes
 
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.api.votes.model.Upvote
 import io.plaidapp.core.designernews.data.api.votes.model.UpvoteRequest
-import io.plaidapp.core.designernews.data.api.votes.model.VoteLinks
 import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRepository
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 import java.io.IOException
 
 class DesignerNewsVotesRepository(
-        private val service: DesignerNewsService,
-        private val loginRepository: DesignerNewsLoginRepository,
-        private val contextProvider: CoroutinesContextProvider
+    private val service: DesignerNewsService,
+    private val loginRepository: DesignerNewsLoginRepository,
+    private val contextProvider: CoroutinesContextProvider
 ) {
     fun upvoteStory(
-            id: Long,
-            onResult: (result: Result<Unit>) -> Unit) = launch(contextProvider.main) {
+        id: Long,
+        onResult: (result: Result<Unit>) -> Unit
+    ) = launch(contextProvider.main) {
         val user = loginRepository.user
         if (user != null) {
             val request = UpvoteRequest(id, user.id)
@@ -40,9 +55,9 @@ class DesignerNewsVotesRepository(
         private var INSTANCE: DesignerNewsVotesRepository? = null
 
         fun getInstance(
-                service: DesignerNewsService,
-                loginRepository: DesignerNewsLoginRepository,
-                contextProvider: CoroutinesContextProvider
+            service: DesignerNewsService,
+            loginRepository: DesignerNewsLoginRepository,
+            contextProvider: CoroutinesContextProvider
         ): DesignerNewsVotesRepository {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE
