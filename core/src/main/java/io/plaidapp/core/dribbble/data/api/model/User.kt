@@ -14,10 +14,25 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.api
+package io.plaidapp.core.dribbble.data.api.model
 
-import io.plaidapp.core.data.CoroutinesContextProvider
-import kotlinx.coroutines.experimental.Unconfined
+import android.os.Parcelable
+import android.support.annotation.Keep
+import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
-fun provideFakeCoroutinesContextProvider(): CoroutinesContextProvider =
-        CoroutinesContextProvider(Unconfined, Unconfined)
+/**
+ * Models a dribbble user
+ */
+@Keep
+@Parcelize
+data class User(
+    @SerializedName("id") val id: Long,
+    @SerializedName("name") val name: String,
+    @SerializedName("username") val username: String,
+    @SerializedName("avatar_url") val avatarUrl: String? = null
+) : Parcelable {
+
+    val highQualityAvatarUrl: String?
+        get() = avatarUrl?.replace("/normal/", "/original/")
+}
