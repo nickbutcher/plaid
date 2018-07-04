@@ -66,7 +66,7 @@ fun provideDesignerNewsLoginRemoteDataSource(context: Context): DesignerNewsLogi
 }
 
 private fun provideDesignerNewsAuthTokenLocalDataSource(
-        context: Context
+    context: Context
 ): DesignerNewsAuthTokenLocalDataSource {
     return DesignerNewsAuthTokenLocalDataSource.getInstance(
             provideSharedPreferences(
@@ -80,7 +80,7 @@ fun provideDesignerNewsService(context: Context): DesignerNewsService {
 }
 
 private fun provideDesignerNewsService(
-        authTokenDataSource: DesignerNewsAuthTokenLocalDataSource
+    authTokenDataSource: DesignerNewsAuthTokenLocalDataSource
 ): DesignerNewsService {
     val client = OkHttpClient.Builder()
             .addInterceptor(
@@ -113,8 +113,8 @@ fun provideDesignerNewsCommentsRepository(context: Context): DesignerNewsComment
 }
 
 private fun provideDesignerNewsCommentsRepository(
-        remoteDataSource: DesignerNewsCommentsRemoteDataSource,
-        contextProvider: CoroutinesContextProvider
+    remoteDataSource: DesignerNewsCommentsRemoteDataSource,
+    contextProvider: CoroutinesContextProvider
 ): DesignerNewsCommentsRepository {
     return DesignerNewsCommentsRepository.getInstance(remoteDataSource, contextProvider)
 }
@@ -131,8 +131,9 @@ fun provideDesignerNewsVotesRepository(context: Context): DesignerNewsVotesRepos
 }
 
 private fun provideDesignerNewsVotesRepository(
-        service: DesignerNewsService,
-        loginRepository: DesignerNewsLoginRepository,
-        contextProvider: CoroutinesContextProvider): DesignerNewsVotesRepository {
+    service: DesignerNewsService,
+    loginRepository: DesignerNewsLoginRepository,
+    contextProvider: CoroutinesContextProvider
+): DesignerNewsVotesRepository {
     return DesignerNewsVotesRepository.getInstance(service, loginRepository, contextProvider)
 }
