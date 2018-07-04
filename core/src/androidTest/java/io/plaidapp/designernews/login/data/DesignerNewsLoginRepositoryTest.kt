@@ -79,6 +79,8 @@ class DesignerNewsLoginRepositoryTest {
         assertEquals(user, actualUser)
         // The user is logged in
         assertTrue(repository.isLoggedIn)
+        // The user cached is the expected user
+        assertEquals(repository.user, user)
     }
 
     @Test
@@ -93,6 +95,8 @@ class DesignerNewsLoginRepositoryTest {
 
         // Then the user is not logged in
         assertFalse(repository.isLoggedIn)
+        // The user cached null
+        assertNull(repository.user)
     }
 
     @Test
@@ -106,6 +110,8 @@ class DesignerNewsLoginRepositoryTest {
 
         // Then the user is logged out
         assertFalse(repository.isLoggedIn)
+        // The user cached null
+        assertNull(repository.user)
     }
 
     @Test
@@ -121,6 +127,8 @@ class DesignerNewsLoginRepositoryTest {
         assertTrue(errorCalled)
         // The user is not logged in
         assertFalse(repository.isLoggedIn)
+        // The user cached null
+        assertNull(repository.user)
     }
 
     private fun withLoginSuccessful() {
