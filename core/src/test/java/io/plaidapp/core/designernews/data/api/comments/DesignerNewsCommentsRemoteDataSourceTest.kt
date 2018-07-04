@@ -18,7 +18,9 @@ package io.plaidapp.core.designernews.data.api.comments
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
+import io.plaidapp.core.designernews.data.api.errorResponseBody
 import io.plaidapp.core.designernews.data.api.model.Comment
+import io.plaidapp.core.designernews.data.api.replies
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
