@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.api.comments
+package io.plaidapp.core.designernews.data.api
 
 import io.plaidapp.core.designernews.data.api.model.Comment
 import io.plaidapp.core.designernews.data.api.model.CommentLinks
