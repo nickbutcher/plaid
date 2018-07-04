@@ -28,23 +28,19 @@ class DesignerNewsLoginRepository(
     private val remoteDataSource: DesignerNewsLoginRemoteDataSource
 ) {
 
-    var isLoggedIn: Boolean = false
-        private set
-
     // local cache of the user object, so we don't retrieve it from the local storage every time
     // we need it
     var user: User? = null
         private set
 
+    val isLoggedIn: Boolean
+        get() = user != null
+
     init {
-        isLoggedIn = localDataSource.user != null
-        if (isLoggedIn) {
             user = localDataSource.user
-        }
     }
 
     fun logout() {
-        isLoggedIn = false
         user = null
 
         localDataSource.logout()
@@ -67,10 +63,9 @@ class DesignerNewsLoginRepository(
                 { error -> onError(error) })
     }
 
-    private fun setLoggedInUser(loggedInUser: User?) {
-        loggedInUser?.let {
+    private fun setLoggedInUser(loggedInUser: User) {
+        loggedInUser.let {
             localDataSource.user = it
-            isLoggedIn = true
             user = loggedInUser
         }
     }
