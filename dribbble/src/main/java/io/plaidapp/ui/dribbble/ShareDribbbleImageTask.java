@@ -73,13 +73,13 @@ class ShareDribbbleImageTask extends AsyncTask<Void, Void, File> {
         ShareCompat.IntentBuilder.from(activity)
                 .setText(getShareText())
                 .setType(getImageMimeType(fileName))
-                .setSubject(shot.title)
+                .setSubject(shot.getTitle())
                 .setStream(uri)
                 .startChooser();
     }
 
     private String getShareText() {
-        return "“" + shot.title + "” by " + shot.user.name + "\n" + shot.url;
+        return "“" + shot.getTitle() + "” by " + shot.user.name + "\n" + shot.getUrl();
     }
 
     private String getImageMimeType(@NonNull String fileName) {

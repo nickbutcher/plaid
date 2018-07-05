@@ -215,7 +215,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 layoutInflater.inflate(R.layout.designer_news_story_item, parent, false),
                 pocketIsInstalled,
                 (story, position) -> {
-                    PocketUtils.addToPocket(host, story.url);
+                    PocketUtils.addToPocket(host, story.getUrl());
                     // notify changed with a payload asking RV to run the anim
                     notifyItemChanged(position, HomeGridItemAnimator.ADD_TO_POCKET);
                     return Unit.INSTANCE;
@@ -225,7 +225,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     return Unit.INSTANCE;
                 },
                 story -> {
-                    if (story.url != null) {
+                    if (story.getUrl() != null) {
                         openTabDesignerNews(story);
                     }
                     return Unit.INSTANCE;
@@ -260,7 +260,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         CustomTabActivityHelper.openCustomTab(host,
                 Activities.DesignerNews.Story.INSTANCE
                         .customTabIntent(host, story, null).build(),
-                Uri.parse(story.url));
+                Uri.parse(story.getUrl()));
     }
 
     @NonNull
@@ -386,11 +386,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final ProductHuntPostHolder holder = new ProductHuntPostHolder(
                 layoutInflater.inflate(R.layout.product_hunt_item, parent, false),
                 post -> {
-                    openTabForProductHunt(post.discussion_url);
+                    openTabForProductHunt(post.getDiscussion_url());
                     return Unit.INSTANCE;
                 },
                 post -> {
-                    openTabForProductHunt(post.redirect_url);
+                    openTabForProductHunt(post.getRedirect_url());
                     return Unit.INSTANCE;
                 });
         return holder;
@@ -441,7 +441,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             case TYPE_LOADING_MORE:
                 return columns;
             default:
-                return getItem(position).colspan;
+                return getItem(position).getColspan();
         }
     }
 
@@ -473,7 +473,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (items == null || items.isEmpty()) return;
 
         PlaidItemSorting.PlaidItemGroupWeigher weigher = null;
-        switch (items.get(0).dataSource) {
+        switch (items.get(0).getDataSource()) {
             // some sources should just use the natural order i.e. as returned by the API as users
             // have an expectation about the order they appear in
             case SourceManager.SOURCE_PRODUCT_HUNT:
@@ -535,12 +535,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final int count = items.size();
         for (int i = 0; i < count; i++) {
             PlaidItem item = getItem(i);
-            if (item instanceof Shot && item.page > page) {
-                item.colspan = columns;
-                page = item.page;
+            if (item instanceof Shot && item.getPage() > page) {
+                item.setColspan(columns);
+                page = item.getPage();
                 expandedPositions.add(i);
             } else {
-                item.colspan = 1;
+                item.setColspan(1);
             }
         }
 
@@ -562,7 +562,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void removeDataSource(String dataSource) {
         for (int i = items.size() - 1; i >= 0; i--) {
             PlaidItem item = items.get(i);
-            if (dataSource.equals(item.dataSource)) {
+            if (dataSource.equals(item.getDataSource())) {
                 items.remove(i);
             }
         }
@@ -576,12 +576,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (getItemViewType(position) == TYPE_LOADING_MORE) {
             return -1L;
         }
-        return getItem(position).id;
+        return getItem(position).getId();
     }
 
     public int getItemPosition(final long itemId) {
         for (int position = 0; position < items.size(); position++) {
-            if (getItem(position).id == itemId) return position;
+            if (getItem(position).getId() == itemId) return position;
         }
         return RecyclerView.NO_POSITION;
     }

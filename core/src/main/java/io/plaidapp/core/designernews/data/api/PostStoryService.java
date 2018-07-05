@@ -136,16 +136,27 @@ public class PostStoryService extends IntentService {
     @NonNull
     private Story getStory(List<Story> stories, User user) {
         final Story returnedStory = stories.get(0);
-        final Story.Builder builder = Story.Builder.from(returnedStory)
-                .setUserId(user.getId())
-                .setUserDisplayName(user.getDisplayName())
-                .setUserPortraitUrl(user.getPortraitUrl());
         // API doesn't add a self URL, so potentially add one for consistency
-        if (TextUtils.isEmpty(returnedStory.url)) {
-            builder.setDefaultUrl(returnedStory.id);
-        }
-        final Story newStory = builder.build();
-        newStory.dataSource = SOURCE_NEW_DN_POST;
+        String defaultUrl = TextUtils.isEmpty(returnedStory.getUrl()) ?
+                String.valueOf(returnedStory.getId()) :
+                returnedStory.getUrl();
+
+        final Story newStory = new Story(returnedStory.getId(),
+                returnedStory.getTitle(),
+                defaultUrl,
+                returnedStory.getComment(),
+                returnedStory.getCommentHtml(),
+                returnedStory.getCommentCount(),
+                returnedStory.getVoteCount(),
+                user.getId(),
+                returnedStory.getCreatedAt(),
+                returnedStory.getLinks(),
+                user.getDisplayName(),
+                user.getPortraitUrl(),
+                returnedStory.getUserJob(),
+                returnedStory.getComments()
+        );
+        newStory.setDataSource(SOURCE_NEW_DN_POST);
         return newStory;
     }
 }

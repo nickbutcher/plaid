@@ -167,7 +167,7 @@ public class DribbbleShot extends Activity {
     @Override
     @TargetApi(Build.VERSION_CODES.M)
     public void onProvideAssistContent(AssistContent outContent) {
-        outContent.setWebUri(Uri.parse(shot.url));
+        outContent.setWebUri(Uri.parse(shot.getUrl()));
     }
 
     void bindShot(final boolean postponeEnterTransition) {
@@ -197,7 +197,7 @@ public class DribbbleShot extends Activity {
                     }
                 });
 
-        ((TextView) title).setText(shot.title);
+        ((TextView) title).setText(shot.getTitle());
         if (!TextUtils.isEmpty(shot.description)) {
             final Spanned descText = shot.getParsedDescription(
                     ContextCompat.getColorStateList(this, R.color.dribbble_links),
@@ -258,7 +258,7 @@ public class DribbbleShot extends Activity {
     private View.OnClickListener shotClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            openLink(shot.url);
+            openLink(shot.getUrl());
         }
     };
 
@@ -385,7 +385,7 @@ public class DribbbleShot extends Activity {
 
     void setResultAndFinish() {
         final Intent resultData = new Intent();
-        resultData.putExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID, shot.id);
+        resultData.putExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID, shot.getId());
         setResult(RESULT_OK, resultData);
         finishAfterTransition();
     }
