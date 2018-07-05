@@ -583,7 +583,7 @@ public class DesignerNewsStory extends Activity {
         if (designerNewsPrefs.isLoggedIn()) {
             if (!upvoteStory.isActivated()) {
                 upvoteStory.setActivated(true);
-                votesRepository.upvoteStory(story.id, designerNewsPrefs.getUser(),
+                votesRepository.upvoteStory(story.id, designerNewsPrefs.getUser().getId(),
                         it -> {
                             if (it instanceof Result.Success) {
                                 storyUpvoted(story.vote_count + 1);
