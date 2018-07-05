@@ -583,10 +583,10 @@ public class DesignerNewsStory extends Activity {
         if (designerNewsPrefs.isLoggedIn()) {
             if (!upvoteStory.isActivated()) {
                 upvoteStory.setActivated(true);
-                votesRepository.upvoteStory(story.id, designerNewsPrefs.getUser().getId(),
+                votesRepository.upvoteStory(story.getId(), designerNewsPrefs.getUser().getId(),
                         it -> {
                             if (it instanceof Result.Success) {
-                                storyUpvoted(story.vote_count + 1);
+                                storyUpvoted(story.getVoteCount() + 1);
                             } else {
                                 Toast.makeText(this, "Unable to upvote story", Toast.LENGTH_LONG)
                                         .show();

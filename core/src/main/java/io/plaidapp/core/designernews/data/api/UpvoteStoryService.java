@@ -64,7 +64,6 @@ public class UpvoteStoryService extends IntentService {
         final Call<Story> upvoteStoryCall = designerNewsPrefs.getApi().upvoteStory(storyId);
         try {
             final Response<Story> response = upvoteStoryCall.execute();
-            // int newVotesCount = response.body().voteCount;
             // TODO report success
         } catch (Exception e) {
             // TODO report failure
