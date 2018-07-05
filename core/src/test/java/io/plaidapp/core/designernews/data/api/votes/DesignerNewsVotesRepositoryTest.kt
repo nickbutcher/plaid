@@ -20,9 +20,7 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.api.any
 import io.plaidapp.core.designernews.data.api.errorResponseBody
-import io.plaidapp.core.designernews.data.api.model.User
 import io.plaidapp.core.designernews.data.api.provideFakeCoroutinesContextProvider
-import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRepository
 import kotlinx.coroutines.experimental.CompletableDeferred
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -36,57 +34,37 @@ import retrofit2.Response
 class DesignerNewsVotesRepositoryTest {
 
     private val userId = 3L
-    private val user = User(id = userId)
     private val storyId = 1345L
 
     private val service = Mockito.mock(DesignerNewsService::class.java)
-    private val loginRepository = Mockito.mock(DesignerNewsLoginRepository::class.java)
     private val votesRepository = DesignerNewsVotesRepository(
             service,
-            loginRepository,
             provideFakeCoroutinesContextProvider()
     )
 
     @Test
-    fun upvoteStory_whenUserLoggedIn_whenRequestSuccessful() {
-        // Given a logged in user
-        Mockito.`when`(loginRepository.user).thenReturn(user)
+    fun upvoteStory_whenRequestSuccessful() {
         // Given that the service responds with success
         val response = Response.success(Unit)
         Mockito.`when`(service.upvoteStoryV2(any())).thenReturn(CompletableDeferred(response))
         var result: Result<Unit>? = null
 
         // When upvoting a story
-        votesRepository.upvoteStory(storyId) { result = it }
+        votesRepository.upvoteStory(storyId, userId) { result = it }
 
         // Then the result is successful
         assertEquals(Result.Success(Unit), result)
     }
 
     @Test
-    fun upvoteStory_whenUserLoggedIn_whenRequestFailed() {
-        // Given a logged in user
-        Mockito.`when`(loginRepository.user).thenReturn(user)
+    fun upvoteStory_whenRequestFailed() {
         // Given that the service responds with error
         val response = Response.error<Unit>(404, errorResponseBody)
         Mockito.`when`(service.upvoteStoryV2(any())).thenReturn(CompletableDeferred(response))
         var result: Result<Unit>? = null
 
         // When upvoting a story
-        votesRepository.upvoteStory(storyId) { result = it }
-
-        // Then the result is error
-        assertTrue(result is Result.Error)
-    }
-
-    @Test
-    fun upvoteStory_whenUserNotLoggedIn() {
-        // Given a logged in user
-        Mockito.`when`(loginRepository.user).thenReturn(null)
-        var result: Result<Unit>? = null
-
-        // When upvoting a story
-        votesRepository.upvoteStory(storyId) { result = it }
+        votesRepository.upvoteStory(storyId, userId) { result = it }
 
         // Then the result is error
         assertTrue(result is Result.Error)
