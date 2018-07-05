@@ -15,8 +15,9 @@
   limitations under the License.
   -->
 
-<io.plaidapp.core.ui.widget.ForegroundRelativeLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -30,19 +31,19 @@
     <ImageView
         android:id="@+id/depth"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/comment_text"
         android:layout_marginStart="@dimen/padding_normal"
-        android:layout_marginEnd="@dimen/spacing_normal"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignBottom="@+id/comment_text" />
+        android:paddingEnd="@dimen/spacing_normal" />
 
     <io.plaidapp.core.ui.widget.BaselineGridTextView
         android:id="@+id/comment_time_ago"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:paddingTop="@dimen/spacing_micro"
         android:paddingEnd="@dimen/padding_normal"
         android:textAppearance="@style/TextAppearance.CommentTimestamp"
@@ -52,9 +53,9 @@
         android:id="@+id/comment_author"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@id/depth"
-        android:layout_toStartOf="@id/comment_time_ago"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/depth"
+        app:layout_constraintEnd_toStartOf="@id/comment_time_ago"
         android:paddingTop="@dimen/spacing_micro"
         android:ellipsize="end"
         android:textAppearance="@style/TextAppearance.CommentAuthor.DesignerNews"
@@ -62,10 +63,12 @@
 
     <io.plaidapp.core.ui.widget.BaselineGridTextView
         android:id="@+id/comment_text"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
+        app:layout_constraintStart_toEndOf="@id/depth"
+        app:layout_constraintTop_toBottomOf="@id/comment_author"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/spacing_micro"
         android:paddingEnd="@dimen/padding_normal"
         android:paddingBottom="@dimen/padding_normal"
         android:textAppearance="@style/TextAppearance.Comment"
@@ -73,4 +76,4 @@
         android:textColorLink="@color/designer_news_links"
         tools:text="Dude do you use sketch? You should totally use sketch. Should designers code??" />
 
-</io.plaidapp.core.ui.widget.ForegroundRelativeLayout>
+</android.support.constraint.ConstraintLayout>
