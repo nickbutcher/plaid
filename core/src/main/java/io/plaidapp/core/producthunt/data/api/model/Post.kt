@@ -17,6 +17,7 @@
 package io.plaidapp.core.producthunt.data.api.model
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import io.plaidapp.core.data.PlaidItem
 import kotlinx.android.parcel.Parcelize
 
@@ -25,13 +26,13 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 class Post(
-    override val id: Long = 0,
-    override val title: String? = null,
-    override var url: String? = null,
-    val name: String,
-    val tagline: String,
-    val discussion_url: String,
-    val redirect_url: String,
-    val comments_count: Int,
-    val votes_count: Int
+    @SerializedName("id") override val id: Long = 0,
+    @SerializedName("title") override val title: String? = null,
+    @SerializedName("url") override var url: String? = null,
+    @SerializedName("name") val name: String,
+    @SerializedName("tagline") val tagline: String,
+    @SerializedName("discussion_url") val discussionUrl: String,
+    @SerializedName("redirect_url") val redirectUrl: String,
+    @SerializedName("comments_count") val commentsCount: Int,
+    @SerializedName("votes_count") val votesCount: Int
 ) : PlaidItem(id, title, url), Parcelable

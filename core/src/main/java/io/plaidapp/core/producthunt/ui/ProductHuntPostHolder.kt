@@ -47,6 +47,6 @@ class ProductHuntPostHolder(
         post = item
         title.text = item.name
         tagline.text = item.tagline
-        comments.text = item.comments_count.toString()
+        comments.text = item.commentsCount.toString()
     }
 }

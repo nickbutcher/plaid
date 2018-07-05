@@ -386,11 +386,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final ProductHuntPostHolder holder = new ProductHuntPostHolder(
                 layoutInflater.inflate(R.layout.product_hunt_item, parent, false),
                 post -> {
-                    openTabForProductHunt(post.getDiscussion_url());
+                    openTabForProductHunt(post.getDiscussionUrl());
                     return Unit.INSTANCE;
                 },
                 post -> {
-                    openTabForProductHunt(post.getRedirect_url());
+                    openTabForProductHunt(post.getRedirectUrl());
                     return Unit.INSTANCE;
                 });
         return holder;
