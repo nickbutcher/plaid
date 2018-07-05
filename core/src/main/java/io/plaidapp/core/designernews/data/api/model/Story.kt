@@ -29,7 +29,7 @@ fun getDefaultUrl(id: Long) = "https://www.designernews.co/click/stories/$id"
  */
 @Parcelize
 data class Story(
-    @SerializedName("id") override val id: Long = 0L,
+    @SerializedName("id") override val id: Long,
     @SerializedName("title") override val title: String,
     @SerializedName("url")
     override var url: String? = getDefaultUrl(id),
