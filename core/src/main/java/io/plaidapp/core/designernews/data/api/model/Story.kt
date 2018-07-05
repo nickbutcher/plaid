@@ -27,9 +27,9 @@ import java.util.Date
  */
 @Parcelize
 class Story(
-    override val id: Long = 0,
-    override val title: String? = null,
-    override var url: String? = null,
+    @SerializedName("id") override val id: Long = 0,
+    @SerializedName("title") override val title: String? = null,
+    @SerializedName("url") override var url: String? = null,
     @SerializedName("comment") val comment: String? = null,
     @SerializedName("comment_html") val commentHtml: String? = null,
     @SerializedName("comment_count") val commentCount: Int = 0,
