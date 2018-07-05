@@ -131,7 +131,7 @@ public class Shot extends PlaidItem implements Parcelable {
         long tmpUpdated_at = in.readLong();
         updated_at = tmpUpdated_at != -1 ? new Date(tmpUpdated_at) : null;
         html_url = in.readString();
-        url = html_url;
+        setUrl(html_url);
         attachments_url = in.readString();
         buckets_url = in.readString();
         comments_url = in.readString();
@@ -338,9 +338,9 @@ public class Shot extends PlaidItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
-        dest.writeString(title);
-        dest.writeString(url);
+        dest.writeLong(getId());
+        dest.writeString(getTitle());
+        dest.writeString(getUrl());
         dest.writeString(description);
         dest.writeLong(width);
         dest.writeLong(height);

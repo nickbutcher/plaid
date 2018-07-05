@@ -77,7 +77,7 @@ class DesignerNewsStoryHolder(
         this.story = story
         title.text = story.title
         title.alpha = 1f // interrupted add to pocket anim can mangle
-        comments.text = story.comment_count.toString()
+        comments.text = story.commentCount.toString()
         itemView.transitionName = story.url
     }
 
