@@ -36,6 +36,7 @@ import io.plaidapp.core.designernews.login.data.DesignerNewsLoginLocalDataSource
 import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRemoteDataSource
 import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRepository
 import io.plaidapp.core.loggingInterceptor
+import io.plaidapp.core.designernews.data.users.UserRepository
 import io.plaidapp.core.provideCoroutinesContextProvider
 import io.plaidapp.core.provideSharedPreferences
 import okhttp3.OkHttpClient
@@ -108,17 +109,26 @@ private fun provideDesignerNewsRepository(service: DesignerNewsService): Designe
 }
 
 fun provideDesignerNewsCommentsRepository(context: Context): DesignerNewsCommentsRepository {
+    val service = provideDesignerNewsService(context)
     return provideDesignerNewsCommentsRepository(
-            provideDesignerNewsCommentsRemoteDataSource(provideDesignerNewsService(context)),
+            provideDesignerNewsCommentsRemoteDataSource(service),
+            provideUsersRepository(service),
             provideCoroutinesContextProvider())
 }
 
 private fun provideDesignerNewsCommentsRepository(
     remoteDataSource: DesignerNewsCommentsRemoteDataSource,
+    userRepository: UserRepository,
     contextProvider: CoroutinesContextProvider
 ): DesignerNewsCommentsRepository {
-    return DesignerNewsCommentsRepository.getInstance(remoteDataSource, contextProvider)
+    return DesignerNewsCommentsRepository.getInstance(
+            remoteDataSource,
+            userRepository,
+            contextProvider)
 }
+
+private fun provideUsersRepository(service: DesignerNewsService) =
+        UserRepository.getInstance(service)
 
 private fun provideDesignerNewsCommentsRemoteDataSource(service: DesignerNewsService) =
         DesignerNewsCommentsRemoteDataSource.getInstance(service)

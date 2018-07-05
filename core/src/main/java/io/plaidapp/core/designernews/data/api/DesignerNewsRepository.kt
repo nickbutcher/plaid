@@ -27,7 +27,7 @@ import retrofit2.Response
 /**
  * Repository class that handles work with Designer News.
  */
-class DesignerNewsRepository(private val service: io.plaidapp.core.designernews.data.api.DesignerNewsService) {
+class DesignerNewsRepository(private val service: DesignerNewsService) {
     private val inflight: MutableMap<String, Call<*>> = HashMap()
 
     fun loadTopStories(page: Int, callback: LoadSourceCallback) {
@@ -111,7 +111,7 @@ class DesignerNewsRepository(private val service: io.plaidapp.core.designernews.
         @Volatile
         private var INSTANCE: io.plaidapp.core.designernews.data.api.DesignerNewsRepository? = null
 
-        fun getInstance(service: io.plaidapp.core.designernews.data.api.DesignerNewsService): DesignerNewsRepository {
+        fun getInstance(service: DesignerNewsService): DesignerNewsRepository {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE
                         ?: DesignerNewsRepository(service).also { INSTANCE = it }
