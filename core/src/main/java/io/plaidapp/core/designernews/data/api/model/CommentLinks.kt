@@ -25,7 +25,7 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class CommentLinks(
-    @SerializedName("user") val user: String,
+    @SerializedName("user") val userId: Long,
     @SerializedName("story") val story: String,
     @SerializedName("parent_comment") val parentComment: Long? = null,
     @SerializedName("comments") val comments: List<Long> = emptyList(),
