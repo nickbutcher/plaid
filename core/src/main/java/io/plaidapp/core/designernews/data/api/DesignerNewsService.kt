@@ -66,6 +66,10 @@ interface DesignerNewsService {
     fun search(@Query("query") query: String, @Query("page") page: Int?): Call<List<Story>>
 
     @EnvelopePayload("users")
+    @GET("api/v2/users/{ids}")
+    fun getUsers(@Path("ids") userids: String): Deferred<Response<List<User>>>
+
+    @EnvelopePayload("users")
     @GET("api/v2/me")
     fun getAuthedUser(): Call<List<User>>
 
