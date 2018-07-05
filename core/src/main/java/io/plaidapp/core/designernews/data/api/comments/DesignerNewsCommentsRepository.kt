@@ -19,6 +19,8 @@ package io.plaidapp.core.designernews.data.api.comments
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.model.Comment
+import io.plaidapp.core.designernews.data.api.model.User
+import io.plaidapp.core.designernews.data.users.UserRepository
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 
@@ -27,8 +29,9 @@ import kotlinx.coroutines.experimental.withContext
  * get the data.
  */
 class DesignerNewsCommentsRepository(
-    private val remoteDataSource: DesignerNewsCommentsRemoteDataSource,
-    private val contextProvider: CoroutinesContextProvider
+        private val remoteDataSource: DesignerNewsCommentsRemoteDataSource,
+        private val userRepository: UserRepository,
+        private val contextProvider: CoroutinesContextProvider
 ) {
 
     /**
@@ -39,8 +42,8 @@ class DesignerNewsCommentsRepository(
      * business logic is away from the main context
      */
     fun getComments(
-        ids: List<Long>,
-        onResult: (result: Result<List<Comment>>) -> Unit
+            ids: List<Long>,
+            onResult: (result: Result<List<Comment>>) -> Unit
     ) = launch(contextProvider.main) {
         // request comments and await until the result is received.
         val result = withContext(contextProvider.io) { getAllComments(ids) }
@@ -76,6 +79,7 @@ class DesignerNewsCommentsRepository(
         // the last request was unsuccessful
         // if we already got some comments and replies, then use that data and ignore the error
         return if (replies.isNotEmpty()) {
+            fillUserData(replies)
             matchComments(replies)
             Result.Success(replies[0])
         } else {
@@ -95,8 +99,8 @@ class DesignerNewsCommentsRepository(
     }
 
     private fun matchCommentsWithReplies(
-        comments: List<Comment>,
-        replies: List<Comment>
+            comments: List<Comment>,
+            replies: List<Comment>
     ): List<Comment> {
         // for every reply, get the comment to which the reply belongs to and add it to the list
         // of replies for that comment
@@ -106,19 +110,46 @@ class DesignerNewsCommentsRepository(
         return comments
     }
 
+    private suspend fun fillUserData(replies: List<List<Comment>>) {
+        // get all the user ids corresponding to the comments
+        val userIds = mutableSetOf<Long>()
+        replies.map { userIds.addAll(it.map { it.user_id }) }
+        // get the users
+        val usersResult = userRepository.getUsers(userIds)
+        // no users, no data displayed. Ignore the error case for now
+        if (usersResult is Result.Success) {
+            matchUsersWithComments(replies, usersResult.data)
+        }
+    }
+
+    private fun matchUsersWithComments(
+            comments: List<List<Comment>>,
+            users: List<User>) {
+        val usersMap = users.map { it.id to it }.toMap()
+        comments.map { replies ->
+            replies.map {
+                val user = usersMap[it.user_id]
+                it.user_display_name = user?.displayName
+                it.user_portrait_url = user?.portraitUrl
+            }
+        }
+    }
+
     companion object {
         @Volatile
         private var INSTANCE: DesignerNewsCommentsRepository? = null
 
         fun getInstance(
-            remoteDataSource: DesignerNewsCommentsRemoteDataSource,
-            contextProvider: CoroutinesContextProvider
+                remoteDataSource: DesignerNewsCommentsRemoteDataSource,
+                userRepository: UserRepository,
+                contextProvider: CoroutinesContextProvider
         ): DesignerNewsCommentsRepository {
             return INSTANCE
                     ?: synchronized(this) {
                         INSTANCE
                                 ?: DesignerNewsCommentsRepository(
                                         remoteDataSource,
+                                        userRepository,
                                         contextProvider
                                 ).also { INSTANCE = it }
                     }
