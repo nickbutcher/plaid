@@ -36,7 +36,7 @@ public class ShotWeigher implements PlaidItemSorting.PlaidItemGroupWeigher<Shot>
         }
         for (Shot shot : shots) {
             float weight = 1f - ((float) shot.likes_count / maxLikes);
-            shot.weight = shot.page + weight;
+            shot.setWeight(shot.getPage() + weight);
         }
     }
 

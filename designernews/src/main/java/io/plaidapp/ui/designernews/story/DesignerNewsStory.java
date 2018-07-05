@@ -147,7 +147,7 @@ public class DesignerNewsStory extends Activity {
 
         story = getIntent().getParcelableExtra(Activities.DesignerNews.Story.EXTRA_STORY);
 
-        commentsRepository.getComments(story.links.getComments(),
+        commentsRepository.getComments(story.getLinks().getComments(),
                 result -> {
                     if (result instanceof Result.Success) {
                         Result.Success<List<Comment>> success =
@@ -181,7 +181,7 @@ public class DesignerNewsStory extends Activity {
         // setup title/toolbar
         if (collapsingToolbar != null) { // narrow device: collapsing toolbar
             collapsingToolbar.addOnLayoutChangeListener(titlebarLayout);
-            collapsingToolbar.setTitle(story.title);
+            collapsingToolbar.setTitle(story.getTitle());
             final Toolbar toolbar = findViewById(R.id.story_toolbar);
             toolbar.setNavigationOnClickListener(backClick);
             commentsList.addOnScrollListener(headerScrollListener);
@@ -202,7 +202,7 @@ public class DesignerNewsStory extends Activity {
 
         } else { // w600dp configuration: content card scrolls over title bar
             final TextView title = findViewById(R.id.story_title);
-            title.setText(story.title);
+            title.setText(story.getTitle());
             findViewById(R.id.back).setOnClickListener(backClick);
         }
 
@@ -219,7 +219,7 @@ public class DesignerNewsStory extends Activity {
         if (comments.size() > 0) {
             // flatten the comments from a nested structure {@see Comment#comments} to a
             // list appropriate for our adapter (using the depth attribute).
-            List<Comment> flattened = new ArrayList<>(story.comment_count);
+            List<Comment> flattened = new ArrayList<>(story.getCommentCount());
             unnestComments(comments, flattened);
             commentsAdapter.updateList(flattened);
             commentsList.setAdapter(commentsAdapter);
@@ -287,8 +287,8 @@ public class DesignerNewsStory extends Activity {
     @Override
     @TargetApi(Build.VERSION_CODES.M)
     public void onProvideAssistContent(AssistContent outContent) {
-        if (story.url != null) {
-            outContent.setWebUri(Uri.parse(story.url));
+        if (story.getUrl() != null) {
+            outContent.setWebUri(Uri.parse(story.getUrl()));
         }
     }
 
@@ -297,8 +297,8 @@ public class DesignerNewsStory extends Activity {
 
         @Override
         public void onCustomTabsConnected() {
-            if (story.url != null) {
-                customTab.mayLaunchUrl(Uri.parse(story.url), null, null);
+            if (story.getUrl() != null) {
+                customTab.mayLaunchUrl(Uri.parse(story.getUrl()), null, null);
             }
         }
 
@@ -415,7 +415,7 @@ public class DesignerNewsStory extends Activity {
                                     io.plaidapp.R.anim.chrome_custom_tab_enter,
                                     io.plaidapp.R.anim.fade_out_rapidly)
                             .build(),
-                    Uri.parse(story.url));
+                    Uri.parse(story.getUrl()));
         }
     };
 
@@ -466,14 +466,14 @@ public class DesignerNewsStory extends Activity {
 
     private void bindDescription() {
         final TextView storyComment = header.findViewById(R.id.story_comment);
-        if (!TextUtils.isEmpty(story.comment)) {
+        if (!TextUtils.isEmpty(story.getComment())) {
 
             ColorStateList linksColor = ContextCompat.getColorStateList(this,
                     R.color.designer_news_links);
             int highlightColor = ContextCompat.getColor(this,
                     io.plaidapp.R.color.designer_news_link_highlight);
 
-            HtmlUtils.parseMarkdownAndSetText(storyComment, story.comment, markdown,
+            HtmlUtils.parseMarkdownAndSetText(storyComment, story.getComment(), markdown,
                     linksColor, highlightColor,
                     (src, loadingSpan) -> GlideApp.with(DesignerNewsStory.this)
                             .asBitmap()
@@ -486,28 +486,28 @@ public class DesignerNewsStory extends Activity {
         }
 
         upvoteStory = header.findViewById(R.id.story_vote_action);
-        storyUpvoted(story.vote_count);
+        storyUpvoted(story.getVoteCount());
         upvoteStory.setOnClickListener(v -> upvoteStory());
 
         final TextView share = header.findViewById(R.id.story_share_action);
         share.setOnClickListener(v -> {
             ((AnimatedVectorDrawable) share.getCompoundDrawables()[1]).start();
             startActivity(ShareCompat.IntentBuilder.from(DesignerNewsStory.this)
-                    .setText(story.url)
+                    .setText(story.getUrl())
                     .setType("text/plain")
-                    .setSubject(story.title)
+                    .setSubject(story.getTitle())
                     .getIntent());
         });
 
         TextView storyPosterTime = header.findViewById(R.id.story_poster_time);
-        if (story.user_display_name != null && story.user_job != null) {
-            SpannableString poster = new SpannableString(story.user_display_name.toLowerCase());
+        if (story.getUserDisplayName() != null && story.getUserJob() != null) {
+            SpannableString poster = new SpannableString(story.getUserDisplayName().toLowerCase());
             poster.setSpan(new TextAppearanceSpan(this, io.plaidapp.R.style
                             .TextAppearance_CommentAuthor),
                     0, poster.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             CharSequence job =
-                    !TextUtils.isEmpty(story.user_job) ? "\n" + story.user_job.toLowerCase() : "";
-            CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(story.created_at.getTime(),
+                    !TextUtils.isEmpty(story.getUserJob()) ? "\n" + story.getUserJob().toLowerCase() : "";
+            CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(story.getCreatedAt().getTime(),
                     System.currentTimeMillis(),
                     DateUtils.SECOND_IN_MILLIS)
                     .toString().toLowerCase();
@@ -515,9 +515,9 @@ public class DesignerNewsStory extends Activity {
 
         }
         ImageView avatar = header.findViewById(R.id.story_poster_avatar);
-        if (!TextUtils.isEmpty(story.user_portrait_url)) {
+        if (!TextUtils.isEmpty(story.getUserPortraitUrl())) {
             GlideApp.with(this)
-                    .load(story.user_portrait_url)
+                    .load(story.getUserPortraitUrl())
                     .transition(withCrossFade())
                     .placeholder(io.plaidapp.R.drawable.avatar_placeholder)
                     .circleCrop()
@@ -550,7 +550,7 @@ public class DesignerNewsStory extends Activity {
 
     private void addComment() {
         final Call<Comment> comment = designerNewsPrefs.getApi()
-                .comment(story.id, enterComment.getText().toString());
+                .comment(story.getId(), enterComment.getText().toString());
         comment.enqueue(new Callback<Comment>() {
             @Override
             public void onResponse(Call<Comment> call, Response<Comment> response) {
@@ -643,7 +643,7 @@ public class DesignerNewsStory extends Activity {
     };
 
     private boolean isOP(Long userId) {
-        return userId.equals(story.user_id);
+        return userId.equals(story.getUserId());
     }
 
     /* package */ class DesignerNewsCommentsAdapter

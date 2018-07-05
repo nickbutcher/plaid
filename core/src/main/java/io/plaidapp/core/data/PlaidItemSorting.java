@@ -32,7 +32,7 @@ public class PlaidItemSorting {
 
         @Override
         public int compare(PlaidItem lhs, PlaidItem rhs) {
-            return Float.compare(lhs.weight, rhs.weight);
+            return Float.compare(lhs.getWeight(), rhs.getWeight());
         }
     }
 
@@ -53,7 +53,7 @@ public class PlaidItemSorting {
             final float step = 1f / (float) items.size();
             for (int i = 0; i < items.size(); i++) {
                 PlaidItem item = items.get(i);
-                item.weight = item.page + ((float) i) * step;
+                item.setWeight(item.getPage() + ((float) i) * step);
             }
         }
     }

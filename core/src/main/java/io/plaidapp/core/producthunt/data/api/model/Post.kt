@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.api.model
+package io.plaidapp.core.producthunt.data.api.model
 
-import com.google.gson.annotations.SerializedName
+import android.os.Parcelable
+import io.plaidapp.core.data.PlaidItem
+import kotlinx.android.parcel.Parcelize
 
 /**
- * Models a Designer News User
+ * Models a post on Product Hunt.
  */
-data class User(
-    @SerializedName("id") val id: Long = 0,
-    @SerializedName("first_name") val firstName: String? = null,
-    @SerializedName("last_name") val lastName: String? = null,
-    @SerializedName("display_name") val displayName: String? = null,
-    @SerializedName("portrait_url") val portraitUrl: String? = null,
-    @SerializedName("cover_photo_url") val coverPhotoUrl: String? = null
-)
+@Parcelize
+class Post(
+    override val id: Long = 0,
+    override val title: String? = null,
+    override var url: String? = null,
+    val name: String,
+    val tagline: String,
+    val discussion_url: String,
+    val redirect_url: String,
+    val comments_count: Int,
+    val votes_count: Int
+) : PlaidItem(id, title, url), Parcelable

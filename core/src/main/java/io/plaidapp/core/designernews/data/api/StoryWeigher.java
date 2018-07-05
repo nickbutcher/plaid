@@ -33,13 +33,13 @@ public class StoryWeigher implements PlaidItemSorting.PlaidItemGroupWeigher<Stor
         float maxVotes = 0f;
         float maxComments = 0f;
         for (Story story : stories) {
-            maxVotes = Math.max(maxVotes, story.vote_count);
-            maxComments = Math.max(maxComments, story.comment_count);
+            maxVotes = Math.max(maxVotes, story.getVoteCount());
+            maxComments = Math.max(maxComments, story.getCommentCount());
         }
         for (Story story : stories) {
-            float weight = 1f - ((((float) story.comment_count) / maxComments) +
-                    ((float) story.vote_count / maxVotes)) / 2f;
-            story.weight = story.page + weight;
+            float weight = 1f - ((((float) story.getCommentCount()) / maxComments) +
+                    ((float) story.getVoteCount() / maxVotes)) / 2f;
+            story.setWeight(story.getPage() + weight);
         }
     }
 

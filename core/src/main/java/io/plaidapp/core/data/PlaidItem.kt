@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.api.model
-
-import com.google.gson.annotations.SerializedName
+package io.plaidapp.core.data
 
 /**
- * Models a Designer News User
+ * Base class for all model types
  */
-data class User(
-    @SerializedName("id") val id: Long = 0,
-    @SerializedName("first_name") val firstName: String? = null,
-    @SerializedName("last_name") val lastName: String? = null,
-    @SerializedName("display_name") val displayName: String? = null,
-    @SerializedName("portrait_url") val portraitUrl: String? = null,
-    @SerializedName("cover_photo_url") val coverPhotoUrl: String? = null
-)
+abstract class PlaidItem(
+    open val id: Long,
+    open val title: String? = null,
+// can't be final as some APIs use different serialized names
+    open var url: String? = null
+) {
+    var dataSource: String? = null
+    var page: Int = 0
+    var weight: Float = 0.toFloat() // used for sorting
+    var colspan: Int = 0
+}

@@ -93,13 +93,13 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
 
     protected static void setPage(List<? extends PlaidItem> items, int page) {
         for (PlaidItem item : items) {
-            item.page = page;
+            item.setPage(page);
         }
     }
 
     protected static void setDataSource(List<? extends PlaidItem> items, String dataSource) {
         for (PlaidItem item : items) {
-            item.dataSource = dataSource;
+            item.setDataSource(dataSource);
         }
     }
 
