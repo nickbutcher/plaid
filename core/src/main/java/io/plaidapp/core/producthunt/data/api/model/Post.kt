@@ -27,7 +27,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class Post(
     @SerializedName("id") override val id: Long = 0,
-    @SerializedName("title") override val title: String? = null,
+    @SerializedName("title") override val title: String,
     @SerializedName("url") override var url: String? = null,
     @SerializedName("name") val name: String,
     @SerializedName("tagline") val tagline: String,

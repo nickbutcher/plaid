@@ -22,7 +22,7 @@ import io.plaidapp.core.data.PlaidItem
 import kotlinx.android.parcel.Parcelize
 import java.util.Date
 
-fun getDefaultUrl(id: Long) = "https://www.designernews.co/click/stories/ $id"
+fun getDefaultUrl(id: Long) = "https://www.designernews.co/click/stories/$id"
 
 /**
  * Models a Designer News story
@@ -30,9 +30,9 @@ fun getDefaultUrl(id: Long) = "https://www.designernews.co/click/stories/ $id"
 @Parcelize
 data class Story(
     @SerializedName("id") override val id: Long = 0L,
-    @SerializedName("title") override val title: String? = null,
+    @SerializedName("title") override val title: String,
     @SerializedName("url")
-    override var url: String? = "https://www.designernews.co/click/stories/ $id",
+    override var url: String? = getDefaultUrl(id),
     @SerializedName("comment") val comment: String? = null,
     @SerializedName("comment_html") val commentHtml: String? = null,
     @SerializedName("comment_count") val commentCount: Int = 0,
@@ -40,8 +40,11 @@ data class Story(
     @SerializedName("user_id") val userId: Long = 0L,
     @SerializedName("created_at") val createdAt: Date? = null,
     @SerializedName("links") val links: StoryLinks? = null,
-    @SerializedName("user_display_name") val userDisplayName: String? = null, // Removed in DN API V2
-    @SerializedName("user_portrait_url") val userPortraitUrl: String? = null, // Removed in DN API V2
+    @Deprecated("Removed in DN API V2")
+    @SerializedName("user_display_name") val userDisplayName: String? = null,
+    @Deprecated("Removed in DN API V2")
+    @SerializedName("user_portrait_url") val userPortraitUrl: String? = null,
     @SerializedName("user_job") val userJob: String? = null,
-    @SerializedName("comments") val comments: List<Comment> = emptyList() // Removed in DN API V2
+    @Deprecated("Removed in DN API V2")
+    @SerializedName("comments") val comments: List<Comment> = emptyList()
 ) : PlaidItem(id, title, url), Parcelable
