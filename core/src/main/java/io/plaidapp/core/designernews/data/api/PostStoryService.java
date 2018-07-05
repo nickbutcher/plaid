@@ -30,6 +30,7 @@ import java.util.List;
 import io.plaidapp.core.designernews.DesignerNewsPrefs;
 import io.plaidapp.core.designernews.data.api.model.NewStoryRequest;
 import io.plaidapp.core.designernews.data.api.model.Story;
+import io.plaidapp.core.designernews.data.api.model.StoryKt;
 import io.plaidapp.core.designernews.data.api.model.User;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -138,7 +139,7 @@ public class PostStoryService extends IntentService {
         final Story returnedStory = stories.get(0);
         // API doesn't add a self URL, so potentially add one for consistency
         String defaultUrl = TextUtils.isEmpty(returnedStory.getUrl()) ?
-                String.valueOf(returnedStory.getId()) :
+                StoryKt.getDefaultUrl(returnedStory.getId()) :
                 returnedStory.getUrl();
 
         final Story newStory = new Story(returnedStory.getId(),
