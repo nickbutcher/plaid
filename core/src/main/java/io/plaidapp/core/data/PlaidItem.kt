@@ -20,10 +20,10 @@ package io.plaidapp.core.data
  * Base class for all model types
  */
 abstract class PlaidItem(
-        @Transient open val id: Long,
-        @Transient open val title: String? = null,
+    @Transient open val id: Long,
+    @Transient open val title: String? = null,
 // can't be final as some APIs use different serialized names
-        @Transient open var url: String? = null
+    @Transient open var url: String? = null
 ) {
     var dataSource: String? = null
     var page: Int = 0
