@@ -24,7 +24,7 @@ android {
     defaultConfig {
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
-        resConfig "en"
+        resConfig 'en'
     }
     buildTypes {
         release {

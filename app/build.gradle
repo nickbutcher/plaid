@@ -27,13 +27,13 @@ android {
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         versionCode rootProject.gitCommitCount
-        versionName rootProject.gitTag
-        archivesBaseName = "plaid"
+        versionName = '1.0.2'
+        archivesBaseName = 'plaid'
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
 
-        resConfig "en"
-        buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
+        resConfig 'en'
+        buildConfigField 'String', 'GIT_SHA', "\"${gitSha}\""
          manifestPlaceholders += [
                  crashlyticsEnabled: false
          ]
@@ -41,8 +41,7 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
-                    'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             manifestPlaceholders += [crashlyticsEnabled: true]
         }
     }
@@ -55,8 +54,8 @@ android {
 
 repositories {
     google()
-    jcenter()
     maven { url 'https://maven.fabric.io/public' }
+    jcenter()
 }
 
 dependencies {
