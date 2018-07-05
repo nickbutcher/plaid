@@ -22,19 +22,22 @@ import io.plaidapp.core.data.PlaidItem
 import kotlinx.android.parcel.Parcelize
 import java.util.Date
 
+fun getDefaultUrl(id: Long) = "https://www.designernews.co/click/stories/ $id"
+
 /**
  * Models a Designer News story
  */
 @Parcelize
-class Story(
-    @SerializedName("id") override val id: Long = 0,
+data class Story(
+    @SerializedName("id") override val id: Long = 0L,
     @SerializedName("title") override val title: String? = null,
-    @SerializedName("url") override var url: String? = null,
+    @SerializedName("url")
+    override var url: String? = "https://www.designernews.co/click/stories/ $id",
     @SerializedName("comment") val comment: String? = null,
     @SerializedName("comment_html") val commentHtml: String? = null,
     @SerializedName("comment_count") val commentCount: Int = 0,
     @SerializedName("vote_count") val voteCount: Int = 0,
-    @SerializedName("user_id") val userId: Long = 0,
+    @SerializedName("user_id") val userId: Long = 0L,
     @SerializedName("created_at") val createdAt: Date? = null,
     @SerializedName("links") val links: StoryLinks? = null,
     @SerializedName("user_display_name") val userDisplayName: String? = null, // Removed in DN API V2
