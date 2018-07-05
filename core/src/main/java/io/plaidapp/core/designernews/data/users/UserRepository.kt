@@ -1,25 +1,25 @@
-package io.plaidapp.data.user
+package io.plaidapp.core.designernews.data.users
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.api.model.User
 import java.io.IOException
 
-typealias UserId = Long
-
 class UserRepository(private val service: DesignerNewsService) {
 
     private val cachedUsers = mutableMapOf<Long, User>()
 
-    suspend fun getUsers(ids: List<Long>): Result<List<User>> {
+    suspend fun getUsers(ids: Set<Long>): Result<List<User>> {
         // find the ids in the cached users first and only request the ones that we don't have yet
-        val (cached, notCached) = getCachedAndNonCachedUsers(ids)
-        val requestIds = notCached.joinToString(",")
+        val notCachedUsers = ids.filterNot { cachedUsers.containsKey(it) }
+        val requestIds = notCachedUsers.joinToString(",")
         val result = getUsersFromRemote(requestIds)
+
         // save the new users in the cachedUsers
         if (result is Result.Success) {
             result.data.map { cachedUsers[it.id] = it }
         }
+
         // compute the list of users requested
         val users = ids.mapNotNull { cachedUsers[it] }
         if (users.isNotEmpty()) {
@@ -37,14 +37,16 @@ class UserRepository(private val service: DesignerNewsService) {
         }
     }
 
-    private fun getCachedAndNonCachedUsers(ids: List<UserId>): CachedNotCachedUserIds {
-        val result = ids.groupBy { cachedUsers.containsKey(it) }
-        return CachedNotCachedUserIds(result[true].orEmpty(), result[false].orEmpty())
-    }
+    companion object {
+        @Volatile
+        private var INSTANCE: UserRepository? = null
 
-    private data class CachedNotCachedUserIds(
-            val cachedUserIds: List<UserId>,
-            val notCachedUserIds: List<UserId>
-    )
+        fun getInstance(service: DesignerNewsService): UserRepository {
+            return INSTANCE
+                    ?: synchronized(this) {
+                        INSTANCE ?: UserRepository(service).also { INSTANCE = it }
+                    }
+        }
+    }
 }
 
