@@ -29,9 +29,9 @@ import kotlinx.coroutines.experimental.withContext
  * get the data.
  */
 class DesignerNewsCommentsRepository(
-        private val remoteDataSource: DesignerNewsCommentsRemoteDataSource,
-        private val userRepository: UserRepository,
-        private val contextProvider: CoroutinesContextProvider
+    private val remoteDataSource: DesignerNewsCommentsRemoteDataSource,
+    private val userRepository: UserRepository,
+    private val contextProvider: CoroutinesContextProvider
 ) {
 
     /**
@@ -42,8 +42,8 @@ class DesignerNewsCommentsRepository(
      * business logic is away from the main context
      */
     fun getComments(
-            ids: List<Long>,
-            onResult: (result: Result<List<Comment>>) -> Unit
+        ids: List<Long>,
+        onResult: (result: Result<List<Comment>>) -> Unit
     ) = launch(contextProvider.main) {
         // request comments and await until the result is received.
         val result = withContext(contextProvider.io) { getAllComments(ids) }
@@ -71,6 +71,7 @@ class DesignerNewsCommentsRepository(
                 // we don't have any other level of replies match the replies to the comments
                 // they belong to and return the first level of comments.
                 if (replies.isNotEmpty()) {
+                    fillUserData(replies)
                     matchComments(replies)
                     return Result.Success(replies[0])
                 }
@@ -99,8 +100,8 @@ class DesignerNewsCommentsRepository(
     }
 
     private fun matchCommentsWithReplies(
-            comments: List<Comment>,
-            replies: List<Comment>
+        comments: List<Comment>,
+        replies: List<Comment>
     ): List<Comment> {
         // for every reply, get the comment to which the reply belongs to and add it to the list
         // of replies for that comment
@@ -113,7 +114,7 @@ class DesignerNewsCommentsRepository(
     private suspend fun fillUserData(replies: List<List<Comment>>) {
         // get all the user ids corresponding to the comments
         val userIds = mutableSetOf<Long>()
-        replies.map { userIds.addAll(it.map { it.user_id }) }
+        replies.map { userIds.addAll(it.map { it.links.userId }) }
         // get the users
         val usersResult = userRepository.getUsers(userIds)
         // no users, no data displayed. Ignore the error case for now
@@ -123,12 +124,13 @@ class DesignerNewsCommentsRepository(
     }
 
     private fun matchUsersWithComments(
-            comments: List<List<Comment>>,
-            users: List<User>) {
+        comments: List<List<Comment>>,
+        users: List<User>
+    ) {
         val usersMap = users.map { it.id to it }.toMap()
         comments.map { replies ->
             replies.map {
-                val user = usersMap[it.user_id]
+                val user = usersMap[it.links.userId]
                 it.user_display_name = user?.displayName
                 it.user_portrait_url = user?.portraitUrl
             }
@@ -140,9 +142,9 @@ class DesignerNewsCommentsRepository(
         private var INSTANCE: DesignerNewsCommentsRepository? = null
 
         fun getInstance(
-                remoteDataSource: DesignerNewsCommentsRemoteDataSource,
-                userRepository: UserRepository,
-                contextProvider: CoroutinesContextProvider
+            remoteDataSource: DesignerNewsCommentsRemoteDataSource,
+            userRepository: UserRepository,
+            contextProvider: CoroutinesContextProvider
         ): DesignerNewsCommentsRepository {
             return INSTANCE
                     ?: synchronized(this) {

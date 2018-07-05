@@ -38,7 +38,6 @@ public class Comment implements Parcelable {
     public final Date created_at;
     public final int depth;
     public int vote_count;
-    public final long user_id;
     public String user_display_name;
     public String user_portrait_url;
     @SerializedName("links")
@@ -66,7 +65,6 @@ public class Comment implements Parcelable {
         this.created_at = created_at;
         this.depth = depth;
         this.vote_count = vote_count;
-        this.user_id = user_id;
         this.user_display_name = user_display_name;
         this.user_portrait_url = user_portrait_url;
         this.links = links;
@@ -177,7 +175,6 @@ public class Comment implements Parcelable {
         return id == comment.id &&
                 depth == comment.depth &&
                 vote_count == comment.vote_count &&
-                user_id == comment.user_id &&
                 Objects.equals(body, comment.body) &&
                 Objects.equals(body_html, comment.body_html) &&
                 Objects.equals(created_at, comment.created_at) &&
@@ -190,7 +187,7 @@ public class Comment implements Parcelable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, body, body_html, created_at, depth, vote_count, user_id,
+        return Objects.hash(id, body, body_html, created_at, depth, vote_count,
                 user_display_name, user_portrait_url, links, replies, upvoted);
     }
 
@@ -204,7 +201,6 @@ public class Comment implements Parcelable {
         created_at = tmpCreated_at != -1 ? new Date(tmpCreated_at) : null;
         depth = in.readInt();
         vote_count = in.readInt();
-        user_id = in.readLong();
         user_display_name = in.readString();
         user_portrait_url = in.readString();
         links = in.readParcelable(CommentLinks.class.getClassLoader());
@@ -224,7 +220,6 @@ public class Comment implements Parcelable {
         dest.writeLong(created_at != null ? created_at.getTime() : -1L);
         dest.writeInt(depth);
         dest.writeInt(vote_count);
-        dest.writeLong(user_id);
         dest.writeString(user_display_name);
         dest.writeString(user_portrait_url);
         dest.writeParcelable(links, flags);
@@ -252,7 +247,6 @@ public class Comment implements Parcelable {
                 ", created_at=" + created_at +
                 ", depth=" + depth +
                 ", vote_count=" + vote_count +
-                ", user_id=" + user_id +
                 ", user_display_name='" + user_display_name + '\'' +
                 ", user_portrait_url='" + user_portrait_url + '\'' +
                 ", links=" + links +
