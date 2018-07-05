@@ -125,15 +125,13 @@ private fun provideDesignerNewsCommentsRemoteDataSource(service: DesignerNewsSer
 fun provideDesignerNewsVotesRepository(context: Context): DesignerNewsVotesRepository {
     return provideDesignerNewsVotesRepository(
             provideDesignerNewsService(context),
-            provideDesignerNewsLoginRepository(context),
             provideCoroutinesContextProvider()
     )
 }
 
 private fun provideDesignerNewsVotesRepository(
     service: DesignerNewsService,
-    loginRepository: DesignerNewsLoginRepository,
     contextProvider: CoroutinesContextProvider
 ): DesignerNewsVotesRepository {
-    return DesignerNewsVotesRepository.getInstance(service, loginRepository, contextProvider)
+    return DesignerNewsVotesRepository.getInstance(service, contextProvider)
 }

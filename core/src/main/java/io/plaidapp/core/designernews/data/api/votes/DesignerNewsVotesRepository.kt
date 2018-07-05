@@ -20,7 +20,6 @@ import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.api.votes.model.UpvoteRequest
-import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRepository
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 import java.io.IOException
@@ -30,29 +29,25 @@ import java.io.IOException
  */
 class DesignerNewsVotesRepository(
     private val service: DesignerNewsService,
-    private val loginRepository: DesignerNewsLoginRepository,
     private val contextProvider: CoroutinesContextProvider
 ) {
     fun upvoteStory(
         id: Long,
+        userId: Long,
         onResult: (result: Result<Unit>) -> Unit
     ) = launch(contextProvider.main) {
-        val user = loginRepository.user
-        if (user != null) {
-            val request = UpvoteRequest(id, user.id)
-            // right now we just care whether the response is successful or not.
-            // TODO save the response in the database
-            val response = withContext(contextProvider.io) { service.upvoteStoryV2(request) }.await()
-            if (response.isSuccessful) {
-                onResult(Result.Success(Unit))
-                return@launch
-            } else {
-                onResult(Result.Error(IOException(
-                        "Unable to upvote story ${response.code()} ${response.errorBody()?.string()}")))
-                return@launch
-            }
+        val request = UpvoteRequest(id, userId)
+        // right now we just care whether the response is successful or not.
+        // TODO save the response in the database
+        val response = withContext(contextProvider.io) { service.upvoteStoryV2(request) }.await()
+        if (response.isSuccessful) {
+            onResult(Result.Success(Unit))
+            return@launch
+        } else {
+            onResult(Result.Error(IOException(
+                    "Unable to upvote story ${response.code()} ${response.errorBody()?.string()}")))
+            return@launch
         }
-        onResult(Result.Error(IOException("User not logged in")))
     }
 
     companion object {
@@ -61,12 +56,11 @@ class DesignerNewsVotesRepository(
 
         fun getInstance(
             service: DesignerNewsService,
-            loginRepository: DesignerNewsLoginRepository,
             contextProvider: CoroutinesContextProvider
         ): DesignerNewsVotesRepository {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE
-                        ?: DesignerNewsVotesRepository(service, loginRepository, contextProvider)
+                        ?: DesignerNewsVotesRepository(service, contextProvider)
                                 .also { INSTANCE = it }
             }
         }
