@@ -27,7 +27,7 @@ import okhttp3.ResponseBody
 
 const val parentId = 1L
 
-val links = CommentLinks(user = "userid", story = "storyid", parentComment = parentId)
+val links = CommentLinks(userId = "userid", story = "storyid", parentComment = parentId)
 
 val reply1 = Comment.Builder()
         .setId(11L)
@@ -43,7 +43,7 @@ val reply2 = Comment.Builder()
 
 val replies = listOf(reply1, reply2)
 
-val parentLinks = CommentLinks(user = "userid", story = "storyid", parentComment = 1L,
+val parentLinks = CommentLinks(userId = "userid", story = "storyid", parentComment = 1L,
         comments = arrayListOf(11L, 12L))
 
 val parentCommentWithReplies = Comment.Builder()
