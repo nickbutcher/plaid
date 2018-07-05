@@ -21,7 +21,7 @@ package io.plaidapp.core.data
  */
 abstract class PlaidItem(
     @Transient open val id: Long,
-    @Transient open val title: String? = null,
+    @Transient open val title: String,
     @Transient open var url: String? = null
 ) {
     var dataSource: String? = null
