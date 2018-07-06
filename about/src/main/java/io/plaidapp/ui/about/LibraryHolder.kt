@@ -26,11 +26,11 @@ import io.plaidapp.about.R
 import io.plaidapp.core.util.glide.GlideApp
 import io.plaidapp.R as appR
 
-typealias OnClick = (link: String, position: Int) -> Unit
+typealias OnClick = (library: Library) -> Unit
 
 internal class LibraryHolder(
     itemView: View,
-    private val onClicked: OnClick
+    private val onClick: OnClick
 ) : RecyclerView.ViewHolder(itemView) {
 
     private var library: Library? = null
@@ -41,8 +41,8 @@ internal class LibraryHolder(
     private var link: Button = itemView.findViewById(R.id.library_link)
 
     init {
-        itemView.setOnClickListener { library?.let { onClicked(it.link, adapterPosition) } }
-        link.setOnClickListener { library?.let { onClicked(it.link, adapterPosition) } }
+        itemView.setOnClickListener { library?.let { onClick(it) } }
+        link.setOnClickListener { library?.let { onClick(it) } }
     }
 
     fun bind(lib: Library) {

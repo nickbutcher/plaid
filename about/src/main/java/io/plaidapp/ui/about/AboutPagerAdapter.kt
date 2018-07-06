@@ -27,7 +27,10 @@ import java.security.InvalidParameterException
 import io.plaidapp.about.R
 import io.plaidapp.core.util.HtmlUtils
 
-internal class AboutPagerAdapter(private val aboutViewModel: AboutViewModel) : PagerAdapter() {
+internal class AboutPagerAdapter(
+    private val aboutViewModel: AboutViewModel,
+    private val onClick: OnClick
+) : PagerAdapter() {
 
     private lateinit var aboutPlaid: View
     private lateinit var aboutIcon: View
@@ -78,7 +81,7 @@ internal class AboutPagerAdapter(private val aboutViewModel: AboutViewModel) : P
     private fun buildLibsAboutPage(parent: ViewGroup) {
         aboutLibs = layoutInflater.inflate(R.layout.about_libs, parent, false).also {
             it.findViewById<RecyclerView>(R.id.libs_list).apply {
-                adapter = LibraryAdapter(aboutViewModel.libraries)
+                adapter = LibraryAdapter(aboutViewModel.libraries, onClick)
             }
         }
     }
@@ -98,5 +101,4 @@ internal class AboutPagerAdapter(private val aboutViewModel: AboutViewModel) : P
             }
         }
     }
-
 }
