@@ -16,22 +16,18 @@
 
 package io.plaidapp.ui.about
 
-import android.app.Activity
-import android.net.Uri
-import android.support.customtabs.CustomTabsIntent
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import io.plaidapp.about.R
-import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
 import java.security.InvalidParameterException
-import io.plaidapp.R as appR
 
 /**
  * Adapter that holds libraries.
  */
-internal class LibraryAdapter(private val libraries: List<Library>
+internal class LibraryAdapter(
+    private val libraries: List<Library>,
+    private val onClick: OnClick
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -45,23 +41,8 @@ internal class LibraryAdapter(private val libraries: List<Library>
 
     private fun createLibraryHolder(parent: ViewGroup): LibraryHolder {
         return LibraryHolder(LayoutInflater.from(parent.context)
-                .inflate(R.layout.library, parent, false)
-        ) { link, position ->
-            if (position != RecyclerView.NO_POSITION)
-                if (parent.context is Activity) {
-                    openLink(link, parent.context as Activity)
-                }
-        }
-    }
-
-    private fun openLink(link: String, context: Activity) {
-        CustomTabActivityHelper.openCustomTab(
-                context,
-                CustomTabsIntent.Builder()
-                        .setToolbarColor(ContextCompat.getColor(context,
-                                appR.color.primary))
-                        .addDefaultShareMenuItem()
-                        .build(), Uri.parse(link))
+                .inflate(R.layout.library, parent, false),
+                onClick)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -80,5 +61,4 @@ internal class LibraryAdapter(private val libraries: List<Library>
         private const val VIEW_TYPE_INTRO = 0
         private const val VIEW_TYPE_LIBRARY = 1
     }
-
 }

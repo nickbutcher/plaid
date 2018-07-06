@@ -16,15 +16,19 @@
 
 package io.plaidapp.ui.about
 
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat.finishAfterTransition
+import android.support.customtabs.CustomTabsIntent
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.transition.TransitionInflater
+import androidx.core.net.toUri
 import io.plaidapp.about.R
+import io.plaidapp.core.util.event.EventObserver
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
+import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
 import io.plaidapp.ui.about.widget.InkPageIndicator
 import io.plaidapp.R as appR
 
@@ -46,24 +50,46 @@ class AboutActivity : AppCompatActivity() {
 
         val aboutViewModel = ViewModelProviders.of(this).get(AboutViewModel::class.java)
 
+        aboutViewModel.navigationTarget.observe(this, EventObserver { url ->
+            openLink(url)
+        })
+
         pager.apply {
-            adapter = AboutPagerAdapter(aboutViewModel)
+            adapter = AboutPagerAdapter(aboutViewModel) { library ->
+                aboutViewModel.onLibraryClick(library)
+            }
             pageMargin = resources.getDimensionPixelSize(appR.dimen.spacing_normal)
         }
 
         pageIndicator?.setViewPager(pager)
 
         draggableFrame?.addListener(
-                object : ElasticDragDismissFrameLayout.SystemChromeFader(this) {
-                    override fun onDragDismissed() {
-                        // if we drag dismiss downward then the default reversal of the enter
-                        // transition would slide content upward which looks weird. So reverse it.
-                        if (draggableFrame.translationY > 0) {
-                            window.returnTransition = TransitionInflater.from(this@AboutActivity)
-                                    .inflateTransition(R.transition.about_return_downward)
-                        }
-                        finishAfterTransition()
+            object : ElasticDragDismissFrameLayout.SystemChromeFader(this) {
+                override fun onDragDismissed() {
+                    // if we drag dismiss downward then the default reversal of the enter
+                    // transition would slide content upward which looks weird. So reverse it.
+                    if (draggableFrame.translationY > 0) {
+                        window.returnTransition = TransitionInflater.from(this@AboutActivity)
+                            .inflateTransition(R.transition.about_return_downward)
                     }
-                })
+                    finishAfterTransition()
+                }
+            })
+    }
+
+    private fun openLink(link: String) {
+        CustomTabActivityHelper.openCustomTab(
+            this,
+            CustomTabsIntent.Builder()
+                .setToolbarColor(
+                    ContextCompat.getColor(
+                        this,
+                        appR.color.primary
+                    )
+                )
+                .addDefaultShareMenuItem()
+                .build(),
+            link.toUri()
+        )
     }
 }
