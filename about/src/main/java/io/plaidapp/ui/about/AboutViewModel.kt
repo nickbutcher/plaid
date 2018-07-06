@@ -1,20 +1,17 @@
 /*
- * Copyright 2018 Google LLC
+ * Copyright 2018 Google, Inc.
  *
- * Licensed to the Apache Software Foundation (ASF) under one or more contributor
- * license agreements. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership. The ASF licenses this
- * file to you under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package io.plaidapp.ui.about
@@ -22,6 +19,8 @@ package io.plaidapp.ui.about
 import `in`.uncod.android.bypass.Bypass
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.content.res.ColorStateList
 import android.support.annotation.ColorInt
 import android.support.annotation.StringRes
@@ -31,6 +30,7 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.AlignmentSpan
 import io.plaidapp.about.R
+import io.plaidapp.core.util.event.Event
 import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.R as appR
 
@@ -47,8 +47,12 @@ class AboutViewModel(application: Application) : AndroidViewModel(application) {
     private val highlightColor = ColorUtils.getThemeColor(application,
             appR.attr.colorPrimary, appR.color.primary)
 
+    private val _navigationTarget = MutableLiveData<Event<String>>()
+    val navigationTarget: LiveData<Event<String>>
+        get() = _navigationTarget
+
     val appAboutText: CharSequence
-        get()  {
+        get() {
             // fun with spans & markdown
             val about0 = getSpannableFromMarkdown(R.string.about_plaid_0,
                     linksColor,
@@ -80,6 +84,10 @@ class AboutViewModel(application: Application) : AndroidViewModel(application) {
             val icon1 = getSpannableFromMarkdown(R.string.about_icon_1, linksColor, highlightColor)
             return "$icon0\n$icon1"
         }
+
+    fun onLibraryClick(library: Library) {
+        _navigationTarget.value = Event(library.link)
+    }
 
     val libraries = listOf(
             Library("Android support libraries",
@@ -116,9 +124,10 @@ class AboutViewModel(application: Application) : AndroidViewModel(application) {
                     false))
 
     private fun getSpannableFromMarkdown(
-            @StringRes stringId: Int,
-            linksColor: ColorStateList,
-            @ColorInt highlightColor: Int): CharSequence {
+        @StringRes stringId: Int,
+        linksColor: ColorStateList,
+        @ColorInt highlightColor: Int
+    ): CharSequence {
         return markdown.markdownToSpannable(resources.getString(stringId), linksColor,
                 highlightColor, null)
     }
