@@ -25,7 +25,8 @@ import java.util.Date
 fun getDefaultUrl(id: Long) = "https://www.designernews.co/click/stories/$id"
 
 /**
- * Models a Designer News story
+ * Models a Designer News story.
+ * TODO split this into StoryRequest and Story, so we can keep the object immutable.
  */
 @Parcelize
 data class Story(
@@ -46,5 +47,5 @@ data class Story(
     @SerializedName("user_portrait_url") val userPortraitUrl: String? = null,
     @SerializedName("user_job") val userJob: String? = null,
     @Deprecated("Removed in DN API V2")
-    @SerializedName("comments") val comments: List<Comment> = emptyList()
+    @SerializedName("comments") var comments: List<Comment>? = emptyList()
 ) : PlaidItem(id, title, url), Parcelable
