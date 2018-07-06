@@ -26,11 +26,7 @@ android {
         targetSdkVersion versions.targetSdk
         resConfig 'en'
     }
-    buildTypes {
-        release {
-            proguardFiles 'proguard-rules.pro'
-        }
-    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
