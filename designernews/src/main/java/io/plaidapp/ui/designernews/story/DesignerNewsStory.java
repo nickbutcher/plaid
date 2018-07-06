@@ -67,6 +67,7 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -80,8 +81,10 @@ import io.plaidapp.core.designernews.data.api.model.Story;
 import io.plaidapp.core.designernews.data.api.model.User;
 import io.plaidapp.core.designernews.data.votes.DesignerNewsVotesRepository;
 import io.plaidapp.core.ui.transitions.GravityArcMotion;
+import io.plaidapp.core.ui.transitions.MorphTransform;
 import io.plaidapp.core.ui.transitions.ReflowText;
 import io.plaidapp.core.ui.widget.CollapsingTitleLayout;
+import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.core.util.Activities;
 import io.plaidapp.core.util.HtmlUtils;
 import io.plaidapp.core.util.ImeUtils;
@@ -93,6 +96,7 @@ import io.plaidapp.designernews.R;
 import io.plaidapp.ui.designernews.DesignerNewsLogin;
 import io.plaidapp.core.ui.transitions.MorphTransform;
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout;
+import io.plaidapp.ui.drawable.ThreadedCommentDrawable;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import kotlin.Unit;
 import retrofit2.Call;
@@ -633,7 +637,7 @@ public class DesignerNewsStory extends Activity {
     private void unnestComments(List<Comment> nested, List<Comment> flat) {
         for (Comment comment : nested) {
             flat.add(comment);
-            if (comment.getReplies() != null && comment.getReplies().size() > 0) {
+            if (comment.getReplies().size() > 0) {
                 unnestComments(comment.getReplies(), flat);
             }
         }
@@ -769,7 +773,7 @@ public class DesignerNewsStory extends Activity {
             do {
                 commentIndex++;
             } while (commentIndex < comments.size() &&
-                    comments.get(commentIndex).depth >= newComment.depth);
+                    comments.get(commentIndex).getDepth() >= newComment.getDepth());
             comments.add(commentIndex, newComment);
             int adapterPosition = commentIndexToAdapterPosition(commentIndex);
             notifyItemInserted(adapterPosition);
@@ -916,9 +920,10 @@ public class DesignerNewsStory extends Activity {
                     votesRepository.upvoteComment(story.getId(), designerNewsPrefs.getUser().getId(),
                             result -> {
                                 if (result instanceof Result.Success) {
-                                    comment.upvoted = true;
-                                    comment.vote_count++;
-                                    holder.getCommentVotes().setText(String.valueOf(comment.vote_count));
+                                    comment.setUpvoted(true);;
+                                    // TODO fix this
+//                                    comment.vote_count++;
+                                    holder.getCommentVotes().setText(String.valueOf(comment.getVoteCount()));
                                     holder.getCommentVotes().setActivated(true);
                                 } else {
                                     Toast.makeText(DesignerNewsStory.this, "Unable to upvote comment",
@@ -929,9 +934,9 @@ public class DesignerNewsStory extends Activity {
                             });
 
                 } else {
-                    comment.upvoted = false;
-                    comment.vote_count--;
-                    holder.getCommentVotes().setText(String.valueOf(comment.vote_count));
+                    comment.setUpvoted(false);
+//                    comment.setVoteCount(comment.getVoteCount() - 1);
+                    holder.getCommentVotes().setText(String.valueOf(comment.getVoteCount()));
                     holder.getCommentVotes().setActivated(false);
                     // TODO actually delete upvote - florina: why?
                 }
@@ -1021,20 +1026,26 @@ public class DesignerNewsStory extends Activity {
 
                     // insert a locally created comment before actually
                     // hitting the API for immediate response
-                    int replyDepth = replyingTo.depth + 1;
+                    int replyDepth = replyingTo.getDepth() + 1;
                     User user = designerNewsPrefs.getUser();
+                    String commentBody = holder.getCommentReply().getText().toString();
                     final int newReplyPosition = commentsAdapter.addCommentReply(
-                            new Comment.Builder()
-                                    .setBody(holder.getCommentReply().getText().toString())
-                                    .setCreatedAt(new Date())
-                                    .setDepth(replyDepth)
-                                    .setUserId(user.getId())
-                                    .setUserDisplayName(user.getDisplayName())
-                                    .setUserPortraitUrl(user.getPortraitUrl())
-                                    .build(),
+                            new Comment(
+                                    0,
+                                    replyingTo.getId(),
+                                    commentBody,
+                                    new Date(),
+                                    replyDepth,
+                                    0,
+                                    Collections.emptyList(),
+                                    user.getId(),
+                                    user.getDisplayName(),
+                                    user.getPortraitUrl(),
+                                    false
+                            ),
                             inReplyToCommentPosition);
 
-                    replyToComment(replyingTo.id, reply);
+                    replyToComment(replyingTo.getId(), reply);
                     holder.getCommentReply().getText().clear();
                     ImeUtils.hideIme(holder.getCommentReply());
                     commentsList.scrollToPosition(newReplyPosition);

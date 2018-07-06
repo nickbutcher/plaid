@@ -17,7 +17,8 @@
 package io.plaidapp.core.designernews.data.api
 
 import io.plaidapp.core.designernews.data.api.model.Comment
-import io.plaidapp.core.designernews.data.api.model.CommentLinks
+import io.plaidapp.core.designernews.data.api.model.CommentLinksResponse
+import io.plaidapp.core.designernews.data.api.model.CommentResponse
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 
@@ -27,24 +28,20 @@ import okhttp3.ResponseBody
 
 const val parentId = 1L
 
-val links = CommentLinks(userId = "userid", story = "storyid", parentComment = parentId)
+val links = CommentLinksResponse(userId = 45L, story = "storyid", parentComment = parentId)
 
-val reply1 = Comment.Builder()
-        .setId(11L)
-        .setCommentLinks(links)
-        .setBody("commenty comment")
-        .build()
+val reply1 = CommentResponse(id = 11L, body = "commenty comment", links = links)
 
-val reply2 = Comment.Builder()
-        .setId(12L)
-        .setCommentLinks(links)
-        .setBody("commenty comment")
-        .build()
+val reply2 = CommentResponse(id = 12L, body = "commenty comment", links = links)
 
 val replies = listOf(reply1, reply2)
 
-val parentLinks = CommentLinks(userId = "userid", story = "storyid", parentComment = 1L,
-        comments = arrayListOf(11L, 12L))
+val parentLinks = CommentLinksResponse(
+        userId = 532L,
+        story = "storyid",
+        parentComment = 1L,
+        comments = arrayListOf(11L, 12L)
+)
 
 val parentCommentWithReplies = Comment.Builder()
         .setId(parentId)
@@ -53,10 +50,9 @@ val parentCommentWithReplies = Comment.Builder()
         .setReplies(replies)
         .build()
 
-val parentCommentWithoutReplies = Comment.Builder()
-        .setId(parentId)
-        .setBody("commenty comment")
-        .setCommentLinks(parentLinks)
-        .build()
+val parentCommentWithoutReplies = CommentResponse(
+        id = parentId,
+        body = "commenty comment",
+        links = parentLinks)
 
 val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")
