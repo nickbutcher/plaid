@@ -36,7 +36,8 @@ class DesignerNewsLoginLocalDataSource(private val prefs: SharedPreferences) {
             if (userId == 0L && username == null && userAvatar == null) {
                 return null
             }
-            return User(id = userId, displayName = username, portraitUrl = userAvatar)
+            return User(id = userId, firstName = "", lastName = "",
+                    displayName = username, portraitUrl = userAvatar)
         }
         set(value) {
             if (value != null) {

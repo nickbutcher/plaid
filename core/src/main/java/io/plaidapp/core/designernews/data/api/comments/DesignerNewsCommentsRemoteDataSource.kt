@@ -18,7 +18,7 @@ package io.plaidapp.core.designernews.data.api.comments
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.api.model.Comment
+import io.plaidapp.core.designernews.data.api.model.CommentResponse
 import java.io.IOException
 
 /**
@@ -29,7 +29,7 @@ class DesignerNewsCommentsRemoteDataSource(private val service: DesignerNewsServ
     /**
      * Get a list of comments based on ids from Designer News API.
      */
-    suspend fun getComments(ids: List<Long>): Result<List<Comment>> {
+    suspend fun getComments(ids: List<Long>): Result<List<CommentResponse>> {
         val requestIds = ids.joinToString(",")
         val response = service.getComments(requestIds).await()
         return if (response.isSuccessful && response.body() != null) {

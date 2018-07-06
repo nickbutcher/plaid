@@ -19,10 +19,12 @@ package io.plaidapp.core.designernews.data.api.comments
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.model.Comment
+import io.plaidapp.core.designernews.data.api.model.CommentResponse
 import io.plaidapp.core.designernews.data.api.model.User
 import io.plaidapp.core.designernews.data.users.UserRepository
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
+import java.io.IOException
 
 /**
  * Repository for Designer News comments. Works with the [DesignerNewsCommentsRemoteDataSource] to
@@ -46,7 +48,7 @@ class DesignerNewsCommentsRepository(
         onResult: (result: Result<List<Comment>>) -> Unit
     ) = launch(contextProvider.main) {
         // request comments and await until the result is received.
-        val result = withContext(contextProvider.io) { getAllComments(ids) }
+        val result = withContext(contextProvider.io) { getAllCommentsWithUsers(ids) }
         onResult(result)
     }
 
@@ -54,8 +56,8 @@ class DesignerNewsCommentsRepository(
      * Get all comments and their replies. If we get an error on any reply depth level, ignore it
      * and just use the comments retrieved until that point.
      */
-    private suspend fun getAllComments(parentIds: List<Long>): Result<List<Comment>> {
-        val replies = mutableListOf<List<Comment>>()
+    private suspend fun getAllCommentsWithUsers(parentIds: List<Long>): Result<List<Comment>> {
+        val replies = mutableListOf<List<CommentResponse>>()
         // get the first level of comments
         var result = remoteDataSource.getComments(parentIds)
         // as long as we could get comments or replies to comments
@@ -71,70 +73,73 @@ class DesignerNewsCommentsRepository(
                 // we don't have any other level of replies match the replies to the comments
                 // they belong to and return the first level of comments.
                 if (replies.isNotEmpty()) {
-                    fillUserData(replies)
-                    matchComments(replies)
-                    return Result.Success(replies[0])
+                    return buildCommentsWithUsers(replies)
                 }
             }
         }
         // the last request was unsuccessful
         // if we already got some comments and replies, then use that data and ignore the error
         return if (replies.isNotEmpty()) {
-            fillUserData(replies)
-            matchComments(replies)
-            Result.Success(replies[0])
-        } else {
-            // if we never get any data, then return the error
+            buildCommentsWithUsers(replies)
+        } else if (result is Result.Error) {
             result
+        } else {
+            Result.Error(IOException("Unable to get comments"))
         }
     }
 
-    /**
-     * Build up the replies tree, by matching the replies from lower levels to the level above they
-     * belong to
-     */
-    private fun matchComments(comments: List<List<Comment>>) {
-        for (index in comments.size - 1 downTo 1) {
-            matchCommentsWithReplies(comments[index - 1], comments[index])
-        }
-    }
-
-    private fun matchCommentsWithReplies(
-        comments: List<Comment>,
-        replies: List<Comment>
+    private fun buildCommentsWithRepliesAndUser(
+        comments: List<CommentResponse>,
+        replies: List<Comment>,
+        users: Map<Long, User>
     ): List<Comment> {
-        // for every reply, get the comment to which the reply belongs to and add it to the list
-        // of replies for that comment
-        replies.map { reply ->
-            comments.find { it.id == reply.links.parentComment }?.addReply(reply)
+        val mapping = replies.groupBy { it.parentComment }
+        return comments.map {
+            val commentReplies = mapping[it.id]
+            val user = users[it.links.userId]
+            Comment(
+                    it.id,
+                    it.links.parentComment,
+                    it.body,
+                    it.created_at,
+                    it.depth,
+                    it.vote_count,
+                    commentReplies.orEmpty(),
+                    user?.id,
+                    user?.displayName.orEmpty(),
+                    user?.portraitUrl,
+                    false)
         }
-        return comments
     }
 
-    private suspend fun fillUserData(replies: List<List<Comment>>) {
-        // get all the user ids corresponding to the comments
-        val userIds = mutableSetOf<Long>()
-        replies.map { userIds.addAll(it.map { it.links.userId }) }
-        // get the users
-        val usersResult = userRepository.getUsers(userIds)
+    private suspend fun buildCommentsWithUsers(replies: List<List<CommentResponse>>): Result<List<Comment>> {
+        val usersResult = getUsersForComments(replies)
         // no users, no data displayed. Ignore the error case for now
         if (usersResult is Result.Success) {
-            matchUsersWithComments(replies, usersResult.data)
+            return Result.Success(matchUsersWithComments(replies, usersResult.data))
         }
+        return Result.Error(IOException("Unable to get user data"))
+    }
+
+    private suspend fun getUsersForComments(comments: List<List<CommentResponse>>): Result<List<User>> {
+        // get all the user ids corresponding to the comments
+        val userIds = mutableSetOf<Long>()
+        comments.map { userIds.addAll(it.map { it.links.userId }) }
+
+        return userRepository.getUsers(userIds)
     }
 
     private fun matchUsersWithComments(
-        comments: List<List<Comment>>,
+        comments: List<List<CommentResponse>>,
         users: List<User>
-    ) {
+    ): List<Comment> {
         val usersMap = users.map { it.id to it }.toMap()
-        comments.map { replies ->
-            replies.map {
-                val user = usersMap[it.links.userId]
-                it.user_display_name = user?.displayName
-                it.user_portrait_url = user?.portraitUrl
-            }
+
+        var lastReplies = emptyList<Comment>()
+        for (index in comments.size - 1 downTo 0) {
+            lastReplies = buildCommentsWithRepliesAndUser(comments[index], lastReplies, usersMap)
         }
+        return lastReplies
     }
 
     companion object {
