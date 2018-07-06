@@ -19,6 +19,7 @@ package io.plaidapp.core.designernews.data.api
 import io.plaidapp.core.data.api.EnvelopePayload
 import io.plaidapp.core.designernews.data.api.model.AccessToken
 import io.plaidapp.core.designernews.data.api.model.Comment
+import io.plaidapp.core.designernews.data.api.model.CommentResponse
 import io.plaidapp.core.designernews.data.api.model.NewStoryRequest
 import io.plaidapp.core.designernews.data.api.model.Story
 import io.plaidapp.core.designernews.data.api.model.User
@@ -92,7 +93,7 @@ interface DesignerNewsService {
 
     @EnvelopePayload("comments")
     @GET("api/v2/comments/{ids}")
-    fun getComments(@Path("ids") commentIds: String): Deferred<Response<List<Comment>>>
+    fun getComments(@Path("ids") commentIds: String): Deferred<Response<List<CommentResponse>>>
 
     @FormUrlEncoded
     @POST("api/v1/stories/{id}/reply")

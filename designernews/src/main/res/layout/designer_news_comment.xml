@@ -56,6 +56,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/depth"
         app:layout_constraintEnd_toStartOf="@id/comment_time_ago"
+        app:layout_constraintHorizontal_bias="0"
         android:paddingTop="@dimen/spacing_micro"
         android:ellipsize="end"
         android:textAppearance="@style/TextAppearance.CommentAuthor.DesignerNews"

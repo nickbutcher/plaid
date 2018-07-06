@@ -16,15 +16,24 @@
 
 package io.plaidapp.core.designernews.data.api.model
 
-import com.google.gson.annotations.SerializedName
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+import java.util.Date
 
 /**
- * Models a Designer News User
+ * Models a comment on a designer news story.
  */
-data class User(
-    @SerializedName("id") val id: Long = 0L,
-    @SerializedName("first_name") val firstName: String,
-    @SerializedName("last_name") val lastName: String,
-    @SerializedName("display_name") val displayName: String,
-    @SerializedName("portrait_url") val portraitUrl: String? = null
-)
+@Parcelize
+data class Comment(
+    val id: Long,
+    val parentComment: Long?,
+    val body: String,
+    val created_at: Date,
+    val depth: Int,
+    val voteCount: Int,
+    val replies: List<Comment>,
+    val userId: Long?,
+    val userDisplayName: String,
+    val userPortraitUrl: String?,
+    var upvoted: Boolean
+) : Parcelable

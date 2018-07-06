@@ -20,11 +20,13 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.api.errorResponseBody
 import io.plaidapp.core.designernews.data.api.model.Comment
+import io.plaidapp.core.designernews.data.api.model.CommentResponse
 import io.plaidapp.core.designernews.data.api.parentCommentWithReplies
 import io.plaidapp.core.designernews.data.api.parentCommentWithoutReplies
 import io.plaidapp.core.designernews.data.api.provideFakeCoroutinesContextProvider
 import io.plaidapp.core.designernews.data.api.replies
 import io.plaidapp.core.designernews.data.api.reply1
+import io.plaidapp.core.designernews.data.users.UserRepository
 import kotlinx.coroutines.experimental.CompletableDeferred
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -40,8 +42,10 @@ class DesignerNewsCommentsRepositoryTest {
 
     private val service = Mockito.mock(DesignerNewsService::class.java)
     private val dataSource = DesignerNewsCommentsRemoteDataSource(service)
+    private val userRepository = UserRepository(service)
     private val repository = DesignerNewsCommentsRepository(
             dataSource,
+            userRepository,
             provideFakeCoroutinesContextProvider()
     )
 
@@ -64,7 +68,7 @@ class DesignerNewsCommentsRepositoryTest {
     @Test
     fun getComments_noReplies_whenRequestFailed() {
         // Given that the service responds with failure
-        val apiResult = Response.error<List<Comment>>(400, errorResponseBody)
+        val apiResult = Response.error<List<CommentResponse>>(400, errorResponseBody)
         Mockito.`when`(service.getComments("11")).thenReturn(CompletableDeferred(apiResult))
         var result: Result<List<Comment>>? = null
 
@@ -106,7 +110,7 @@ class DesignerNewsCommentsRepositoryTest {
         val resultParent = Response.success(listOf(parentCommentWithReplies))
         Mockito.`when`(service.getComments("1")).thenReturn(CompletableDeferred(resultParent))
         // When requesting replies for ids 11 and 12 from service we get an error
-        val resultChildrenError = Response.error<List<Comment>>(400, errorResponseBody)
+        val resultChildrenError = Response.error<List<CommentResponse>>(400, errorResponseBody)
         Mockito.`when`(service.getComments("11,12"))
                 .thenReturn(CompletableDeferred(resultChildrenError))
         var result: Result<List<Comment>>? = null

@@ -24,7 +24,7 @@ import kotlinx.android.parcel.Parcelize
  * Models comment links received from DesignerNews v2 API
  */
 @Parcelize
-data class CommentLinks(
+data class CommentLinksResponse(
     @SerializedName("user") val userId: Long,
     @SerializedName("story") val story: String,
     @SerializedName("parent_comment") val parentComment: Long? = null,
