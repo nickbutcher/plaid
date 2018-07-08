@@ -154,8 +154,7 @@ public class PostStoryService extends IntentService {
                 returnedStory.getLinks(),
                 user.getDisplayName(),
                 user.getPortraitUrl(),
-                returnedStory.getUserJob(),
-                returnedStory.getComments()
+                returnedStory.getUserJob()
         );
         newStory.setDataSource(SOURCE_NEW_DN_POST);
         return newStory;

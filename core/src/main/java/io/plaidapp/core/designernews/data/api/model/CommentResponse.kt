@@ -16,19 +16,17 @@
 
 package io.plaidapp.core.designernews.data.api.model
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import com.google.gson.annotations.SerializedName
 import java.util.Date
 
 /**
  * Models a comment on a designer news story response.
  */
-@Parcelize
 data class CommentResponse(
-    val id: Long,
-    val body: String,
-    val created_at: Date,
-    val depth: Int = 0,
-    var vote_count: Int = 0,
-    val links: CommentLinksResponse
-) : Parcelable
+    @SerializedName("id") val id: Long,
+    @SerializedName("body") val body: String,
+    @SerializedName("created_at") val created_at: Date,
+    @SerializedName("depth") val depth: Int = 0,
+    @SerializedName("vote_count") var vote_count: Int = 0,
+    @SerializedName("links") val links: CommentLinksResponse
+)
