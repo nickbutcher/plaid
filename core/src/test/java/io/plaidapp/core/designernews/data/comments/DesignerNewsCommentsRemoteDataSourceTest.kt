@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.api.comments
+package io.plaidapp.core.designernews.data.comments
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.api.errorResponseBody
-import io.plaidapp.core.designernews.data.api.model.Comment
-import io.plaidapp.core.designernews.data.api.replies
+import io.plaidapp.core.designernews.data.api.model.CommentResponse
+import io.plaidapp.core.designernews.data.api.repliesResponses
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
@@ -41,7 +41,7 @@ class DesignerNewsCommentsRemoteDataSourceTest {
     @Test
     fun getComments_whenRequestSuccessful() = runBlocking {
         // Given that the service responds with success
-        val result = Response.success(replies)
+        val result = Response.success(repliesResponses)
         Mockito.`when`(service.getComments("1")).thenReturn(CompletableDeferred(result))
 
         // When getting the list of comments
@@ -49,13 +49,13 @@ class DesignerNewsCommentsRemoteDataSourceTest {
 
         // Then the response is the expected one
         assertNotNull(response)
-        assertEquals(Result.Success(replies), response)
+        assertEquals(Result.Success(repliesResponses), response)
     }
 
     @Test
     fun getComments_forMultipleComments() = runBlocking {
         // Given that the service responds with success for specific ids
-        val result = Response.success(replies)
+        val result = Response.success(repliesResponses)
         Mockito.`when`(service.getComments("11,12")).thenReturn(CompletableDeferred(result))
 
         // When getting the list of comments for specific list of ids
@@ -63,13 +63,13 @@ class DesignerNewsCommentsRemoteDataSourceTest {
 
         // Then the response is the expected one
         assertNotNull(response)
-        assertEquals(Result.Success(replies), response)
+        assertEquals(Result.Success(repliesResponses), response)
     }
 
     @Test
     fun getComments_whenRequestFailed() = runBlocking {
         // Given that the service responds with failure
-        val result = Response.error<List<Comment>>(400, errorResponseBody)
+        val result = Response.error<List<CommentResponse>>(400, errorResponseBody)
         Mockito.`when`(service.getComments("1")).thenReturn(CompletableDeferred(result))
 
         // When getting the list of comments
@@ -82,7 +82,7 @@ class DesignerNewsCommentsRemoteDataSourceTest {
     @Test
     fun getComments_whenResponseEmpty() = runBlocking {
         // Given that the service responds with success but with an empty response
-        val result = Response.success<List<Comment>>(null)
+        val result = Response.success<List<CommentResponse>>(null)
         Mockito.`when`(service.getComments("1")).thenReturn(CompletableDeferred(result))
 
         // When getting the list of comments

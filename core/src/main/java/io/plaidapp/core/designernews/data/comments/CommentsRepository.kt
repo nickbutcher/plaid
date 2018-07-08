@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.api.model
+package io.plaidapp.core.designernews.data.comments
 
-import java.util.Date
+import io.plaidapp.core.data.Result
+import io.plaidapp.core.designernews.data.api.model.CommentResponse
 
 /**
- * Models a comment on a designer news story.
+ * Class that knows how to get and store Designer News comments.
  */
-data class Comment(
-    val id: Long,
-    val parentComment: Long?,
-    val body: String,
-    val createdAt: Date,
-    val depth: Int,
-    val voteCount: Int,
-    val replies: List<Comment>,
-    val userId: Long?,
-    val userDisplayName: String?,
-    val userPortraitUrl: String?,
-    var upvoted: Boolean // TODO change this to val when getting to the upvoting
-)
+class CommentsRepository(private val remoteDataSource: DesignerNewsCommentsRemoteDataSource) {
+
+    /**
+     * Get the list of [CommentResponse]s corresponding to [ids]
+     */
+    suspend fun getComments(ids: List<Long>): Result<List<CommentResponse>> {
+        return remoteDataSource.getComments(ids)
+    }
+}

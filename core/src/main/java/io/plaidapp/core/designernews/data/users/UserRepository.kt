@@ -21,6 +21,9 @@ import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.api.model.User
 import java.io.IOException
 
+/**
+ * Class that requests users from the service and caches them, in memory.
+ */
 class UserRepository(private val service: DesignerNewsService) {
 
     private val cachedUsers = mutableMapOf<Long, User>()

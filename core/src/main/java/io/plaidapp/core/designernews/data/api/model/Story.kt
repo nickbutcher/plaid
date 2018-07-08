@@ -45,7 +45,5 @@ data class Story(
     @SerializedName("user_display_name") val userDisplayName: String? = null,
     @Deprecated("Removed in DN API V2")
     @SerializedName("user_portrait_url") val userPortraitUrl: String? = null,
-    @SerializedName("user_job") val userJob: String? = null,
-    @Deprecated("Removed in DN API V2")
-    @SerializedName("comments") var comments: List<Comment>? = emptyList()
+    @SerializedName("user_job") val userJob: String? = null
 ) : PlaidItem(id, title, url), Parcelable

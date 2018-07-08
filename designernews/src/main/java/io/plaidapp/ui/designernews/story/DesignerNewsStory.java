@@ -75,7 +75,7 @@ import in.uncod.android.bypass.Bypass;
 import io.plaidapp.core.data.Result;
 import io.plaidapp.core.designernews.DesignerNewsPrefs;
 import io.plaidapp.core.designernews.Injection;
-import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRepository;
+import io.plaidapp.core.designernews.data.comments.DesignerNewsCommentsRepository;
 import io.plaidapp.core.designernews.data.api.model.Comment;
 import io.plaidapp.core.designernews.data.api.model.Story;
 import io.plaidapp.core.designernews.data.api.model.User;

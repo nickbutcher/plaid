@@ -28,10 +28,10 @@ import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.core.designernews.data.api.DesignerNewsAuthTokenLocalDataSource
 import io.plaidapp.core.designernews.data.api.DesignerNewsRepository
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRemoteDataSource
-import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRepository
 import io.plaidapp.core.designernews.data.votes.DesignerNewsVotesRepository
 import io.plaidapp.core.designernews.data.votes.VotesRemoteDataSource
+import io.plaidapp.core.designernews.data.comments.DesignerNewsCommentsRemoteDataSource
+import io.plaidapp.core.designernews.data.comments.DesignerNewsCommentsRepository
 import io.plaidapp.core.designernews.login.data.DesignerNewsLoginLocalDataSource
 import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRemoteDataSource
 import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRepository
