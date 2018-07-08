@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.api.model
+package io.plaidapp.core.designernews.data.users
 
-import java.util.Date
+import org.junit.Before
+import org.junit.Test
 
-/**
- * Models a comment on a designer news story.
- */
-data class Comment(
-    val id: Long,
-    val parentComment: Long?,
-    val body: String,
-    val createdAt: Date,
-    val depth: Int,
-    val voteCount: Int,
-    val replies: List<Comment>,
-    val userId: Long?,
-    val userDisplayName: String?,
-    val userPortraitUrl: String?,
-    var upvoted: Boolean // TODO change this to val when getting to the upvoting
-)
+class UserRepositoryTest {
+
+    @Before
+    fun setUp() {
+    }
+
+    @Test
+    fun getUsers() {
+    }
+}

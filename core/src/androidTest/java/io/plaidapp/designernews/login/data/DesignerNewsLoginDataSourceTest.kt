@@ -52,7 +52,13 @@ class DesignerNewsLoginDataSourceTest {
     @Test
     fun user_set() {
         // Given a user
-        val user = User(id = 3, displayName = "Plaidinium Plaidescu", portraitUrl = "www")
+        val user = User(
+                id = 3,
+                firstName = "Pladinium",
+                lastName = "Plaidescu",
+                displayName = "Plaidinium Plaidescu",
+                portraitUrl = "www"
+        )
 
         // When inserting it in the data source
         dataSource.user = user
@@ -64,7 +70,12 @@ class DesignerNewsLoginDataSourceTest {
     @Test
     fun logout() {
         // Given a user set
-        val user = User(id = 3, displayName = "Plaidy Plaidinski", portraitUrl = "www")
+        val user = User(
+                id = 3,
+                firstName = "Plaidy",
+                lastName = "Plaidinkski",
+                displayName = "Plaidy Plaidinski",
+                portraitUrl = "www")
         dataSource.user = user
 
         // When logging out
