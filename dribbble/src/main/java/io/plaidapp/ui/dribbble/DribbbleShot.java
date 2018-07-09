@@ -29,24 +29,21 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.graphics.Palette;
-import android.support.v7.widget.RecyclerView;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -54,10 +51,8 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-
-import java.text.NumberFormat;
-
 import io.plaidapp.core.data.api.dribbble.model.Shot;
+import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.core.ui.widget.ParallaxScrimageView;
 import io.plaidapp.core.util.Activities;
 import io.plaidapp.core.util.ColorUtils;
@@ -67,8 +62,8 @@ import io.plaidapp.core.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.core.util.glide.GlideApp;
 import io.plaidapp.core.util.glide.GlideUtils;
 import io.plaidapp.dribbble.R;
-import io.plaidapp.core.ui.recyclerview.InsetDividerDecoration;
-import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout;
+
+import java.text.NumberFormat;
 
 import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
 
@@ -77,23 +72,21 @@ public class DribbbleShot extends Activity {
     private static final float SCRIM_ADJUSTMENT = 0.075f;
 
     private ElasticDragDismissFrameLayout draggableFrame;
-    private ImageButton back;
-    private ParallaxScrimageView imageView;
-    private RecyclerView commentsList;
-    View shotDescription;
-    View shotSpacer;
-    Button likeCount;
-    Button viewCount;
-    Button share;
-    ImageView playerAvatar;
-    private View title;
-    private View description;
+    private NestedScrollView bodyScroll;
+    private Button likeCount;
+    private Button viewCount;
+    private Button share;
+    private ImageView playerAvatar;
+    private TextView title;
+    private TextView description;
     private TextView playerName;
     private TextView shotTimeAgo;
     private ElasticDragDismissFrameLayout.SystemChromeFader chromeFader;
+    ImageButton back;
+    ParallaxScrimageView imageView;
+    View shotSpacer;
 
     Shot shot;
-    CommentsAdapter adapter;
     private int largeAvatarSize;
 
     @Override
@@ -101,20 +94,8 @@ public class DribbbleShot extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dribbble_shot);
         bindResources();
-        shotDescription = getLayoutInflater().inflate(R.layout.dribbble_shot_description,
-                commentsList, false);
-        shotSpacer = shotDescription.findViewById(R.id.shot_spacer);
-        title = shotDescription.findViewById(R.id.shot_title);
-        description = shotDescription.findViewById(R.id.shot_description);
-        likeCount = shotDescription.findViewById(R.id.shot_like_count);
-        viewCount = shotDescription.findViewById(R.id.shot_view_count);
-        share = shotDescription.findViewById(R.id.shot_share_action);
-        playerName = shotDescription.findViewById(R.id.player_name);
-        playerAvatar = shotDescription.findViewById(R.id.player_avatar);
-        shotTimeAgo = shotDescription.findViewById(R.id.shot_time_ago);
 
-        commentsList.addOnScrollListener(scrollListener);
-        commentsList.setOnFlingListener(flingListener);
+        bodyScroll.setOnScrollChangeListener(scrollListener);
         back.setOnClickListener(v -> setResultAndFinish());
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this) {
             @Override
@@ -136,9 +117,17 @@ public class DribbbleShot extends Activity {
         draggableFrame = findViewById(R.id.draggable_frame);
         back = findViewById(R.id.back);
         imageView = findViewById(R.id.shot);
-        commentsList = findViewById(R.id.dribbble_comments);
-        Resources res = getResources();
-        largeAvatarSize = res.getDimensionPixelSize(io.plaidapp.R.dimen.large_avatar_size);
+        bodyScroll = findViewById(R.id.body_scroll);
+        shotSpacer = findViewById(R.id.shot_spacer);
+        title = findViewById(R.id.shot_title);
+        description = findViewById(R.id.shot_description);
+        likeCount = findViewById(R.id.shot_like_count);
+        viewCount = findViewById(R.id.shot_view_count);
+        share = findViewById(R.id.shot_share_action);
+        playerName = findViewById(R.id.player_name);
+        playerAvatar = findViewById(R.id.player_avatar);
+        shotTimeAgo = findViewById(R.id.shot_time_ago);
+        largeAvatarSize = getResources().getDimensionPixelSize(io.plaidapp.R.dimen.large_avatar_size);
     }
 
     @Override
@@ -197,12 +186,12 @@ public class DribbbleShot extends Activity {
                     }
                 });
 
-        ((TextView) title).setText(shot.getTitle());
+        title.setText(shot.getTitle());
         if (!TextUtils.isEmpty(shot.description)) {
             final Spanned descText = shot.getParsedDescription(
                     ContextCompat.getColorStateList(this, R.color.dribbble_links),
                     ContextCompat.getColor(this, io.plaidapp.R.color.dribbble_link_highlight));
-            HtmlUtils.setTextWithNiceLinks((TextView) description, descText);
+            HtmlUtils.setTextWithNiceLinks(description, descText);
         } else {
             description.setVisibility(View.GONE);
         }
@@ -211,9 +200,7 @@ public class DribbbleShot extends Activity {
                 res.getQuantityString(io.plaidapp.R.plurals.likes,
                         (int) shot.likes_count,
                         nf.format(shot.likes_count)));
-        likeCount.setOnClickListener(v -> {
-            ((AnimatedVectorDrawable) likeCount.getCompoundDrawables()[1]).start();
-        });
+        likeCount.setOnClickListener(v -> ((AnimatedVectorDrawable) likeCount.getCompoundDrawables()[1]).start());
         if (shot.likes_count == 0) {
             likeCount.setBackground(null); // clear touch ripple if doesn't do anything
         }
@@ -246,13 +233,6 @@ public class DribbbleShot extends Activity {
             playerAvatar.setVisibility(View.GONE);
             shotTimeAgo.setVisibility(View.GONE);
         }
-
-        adapter = new CommentsAdapter(shotDescription);
-        commentsList.setAdapter(adapter);
-        commentsList.addItemDecoration(new InsetDividerDecoration(
-                res.getDimensionPixelSize(io.plaidapp.R.dimen.divider_height),
-                res.getDimensionPixelSize(io.plaidapp.R.dimen.keyline_1),
-                ContextCompat.getColor(this, io.plaidapp.R.color.divider)));
     }
 
     private View.OnClickListener shotClick = new View.OnClickListener() {
@@ -281,54 +261,51 @@ public class DribbbleShot extends Activity {
             if (bitmap == null) return false;
             final int twentyFourDip = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                     24, DribbbleShot.this.getResources().getDisplayMetrics());
-            Palette.from(bitmap)
-                    .maximumColorCount(3)
-                    .clearFilters() /* by default palette ignore certain hues
-                        (e.g. pure black/white) but we don't want this. */
-                    .setRegion(0, 0, bitmap.getWidth() - 1, twentyFourDip) /* - 1 to work around
-                        https://code.google.com/p/android/issues/detail?id=191013 */
-                    .generate(palette -> {
-                        boolean isDark;
-                        @ColorUtils.Lightness int lightness = ColorUtils.isDark(palette);
-                        if (lightness == ColorUtils.LIGHTNESS_UNKNOWN) {
-                            isDark = ColorUtils.isDark(bitmap, bitmap.getWidth() / 2, 0);
-                        } else {
-                            isDark = lightness == ColorUtils.IS_DARK;
-                        }
+            Palette.from(bitmap).maximumColorCount(3);
+            Palette.from(bitmap).clearFilters();
+            Palette.from(bitmap).setRegion(0, 0, bitmap.getWidth() - 1, twentyFourDip);
+            Palette.from(bitmap).generate(palette -> {
+                boolean isDark;
+                @ColorUtils.Lightness int lightness = ColorUtils.isDark(palette);
+                if (lightness == ColorUtils.LIGHTNESS_UNKNOWN) {
+                    isDark = ColorUtils.isDark(bitmap, bitmap.getWidth() / 2, 0);
+                } else {
+                    isDark = lightness == ColorUtils.IS_DARK;
+                }
 
-                        if (!isDark) { // make back icon dark on light images
-                            back.setColorFilter(ContextCompat.getColor(
-                                    DribbbleShot.this, io.plaidapp.R.color.dark_icon));
-                        }
+                if (!isDark) { // make back icon dark on light images
+                    back.setColorFilter(ContextCompat.getColor(
+                            DribbbleShot.this, io.plaidapp.R.color.dark_icon));
+                }
 
-                        // color the status bar. Set a complementary dark color on L,
-                        // light or dark color on M (with matching status bar icons)
-                        int statusBarColor = getWindow().getStatusBarColor();
-                        final Palette.Swatch topColor =
-                                ColorUtils.getMostPopulousSwatch(palette);
-                        if (topColor != null &&
-                                (isDark || Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
-                            statusBarColor = ColorUtils.scrimify(topColor.getRgb(),
-                                    isDark, SCRIM_ADJUSTMENT);
-                            // set a light status bar on M+
-                            if (!isDark && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                ViewUtils.setLightStatusBar(imageView);
-                            }
-                        }
+                // color the status bar. Set a complementary dark color on L,
+                // light or dark color on M (with matching status bar icons)
+                int statusBarColor = getWindow().getStatusBarColor();
+                final Palette.Swatch topColor =
+                        ColorUtils.getMostPopulousSwatch(palette);
+                if (topColor != null && isDark) {
+                    statusBarColor = ColorUtils.scrimify(topColor.getRgb(), isDark, SCRIM_ADJUSTMENT);
+                    // set a light status bar on M+
+                    if (!isDark) {
+                        ViewUtils.setLightStatusBar(imageView);
+                    }
+                }
 
-                        if (statusBarColor != getWindow().getStatusBarColor()) {
-                            imageView.setScrimColor(statusBarColor);
-                            ValueAnimator statusBarColorAnim = ValueAnimator.ofArgb(
-                                    getWindow().getStatusBarColor(), statusBarColor);
-                            statusBarColorAnim.addUpdateListener(animation ->
-                                    getWindow().setStatusBarColor(
+                if (statusBarColor != getWindow().getStatusBarColor()) {
+                    imageView.setScrimColor(statusBarColor);
+                    ValueAnimator statusBarColorAnim = ValueAnimator.ofArgb(
+                            getWindow().getStatusBarColor(), statusBarColor);
+                    statusBarColorAnim.addUpdateListener(animation ->
+                            getWindow().setStatusBarColor(
                                     (int) animation.getAnimatedValue()));
-                            statusBarColorAnim.setDuration(1000L);
-                            statusBarColorAnim.setInterpolator(
-                                    getFastOutSlowInInterpolator(DribbbleShot.this));
-                            statusBarColorAnim.start();
-                        }
-                    });
+                    statusBarColorAnim.setDuration(1000L);
+                    statusBarColorAnim.setInterpolator(
+                            getFastOutSlowInInterpolator(DribbbleShot.this));
+                    statusBarColorAnim.start();
+                }
+            });/* by default palette ignore certain hues
+                        (e.g. pure black/white) but we don't want this. *//* - 1 to work around
+                        https://code.google.com/p/android/issues/detail?id=191013 */
 
             Palette.from(bitmap)
                     .clearFilters()
@@ -358,69 +335,14 @@ public class DribbbleShot extends Activity {
         }
     };
 
-    private RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            final int scrollY = shotDescription.getTop();
-            imageView.setOffset(scrollY);
-        }
-
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            // as we animate the main image's elevation change when it 'pins' at it's min height
-            // a fling can cause the title to go over the image before the animation has a chance to
-            // run. In this case we short circuit the animation and just jump to state.
-            imageView.setImmediatePin(newState == RecyclerView.SCROLL_STATE_SETTLING);
-        }
-    };
-
-    private RecyclerView.OnFlingListener flingListener = new RecyclerView.OnFlingListener() {
-        @Override
-        public boolean onFling(int velocityX, int velocityY) {
-            imageView.setImmediatePin(true);
-            return false;
-        }
-    };
+    private NestedScrollView.OnScrollChangeListener scrollListener = (v, scrollX, scrollY, oldScrollX, oldScrollY) ->
+            imageView.setOffset(-scrollY);
 
     void setResultAndFinish() {
         final Intent resultData = new Intent();
         resultData.putExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID, shot.getId());
         setResult(RESULT_OK, resultData);
         finishAfterTransition();
-    }
-
-    class CommentsAdapter extends RecyclerView.Adapter<SimpleViewHolder> {
-
-        private final View description;
-
-        CommentsAdapter(@NonNull View description) {
-            this.description = description;
-        }
-
-        @Override
-        public int getItemCount() {
-            return 1; // description
-        }
-
-        @NonNull
-        @Override
-        public SimpleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new SimpleViewHolder(description);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull SimpleViewHolder holder, int position) {
-            // no-op
-        }
-
-    }
-
-    static class SimpleViewHolder extends RecyclerView.ViewHolder {
-
-        SimpleViewHolder(View itemView) {
-            super(itemView);
-        }
     }
 
 }
