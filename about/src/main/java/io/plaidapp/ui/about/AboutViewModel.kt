@@ -17,36 +17,31 @@
 package io.plaidapp.ui.about
 
 import `in`.uncod.android.bypass.Bypass
-import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.ViewModel
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.support.annotation.ColorInt
 import android.support.annotation.StringRes
-import android.support.v4.content.ContextCompat
 import android.text.Layout
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.AlignmentSpan
 import io.plaidapp.about.R
-import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.core.util.event.Event
 import io.plaidapp.R as appR
 
 /**
  * [AndroidViewModel] for the about module.
  */
-class AboutViewModel(application: Application) : AndroidViewModel(application) {
+class AboutViewModel(
+        private val aboutStyler: AboutStyler,
+        private val resources: Resources
+) : ViewModel() {
 
-    private val markdown = Bypass(application.resources.displayMetrics, Bypass.Options())
-    private val resources = application.resources
-
-    private val linksColor = ContextCompat.getColorStateList(application,
-            appR.color.plaid_links)!!
-    private val highlightColor = ColorUtils.getThemeColor(application,
-            appR.attr.colorPrimary, appR.color.primary)
+    private val markdown = Bypass(resources.displayMetrics, Bypass.Options())
 
     private val _navigationTarget = MutableLiveData<Event<String>>()
     val navigationTarget: LiveData<Event<String>>
@@ -54,36 +49,40 @@ class AboutViewModel(application: Application) : AndroidViewModel(application) {
 
     val appAboutText: CharSequence
         get() {
-            // fun with spans & markdown
-            val about0 = getSpannableFromMarkdown(R.string.about_plaid_0,
-                    linksColor,
-                    highlightColor)
+            return with(aboutStyler) {
+                // fun with spans & markdown
+                val about0 = getSpannableFromMarkdown(R.string.about_plaid_0,
+                        linksColor,
+                        highlightColor)
 
-            val about1 = SpannableString(resources.getString(R.string.about_plaid_1)).apply {
-                setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                        0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
+                val about1 = SpannableString(resources.getString(R.string.about_plaid_1)).apply {
+                    setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                            0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
 
-            val about2 = SpannableString(
-                    getSpannableFromMarkdown(R.string.about_plaid_2,
-                            linksColor, highlightColor)).apply {
-                setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                        0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val about2 = SpannableString(
+                        getSpannableFromMarkdown(R.string.about_plaid_2,
+                                linksColor, highlightColor)).apply {
+                    setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                            0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+                val about3 = SpannableString(
+                        getSpannableFromMarkdown(R.string.about_plaid_3,
+                                linksColor, highlightColor)).apply {
+                    setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                            0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+                "$about0\n\n$about1\n$about2\n\n$about3"
             }
-            val about3 = SpannableString(
-                    getSpannableFromMarkdown(R.string.about_plaid_3,
-                            linksColor, highlightColor)).apply {
-                setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                        0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
-            return "$about0\n\n$about1\n$about2\n\n$about3"
         }
 
     val iconAboutText: CharSequence
         get() {
             val icon0 = resources.getString(R.string.about_icon_0)
+            return with(aboutStyler) {
             val icon1 = getSpannableFromMarkdown(R.string.about_icon_1, linksColor, highlightColor)
-            return "$icon0\n$icon1"
+            "$icon0\n$icon1"
+            }
         }
 
     internal fun onLibraryClick(library: Library) {
@@ -125,9 +124,9 @@ class AboutViewModel(application: Application) : AndroidViewModel(application) {
                     false))
 
     private fun getSpannableFromMarkdown(
-        @StringRes stringId: Int,
-        linksColor: ColorStateList,
-        @ColorInt highlightColor: Int
+            @StringRes stringId: Int,
+            linksColor: ColorStateList,
+            @ColorInt highlightColor: Int
     ): CharSequence {
         return markdown.markdownToSpannable(resources.getString(stringId), linksColor,
                 highlightColor, null)
