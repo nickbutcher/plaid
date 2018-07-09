@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -98,7 +99,7 @@ public class Bypass implements Markdown {
     public CharSequence markdownToSpannable(@NonNull String markdown,
                                             @NonNull ColorStateList linksColors,
                                             int highlightColor,
-                                            @NonNull LoadImageCallback loadImageCallback) {
+                                            @Nullable LoadImageCallback loadImageCallback) {
         Document document = processMarkdown(markdown);
 
         int size = document.getElementCount();
