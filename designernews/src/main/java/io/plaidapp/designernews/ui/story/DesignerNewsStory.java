@@ -158,7 +158,7 @@ public class DesignerNewsStory extends Activity {
 
         fab.setOnClickListener(fabClick);
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this);
-        markdown = new Bypass(this, new Bypass.Options()
+        markdown = new Bypass(getResources().getDisplayMetrics(), new Bypass.Options()
                 .setBlockQuoteLineColor(
                         ContextCompat.getColor(this, io.plaidapp.R.color.designer_news_quote_line))
                 .setBlockQuoteLineWidth(2) // dps
