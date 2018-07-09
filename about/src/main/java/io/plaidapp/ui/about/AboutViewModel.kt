@@ -22,6 +22,7 @@ import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.content.res.ColorStateList
+import android.content.res.Resources
 import android.support.annotation.ColorInt
 import android.support.annotation.StringRes
 import android.support.v4.content.ContextCompat
@@ -39,7 +40,7 @@ import io.plaidapp.R as appR
  */
 class AboutViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val markdown = Bypass(application, Bypass.Options())
+    private val markdown = Bypass(application.resources.displayMetrics, Bypass.Options())
     private val resources = application.resources
 
     private val linksColor = ContextCompat.getColorStateList(application,
