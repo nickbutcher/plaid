@@ -31,14 +31,13 @@ import android.text.Spanned
 import android.text.style.AlignmentSpan
 import io.plaidapp.about.R
 import io.plaidapp.core.util.event.Event
-import io.plaidapp.R as appR
 
 /**
  * [AndroidViewModel] for the about module.
  */
-class AboutViewModel(
-        private val aboutStyler: AboutStyler,
-        private val resources: Resources
+internal class AboutViewModel(
+    private val aboutStyler: AboutStyler,
+    private val resources: Resources
 ) : ViewModel() {
 
     private val markdown = Bypass(resources.displayMetrics, Bypass.Options())
@@ -47,88 +46,115 @@ class AboutViewModel(
     val navigationTarget: LiveData<Event<String>>
         get() = _navigationTarget
 
-    val appAboutText: CharSequence
-        get() {
-            return with(aboutStyler) {
-                // fun with spans & markdown
-                val about0 = getSpannableFromMarkdown(R.string.about_plaid_0,
-                        linksColor,
-                        highlightColor)
+    val appAboutText: CharSequence by lazy {
+        with(aboutStyler) {
+            // fun with spans & markdown
+            val about0 = getSpannableFromMarkdown(
+                R.string.about_plaid_0,
+                linksColor,
+                highlightColor
+            )
 
-                val about1 = SpannableString(resources.getString(R.string.about_plaid_1)).apply {
-                    setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                            0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                }
-
-                val about2 = SpannableString(
-                        getSpannableFromMarkdown(R.string.about_plaid_2,
-                                linksColor, highlightColor)).apply {
-                    setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                            0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                }
-                val about3 = SpannableString(
-                        getSpannableFromMarkdown(R.string.about_plaid_3,
-                                linksColor, highlightColor)).apply {
-                    setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                            0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                }
-                "$about0\n\n$about1\n$about2\n\n$about3"
+            val about1 = SpannableString(resources.getString(R.string.about_plaid_1)).apply {
+                setSpan(
+                    AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                    0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
             }
-        }
 
-    val iconAboutText: CharSequence
-        get() {
-            val icon0 = resources.getString(R.string.about_icon_0)
-            return with(aboutStyler) {
+            val about2 = SpannableString(
+                getSpannableFromMarkdown(
+                    R.string.about_plaid_2,
+                    linksColor, highlightColor
+                )
+            ).apply {
+                setSpan(
+                    AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                    0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+            val about3 = SpannableString(
+                getSpannableFromMarkdown(
+                    R.string.about_plaid_3,
+                    linksColor, highlightColor
+                )
+            ).apply {
+                setSpan(
+                    AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                    0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+            "$about0\n\n$about1\n$about2\n\n$about3"
+        }
+    }
+
+    val iconAboutText: CharSequence by lazy {
+        val icon0 = resources.getString(R.string.about_icon_0)
+        with(aboutStyler) {
             val icon1 = getSpannableFromMarkdown(R.string.about_icon_1, linksColor, highlightColor)
             "$icon0\n$icon1"
-            }
         }
+    }
 
-    internal fun onLibraryClick(library: Library) {
+    val libraries = listOf(
+        Library(
+            "Android support libraries",
+            "The Android support libraries offer a number of features that are " +
+                "not built into the framework.",
+            "https://developer.android.com/topic/libraries/support-library",
+            "https://developer.android.com/images/android_icon_125.png",
+            false
+        ),
+        Library(
+            "Bypass",
+            "Skip the HTML, Bypass takes markdown and renders it directly.",
+            "https://github.com/Uncodin/bypass",
+            "https://avatars.githubusercontent.com/u/1072254",
+            true
+        ),
+        Library(
+            "Glide",
+            "An image loading and caching library for Android focused onsmooth " +
+                "scrolling.",
+            "https://github.com/bumptech/glide",
+            "https://avatars.githubusercontent.com/u/423539",
+            false
+        ),
+        Library(
+            "JSoup",
+            "Java HTML Parser, with best of DOM, CSS, and jquery.",
+            "https://github.com/jhy/jsoup/",
+            "https://avatars.githubusercontent.com/u/76934",
+            true
+        ),
+        Library(
+            "OkHttp",
+            "An HTTP & HTTP/2 client for Android and Java applications.",
+            "http://square.github.io/okhttp/",
+            "https://avatars.githubusercontent.com/u/82592",
+            false
+        ),
+        Library(
+            "Retrofit",
+            "A type-safe HTTP client for Android and Java.",
+            "http://square.github.io/retrofit/",
+            "https://avatars.githubusercontent.com/u/82592",
+            false
+        )
+    )
+
+    fun onLibraryClick(library: Library) {
         _navigationTarget.value = Event(library.link)
     }
 
-    internal val libraries = listOf(
-            Library("Android support libraries",
-                    "The Android support libraries offer a number of features that are " +
-                            "not built into the framework.",
-                    "https://developer.android.com/topic/libraries/support-library",
-                    "https://developer.android.com/images/android_icon_125.png",
-                    false),
-            Library("Bypass",
-                    "Skip the HTML, Bypass takes markdown and renders it directly.",
-                    "https://github.com/Uncodin/bypass",
-                    "https://avatars.githubusercontent.com/u/1072254",
-                    true),
-            Library("Glide",
-                    "An image loading and caching library for Android focused onsmooth " +
-                            "scrolling.",
-                    "https://github.com/bumptech/glide",
-                    "https://avatars.githubusercontent.com/u/423539",
-                    false),
-            Library("JSoup",
-                    "Java HTML Parser, with best of DOM, CSS, and jquery.",
-                    "https://github.com/jhy/jsoup/",
-                    "https://avatars.githubusercontent.com/u/76934",
-                    true),
-            Library("OkHttp",
-                    "An HTTP & HTTP/2 client for Android and Java applications.",
-                    "http://square.github.io/okhttp/",
-                    "https://avatars.githubusercontent.com/u/82592",
-                    false),
-            Library("Retrofit",
-                    "A type-safe HTTP client for Android and Java.",
-                    "http://square.github.io/retrofit/",
-                    "https://avatars.githubusercontent.com/u/82592",
-                    false))
-
     private fun getSpannableFromMarkdown(
-            @StringRes stringId: Int,
-            linksColor: ColorStateList,
-            @ColorInt highlightColor: Int
+        @StringRes stringId: Int,
+        linksColor: ColorStateList,
+        @ColorInt highlightColor: Int
     ): CharSequence {
-        return markdown.markdownToSpannable(resources.getString(stringId), linksColor,
-                highlightColor, null)
+        return markdown.markdownToSpannable(
+            resources.getString(stringId), linksColor,
+            highlightColor, null
+        )
     }
 }
