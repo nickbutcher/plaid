@@ -34,11 +34,15 @@ android {
 
         resConfig 'en'
         buildConfigField 'String', 'GIT_SHA', "\"${gitSha}\""
-         manifestPlaceholders += [
-                 crashlyticsEnabled: false
-         ]
+        manifestPlaceholders += [
+                crashlyticsEnabled: false
+        ]
     }
     buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-DEBUG'
+        }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
