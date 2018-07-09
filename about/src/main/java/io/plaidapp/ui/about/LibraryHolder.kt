@@ -26,7 +26,7 @@ import io.plaidapp.about.R
 import io.plaidapp.core.util.glide.GlideApp
 import io.plaidapp.R as appR
 
-typealias OnClick = (library: Library) -> Unit
+internal typealias OnClick = (library: Library) -> Unit
 
 internal class LibraryHolder(
     itemView: View,

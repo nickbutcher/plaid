@@ -85,11 +85,11 @@ class AboutViewModel(application: Application) : AndroidViewModel(application) {
             return "$icon0\n$icon1"
         }
 
-    fun onLibraryClick(library: Library) {
+    internal fun onLibraryClick(library: Library) {
         _navigationTarget.value = Event(library.link)
     }
 
-    val libraries = listOf(
+    internal val libraries = listOf(
             Library("Android support libraries",
                     "The Android support libraries offer a number of features that are " +
                             "not built into the framework.",
