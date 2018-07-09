@@ -30,6 +30,6 @@ interface Markdown {
         content: String,
         linksColor: ColorStateList,
         @ColorInt highlightColor: Int,
-        callback: LoadImageCallback
+        callback: LoadImageCallback?
     ): CharSequence
 }

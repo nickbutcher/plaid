@@ -16,7 +16,6 @@
 
 package io.plaidapp.ui.about
 
-import android.arch.lifecycle.ViewModelProviders
 import android.net.Uri
 import android.os.Bundle
 import android.support.customtabs.CustomTabsIntent

@@ -27,7 +27,7 @@ import java.security.InvalidParameterException
  * Adapter that holds libraries.
  */
 internal class LibraryAdapter(
-        private val uiModel: LibrariesUiModel
+    private val uiModel: LibrariesUiModel
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
