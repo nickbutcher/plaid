@@ -20,14 +20,14 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import io.plaidapp.about.R
+import io.plaidapp.ui.about.uimodel.LibrariesUiModel
 import java.security.InvalidParameterException
 
 /**
  * Adapter that holds libraries.
  */
 internal class LibraryAdapter(
-    private val libraries: List<Library>,
-    private val onClick: OnClick
+        private val uiModel: LibrariesUiModel
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -42,19 +42,19 @@ internal class LibraryAdapter(
     private fun createLibraryHolder(parent: ViewGroup): LibraryHolder {
         return LibraryHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.library, parent, false),
-                onClick)
+                uiModel.onClick)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == VIEW_TYPE_LIBRARY) {
-            (holder as LibraryHolder).bind(libraries[position - 1]) // adjust for intro
+            (holder as LibraryHolder).bind(uiModel.libraries[position - 1]) // adjust for intro
         }
     }
 
     override fun getItemViewType(position: Int) =
             if (position == 0) VIEW_TYPE_INTRO else VIEW_TYPE_LIBRARY
 
-    override fun getItemCount() = libraries.size + 1 // + 1 for the static intro view
+    override fun getItemCount() = uiModel.libraries.size + 1 // + 1 for the static intro view
 
     companion object {
 

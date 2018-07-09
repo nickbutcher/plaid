@@ -30,8 +30,8 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.AlignmentSpan
 import io.plaidapp.about.R
-import io.plaidapp.core.util.event.Event
 import io.plaidapp.core.util.ColorUtils
+import io.plaidapp.core.util.event.Event
 import io.plaidapp.R as appR
 
 /**

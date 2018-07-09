@@ -22,15 +22,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
-import java.security.InvalidParameterException
 import io.plaidapp.about.R
 import io.plaidapp.core.util.HtmlUtils
+import io.plaidapp.ui.about.uimodel.AboutUiModel
+import java.security.InvalidParameterException
 
-internal class AboutPagerAdapter(
-    private val aboutViewModel: AboutViewModel,
-    private val onClick: OnClick
-) : PagerAdapter() {
+internal class AboutPagerAdapter(private val uiModel: AboutUiModel) : PagerAdapter() {
 
     private lateinit var aboutPlaid: View
     private lateinit var aboutIcon: View
@@ -79,25 +76,25 @@ internal class AboutPagerAdapter(
     }
 
     private fun buildLibsAboutPage(parent: ViewGroup) {
-        aboutLibs = layoutInflater.inflate(R.layout.about_libs, parent, false).also {
-            it.findViewById<RecyclerView>(R.id.libs_list).apply {
-                adapter = LibraryAdapter(aboutViewModel.libraries, onClick)
+        aboutLibs = layoutInflater.inflate(R.layout.about_libs, parent, false).apply {
+            findViewById<RecyclerView>(R.id.libs_list).apply {
+                adapter = LibraryAdapter(uiModel.librariesUiModel)
             }
         }
     }
 
     private fun buildIconAboutPage(parent: ViewGroup) {
-        aboutIcon = layoutInflater.inflate(R.layout.about_icon, parent, false).also {
-            it.findViewById<TextView>(R.id.icon_description).apply {
-                HtmlUtils.setTextWithNiceLinks(this, aboutViewModel.iconAboutText)
+        aboutIcon = layoutInflater.inflate(R.layout.about_icon, parent, false).apply {
+            findViewById<TextView>(R.id.icon_description).apply {
+                HtmlUtils.setTextWithNiceLinks(this, uiModel.iconAboutText)
             }
         }
     }
 
     private fun buildAppAboutPage(parent: ViewGroup) {
-        aboutPlaid = layoutInflater.inflate(R.layout.about_plaid, parent, false).also {
-            it.findViewById<TextView>(R.id.about_description).apply {
-                HtmlUtils.setTextWithNiceLinks(this, aboutViewModel.appAboutText)
+        aboutPlaid = layoutInflater.inflate(R.layout.about_plaid, parent, false).apply{
+            findViewById<TextView>(R.id.about_description).apply {
+                HtmlUtils.setTextWithNiceLinks(this, uiModel.appAboutText)
             }
         }
     }
