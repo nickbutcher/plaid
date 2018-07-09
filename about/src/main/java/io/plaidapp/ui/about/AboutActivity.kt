@@ -27,6 +27,7 @@ import android.transition.TransitionInflater
 import androidx.core.net.toUri
 import io.plaidapp.about.R
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
+import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
 import io.plaidapp.core.util.event.EventObserver
 import io.plaidapp.ui.about.uimodel.AboutUiModel
@@ -49,7 +50,14 @@ class AboutActivity : AppCompatActivity() {
         val draggableFrame = findViewById<ElasticDragDismissFrameLayout>(R.id.draggable_frame)
         val pager = findViewById<ViewPager>(R.id.pager)
         val pageIndicator = findViewById<InkPageIndicator>(R.id.indicator)
-        val viewModel = ViewModelProviders.of(this).get(AboutViewModel::class.java).apply {
+
+        val linksColor = ContextCompat.getColorStateList(application,
+                appR.color.plaid_links)!!
+        val highlightColor = ColorUtils.getThemeColor(application,
+                appR.attr.colorPrimary, appR.color.primary)
+        val aboutStyler = AboutStyler(linksColor, highlightColor)
+
+        val viewModel = AboutViewModel(aboutStyler, resources).apply {
             navigationTarget.observe(this@AboutActivity, EventObserver { url ->
                 openLink(url)
             })
