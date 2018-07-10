@@ -15,7 +15,7 @@
  *
  */
 
-package io.plaidapp.ui.dribbble;
+package io.plaidapp.dribbble.ui;
 
 import android.app.Activity;
 import android.net.Uri;
