@@ -200,7 +200,8 @@ public class DribbbleShot extends Activity {
                 res.getQuantityString(io.plaidapp.R.plurals.likes,
                         (int) shot.likes_count,
                         nf.format(shot.likes_count)));
-        likeCount.setOnClickListener(v -> ((AnimatedVectorDrawable) likeCount.getCompoundDrawables()[1]).start());
+        likeCount.setOnClickListener(v ->
+                ((AnimatedVectorDrawable) likeCount.getCompoundDrawables()[1]).start());
         if (shot.likes_count == 0) {
             likeCount.setBackground(null); // clear touch ripple if doesn't do anything
         }
@@ -259,69 +260,20 @@ public class DribbbleShot extends Activity {
                                        DataSource dataSource, boolean isFirstResource) {
             final Bitmap bitmap = GlideUtils.getBitmap(resource);
             if (bitmap == null) return false;
-            final int twentyFourDip = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                    24, DribbbleShot.this.getResources().getDisplayMetrics());
-            Palette.from(bitmap).maximumColorCount(3);
-            Palette.from(bitmap).clearFilters();
-            Palette.from(bitmap).setRegion(0, 0, bitmap.getWidth() - 1, twentyFourDip);
-            Palette.from(bitmap).generate(palette -> {
-                boolean isDark;
-                @ColorUtils.Lightness int lightness = ColorUtils.isDark(palette);
-                if (lightness == ColorUtils.LIGHTNESS_UNKNOWN) {
-                    isDark = ColorUtils.isDark(bitmap, bitmap.getWidth() / 2, 0);
-                } else {
-                    isDark = lightness == ColorUtils.IS_DARK;
-                }
-
-                if (!isDark) { // make back icon dark on light images
-                    back.setColorFilter(ContextCompat.getColor(
-                            DribbbleShot.this, io.plaidapp.R.color.dark_icon));
-                }
-
-                // color the status bar. Set a complementary dark color on L,
-                // light or dark color on M (with matching status bar icons)
-                int statusBarColor = getWindow().getStatusBarColor();
-                final Palette.Swatch topColor =
-                        ColorUtils.getMostPopulousSwatch(palette);
-                if (topColor != null && isDark) {
-                    statusBarColor = ColorUtils.scrimify(topColor.getRgb(), isDark, SCRIM_ADJUSTMENT);
-                    // set a light status bar on M+
-                    if (!isDark) {
-                        ViewUtils.setLightStatusBar(imageView);
-                    }
-                }
-
-                if (statusBarColor != getWindow().getStatusBarColor()) {
-                    imageView.setScrimColor(statusBarColor);
-                    ValueAnimator statusBarColorAnim = ValueAnimator.ofArgb(
-                            getWindow().getStatusBarColor(), statusBarColor);
-                    statusBarColorAnim.addUpdateListener(animation ->
-                            getWindow().setStatusBarColor(
-                                    (int) animation.getAnimatedValue()));
-                    statusBarColorAnim.setDuration(1000L);
-                    statusBarColorAnim.setInterpolator(
-                            getFastOutSlowInInterpolator(DribbbleShot.this));
-                    statusBarColorAnim.start();
-                }
-            });/* by default palette ignore certain hues
-                        (e.g. pure black/white) but we don't want this. *//* - 1 to work around
-                        https://code.google.com/p/android/issues/detail?id=191013 */
 
             Palette.from(bitmap)
+                    .clearFilters() /* by default palette ignore certain hues
+                        (e.g. pure black/white) but we don't want this. */
+                    .generate(palette -> applyFullImagePalette(palette));
+
+            final int twentyFourDip = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                    24, DribbbleShot.this.getResources().getDisplayMetrics());
+            Palette.from(bitmap)
+                    .maximumColorCount(3)
                     .clearFilters()
-                    .generate(palette -> {
-                        // color the ripple on the image spacer (default is grey)
-                        shotSpacer.setBackground(
-                                ViewUtils.createRipple(palette, 0.25f, 0.5f, ContextCompat.getColor(
-                                        DribbbleShot.this, io.plaidapp.R.color.mid_grey),
-                                        true));
-                        // slightly more opaque ripple on the pinned image to compensate
-                        // for the scrim
-                        imageView.setForeground(
-                                ViewUtils.createRipple(palette, 0.3f, 0.6f, ContextCompat.getColor(
-                                        DribbbleShot.this, io.plaidapp.R.color.mid_grey),
-                                        true));
-                    });
+                    .setRegion(0, 0, bitmap.getWidth() - 1, twentyFourDip) /* - 1 to work around
+                        https://code.google.com/p/android/issues/detail?id=191013 */
+                    .generate(palette -> applyTopPalette(bitmap, palette));
 
             // TODO should keep the background if the image contains transparency?!
             imageView.setBackground(null);
@@ -335,8 +287,54 @@ public class DribbbleShot extends Activity {
         }
     };
 
-    private NestedScrollView.OnScrollChangeListener scrollListener = (v, scrollX, scrollY, oldScrollX, oldScrollY) ->
-            imageView.setOffset(-scrollY);
+    void applyFullImagePalette(Palette palette) {
+        // color the ripple on the image spacer (default is grey)
+        shotSpacer.setBackground(ViewUtils.createRipple(palette, 0.25f, 0.5f,
+                ContextCompat.getColor(DribbbleShot.this, io.plaidapp.R.color.mid_grey), true));
+        // slightly more opaque ripple on the pinned image to compensate for the scrim
+        imageView.setForeground(ViewUtils.createRipple(palette, 0.3f, 0.6f,
+                ContextCompat.getColor(DribbbleShot.this, io.plaidapp.R.color.mid_grey), true));
+    }
+
+    void applyTopPalette(Bitmap bitmap, Palette palette) {
+        boolean isDark;
+        @ColorUtils.Lightness int lightness = ColorUtils.isDark(palette);
+        if (lightness == ColorUtils.LIGHTNESS_UNKNOWN) {
+            isDark = ColorUtils.isDark(bitmap, bitmap.getWidth() / 2, 0);
+        } else {
+            isDark = lightness == ColorUtils.IS_DARK;
+        }
+
+        if (!isDark) { // make back icon dark on light images
+            back.setColorFilter(
+                    ContextCompat.getColor(DribbbleShot.this, io.plaidapp.R.color.dark_icon));
+        }
+
+        // color the status bar.
+        int statusBarColor = getWindow().getStatusBarColor();
+        final Palette.Swatch topColor = ColorUtils.getMostPopulousSwatch(palette);
+        if (topColor != null) {
+            statusBarColor = ColorUtils.scrimify(topColor.getRgb(), isDark, SCRIM_ADJUSTMENT);
+            // set a light status bar
+            if (!isDark) {
+                ViewUtils.setLightStatusBar(imageView);
+            }
+        }
+
+        if (statusBarColor != getWindow().getStatusBarColor()) {
+            imageView.setScrimColor(statusBarColor);
+            ValueAnimator statusBarColorAnim =
+                    ValueAnimator.ofArgb(getWindow().getStatusBarColor(), statusBarColor);
+            statusBarColorAnim.addUpdateListener(animation ->
+                    getWindow().setStatusBarColor((int) animation.getAnimatedValue()));
+            statusBarColorAnim.setDuration(1000L);
+            statusBarColorAnim.setInterpolator(getFastOutSlowInInterpolator(DribbbleShot.this));
+            statusBarColorAnim.start();
+        }
+    }
+
+    private NestedScrollView.OnScrollChangeListener scrollListener =
+            (v, scrollX, scrollY, oldScrollX, oldScrollY) -> imageView.setOffset(-scrollY);
 
     void setResultAndFinish() {
         final Intent resultData = new Intent();
