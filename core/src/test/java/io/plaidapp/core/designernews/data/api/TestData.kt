@@ -20,6 +20,7 @@ import io.plaidapp.core.designernews.data.api.model.Comment
 import io.plaidapp.core.designernews.data.api.model.CommentLinksResponse
 import io.plaidapp.core.designernews.data.api.model.CommentResponse
 import io.plaidapp.core.designernews.data.api.model.User
+import io.plaidapp.core.designernews.domain.CommentWithReplies
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import java.util.Date
@@ -48,7 +49,7 @@ val user2 = User(
 
 const val parentId = 1L
 
-val links = CommentLinksResponse(userId = user1.id, story = "storyid", parentComment = parentId)
+val links = CommentLinksResponse(userId = user1.id, story = 999L, parentComment = parentId)
 
 val replyResponse1 = CommentResponse(
         id = 11L,
@@ -57,13 +58,23 @@ val replyResponse1 = CommentResponse(
         links = links
 )
 
+val replyWithReplies1 = CommentWithReplies(
+        id = replyResponse1.id,
+        parentId = replyResponse1.links.parentComment,
+        body = replyResponse1.body,
+        createdAt = replyResponse1.created_at,
+        userId = replyResponse1.links.userId,
+        storyId = replyResponse1.links.story,
+        replies = emptyList()
+)
+
 val reply1 = Comment(
         id = replyResponse1.id,
-        parentComment = parentId,
+        parentCommentId = parentId,
         body = replyResponse1.body,
         createdAt = replyResponse1.created_at,
         depth = replyResponse1.depth,
-        voteCount = replyResponse1.vote_count,
+        upvotesCount = replyResponse1.vote_count,
         replies = emptyList(),
         userId = replyResponse1.links.userId,
         userDisplayName = user1.displayName,
@@ -73,11 +84,11 @@ val reply1 = Comment(
 
 val reply1NoUser = Comment(
         id = replyResponse1.id,
-        parentComment = parentId,
+        parentCommentId = parentId,
         body = replyResponse1.body,
         createdAt = replyResponse1.created_at,
         depth = replyResponse1.depth,
-        voteCount = replyResponse1.vote_count,
+        upvotesCount = replyResponse1.vote_count,
         replies = emptyList(),
         userId = null,
         userDisplayName = null,
@@ -92,13 +103,23 @@ val replyResponse2 = CommentResponse(
         links = links
 )
 
+val replyWithReplies2 = CommentWithReplies(
+        id = replyResponse2.id,
+        parentId = replyResponse2.links.parentComment,
+        body = replyResponse2.body,
+        createdAt = replyResponse2.created_at,
+        userId = replyResponse2.links.userId,
+        storyId = replyResponse2.links.story,
+        replies = emptyList()
+)
+
 val reply2 = Comment(
         id = replyResponse2.id,
-        parentComment = parentId,
+        parentCommentId = parentId,
         body = replyResponse2.body,
         createdAt = replyResponse2.created_at,
         depth = replyResponse2.depth,
-        voteCount = replyResponse2.vote_count,
+        upvotesCount = replyResponse2.vote_count,
         replies = emptyList(),
         userId = replyResponse2.links.userId,
         userDisplayName = user1.displayName,
@@ -111,7 +132,7 @@ val replies = listOf(reply1, reply2)
 
 val parentLinks = CommentLinksResponse(
         userId = user2.id,
-        story = "storyid",
+        story = 987L,
         parentComment = null,
         comments = arrayListOf(11L, 12L)
 )
@@ -124,11 +145,11 @@ val parentCommentResponse = CommentResponse(
 
 val parentComment = Comment(
         id = parentCommentResponse.id,
-        parentComment = null,
+        parentCommentId = null,
         body = parentCommentResponse.body,
         createdAt = parentCommentResponse.created_at,
         depth = parentCommentResponse.depth,
-        voteCount = parentCommentResponse.vote_count,
+        upvotesCount = parentCommentResponse.vote_count,
         replies = replies,
         userId = user2.id,
         userDisplayName = user2.displayName,
@@ -138,11 +159,11 @@ val parentComment = Comment(
 
 val parentCommentWithoutReplies = Comment(
         id = parentCommentResponse.id,
-        parentComment = null,
+        parentCommentId = null,
         body = parentCommentResponse.body,
         createdAt = parentCommentResponse.created_at,
         depth = parentCommentResponse.depth,
-        voteCount = parentCommentResponse.vote_count,
+        upvotesCount = parentCommentResponse.vote_count,
         replies = emptyList(),
         userId = user2.id,
         userDisplayName = user2.displayName,

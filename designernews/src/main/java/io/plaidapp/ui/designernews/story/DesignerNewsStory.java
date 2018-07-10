@@ -16,12 +16,6 @@
 
 package io.plaidapp.ui.designernews.story;
 
-import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
-
-import static io.plaidapp.core.util.AnimUtils.getFastOutLinearInInterpolator;
-import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
-import static io.plaidapp.core.util.AnimUtils.getLinearOutSlowInInterpolator;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -61,25 +55,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
-
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
-
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import in.uncod.android.bypass.Bypass;
 import io.plaidapp.core.data.Result;
 import io.plaidapp.core.designernews.DesignerNewsPrefs;
 import io.plaidapp.core.designernews.Injection;
-import io.plaidapp.core.designernews.data.comments.DesignerNewsCommentsRepository;
 import io.plaidapp.core.designernews.data.api.model.Comment;
 import io.plaidapp.core.designernews.data.api.model.Story;
 import io.plaidapp.core.designernews.data.api.model.User;
 import io.plaidapp.core.designernews.data.votes.DesignerNewsVotesRepository;
+import io.plaidapp.core.designernews.domain.CommentsUseCase;
 import io.plaidapp.core.ui.transitions.GravityArcMotion;
 import io.plaidapp.core.ui.transitions.MorphTransform;
 import io.plaidapp.core.ui.transitions.ReflowText;
@@ -94,14 +80,22 @@ import io.plaidapp.core.util.glide.GlideApp;
 import io.plaidapp.core.util.glide.ImageSpanTarget;
 import io.plaidapp.designernews.R;
 import io.plaidapp.ui.designernews.DesignerNewsLogin;
-import io.plaidapp.core.ui.transitions.MorphTransform;
-import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout;
-import io.plaidapp.ui.drawable.ThreadedCommentDrawable;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import kotlin.Unit;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+import static io.plaidapp.core.util.AnimUtils.getFastOutLinearInInterpolator;
+import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
+import static io.plaidapp.core.util.AnimUtils.getLinearOutSlowInInterpolator;
 
 public class DesignerNewsStory extends Activity {
 
@@ -131,7 +125,7 @@ public class DesignerNewsStory extends Activity {
 
     private Story story;
 
-    private DesignerNewsCommentsRepository commentsRepository;
+    private CommentsUseCase commentsUseCase;
     private DesignerNewsVotesRepository votesRepository;
 
     private DesignerNewsPrefs designerNewsPrefs;
@@ -143,14 +137,14 @@ public class DesignerNewsStory extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_story);
 
-        commentsRepository = Injection.provideDesignerNewsCommentsRepository(this);
+        commentsUseCase = Injection.provideCommentsUseCase(this);
         votesRepository = Injection.provideDesignerNewsVotesRepository(this);
 
         bindResources();
 
         story = getIntent().getParcelableExtra(Activities.DesignerNews.Story.EXTRA_STORY);
 
-        commentsRepository.getComments(story.getLinks().getComments(),
+        commentsUseCase.getComments(story.getLinks().getComments(),
                 result -> {
                     if (result instanceof Result.Success) {
                         Result.Success<List<Comment>> success = (Result.Success<List<Comment>>) result;
@@ -523,7 +517,7 @@ public class DesignerNewsStory extends Activity {
         }
     }
 
-    private CharSequence getStoryPosterTimeText(String userDisplayName, String userJob, Date createdAt){
+    private CharSequence getStoryPosterTimeText(String userDisplayName, String userJob, Date createdAt) {
         SpannableString poster = new SpannableString(userDisplayName.toLowerCase());
         poster.setSpan(new TextAppearanceSpan(this, io.plaidapp.R.style
                         .TextAppearance_CommentAuthor),
@@ -673,8 +667,8 @@ public class DesignerNewsStory extends Activity {
         private boolean replyToCommentFocused = false;
 
         DesignerNewsCommentsAdapter(@NonNull View header,
-                @NonNull List<Comment> comments,
-                @NonNull View footer) {
+                                    @NonNull List<Comment> comments,
+                                    @NonNull View footer) {
             this.header = header;
             this.comments = comments;
             this.footer = footer;
@@ -732,8 +726,8 @@ public class DesignerNewsStory extends Activity {
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder,
-                int position,
-                List<Object> partialChangePayloads) {
+                                     int position,
+                                     List<Object> partialChangePayloads) {
             switch (getItemViewType(position)) {
                 case TYPE_COMMENT:
                     bindComment((CommentViewHolder) holder, partialChangePayloads);
@@ -861,7 +855,7 @@ public class DesignerNewsStory extends Activity {
                         io.plaidapp.R.color.designer_news_link_highlight);
 
                 CharSequence commentText = HtmlUtils.parseMarkdownAndPlainLinks(
-                        comment.body,
+                        comment.getBody(),
                         markdown,
                         linksColor,
                         highlightColor,
@@ -871,10 +865,10 @@ public class DesignerNewsStory extends Activity {
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(new ImageSpanTarget(holder.getComment(), loadingSpan)));
 
-                String author = comment.user_display_name != null ? comment.user_display_name.toLowerCase() : "";
-                boolean isOriginalPoster = isOP(comment.user_id);
+                String author = comment.getUserDisplayName() != null ? comment.getUserDisplayName().toLowerCase() : "";
+                boolean isOriginalPoster = isOP(comment.getUserId());
                 String timeAgo = DateUtils.getRelativeTimeSpanString(
-                        comment.created_at.getTime(),
+                        comment.getCreatedAt().getTime(),
                         System.currentTimeMillis(),
                         DateUtils.SECOND_IN_MILLIS)
                         .toString().toLowerCase();
@@ -882,7 +876,7 @@ public class DesignerNewsStory extends Activity {
                 CommentUiModel commentUiModel = new CommentUiModel(
                         commentText,
                         timeAgo,
-                        comment.depth,
+                        comment.getDepth(),
                         author,
                         isOriginalPoster
                 );
@@ -913,17 +907,18 @@ public class DesignerNewsStory extends Activity {
         }
 
         private void handleCommentVotesClick(CommentReplyViewHolder holder,
-                boolean isUserLoggedIn,
-                Comment comment) {
+                                             boolean isUserLoggedIn,
+                                             Comment comment) {
             if (isUserLoggedIn) {
                 if (!holder.getCommentVotes().isActivated()) {
                     votesRepository.upvoteComment(story.getId(), designerNewsPrefs.getUser().getId(),
                             result -> {
                                 if (result instanceof Result.Success) {
-                                    comment.setUpvoted(true);;
+                                    comment.setUpvoted(true);
+                                    ;
                                     // TODO fix this
 //                                    comment.vote_count++;
-                                    holder.getCommentVotes().setText(String.valueOf(comment.getVoteCount()));
+                                    holder.getCommentVotes().setText(String.valueOf(comment.getUpvotesCount()));
                                     holder.getCommentVotes().setActivated(true);
                                 } else {
                                     Toast.makeText(DesignerNewsStory.this, "Unable to upvote comment",
@@ -936,7 +931,7 @@ public class DesignerNewsStory extends Activity {
                 } else {
                     comment.setUpvoted(false);
 //                    comment.setVoteCount(comment.getVoteCount() - 1);
-                    holder.getCommentVotes().setText(String.valueOf(comment.getVoteCount()));
+                    holder.getCommentVotes().setText(String.valueOf(comment.getUpvotesCount()));
                     holder.getCommentVotes().setActivated(false);
                     // TODO actually delete upvote - florina: why?
                 }
@@ -947,7 +942,7 @@ public class DesignerNewsStory extends Activity {
         }
 
         private void handleCommentReplyFocus(CommentReplyViewHolder holder,
-                Interpolator interpolator) {
+                                             Interpolator interpolator) {
             holder.getCommentVotes().animate()
                     .translationX(-holder.getCommentVotes().getWidth())
                     .alpha(0f)
@@ -977,7 +972,7 @@ public class DesignerNewsStory extends Activity {
         }
 
         private void handleCommentReplyFocusLoss(CommentReplyViewHolder holder,
-                Interpolator interpolator) {
+                                                 Interpolator interpolator) {
             holder.getCommentVotes().animate()
                     .translationX(0f)
                     .alpha(1f)
