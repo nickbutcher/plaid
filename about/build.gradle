@@ -24,6 +24,8 @@ android {
     defaultConfig {
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
+
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
 
     compileOptions {
@@ -41,4 +43,16 @@ dependencies {
     implementation project(':app')
     implementation "android.arch.lifecycle:viewmodel:${versions.lifecycle}"
     implementation "android.arch.lifecycle:extensions:${versions.lifecycle}"
+    implementation "com.android.support:support-fragment:${versions.supportLibrary}"
+
+    testImplementation project(':test_shared')
+    testImplementation "junit:junit:${versions.junit}"
+    testImplementation "org.mockito:mockito-core:${versions.mockito}"
+
+    androidTestImplementation "com.android.support.test:runner:${versions.test_runner}"
+    androidTestImplementation "com.android.support.test:rules:${versions.test_rules}"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:${versions.espresso}"
+    androidTestImplementation "org.mockito:mockito-core:${versions.mockito}"
+    androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
+    androidTestImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
 }

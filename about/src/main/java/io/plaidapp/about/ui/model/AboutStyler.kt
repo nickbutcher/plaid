@@ -17,5 +17,6 @@
 package io.plaidapp.about.ui.model
 
 import android.content.res.ColorStateList
+import android.support.annotation.ColorInt
 
-data class AboutStyler(val linksColor: ColorStateList, val highlightColor: Int)
+data class AboutStyler(val linksColor: ColorStateList, @ColorInt val highlightColor: Int)
