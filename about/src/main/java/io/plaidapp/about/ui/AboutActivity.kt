@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.about
+package io.plaidapp.about.ui
 
 import android.net.Uri
 import android.os.Bundle
@@ -25,13 +25,16 @@ import android.support.v7.app.AppCompatActivity
 import android.transition.TransitionInflater
 import androidx.core.net.toUri
 import io.plaidapp.about.R
+import io.plaidapp.about.ui.adapter.AboutPagerAdapter
+import io.plaidapp.about.ui.model.AboutStyler
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
 import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
 import io.plaidapp.core.util.event.EventObserver
-import io.plaidapp.ui.about.uimodel.AboutUiModel
-import io.plaidapp.ui.about.uimodel.LibrariesUiModel
-import io.plaidapp.ui.about.widget.InkPageIndicator
+import io.plaidapp.about.ui.model.AboutUiModel
+import io.plaidapp.about.ui.model.AboutViewModel
+import io.plaidapp.about.ui.model.LibrariesUiModel
+import io.plaidapp.about.ui.widget.InkPageIndicator
 import io.plaidapp.R as appR
 
 /**
@@ -64,11 +67,11 @@ class AboutActivity : AppCompatActivity() {
 
         val uiModel = with(viewModel) {
             AboutUiModel(
-                    appAboutText,
-                    iconAboutText,
-                    LibrariesUiModel(libraries) {
-                        onLibraryClick(it)
-                    })
+                appAboutText,
+                iconAboutText,
+                LibrariesUiModel(libraries) {
+                    onLibraryClick(it)
+                })
         }
 
         pager.apply {

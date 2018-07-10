@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.about
+package io.plaidapp.about.domain.model
 
-import android.content.res.ColorStateList
-
-data class AboutStyler(val linksColor: ColorStateList, val highlightColor: Int)
+/**
+ * Models an open source library we want to credit
+ */
+internal data class Library(
+    val name: String,
+    val description: String,
+    val link: String,
+    val imageUrl: String,
+    val circleCrop: Boolean
+)

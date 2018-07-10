@@ -25,14 +25,14 @@
     android:layout_height="match_parent"
     app:dragDismissDistance="@dimen/drag_dismiss_distance"
     app:dragDismissScale="0.95"
-    tools:context="io.plaidapp.ui.about.AboutActivity">
+    tools:context=".ui.AboutActivity">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <io.plaidapp.ui.about.widget.InkPageIndicator
+    <io.plaidapp.about.ui.widget.InkPageIndicator
         android:id="@+id/indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
