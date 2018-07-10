@@ -30,7 +30,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <io.plaidapp.ui.about.widget.CutoutTextView
+        <io.plaidapp.about.ui.widget.CutoutTextView
             android:layout_width="match_parent"
             android:layout_height="@dimen/about_header_height"
             android:text="@string/app_name"

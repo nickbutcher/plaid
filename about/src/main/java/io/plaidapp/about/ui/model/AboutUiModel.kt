@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.about
+package io.plaidapp.about.ui.model
 
-import android.support.v7.widget.RecyclerView
-import android.view.View
-
-internal class LibraryIntroHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+/**
+ * Hold values displayed in the about Ui.
+ */
+internal data class AboutUiModel(
+    val appAboutText: CharSequence,
+    val iconAboutText: CharSequence,
+    val librariesUiModel: LibrariesUiModel
+)

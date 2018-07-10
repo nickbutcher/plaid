@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.about
+package io.plaidapp.about.ui.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import io.plaidapp.about.R
-import io.plaidapp.ui.about.uimodel.LibrariesUiModel
+import io.plaidapp.about.ui.model.LibrariesUiModel
 import java.security.InvalidParameterException
 
 /**
@@ -32,17 +32,21 @@ internal class LibraryAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            VIEW_TYPE_INTRO -> LibraryIntroHolder(LayoutInflater.from(parent.context)
-                    .inflate(R.layout.about_lib_intro, parent, false))
+            VIEW_TYPE_INTRO -> LibraryIntroHolder(
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.about_lib_intro, parent, false)
+            )
             VIEW_TYPE_LIBRARY -> createLibraryHolder(parent)
             else -> throw InvalidParameterException()
         }
     }
 
     private fun createLibraryHolder(parent: ViewGroup): LibraryHolder {
-        return LibraryHolder(LayoutInflater.from(parent.context)
+        return LibraryHolder(
+            LayoutInflater.from(parent.context)
                 .inflate(R.layout.library, parent, false),
-                uiModel.onClick)
+            uiModel.onClick
+        )
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

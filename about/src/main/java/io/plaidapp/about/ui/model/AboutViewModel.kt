@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.about
+package io.plaidapp.about.ui.model
 
 import `in`.uncod.android.bypass.Bypass
 import android.arch.lifecycle.AndroidViewModel
@@ -30,6 +30,7 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.AlignmentSpan
 import io.plaidapp.about.R
+import io.plaidapp.about.domain.model.Library
 import io.plaidapp.core.util.event.Event
 
 /**

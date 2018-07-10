@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.about
+package io.plaidapp.about.ui.adapter
 
 import android.support.annotation.LayoutRes
 import android.support.v4.view.PagerAdapter
@@ -25,7 +25,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import io.plaidapp.about.R
 import io.plaidapp.core.util.HtmlUtils
-import io.plaidapp.ui.about.uimodel.AboutUiModel
+import io.plaidapp.about.ui.model.AboutUiModel
 import java.security.InvalidParameterException
 
 internal class AboutPagerAdapter(private val uiModel: AboutUiModel) : PagerAdapter() {

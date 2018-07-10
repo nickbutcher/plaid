@@ -15,7 +15,7 @@
  *
  */
 
-package io.plaidapp.ui.about.widget;
+package io.plaidapp.about.ui.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

@@ -32,6 +32,7 @@ import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
  * Helpers to start activities in a modularized world.
  */
 
+private const val PACKAGE_NAME_OLD = "io.plaidapp.ui"
 private const val PACKAGE_NAME = "io.plaidapp"
 
 /**
@@ -64,7 +65,7 @@ object Activities {
      * AboutActivity
      */
     object About : AddressableActivity {
-        override val className = "$PACKAGE_NAME.ui.about.AboutActivity"
+        override val className = "$PACKAGE_NAME.about.ui.AboutActivity"
     }
 
     /**
@@ -115,7 +116,7 @@ object Activities {
          * PostNewDesignerNewsStory Activity
          */
         object PostStory : AddressableActivity {
-            override val className = "$PACKAGE_NAME.designernews.PostNewDesignerNewsStory"
+            override val className = "$PACKAGE_NAME_OLD.designernews.PostNewDesignerNewsStory"
 
             const val RESULT_DRAG_DISMISSED = 3
             const val RESULT_POSTING = 4
@@ -141,7 +142,7 @@ object Activities {
      * SearchActivity
      */
     object Search : AddressableActivity {
-        override val className = "$PACKAGE_NAME.ui.search.SearchActivity"
+        override val className = "$PACKAGE_NAME_OLD.search.SearchActivity"
 
         const val EXTRA_QUERY = "EXTRA_QUERY"
         const val EXTRA_SAVE_DRIBBBLE = "EXTRA_SAVE_DRIBBBLE"

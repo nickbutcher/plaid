@@ -28,7 +28,7 @@
 
     <application>
     <activity
-        android:name="io.plaidapp.ui.about.AboutActivity"
+        android:name="io.plaidapp.about.ui.AboutActivity"
         android:theme="@style/Plaid.Translucent.About"
         android:parentActivityName="io.plaidapp.ui.HomeActivity">
         <intent-filter>

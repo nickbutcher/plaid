@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.about
+package io.plaidapp.about.ui.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -23,6 +23,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import io.plaidapp.about.R
+import io.plaidapp.about.domain.model.Library
 import io.plaidapp.core.util.glide.GlideApp
 import io.plaidapp.R as appR
 
