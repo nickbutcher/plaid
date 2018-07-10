@@ -15,7 +15,7 @@
  *
  */
 
-package io.plaidapp.ui.dribbble;
+package io.plaidapp.dribbble.ui;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
