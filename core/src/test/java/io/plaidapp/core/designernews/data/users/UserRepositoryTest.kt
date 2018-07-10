@@ -16,14 +16,13 @@
 
 package io.plaidapp.core.designernews.data.users
 
-import org.junit.Before
+import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import org.junit.Test
+import org.mockito.Mockito
 
 class UserRepositoryTest {
 
-    @Before
-    fun setUp() {
-    }
+    private val service = Mockito.mock(DesignerNewsService::class.java)
 
     @Test
     fun getUsers() {

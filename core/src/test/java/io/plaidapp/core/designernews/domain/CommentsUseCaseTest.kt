@@ -17,42 +17,35 @@
 package io.plaidapp.core.designernews.domain
 
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.api.errorResponseBody
 import io.plaidapp.core.designernews.data.api.model.Comment
-import io.plaidapp.core.designernews.data.api.model.CommentResponse
 import io.plaidapp.core.designernews.data.api.model.User
 import io.plaidapp.core.designernews.data.api.parentComment
-import io.plaidapp.core.designernews.data.api.parentCommentResponse
+import io.plaidapp.core.designernews.data.api.parentCommentWithReplies
+import io.plaidapp.core.designernews.data.api.parentCommentWithRepliesWithoutReplies
 import io.plaidapp.core.designernews.data.api.parentCommentWithoutReplies
 import io.plaidapp.core.designernews.data.api.provideFakeCoroutinesContextProvider
-import io.plaidapp.core.designernews.data.api.repliesResponses
 import io.plaidapp.core.designernews.data.api.reply1
 import io.plaidapp.core.designernews.data.api.reply1NoUser
-import io.plaidapp.core.designernews.data.api.replyResponse1
+import io.plaidapp.core.designernews.data.api.replyWithReplies1
 import io.plaidapp.core.designernews.data.api.user1
 import io.plaidapp.core.designernews.data.api.user2
-import io.plaidapp.core.designernews.data.comments.CommentsRepository
-import io.plaidapp.core.designernews.data.comments.DesignerNewsCommentsRemoteDataSource
 import io.plaidapp.core.designernews.data.users.UserRepository
-import io.plaidapp.core.designernews.provideCommentsUseCase
-import io.plaidapp.core.designernews.provideCommentsWithRepliesUseCase
-import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Mockito
-import retrofit2.Response
+import java.io.IOException
 
+/**
+ * Tests for [CommentsUseCase] where all the dependencies are mocked.
+ */
 class CommentsUseCaseTest {
-    private val service = Mockito.mock(DesignerNewsService::class.java)
-    private val dataSource = DesignerNewsCommentsRemoteDataSource(service)
-    private val commentsRepository = CommentsRepository(dataSource)
-    private val userRepository = UserRepository(service)
-    private val repository = provideCommentsUseCase(
-            provideCommentsWithRepliesUseCase(commentsRepository),
+    private val commentsWithRepliesUseCase = Mockito.mock(CommentsWithRepliesUseCase::class.java)
+    private val userRepository = Mockito.mock(UserRepository::class.java)
+    private val repository = CommentsUseCase(
+            commentsWithRepliesUseCase,
             userRepository,
             provideFakeCoroutinesContextProvider()
     )
@@ -60,29 +53,29 @@ class CommentsUseCaseTest {
     @Test
     fun getComments_noReplies_whenCommentsAnUserRequestsSuccessful() = runBlocking {
         // Given that the comments request responds with success
-        withComments(replyResponse1, "11")
+        val ids = listOf(11L)
+        withComment(replyWithReplies1, ids)
         // Given that the user request responds with success
-        withUsers(listOf(user1), "111")
+        withUsers(setOf(user1), setOf(111L))
         var result: Result<List<Comment>>? = null
 
         // When getting the replies
-        repository.getComments(listOf(11L)) { it -> result = it }
+        repository.getComments(ids) { it -> result = it }
 
-        // Then the correct list of comments was requested from the API
-        Mockito.verify(service).getComments("11")
         // Then the correct list is received
         assertEquals(Result.Success(listOf(reply1)), result)
     }
 
     @Test
-    fun getComments_noReplies_whenCommentsRequestFailed() {
-        // Given that the service responds with failure
-        val apiResult = Response.error<List<CommentResponse>>(400, errorResponseBody)
-        Mockito.`when`(service.getComments("11")).thenReturn(CompletableDeferred(apiResult))
+    fun getComments_noReplies_whenCommentsRequestFailed() = runBlocking {
+        // Given that the commentsWithRepliesUseCase responds with failure
+        val resultError = Result.Error(IOException("Comment error"))
+        val ids = listOf(11L)
+        Mockito.`when`(commentsWithRepliesUseCase.getCommentsWithReplies(ids)).thenReturn(resultError)
         var result: Result<List<Comment>>? = null
 
         // When getting the comments
-        repository.getComments(listOf(11L)) { it -> result = it }
+        repository.getComments(ids) { it -> result = it }
 
         // Then the result is not successful
         assertNotNull(result)
@@ -92,21 +85,18 @@ class CommentsUseCaseTest {
     @Test
     fun getComments_multipleReplies_whenCommentsAndUsersRequestsSuccessful() = runBlocking {
         // Given that:
-        // When requesting replies for ids 1 from service we get the parent comment but
+        // When requesting replies for ids 1 from commentsWithRepliesUseCase we get the parent comment but
         // without replies embedded (since that's what the next call is doing)
-        withComments(parentCommentResponse, "1")
-        // When requesting replies for ids 11 and 12 from service we get the children
-        withComments(repliesResponses, "11,12")
-        // When the user request responds with success
-        withUsers(listOf(user1, user2), "11,,22")
+        val parentIds = listOf(1L)
+        withComment(parentCommentWithReplies, parentIds)
+        withUsers(setOf(user1, user2), setOf(111L, 222L))
         var result: Result<List<Comment>>? = null
 
         // When getting the comments from the repository
         repository.getComments(listOf(1L)) { it -> result = it }
 
         // Then  API requests were triggered
-        Mockito.verify(service).getComments("1")
-        Mockito.verify(service).getComments("11,12")
+        Mockito.verify(commentsWithRepliesUseCase).getCommentsWithReplies(parentIds)
         // Then the correct result is received
         assertEquals(Result.Success(listOf(parentComment)), result)
     }
@@ -114,22 +104,18 @@ class CommentsUseCaseTest {
     @Test
     fun getComments_multipleReplies_whenRepliesRequestFailed() = runBlocking {
         // Given that
-        // When requesting replies for ids 1 from service we get the parent comment
-        withComments(parentCommentResponse, "1")
-        // When requesting replies for ids 11 and 12 from service we get an error
-        val resultChildrenError = Response.error<List<CommentResponse>>(400, errorResponseBody)
-        Mockito.`when`(service.getComments("11,12"))
-                .thenReturn(CompletableDeferred(resultChildrenError))
+        // When requesting replies for ids 1 from commentsWithRepliesUseCase we get the parent comment
+        val parentIds = listOf(1L)
+        withComment(parentCommentWithRepliesWithoutReplies, parentIds)
         // Given that the user request responds with success
-        withUsers(listOf(user2), "22")
+        withUsers(setOf(user2), setOf(222))
         var result: Result<List<Comment>>? = null
 
         // When getting the comments from the repository
         repository.getComments(listOf(1L)) { it -> result = it }
 
         // Then  API requests were triggered
-        Mockito.verify(service).getComments("1")
-        Mockito.verify(service).getComments("11,12")
+        Mockito.verify(commentsWithRepliesUseCase).getCommentsWithReplies(parentIds)
         // Then the correct result is received
         assertEquals(Result.Success(arrayListOf(parentCommentWithoutReplies)), result)
     }
@@ -137,37 +123,37 @@ class CommentsUseCaseTest {
     @Test
     fun getComments_whenUserRequestFailed() = runBlocking {
         // Given that:
-        // When requesting replies for ids 1 from service we get the parent comment but
+        // When requesting replies for ids 1 from commentsWithRepliesUseCase we get the parent comment but
         // without replies embedded (since that's what the next call is doing)
-        withComments(replyResponse1, "11")
+        val ids = listOf(11L)
+        withComment(replyWithReplies1, ids)
         // Given that the user request responds with failure
-        val userError = Response.error<List<User>>(400, errorResponseBody)
-        Mockito.`when`(service.getUsers("11"))
-                .thenReturn(CompletableDeferred(userError))
+        val userError = Result.Error(IOException("User error"))
+        Mockito.`when`(userRepository.getUsers(setOf(11L))).thenReturn(userError)
         var result: Result<List<Comment>>? = null
 
         // When getting the comments from the repository
         repository.getComments(listOf(11L)) { it -> result = it }
 
         // Then  API requests were triggered
-        Mockito.verify(service).getComments("11")
+        Mockito.verify(commentsWithRepliesUseCase).getCommentsWithReplies(ids)
         // Then the correct result is received
         assertEquals(Result.Success(arrayListOf(reply1NoUser)), result)
     }
 
     // Given that the users request responds with success
-    private fun withUsers(users: List<User>, ids: String) = runBlocking {
-        val userResult = Response.success(users)
-        Mockito.`when`(service.getUsers(ids)).thenReturn(CompletableDeferred(userResult))
+    private fun withUsers(users: Set<User>, ids: Set<Long>) = runBlocking {
+        val userResult = Result.Success(users)
+        Mockito.`when`(userRepository.getUsers(ids)).thenReturn(userResult)
     }
 
-    private fun withComments(commentResponse: CommentResponse, ids: String) {
-        val resultParent = Response.success(listOf(commentResponse))
-        Mockito.`when`(service.getComments(ids)).thenReturn(CompletableDeferred(resultParent))
+    private fun withComment(comment: CommentWithReplies, ids: List<Long>) = runBlocking {
+        val resultParent = Result.Success(listOf(comment))
+        Mockito.`when`(commentsWithRepliesUseCase.getCommentsWithReplies(ids)).thenReturn(resultParent)
     }
 
-    private fun withComments(commentResponse: List<CommentResponse>, ids: String) {
-        val resultParent = Response.success(commentResponse)
-        Mockito.`when`(service.getComments(ids)).thenReturn(CompletableDeferred(resultParent))
+    private fun withComments(comment: List<CommentWithReplies>, ids: List<Long>) = runBlocking {
+        val resultParent = Result.Success(comment)
+        Mockito.`when`(commentsWithRepliesUseCase.getCommentsWithReplies(ids)).thenReturn(resultParent)
     }
 }

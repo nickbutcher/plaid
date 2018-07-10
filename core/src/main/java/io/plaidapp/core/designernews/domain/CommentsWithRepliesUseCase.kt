@@ -80,22 +80,18 @@ class CommentsWithRepliesUseCase(private val commentsRepository: CommentsReposit
         // for every comment construct the CommentWithReplies based on the comment properties and
         // the list of replies
         return comments.mapNotNull {
-            val replies = commentReplyMapping[it.id]
-            var comment: CommentWithReplies? = null
-            if (replies != null) {
-                comment = CommentWithReplies(
-                        it.id,
-                        it.links.parentComment,
-                        it.body,
-                        it.created_at,
-                        it.depth,
-                        it.links.commentUpvotes.size,
-                        it.links.userId,
-                        it.links.story,
-                        replies
-                )
-            }
-            comment
+            val replies = commentReplyMapping[it.id].orEmpty()
+            CommentWithReplies(
+                    it.id,
+                    it.links.parentComment,
+                    it.body,
+                    it.created_at,
+                    it.depth,
+                    it.links.commentUpvotes.size,
+                    it.links.userId,
+                    it.links.story,
+                    replies
+            )
         }
     }
 }
