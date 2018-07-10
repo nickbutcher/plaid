@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.comments
+package io.plaidapp.core.designernews.domain
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
@@ -32,7 +32,11 @@ import io.plaidapp.core.designernews.data.api.reply1NoUser
 import io.plaidapp.core.designernews.data.api.replyResponse1
 import io.plaidapp.core.designernews.data.api.user1
 import io.plaidapp.core.designernews.data.api.user2
+import io.plaidapp.core.designernews.data.comments.CommentsRepository
+import io.plaidapp.core.designernews.data.comments.DesignerNewsCommentsRemoteDataSource
 import io.plaidapp.core.designernews.data.users.UserRepository
+import io.plaidapp.core.designernews.provideCommentsUseCase
+import io.plaidapp.core.designernews.provideCommentsWithRepliesUseCase
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
@@ -42,16 +46,13 @@ import org.junit.Test
 import org.mockito.Mockito
 import retrofit2.Response
 
-/**
- * Tests for [DesignerNewsCommentsRepository] with mocked service
- */
-class DesignerNewsCommentsRepositoryTest {
-
+class CommentsUseCaseTest {
     private val service = Mockito.mock(DesignerNewsService::class.java)
     private val dataSource = DesignerNewsCommentsRemoteDataSource(service)
+    private val commentsRepository = CommentsRepository(dataSource)
     private val userRepository = UserRepository(service)
-    private val repository = DesignerNewsCommentsRepository(
-            dataSource,
+    private val repository = provideCommentsUseCase(
+            provideCommentsWithRepliesUseCase(commentsRepository),
             userRepository,
             provideFakeCoroutinesContextProvider()
     )

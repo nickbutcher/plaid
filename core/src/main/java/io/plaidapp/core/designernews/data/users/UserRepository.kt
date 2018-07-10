@@ -28,7 +28,7 @@ class UserRepository(private val service: DesignerNewsService) {
 
     private val cachedUsers = mutableMapOf<Long, User>()
 
-    suspend fun getUsers(ids: Set<Long>): Result<List<User>> {
+    suspend fun getUsers(ids: Set<Long>): Result<Set<User>> {
         // find the ids in the cached users first and only request the ones that we don't have yet
         val notCachedUsers = ids.filterNot { cachedUsers.containsKey(it) }
         if (notCachedUsers.isNotEmpty()) {
@@ -36,7 +36,7 @@ class UserRepository(private val service: DesignerNewsService) {
         }
 
         // compute the list of users requested
-        val users = ids.mapNotNull { cachedUsers[it] }
+        val users = ids.mapNotNull { cachedUsers[it] }.toSet()
         if (users.isNotEmpty()) {
             return Result.Success(users)
         }
