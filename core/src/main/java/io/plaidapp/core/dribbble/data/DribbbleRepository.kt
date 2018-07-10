@@ -20,6 +20,7 @@ import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchRemoteDataSource
+import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 
@@ -30,13 +31,30 @@ class DribbbleRepository(
     private val remoteDataSource: DribbbleSearchRemoteDataSource,
     private val contextProvider: CoroutinesContextProvider
 ) {
+    private val inflight = mutableMapOf<String, Job>()
 
     fun search(
         query: String,
         page: Int,
         onResult: (Result<List<Shot>>) -> Unit
+    ) {
+        val id = "$query::$page"
+        inflight[id] = launchSearch(query, page, id, onResult)
+    }
+
+    fun cancelAllSearches() {
+        inflight.values.forEach { it.cancel() }
+        inflight.clear()
+    }
+
+    private fun launchSearch(
+        query: String,
+        page: Int,
+        id: String,
+        onResult: (Result<List<Shot>>) -> Unit
     ) = launch(contextProvider.io) {
         val result = remoteDataSource.search(query, page)
+        inflight.remove(id)
         withContext(contextProvider.main) { onResult(result) }
     }
 
@@ -48,7 +66,8 @@ class DribbbleRepository(
             contextProvider: CoroutinesContextProvider
         ): DribbbleRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: DribbbleRepository(remoteDataSource, contextProvider).also { INSTANCE = it }
+                INSTANCE ?: DribbbleRepository(remoteDataSource, contextProvider)
+                    .also { INSTANCE = it }
             }
         }
     }
