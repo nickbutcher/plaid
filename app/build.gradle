@@ -41,6 +41,7 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix '.debug'
+            rootProject.ext.names.applicationId += '.debug'
             versionNameSuffix '-DEBUG'
         }
         release {
