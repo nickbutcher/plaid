@@ -90,7 +90,7 @@ val reply1NoUser = Comment(
         depth = replyResponse1.depth,
         upvotesCount = replyResponse1.vote_count,
         replies = emptyList(),
-        userId = null,
+        userId = replyResponse1.links.userId,
         userDisplayName = null,
         userPortraitUrl = null,
         upvoted = false
@@ -143,6 +143,16 @@ val parentCommentResponse = CommentResponse(
         created_at = createdDate,
         links = parentLinks)
 
+val parentCommentWithReplies = CommentWithReplies(
+        id = parentCommentResponse.id,
+        parentId = parentCommentResponse.links.parentComment,
+        body = parentCommentResponse.body,
+        createdAt = parentCommentResponse.created_at,
+        userId = parentCommentResponse.links.userId,
+        storyId = parentCommentResponse.links.story,
+        replies = listOf(replyWithReplies1, replyWithReplies2)
+)
+
 val parentComment = Comment(
         id = parentCommentResponse.id,
         parentCommentId = null,
@@ -155,6 +165,16 @@ val parentComment = Comment(
         userDisplayName = user2.displayName,
         userPortraitUrl = user2.portraitUrl,
         upvoted = false
+)
+
+val parentCommentWithRepliesWithoutReplies = CommentWithReplies(
+        id = parentCommentResponse.id,
+        parentId = parentCommentResponse.links.parentComment,
+        body = parentCommentResponse.body,
+        createdAt = parentCommentResponse.created_at,
+        userId = parentCommentResponse.links.userId,
+        storyId = parentCommentResponse.links.story,
+        replies = emptyList()
 )
 
 val parentCommentWithoutReplies = Comment(

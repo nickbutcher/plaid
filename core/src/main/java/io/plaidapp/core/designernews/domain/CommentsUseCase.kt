@@ -36,7 +36,7 @@ class CommentsUseCase(
         val commentsWithRepliesResult = commentsWithCommentsWithRepliesUseCase.getCommentsWithReplies(ids)
         if (commentsWithRepliesResult is Result.Error) {
             withContext(contextProvider.main) {
-                Result.Error(commentsWithRepliesResult.exception)
+                onResult(Result.Error(commentsWithRepliesResult.exception))
             }
             return@launch
         }
