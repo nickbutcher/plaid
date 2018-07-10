@@ -27,14 +27,14 @@ import androidx.core.net.toUri
 import io.plaidapp.about.R
 import io.plaidapp.about.ui.adapter.AboutPagerAdapter
 import io.plaidapp.about.ui.model.AboutStyler
-import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
-import io.plaidapp.core.util.ColorUtils
-import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
-import io.plaidapp.core.util.event.EventObserver
 import io.plaidapp.about.ui.model.AboutUiModel
 import io.plaidapp.about.ui.model.AboutViewModel
 import io.plaidapp.about.ui.model.LibrariesUiModel
 import io.plaidapp.about.ui.widget.InkPageIndicator
+import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
+import io.plaidapp.core.util.ColorUtils
+import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
+import io.plaidapp.core.util.event.EventObserver
 import io.plaidapp.R as appR
 
 /**

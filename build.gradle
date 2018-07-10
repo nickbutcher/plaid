@@ -15,6 +15,7 @@
  */
 
 buildscript {
+    ext.kotlin_version = '1.2.51'
 
     ext.versions = [
             'compileSdk'        : 28,
@@ -58,6 +59,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         classpath "com.google.gms:google-services:${versions.googleServices}"
         classpath "io.fabric.tools:gradle:${versions.fabric}"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 
 }
