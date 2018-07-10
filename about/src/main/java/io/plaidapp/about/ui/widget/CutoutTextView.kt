@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.about.widget
+package io.plaidapp.about.ui.widget
 
 import android.content.Context
 import android.content.res.Resources

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.about.uimodel
+package io.plaidapp.about.ui.model
 
-import io.plaidapp.ui.about.Library
-import io.plaidapp.ui.about.OnClick
+import io.plaidapp.about.domain.model.Library
+import io.plaidapp.about.ui.adapter.OnClick
 
 /**
  * * Hold values displayed in the libraries Ui.
