@@ -25,7 +25,6 @@ import io.plaidapp.core.designernews.data.api.model.User
 import io.plaidapp.core.designernews.data.api.parentComment
 import io.plaidapp.core.designernews.data.api.parentCommentResponse
 import io.plaidapp.core.designernews.data.api.parentCommentWithoutReplies
-import io.plaidapp.core.designernews.data.api.provideFakeCoroutinesContextProvider
 import io.plaidapp.core.designernews.data.api.repliesResponses
 import io.plaidapp.core.designernews.data.api.reply1
 import io.plaidapp.core.designernews.data.api.reply1NoUser
@@ -38,6 +37,7 @@ import io.plaidapp.core.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.core.designernews.data.users.UserRepository
 import io.plaidapp.core.designernews.provideCommentsUseCase
 import io.plaidapp.core.designernews.provideCommentsWithRepliesUseCase
+import io.plaidapp.core.provideFakeCoroutinesContextProvider
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals

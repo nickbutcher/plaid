@@ -44,11 +44,11 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
         implements LoadSourceCallback {
 
     private final DribbbleRepository dribbbleRepository;
-    private final DesignerNewsRepository designerNewsRepository;
+    final DesignerNewsRepository designerNewsRepository;
     private final ProductHuntRepository productHuntRepository;
     private final FilterAdapter filterAdapter;
-    private Map<String, Integer> pageIndexes;
-    private Map<String, Call> inflight;
+    Map<String, Integer> pageIndexes;
+    Map<String, Call> inflightCalls;
 
     public DataManager(Context context, FilterAdapter filterAdapter) {
         super();
@@ -59,7 +59,7 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
         this.filterAdapter = filterAdapter;
         filterAdapter.registerFilterChangedCallback(filterListener);
         setupPageIndexes();
-        inflight = new HashMap<>();
+        inflightCalls = new HashMap<>();
     }
 
     public void loadAllDataSources() {
@@ -70,12 +70,13 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
 
     @Override
     public void cancelLoading() {
-        if (inflight.size() > 0) {
-            for (Call call : inflight.values()) {
+        if (inflightCalls.size() > 0) {
+            for (Call call : inflightCalls.values()) {
                 call.cancel();
             }
-            inflight.clear();
+            inflightCalls.clear();
         }
+        dribbbleRepository.cancelAllSearches();
         designerNewsRepository.cancelAllRequests();
         productHuntRepository.cancelAllRequests();
     }
@@ -88,10 +89,10 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
                         loadSource(changedFilter);
                     } else { // filter deactivated
                         final String key = changedFilter.key;
-                        if (inflight.containsKey(key)) {
-                            final Call call = inflight.get(key);
+                        if (inflightCalls.containsKey(key)) {
+                            final Call call = inflightCalls.get(key);
                             if (call != null) call.cancel();
-                            inflight.remove(key);
+                            inflightCalls.remove(key);
                         }
                         designerNewsRepository.cancelRequestOfSource(key);
                         // clear the page index for the source
@@ -100,7 +101,7 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
                 }
             };
 
-    private void loadSource(Source source) {
+    void loadSource(Source source) {
         if (source.active) {
             loadStarted();
             final int page = getNextPageIndex(source.key);
@@ -155,13 +156,13 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
             setDataSource(data, source);
             onDataLoaded(data);
         }
-        inflight.remove(source);
+        inflightCalls.remove(source);
     }
 
     @Override
     public void loadFailed(@NonNull String source) {
         loadFinished();
-        inflight.remove(source);
+        inflightCalls.remove(source);
     }
 
     private void loadDesignerNewsTopStories(final int page) {

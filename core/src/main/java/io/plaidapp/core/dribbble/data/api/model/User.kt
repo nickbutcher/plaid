@@ -17,14 +17,13 @@
 package io.plaidapp.core.dribbble.data.api.model
 
 import android.os.Parcelable
-import android.support.annotation.Keep
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 /**
  * Models a dribbble user
  */
-@Keep
 @Parcelize
 data class User(
     @SerializedName("id") val id: Long,
@@ -33,6 +32,7 @@ data class User(
     @SerializedName("avatar_url") val avatarUrl: String? = null
 ) : Parcelable {
 
-    val highQualityAvatarUrl: String?
-        get() = avatarUrl?.replace("/normal/", "/original/")
+    @IgnoredOnParcel val highQualityAvatarUrl: String? by lazy {
+        avatarUrl?.replace("/normal/", "/original/")
+    }
 }
