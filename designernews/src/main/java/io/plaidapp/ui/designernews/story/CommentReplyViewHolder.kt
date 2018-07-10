@@ -38,7 +38,7 @@ internal class CommentReplyViewHolder(itemView: View) : RecyclerView.ViewHolder(
     val postReply: ImageButton = itemView.findViewById(R.id.post_reply)
 
     fun bindCommentReply(comment: Comment) {
-        commentVotes.text = comment.voteCount.toString()
+        commentVotes.text = comment.upvotesCount.toString()
         commentVotes.isActivated = comment.upvoted != null && comment.upvoted
     }
 }

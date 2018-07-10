@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.api.model
+package io.plaidapp.core.designernews.domain
 
-import java.util.Date
+import io.plaidapp.core.designernews.data.comments.CommentsRepository
+import org.junit.Test
+import org.mockito.Mockito
 
-/**
- * Models a comment on a designer news story.
- */
-data class Comment(
-    val id: Long,
-    val parentCommentId: Long?,
-    val body: String,
-    val createdAt: Date,
-    val depth: Int,
-    val upvotesCount: Int,
-    val replies: List<Comment>,
-    val userId: Long?,
-    val userDisplayName: String?,
-    val userPortraitUrl: String?,
-    var upvoted: Boolean // TODO change this to val when getting to the upvoting
-)
+class CommentsWithRepliesUseCaseTest {
+
+    private val repository = Mockito.mock(CommentsRepository::class.java)
+    private val useCase = CommentsWithRepliesUseCase(repository)
+
+    @Test
+    fun getCommentsWithReplies() {
+    }
+}
