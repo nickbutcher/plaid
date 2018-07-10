@@ -19,54 +19,53 @@ package io.plaidapp.core.dribbble.data
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchRemoteDataSource
-import io.plaidapp.core.dribbble.data.search.DribbbleSearchService
 import io.plaidapp.core.provideFakeCoroutinesContextProvider
-import kotlinx.coroutines.experimental.CompletableDeferred
-import okhttp3.MediaType
-import okhttp3.ResponseBody
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Mockito
-import retrofit2.Response
+import java.io.IOException
 
+/**
+ * Tests for [DribbbleRepository] which mocks all dependencies.
+ */
 class DribbbleRepositoryTest {
 
-    private val service = Mockito.mock(DribbbleSearchService::class.java)
-    private val dataSource = DribbbleSearchRemoteDataSource(service)
+    private val dataSource = Mockito.mock(DribbbleSearchRemoteDataSource::class.java)
     private val repository = DribbbleRepository(dataSource, provideFakeCoroutinesContextProvider())
     private val query = "Plaid shirts"
     private val page = 0
 
     @Test
-    fun search_whenRequestSuccessful() {
-        // Given that the service responds with success
-        val apiResult = Response.success(shots)
-        Mockito.`when`(service.searchDeferred(query, page)).thenReturn(CompletableDeferred(apiResult))
-        var result: Result<List<Shot>>? = null
+    fun search_whenRequestSuccessful() = runBlocking {
+        // Given that the data source responds with success
+        val result = Result.Success(shots)
+        Mockito.`when`(dataSource.search(query, page)).thenReturn(result)
+        var data: Result<List<Shot>>? = null
 
         // When searching for a query
-        repository.search(query, page) { result = it }
+        repository.search(query, page) { data = it }
 
-        // Then the correct API method was called
-        Mockito.verify(service).searchDeferred(query, page)
+        // Then the correct method was called
+        Mockito.verify(dataSource).search(query, page)
         // And the expected result was returned to the callback
-        assertEquals(Result.Success(shots), result)
+        assertEquals(Result.Success(shots), data)
     }
 
     @Test
-    fun search_whenRequestFailed() {
-        // Given that the service responds with failure
-        val apiResult = Response.error<List<Shot>>(400, ResponseBody.create(MediaType.parse(""), "Error"))
-        Mockito.`when`(service.searchDeferred(query, page)).thenReturn(CompletableDeferred(apiResult))
-        var result: Result<List<Shot>>? = null
+    fun search_whenRequestFailed() = runBlocking {
+        // Given that the data source responds with failure
+        val result = Result.Error(IOException("error"))
+        Mockito.`when`(dataSource.search(query, page)).thenReturn(result)
+        var data: Result<List<Shot>>? = null
 
         // When searching for a query
-        repository.search(query, page) { result = it }
+        repository.search(query, page) { data = it }
 
         // Then an error result is reported
-        assertNotNull(result)
-        assertTrue(result is Result.Error)
+        assertNotNull(data)
+        assertTrue(data is Result.Error)
     }
 }

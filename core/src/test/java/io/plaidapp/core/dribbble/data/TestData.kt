@@ -19,6 +19,8 @@ package io.plaidapp.core.dribbble.data
 import io.plaidapp.core.dribbble.data.api.model.Images
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.api.model.User
+import okhttp3.MediaType
+import okhttp3.ResponseBody
 
 /**
  * Dribbble test data
@@ -53,3 +55,5 @@ val shots = listOf(
         user = player
     )
 )
+
+val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")

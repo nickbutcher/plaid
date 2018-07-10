@@ -35,16 +35,16 @@ interface DribbbleSearchService {
     fun search(
         @Query("q") query: String,
         @Query("page") page: Int?,
-        @Query("per_page") pageSize: Int? = PER_PAGE_DEFAULT,
-        @Query("s") @SortOrder sort: String = SORT_RECENT
+        @Query("per_page") pageSize: Int,
+        @Query("s") @SortOrder sort: String
     ): Call<List<Shot>>
 
     @GET("search")
     fun searchDeferred(
         @Query("q") query: String,
         @Query("page") page: Int?,
-        @Query("s") sort: String = SORT_RECENT,
-        @Query("per_page") pageSize: Int? = PER_PAGE_DEFAULT
+        @Query("s") sort: String,
+        @Query("per_page") pageSize: Int
     ): Deferred<Response<List<Shot>>>
 
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)

@@ -17,13 +17,11 @@
 package io.plaidapp.core.dribbble.data.api.model
 
 import android.os.Parcelable
-import android.support.annotation.Keep
 import kotlinx.android.parcel.Parcelize
 
 /**
  * Models links to the various quality of images of a shot.
  */
-@Keep
 @Parcelize
 data class Images(
     val hidpi: String? = null,

@@ -16,14 +16,9 @@
 
 package io.plaidapp.core.dribbble.data.api.model
 
-import android.content.res.ColorStateList
 import android.os.Parcelable
-import android.support.annotation.ColorInt
-import android.support.annotation.Keep
-import android.text.Spanned
 import com.google.gson.annotations.SerializedName
 import io.plaidapp.core.data.PlaidItem
-import io.plaidapp.core.util.HtmlUtils
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import java.util.Date
@@ -31,7 +26,6 @@ import java.util.Date
 /**
  * Models a dibbble shot
  */
-@Keep
 @Parcelize
 data class Shot(
     @SerializedName("id") override val id: Long,
@@ -50,15 +44,4 @@ data class Shot(
 
     // todo move this into a decorator
     @IgnoredOnParcel var hasFadedIn = false
-    @IgnoredOnParcel var parsedDescription: Spanned? = null
-
-    fun getParsedDescription(
-        linkTextColor: ColorStateList,
-        @ColorInt linkHighlightColor: Int
-    ): Spanned? {
-        if (parsedDescription == null && !description.isNullOrEmpty()) {
-            parsedDescription = HtmlUtils.parseHtml(description, linkTextColor, linkHighlightColor)
-        }
-        return parsedDescription
-    }
 }
