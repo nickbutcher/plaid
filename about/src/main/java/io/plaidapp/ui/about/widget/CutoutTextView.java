@@ -18,7 +18,6 @@
 package io.plaidapp.ui.about.widget;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -32,7 +31,6 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
-
 import io.plaidapp.about.R;
 import io.plaidapp.core.util.ViewUtils;
 
@@ -64,7 +62,7 @@ public class CutoutTextView extends View {
                 if (font != null) {
                     textPaint.setTypeface(font);
                 }
-            } catch (Resources.NotFoundException nfe) { }
+            } catch (Exception e) { /* ignore */ }
         }
         if (a.hasValue(R.styleable.CutoutTextView_foregroundColor)) {
             foregroundColor = a.getColor(R.styleable.CutoutTextView_foregroundColor,
@@ -73,7 +71,8 @@ public class CutoutTextView extends View {
         if (a.hasValue(R.styleable.CutoutTextView_android_text)) {
             text = a.getString(R.styleable.CutoutTextView_android_text);
         }
-        maxTextSize = context.getResources().getDimensionPixelSize(io.plaidapp.R.dimen.display_4_text_size);
+        maxTextSize = context.getResources()
+                .getDimensionPixelSize(io.plaidapp.R.dimen.display_4_text_size);
         a.recycle();
     }
 
@@ -86,8 +85,8 @@ public class CutoutTextView extends View {
 
     private void calculateTextPosition() {
         float targetWidth = getWidth() / PHI;
-        float textSize = ViewUtils.getSingleLineTextSize(
-                text, textPaint, targetWidth, 0f, maxTextSize, 0.5f, getResources().getDisplayMetrics());
+        float textSize = ViewUtils.getSingleLineTextSize(text, textPaint, targetWidth, 0f,
+                maxTextSize, 0.5f, getResources().getDisplayMetrics());
         textPaint.setTextSize(textSize);
 
         // measuring text is fun :] see: https://chris.banes.me/2014/03/27/measuring-text/
