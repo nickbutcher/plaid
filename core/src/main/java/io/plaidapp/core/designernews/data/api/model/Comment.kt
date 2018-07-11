@@ -29,7 +29,7 @@ data class Comment(
     val depth: Int,
     val upvotesCount: Int,
     val replies: List<Comment>,
-    val userId: Long?,
+    val userId: Long,
     val userDisplayName: String?,
     val userPortraitUrl: String?,
     var upvoted: Boolean // TODO change this to val when getting to the upvoting

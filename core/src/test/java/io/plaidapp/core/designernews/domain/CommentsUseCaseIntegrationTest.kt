@@ -34,6 +34,7 @@ import io.plaidapp.core.designernews.data.api.user1
 import io.plaidapp.core.designernews.data.api.user2
 import io.plaidapp.core.designernews.data.comments.CommentsRepository
 import io.plaidapp.core.designernews.data.comments.DesignerNewsCommentsRemoteDataSource
+import io.plaidapp.core.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.core.designernews.data.users.UserRepository
 import io.plaidapp.core.designernews.provideCommentsUseCase
 import io.plaidapp.core.designernews.provideCommentsWithRepliesUseCase
@@ -48,13 +49,13 @@ import retrofit2.Response
 
 /**
  * Integration test for [CommentsUseCase] where only the responses from the [DesignerNewsService]
- * are mocked. Everything else is using real implementation.
+ * are mocked. Everything else uses real implementation.
  */
 class CommentsUseCaseIntegrationTest {
     private val service = Mockito.mock(DesignerNewsService::class.java)
     private val dataSource = DesignerNewsCommentsRemoteDataSource(service)
     private val commentsRepository = CommentsRepository(dataSource)
-    private val userRepository = UserRepository(service)
+    private val userRepository = UserRepository(UserRemoteDataSource(service))
     private val repository = provideCommentsUseCase(
             provideCommentsWithRepliesUseCase(commentsRepository),
             userRepository,
@@ -111,6 +112,7 @@ class CommentsUseCaseIntegrationTest {
         // Then  API requests were triggered
         Mockito.verify(service).getComments("1")
         Mockito.verify(service).getComments("11,12")
+        Mockito.verify(service).getUsers("222,111")
         // Then the correct result is received
         assertEquals(Result.Success(listOf(parentComment)), result)
     }
@@ -134,6 +136,7 @@ class CommentsUseCaseIntegrationTest {
         // Then  API requests were triggered
         Mockito.verify(service).getComments("1")
         Mockito.verify(service).getComments("11,12")
+        Mockito.verify(service).getUsers("222")
         // Then the correct result is received
         assertEquals(Result.Success(arrayListOf(parentCommentWithoutReplies)), result)
     }
@@ -155,6 +158,7 @@ class CommentsUseCaseIntegrationTest {
 
         // Then  API requests were triggered
         Mockito.verify(service).getComments("11")
+        Mockito.verify(service).getUsers("111")
         // Then the correct result is received
         assertEquals(Result.Success(arrayListOf(reply1NoUser)), result)
     }

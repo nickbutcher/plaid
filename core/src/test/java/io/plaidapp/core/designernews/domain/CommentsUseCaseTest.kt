@@ -30,6 +30,7 @@ import io.plaidapp.core.designernews.data.api.replyWithReplies1
 import io.plaidapp.core.designernews.data.api.user1
 import io.plaidapp.core.designernews.data.api.user2
 import io.plaidapp.core.designernews.data.users.UserRepository
+import io.plaidapp.core.designernews.domain.model.CommentWithReplies
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -95,7 +96,7 @@ class CommentsUseCaseTest {
         // When getting the comments from the repository
         repository.getComments(listOf(1L)) { it -> result = it }
 
-        // Then  API requests were triggered
+        // Then comments were requested for correct ids
         Mockito.verify(commentsWithRepliesUseCase).getCommentsWithReplies(parentIds)
         // Then the correct result is received
         assertEquals(Result.Success(listOf(parentComment)), result)
@@ -103,8 +104,7 @@ class CommentsUseCaseTest {
 
     @Test
     fun getComments_multipleReplies_whenRepliesRequestFailed() = runBlocking {
-        // Given that
-        // When requesting replies for ids 1 from commentsWithRepliesUseCase we get the parent comment
+        // Given that when requesting replies for ids 1 from commentsWithRepliesUseCase we get the parent comment
         val parentIds = listOf(1L)
         withComment(parentCommentWithRepliesWithoutReplies, parentIds)
         // Given that the user request responds with success
@@ -114,7 +114,7 @@ class CommentsUseCaseTest {
         // When getting the comments from the repository
         repository.getComments(listOf(1L)) { it -> result = it }
 
-        // Then  API requests were triggered
+        // Then comments were requested for correct ids
         Mockito.verify(commentsWithRepliesUseCase).getCommentsWithReplies(parentIds)
         // Then the correct result is received
         assertEquals(Result.Success(arrayListOf(parentCommentWithoutReplies)), result)
@@ -135,7 +135,7 @@ class CommentsUseCaseTest {
         // When getting the comments from the repository
         repository.getComments(listOf(11L)) { it -> result = it }
 
-        // Then  API requests were triggered
+        // Then comments were requested for correct ids
         Mockito.verify(commentsWithRepliesUseCase).getCommentsWithReplies(ids)
         // Then the correct result is received
         assertEquals(Result.Success(arrayListOf(reply1NoUser)), result)
