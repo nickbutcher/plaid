@@ -67,10 +67,9 @@ class UserRepository(private val service: DesignerNewsService) {
         private var INSTANCE: UserRepository? = null
 
         fun getInstance(service: DesignerNewsService): UserRepository {
-            return INSTANCE
-                    ?: synchronized(this) {
-                        INSTANCE ?: UserRepository(service).also { INSTANCE = it }
-                    }
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: UserRepository(service).also { INSTANCE = it }
+            }
         }
     }
 }

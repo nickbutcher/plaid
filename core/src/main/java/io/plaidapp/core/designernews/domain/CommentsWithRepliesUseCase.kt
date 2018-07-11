@@ -79,8 +79,8 @@ class CommentsWithRepliesUseCase(private val commentsRepository: CommentsReposit
         val commentReplyMapping = replies.groupBy { it.parentId }
         // for every comment construct the CommentWithReplies based on the comment properties and
         // the list of replies
-        return comments.mapNotNull {
-            val replies = commentReplyMapping[it.id].orEmpty()
+        return comments.map {
+            val commentReplies = commentReplyMapping[it.id].orEmpty()
             CommentWithReplies(
                     it.id,
                     it.links.parentComment,
@@ -90,7 +90,7 @@ class CommentsWithRepliesUseCase(private val commentsRepository: CommentsReposit
                     it.links.commentUpvotes.size,
                     it.links.userId,
                     it.links.story,
-                    replies
+                    commentReplies
             )
         }
     }
