@@ -47,6 +47,8 @@ val user2 = User(
         portraitUrl = "www"
 )
 
+val users = listOf(user1, user2)
+
 const val parentId = 1L
 
 val links = CommentLinksResponse(userId = user1.id, story = 999L, parentComment = parentId)

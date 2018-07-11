@@ -930,6 +930,7 @@ public class DesignerNewsStory extends Activity {
 
                 } else {
                     comment.setUpvoted(false);
+                    // TODO fix this
 //                    comment.setVoteCount(comment.getVoteCount() - 1);
                     holder.getCommentVotes().setText(String.valueOf(comment.getUpvotesCount()));
                     holder.getCommentVotes().setActivated(false);

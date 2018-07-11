@@ -24,6 +24,9 @@ import io.plaidapp.core.designernews.data.users.UserRepository
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 
+/**
+ * Use case that builds [Comment]s based on comments with replies and users
+ */
 class CommentsUseCase(
     private val commentsWithCommentsWithRepliesUseCase: CommentsWithRepliesUseCase,
     private val userRepository: UserRepository,
