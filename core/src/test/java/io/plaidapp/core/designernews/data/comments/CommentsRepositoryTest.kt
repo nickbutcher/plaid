@@ -22,6 +22,7 @@ import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mockito.Mockito
+import java.io.IOException
 
 /**
  * Tests for [CommentsRepository] mocking all dependencies
@@ -30,11 +31,26 @@ class CommentsRepositoryTest {
 
     private val dataSource = Mockito.mock(DesignerNewsCommentsRemoteDataSource::class.java)
     private val repository = CommentsRepository(dataSource)
+
     @Test
-    fun getComments() = runBlocking {
+    fun getComments_withSuccess() = runBlocking {
         // Given a list of comment responses that are return for a specific list of ids
         val ids = listOf(1L)
         val result = Result.Success(repliesResponses)
+        Mockito.`when`(dataSource.getComments(ids)).thenReturn(result)
+
+        // When requesting the comments
+        val data = repository.getComments(ids)
+
+        // The correct response is returned
+        assertEquals(result, data)
+    }
+
+    @Test
+    fun getComments_withError() = runBlocking {
+        // Given a list of comment responses that are return for a specific list of ids
+        val ids = listOf(1L)
+        val result = Result.Error(IOException("error"))
         Mockito.`when`(dataSource.getComments(ids)).thenReturn(result)
 
         // When requesting the comments

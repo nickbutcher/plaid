@@ -17,7 +17,22 @@
 package io.plaidapp.core.designernews.data.api.model
 
 import com.google.gson.annotations.SerializedName
+import io.plaidapp.core.designernews.domain.model.CommentWithReplies
 import java.util.Date
+
+fun CommentResponse.toCommentsWithReplies(
+    replies: List<CommentWithReplies>
+) = CommentWithReplies(
+        id = id,
+        parentId = links.parentComment,
+        body = body,
+        createdAt = created_at,
+        depth = depth,
+        upvotesCount = links.commentUpvotes.size,
+        userId = links.userId,
+        storyId = links.story,
+        replies = replies
+)
 
 /**
  * Models a comment on a designer news story response.

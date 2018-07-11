@@ -18,10 +18,15 @@ package io.plaidapp.core.designernews.domain
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.model.CommentResponse
+import io.plaidapp.core.designernews.data.api.model.toCommentsWithReplies
 import io.plaidapp.core.designernews.data.comments.CommentsRepository
+import io.plaidapp.core.designernews.domain.model.CommentWithReplies
 import java.io.IOException
-import java.util.Date
 
+/**
+ * Use case that constructs the entire comments and replies tree for a list of comments. Works
+ * with the [CommentsRepository] to get the data.
+ */
 class CommentsWithRepliesUseCase(private val commentsRepository: CommentsRepository) {
 
     /**
@@ -31,16 +36,16 @@ class CommentsWithRepliesUseCase(private val commentsRepository: CommentsReposit
     suspend fun getCommentsWithReplies(parentIds: List<Long>): Result<List<CommentWithReplies>> {
         val replies = mutableListOf<List<CommentResponse>>()
         // get the first level of comments
-        var result = commentsRepository.getComments(parentIds)
+        var parentComments = commentsRepository.getComments(parentIds)
         // as long as we could get comments or replies to comments
-        while (result is Result.Success) {
-            val newReplies = result.data
+        while (parentComments is Result.Success) {
+            val parents = parentComments.data
             // add the replies
-            replies.add(newReplies)
+            replies.add(parents)
             // check if we have another level of replies
-            val nextRepliesIds = newReplies.flatMap { comment -> comment.links.comments }
-            if (!nextRepliesIds.isEmpty()) {
-                result = commentsRepository.getComments(nextRepliesIds)
+            val replyIds = parents.flatMap { comment -> comment.links.comments }
+            if (!replyIds.isEmpty()) {
+                parentComments = commentsRepository.getComments(replyIds)
             } else {
                 // we don't have any other level of replies match the replies to the comments
                 // they belong to and return the first level of comments.
@@ -53,8 +58,8 @@ class CommentsWithRepliesUseCase(private val commentsRepository: CommentsReposit
         // if we already got some comments and replies, then use that data and ignore the error
         return if (replies.isNotEmpty()) {
             Result.Success(matchComments(replies))
-        } else if (result is Result.Error) {
-            result
+        } else if (parentComments is Result.Error) {
+            parentComments
         } else {
             Result.Error(IOException("Unable to get comments"))
         }
@@ -81,32 +86,7 @@ class CommentsWithRepliesUseCase(private val commentsRepository: CommentsReposit
         // the list of replies
         return comments.map {
             val commentReplies = commentReplyMapping[it.id].orEmpty()
-            CommentWithReplies(
-                    it.id,
-                    it.links.parentComment,
-                    it.body,
-                    it.created_at,
-                    it.depth,
-                    it.links.commentUpvotes.size,
-                    it.links.userId,
-                    it.links.story,
-                    commentReplies
-            )
+            it.toCommentsWithReplies(commentReplies)
         }
     }
 }
-
-/**
- * Models a comment with replies.
- */
-data class CommentWithReplies(
-    val id: Long,
-    val parentId: Long?,
-    val body: String,
-    val createdAt: Date,
-    val depth: Int = 0,
-    val upvotesCount: Int = 0,
-    val userId: Long,
-    val storyId: Long,
-    val replies: List<CommentWithReplies> = emptyList()
-)
