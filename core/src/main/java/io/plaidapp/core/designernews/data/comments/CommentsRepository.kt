@@ -30,4 +30,17 @@ class CommentsRepository(private val remoteDataSource: DesignerNewsCommentsRemot
     suspend fun getComments(ids: List<Long>): Result<List<CommentResponse>> {
         return remoteDataSource.getComments(ids)
     }
+
+    companion object {
+        @Volatile
+        private var INSTANCE: CommentsRepository? = null
+
+        fun getInstance(
+            remoteDataSource: DesignerNewsCommentsRemoteDataSource
+        ): CommentsRepository {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: CommentsRepository(remoteDataSource).also { INSTANCE = it }
+            }
+        }
+    }
 }

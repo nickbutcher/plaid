@@ -32,6 +32,7 @@ import io.plaidapp.core.designernews.data.comments.CommentsRepository
 import io.plaidapp.core.designernews.data.votes.DesignerNewsVotesRepository
 import io.plaidapp.core.designernews.data.votes.VotesRemoteDataSource
 import io.plaidapp.core.designernews.data.comments.DesignerNewsCommentsRemoteDataSource
+import io.plaidapp.core.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.core.designernews.data.users.UserRepository
 import io.plaidapp.core.designernews.domain.CommentsUseCase
 import io.plaidapp.core.designernews.domain.CommentsWithRepliesUseCase
@@ -114,7 +115,7 @@ fun provideCommentsUseCase(context: Context): CommentsUseCase {
     val service = provideDesignerNewsService(context)
     val commentsRepository = provideCommentsRepository(
             provideDesignerNewsCommentsRemoteDataSource(service))
-    val userRepository = provideUsersRepository(service)
+    val userRepository = provideUserRepository(provideUserRemoteDataSource(service))
     return provideCommentsUseCase(
             provideCommentsWithRepliesUseCase(commentsRepository),
             userRepository,
@@ -122,7 +123,7 @@ fun provideCommentsUseCase(context: Context): CommentsUseCase {
 }
 
 fun provideCommentsRepository(dataSource: DesignerNewsCommentsRemoteDataSource) =
-        CommentsRepository(dataSource)
+        CommentsRepository.getInstance(dataSource)
 
 fun provideCommentsWithRepliesUseCase(commentsRepository: CommentsRepository) =
         CommentsWithRepliesUseCase(commentsRepository)
@@ -133,8 +134,11 @@ fun provideCommentsUseCase(
     contextProvider: CoroutinesContextProvider
 ) = CommentsUseCase(commentsWithCommentsWithRepliesUseCase, userRepository, contextProvider)
 
-private fun provideUsersRepository(service: DesignerNewsService) =
-        UserRepository.getInstance(service)
+private fun provideUserRemoteDataSource(service: DesignerNewsService) =
+        UserRemoteDataSource(service)
+
+private fun provideUserRepository(dataSource: UserRemoteDataSource) =
+        UserRepository.getInstance(dataSource)
 
 private fun provideDesignerNewsCommentsRemoteDataSource(service: DesignerNewsService) =
         DesignerNewsCommentsRemoteDataSource.getInstance(service)
