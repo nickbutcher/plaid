@@ -26,5 +26,9 @@ class AboutStyler(activity: Activity) {
 
     val linksColor = ContextCompat.getColorStateList(activity, coreR.color.plaid_links)!!
     @ColorInt
-    val highlightColor = ColorUtils.getThemeColor(activity, coreR.attr.colorPrimary, coreR.color.primary)
+    val highlightColor = ColorUtils.getThemeColor(
+        activity,
+        coreR.attr.colorPrimary,
+        coreR.color.primary
+    )
 }

@@ -28,6 +28,7 @@ import android.support.annotation.VisibleForTesting
 import android.text.Layout
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.TextUtils
 import android.text.style.AlignmentSpan
 import io.plaidapp.about.R
 import io.plaidapp.about.domain.model.Library
@@ -86,7 +87,7 @@ internal class AboutViewModel(
                     0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
             }
-            "$about0\n\n$about1\n$about2\n\n$about3"
+            TextUtils.concat(about0, "\n\n", about1, "\n", about2, "\n\n", about3)
         }
     }
 
@@ -95,7 +96,7 @@ internal class AboutViewModel(
         val icon0 = resources.getString(R.string.about_icon_0)
         with(aboutStyler) {
             val icon1 = getSpannableFromMarkdown(R.string.about_icon_1, linksColor, highlightColor)
-            "$icon0\n$icon1"
+            TextUtils.concat(icon0, "\n", icon1)
         }
     }
 
@@ -103,7 +104,7 @@ internal class AboutViewModel(
         Library(
             "Android support libraries",
             "The Android support libraries offer a number of features that are " +
-                "not built into the framework.",
+                    "not built into the framework.",
             "https://developer.android.com/topic/libraries/support-library",
             "https://developer.android.com/images/android_icon_125.png",
             false
@@ -118,7 +119,7 @@ internal class AboutViewModel(
         Library(
             "Glide",
             "An image loading and caching library for Android focused onsmooth " +
-                "scrolling.",
+                    "scrolling.",
             "https://github.com/bumptech/glide",
             "https://avatars.githubusercontent.com/u/423539",
             false
