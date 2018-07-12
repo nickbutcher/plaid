@@ -16,12 +16,6 @@
 
 package io.plaidapp.ui.designernews.story;
 
-import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
-
-import static io.plaidapp.core.util.AnimUtils.getFastOutLinearInInterpolator;
-import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
-import static io.plaidapp.core.util.AnimUtils.getLinearOutSlowInInterpolator;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -80,8 +74,10 @@ import io.plaidapp.core.designernews.data.api.model.Story;
 import io.plaidapp.core.designernews.data.api.model.User;
 import io.plaidapp.core.designernews.data.api.votes.DesignerNewsVotesRepository;
 import io.plaidapp.core.ui.transitions.GravityArcMotion;
+import io.plaidapp.core.ui.transitions.MorphTransform;
 import io.plaidapp.core.ui.transitions.ReflowText;
 import io.plaidapp.core.ui.widget.CollapsingTitleLayout;
+import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.core.util.Activities;
 import io.plaidapp.core.util.HtmlUtils;
 import io.plaidapp.core.util.ImeUtils;
@@ -92,13 +88,16 @@ import io.plaidapp.core.util.glide.ImageSpanTarget;
 import io.plaidapp.designernews.R;
 import io.plaidapp.ui.designernews.DesignerNewsLogin;
 import io.plaidapp.ui.drawable.ThreadedCommentDrawable;
-import io.plaidapp.core.ui.transitions.MorphTransform;
-import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import kotlin.Unit;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+import static io.plaidapp.core.util.AnimUtils.getFastOutLinearInInterpolator;
+import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
+import static io.plaidapp.core.util.AnimUtils.getLinearOutSlowInInterpolator;
 
 public class DesignerNewsStory extends Activity {
 
@@ -492,11 +491,11 @@ public class DesignerNewsStory extends Activity {
         final TextView share = header.findViewById(R.id.story_share_action);
         share.setOnClickListener(v -> {
             ((AnimatedVectorDrawable) share.getCompoundDrawables()[1]).start();
-            startActivity(ShareCompat.IntentBuilder.from(DesignerNewsStory.this)
-                    .setText(story.getUrl())
-                    .setType("text/plain")
-                    .setSubject(story.getTitle())
-                    .getIntent());
+            ShareCompat.IntentBuilder.from(DesignerNewsStory.this)
+                                     .setText(story.getUrl())
+                                     .setType("text/plain")
+                                     .setSubject(story.getTitle())
+                                     .startChooser();
         });
 
         TextView storyPosterTime = header.findViewById(R.id.story_poster_time);
