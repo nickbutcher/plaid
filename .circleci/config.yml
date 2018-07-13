@@ -4,14 +4,24 @@ references:
   cache_key: &cache_key
     key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
 
-jobs:
-  build:
+  config_android: &config_android
     docker:
       - image: circleci/android:api-28-alpha
     environment:
       JVM_OPTS: "-Xmx1024m"
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
       TERM: dumb
+
+  config_gcloud: &config_gcloud
+    docker:
+      - image: google/cloud-sdk:latest
+    environment:
+      TERM: dumb
+
+jobs:
+  build:
+    <<: *config_android
+
     steps:
       - checkout
       - restore_cache:
@@ -32,3 +42,11 @@ jobs:
           command: scripts/copy_lint_results.sh
       - store_artifacts:
           path: ci_results/lint
+
+  test_instrumented:
+    <<: *config_gcloud
+
+    steps:
+      - run:
+          name: Setup Google Cloud auth
+          command: ls
