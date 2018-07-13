@@ -24,28 +24,48 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import io.plaidapp.core.ui.recyclerview.SlideInItemAnimator
+import io.plaidapp.core.ui.widget.AuthorTextView
 import io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator
 import io.plaidapp.core.util.AnimUtils.getLinearOutSlowInInterpolator
+import io.plaidapp.core.util.HtmlUtils
 import io.plaidapp.designernews.R
-import io.plaidapp.core.ui.widget.AuthorTextView
+import io.plaidapp.ui.drawable.ThreadedCommentDrawable
 
-internal class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+internal class CommentViewHolder(
+    itemView: View,
+    private val threadWidth: Int,
+    private val threadGap: Int
+) : RecyclerView.ViewHolder(itemView) {
 
-    val threadDepth: ImageView = itemView.findViewById(R.id.depth)
-    val author: AuthorTextView = itemView.findViewById(R.id.comment_author)
-    val timeAgo: TextView = itemView.findViewById(R.id.comment_time_ago)
+    private val threadDepth: ImageView = itemView.findViewById(R.id.depth)
+    private val author: AuthorTextView = itemView.findViewById(R.id.comment_author)
+    private val timeAgo: TextView = itemView.findViewById(R.id.comment_time_ago)
     val comment: TextView = itemView.findViewById(R.id.comment_text)
+
+    init {
+        threadDepth.setImageDrawable(ThreadedCommentDrawable(threadWidth, threadGap))
+    }
+
+    fun bind(model: CommentUiModel) {
+        HtmlUtils.setTextWithNiceLinks(comment, model.body)
+        author.text = model.author
+        author.isOriginalPoster = model.isOriginalPoster
+        timeAgo.text = model.timeSinceCommentCreation
+        threadDepth.setImageDrawable(
+            ThreadedCommentDrawable(threadWidth, threadGap, model.depth)
+        )
+    }
 
     private fun getExpandedAuthorCommentOffset(): Float {
         return (-(threadDepth.width +
-                (threadDepth.layoutParams as ViewGroup.MarginLayoutParams)
-                        .marginEnd)).toFloat()
+            (threadDepth.layoutParams as ViewGroup.MarginLayoutParams)
+                .marginEnd)).toFloat()
     }
 
     private fun getExpandedThreadOffset(): Float {
         return (-(threadDepth.width +
-                (threadDepth.layoutParams as ViewGroup.MarginLayoutParams)
-                        .marginStart)).toFloat()
+            (threadDepth.layoutParams as ViewGroup.MarginLayoutParams)
+                .marginStart)).toFloat()
     }
 
     fun expand(animator: SlideInItemAnimator) {
@@ -128,6 +148,21 @@ internal class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
             translationX(0f)
             duration = 200L
             interpolator = moveInterpolator
+        }
+    }
+
+    fun setExpanded(expanded: Boolean) {
+        if (expanded) {
+            val layoutParams = (threadDepth.layoutParams as ViewGroup.MarginLayoutParams)
+            val threadDepthWidth = threadDepth.drawable.intrinsicWidth
+            val leftShift = (-(threadDepthWidth + layoutParams.marginEnd)).toFloat()
+            author.translationX = leftShift
+            comment.translationX = leftShift
+            threadDepth.translationX = (-(threadDepthWidth + layoutParams.marginStart)).toFloat()
+        } else {
+            threadDepth.translationX = 0f
+            author.translationX = 0f
+            comment.translationX = 0f
         }
     }
 }
