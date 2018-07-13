@@ -50,3 +50,12 @@ jobs:
       - run:
           name: Setup Google Cloud auth
           command: ls
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test_instrumented:
+          requires:
+            - build
