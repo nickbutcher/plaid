@@ -473,7 +473,7 @@ public class DesignerNewsStory extends Activity {
             int highlightColor = ContextCompat.getColor(this,
                     io.plaidapp.R.color.designer_news_link_highlight);
 
-            HtmlUtils.parseMarkdownAndSetText(storyComment, story.getComment(), markdown,
+            CharSequence text = HtmlUtils.parseMarkdownAndPlainLinks(story.getComment(), markdown,
                     linksColor, highlightColor,
                     (src, loadingSpan) -> GlideApp.with(DesignerNewsStory.this)
                             .asBitmap()
@@ -481,6 +481,9 @@ public class DesignerNewsStory extends Activity {
                             .transition(BitmapTransitionOptions.withCrossFade())
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(new ImageSpanTarget(storyComment, loadingSpan)));
+
+            HtmlUtils.setTextWithNiceLinks(storyComment, text);
+
         } else {
             storyComment.setVisibility(View.GONE);
         }
@@ -501,18 +504,9 @@ public class DesignerNewsStory extends Activity {
 
         TextView storyPosterTime = header.findViewById(R.id.story_poster_time);
         if (story.getUserDisplayName() != null && story.getUserJob() != null) {
-            SpannableString poster = new SpannableString(story.getUserDisplayName().toLowerCase());
-            poster.setSpan(new TextAppearanceSpan(this, io.plaidapp.R.style
-                            .TextAppearance_CommentAuthor),
-                    0, poster.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            CharSequence job =
-                    !TextUtils.isEmpty(story.getUserJob()) ? "\n" + story.getUserJob().toLowerCase() : "";
-            CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(story.getCreatedAt().getTime(),
-                    System.currentTimeMillis(),
-                    DateUtils.SECOND_IN_MILLIS)
-                    .toString().toLowerCase();
-            storyPosterTime.setText(TextUtils.concat(poster, job, "\n", timeAgo));
-
+            CharSequence storyPosterTimeText = getStoryPosterTimeText(story.getUserDisplayName(),
+                    story.getUserJob(), story.getCreatedAt());
+            storyPosterTime.setText(storyPosterTimeText);
         }
         ImageView avatar = header.findViewById(R.id.story_poster_avatar);
         if (!TextUtils.isEmpty(story.getUserPortraitUrl())) {
@@ -525,6 +519,21 @@ public class DesignerNewsStory extends Activity {
         } else {
             avatar.setVisibility(View.GONE);
         }
+    }
+
+    private CharSequence getStoryPosterTimeText(String userDisplayName, String userJob, Date createdAt){
+        SpannableString poster = new SpannableString(userDisplayName.toLowerCase());
+        poster.setSpan(new TextAppearanceSpan(this, io.plaidapp.R.style
+                        .TextAppearance_CommentAuthor),
+                0, poster.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        CharSequence job = !TextUtils.isEmpty(userJob) ? "\n" + userJob.toLowerCase() : "";
+        CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(
+                createdAt.getTime(),
+                System.currentTimeMillis(),
+                DateUtils.SECOND_IN_MILLIS)
+                .toString().toLowerCase();
+
+        return TextUtils.concat(poster, job, "\n", timeAgo);
     }
 
     @NonNull
@@ -806,7 +815,8 @@ public class DesignerNewsStory extends Activity {
         @NonNull
         private CommentViewHolder createCommentHolder(ViewGroup parent) {
             final CommentViewHolder holder = new CommentViewHolder(
-                    getLayoutInflater().inflate(R.layout.designer_news_comment, parent, false));
+                    getLayoutInflater().inflate(R.layout.designer_news_comment, parent, false),
+                    threadWidth, threadGap);
             holder.itemView.setOnClickListener(v -> {
                 final boolean collapsingSelf =
                         expandedCommentPosition == holder.getAdapterPosition();
@@ -819,8 +829,6 @@ public class DesignerNewsStory extends Activity {
                 notifyItemChanged(expandedCommentPosition,
                         CommentAnimator.EXPAND_COMMENT);
             });
-            holder.getThreadDepth().setImageDrawable(
-                    new ThreadedCommentDrawable(threadWidth, threadGap));
 
             return holder;
         }
@@ -850,8 +858,7 @@ public class DesignerNewsStory extends Activity {
                 int highlightColor = ContextCompat.getColor(getApplicationContext(),
                         io.plaidapp.R.color.designer_news_link_highlight);
 
-                HtmlUtils.parseMarkdownAndSetText(
-                        holder.getComment(),
+                CharSequence commentText = HtmlUtils.parseMarkdownAndPlainLinks(
                         comment.body,
                         markdown,
                         linksColor,
@@ -862,42 +869,28 @@ public class DesignerNewsStory extends Activity {
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(new ImageSpanTarget(holder.getComment(), loadingSpan)));
 
-                if (comment.user_display_name != null) {
-                    holder.getAuthor().setText(comment.user_display_name.toLowerCase());
-                }
-                holder.getAuthor().setOriginalPoster(isOP(comment.user_id));
-                if (comment.created_at != null) {
-                    holder.getTimeAgo().setText(
-                            DateUtils.getRelativeTimeSpanString(comment.created_at.getTime(),
-                                    System.currentTimeMillis(),
-                                    DateUtils.SECOND_IN_MILLIS)
-                                    .toString().toLowerCase());
-                }
-                // FIXME updating drawable doesn't seem to be working, just create a new one
-                //((ThreadedCommentDrawable) holder.threadDepth.getDrawable())
-                //     .setDepth(comment.depth);
+                String author = comment.user_display_name.toLowerCase();
+                boolean isOriginalPoster = isOP(comment.user_id);
+                String timeAgo = DateUtils.getRelativeTimeSpanString(
+                        comment.created_at.getTime(),
+                        System.currentTimeMillis(),
+                        DateUtils.SECOND_IN_MILLIS)
+                        .toString().toLowerCase();
 
-                holder.getThreadDepth().setImageDrawable(
-                        new ThreadedCommentDrawable(threadWidth, threadGap, comment.depth));
+                CommentUiModel commentUiModel = new CommentUiModel(
+                        commentText,
+                        timeAgo,
+                        comment.depth,
+                        author,
+                        isOriginalPoster
+                );
+
+                holder.bind(commentUiModel);
             }
 
             // set/clear expanded comment state
             holder.itemView.setActivated(holder.getAdapterPosition() == expandedCommentPosition);
-            if (holder.getAdapterPosition() == expandedCommentPosition) {
-                final int threadDepthWidth =
-                        holder.getThreadDepth().getDrawable().getIntrinsicWidth();
-                final float leftShift = -(threadDepthWidth + ((ViewGroup.MarginLayoutParams)
-                        holder.getThreadDepth().getLayoutParams()).getMarginEnd());
-                holder.getAuthor().setTranslationX(leftShift);
-                holder.getComment().setTranslationX(leftShift);
-                holder.getThreadDepth().setTranslationX(-(threadDepthWidth
-                        + ((ViewGroup.MarginLayoutParams)
-                        holder.getThreadDepth().getLayoutParams()).getMarginStart()));
-            } else {
-                holder.getThreadDepth().setTranslationX(0f);
-                holder.getAuthor().setTranslationX(0f);
-                holder.getComment().setTranslationX(0f);
-            }
+            holder.setExpanded(holder.getAdapterPosition() == expandedCommentPosition);
         }
 
         private void upvoteComment(Long id) {
