@@ -30,7 +30,8 @@ import io.plaidapp.core.designernews.data.api.DesignerNewsRepository
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRemoteDataSource
 import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRepository
-import io.plaidapp.core.designernews.data.api.votes.DesignerNewsVotesRepository
+import io.plaidapp.core.designernews.data.votes.DesignerNewsVotesRepository
+import io.plaidapp.core.designernews.data.votes.VotesRemoteDataSource
 import io.plaidapp.core.designernews.login.data.DesignerNewsLoginLocalDataSource
 import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRemoteDataSource
 import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRepository
@@ -124,14 +125,16 @@ private fun provideDesignerNewsCommentsRemoteDataSource(service: DesignerNewsSer
 
 fun provideDesignerNewsVotesRepository(context: Context): DesignerNewsVotesRepository {
     return provideDesignerNewsVotesRepository(
-            provideDesignerNewsService(context),
+            provideVotesRemoteDataSource(provideDesignerNewsService(context)),
             provideCoroutinesContextProvider()
     )
 }
 
+private fun provideVotesRemoteDataSource(service: DesignerNewsService) = VotesRemoteDataSource(service)
+
 private fun provideDesignerNewsVotesRepository(
-    service: DesignerNewsService,
+    remoteDataSource: VotesRemoteDataSource,
     contextProvider: CoroutinesContextProvider
 ): DesignerNewsVotesRepository {
-    return DesignerNewsVotesRepository.getInstance(service, contextProvider)
+    return DesignerNewsVotesRepository.getInstance(remoteDataSource, contextProvider)
 }

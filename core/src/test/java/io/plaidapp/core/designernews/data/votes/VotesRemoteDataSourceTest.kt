@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.api.votes
+package io.plaidapp.core.designernews.data.votes
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.api.any
 import io.plaidapp.core.designernews.data.api.errorResponseBody
-import io.plaidapp.core.designernews.data.api.provideFakeCoroutinesContextProvider
 import kotlinx.coroutines.experimental.CompletableDeferred
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -31,40 +31,61 @@ import retrofit2.Response
 /**
  * Test for [DesignerNewsVotesRepository] mocking all dependencies.
  */
-class DesignerNewsVotesRepositoryTest {
+class VotesRemoteDataSourceTest {
 
     private val userId = 3L
     private val storyId = 1345L
 
     private val service = Mockito.mock(DesignerNewsService::class.java)
-    private val votesRepository = DesignerNewsVotesRepository(
-            service,
-            provideFakeCoroutinesContextProvider()
-    )
+    private val dataSource = VotesRemoteDataSource(service)
 
     @Test
-    fun upvoteStory_whenRequestSuccessful() {
+    fun upvoteStory_whenRequestSuccessful() = runBlocking {
         // Given that the service responds with success
         val response = Response.success(Unit)
         Mockito.`when`(service.upvoteStoryV2(any())).thenReturn(CompletableDeferred(response))
-        var result: Result<Unit>? = null
 
         // When upvoting a story
-        votesRepository.upvoteStory(storyId, userId) { result = it }
+        val result = dataSource.upvoteStory(storyId, userId)
 
         // Then the result is successful
         assertEquals(Result.Success(Unit), result)
     }
 
     @Test
-    fun upvoteStory_whenRequestFailed() {
+    fun upvoteStory_whenRequestFailed() = runBlocking {
         // Given that the service responds with error
         val response = Response.error<Unit>(404, errorResponseBody)
         Mockito.`when`(service.upvoteStoryV2(any())).thenReturn(CompletableDeferred(response))
-        var result: Result<Unit>? = null
 
         // When upvoting a story
-        votesRepository.upvoteStory(storyId, userId) { result = it }
+        val result = dataSource.upvoteStory(storyId, userId)
+
+        // Then the result is error
+        assertTrue(result is Result.Error)
+    }
+
+    @Test
+    fun upvoteComment_whenRequestSuccessful() = runBlocking {
+        // Given that the service responds with success
+        val response = Response.success(Unit)
+        Mockito.`when`(service.upvoteComment(any())).thenReturn(CompletableDeferred(response))
+
+        // When upvoting a story
+        val result = dataSource.upvoteComment(storyId, userId)
+
+        // Then the result is successful
+        assertEquals(Result.Success(Unit), result)
+    }
+
+    @Test
+    fun upvoteComment_whenRequestFailed() = runBlocking {
+        // Given that the service responds with error
+        val response = Response.error<Unit>(404, errorResponseBody)
+        Mockito.`when`(service.upvoteComment(any())).thenReturn(CompletableDeferred(response))
+
+        // When upvoting a story
+        val result = dataSource.upvoteComment(storyId, userId)
 
         // Then the result is error
         assertTrue(result is Result.Error)

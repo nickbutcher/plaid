@@ -14,40 +14,38 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.api.votes
+package io.plaidapp.core.designernews.data.votes
 
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.api.votes.model.UpvoteRequest
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
-import java.io.IOException
 
 /**
  * Repository for Designer News votes.
  */
 class DesignerNewsVotesRepository(
-    private val service: DesignerNewsService,
+    private val remoteDataSource: VotesRemoteDataSource,
     private val contextProvider: CoroutinesContextProvider
 ) {
     fun upvoteStory(
-        id: Long,
+        storyId: Long,
         userId: Long,
         onResult: (result: Result<Unit>) -> Unit
-    ) = launch(contextProvider.main) {
-        val request = UpvoteRequest(id, userId)
-        // right now we just care whether the response is successful or not.
+    ) = launch(contextProvider.io) {
         // TODO save the response in the database
-        val response = withContext(contextProvider.io) { service.upvoteStoryV2(request) }.await()
-        if (response.isSuccessful) {
-            onResult(Result.Success(Unit))
-            return@launch
-        } else {
-            onResult(Result.Error(IOException(
-                    "Unable to upvote story ${response.code()} ${response.errorBody()?.string()}")))
-            return@launch
-        }
+        val response = remoteDataSource.upvoteStory(storyId, userId)
+        withContext(contextProvider.main) { onResult(response) }
+    }
+
+    fun upvoteComment(
+        commentId: Long,
+        userId: Long,
+        onResult: (result: Result<Unit>) -> Unit
+    ) = launch(contextProvider.io) {
+        // TODO save the response in the database
+        val response = remoteDataSource.upvoteComment(commentId, userId)
+        withContext(contextProvider.main) { onResult(response) }
     }
 
     companion object {
@@ -55,13 +53,11 @@ class DesignerNewsVotesRepository(
         private var INSTANCE: DesignerNewsVotesRepository? = null
 
         fun getInstance(
-            service: DesignerNewsService,
+            remoteDataSource: VotesRemoteDataSource,
             contextProvider: CoroutinesContextProvider
         ): DesignerNewsVotesRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE
-                        ?: DesignerNewsVotesRepository(service, contextProvider)
-                                .also { INSTANCE = it }
+                INSTANCE ?: DesignerNewsVotesRepository(remoteDataSource, contextProvider).also { INSTANCE = it }
             }
         }
     }
