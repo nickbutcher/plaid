@@ -78,7 +78,7 @@ import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRepos
 import io.plaidapp.core.designernews.data.api.model.Comment;
 import io.plaidapp.core.designernews.data.api.model.Story;
 import io.plaidapp.core.designernews.data.api.model.User;
-import io.plaidapp.core.designernews.data.api.votes.DesignerNewsVotesRepository;
+import io.plaidapp.core.designernews.data.votes.DesignerNewsVotesRepository;
 import io.plaidapp.core.ui.transitions.GravityArcMotion;
 import io.plaidapp.core.ui.transitions.ReflowText;
 import io.plaidapp.core.ui.widget.CollapsingTitleLayout;
@@ -91,7 +91,6 @@ import io.plaidapp.core.util.glide.GlideApp;
 import io.plaidapp.core.util.glide.ImageSpanTarget;
 import io.plaidapp.designernews.R;
 import io.plaidapp.ui.designernews.DesignerNewsLogin;
-import io.plaidapp.ui.drawable.ThreadedCommentDrawable;
 import io.plaidapp.core.ui.transitions.MorphTransform;
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.ui.widget.PinnedOffsetView;
@@ -150,8 +149,7 @@ public class DesignerNewsStory extends Activity {
         commentsRepository.getComments(story.getLinks().getComments(),
                 result -> {
                     if (result instanceof Result.Success) {
-                        Result.Success<List<Comment>> success =
-                                (Result.Success<List<Comment>>) result;
+                        Result.Success<List<Comment>> success = (Result.Success<List<Comment>>) result;
                         List<Comment> data = success.getData();
                         setupComments(data);
                     }
@@ -869,7 +867,7 @@ public class DesignerNewsStory extends Activity {
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(new ImageSpanTarget(holder.getComment(), loadingSpan)));
 
-                String author = comment.user_display_name.toLowerCase();
+                String author = comment.user_display_name != null ? comment.user_display_name.toLowerCase() : "";
                 boolean isOriginalPoster = isOP(comment.user_id);
                 String timeAgo = DateUtils.getRelativeTimeSpanString(
                         comment.created_at.getTime(),
@@ -891,21 +889,6 @@ public class DesignerNewsStory extends Activity {
             // set/clear expanded comment state
             holder.itemView.setActivated(holder.getAdapterPosition() == expandedCommentPosition);
             holder.setExpanded(holder.getAdapterPosition() == expandedCommentPosition);
-        }
-
-        private void upvoteComment(Long id) {
-            final Call<Comment> upvoteComment =
-                    designerNewsPrefs.getApi().upvoteComment(id);
-            upvoteComment.enqueue(new Callback<Comment>() {
-                @Override
-                public void onResponse(Call<Comment> call,
-                        Response<Comment> response) {
-                }
-
-                @Override
-                public void onFailure(Call<Comment> call, Throwable t) {
-                }
-            });
         }
 
         private void replyToComment(Long commentId, String reply) {
@@ -930,11 +913,21 @@ public class DesignerNewsStory extends Activity {
                 Comment comment) {
             if (isUserLoggedIn) {
                 if (!holder.getCommentVotes().isActivated()) {
-                    upvoteComment(comment.id);
-                    comment.upvoted = true;
-                    comment.vote_count++;
-                    holder.getCommentVotes().setText(String.valueOf(comment.vote_count));
-                    holder.getCommentVotes().setActivated(true);
+                    votesRepository.upvoteComment(story.getId(), designerNewsPrefs.getUser().getId(),
+                            result -> {
+                                if (result instanceof Result.Success) {
+                                    comment.upvoted = true;
+                                    comment.vote_count++;
+                                    holder.getCommentVotes().setText(String.valueOf(comment.vote_count));
+                                    holder.getCommentVotes().setActivated(true);
+                                } else {
+                                    Toast.makeText(DesignerNewsStory.this, "Unable to upvote comment",
+                                            Toast.LENGTH_LONG)
+                                            .show();
+                                }
+                                return Unit.INSTANCE;
+                            });
+
                 } else {
                     comment.upvoted = false;
                     comment.vote_count--;
