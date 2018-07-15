@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.designernews.story;
+package io.plaidapp.designernews.ui.story;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -79,10 +79,8 @@ import io.plaidapp.core.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.core.util.glide.GlideApp;
 import io.plaidapp.core.util.glide.ImageSpanTarget;
 import io.plaidapp.designernews.R;
+import io.plaidapp.designernews.ui.login.DesignerNewsLogin;
 import io.plaidapp.ui.widget.PinnedOffsetView;
-import io.plaidapp.ui.designernews.login.DesignerNewsLogin;
-import io.plaidapp.core.ui.transitions.MorphTransform;
-import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout;
 import kotlin.Unit;
 import retrofit2.Call;
 import retrofit2.Callback;

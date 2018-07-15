@@ -28,21 +28,29 @@ import org.mockito.Mockito
 import java.io.IOException
 
 /**
- * Tests for [DesignerNewsLoginRepository] using shared preferences from instrumentation context
+ * Tests for [LoginRepository] using shared preferences from instrumentation context
  * for building the local and remote data sources, and mocked API service.
  */
-class DesignerNewsLoginRepositoryTest {
+class LoginRepositoryTest {
 
     private val username = "user"
     private val pass = "pass"
-    private val user = User(id = 3, displayName = "Plaida Plaidich", portraitUrl = "www")
+    private val user = User(
+        id = 3,
+        firstName = "Plaida",
+        lastName = "Plaidich",
+        displayName = "Plaida Plaidich",
+        portraitUrl = "www"
+    )
 
-    private var localDataSource = Mockito.mock(DesignerNewsLoginLocalDataSource::class.java)
-    private val remoteDataSource = Mockito.mock(DesignerNewsLoginRemoteDataSource::class.java)
-    private val repository = DesignerNewsLoginRepository(localDataSource, remoteDataSource)
+    private var localDataSource = Mockito.mock(LoginLocalDataSource::class.java)
+    private val remoteDataSource = Mockito.mock(LoginRemoteDataSource::class.java)
+    private val repository = LoginRepository(localDataSource, remoteDataSource)
 
     @Test
     fun isNotLoggedIn_byDefault() {
+        // When no user was logged in
+        // Then the logged in repository flag is false
         assertFalse(repository.isLoggedIn)
     }
 
@@ -54,7 +62,7 @@ class DesignerNewsLoginRepositoryTest {
         // When logging in
         val result = repository.login(username, pass)
 
-        // Then the success callback was called
+        // Then the success result is returned
         assertEquals(Result.Success(user), result)
         // The user is logged in
         assertTrue(repository.isLoggedIn)
@@ -74,7 +82,7 @@ class DesignerNewsLoginRepositoryTest {
 
         // Then the user is not logged in
         assertFalse(repository.isLoggedIn)
-        // The user cached null
+        // The cached user is null
         assertNull(repository.user)
     }
 
@@ -89,7 +97,7 @@ class DesignerNewsLoginRepositoryTest {
 
         // Then the user is logged out
         assertFalse(repository.isLoggedIn)
-        // The user cached null
+        // The cached user is null
         assertNull(repository.user)
     }
 
@@ -101,11 +109,11 @@ class DesignerNewsLoginRepositoryTest {
         // When logging in
         val result = repository.login(username, pass)
 
-        // Then the error callback was called
+        // Then the error result is returned
         assertTrue(result is Result.Error)
         // The user is not logged in
         assertFalse(repository.isLoggedIn)
-        // The user cached null
+        // The cached user is null
         assertNull(repository.user)
     }
 

@@ -27,7 +27,7 @@ import java.io.IOException
  * Remote data source for Designer News login data. Knows which API calls need to be triggered
  * for login (auth and /me) and updates the auth token after authorizing.
  */
-class DesignerNewsLoginRemoteDataSource(
+class LoginRemoteDataSource(
     private val tokenLocalDataSource: DesignerNewsAuthTokenLocalDataSource,
     val service: DesignerNewsService
 ) {
