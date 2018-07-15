@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.designernews.story
+package io.plaidapp.designernews.ui.story
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter

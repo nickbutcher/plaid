@@ -23,7 +23,7 @@ import io.plaidapp.core.designernews.data.api.model.User
 /**
  * Local storage for Designer News login related data, implemented using SharedPreferences
  */
-class DesignerNewsLoginLocalDataSource(private val prefs: SharedPreferences) {
+class LoginLocalDataSource(private val prefs: SharedPreferences) {
 
     /**
      * Instance of the logged in user. If missing, null is returned
