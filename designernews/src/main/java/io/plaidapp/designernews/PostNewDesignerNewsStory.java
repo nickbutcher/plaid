@@ -15,7 +15,7 @@
  *
  */
 
-package io.plaidapp.ui.designernews;
+package io.plaidapp.designernews;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -39,7 +39,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import io.plaidapp.core.util.ActivityHelper;
-import io.plaidapp.designernews.R;
 import io.plaidapp.core.designernews.data.api.PostStoryService;
 import io.plaidapp.core.designernews.DesignerNewsPrefs;
 import io.plaidapp.core.ui.transitions.FabTransform;

@@ -25,6 +25,9 @@ android {
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         resConfig 'en'
+
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+
     }
 
     compileOptions {
@@ -40,6 +43,4 @@ repositories {
 
 dependencies {
     implementation project(':app')
-    implementation "android.arch.lifecycle:viewmodel:${versions.lifecycle}"
-    implementation "android.arch.lifecycle:extensions:${versions.lifecycle}"
 }

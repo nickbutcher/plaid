@@ -32,17 +32,23 @@ import org.mockito.Mockito
 import retrofit2.Response
 
 /**
- * Tests for [DesignerNewsLoginRemoteDataSource] using shared preferences from instrumentation
+ * Tests for [LoginRemoteDataSource] using shared preferences from instrumentation
  * context and mocked API service.
  */
 class DesignerNewsLoginRemoteDataSourceTest {
 
-    private val user = User(id = 3, displayName = "Plaidy Plaidinski", portraitUrl = "www")
+    private val user = User(
+        id = 3,
+        firstName = "Plaidy",
+        lastName = "Plaidinski",
+        displayName = "Plaidy Plaidinski",
+        portraitUrl = "www"
+    )
     private val accessToken = AccessToken("token")
 
     private val service = Mockito.mock(DesignerNewsService::class.java)
     private val authTokenDataSource = Mockito.mock(DesignerNewsAuthTokenLocalDataSource::class.java)
-    private val dataSource = DesignerNewsLoginRemoteDataSource(authTokenDataSource, service)
+    private val dataSource = LoginRemoteDataSource(authTokenDataSource, service)
 
     @Test
     fun logout_clearsToken() {

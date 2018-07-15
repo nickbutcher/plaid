@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package io.plaidapp.designernews.login.data
+package io.plaidapp.designernews.ui.login.data
 
 import android.content.Context
 import android.support.test.InstrumentationRegistry.getInstrumentation
 import io.plaidapp.core.designernews.data.api.model.User
-import io.plaidapp.core.designernews.login.data.DesignerNewsLoginLocalDataSource
+import io.plaidapp.core.designernews.login.data.LoginLocalDataSource
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 
 /**
- * Tests for [DesignerNewsLoginLocalDataSource] using shared preferences from instrumentation
+ * Tests for [LoginLocalDataSource] using shared preferences from instrumentation
  * context
  */
 class DesignerNewsLoginDataSourceTest {
@@ -34,7 +34,7 @@ class DesignerNewsLoginDataSourceTest {
     private var sharedPreferences = getInstrumentation().context
             .getSharedPreferences("test", Context.MODE_PRIVATE)
 
-    private var dataSource = DesignerNewsLoginLocalDataSource(sharedPreferences)
+    private var dataSource = LoginLocalDataSource(sharedPreferences)
 
     @After
     fun tearDown() {

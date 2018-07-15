@@ -24,9 +24,9 @@ import io.plaidapp.core.designernews.data.api.model.User
  * Repository that handles Designer News login data. It knows what data sources need to be
  * triggered to login and where to store the data, once the user was logged in.
  */
-class DesignerNewsLoginRepository(
-    private val localDataSource: DesignerNewsLoginLocalDataSource,
-    private val remoteDataSource: DesignerNewsLoginRemoteDataSource
+class LoginRepository(
+    private val localDataSource: LoginLocalDataSource,
+    private val remoteDataSource: LoginRemoteDataSource
 ) {
 
     // local cache of the user object, so we don't retrieve it from the local storage every time
@@ -69,14 +69,14 @@ class DesignerNewsLoginRepository(
 
     companion object {
         @Volatile
-        private var INSTANCE: DesignerNewsLoginRepository? = null
+        private var INSTANCE: LoginRepository? = null
 
         fun getInstance(
-            localDataSource: DesignerNewsLoginLocalDataSource,
-            remoteDataSource: DesignerNewsLoginRemoteDataSource
-        ): DesignerNewsLoginRepository {
+            localDataSource: LoginLocalDataSource,
+            remoteDataSource: LoginRemoteDataSource
+        ): LoginRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: DesignerNewsLoginRepository(
+                INSTANCE ?: LoginRepository(
                     localDataSource,
                     remoteDataSource
                 ).also { INSTANCE = it }

@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.designernews.login;
-
-import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+package io.plaidapp.designernews.ui.login;
 
 import android.Manifest;
 import android.accounts.Account;
@@ -24,6 +22,7 @@ import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -33,10 +32,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.transition.TransitionManager;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -53,22 +52,24 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import io.plaidapp.core.data.Result;
+import io.plaidapp.core.designernews.login.ui.LoginUiModel;
+import io.plaidapp.core.designernews.login.ui.LoginViewModel;
+import io.plaidapp.core.ui.transitions.FabTransform;
+import io.plaidapp.core.ui.transitions.MorphTransform;
+import io.plaidapp.core.util.ScrimUtil;
+import io.plaidapp.core.util.glide.GlideApp;
+import io.plaidapp.designernews.InjectionKt;
+import io.plaidapp.designernews.R;
+import io.plaidapp.designernews.ui.ViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.plaidapp.core.designernews.Injection;
-import io.plaidapp.core.designernews.data.api.model.User;
-import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRepository;
-import io.plaidapp.core.util.glide.GlideApp;
-import io.plaidapp.designernews.R;
-import io.plaidapp.core.ui.transitions.FabTransform;
-import io.plaidapp.core.ui.transitions.MorphTransform;
-import io.plaidapp.core.util.ScrimUtil;
-import kotlin.Unit;
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
-public class DesignerNewsLogin extends Activity {
+public class DesignerNewsLogin extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST_GET_ACCOUNTS = 0;
 
@@ -84,7 +85,7 @@ public class DesignerNewsLogin extends Activity {
     private Button login;
     private ProgressBar loading;
 
-    private DesignerNewsLoginRepository loginRepository;
+    private LoginViewModel viewModel;
 
     private boolean shouldPromptForPermission = false;
 
@@ -93,7 +94,20 @@ public class DesignerNewsLogin extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_login);
 
-        loginRepository = Injection.provideDesignerNewsLoginRepository(this);
+        ViewModelFactory factory = InjectionKt.provideViewModelFactory(this);
+        viewModel = ViewModelProviders.of(this, factory).get(LoginViewModel.class);
+
+        viewModel.getUiState().observe(this, loginUiModelResult -> {
+            if (loginUiModelResult instanceof Result.Loading) {
+                showLoading();
+            } else if (loginUiModelResult instanceof Result.Error) {
+                showLoginFailed();
+            } else if (loginUiModelResult instanceof Result.Success) {
+                updateUiWithUser(((Result.Success<LoginUiModel>) loginUiModelResult).getData());
+                setResult(Activity.RESULT_OK);
+                finish();
+            }
+        });
 
         bindViews();
         if (!FabTransform.setup(this, container)) {
@@ -160,8 +174,8 @@ public class DesignerNewsLogin extends Activity {
     @Override
     @TargetApi(Build.VERSION_CODES.M)
     public void onRequestPermissionsResult(int requestCode,
-            @NonNull String[] permissions,
-            @NonNull int[] grantResults) {
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST_GET_ACCOUNTS) {
             TransitionManager.beginDelayedTransition(container);
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -183,20 +197,7 @@ public class DesignerNewsLogin extends Activity {
     }
 
     public void doLogin(View view) {
-        showLoading();
-
-        loginRepository.login(username.getText().toString(),
-                password.getText().toString(),
-                user -> {
-                    updateUiWithUser(user);
-                    setResult(Activity.RESULT_OK);
-                    finish();
-                    return Unit.INSTANCE;
-                }, error -> {
-                    Log.e(getClass().getCanonicalName(), error);
-                    showLoginFailed();
-                    return Unit.INSTANCE;
-                });
+        viewModel.login(username.getText().toString(), password.getText().toString());
     }
 
     public void signup(View view) {
@@ -222,18 +223,20 @@ public class DesignerNewsLogin extends Activity {
         return username.length() > 0 && password.length() > 0;
     }
 
-    private void updateUiWithUser(User user) {
+    private void updateUiWithUser(LoginUiModel uiModel) {
         final Toast confirmLogin = new Toast(getApplicationContext());
         final View v = LayoutInflater.from(DesignerNewsLogin.this)
                 .inflate(io.plaidapp.R.layout.toast_logged_in_confirmation, null, false);
-        ((TextView) v.findViewById(io.plaidapp.R.id.name)).setText(user.getDisplayName().toLowerCase());
+        ((TextView) v.findViewById(io.plaidapp.R.id.name)).setText(uiModel.getDisplayName());
         // need to use app context here as the activity will be destroyed shortly
-        GlideApp.with(getApplicationContext())
-                .load(user.getPortraitUrl())
-                .placeholder(io.plaidapp.R.drawable.avatar_placeholder)
-                .circleCrop()
-                .transition(withCrossFade())
-                .into((ImageView) v.findViewById(io.plaidapp.R.id.avatar));
+        if (uiModel.getPortraitUrl() != null) {
+            GlideApp.with(getApplicationContext())
+                    .load(uiModel.getPortraitUrl())
+                    .placeholder(io.plaidapp.R.drawable.avatar_placeholder)
+                    .circleCrop()
+                    .transition(withCrossFade())
+                    .into((ImageView) v.findViewById(io.plaidapp.R.id.avatar));
+        }
         v.findViewById(io.plaidapp.R.id.scrim).setBackground(ScrimUtil
                 .makeCubicGradientScrimDrawable(
                         ContextCompat.getColor(DesignerNewsLogin.this,

@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.designernews.login
+package io.plaidapp.designernews.ui.story
 
-import android.arch.lifecycle.ViewModel
-import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRepository
-
-class LoginViewModel(private val loginRepository: DesignerNewsLoginRepository) : ViewModel()
+/**
+ * Comment model for the UI
+ */
+data class CommentUiModel(
+    val body: CharSequence,
+    val timeSinceCommentCreation: String,
+    val depth: Int,
+    val author: String?,
+    val isOriginalPoster: Boolean
+)

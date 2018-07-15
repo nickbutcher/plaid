@@ -28,6 +28,9 @@ import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.core.designernews.data.api.DesignerNewsAuthTokenLocalDataSource
 import io.plaidapp.core.designernews.data.api.DesignerNewsRepository
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
+import io.plaidapp.core.designernews.login.data.LoginLocalDataSource
+import io.plaidapp.core.designernews.login.data.LoginRemoteDataSource
+import io.plaidapp.core.designernews.login.data.LoginRepository
 import io.plaidapp.core.designernews.data.comments.CommentsRepository
 import io.plaidapp.core.designernews.data.votes.DesignerNewsVotesRepository
 import io.plaidapp.core.designernews.data.votes.VotesRemoteDataSource
@@ -36,9 +39,6 @@ import io.plaidapp.core.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.core.designernews.data.users.UserRepository
 import io.plaidapp.core.designernews.domain.CommentsUseCase
 import io.plaidapp.core.designernews.domain.CommentsWithRepliesUseCase
-import io.plaidapp.core.designernews.login.data.DesignerNewsLoginLocalDataSource
-import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRemoteDataSource
-import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRepository
 import io.plaidapp.core.loggingInterceptor
 import io.plaidapp.core.provideCoroutinesContextProvider
 import io.plaidapp.core.provideSharedPreferences
@@ -52,22 +52,22 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Once we have a dependency injection framework or a service locator, this should be removed.
  */
 
-fun provideDesignerNewsLoginLocalDataSource(context: Context): DesignerNewsLoginLocalDataSource {
+fun provideDesignerNewsLoginLocalDataSource(context: Context): LoginLocalDataSource {
     val preferences = provideSharedPreferences(
             context,
-            DesignerNewsLoginLocalDataSource.DESIGNER_NEWS_PREF)
-    return DesignerNewsLoginLocalDataSource(preferences)
+            LoginLocalDataSource.DESIGNER_NEWS_PREF)
+    return LoginLocalDataSource(preferences)
 }
 
-fun provideDesignerNewsLoginRepository(context: Context): DesignerNewsLoginRepository {
-    return DesignerNewsLoginRepository.getInstance(
+fun provideDesignerNewsLoginRepository(context: Context): LoginRepository {
+    return LoginRepository.getInstance(
             provideDesignerNewsLoginLocalDataSource(context),
             provideDesignerNewsLoginRemoteDataSource(context))
 }
 
-fun provideDesignerNewsLoginRemoteDataSource(context: Context): DesignerNewsLoginRemoteDataSource {
+fun provideDesignerNewsLoginRemoteDataSource(context: Context): LoginRemoteDataSource {
     val tokenHolder = provideDesignerNewsAuthTokenLocalDataSource(context)
-    return DesignerNewsLoginRemoteDataSource(tokenHolder, provideDesignerNewsService(tokenHolder))
+    return LoginRemoteDataSource(tokenHolder, provideDesignerNewsService(tokenHolder))
 }
 
 private fun provideDesignerNewsAuthTokenLocalDataSource(

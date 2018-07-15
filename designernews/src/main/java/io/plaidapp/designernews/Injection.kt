@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.designernews.story
+package io.plaidapp.designernews
+
+import android.content.Context
+import io.plaidapp.core.designernews.provideDesignerNewsLoginRepository
+import io.plaidapp.core.provideCoroutinesContextProvider
+import io.plaidapp.designernews.ui.ViewModelFactory
 
 /**
- * Comment model for the UI
+ * File providing different dependencies.
+ *
+ * Once we have a dependency injection framework or a service locator, this should be removed.
  */
-data class CommentUiModel(
-    val body: CharSequence,
-    val timeSinceCommentCreation: String,
-    val depth: Int,
-    val author: String?,
-    val isOriginalPoster: Boolean
-)
+
+fun provideViewModelFactory(context: Context): ViewModelFactory {
+    return ViewModelFactory(
+        provideDesignerNewsLoginRepository(context),
+        provideCoroutinesContextProvider()
+    )
+}
