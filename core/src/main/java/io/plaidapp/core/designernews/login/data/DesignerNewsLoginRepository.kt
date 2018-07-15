@@ -16,6 +16,7 @@
 
 package io.plaidapp.core.designernews.login.data
 
+import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.api.model.User
 
@@ -47,20 +48,13 @@ class DesignerNewsLoginRepository(
         remoteDataSource.logout()
     }
 
-    fun login(
-        username: String,
-        password: String,
-        onSuccess: (user: User) -> Unit,
-        onError: (error: String) -> Unit
-    ) {
-        remoteDataSource.login(
-                username,
-                password,
-                { user ->
-                    setLoggedInUser(user)
-                    onSuccess(user)
-                },
-                { error -> onError(error) })
+    suspend fun login(username: String, password: String): Result<User> {
+        val result = remoteDataSource.login(username, password)
+
+        if (result is Result.Success) {
+            setLoggedInUser(result.data)
+        }
+        return result
     }
 
     private fun setLoggedInUser(loggedInUser: User) {
@@ -83,8 +77,8 @@ class DesignerNewsLoginRepository(
         ): DesignerNewsLoginRepository {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: DesignerNewsLoginRepository(
-                        localDataSource,
-                        remoteDataSource
+                    localDataSource,
+                    remoteDataSource
                 ).also { INSTANCE = it }
             }
         }

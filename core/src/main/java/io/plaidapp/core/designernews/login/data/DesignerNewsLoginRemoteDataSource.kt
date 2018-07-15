@@ -17,20 +17,18 @@
 package io.plaidapp.core.designernews.login.data
 
 import io.plaidapp.core.BuildConfig
+import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsAuthTokenLocalDataSource
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.api.model.AccessToken
 import io.plaidapp.core.designernews.data.api.model.User
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import java.io.IOException
 
 /**
  * Remote data source for Designer News login data. Knows which API calls need to be triggered
  * for login (auth and /me) and updates the auth token after authorizing.
  */
 class DesignerNewsLoginRemoteDataSource(
-    val tokenLocalDataSource: DesignerNewsAuthTokenLocalDataSource,
+    private val tokenLocalDataSource: DesignerNewsAuthTokenLocalDataSource,
     val service: DesignerNewsService
 ) {
 
@@ -41,60 +39,37 @@ class DesignerNewsLoginRemoteDataSource(
         tokenLocalDataSource.authToken = null
     }
 
-    fun login(
-        username: String,
-        password: String,
-        onSuccess: (user: User) -> Unit,
-        onError: (error: String) -> Unit
-    ) {
-        val login = service.login(buildLoginParams(username, password))
-        login.enqueue(object : Callback<AccessToken> {
-            override fun onResponse(call: Call<AccessToken>, response: Response<AccessToken>) {
-                if (response.isSuccessful && response.body() != null) {
-                    val token = response.body()?.accessToken
-                    tokenLocalDataSource.authToken = token
-                    requestUser(onSuccess, onError)
-                } else {
-                    onError("Access token retrieval failed")
-                }
+    suspend fun login(username: String, password: String): Result<User> {
+        val response = service.login(buildLoginParams(username, password)).await()
+        if (response.isSuccessful) {
+            val body = response.body()
+            if (body != null) {
+                val token = body.accessToken
+                tokenLocalDataSource.authToken = token
+                return requestUser()
             }
-
-            override fun onFailure(call: Call<AccessToken>, t: Throwable) {
-                onError("Access token retrieval failed with ${t.message}")
-            }
-        })
+        }
+        return Result.Error(IOException("Access token retrieval failed ${response.code()} ${response.message()}"))
     }
 
-    private fun requestUser(onSuccess: (user: User) -> Unit, onError: (error: String) -> Unit) {
-        val authedUser = service.getAuthedUser()
-        authedUser.enqueue(object : Callback<List<User>> {
-            override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
-                if (!response.isSuccessful || response.body() == null ||
-                        response.body()!!.isEmpty()) {
-                    onError("Failed to get user")
-                    return
-                }
-                val users = response.body()
-                if (users != null && users.isNotEmpty()) {
-                    onSuccess(users[0])
-                } else {
-                    onError("Failed to get user")
-                }
+    private suspend fun requestUser(): Result<User> {
+        val response = service.getAuthedUser().await()
+        if (response.isSuccessful) {
+            val users = response.body()
+            if (users != null && users.isNotEmpty()) {
+                return Result.Success(users[0])
             }
-
-            override fun onFailure(call: Call<List<User>>, t: Throwable) {
-                onError("Failed to get authed user ${t.message}")
-            }
-        })
+        }
+        return Result.Error(IOException("Failed to get authed user ${response.code()} ${response.message()}"))
     }
 
     private fun buildLoginParams(username: String, password: String): Map<String, String> {
         return mapOf(
-                "client_id" to BuildConfig.DESIGNER_NEWS_CLIENT_ID,
-                "client_secret" to BuildConfig.DESIGNER_NEWS_CLIENT_SECRET,
-                "grant_type" to "password",
-                "username" to username,
-                "password" to password
+            "client_id" to BuildConfig.DESIGNER_NEWS_CLIENT_ID,
+            "client_secret" to BuildConfig.DESIGNER_NEWS_CLIENT_SECRET,
+            "grant_type" to "password",
+            "username" to username,
+            "password" to password
         )
     }
 }

@@ -14,26 +14,17 @@
  * limitations under the License.
  */
 
-package io.plaidapp.designernews.login.data
+package io.plaidapp.core.designernews.login.data
 
-import android.content.Context
-import android.support.test.InstrumentationRegistry
-import io.plaidapp.core.designernews.data.api.DesignerNewsAuthTokenLocalDataSource
-import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.api.model.AccessToken
+import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.model.User
-import io.plaidapp.core.designernews.login.data.DesignerNewsLoginLocalDataSource
-import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRemoteDataSource
-import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRepository
-import org.junit.After
-import org.junit.Assert
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Mockito
-import retrofit2.mock.Calls
 import java.io.IOException
 
 /**
@@ -42,24 +33,13 @@ import java.io.IOException
  */
 class DesignerNewsLoginRepositoryTest {
 
+    private val username = "user"
+    private val pass = "pass"
     private val user = User(id = 3, displayName = "Plaida Plaidich", portraitUrl = "www")
-    private val accessToken = AccessToken("token")
 
-    private var sharedPreferences = InstrumentationRegistry.getInstrumentation().context
-            .getSharedPreferences("test", Context.MODE_PRIVATE)
-    private var localDataSource = DesignerNewsLoginLocalDataSource(sharedPreferences)
-
-    private val service = Mockito.mock(DesignerNewsService::class.java)
-    private val remoteDataSource = DesignerNewsLoginRemoteDataSource(
-            DesignerNewsAuthTokenLocalDataSource(sharedPreferences), service)
-
+    private var localDataSource = Mockito.mock(DesignerNewsLoginLocalDataSource::class.java)
+    private val remoteDataSource = Mockito.mock(DesignerNewsLoginRemoteDataSource::class.java)
     private val repository = DesignerNewsLoginRepository(localDataSource, remoteDataSource)
-
-    @After
-    fun tearDown() {
-        // cleanup the shared preferences after every test
-        sharedPreferences.edit().clear().commit()
-    }
 
     @Test
     fun isNotLoggedIn_byDefault() {
@@ -67,16 +47,15 @@ class DesignerNewsLoginRepositoryTest {
     }
 
     @Test
-    fun isLoggedIn_afterSuccessfulLogin() {
+    fun isLoggedIn_afterSuccessfulLogin() = runBlocking {
         // Given that the login will be successful
-        withLoginSuccessful()
-        var actualUser: User? = null
+        withLoginSuccessful(username, pass)
 
         // When logging in
-        repository.login("user", "pass", { it -> actualUser = it }, { Assert.fail() })
+        val result = repository.login(username, pass)
 
         // Then the success callback was called
-        assertEquals(user, actualUser)
+        assertEquals(Result.Success(user), result)
         // The user is logged in
         assertTrue(repository.isLoggedIn)
         // The user cached is the expected user
@@ -100,10 +79,10 @@ class DesignerNewsLoginRepositoryTest {
     }
 
     @Test
-    fun logout_afterLogin() {
+    fun logout_afterLogin() = runBlocking {
         // Given a logged in user
-        withLoginSuccessful()
-        repository.login("user", "pass", { it -> assertEquals(user, it) }, { Assert.fail() })
+        withLoginSuccessful(username, pass)
+        repository.login(username, pass)
 
         // When logging out
         repository.logout()
@@ -115,29 +94,28 @@ class DesignerNewsLoginRepositoryTest {
     }
 
     @Test
-    fun isNotLoggedIn_afterFailedLogin() {
+    fun isNotLoggedIn_afterFailedLogin() = runBlocking {
         // Given that the login will fail
-        withLoginFailed()
-        var errorCalled = false
+        withLoginFailed(username, pass)
 
         // When logging in
-        repository.login("user", "pass", { Assert.fail() }, { errorCalled = true })
+        val result = repository.login(username, pass)
 
         // Then the error callback was called
-        assertTrue(errorCalled)
+        assertTrue(result is Result.Error)
         // The user is not logged in
         assertFalse(repository.isLoggedIn)
         // The user cached null
         assertNull(repository.user)
     }
 
-    private fun withLoginSuccessful() {
-        Mockito.`when`(service.login(Mockito.anyMap())).thenReturn(Calls.response(accessToken))
-        Mockito.`when`(service.getAuthedUser()).thenReturn(Calls.response(arrayListOf(user)))
+    private fun withLoginSuccessful(username: String, pass: String) = runBlocking {
+        val result = Result.Success(user)
+        Mockito.`when`(remoteDataSource.login(username, pass)).thenReturn(result)
     }
 
-    private fun withLoginFailed() {
-        Mockito.`when`(service.login(Mockito.anyMap()))
-                .thenReturn(Calls.failure(IOException("test")))
+    private fun withLoginFailed(username: String, pass: String) = runBlocking {
+        Mockito.`when`(remoteDataSource.login(username, pass))
+            .thenReturn(Result.Error(IOException("error")))
     }
 }

@@ -72,11 +72,11 @@ interface DesignerNewsService {
 
     @EnvelopePayload("users")
     @GET("api/v2/me")
-    fun getAuthedUser(): Call<List<User>>
+    fun getAuthedUser(): Deferred<Response<List<User>>>
 
     @FormUrlEncoded
     @POST("oauth/token")
-    fun login(@FieldMap loginParams: Map<String, String>): Call<AccessToken>
+    fun login(@FieldMap loginParams: Map<String, String>): Deferred<Response<AccessToken>>
 
     @EnvelopePayload("story")
     @POST("api/v2/stories/{id}/upvote")
