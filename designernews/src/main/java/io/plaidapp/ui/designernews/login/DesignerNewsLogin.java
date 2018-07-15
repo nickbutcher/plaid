@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.designernews;
+package io.plaidapp.ui.designernews.login;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
@@ -72,7 +72,6 @@ public class DesignerNewsLogin extends Activity {
 
     private static final int PERMISSIONS_REQUEST_GET_ACCOUNTS = 0;
 
-    private boolean isDismissing = false;
     private ViewGroup container;
     private TextView title;
     private TextInputLayout usernameLabel;
@@ -206,7 +205,6 @@ public class DesignerNewsLogin extends Activity {
     }
 
     public void dismiss(View view) {
-        isDismissing = true;
         setResult(Activity.RESULT_CANCELED);
         finishAfterTransition();
     }
