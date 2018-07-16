@@ -56,7 +56,7 @@
             android:layout_marginStart="@dimen/spacing_micro"
             app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
-            <AutoCompleteTextView
+            <EditText
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -66,14 +66,6 @@
                 android:selectAllOnFocus="true" />
 
         </android.support.design.widget.TextInputLayout>
-
-        <CheckBox
-            android:id="@+id/permission_primer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_normal"
-            android:text="@string/get_accounts_permission_primer_message"
-            style="@style/Widget.Plaid.HintCheckBox" />
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/password_float_label"
