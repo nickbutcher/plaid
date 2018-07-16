@@ -42,7 +42,6 @@
 
     <!-- designer news login -->
     <string name="username">Username</string>
-    <string name="get_accounts_permission_primer_message">Autocomplete email addresses</string>
     <string name="password">Password</string>
     <string name="sign_up">Sign up</string>
     <string name="dn_login_action">Log in</string>

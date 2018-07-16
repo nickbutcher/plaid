@@ -15,5 +15,3 @@ This behavior is implemented [here](https://github.com/nickbutcher/plaid/blob/ma
 - Your **username**, **user id** & **avatar url** are stored to be presented in the UI later.
 
 This behavior is implemented [here](https://github.com/nickbutcher/plaid/blob/master/app/src/main/java/io/plaidapp/data/prefs/DesignerNewsPrefs.java).
-
-To ease login to Designer News, Plaid asks to read the accounts stored on your device, this is presented to you as requesting access to your contacts. This is solely used to auto-complete email addresses saved on your device, the app does not in fact read your contacts or send this information off-device. You can verify this behavior [here](https://github.com/nickbutcher/plaid/blob/master/app/src/main/java/io/plaidapp/ui/DesignerNewsLogin.java).
