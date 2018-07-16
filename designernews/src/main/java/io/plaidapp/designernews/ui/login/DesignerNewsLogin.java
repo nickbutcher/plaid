@@ -16,19 +16,11 @@
 
 package io.plaidapp.designernews.ui.login;
 
-import android.Manifest;
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
@@ -36,16 +28,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.transition.TransitionManager;
-import android.util.Patterns;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -63,21 +52,14 @@ import io.plaidapp.designernews.InjectionKt;
 import io.plaidapp.designernews.R;
 import io.plaidapp.designernews.ui.ViewModelFactory;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 public class DesignerNewsLogin extends AppCompatActivity {
 
-    private static final int PERMISSIONS_REQUEST_GET_ACCOUNTS = 0;
-
     private ViewGroup container;
     private TextView title;
     private TextInputLayout usernameLabel;
-    private AutoCompleteTextView username;
-    private CheckBox permissionPrimer;
+    private EditText username;
     private TextInputLayout passwordLabel;
     private EditText password;
     private FrameLayout actionsContainer;
@@ -86,8 +68,6 @@ public class DesignerNewsLogin extends AppCompatActivity {
     private ProgressBar loading;
 
     private LoginViewModel viewModel;
-
-    private boolean shouldPromptForPermission = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +97,6 @@ public class DesignerNewsLogin extends AppCompatActivity {
         }
 
         loading.setVisibility(View.GONE);
-        setupAccountAutocomplete();
         username.addTextChangedListener(loginFieldWatcher);
         // the primer checkbox messes with focus order so force it
         username.setOnEditorActionListener((v, actionId, event) -> {
@@ -142,7 +121,6 @@ public class DesignerNewsLogin extends AppCompatActivity {
         title = findViewById(R.id.dialog_title);
         usernameLabel = findViewById(R.id.username_float_label);
         username = findViewById(R.id.username);
-        permissionPrimer = findViewById(R.id.permission_primer);
         passwordLabel = findViewById(R.id.password_float_label);
         password = findViewById(R.id.password);
         actionsContainer = findViewById(R.id.actions_container);
@@ -152,48 +130,8 @@ public class DesignerNewsLogin extends AppCompatActivity {
     }
 
     @Override
-    @SuppressLint("NewApi")
-    public void onEnterAnimationComplete() {
-        /* Postpone some of the setup steps so that we can run it after the enter transition (if
-        there is one). Otherwise we may show the permissions dialog or account dropdown during the
-        enter animation which is jarring. */
-        if (shouldPromptForPermission) {
-            requestPermissions(new String[]{Manifest.permission.GET_ACCOUNTS},
-                    PERMISSIONS_REQUEST_GET_ACCOUNTS);
-            shouldPromptForPermission = false;
-        }
-        username.setOnFocusChangeListener((v, hasFocus) -> maybeShowAccounts());
-        maybeShowAccounts();
-    }
-
-    @Override
     public void onBackPressed() {
         dismiss(null);
-    }
-
-    @Override
-    @TargetApi(Build.VERSION_CODES.M)
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == PERMISSIONS_REQUEST_GET_ACCOUNTS) {
-            TransitionManager.beginDelayedTransition(container);
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                setupAccountAutocomplete();
-                username.requestFocus();
-                username.showDropDown();
-            } else {
-                // if permission was denied check if we should ask again in the future (i.e. they
-                // did not check 'never ask again')
-                if (shouldShowRequestPermissionRationale(Manifest.permission.GET_ACCOUNTS)) {
-                    setupPermissionPrimer();
-                } else {
-                    // denied & shouldn't ask again. deal with it (•_•) ( •_•)>⌐■-■ (⌐■_■)
-                    TransitionManager.beginDelayedTransition(container);
-                    permissionPrimer.setVisibility(View.GONE);
-                }
-            }
-        }
     }
 
     public void doLogin(View view) {
@@ -208,15 +146,6 @@ public class DesignerNewsLogin extends AppCompatActivity {
     public void dismiss(View view) {
         setResult(Activity.RESULT_CANCELED);
         finishAfterTransition();
-    }
-
-    private void maybeShowAccounts() {
-        if (username.hasFocus()
-                && username.isAttachedToWindow()
-                && username.getAdapter() != null
-                && username.getAdapter().getCount() > 0) {
-            username.showDropDown();
-        }
     }
 
     boolean isLoginValid() {
@@ -273,7 +202,6 @@ public class DesignerNewsLogin extends AppCompatActivity {
         TransitionManager.beginDelayedTransition(container);
         title.setVisibility(View.GONE);
         usernameLabel.setVisibility(View.GONE);
-        permissionPrimer.setVisibility(View.GONE);
         passwordLabel.setVisibility(View.GONE);
         actionsContainer.setVisibility(View.GONE);
         loading.setVisibility(View.VISIBLE);
@@ -286,41 +214,5 @@ public class DesignerNewsLogin extends AppCompatActivity {
         passwordLabel.setVisibility(View.VISIBLE);
         actionsContainer.setVisibility(View.VISIBLE);
         loading.setVisibility(View.GONE);
-    }
-
-    @SuppressLint("NewApi")
-    private void setupAccountAutocomplete() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS) ==
-                PackageManager.PERMISSION_GRANTED) {
-            permissionPrimer.setVisibility(View.GONE);
-            final Account[] accounts = AccountManager.get(this).getAccounts();
-            final Set<String> emailSet = new HashSet<>();
-            for (Account account : accounts) {
-                if (Patterns.EMAIL_ADDRESS.matcher(account.name).matches()) {
-                    emailSet.add(account.name);
-                }
-            }
-            username.setAdapter(new ArrayAdapter<>(this,
-                    R.layout.account_dropdown_item, new ArrayList<>(emailSet)));
-        } else {
-            if (shouldShowRequestPermissionRationale(Manifest.permission.GET_ACCOUNTS)) {
-                setupPermissionPrimer();
-            } else {
-                permissionPrimer.setVisibility(View.GONE);
-                shouldPromptForPermission = true;
-            }
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    private void setupPermissionPrimer() {
-        permissionPrimer.setChecked(false);
-        permissionPrimer.setVisibility(View.VISIBLE);
-        permissionPrimer.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                requestPermissions(new String[]{Manifest.permission.GET_ACCOUNTS},
-                        PERMISSIONS_REQUEST_GET_ACCOUNTS);
-            }
-        });
     }
 }
