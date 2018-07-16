@@ -21,7 +21,6 @@ references:
 jobs:
   build:
     <<: *config_android
-
     steps:
       - checkout
       - restore_cache:
@@ -45,11 +44,20 @@ jobs:
 
   test_instrumented:
     <<: *config_gcloud
-
     steps:
       - run:
           name: Setup Google Cloud auth
           command: ls
+#          command: scripts/ftl_setup.sh
+      - run:
+          name: Run tests on Firebase Test Lab and download results
+          command: ls
+#          command: scripts/ftl_run_tests.sh $CIRCLE_BUILD_NUM firebase_test_results
+          when: always
+      - store_artifacts:
+          path: firebase_test_results
+      - store_test_Results:
+          path: firebase_test_results
 
 workflows:
   version: 2
