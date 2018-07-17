@@ -26,7 +26,7 @@ import android.support.customtabs.CustomTabsSession
 import android.support.v4.content.ContextCompat
 import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.R
-import io.plaidapp.core.designernews.data.api.UpvoteStoryService
+import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
 
 /**
  * Helpers to start activities in a modularized world.
@@ -90,7 +90,7 @@ object Activities {
              */
             fun customTabIntent(
                 context: Context,
-                story: io.plaidapp.core.designernews.data.api.model.Story,
+                story: io.plaidapp.core.designernews.data.stories.model.Story,
                 session: CustomTabsSession?
             ): CustomTabsIntent.Builder {
                 val upvoteStory = Intent(context, UpvoteStoryService::class.java)

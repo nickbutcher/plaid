@@ -18,9 +18,9 @@ package io.plaidapp.core.designernews.data.users
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.api.errorResponseBody
-import io.plaidapp.core.designernews.data.api.model.User
-import io.plaidapp.core.designernews.data.api.users
+import io.plaidapp.core.designernews.errorResponseBody
+import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.core.designernews.users
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
@@ -68,7 +68,9 @@ class UserRemoteDataSourceTest {
     }
 
     private fun withUsersError(ids: String) {
-        val result = Response.error<List<User>>(400, errorResponseBody)
+        val result = Response.error<List<User>>(400,
+            errorResponseBody
+        )
         Mockito.`when`(service.getUsers(ids)).thenReturn(CompletableDeferred(result))
     }
 }

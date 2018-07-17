@@ -28,7 +28,7 @@ import java.util.List;
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchService;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.designernews.Injection;
-import io.plaidapp.core.designernews.data.api.DesignerNewsRepository;
+import io.plaidapp.core.designernews.data.stories.DesignerNewsRepository;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

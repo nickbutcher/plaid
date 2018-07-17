@@ -24,7 +24,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 
 import io.plaidapp.designernews.R
-import io.plaidapp.core.designernews.data.api.model.Comment
+import io.plaidapp.core.designernews.domain.model.Comment
 
 /**
  * View holder for a Designer News comment reply.

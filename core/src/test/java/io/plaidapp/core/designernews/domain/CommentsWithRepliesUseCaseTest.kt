@@ -17,13 +17,13 @@
 package io.plaidapp.core.designernews.domain
 
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.api.parentCommentResponse
-import io.plaidapp.core.designernews.data.api.parentCommentWithReplies
-import io.plaidapp.core.designernews.data.api.parentCommentWithRepliesWithoutReplies
-import io.plaidapp.core.designernews.data.api.reply1
-import io.plaidapp.core.designernews.data.api.replyResponse1
-import io.plaidapp.core.designernews.data.api.replyResponse2
-import io.plaidapp.core.designernews.data.api.replyWithReplies1
+import io.plaidapp.core.designernews.parentCommentResponse
+import io.plaidapp.core.designernews.parentCommentWithReplies
+import io.plaidapp.core.designernews.parentCommentWithRepliesWithoutReplies
+import io.plaidapp.core.designernews.reply1
+import io.plaidapp.core.designernews.replyResponse1
+import io.plaidapp.core.designernews.replyResponse2
+import io.plaidapp.core.designernews.replyWithReplies1
 import io.plaidapp.core.designernews.data.comments.CommentsRepository
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
@@ -82,7 +82,10 @@ class CommentsWithRepliesUseCaseTest {
         Mockito.`when`(repository.getComments(parentIds)).thenReturn(resultParent)
         // When requesting replies for ids 11 and 12 from repository we get the children
         val childrenIds = listOf(11L, 12L)
-        val resultChildren = Result.Success(listOf(replyResponse1, replyResponse2))
+        val resultChildren = Result.Success(listOf(
+            replyResponse1,
+            replyResponse2
+        ))
         Mockito.`when`(repository.getComments(childrenIds)).thenReturn(resultChildren)
 
         // When getting the comments from the useCase
