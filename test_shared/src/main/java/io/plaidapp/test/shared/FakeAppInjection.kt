@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core
+package io.plaidapp.test.shared
 
 import io.plaidapp.core.data.CoroutinesContextProvider
 import kotlinx.coroutines.experimental.Unconfined

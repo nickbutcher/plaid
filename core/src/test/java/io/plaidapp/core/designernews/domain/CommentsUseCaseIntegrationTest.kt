@@ -37,7 +37,7 @@ import io.plaidapp.core.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.core.designernews.data.users.UserRepository
 import io.plaidapp.core.designernews.provideCommentsUseCase
 import io.plaidapp.core.designernews.provideCommentsWithRepliesUseCase
-import io.plaidapp.core.provideFakeCoroutinesContextProvider
+import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
