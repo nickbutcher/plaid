@@ -76,6 +76,7 @@ import io.plaidapp.core.util.HtmlUtils;
 import io.plaidapp.core.util.ImeUtils;
 import io.plaidapp.core.util.ViewUtils;
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper;
+import io.plaidapp.core.util.event.Event;
 import io.plaidapp.core.util.glide.GlideApp;
 import io.plaidapp.core.util.glide.ImageSpanTarget;
 import io.plaidapp.designernews.InjectionKt;
@@ -83,9 +84,6 @@ import io.plaidapp.designernews.R;
 import io.plaidapp.designernews.ui.login.LoginActivity;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import kotlin.Unit;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -149,6 +147,8 @@ public class StoryActivity extends AppCompatActivity {
         viewModel.getUiModel().observe(this,
                 storyUiModel -> setupComments(storyUiModel.getComments()));
 
+        viewModel.getShowErrorMessage().observe(this, this::showError);
+
         fab.setOnClickListener(fabClick);
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this);
         markdown = new Bypass(getResources().getDisplayMetrics(), new Bypass.Options()
@@ -204,6 +204,12 @@ public class StoryActivity extends AppCompatActivity {
 
         customTab = new CustomTabActivityHelper();
         customTab.setConnectionCallback(customTabConnect);
+    }
+
+    private void showError(Event<Integer> event) {
+        if (!event.getConsumed()) {
+            Toast.makeText(getApplicationContext(), event.consume(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void setupComments(List<Comment> comments) {
@@ -535,33 +541,29 @@ public class StoryActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(enterComment.getText())) return;
                 enterComment.setEnabled(false);
                 postComment.setEnabled(false);
-                addComment();
+                postComment();
             } else {
                 needsLogin(postComment, 0);
             }
             enterComment.clearFocus();
         });
         enterComment.setOnFocusChangeListener(enterCommentFocus);
-        // hide the comment view until we know that posting a DN comment works
-        enterCommentView.setVisibility(View.GONE);
         return enterCommentView;
     }
 
-    private void addComment() {
-        final Call<Comment> comment = designerNewsPrefs.getApi()
-                .comment(story.getId(), enterComment.getText().toString());
-        comment.enqueue(new Callback<Comment>() {
-            @Override
-            public void onResponse(Call<Comment> call, Response<Comment> response) {
-                Comment responseComment = response.body();
-                commentAdded(responseComment);
-            }
-
-            @Override
-            public void onFailure(Call<Comment> call, Throwable t) {
-                commentAddingFailed();
-            }
-        });
+    private void postComment() {
+        viewModel.storyReplyRequested(enterComment.getText());
+//        postCommentUseCase.postStoryComment(comment, story.getId(),
+//                it -> {
+//                    if (it instanceof Result.Success) {
+//                        Log.d("flo", "Comment added");
+//                        Comment responseComment = response.body();
+//                        commentAdded(responseComment);
+//                    } else {
+//                        commentAddingFailed();
+//                    }
+//                    return Unit.INSTANCE;
+//                });
     }
 
     private void commentAddingFailed() {
@@ -876,20 +878,17 @@ public class StoryActivity extends AppCompatActivity {
         }
 
         private void replyToComment(Long commentId, String reply) {
-            final Call<Comment> replyToComment = designerNewsPrefs.getApi()
-                    .replyToComment(commentId, reply);
-            replyToComment.enqueue(new Callback<Comment>() {
-                @Override
-                public void onResponse(Call<Comment> call, Response<Comment> response) {
-
-                }
-
-                @Override
-                public void onFailure(Call<Comment> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(),
-                            "Failed to post comment :(", Toast.LENGTH_SHORT).show();
-                }
-            });
+            viewModel.commentReplyRequested(reply, commentId);
+//            postReplyUseCase.postReply(reply, commentId,
+//                    it -> {
+//                        if (it instanceof Result.Success) {
+//                            Log.d("flo", "reply posted");
+//                        } else {
+//                            Toast.makeText(getApplicationContext(),
+//                                    "Failed to post comment :(", Toast.LENGTH_SHORT).show();
+//                        }
+//                        return Unit.INSTANCE;
+//                    });
         }
 
         private void handleCommentVotesClick(CommentReplyViewHolder holder,

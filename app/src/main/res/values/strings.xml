@@ -49,4 +49,9 @@
     <string name="share">share</string>
     <string name="prospects_cant_post">Sorry but prospects cannot comment :(</string>
     <string name="bad_dribbble_shot_url">Can\'t open that link :(</string>
+
+
+    <!--designer news screen-->
+    <string name="error_posting_reply">Failed to post comment :("</string>
+
 </resources>

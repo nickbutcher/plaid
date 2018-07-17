@@ -19,17 +19,24 @@ package io.plaidapp.designernews.ui.story
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.support.annotation.StringRes
+import android.util.Log
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.domain.model.Comment
+import io.plaidapp.core.util.event.Event
+import io.plaidapp.core.util.exhaustive
 import io.plaidapp.designernews.domain.CommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
+import io.plaidapp.designernews.domain.PostCommentUseCase
+import io.plaidapp.designernews.domain.PostReplyUseCase
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
+import io.plaidapp.R as appR
 
 /**
  * [ViewModel] responsible for providing data for [StoryActivity] and for handling user actions.
@@ -38,11 +45,17 @@ import kotlinx.coroutines.experimental.withContext
 class StoryViewModel(
     storyId: Long,
     getStoryUseCase: GetStoryUseCase,
+    private var postComment: PostCommentUseCase,
+    private var postReply: PostReplyUseCase,
     private val commentsWithRepliesAndUsers: CommentsWithRepliesAndUsersUseCase,
     private val upvoteStoryUseCase: UpvoteStoryUseCase,
     private val upvoteCommentUseCase: UpvoteCommentUseCase,
     private val contextProvider: CoroutinesContextProvider
 ) : ViewModel() {
+
+    private val _showErrorMessage = MutableLiveData<Event<Int>>()
+    val showErrorMessage: LiveData<Event<Int>>
+        get() = _showErrorMessage
 
     private val _uiModel = MutableLiveData<StoryUiModel>()
     val uiModel: LiveData<StoryUiModel>
@@ -62,6 +75,28 @@ class StoryViewModel(
     }
 
     private val parentJob = Job()
+
+    fun commentReplyRequested(text: CharSequence, commentId: Long) =
+        launch(contextProvider.io, parent = parentJob) {
+            val result = postReply(text, commentId)
+            when (result) {
+                is Result.Success -> {
+                    Log.d("flo", "Reply posted")
+                }
+                is Result.Error -> showErrorMessage(appR.string.error_posting_reply)
+            }.exhaustive
+        }
+
+    fun storyReplyRequested(text: CharSequence) =
+        launch(contextProvider.io, parent = parentJob) {
+            val result = postComment(text.toString(), story.id)
+            when (result) {
+                is Result.Success -> {
+                    Log.d("flo", "Story reply posted")
+                }
+                is Result.Error -> showErrorMessage(appR.string.error_posting_reply)
+            }.exhaustive
+        }
 
     fun storyUpvoteRequested(storyId: Long, onResult: (result: Result<Unit>) -> Unit) = launch(
         context = contextProvider.io,
@@ -96,6 +131,11 @@ class StoryViewModel(
     private fun emitUiModel(comments: List<Comment>) =
         launch(contextProvider.main, parent = parentJob) {
             _uiModel.value = StoryUiModel(comments)
+        }
+
+    private fun showErrorMessage(@StringRes message: Int) =
+        launch(contextProvider.main, parent = parentJob) {
+            _showErrorMessage.value = Event(message)
         }
 }
 

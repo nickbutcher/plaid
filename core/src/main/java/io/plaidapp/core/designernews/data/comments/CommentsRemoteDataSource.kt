@@ -18,6 +18,7 @@ package io.plaidapp.core.designernews.data.comments
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
+import io.plaidapp.core.designernews.data.api.model.NewCommentRequest
 import io.plaidapp.core.designernews.data.comments.model.CommentResponse
 import io.plaidapp.core.util.safeApiCall
 import java.io.IOException
@@ -47,6 +48,32 @@ class CommentsRemoteDataSource(private val service: DesignerNewsService) {
         return Result.Error(
             IOException("Error getting comments ${response.code()} ${response.message()}")
         )
+    }
+
+    /**
+     * Post a comment to a story or as a reply to another comment. Either the parent comment id or the story need to be present.
+     */
+    suspend fun comment(
+        body: CharSequence,
+        parentCommentId: Long?,
+        storyId: Long?,
+        userId: Long
+    ): Result<CommentResponse> {
+        check(
+            parentCommentId != null || storyId != null
+        ) { "Unable to post comment. Either parent comment or the story need to be present" }
+        val sid = storyId?.let { "$storyId" }
+        val request = NewCommentRequest(
+            body = body, parent_comment = "$parentCommentId", story = sid, user = "$userId"
+        )
+        val response = service.commentV2(request).await()
+        if (response.isSuccessful) {
+            val body = response.body()
+            if (body != null && !body.comments.isEmpty()) {
+                return Result.Success(body.comments[0])
+            }
+        }
+        return Result.Error(IOException("Error posting comment ${response.code()} ${response.message()}"))
     }
 
     companion object {

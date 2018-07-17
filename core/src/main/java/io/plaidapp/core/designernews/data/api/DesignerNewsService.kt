@@ -19,6 +19,8 @@ package io.plaidapp.core.designernews.data.api
 import io.plaidapp.core.data.api.EnvelopePayload
 import io.plaidapp.core.designernews.data.comments.model.CommentResponse
 import io.plaidapp.core.designernews.data.login.model.AccessToken
+import io.plaidapp.core.designernews.data.api.model.NewCommentRequest
+import io.plaidapp.core.designernews.data.comments.model.PostCommentResponse
 import io.plaidapp.core.designernews.data.poststory.model.NewStoryRequest
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
@@ -100,6 +102,10 @@ interface DesignerNewsService {
         @Path("id") commentId: Long,
         @Field("comment[body]") comment: String
     ): Call<Comment>
+
+    @Headers("Content-Type: application/vnd.api+json")
+    @POST("api/v2/comments")
+    fun commentV2(@Body comment: NewCommentRequest): Deferred<Response<PostCommentResponse>>
 
     @Headers("Content-Type: application/vnd.api+json")
     @POST("api/v2/comment_upvotes")
