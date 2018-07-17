@@ -17,14 +17,11 @@
 package io.plaidapp.core.designernews.login.ui
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
-import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.model.User
 import io.plaidapp.core.designernews.data.api.provideFakeCoroutinesContextProvider
 import io.plaidapp.core.designernews.login.data.LoginRepository
 import io.plaidapp.core.designernews.util.LiveDataTestUtil
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.Unconfined
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -32,8 +29,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.never
-import org.mockito.Mockito.verify
 import java.io.IOException
 
 /**
@@ -67,35 +62,6 @@ class LoginViewModelTest {
 
         // When logging in
         viewModel.login(username, pass)
-
-        // Then the correct UI model is created
-        val event = LiveDataTestUtil.getValue(viewModel.uiState)
-        assertEquals(Result.Success(uiModel), event)
-    }
-
-    @Test
-    fun loginTriggeredOnce_whenMultipleRequestsSimultaneously() = runBlocking {
-        // don't force the jobs to be synchronous
-        val viewModel = LoginViewModel(loginRepo, (CoroutinesContextProvider(main = Unconfined, io = CommonPool)))
-        // Given that the repository returns a user
-        val user = User(
-            id = 3,
-            firstName = "Plaida",
-            lastName = "Plaidich",
-            displayName = "Plaida Plaidich",
-            portraitUrl = "www"
-        )
-        val uiModel = LoginUiModel("plaida plaidich", "www")
-        Mockito.`when`(loginRepo.login(username, pass)).thenReturn(Result.Success(user))
-        Mockito.`when`(loginRepo.login("test", pass)).thenReturn(Result.Success(user))
-
-        // When logging in multiple times
-        viewModel.login(username, pass)
-        viewModel.login("test", pass)
-
-        // Then the login is only triggered once
-        verify(loginRepo).login(username, pass)
-        verify(loginRepo, never()).login("test", pass)
 
         // Then the correct UI model is created
         val event = LiveDataTestUtil.getValue(viewModel.uiState)
