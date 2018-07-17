@@ -38,7 +38,7 @@ buildscript {
             'espresso'          : '3.0.2',
             'mockito'           : '2.19.0',
             'ktlint'            : '0.24.0',
-            'chrashlytics'      : '2.9.4',
+            'crashlytics'      : '2.9.4',
             'googleServices'    : '4.0.1',
             'fabric'            : '1.25.4'
     ]
