@@ -43,4 +43,7 @@ repositories {
 
 dependencies {
     implementation project(':app')
+
+    api "android.arch.lifecycle:viewmodel:${versions.lifecycle}"
+    api "android.arch.lifecycle:extensions:${versions.lifecycle}"
 }
