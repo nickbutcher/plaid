@@ -18,9 +18,9 @@ package io.plaidapp.core.designernews.data.comments
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.api.errorResponseBody
-import io.plaidapp.core.designernews.data.api.model.CommentResponse
-import io.plaidapp.core.designernews.data.api.repliesResponses
+import io.plaidapp.core.designernews.errorResponseBody
+import io.plaidapp.core.designernews.data.comments.model.CommentResponse
+import io.plaidapp.core.designernews.repliesResponses
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
@@ -69,7 +69,9 @@ class DesignerNewsCommentsRemoteDataSourceTest {
     @Test
     fun getComments_whenRequestFailed() = runBlocking {
         // Given that the service responds with failure
-        val result = Response.error<List<CommentResponse>>(400, errorResponseBody)
+        val result = Response.error<List<CommentResponse>>(400,
+            errorResponseBody
+        )
         Mockito.`when`(service.getComments("1")).thenReturn(CompletableDeferred(result))
 
         // When getting the list of comments
