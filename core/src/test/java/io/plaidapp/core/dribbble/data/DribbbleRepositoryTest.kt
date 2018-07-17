@@ -19,7 +19,7 @@ package io.plaidapp.core.dribbble.data
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchRemoteDataSource
-import io.plaidapp.core.provideFakeCoroutinesContextProvider
+import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull

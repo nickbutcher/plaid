@@ -66,8 +66,9 @@ repositories {
 
 dependencies {
     api project(':core')
-    api project(':bypass')
+
     implementation project(':search')
+
     implementation "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
 }
 
