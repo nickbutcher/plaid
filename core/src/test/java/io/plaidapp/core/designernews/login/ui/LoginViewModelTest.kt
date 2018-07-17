@@ -19,9 +19,9 @@ package io.plaidapp.core.designernews.login.ui
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.model.User
-import io.plaidapp.core.designernews.data.api.provideFakeCoroutinesContextProvider
 import io.plaidapp.core.designernews.login.data.LoginRepository
 import io.plaidapp.core.designernews.util.LiveDataTestUtil
+import io.plaidapp.core.provideFakeCoroutinesContextProvider
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
