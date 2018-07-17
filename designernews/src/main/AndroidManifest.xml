@@ -69,11 +69,11 @@
         </activity>
 
         <service
-            android:name="io.plaidapp.core.designernews.data.api.PostStoryService"
+            android:name="io.plaidapp.core.designernews.data.poststory.PostStoryService"
             android:exported="false" />
 
         <service
-            android:name="io.plaidapp.core.designernews.data.api.UpvoteStoryService"
+            android:name="io.plaidapp.core.designernews.data.votes.UpvoteStoryService"
             android:exported="false" />
     </application>
 

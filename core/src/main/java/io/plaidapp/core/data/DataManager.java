@@ -22,7 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import io.plaidapp.core.data.prefs.SourceManager;
 import io.plaidapp.core.designernews.Injection;
-import io.plaidapp.core.designernews.data.api.DesignerNewsRepository;
+import io.plaidapp.core.designernews.data.stories.DesignerNewsRepository;
 import io.plaidapp.core.dribbble.DribbbleInjection;
 import io.plaidapp.core.dribbble.data.DribbbleRepository;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
