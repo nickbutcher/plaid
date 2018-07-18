@@ -52,10 +52,10 @@ class ShareDribbbleImageTask extends AsyncTask<Void, Void, File> {
         final Images.ImageSize size = shot.getImages().bestSize();
         try {
             return Glide.with(activity)
-                 .asFile()
-                 .load(url)
-                 .submit(size.getWidth(), size.getHeight())
-                 .get();
+                        .asFile()
+                        .load(url)
+                        .submit(size.getWidth(), size.getHeight())
+                        .get();
         } catch (Exception ex) {
             Log.w("SHARE", "Sharing " + url + " failed", ex);
             return null;
