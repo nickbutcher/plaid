@@ -89,6 +89,7 @@ dependencies {
     api "android.arch.lifecycle:viewmodel:${versions.lifecycle}"
     api "android.arch.lifecycle:extensions:${versions.lifecycle}"
 
+    testImplementation project(':test_shared')
     testImplementation "junit:junit:${versions.junit}"
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
     testImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
