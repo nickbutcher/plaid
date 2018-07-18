@@ -31,8 +31,6 @@ data class Shot(
     @SerializedName("id") override val id: Long,
     @SerializedName("title") override val title: String,
     @SerializedName("description") val description: String,
-    @SerializedName("width") val width: Int? = null,
-    @SerializedName("height") val height: Int? = null,
     @SerializedName("images") val images: Images,
     @SerializedName("views_count") val viewsCount: Long = 0L,
     @SerializedName("likes_count") val likesCount: Long = 0L,
