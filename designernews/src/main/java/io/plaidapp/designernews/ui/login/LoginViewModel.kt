@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.ui.login
+package io.plaidapp.designernews.ui.login
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData

@@ -93,7 +93,6 @@ dependencies {
     testImplementation "junit:junit:${versions.junit}"
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
     testImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
-    testImplementation "android.arch.core:core-testing:${versions.lifecycle}"
 
     androidTestImplementation "com.android.support.test:runner:${versions.test_runner}"
     androidTestImplementation "com.android.support.test:rules:${versions.test_rules}"
