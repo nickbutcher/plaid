@@ -30,7 +30,7 @@
     <application>
 
         <activity
-            android:name=".ui.DribbbleShotActivity"
+            android:name=".ui.shot.DribbbleShotActivity"
             android:parentActivityName="io.plaidapp.ui.HomeActivity"
             android:theme="@style/Plaid.Translucent.Dribbble.Shot" />
 

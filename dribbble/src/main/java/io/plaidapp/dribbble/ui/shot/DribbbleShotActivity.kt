@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package io.plaidapp.dribbble.ui
+package io.plaidapp.dribbble.ui.shot
 
 import android.animation.ValueAnimator
 import android.app.Activity
 import android.app.assist.AssistContent
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.AnimatedVectorDrawable
@@ -26,6 +27,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.support.customtabs.CustomTabsIntent
+import android.support.v4.app.ShareCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
@@ -40,7 +42,6 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.net.toUri
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -57,9 +58,12 @@ import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.core.util.HtmlUtils
 import io.plaidapp.core.util.ViewUtils
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
+import io.plaidapp.core.util.event.EventObserver
 import io.plaidapp.core.util.glide.GlideApp
 import io.plaidapp.core.util.glide.getBitmap
 import io.plaidapp.dribbble.R
+import io.plaidapp.dribbble.domain.ShareShotInfo
+import io.plaidapp.dribbble.provideViewModelFactory
 import java.text.NumberFormat
 
 /**
@@ -82,10 +86,12 @@ class DribbbleShotActivity : AppCompatActivity() {
     private var imageView: ParallaxScrimageView? = null
     private var shotSpacer: View? = null
 
+    private lateinit var viewModel: DribbbleShotViewModel
     private var shot: Shot? = null
     private var largeAvatarSize: Int = 0
 
-    private val shotClick = OnClickListener { openLink(shot?.url) }
+    // TODO invoke with data binding
+    private val shotClick = OnClickListener { viewModel.viewShotRequested() }
 
     private val shotLoadListener = object : RequestListener<Drawable> {
         override fun onResourceReady(
@@ -132,6 +138,11 @@ class DribbbleShotActivity : AppCompatActivity() {
         setContentView(R.layout.activity_dribbble_shot)
         bindResources()
 
+        val factory = provideViewModelFactory(this)
+        viewModel = ViewModelProviders.of(this, factory).get(DribbbleShotViewModel::class.java)
+        viewModel.openLink.observe(this, EventObserver { openLink(it) })
+        viewModel.shareShot.observe(this, EventObserver { shareShot(it) })
+
         bodyScroll?.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             imageView?.offset = -scrollY
         }
@@ -145,6 +156,7 @@ class DribbbleShotActivity : AppCompatActivity() {
         if (intent.hasExtra(Activities.Dribbble.Shot.EXTRA_SHOT)) {
             shot = intent.getParcelableExtra(Activities.Dribbble.Shot.EXTRA_SHOT)
             bindShot()
+            viewModel.shot = shot // todo remove this when vm retrieves shot from repo
         } else {
             finishAfterTransition()
         }
@@ -247,7 +259,7 @@ class DribbbleShotActivity : AppCompatActivity() {
         }
         share?.setOnClickListener {
             (share!!.compoundDrawables[1] as AnimatedVectorDrawable).start()
-            ShareDribbbleImageTask(this@DribbbleShotActivity, shot).execute()
+            viewModel.shareShotRequested()
         }
         playerName?.text = shot.user.name.toLowerCase()
         GlideApp.with(this)
@@ -266,19 +278,28 @@ class DribbbleShotActivity : AppCompatActivity() {
         }
     }
 
-    private fun openLink(url: String?) {
+    private fun openLink(url: String) {
         CustomTabActivityHelper.openCustomTab(
-            this@DribbbleShotActivity,
+            this,
             CustomTabsIntent.Builder()
                 .setToolbarColor(
-                    ContextCompat.getColor(
-                        this@DribbbleShotActivity, io.plaidapp.R.color.dribbble
-                    )
+                    ContextCompat.getColor(this@DribbbleShotActivity, io.plaidapp.R.color.dribbble)
                 )
                 .addDefaultShareMenuItem()
                 .build(),
-            url?.toUri()
+            url
         )
+    }
+
+    private fun shareShot(shareInfo: ShareShotInfo) {
+        with(shareInfo) {
+            ShareCompat.IntentBuilder.from(this@DribbbleShotActivity)
+                .setText(shareText)
+                .setSubject(title)
+                .setStream(imageUri)
+                .setType(mimeType)
+                .startChooser()
+        }
     }
 
     internal fun applyFullImagePalette(palette: Palette) {
