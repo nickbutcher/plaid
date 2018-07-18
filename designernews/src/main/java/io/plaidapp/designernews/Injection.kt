@@ -19,7 +19,7 @@ package io.plaidapp.designernews
 import android.content.Context
 import io.plaidapp.core.designernews.provideDesignerNewsLoginRepository
 import io.plaidapp.core.provideCoroutinesContextProvider
-import io.plaidapp.designernews.ui.ViewModelFactory
+import io.plaidapp.designernews.ui.DesignerNewsViewModelFactory
 
 /**
  * File providing different dependencies.
@@ -27,8 +27,8 @@ import io.plaidapp.designernews.ui.ViewModelFactory
  * Once we have a dependency injection framework or a service locator, this should be removed.
  */
 
-fun provideViewModelFactory(context: Context): ViewModelFactory {
-    return ViewModelFactory(
+fun provideViewModelFactory(context: Context): DesignerNewsViewModelFactory {
+    return DesignerNewsViewModelFactory(
         provideDesignerNewsLoginRepository(context),
         provideCoroutinesContextProvider()
     )

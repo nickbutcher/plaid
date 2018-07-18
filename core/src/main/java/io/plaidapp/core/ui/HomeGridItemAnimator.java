@@ -26,7 +26,7 @@ import android.util.Pair;
 
 import java.util.List;
 
-import io.plaidapp.core.designernews.ui.DesignerNewsStoryHolder;
+import io.plaidapp.core.designernews.ui.stories.DesignerNewsStoryHolder;
 import io.plaidapp.core.ui.recyclerview.SlideInItemAnimator;
 
 

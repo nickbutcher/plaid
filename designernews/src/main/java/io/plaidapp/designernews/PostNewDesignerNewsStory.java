@@ -39,7 +39,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import io.plaidapp.core.util.ActivityHelper;
-import io.plaidapp.core.designernews.data.api.PostStoryService;
+import io.plaidapp.core.designernews.data.poststory.PostStoryService;
 import io.plaidapp.core.designernews.DesignerNewsPrefs;
 import io.plaidapp.core.ui.transitions.FabTransform;
 import io.plaidapp.core.ui.transitions.MorphTransform;

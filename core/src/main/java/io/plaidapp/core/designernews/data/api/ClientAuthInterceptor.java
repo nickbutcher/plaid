@@ -23,6 +23,7 @@ import android.text.TextUtils;
 
 import java.io.IOException;
 
+import io.plaidapp.core.designernews.data.login.DesignerNewsAuthTokenLocalDataSource;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.Request;

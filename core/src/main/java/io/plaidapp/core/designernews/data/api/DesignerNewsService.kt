@@ -17,12 +17,12 @@
 package io.plaidapp.core.designernews.data.api
 
 import io.plaidapp.core.data.api.EnvelopePayload
-import io.plaidapp.core.designernews.data.api.model.AccessToken
-import io.plaidapp.core.designernews.data.api.model.Comment
-import io.plaidapp.core.designernews.data.api.model.CommentResponse
-import io.plaidapp.core.designernews.data.api.model.NewStoryRequest
-import io.plaidapp.core.designernews.data.api.model.Story
-import io.plaidapp.core.designernews.data.api.model.User
+import io.plaidapp.core.designernews.data.login.model.AccessToken
+import io.plaidapp.core.designernews.domain.model.Comment
+import io.plaidapp.core.designernews.data.comments.model.CommentResponse
+import io.plaidapp.core.designernews.data.poststory.model.NewStoryRequest
+import io.plaidapp.core.designernews.data.stories.model.Story
+import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.core.designernews.data.votes.model.UpvoteCommentRequest
 import io.plaidapp.core.designernews.data.votes.model.UpvoteStoryRequest
 import kotlinx.coroutines.experimental.Deferred

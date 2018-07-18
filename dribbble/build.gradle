@@ -16,6 +16,7 @@
  */
 
 apply plugin: 'com.android.dynamic-feature'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion versions.compileSdk

@@ -57,13 +57,15 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
+
 import in.uncod.android.bypass.Bypass;
+import in.uncod.android.bypass.Markdown;
 import io.plaidapp.core.data.Result;
 import io.plaidapp.core.designernews.DesignerNewsPrefs;
 import io.plaidapp.core.designernews.Injection;
-import io.plaidapp.core.designernews.data.api.model.Comment;
-import io.plaidapp.core.designernews.data.api.model.Story;
-import io.plaidapp.core.designernews.data.api.model.User;
+import io.plaidapp.core.designernews.domain.model.Comment;
+import io.plaidapp.core.designernews.data.stories.model.Story;
+import io.plaidapp.core.designernews.data.users.model.User;
 import io.plaidapp.core.designernews.data.votes.DesignerNewsVotesRepository;
 import io.plaidapp.core.designernews.domain.CommentsUseCase;
 import io.plaidapp.core.ui.transitions.GravityArcMotion;
@@ -129,7 +131,7 @@ public class DesignerNewsStory extends Activity {
     private DesignerNewsVotesRepository votesRepository;
 
     private DesignerNewsPrefs designerNewsPrefs;
-    private Bypass markdown;
+    private Markdown markdown;
     private CustomTabActivityHelper customTab;
 
     @Override

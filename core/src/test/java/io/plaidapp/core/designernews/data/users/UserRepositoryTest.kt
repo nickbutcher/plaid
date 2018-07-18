@@ -17,10 +17,10 @@
 package io.plaidapp.core.designernews.data.users
 
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.api.model.User
-import io.plaidapp.core.designernews.data.api.user1
-import io.plaidapp.core.designernews.data.api.user2
-import io.plaidapp.core.designernews.data.api.users
+import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.core.designernews.user1
+import io.plaidapp.core.designernews.user2
+import io.plaidapp.core.designernews.users
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

@@ -29,6 +29,7 @@ import com.bumptech.glide.Glide;
 
 import java.io.File;
 
+import io.plaidapp.core.dribbble.data.api.model.Images;
 import io.plaidapp.dribbble.BuildConfig;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 
@@ -48,11 +49,12 @@ class ShareDribbbleImageTask extends AsyncTask<Void, Void, File> {
     @Override
     protected File doInBackground(Void... params) {
         final String url = shot.getImages().best();
+        final Images.ImageSize size = shot.getImages().bestSize();
         try {
             return Glide
                     .with(activity)
                     .load(url)
-                    .downloadOnly(shot.getWidth(), shot.getHeight())
+                    .downloadOnly(size.getWidth(), size.getHeight())
                     .get();
         } catch (Exception ex) {
             Log.w("SHARE", "Sharing " + url + " failed", ex);

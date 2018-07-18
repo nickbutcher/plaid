@@ -16,25 +16,24 @@
 
 package io.plaidapp.core.designernews.domain.model
 
-import io.plaidapp.core.designernews.data.api.model.Comment
-import io.plaidapp.core.designernews.data.api.model.User
+import io.plaidapp.core.designernews.data.users.model.User
 import java.util.Date
 
 fun CommentWithReplies.toComment(
     replies: List<Comment>,
     user: User?
 ) = Comment(
-        id = id,
-        parentCommentId = parentId,
-        body = body,
-        createdAt = createdAt,
-        depth = depth,
-        upvotesCount = upvotesCount,
-        replies = replies,
-        userId = userId,
-        userDisplayName = user?.displayName,
-        userPortraitUrl = user?.portraitUrl,
-        upvoted = false
+    id = id,
+    parentCommentId = parentId,
+    body = body,
+    createdAt = createdAt,
+    depth = depth,
+    upvotesCount = upvotesCount,
+    replies = replies,
+    userId = userId,
+    userDisplayName = user?.displayName,
+    userPortraitUrl = user?.portraitUrl,
+    upvoted = false
 )
 
 /**
