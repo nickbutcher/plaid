@@ -41,15 +41,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import io.plaidapp.core.data.Result;
-import io.plaidapp.core.designernews.ui.login.LoginUiModel;
-import io.plaidapp.core.designernews.ui.login.LoginViewModel;
 import io.plaidapp.core.ui.transitions.FabTransform;
 import io.plaidapp.core.ui.transitions.MorphTransform;
 import io.plaidapp.core.util.ScrimUtil;
 import io.plaidapp.core.util.glide.GlideApp;
 import io.plaidapp.designernews.InjectionKt;
 import io.plaidapp.designernews.R;
-import io.plaidapp.designernews.ui.ViewModelFactory;
+import io.plaidapp.designernews.ui.DesignerNewsViewModelFactory;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
@@ -73,7 +71,7 @@ public class DesignerNewsLogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_login);
 
-        ViewModelFactory factory = InjectionKt.provideViewModelFactory(this);
+        DesignerNewsViewModelFactory factory = InjectionKt.provideViewModelFactory(this);
         viewModel = ViewModelProviders.of(this, factory).get(LoginViewModel.class);
 
         viewModel.getUiState().observe(this, loginUiModelResult -> {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.util
+package io.plaidapp.test.shared
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
