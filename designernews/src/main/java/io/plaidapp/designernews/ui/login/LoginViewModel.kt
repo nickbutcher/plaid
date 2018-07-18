@@ -27,7 +27,7 @@ import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch
 
 /**
- * View Model for [DesignerNewsLogin]
+ * View Model for [LoginActivity]
  * TODO move the rest of the logic from activity here.
  * TODO keep this in core for now, to be moved to designernews module
  */
@@ -78,6 +78,6 @@ class LoginViewModel(
 }
 
 /**
- * UI model for [DesignerNewsLogin]
+ * UI model for [LoginActivity]
  */
 data class LoginUiModel(val displayName: String, val portraitUrl: String?)
