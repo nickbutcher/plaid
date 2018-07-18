@@ -20,12 +20,12 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.designernews.data.login.LoginRepository
-import io.plaidapp.core.designernews.ui.login.LoginViewModel
+import io.plaidapp.designernews.ui.login.LoginViewModel
 
 /**
  * Factory for ViewModels
  */
-class ViewModelFactory(
+class DesignerNewsViewModelFactory(
     private val loginRepository: LoginRepository,
     private val contextProvider: CoroutinesContextProvider
 ) : ViewModelProvider.Factory {

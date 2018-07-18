@@ -20,7 +20,9 @@ import android.arch.core.executor.testing.InstantTaskExecutorRule
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.designernews.data.users.model.User
-import io.plaidapp.core.designernews.util.LiveDataTestUtil
+import io.plaidapp.test.shared.LiveDataTestUtil
+import io.plaidapp.designernews.ui.login.LoginUiModel
+import io.plaidapp.designernews.ui.login.LoginViewModel
 import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
@@ -44,8 +46,7 @@ class LoginViewModelTest {
     private val pass = "design"
 
     private val loginRepo = mock(LoginRepository::class.java)
-    private val viewModel =
-        LoginViewModel(loginRepo, provideFakeCoroutinesContextProvider())
+    private val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesContextProvider())
 
     @Test
     fun successEmitted_whenUserLoggedInSuccessfully() = runBlocking {
