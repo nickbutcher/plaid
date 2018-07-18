@@ -82,7 +82,7 @@ object Activities {
          * DesignerNewsStory Activity
          */
         object Story : AddressableActivity {
-            override val className = "$PACKAGE_NAME.ui.designernews.story.DesignerNewsStory"
+            override val className = "$PACKAGE_NAME.designernews.ui.story.DesignerNewsStory"
             const val EXTRA_STORY = "story"
 
             /**
