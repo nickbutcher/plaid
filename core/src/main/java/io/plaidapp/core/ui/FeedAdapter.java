@@ -69,8 +69,8 @@ import io.plaidapp.core.R;
 import io.plaidapp.core.data.DataLoadingSubject;
 import io.plaidapp.core.data.PlaidItem;
 import io.plaidapp.core.data.PlaidItemSorting;
-import io.plaidapp.core.data.api.dribbble.ShotWeigher;
-import io.plaidapp.core.data.api.dribbble.model.Shot;
+import io.plaidapp.core.dribbble.data.api.ShotWeigher;
+import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.data.pocket.PocketUtils;
 import io.plaidapp.core.data.prefs.SourceManager;
 import io.plaidapp.core.designernews.data.api.StoryWeigher;
@@ -325,16 +325,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void bindDribbbleShotHolder(final Shot shot,
             final DribbbleShotHolder holder,
             int position) {
-        final int[] imageSize = shot.images.bestSize();
+        final int[] imageSize = shot.getImages().bestSize();
         GlideApp.with(host)
-                .load(shot.images.best())
+                .load(shot.getImages().best())
                 .listener(new RequestListener<Drawable>() {
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model,
                             Target<Drawable> target, DataSource dataSource,
                             boolean isFirstResource) {
-                        if (!shot.hasFadedIn) {
+                        if (!shot.getHasFadedIn()) {
                             holder.image.setHasTransientState(true);
                             final ObservableColorMatrix cm = new ObservableColorMatrix();
                             final ObjectAnimator saturation = ObjectAnimator.ofFloat(
@@ -355,7 +355,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                 }
                             });
                             saturation.start();
-                            shot.hasFadedIn = true;
+                            shot.setHasFadedIn(true);
                         }
                         return false;
                     }
@@ -375,9 +375,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         // need both placeholder & background to prevent seeing through shot as it fades in
         holder.image.setBackground(
                 shotLoadingPlaceholders[position % shotLoadingPlaceholders.length]);
-        holder.image.setDrawBadge(shot.animated);
+        holder.image.setDrawBadge(shot.getAnimated());
         // need a unique transition name per shot, let's use it's url
-        holder.image.setTransitionName(shot.html_url);
+        holder.image.setTransitionName(shot.getHtmlUrl());
         shotPreloadSizeProvider.setView(holder.image);
     }
 
@@ -677,7 +677,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public RequestBuilder<Drawable> getPreloadRequestBuilder(Shot item) {
-        return GlideApp.with(host).load(item.images.best());
+        return GlideApp.with(host).load(item.getImages().best());
     }
 
     static class DribbbleShotHolder extends RecyclerView.ViewHolder {

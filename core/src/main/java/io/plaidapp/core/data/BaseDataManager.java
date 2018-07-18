@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import io.plaidapp.core.BuildConfig;
-import io.plaidapp.core.data.api.dribbble.DribbbleSearchConverter;
-import io.plaidapp.core.data.api.dribbble.DribbbleSearchService;
+import io.plaidapp.core.dribbble.data.search.DribbbleSearchConverter;
+import io.plaidapp.core.dribbble.data.search.DribbbleSearchService;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import okhttp3.logging.HttpLoggingInterceptor.Level;

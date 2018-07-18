@@ -1,0 +1,2150 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>
+         Search - Dribbble
+      </title>
+      <meta name="description" content="Dribbble is where designers gain inspiration, feedback, community, and jobs and is your best resource to discover and connect with designers worldwide." />
+      <meta charset="utf-8" />
+      <script>window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","errorBeacon":"bam.nr-data.net","licenseKey":"7840d0c136","applicationID":"2909452","transactionName":"Jg1bREUOClsARUpHBgQQVlhSEklEDVgS","queueTime":0,"applicationTime":248,"agent":""}</script>
+      <script>window.NREUM||(NREUM={}),__nr_require=function(e,t,n){function r(n){if(!t[n]){var o=t[n]={exports:{}};e[n][0].call(o.exports,function(t){var o=e[n][1][t];return r(o||t)},o,o.exports)}return t[n].exports}if("function"==typeof __nr_require)return __nr_require;for(var o=0;o<n.length;o++)r(n[o]);return r}({1:[function(e,t,n){function r(){}function o(e,t,n){return function(){return i(e,[f.now()].concat(u(arguments)),t?null:this,n),t?void 0:this}}var i=e("handle"),a=e(2),u=e(3),c=e("ee").get("tracer"),f=e("loader"),s=NREUM;"undefined"==typeof window.newrelic&&(newrelic=s);var p=["setPageViewName","setCustomAttribute","setErrorHandler","finished","addToTrace","inlineHit","addRelease"],d="api-",l=d+"ixn-";a(p,function(e,t){s[t]=o(d+t,!0,"api")}),s.addPageAction=o(d+"addPageAction",!0),s.setCurrentRouteName=o(d+"routeName",!0),t.exports=newrelic,s.interaction=function(){return(new r).get()};var m=r.prototype={createTracer:function(e,t){var n={},r=this,o="function"==typeof t;return i(l+"tracer",[f.now(),e,n],r),function(){if(c.emit((o?"":"no-")+"fn-start",[f.now(),r,o],n),o)try{return t.apply(this,arguments)}catch(e){throw c.emit("fn-err",[arguments,this,e],n),e}finally{c.emit("fn-end",[f.now()],n)}}}};a("setName,setAttribute,save,ignore,onEnd,getContext,end,get".split(","),function(e,t){m[t]=o(l+t)}),newrelic.noticeError=function(e){"string"==typeof e&&(e=new Error(e)),i("err",[e,f.now()])}},{}],2:[function(e,t,n){function r(e,t){var n=[],r="",i=0;for(r in e)o.call(e,r)&&(n[i]=t(r,e[r]),i+=1);return n}var o=Object.prototype.hasOwnProperty;t.exports=r},{}],3:[function(e,t,n){function r(e,t,n){t||(t=0),"undefined"==typeof n&&(n=e?e.length:0);for(var r=-1,o=n-t||0,i=Array(o<0?0:o);++r<o;)i[r]=e[t+r];return i}t.exports=r},{}],4:[function(e,t,n){t.exports={exists:"undefined"!=typeof window.performance&&window.performance.timing&&"undefined"!=typeof window.performance.timing.navigationStart}},{}],ee:[function(e,t,n){function r(){}function o(e){function t(e){return e&&e instanceof r?e:e?c(e,u,i):i()}function n(n,r,o,i){if(!d.aborted||i){e&&e(n,r,o);for(var a=t(o),u=m(n),c=u.length,f=0;f<c;f++)u[f].apply(a,r);var p=s[y[n]];return p&&p.push([b,n,r,a]),a}}function l(e,t){v[e]=m(e).concat(t)}function m(e){return v[e]||[]}function w(e){return p[e]=p[e]||o(n)}function g(e,t){f(e,function(e,n){t=t||"feature",y[n]=t,t in s||(s[t]=[])})}var v={},y={},b={on:l,emit:n,get:w,listeners:m,context:t,buffer:g,abort:a,aborted:!1};return b}function i(){return new r}function a(){(s.api||s.feature)&&(d.aborted=!0,s=d.backlog={})}var u="nr@context",c=e("gos"),f=e(2),s={},p={},d=t.exports=o();d.backlog=s},{}],gos:[function(e,t,n){function r(e,t,n){if(o.call(e,t))return e[t];var r=n();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(e,t,{value:r,writable:!0,enumerable:!1}),r}catch(i){}return e[t]=r,r}var o=Object.prototype.hasOwnProperty;t.exports=r},{}],handle:[function(e,t,n){function r(e,t,n,r){o.buffer([e],r),o.emit(e,t,n)}var o=e("ee").get("handle");t.exports=r,r.ee=o},{}],id:[function(e,t,n){function r(e){var t=typeof e;return!e||"object"!==t&&"function"!==t?-1:e===window?0:a(e,i,function(){return o++})}var o=1,i="nr@id",a=e("gos");t.exports=r},{}],loader:[function(e,t,n){function r(){if(!x++){var e=h.info=NREUM.info,t=d.getElementsByTagName("script")[0];if(setTimeout(s.abort,3e4),!(e&&e.licenseKey&&e.applicationID&&t))return s.abort();f(y,function(t,n){e[t]||(e[t]=n)}),c("mark",["onload",a()+h.offset],null,"api");var n=d.createElement("script");n.src="https://"+e.agent,t.parentNode.insertBefore(n,t)}}function o(){"complete"===d.readyState&&i()}function i(){c("mark",["domContent",a()+h.offset],null,"api")}function a(){return E.exists&&performance.now?Math.round(performance.now()):(u=Math.max((new Date).getTime(),u))-h.offset}var u=(new Date).getTime(),c=e("handle"),f=e(2),s=e("ee"),p=window,d=p.document,l="addEventListener",m="attachEvent",w=p.XMLHttpRequest,g=w&&w.prototype;NREUM.o={ST:setTimeout,SI:p.setImmediate,CT:clearTimeout,XHR:w,REQ:p.Request,EV:p.Event,PR:p.Promise,MO:p.MutationObserver};var v=""+location,y={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",agent:"js-agent.newrelic.com/nr-1071.min.js"},b=w&&g&&g[l]&&!/CriOS/.test(navigator.userAgent),h=t.exports={offset:u,now:a,origin:v,features:{},xhrWrappable:b};e(1),d[l]?(d[l]("DOMContentLoaded",i,!1),p[l]("load",r,!1)):(d[m]("onreadystatechange",o),p[m]("onload",r)),c("mark",["firstbyte",u],null,"api");var x=0,E=e(4)},{}]},{},["loader"]);</script>
+      <meta name="theme-color" content="#333333">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+      <meta name="referrer" content="origin-when-cross-origin">
+      <!--[if gte IE 7]><!-->
+      <link rel="stylesheet" media="screen, projection" href="https://cdn.dribbble.com/assets/master-f07810fe897a69958ff28acaa55fa556801d5c38cfa2566297d2e80e3c622c71.css" />
+      <link rel="stylesheet" media="screen, projection" href="https://cdn.dribbble.com/assets/infinite-28b948dcc90a8e341cfcf2bca178d750370cbe473cb0ec6e96ec4933cb306194.css" />
+      <link rel="stylesheet" media="screen, projection" href="https://cdn.dribbble.com/assets/attachment-overlay-933e65217dd6129e0b35e8acb6620d75472e5f39e5796214ebdd7feaf8ed32a6.css" />
+      <!-- <![endif]-->
+      <link rel="stylesheet" media="print" href="https://cdn.dribbble.com/assets/print-420701a2f29a91b1a4da06b722a531cc2df463f21afc81e5d4828564714d286b.css" />
+      <link href="https://cdn.dribbble.com/assets/dribbble-vector-ball-95ca193529993e9b3904f7adb541680aba196642f557cfaf3cdbb0a48a284be4.svg" rel="mask-icon" color="#ea4c89" />
+      <link href="https://cdn.dribbble.com/assets/apple-touch-icon-precomposed-4a188d3f4dd693b67971fda843fd4bdeae751f9a245e3b878cae17e0a9d6a0a3.png" rel="apple-touch-icon-precomposed" />
+      <link href="https://cdn.dribbble.com/assets/favicon-63b2904a073c89b52b19aa08cebc16a154bcf83fee8ecc6439968b1e6db569c7.ico" rel="icon" />
+      <link href="https://cdn.dribbble.com/assets/dribbble-ball-192-ec064e49e6f63d9a5fa911518781bee0c90688d052a038f8876ef0824f65eaf2.png" sizes="192x192" rel="icon" />
+      <meta name="csrf-param" content="authenticity_token" />
+      <meta name="csrf-token" content="mJDg+k7PPszG5Pcu4KDsD0RhkmdGk7W5c1g2+CkcazQYGFNBiWTU5OjreGZuVtKpnjYKT0hf9BvxlUni/+dbRg==" />
+      <script>
+         if (location.hash.match(/^#\./) && window.history) {
+           window.history.replaceState({}, window.title, location.origin + location.pathname + location.search)
+         }
+      </script>
+      <noscript>
+         <style>ol.dribbbles { display: block !important }</style>
+      </noscript>
+      <meta name="segment-controller" content="searches" />
+      <meta name="segment-action" content="show" />
+   </head>
+   <body id="search-results" class="logged-out not-pro not-player not-self not-team not-on-team  grid-small grid-with-meta">
+      <div id="header" role="banner" class="group">
+         <div id="header-inner" class="group">
+            <div id="logo">
+               <a href="/"><img alt="dribbble" src="https://cdn.dribbble.com/assets/logo-bw-0200c7483844c355752e89efaa4ba89b83c9c591d70254ba10f4b25d901359d0.gif" /></a>
+            </div>
+            <a href="#nav" id="toggle-nav">Toggle navigation</a>
+            <ul id="nav" role="navigation">
+               <li id="t-search" role="search">
+                  <form id="search" action="https://dribbble.com/search">
+                     <input class="search-text" type="search" name="q" placeholder="Search " value="Material Design" />
+                     <input type="hidden" name="s" id="s" value="published_at" />
+                  </form>
+               </li>
+               <li id="t-signin" data-top-level="signin">
+                  <a href="/session/new?return_to=%2Fsearch%3Fq%3DMaterial%2520Design%26page%3D1%26s%3Dlatest%26per_page%3D12">
+                  <span>Sign in</span>
+                  </a>        
+               </li>
+               <li id="t-signup" data-top-level="signup">
+                  <a data-signup-trigger="true" data-context="top-nav" href="/signup/new">Sign up</a>
+               </li>
+               <li id="t-shots" data-top-level="shots">
+                  <a class="has-sub" href="/shots">Shots</a>
+                  <ul class="tabs">
+                     <li><a href="/shots">Popular Shots</a></li>
+                     <li><a href="/shots?sort=recent">Recent Shots</a></li>
+                     <li class="separate"><a href="/shots?list=debuts">Debuts</a></li>
+                     <li><a href="/shots?list=playoffs">Playoffs</a></li>
+                  </ul>
+               </li>
+               <li id="t-players" data-top-level="players">
+                  <a class="has-sub" href="/designers">Designers</a>
+                  <ul class="tabs">
+                     <li><a href="/designers?sort=trending">Trending Designers</a></li>
+                     <li><a href="/designers?sort=popular">Popular Designers</a></li>
+                  </ul>
+               </li>
+               <li id="t-teams" data-top-level="teams">
+                  <a class="has-sub" href="/teams">Teams</a>
+                  <ul class="tabs">
+                     <li><a href="/teams?sort=trending">Trending Teams</a></li>
+                     <li><a href="/teams?sort=popular">Popular Teams</a></li>
+                     <li class="separate"><a href="/teams/info">Add Your Design Team</a></li>
+                  </ul>
+               </li>
+               <li id="t-community" data-top-level="community">
+                  <a class="has-sub" href="/stories">Community</a>
+                  <ul class="tabs">
+                     <li><a href="/stories">Blog</a></li>
+                     <li><a href="/overtime">Podcast</a></li>
+                     <li><a href="/meetups">Meetups</a></li>
+                     <li><a href="/hangtimes/2018-la">Hang Time Los Angeles</a></li>
+                     <li class="separate"><a href="/meetups/new">Host a Meetup</a></li>
+                  </ul>
+               </li>
+               <li id="t-jobs" data-top-level="jobs">
+                  <a href="/jobs">Jobs</a>
+                  <ul class="tabs">
+                     <li><a href="/jobs">All</a></li>
+                     <li><a href="/jobs?location=Anywhere">Remote</a></li>
+                     <li><a href="/jobs?teams_only=true">Teams Hiring</a></li>
+                     <li class="separate"><a href="/jobs/new">Post a Job</a></li>
+                  </ul>
+               </li>
+               <li id="t-hiring" data-top-level="hiring">
+                  <a href="/hiring">Hiring</a>
+                  <ul class="tabs">
+                     <li><a href="/hiring">Hiring at Dribbble</a></li>
+                     <li><a href="/teams/info">Add Your Design Team</a></li>
+                  </ul>
+               </li>
+               <li id="t-more" data-top-level="more">
+                  <a href="/about">
+                  <span>More</span>
+                  </a>        
+                  <ul class="tabs">
+                     <li><a href="/about">About Dribbble</a></li>
+                     <li><a href="https://shop.dribbble.com/">Dribbble Store</a></li>
+                     <li><a href="http://help.dribbble.com/">Help</a></li>
+                     <li><a href="/careers">Careers</a></li>
+                     <li><a href="/guidelines">Guidelines</a></li>
+                     <li><a href="/branding">Brand</a></li>
+                     <li><a href="/integrations">Integrations</a></li>
+                     <li><a href="http://developer.dribbble.com">API</a></li>
+                     <li><a href="/advertise">Advertise</a></li>
+                     <li class="separate"><a href="/goods">Goods by Designers</a></li>
+                     <li><a href="/colors">Colors</a></li>
+                     <li><a href="/places">Designers by Location</a></li>
+                     <li class="separate"><a href="/ios">iOS App</a></li>
+                  </ul>
+               </li>
+            </ul>
+         </div>
+      </div>
+      <!-- /header -->
+      <hr />
+      <div class="ajax notice hide">
+         <h2></h2>
+      </div>
+      <div id="wrap">
+         <div class="search-extra">
+            <ol class="search-extra-list">
+               <li class="title">Member</li>
+               <li class="member">
+                  <a class="hoverable url" rel="contact" href="/ZalandoMobile"><img class="photo" src="https://cdn.dribbble.com/assets/avatar-default-aa2eab7684294781f93bc99ad394a0eb3249c5768c21390163c9f55ea8ef83a4.gif" /> Material Design Zalando</a>
+               </li>
+               <span class="promoted-user-placement member"></span>
+               <li class="skill">
+                  <a href="/designers?skills=Material+Design">
+                  <img src="https://cdn.dribbble.com/assets/icon-skills-members-e5b0e6fd9bbc921c0ce838c6760f5ad7cda5c3890fb5f4fe15254b934a82f3c8.png" alt="Icon skills members" />
+                  Designers with skill “Material Design”
+                  </a>          
+               </li>
+            </ol>
+         </div>
+         <div class="full-tabs">
+            <ul class="shot-menu full-tabs-links">
+               <li class="">
+                  <a href="/search?page=1&amp;per_page=12&amp;q=Material+Design">Popular</a>
+               </li>
+               <li class="active">
+                  <a href="/search?page=1&amp;per_page=12&amp;q=Material+Design&amp;s=latest">Recent</a>
+               </li>
+            </ul>
+            <div class="screenshot-actions">
+               <div class="actions-menu">
+                  <a class="form-btn grid" href="#">
+                  <span>Actions</span>
+                  </a>  
+                  <ul class="actions-list">
+                     <li class="shot-display">
+                        <h3>Display Options</h3>
+                        <ul class="large-small">
+                           <li rel="tipsy" data-tipsy-class="tipsy-alt" title="Small with info" class="small-with-meta active">
+                              <a href="#">
+                                 <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" width="72" height="72" viewBox="0 0 72 72" role="img" aria-labelledby="gqz16cy57de7t1akon9ezcmf9v9ep42" class="icon">
+                                    <title id="gqz16cy57de7t1akon9ezcmf9v9ep42">Small with meta</title>
+                                    <path d="M49 53L23 53C21 53 20 52 20 50L20 22C20 20 21 19 23 19L49 19C51 19 52 20 52 22L52 50C52 52 51 53 49 53L49 53 49 53ZM28 48L44 48C45 48 46 47 46 46 46 45 45 44 44 44L28 44C27 44 26 45 26 46 26 47 27 48 28 48L28 48 28 48ZM46 25L26 25 26 39 46 39 46 25 46 25Z" fill="#333333"></path>
+                                 </svg>
+                              </a>
+                           </li>
+                           <li rel="tipsy" data-tipsy-class="tipsy-alt" title="Large with info" class="large-with-meta ">
+                              <a href="#">
+                                 <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" width="72" height="72" viewBox="0 0 72 72" role="img" aria-labelledby="l42dgswvzqvma6dzsbz2lrkc4kebrp2" class="icon">
+                                    <title id="l42dgswvzqvma6dzsbz2lrkc4kebrp2">Large with meta</title>
+                                    <path d="M57 61L15 61C13 61 12 60 12 58L12 14C12 12 13 11 15 11L57 11C59 11 60 12 60 14L60 58C60 60 59 61 57 61L57 61ZM20 56L52 56C53 56 54 55 54 54 54 53 53 52 52 52L20 52C19 52 18 53 18 54 18 55 19 56 20 56L20 56ZM54 17L18 17 18 47 54 47 54 17 54 17Z" fill="#333333"></path>
+                                 </svg>
+                              </a>
+                           </li>
+                           <li rel="tipsy" data-tipsy-class="tipsy-alt" title="Small without info" class="small-without-meta ">
+                              <a href="#">
+                                 <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" width="72" height="72" viewBox="0 0 72 72" role="img" aria-labelledby="8eyt2w983eas183ycjgxiajyjnwgr9j" class="icon">
+                                    <title id="8eyt2w983eas183ycjgxiajyjnwgr9j">Small without meta</title>
+                                    <path d="M49 49L23 49C21 49 20 48 20 46L20 26C20 24 21 23 23 23L49 23C51 23 52 24 52 26L52 46C52 48 51 49 49 49L49 49ZM46 29L26 29 26 43 46 43 46 29 46 29Z" fill="#333333"></path>
+                                 </svg>
+                              </a>
+                           </li>
+                           <li rel="tipsy" data-tipsy-class="tipsy-alt" title="Large without info" class="large-without-meta ">
+                              <a href="#">
+                                 <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" width="72" height="72" viewBox="0 0 72 72" role="img" aria-labelledby="56239wxbmtay3rl8b3hyshlhemfm3ig" class="icon">
+                                    <title id="56239wxbmtay3rl8b3hyshlhemfm3ig">Large without meta</title>
+                                    <path d="M57 57L15 57C13 57 12 56 12 54L12 18C12 16 13 15 15 15L57 15C59 15 60 16 60 18L60 54C60 56 59 57 57 57L57 57ZM54 21L18 21 18 51 54 51 54 21 54 21Z" fill="#333333"></path>
+                                 </svg>
+                              </a>
+                           </li>
+                        </ul>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+         <div id="wrap-inner">
+            <div id="content" role="main">
+               <div class="notice-alert">
+                  <h3>
+                     <!-- message goes here -->
+                  </h3>
+                  <a href="#" class="close" aria-label="close">
+                  <img width="25" alt="close" src="https://cdn.dribbble.com/assets/icon-shot-x-light-2x-a4fcd61bdb114023583740bd9f5a46734e243e5be2bff1baa3e1cc33e7877fcd.png" />
+                  </a>
+               </div>
+               <div id="main" class="main-full">
+                  <ol class="dribbbles group">
+                     <li id="screenshot-4832907" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4832907-YouTube-Material-Redesign">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/2425190/screenshots/4832907/youtube_800x600_1x.png" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/2425190/screenshots/4832907/youtube_800x600_teaser.png">
+                                       <img alt="YouTube Material Redesign" src="https://cdn.dribbble.com/users/2425190/screenshots/4832907/youtube_800x600_teaser.png" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4832907-YouTube-Material-Redesign">    <strong>YouTube Material Redesign</strong>
+                                 <span class="comment">YouTube Redesign inspired by YouTube Gaming and Material Design 2.0 Theme by Google and made for the YouTube Redesign Challenge on Uplabs.
+                                 Upvote ...</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4832907-YouTube-Material-Redesign/fans">17</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    0
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>56</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4832907-YouTube-Material-Redesign/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              0
+                              </span>
+                              </a>      <a href="/search">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/RisingFireStar"><img class="photo" src="https://cdn.dribbble.com/users/2425190/avatars/mini/90e5f6a21f400a32ae60f616524bfc40.jpg?1531759150" /> Martin </a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4832756" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4832756-Improv-Icon-Animations">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/1501129/screenshots/4832756/scw-icons-gif_1x.gif" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/1501129/screenshots/4832756/scw-icons-gif_teaser.gif">
+                                       <img alt="Improv Icon Animations" src="https://cdn.dribbble.com/users/1501129/screenshots/4832756/scw-icons-gif_teaser.gif" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4832756-Improv-Icon-Animations">    <strong>Improv Icon Animations</strong>
+                                 <span class="comment">NEW WORK → https://www.secondcityworks.com/</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4832756-Improv-Icon-Animations/fans">18</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    0
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>98</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4832756-Improv-Icon-Animations/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              0
+                              </span>
+                              </a>      <a href="/search">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                           <div class="gif-indicator"></div>
+                           <a class="gif-target" href="/shots/4832756-Improv-Icon-Animations"></a>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/hecopartners"><img class="photo" src="https://cdn.dribbble.com/users/1501129/avatars/mini/e70420ec91bb5c64d675b92459c46d43.png?1480949339" /> Heco</a>
+                           <a class="badge-link" href="/pro">
+                           <span class="badge badge-pro">Pro</span>
+                           </a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4832435" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4832435-Web-App-X-Fit">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/1648335/screenshots/4832435/web-app-x-fit-186838_1x.jpg" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/1648335/screenshots/4832435/web-app-x-fit-186838_teaser.jpg">
+                                       <img alt="Web App : X-Fit" src="https://cdn.dribbble.com/users/1648335/screenshots/4832435/web-app-x-fit-186838_teaser.jpg" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4832435-Web-App-X-Fit">    <strong>Web App : X-Fit</strong>
+                                 <span class="comment"> Hello Guys, It's a fitness app which helps users to keep track of their food and exercise activities that may allow them to be more fit. 
+                                 FULL PR...</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4832435-Web-App-X-Fit/fans">10</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    0
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>62</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4832435-Web-App-X-Fit/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              0
+                              </span>
+                              </a>      <a href="/search">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/snygm"><img class="photo" src="https://cdn.dribbble.com/users/1648335/avatars/mini/e8616d7cf8a5bd5482127a30b8a654c6.jpg?1531670710" /> SNY GM</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4832022" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4832022-Movie-website-material-design-low-contrast-figma-design">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/2092719/screenshots/4832022/mr-fox-netflix-redesign_1x.jpg" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/2092719/screenshots/4832022/mr-fox-netflix-redesign_teaser.jpg">
+                                       <img alt="Movie website material design low contrast  &quot;figma design&quot;" src="https://cdn.dribbble.com/users/2092719/screenshots/4832022/mr-fox-netflix-redesign_teaser.jpg" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4832022-Movie-website-material-design-low-contrast-figma-design">    <strong>Movie website material design low contrast  &quot;figma design&quot;</strong>
+                                 <span class="comment">Experiment done in Figma, is a netflix lookalike with low contrast color palette and using Playfair + Merriweather sans Fonts.
+                                 Trasteando con Figm...</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4832022-Movie-website-material-design-low-contrast-figma-design/fans">8</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    0
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>33</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4832022-Movie-website-material-design-low-contrast-figma-design/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              0
+                              </span>
+                              </a>      <a href="/search">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/morlock"><img class="photo" src="https://cdn.dribbble.com/users/2092719/avatars/mini/ec6fd216f6c0527f986d7e60dc296f25.png?1530731453" /> Daniel Vargas</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4832005" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4832005-Application-Design">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/1053273/screenshots/4832005/01_800na600_1x.jpg" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/1053273/screenshots/4832005/01_800na600_teaser.jpg">
+                                       <img alt="Application Design" src="https://cdn.dribbble.com/users/1053273/screenshots/4832005/01_800na600_teaser.jpg" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4832005-Application-Design">    <strong>Application Design</strong>
+                                 <span class="comment">Design a design of one of the application screens.
+                                 Oil product tracking system. Image design splash screen.
+                                 Learn More: 
+                                 https://www.behance.net/ga...</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4832005-Application-Design/fans">13</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    0
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>92</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4832005-Application-Design/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              0
+                              </span>
+                              </a>      <a href="/search">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/Starodumow"><img class="photo" src="https://cdn.dribbble.com/users/1053273/avatars/mini/af6a59d93690dbe327cde7bd87124da9.jpg?1452776622" /> Alexey Starodumov</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4831641" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4831641-Finance">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4831641/3finance_1x.png" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4831641/3finance_teaser.png">
+                                       <img alt="Finance" src="https://cdn.dribbble.com/users/1029310/screenshots/4831641/3finance_teaser.png" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4831641-Finance">    <strong>Finance</strong>
+                                 <span class="comment">Finance page user interface for the "FIRST Messenger" mobile application</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4831641-Finance/fans">15</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    0
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>77</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4831641-Finance/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              0
+                              </span>
+                              </a>      <a href="/shots/4831365-Contacts">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/andreihoncharuk"><img class="photo" src="https://cdn.dribbble.com/users/1029310/avatars/mini/d946050c23110271ea3574b7659acd63.jpg?1450715729" /> Andrei Honcharuk</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4831365" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4831365-Contacts">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4831365/4contacts1_1x.png" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4831365/4contacts1_teaser.png">
+                                       <img alt="Contacts" src="https://cdn.dribbble.com/users/1029310/screenshots/4831365/4contacts1_teaser.png" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4831365-Contacts">    <strong>Contacts</strong>
+                                 <span class="comment">Contacts page user interface for the "FIRST Messenger" mobile application</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4831365-Contacts/fans">17</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    1
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>88</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4831365-Contacts/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              1
+                              </span>
+                              </a>      <a href="/shots/4831105-Messaging">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/andreihoncharuk"><img class="photo" src="https://cdn.dribbble.com/users/1029310/avatars/mini/d946050c23110271ea3574b7659acd63.jpg?1450715729" /> Andrei Honcharuk</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4831342" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4831342-Azex-Blog">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/1771255/screenshots/4831342/yy_1x.jpg" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/1771255/screenshots/4831342/yy_teaser.jpg">
+                                       <img alt="Azex Blog" src="https://cdn.dribbble.com/users/1771255/screenshots/4831342/yy_teaser.jpg" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4831342-Azex-Blog">    <strong>Azex Blog</strong>
+                                 <span class="comment">Azex blog is fully responsive, Every pages are designed to look great on all devices. It is highly suitable for your personal blog And helps you to...</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4831342-Azex-Blog/fans">15</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    0
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>70</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4831342-Azex-Blog/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              0
+                              </span>
+                              </a>      <a href="/search">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/Saad_Khan"><img class="photo" src="https://cdn.dribbble.com/users/1771255/avatars/mini/8a598eb6aedec87aa8469a5a35769dbb.jpg?1516008436" /> Saad Khan</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4831105" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4831105-Messaging">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4831105/5dialog_1x.png" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4831105/5dialog_teaser.png">
+                                       <img alt="Messaging" src="https://cdn.dribbble.com/users/1029310/screenshots/4831105/5dialog_teaser.png" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4831105-Messaging">    <strong>Messaging</strong>
+                                 <span class="comment">Messaging page user interface for the "FIRST Messenger" mobile application</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4831105-Messaging/fans">22</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    1
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>140</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4831105-Messaging/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              1
+                              </span>
+                              </a>      <a href="/shots/4830961-Chats">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/andreihoncharuk"><img class="photo" src="https://cdn.dribbble.com/users/1029310/avatars/mini/d946050c23110271ea3574b7659acd63.jpg?1450715729" /> Andrei Honcharuk</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4476336" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4476336-Pricing-Mobile-Saas-Admin-UI-Kit">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/384132/screenshots/4476336/92_-_mobile_saas_admin_ui_kit_1x.jpg" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/384132/screenshots/4476336/92_-_mobile_saas_admin_ui_kit_teaser.jpg">
+                                       <img alt="Pricing - Mobile Saas Admin UI Kit" src="https://cdn.dribbble.com/users/384132/screenshots/4476336/92_-_mobile_saas_admin_ui_kit_teaser.jpg" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4476336-Pricing-Mobile-Saas-Admin-UI-Kit">    <strong>Pricing - Mobile Saas Admin UI Kit</strong>
+                                 <span class="comment">Hello guys, I am leaving attached a UI screen from the SaaS Admin Dashboards UI Kit. This UI Kit is intended to speed up your workflow and allow yo...</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4476336-Pricing-Mobile-Saas-Admin-UI-Kit/fans">37</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    0
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>414</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4476336-Pricing-Mobile-Saas-Admin-UI-Kit/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              0
+                              </span>
+                              </a>      <a href="/search">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/pierluigigiglio"><img class="photo" src="https://cdn.dribbble.com/users/384132/avatars/mini/2d4245145fbbf25a173cda4507063e3d.jpg?1466944350" /> Pierluigi Giglio</a>
+                           <a class="badge-link" href="/pro">
+                           <span class="badge badge-pro">Pro</span>
+                           </a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4830961" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4830961-Chats">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4830961/6chats_1x.png" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4830961/6chats_teaser.png">
+                                       <img alt="Chats" src="https://cdn.dribbble.com/users/1029310/screenshots/4830961/6chats_teaser.png" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4830961-Chats">    <strong>Chats</strong>
+                                 <span class="comment">Chats page user interface for the "FIRST Messenger" mobile application</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4830961-Chats/fans">26</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    1
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>197</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4830961-Chats/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              1
+                              </span>
+                              </a>      <a href="/shots/4830558-Car-sale">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/andreihoncharuk"><img class="photo" src="https://cdn.dribbble.com/users/1029310/avatars/mini/d946050c23110271ea3574b7659acd63.jpg?1450715729" /> Andrei Honcharuk</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4830712" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4830712-X-Fit-Logo">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/1648335/screenshots/4830712/x_fit_logo_1x.jpg" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/1648335/screenshots/4830712/x_fit_logo_teaser.jpg">
+                                       <img alt="X Fit Logo" src="https://cdn.dribbble.com/users/1648335/screenshots/4830712/x_fit_logo_teaser.jpg" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4830712-X-Fit-Logo">    <strong>X Fit Logo</strong>
+                                 <span class="comment">Hey Guys!
+                                 Here is the logo I made for healthcare app called X-Fit. It's a fitness app that helps users to stay healthy by recording their food &am...</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4830712-X-Fit-Logo/fans">10</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    0
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>53</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4830712-X-Fit-Logo/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              0
+                              </span>
+                              </a>      <a href="/search">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/snygm"><img class="photo" src="https://cdn.dribbble.com/users/1648335/avatars/mini/e8616d7cf8a5bd5482127a30b8a654c6.jpg?1531670710" /> SNY GM</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4830655" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4830655-Material-Study">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/982388/screenshots/4830655/material_1x.gif" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/982388/screenshots/4830655/material_teaser.gif">
+                                       <img alt="Material Study" src="https://cdn.dribbble.com/users/982388/screenshots/4830655/material_teaser.gif" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4830655-Material-Study">    <strong>Material Study</strong>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4830655-Material-Study/fans">22</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    0
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>183</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4830655-Material-Study/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              0
+                              </span>
+                              </a>      <a href="/search">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                           <div class="gif-indicator"></div>
+                           <a class="gif-target" href="/shots/4830655-Material-Study"></a>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/YarKir"><img class="photo" src="https://cdn.dribbble.com/users/982388/avatars/mini/45e15721955173d0146f8cfe394a3e53.png?1445930724" /> Yaroslav</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4830547" class="group team">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4830547-Sneaker-shop">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/332219/screenshots/4830547/s_shop_1x.jpg" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/332219/screenshots/4830547/s_shop_teaser.jpg">
+                                       <img alt="Sneaker shop" src="https://cdn.dribbble.com/users/332219/screenshots/4830547/s_shop_teaser.jpg" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4830547-Sneaker-shop">    <strong>Sneaker shop</strong>
+                                 <span class="comment">Hey Dribbblers, We decided to play a little with new material design form Google and today we want to show the effects. This is a concept of a snea...</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4830547-Sneaker-shop/fans">34</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    0
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>362</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4830547-Sneaker-shop/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              0
+                              </span>
+                              </a>      <a href="/search">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-team">
+                           <a class="hoverable url" rel="contact" href="/Miquido"><img class="photo" src="https://cdn.dribbble.com/users/763735/avatars/mini/9f59dea8e3378b0569af4ad2d59e97c9.png?1444813985" /> Miquido</a>
+                           <a class="badge-link" href="/teams/info">
+                           <span class="badge badge-team">Team</span>
+                           </a>
+                           </span>
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/juraa"><img class="photo" src="https://cdn.dribbble.com/users/332219/avatars/mini/9c8a7af0b22ee25399befb199fd04ae4.jpg?1465853616" /> ⚡️Mateusz Jurkiewicz⚡️</a>
+                           <a class="badge-link" href="/pro">
+                           <span class="badge badge-pro">Pro</span>
+                           </a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4830558" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4830558-Car-sale">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4830558/7auto3_1x.png" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4830558/7auto3_teaser.png">
+                                       <img alt="Car sale" src="https://cdn.dribbble.com/users/1029310/screenshots/4830558/7auto3_teaser.png" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4830558-Car-sale">    <strong>Car sale</strong>
+                                 <span class="comment">Car sale page user interface for the "FIRST Messenger" mobile application</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4830558-Car-sale/fans">17</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    1
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>76</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4830558-Car-sale/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              1
+                              </span>
+                              </a>      <a href="/shots/4828449-Auto-Market">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/andreihoncharuk"><img class="photo" src="https://cdn.dribbble.com/users/1029310/avatars/mini/d946050c23110271ea3574b7659acd63.jpg?1450715729" /> Andrei Honcharuk</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4830117" class="group team">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4830117-Hotel-amenities-icon-set">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/1121009/screenshots/4830117/icons3_1x.jpg" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/1121009/screenshots/4830117/icons3_teaser.jpg">
+                                       <img alt="Hotel amenities icon set" src="https://cdn.dribbble.com/users/1121009/screenshots/4830117/icons3_teaser.jpg" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4830117-Hotel-amenities-icon-set">    <strong>Hotel amenities icon set</strong>
+                                 <span class="comment">We have created a new icon set library for our cross-platform products. The whole icon set library will be published soon. Check the rebound for th...</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4830117-Hotel-amenities-icon-set/fans">27</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    0
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>244</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4830117-Hotel-amenities-icon-set/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              0
+                              </span>
+                              </a>      <a href="/shots/4760593-Hotel-amenities-icon-set">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-team">
+                           <a class="hoverable url" rel="contact" href="/Treebo"><img class="photo" src="https://cdn.dribbble.com/users/2019022/avatars/mini/5080c5afc0e34295e5d3285923ecdc3c.png?1512466679" /> Treebo</a>
+                           <a class="badge-link" href="/teams/info">
+                           <span class="badge badge-team">Team</span>
+                           </a>
+                           </span>
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/mebonie"><img class="photo" src="https://cdn.dribbble.com/users/1121009/avatars/mini/27fe2a6cdd4b91cfe05fea95a0c00b0c.jpg?1530183442" /> Bonie Varghese</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4830059" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4830059-Crediplus-Referral-Screen">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/747459/screenshots/4830059/crediplus-referral-screen_1x.png" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/747459/screenshots/4830059/crediplus-referral-screen_teaser.png">
+                                       <img alt="Crediplus Referral Screen" src="https://cdn.dribbble.com/users/747459/screenshots/4830059/crediplus-referral-screen_teaser.png" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4830059-Crediplus-Referral-Screen">    <strong>Crediplus Referral Screen</strong>
+                                 <span class="comment">Hello Fellow Designers,
+                                 Crediplus Referral App Screen. Please give your feedback on this work.
+                                 Hope you like it, Thanks.</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4830059-Crediplus-Referral-Screen/fans">14</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    1
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>103</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4830059-Crediplus-Referral-Screen/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              0
+                              </span>
+                              </a>      <a href="/search">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/surajandour19"><img class="photo" src="https://cdn.dribbble.com/users/747459/avatars/mini/b3a09a1618b8e1064ff1770b00de7338.jpg?1529650929" /> Suraj Kumar</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4829514" class="group team">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4829514-Purple-day">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/1822960/screenshots/4829514/1_1x.png" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/1822960/screenshots/4829514/1_teaser.png">
+                                       <img alt="Purple day：）" src="https://cdn.dribbble.com/users/1822960/screenshots/4829514/1_teaser.png" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4829514-Purple-day">    <strong>Purple day：）</strong>
+                                 <span class="comment">Hello Friends, Daily exercise design time now~ 
+                                 Here is a To Study app screen from my idea. The design is a plan for arranging elements in such a w...</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4829514-Purple-day/fans">108</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    13
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>1,770</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4829514-Purple-day/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              0
+                              </span>
+                              </a>      <a href="/search">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-team">
+                           <a class="hoverable url" rel="contact" href="/bbteam"><img class="photo" src="https://cdn.dribbble.com/users/1974563/avatars/mini/fb1c689a7a2da081e7e16cebc861dfc7.png?1509882581" /> B&amp;B</a>
+                           <a class="badge-link" href="/teams/info">
+                           <span class="badge badge-team">Team</span>
+                           </a>
+                           </span>
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/wwwwwaldeinsamkeit"><img class="photo" src="https://cdn.dribbble.com/users/1822960/avatars/mini/be30b2c05851bf90decce9c51c7e4f26.jpeg?1521119040" /> Zhu Yaling</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4828932" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4828932-KAIP-Google-Camera-Animation">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/1318305/screenshots/4828932/kaip_camera_animation_1x.gif" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/1318305/screenshots/4828932/kaip_camera_animation_teaser.gif">
+                                       <img alt="KAIP Google Camera - Animation" src="https://cdn.dribbble.com/users/1318305/screenshots/4828932/kaip_camera_animation_teaser.gif" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4828932-KAIP-Google-Camera-Animation">    <strong>KAIP Google Camera - Animation</strong>
+                                 <span class="comment">Hi Dribbble!
+                                 I'm just a regular guy who occasionally design stuff! Looking forward to sharing my work here! 
+                                 This animation was part of a promo v...</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4828932-KAIP-Google-Camera-Animation/fans">39</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    2
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>439</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4828932-KAIP-Google-Camera-Animation/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              0
+                              </span>
+                              </a>      <a href="/search">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                           <div class="gif-indicator"></div>
+                           <a class="gif-target" href="/shots/4828932-KAIP-Google-Camera-Animation"></a>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/LinkedDesigns"><img class="photo" src="https://cdn.dribbble.com/users/1318305/avatars/mini/baba16327bdb4074941d04d6a13df718.png?1528133887" /> Anthony Nguyen</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4828449" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4828449-Auto-Market">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4828449/8auto_1x.png" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4828449/8auto_teaser.png">
+                                       <img alt="Auto Market" src="https://cdn.dribbble.com/users/1029310/screenshots/4828449/8auto_teaser.png" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4828449-Auto-Market">    <strong>Auto Market</strong>
+                                 <span class="comment">Automarket page user interface for the "FIRST Messenger" mobile application</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4828449-Auto-Market/fans">19</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    2
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>112</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4828449-Auto-Market/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              1
+                              </span>
+                              </a>      <a href="/shots/4828269-Search-filter">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/andreihoncharuk"><img class="photo" src="https://cdn.dribbble.com/users/1029310/avatars/mini/d946050c23110271ea3574b7659acd63.jpg?1450715729" /> Andrei Honcharuk</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4828269" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4828269-Search-filter">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4828269/9auto2_1x.png" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4828269/9auto2_teaser.png">
+                                       <img alt="Search filter" src="https://cdn.dribbble.com/users/1029310/screenshots/4828269/9auto2_teaser.png" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4828269-Search-filter">    <strong>Search filter</strong>
+                                 <span class="comment">Search filter page user interface for mobile application "FIRST Messenger"</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4828269-Search-filter/fans">19</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    2
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>129</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4828269-Search-filter/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              1
+                              </span>
+                              </a>      <a href="/shots/4827673-My-profile">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/andreihoncharuk"><img class="photo" src="https://cdn.dribbble.com/users/1029310/avatars/mini/d946050c23110271ea3574b7659acd63.jpg?1450715729" /> Andrei Honcharuk</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4827662" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4827662-Fancy-Filter-Fields">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/886353/screenshots/4827662/ezgif.com-video-to-gif__2__1x.gif" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/886353/screenshots/4827662/ezgif.com-video-to-gif__2__teaser.gif">
+                                       <img alt="Fancy Filter Fields" src="https://cdn.dribbble.com/users/886353/screenshots/4827662/ezgif.com-video-to-gif__2__teaser.gif" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4827662-Fancy-Filter-Fields">    <strong>Fancy Filter Fields</strong>
+                                 <span class="comment">Fancy input fields to filter data.
+                                 Demo - Codepen</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4827662-Fancy-Filter-Fields/fans">19</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    0
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>115</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4827662-Fancy-Filter-Fields/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              0
+                              </span>
+                              </a>      <a href="/search">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                           <div class="gif-indicator"></div>
+                           <a class="gif-target" href="/shots/4827662-Fancy-Filter-Fields"></a>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/prvnbist"><img class="photo" src="https://cdn.dribbble.com/users/886353/avatars/mini/7f424172b6cdd2b6be9982bb302769c4.png?1481460451" /> Praveen Bisht</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4827673" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4827673-My-profile">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4827673/10myprofile_1x.png" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4827673/10myprofile_teaser.png">
+                                       <img alt="My profile" src="https://cdn.dribbble.com/users/1029310/screenshots/4827673/10myprofile_teaser.png" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4827673-My-profile">    <strong>My profile</strong>
+                                 <span class="comment">Profile page user interface for mobile application "FIRST Messenger"</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4827673-My-profile/fans">18</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    1
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>180</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4827673-My-profile/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              1
+                              </span>
+                              </a>      <a href="/shots/4827562-Settings">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/andreihoncharuk"><img class="photo" src="https://cdn.dribbble.com/users/1029310/avatars/mini/d946050c23110271ea3574b7659acd63.jpg?1450715729" /> Andrei Honcharuk</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <li id="screenshot-4827562" class="group ">
+                        <div class="dribbble">
+                           <div class="dribbble-shot">
+                              <div class="dribbble-img">
+                                 <a class="dribbble-link" href="/shots/4827562-Settings">
+                                    <picture>
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4827562/11settings_1x.png" media="(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 1.5dppx)">
+                                       <source srcset="https://cdn.dribbble.com/users/1029310/screenshots/4827562/11settings_teaser.png">
+                                       <img alt="Settings" src="https://cdn.dribbble.com/users/1029310/screenshots/4827562/11settings_teaser.png" />
+                                    </picture>
+                                 </a>
+                                 <a class="dribbble-over" href="/shots/4827562-Settings">    <strong>Settings</strong>
+                                 <span class="comment">Settings page user interface for mobile application "FIRST Messenger"</span>
+                                 <em class="timestamp"></em>
+                                 </a>
+                              </div>
+                              <ul class="tools group">
+                                 <li class="fav">
+                                    <a title="View fans of this shot" href="/shots/4827562-Settings/fans">24</a>
+                                 </li>
+                                 <li class="cmnt">
+                                    <span>
+                                    2
+                                    </span>
+                                 </li>
+                                 <li class="views">
+                                    <span>280</span>
+                                 </li>
+                              </ul>
+                           </div>
+                           <div class="extras">
+                              <a href="/shots/4827562-Settings/rebounds">
+                              <span rel="tipsy" title="This shot has rebounds." class="rebound-mark has-rebounds">
+                              1
+                              </span>
+                              </a>      <a href="/shots/4723818-FIRST-Messenger">
+                              <span rel="tipsy" title="This shot is a rebound (reply) of another shot. View the original." class="rebound-mark is-rebound">
+                              <img width="16" height="16" alt="Rebound" src="https://cdn.dribbble.com/assets/icon-rebound-2x-24fe8b574874f064bcab2a8e46e0694cc39641ebef3d176c2eb742f5f0c7c308.png" />
+                              </span>
+                              </a>      <span rel="tipsy" title="This shot has attachments" class="attachments-mark">
+                              <img width="16" height="16" alt="Attachments" src="https://cdn.dribbble.com/assets/icon-attach-16-2x-e9c3932a8f6aea66c54a2971b83349a8b6fac457fcaff1117cb13f74fe6766b4.png" />
+                              </span>
+                           </div>
+                        </div>
+                        <h2 class="attribution hover-card-parent">
+                           <span class="attribution-user">
+                           <a class="hoverable url" rel="contact" href="/andreihoncharuk"><img class="photo" src="https://cdn.dribbble.com/users/1029310/avatars/mini/d946050c23110271ea3574b7659acd63.jpg?1450715729" /> Andrei Honcharuk</a>
+                           </span>
+                        </h2>
+                     </li>
+                     <script>
+                        var newestShots = [{
+                            id: 4832907,
+                            title: "YouTube Material Redesign",
+                            path: "/shots/4832907-YouTube-Material-Redesign",
+                            published_at: 'about 3 hours ago',
+                            is_rebound: false,
+                            rebounds_count: 0,
+                            attachments_count: 0,
+                            view_count: 56,
+                            comments_count: 0,
+                            likes_count: 17,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4832756,
+                            title: "Improv Icon Animations",
+                            path: "/shots/4832756-Improv-Icon-Animations",
+                            published_at: 'about 4 hours ago',
+                            is_rebound: false,
+                            rebounds_count: 0,
+                            attachments_count: 0,
+                            view_count: 98,
+                            comments_count: 0,
+                            likes_count: 18,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: [["hecopartners","UA-88246775-1"]]
+                          },{
+                            id: 4832435,
+                            title: "Web App : X-Fit",
+                            path: "/shots/4832435-Web-App-X-Fit",
+                            published_at: 'about 6 hours ago',
+                            is_rebound: false,
+                            rebounds_count: 0,
+                            attachments_count: 0,
+                            view_count: 62,
+                            comments_count: 0,
+                            likes_count: 10,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4832022,
+                            title: "Movie website material design low contrast  \"figma design\"",
+                            path: "/shots/4832022-Movie-website-material-design-low-contrast-figma-design",
+                            published_at: 'about 7 hours ago',
+                            is_rebound: false,
+                            rebounds_count: 0,
+                            attachments_count: 0,
+                            view_count: 33,
+                            comments_count: 0,
+                            likes_count: 8,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4832005,
+                            title: "Application Design",
+                            path: "/shots/4832005-Application-Design",
+                            published_at: 'about 7 hours ago',
+                            is_rebound: false,
+                            rebounds_count: 0,
+                            attachments_count: 0,
+                            view_count: 92,
+                            comments_count: 0,
+                            likes_count: 13,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4831641,
+                            title: "Finance",
+                            path: "/shots/4831641-Finance",
+                            published_at: 'about 8 hours ago',
+                            is_rebound: true,
+                            rebounds_count: 0,
+                            attachments_count: 0,
+                            view_count: 77,
+                            comments_count: 0,
+                            likes_count: 15,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4831365,
+                            title: "Contacts",
+                            path: "/shots/4831365-Contacts",
+                            published_at: 'about 9 hours ago',
+                            is_rebound: true,
+                            rebounds_count: 1,
+                            attachments_count: 0,
+                            view_count: 88,
+                            comments_count: 0,
+                            likes_count: 17,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4831342,
+                            title: "Azex Blog",
+                            path: "/shots/4831342-Azex-Blog",
+                            published_at: 'about 9 hours ago',
+                            is_rebound: false,
+                            rebounds_count: 0,
+                            attachments_count: 0,
+                            view_count: 70,
+                            comments_count: 0,
+                            likes_count: 15,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4831105,
+                            title: "Messaging",
+                            path: "/shots/4831105-Messaging",
+                            published_at: 'about 10 hours ago',
+                            is_rebound: true,
+                            rebounds_count: 1,
+                            attachments_count: 0,
+                            view_count: 140,
+                            comments_count: 0,
+                            likes_count: 22,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4476336,
+                            title: "Pricing - Mobile Saas Admin UI Kit",
+                            path: "/shots/4476336-Pricing-Mobile-Saas-Admin-UI-Kit",
+                            published_at: 'about 10 hours ago',
+                            is_rebound: false,
+                            rebounds_count: 0,
+                            attachments_count: 1,
+                            view_count: 414,
+                            comments_count: 0,
+                            likes_count: 37,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4830961,
+                            title: "Chats",
+                            path: "/shots/4830961-Chats",
+                            published_at: 'about 11 hours ago',
+                            is_rebound: true,
+                            rebounds_count: 1,
+                            attachments_count: 0,
+                            view_count: 197,
+                            comments_count: 0,
+                            likes_count: 26,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4830712,
+                            title: "X Fit Logo",
+                            path: "/shots/4830712-X-Fit-Logo",
+                            published_at: 'about 12 hours ago',
+                            is_rebound: false,
+                            rebounds_count: 0,
+                            attachments_count: 0,
+                            view_count: 53,
+                            comments_count: 0,
+                            likes_count: 10,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4830655,
+                            title: "Material Study",
+                            path: "/shots/4830655-Material-Study",
+                            published_at: 'about 12 hours ago',
+                            is_rebound: false,
+                            rebounds_count: 0,
+                            attachments_count: 0,
+                            view_count: 183,
+                            comments_count: 0,
+                            likes_count: 22,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4830547,
+                            title: "Sneaker shop",
+                            path: "/shots/4830547-Sneaker-shop",
+                            published_at: 'about 12 hours ago',
+                            is_rebound: false,
+                            rebounds_count: 0,
+                            attachments_count: 2,
+                            view_count: 362,
+                            comments_count: 0,
+                            likes_count: 34,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4830558,
+                            title: "Car sale",
+                            path: "/shots/4830558-Car-sale",
+                            published_at: 'about 12 hours ago',
+                            is_rebound: true,
+                            rebounds_count: 1,
+                            attachments_count: 0,
+                            view_count: 76,
+                            comments_count: 0,
+                            likes_count: 17,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4830117,
+                            title: "Hotel amenities icon set",
+                            path: "/shots/4830117-Hotel-amenities-icon-set",
+                            published_at: 'about 14 hours ago',
+                            is_rebound: true,
+                            rebounds_count: 0,
+                            attachments_count: 0,
+                            view_count: 244,
+                            comments_count: 0,
+                            likes_count: 27,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4830059,
+                            title: "Crediplus Referral Screen",
+                            path: "/shots/4830059-Crediplus-Referral-Screen",
+                            published_at: 'about 14 hours ago',
+                            is_rebound: false,
+                            rebounds_count: 0,
+                            attachments_count: 0,
+                            view_count: 103,
+                            comments_count: 1,
+                            likes_count: 14,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4829514,
+                            title: "Purple day：）",
+                            path: "/shots/4829514-Purple-day",
+                            published_at: 'July 15, 2018',
+                            is_rebound: false,
+                            rebounds_count: 0,
+                            attachments_count: 3,
+                            view_count: 1770,
+                            comments_count: 13,
+                            likes_count: 108,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4828932,
+                            title: "KAIP Google Camera - Animation",
+                            path: "/shots/4828932-KAIP-Google-Camera-Animation",
+                            published_at: 'July 15, 2018',
+                            is_rebound: false,
+                            rebounds_count: 0,
+                            attachments_count: 0,
+                            view_count: 439,
+                            comments_count: 2,
+                            likes_count: 39,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4828449,
+                            title: "Auto Market",
+                            path: "/shots/4828449-Auto-Market",
+                            published_at: 'July 15, 2018',
+                            is_rebound: true,
+                            rebounds_count: 1,
+                            attachments_count: 0,
+                            view_count: 112,
+                            comments_count: 1,
+                            likes_count: 19,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4828269,
+                            title: "Search filter",
+                            path: "/shots/4828269-Search-filter",
+                            published_at: 'July 15, 2018',
+                            is_rebound: true,
+                            rebounds_count: 1,
+                            attachments_count: 0,
+                            view_count: 129,
+                            comments_count: 1,
+                            likes_count: 19,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4827662,
+                            title: "Fancy Filter Fields",
+                            path: "/shots/4827662-Fancy-Filter-Fields",
+                            published_at: 'July 15, 2018',
+                            is_rebound: false,
+                            rebounds_count: 0,
+                            attachments_count: 0,
+                            view_count: 115,
+                            comments_count: 0,
+                            likes_count: 19,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4827673,
+                            title: "My profile",
+                            path: "/shots/4827673-My-profile",
+                            published_at: 'July 15, 2018',
+                            is_rebound: true,
+                            rebounds_count: 1,
+                            attachments_count: 0,
+                            view_count: 180,
+                            comments_count: 0,
+                            likes_count: 18,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          },{
+                            id: 4827562,
+                            title: "Settings",
+                            path: "/shots/4827562-Settings",
+                            published_at: 'July 15, 2018',
+                            is_rebound: true,
+                            rebounds_count: 1,
+                            attachments_count: 0,
+                            view_count: 280,
+                            comments_count: 1,
+                            likes_count: 24,
+                            liked: false,
+                            liked_by_html: null,
+                            ga: []
+                          }];
+                        
+                        if (typeof(Dribbble) != "undefined" && typeof(Dribbble.Shots) != "undefined") {
+                          Dribbble.Shots.add(newestShots);
+                          Dribbble.TeaserStats.init(newestShots);
+                        
+                            Dribbble.Screenshots.cursor = '1531647699.467663';
+                        }
+                        else {
+                          if (typeof newShots === "undefined") {
+                            var newShots = [];
+                          }
+                          newShots = newShots.concat(newestShots);
+                        }
+                        
+                     </script>
+                  </ol>
+                  <div class="page">
+                     <div class="pagination"><span class="previous_page disabled">&larr; Prev</span> <a class="next_page" rel="next" href="/search?page=2&amp;per_page=12&amp;q=Material+Design&amp;s=latest">Next &rarr;</a></div>
+                  </div>
+                  <div class="infinite">
+                     <a class="form-sub sign-up-to-continue" data-signup-trigger="true" data-context="homepage-load-more" href="/signup/new">Sign up to continue</a>
+                     <a href="/session/new?return_to=%2Fsearch%3Fq%3DMaterial%2520Design%26page%3D1%26s%3Dlatest%26per_page%3D12">or sign in</a>
+                  </div>
+                  <div class="loading-more">
+                     <span class="processing">Loading more…</span>
+                  </div>
+                  <div class="back-to-top" style="display: none">
+                     <a href="#"><img title="Back to Top" src="https://cdn.dribbble.com/assets/icon-backtotop-1b04df73090f6b0f3192a3b71874ca3b3cc19dff16adc6cf365cd0c75897f6c0.png" alt="Icon backtotop" /></a>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <hr />
+      <div id="footer" role="contentinfo">
+         <div id="footer-inner">
+            <div class="group">
+               <div class="footer-mod">
+                  <p class="logo"><a href="/"><img width="80" alt="dribbble" src="https://cdn.dribbble.com/assets/logo-footer-hd-a05db77841b4b27c0bf23ec1378e97c988190dfe7d26e32e1faea7269f9e001b.png" /></a><br />Show and tell for designers</p>
+                  <p class="about">What are you working on? Dribbble is a community of designers sharing screenshots of their work, process, and projects.</p>
+                  <p class="follow">
+                     <a href="/dribbble"><img width="24" src="https://cdn.dribbble.com/assets/icon-team-dribbble-8706862cdb0afa7f43f9e0218b073515f0a2bef19780961d324ae4620ebe249b.png" alt="Icon team dribbble" /></a>
+                     <a href="http://twitter.com/dribbble"><img width="24" src="https://cdn.dribbble.com/assets/icon-team-twitter-1fa6921d96b16e47f00ad0381ebbab59ba089c22b21f9bce783c9a4a077f40e9.png" alt="Icon team twitter" /></a>
+                     <a href="http://facebook.com/dribbble"><img width="24" src="https://cdn.dribbble.com/assets/icon-team-facebook-4d63851997b88eb903858057327d93df9f950a55c5104a3a19206f2005682ea3.png" alt="Icon team facebook" /></a>
+                     <a href="http://instagram.com/dribbble"><img width="24" src="https://cdn.dribbble.com/assets/icon-team-instagram-5dfdcd1478ea4a1c1e109b32adbd3878062aa1eb571da63ac379e0da1d2d5762.png" alt="Icon team instagram" /></a>
+                     <a href="/stories">
+                     <img width="24" src="https://cdn.dribbble.com/assets/icon-team-blog-2705adcb7ee6522051e175d10683208f0fa0ad17daa15fdf3f36aca99c540312.png" alt="Icon team blog" />
+                     </a>        
+                  </p>
+               </div>
+               <div class="footer-mod">
+                  <div class="extra-links">
+                     <h3><a href="/">Dribbble</a></h3>
+                     <ul>
+                        <li><a id="f-home" href="/about">About</a></li>
+                        <li><a href="http://help.dribbble.com">Help</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                        <li><a href="/careers">Careers</a></li>
+                        <li><a href="/terms">Terms</a></li>
+                        <li><a href="/guidelines">Guidelines</a></li>
+                        <li><a href="/privacy">Privacy</a></li>
+                        <li><a href="https://shop.dribbble.com/">Shop</a></li>
+                        <li><a href="/testimonials">Testimonials</a></li>
+                        <li><a href="/branding">Brand</a></li>
+                        <li><a href="/advertise">Advertise</a></li>
+                        <li><a href="http://developer.dribbble.com">API</a></li>
+                        <li><a href="/integrations">Integrations</a></li>
+                        <li><a href="/ios">iOS App</a></li>
+                     </ul>
+                  </div>
+                  <div class="hiring-links">
+                     <h3><a href="/hiring">Hiring at Dribbble</a></h3>
+                     <ul>
+                        <li><a href="/jobs/new">Post a job</a></li>
+                        <li><a href="/designers">Search designers</a></li>
+                        <li><a href="/teams/info">Add your team</a></li>
+                     </ul>
+                  </div>
+                  <div class="job-links">
+                     <h3><a href="/jobs">Jobs for Designers</a></h3>
+                     <ol class="jobs-list">
+                        <li class="group">
+                           <a class="item-team" rel="tipsy" title="Visit the team’s profile" href="/ueno">
+                           <img src="https://cdn.dribbble.com/users/40433/avatars/normal/41b86a77ca368dd4a969397ef39ba9a6.png?1472167036" alt="41b86a77ca368dd4a969397ef39ba9a6" />
+                           </a>
+                           <a class="job-edit" rel="tipsy" title="Edit this job" data-creator-id="40433" href="/jobs/manage?edit_job_id=14111">
+                           <img src="https://cdn.dribbble.com/assets/icon-edit-button-8d0f2493aa649d9e18d5cf27ee32c93aaa6488ddda85b481f6ca341b85fde845.png" alt="Icon edit button" />
+                           </a>
+                           <a class="item-link group" data-url="https://ueno.co/careers/35w2dJg30Im4iSauMwAWaG/product-designer-san-francisco" rel="nofollow" href="/jobs/14111?source=footer">
+                           <span class="item-info">
+                           <span class="item-title">ueno.</span>
+                           <span class="item-desc">Product Designer</span>
+                           </span>
+                           <span class="item-meta">San Francisco, CA</span>
+                           </a>
+                        </li>
+                        <li class="group">
+                           <a class="item-team" rel="tipsy" title="Visit the team’s profile" href="/brandwatch">
+                           <img src="https://cdn.dribbble.com/users/2386370/avatars/normal/579afc42ff32dc92b14412419f1b7417.jpg?1530024369" alt="579afc42ff32dc92b14412419f1b7417" />
+                           </a>
+                           <a class="job-edit" rel="tipsy" title="Edit this job" data-creator-id="2386370" href="/jobs/manage?edit_job_id=15338">
+                           <img src="https://cdn.dribbble.com/assets/icon-edit-button-8d0f2493aa649d9e18d5cf27ee32c93aaa6488ddda85b481f6ca341b85fde845.png" alt="Icon edit button" />
+                           </a>
+                           <a class="item-link group" data-url="http://jobs.jobvite.com/careers/brandwatch/job/oENP7fw7" rel="nofollow" href="/jobs/15338?source=footer">
+                           <span class="item-info">
+                           <span class="item-title">Brandwatch</span>
+                           <span class="item-desc">Lead Website Designer</span>
+                           </span>
+                           <span class="item-meta">Brighton, United Kingdom</span>
+                           </a>
+                        </li>
+                        <li class="group">
+                           <a class="item-team" rel="tipsy" title="Visit the team’s profile" href="/goldstar">
+                           <img src="https://cdn.dribbble.com/users/431656/avatars/normal/dribble_avatar.jpg?1382985633" alt="Dribble avatar" />
+                           </a>
+                           <a class="job-edit" rel="tipsy" title="Edit this job" data-creator-id="431656" href="/jobs/manage?edit_job_id=15430">
+                           <img src="https://cdn.dribbble.com/assets/icon-edit-button-8d0f2493aa649d9e18d5cf27ee32c93aaa6488ddda85b481f6ca341b85fde845.png" alt="Icon edit button" />
+                           </a>
+                           <a class="item-link group" data-url="https://goldstar.workable.com/jobs/766042" rel="nofollow" href="/jobs/15430?source=footer">
+                           <span class="item-info">
+                           <span class="item-title">Goldstar</span>
+                           <span class="item-desc">(Design Focused) Product Manager</span>
+                           </span>
+                           <span class="item-meta">Portland, OR and Pasadena, CA</span>
+                           </a>
+                        </li>
+                     </ol>
+                  </div>
+               </div>
+               <div class="footer-mod">
+                  <div class="ad carbon target notloaded"></div>
+                  <h4 id="pixels-total" class="group">
+                     <strong>1,126,039,577,978</strong> pixels dribbbled
+                  </h4>
+               </div>
+            </div>
+            <div class="group">
+               <div class="footer-mod">
+                  <p class="network">
+                     &copy; 2018 Dribbble. All rights reserved.
+                  </p>
+               </div>
+               <div class="footer-mod">
+                  <h5 class="remote-love">
+                     Made with &hearts; remotely from
+                     <div class="remote-locations">
+                        <span>Salem, MA</span>
+                        <span>Walnut Creek, CA</span>
+                        <span>Victoria, BC</span>
+                        <span>Centennial, CO</span>
+                        <span>Bournemouth, UK</span>
+                        <span>Vancouver, BC</span>
+                        <span>Montreal, QC</span>
+                        <span>Roseville, MN</span>
+                        <span>Rome, GA</span>
+                        <span>Peterborough, NH</span>
+                        <span>Davis, CA</span>
+                        <span>Oakland, CA</span>
+                        <span>Austin, TX</span>
+                        <span>Mystic, CT</span>
+                        <span>Longueuil, QC</span>
+                        <span>Saint Charles, MO</span>
+                        <span>Des Moines, IA</span>
+                        <span>Salt Lake City, UT</span>
+                        <span>Lander, WY</span>
+                        <span>Scarsdale, NY</span>
+                        <span>Cote St Luc, QC</span>
+                     </div>
+                  </h5>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- /footer -->
+      <div class="shot-overlay" tabindex="-1">
+         <a href="#" class="close-overlay" aria-label="close">
+         <img src="https://cdn.dribbble.com/assets/icon-shot-x-light-40c073cd65443c99d4ac129b69bf578c8cf97d69b78990c00c4f8c5873b0d601.png" alt="Icon shot x light" />
+         </a>
+         <div class="overlay-content group"></div>
+      </div>
+      <div class="attachment-overlay" style="display:none;" tabindex="-1"></div>
+      <div id="signup-overlay" class="overlay ">
+         <div class="lightbox">
+            <a href="#" class="close" aria-label="close"><img alt="close" src="https://cdn.dribbble.com/assets/icon-overlay-x-2x-b7df2526b4c26d4e8410a7c437c433908be0c7c8c3c3402c3e578af5c50cf5a5.png" /></a>
+            <div class="display">
+               <p class="signup-reason"></p>
+               <div class="signup-container">
+                  <div class="pitch-column">
+                     <img width="50" height="50" src="https://cdn.dribbble.com/assets/dribbble-ball-192-ec064e49e6f63d9a5fa911518781bee0c90688d052a038f8876ef0824f65eaf2.png" alt="Dribbble ball 192" />
+                     <p>A community of designers sharing their work, process, and current projects.</p>
+                     <div class="benefits">
+                        <h3>Sign up for Dribbble to…</h3>
+                        <ul>
+                           <li>Get inspired and build your network</li>
+                           <li>If invited, share your work and grow</li>
+                           <li>Message designers about work opportunities <span>(3 free messages)</span></li>
+                        </ul>
+                     </div>
+                  </div>
+                  <div class="form-column">
+                     <div class="signup-social">
+                        <a class="form-btn auth-twitter auth-top social-signup" href="https://dribbble.com/auth/Twitter">
+                           <svg xmlns="http://www.w3.org/2000/svg" aria-labelledby="3etpmmrxopdi1sem7nzoda9sctmqs7e" role="img" viewBox="0 0 24 24" class="icon">
+                              <title id="3etpmmrxopdi1sem7nzoda9sctmqs7e">Social/twitter</title>
+                              <path d="M23.954 4.569c-.885.389-1.83.654-2.825.775 1.014-.611 1.794-1.574 2.163-2.723-.951.555-2.005.959-3.127 1.184-.896-.959-2.173-1.559-3.591-1.559-2.717 0-4.92 2.203-4.92 4.917 0 .39.045.765.127 1.124C7.691 8.094 4.066 6.13 1.64 3.161c-.427.722-.666 1.561-.666 2.475 0 1.71.87 3.213 2.188 4.096-.807-.026-1.566-.248-2.228-.616v.061c0 2.385 1.693 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.314 0-.615-.03-.916-.086.631 1.953 2.445 3.377 4.604 3.417-1.68 1.319-3.809 2.105-6.102 2.105-.39 0-.779-.023-1.17-.067 2.189 1.394 4.768 2.209 7.557 2.209 9.054 0 13.999-7.496 13.999-13.986 0-.209 0-.42-.015-.63.961-.689 1.8-1.56 2.46-2.548l-.047-.02z"></path>
+                           </svg>
+                           Sign up with Twitter
+                        </a>
+                        <a class="form-btn auth-facebook social-signup" href="/auth/facebook/callback">
+                           <svg xmlns="http://www.w3.org/2000/svg" aria-labelledby="i5jerew8qjjgxe2vjc1yf1z7elpufrk" role="img" viewBox="0 0 24 24" class="icon">
+                              <title id="i5jerew8qjjgxe2vjc1yf1z7elpufrk">Social/facebook</title>
+                              <path d="M22.676 0H1.324C.593 0 0 .593 0 1.324v21.352C0 23.408.593 24 1.324 24h11.494v-9.294H9.689v-3.621h3.129V8.41c0-3.099 1.894-4.785 4.659-4.785 1.325 0 2.464.097 2.796.141v3.24h-1.921c-1.5 0-1.792.721-1.792 1.771v2.311h3.584l-.465 3.63H16.56V24h6.115c.733 0 1.325-.592 1.325-1.324V1.324C24 .593 23.408 0 22.676 0"></path>
+                           </svg>
+                           Sign up with Facebook
+                        </a>
+                        <a class="form-btn auth-google social-signup" href="/auth/google_signup">
+                           <svg xmlns="http://www.w3.org/2000/svg" aria-labelledby="ezimnc1kzawmtbfu27bt8k0t1ayuf52" role="img" viewBox="0 0 24 24" class="icon">
+                              <title id="ezimnc1kzawmtbfu27bt8k0t1ayuf52">Social/google</title>
+                              <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z"></path>
+                           </svg>
+                           Sign up with Google
+                        </a>
+                     </div>
+                     <span class="signup-or-label">or</span>
+                     <a class="email-signup-toggle" href="#">Sign up with email</a>
+                     <form class="hide-remove gen-form with-messages signup email-form" id="new_user" action="https://dribbble.com/signup" accept-charset="UTF-8" method="post">
+                        <input name="utf8" type="hidden" value="&#x2713;" /><input type="hidden" name="authenticity_token" value="W5vfwqozvIZbRjbcVoV/RGu0pTeOZiSWvL21rmuxE37bE2x5bZhWrnVJuZTYc0HiseM9H4CqZTQ+cMq0vUojDA==" />
+                        <div class="errorExplanation" style="display: none;">
+                           <h2>Clank!</h2>
+                           <ul></ul>
+                        </div>
+                        <div class="form-field">
+                           <fieldset class="user_name"><input placeholder="First and last name" type="text" name="user[name]" id="user_name" /></fieldset>
+                        </div>
+                        <div class="form-field">
+                           <fieldset class="user_email"><input placeholder="Email" type="text" name="user[email]" id="user_email" /></fieldset>
+                        </div>
+                        <div class="form-field">
+                           <fieldset class="user_login"><input placeholder="Username" autocorrect="off" autocapitalize="off" type="text" name="user[login]" id="user_login" /></fieldset>
+                        </div>
+                        <div class="form-field">
+                           <fieldset class="user_password"><input placeholder="Password" type="password" name="user[password]" id="user_password" /></fieldset>
+                           <p class="message">Minimum 6 characters</p>
+                        </div>
+                        <div class="form-field check-wrap opt-in">
+                           <fieldset>
+                              <label for="user_agree_to_terms">
+                              <input type="checkbox" id="user_agree_to_terms" name="user[agree_to_terms]" />
+                              Creating an account means you’re okay with our
+                              <a target="_blank" href="/terms">Terms of Service</a>,
+                              <a target="_blank" href="/privacy">Privacy Policy</a>, and our default
+                              <a target="_blank" href="/notifications">Notification Settings</a>.
+                              </label>
+                           </fieldset>
+                        </div>
+                        <div class="form-btns">
+                           <input type="submit" name="commit" value="Create Account" class="form-sub btn" />
+                        </div>
+                        <div class="g-recaptcha" data-sitekey="6LdmBTIUAAAAAM4NIokaWu8p3BBuYEw3CxuDdyg_" data-callback="captchaCallback" data-size="invisible" data-badge="inline"></div>
+                        <div class="captcha-not-loaded processing">
+                           <p>Uh oh… We’re still waiting for our <a href="https://www.google.com/recaptcha/intro/index.html" target="_blank" rel="noopener noreferrer">spam prevention code</a> to load.</p>
+                           <p>If this message doesn’t go away soon, please ensure JavaScript is enabled, your ad blocker is disabled, and reload the page to try again.</p>
+                        </div>
+                     </form>
+                     <p class="already-a-member">Already a member? <a href="/session/new?return_to=%2Fsearch%3Fq%3DMaterial%2520Design%26page%3D1%26s%3Dlatest%26per_page%3D12">Sign in</a></p>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <script src="//js.honeybadger.io/v0.2/honeybadger.min.js"></script>
+      <script>
+         Honeybadger.configure({
+           api_key: '1f1d2734', // Public API key
+           environment: 'production',
+           disabled: false,
+           onerror: false,
+           ssl: true
+         });
+         
+         Honeybadger.setContext({
+           userId: null,
+           serverTime: 1531775516000,
+           clientTime: +new Date(),
+           clientTimeString: (new Date()).toString()
+         })
+      </script>
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+      <!-- jquery failover -->
+      <script>
+         if (typeof jQuery == 'undefined') {
+           document.write(unescape('%3Cscript src="https://cdn.dribbble.com/assets/jquery-1.8.3.min-28fb0e51b484b6b09b90155d084759f7d3bea87b6e816b1e2f22c88aa2e0ec67.js">%3C/script>'))
+         }
+      </script>
+      <script src="https://cdn.dribbble.com/assets/boosted-profile-848573adbdb06d07871fe218da03e3c85f9b161e6c4f5856fed388dc3185f0bc.js"></script>    <script>
+         Dribbble.BoostedProfile.initialize({
+           placementLocation: 'top-bar',
+           adbutlerUrl: 'https://dribbble.com/boostedserve/;ID=171773;size=0x0;setID=307015;type=json;click=CLICK_MACRO_PLACEHOLDER',
+         });
+         
+         Dribbble.BoostedProfile.load();
+      </script>
+      <script src="https://cdn.dribbble.com/assets/global-72e23d2f312e0085e03eaa8dde3881959a6ae4c42599751bb3f541e8668ed92b.js"></script>
+      <script src="https://cdn.dribbble.com/assets/shots-manifest-160353c5c99406e1e20c7cd10679157d7600d469246099c3d407fed94b2d1173.js"></script><script>
+         $(function() {
+           Dribbble.Screenshots.initialize({"enable_overlay":true,"cursor":false,"deferredContent":null});
+         
+         });
+      </script>
+      <script>
+         (function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
+         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+         })(window,document,"script","//www.google-analytics.com/analytics.js","ga");
+         
+         ga("create", "UA-24041469-1", "auto", {
+           "sampleRate": 5.0
+         });
+      </script>
+      <script>
+         !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="4.0.0";
+           analytics.load("NebmEAHRg0JSoZUQ3dvYl38FE7sSSTQi");
+         }}();
+      </script>
+      <script>
+         var segmentPageProperties = {controller: "searches", action: "show"}
+         if (window.location.pathname == "/") {
+           Dribbble.Analytics.namedRoot = "/shots";
+           Dribbble.Analytics.logDribbbleGAPageView("/")
+           segmentPageProperties.url = Dribbble.Analytics.namedRoot
+         } else {
+           Dribbble.Analytics.logDribbbleGAPageView("/search?q=Material%20Design\u0026page=1\u0026s=latest\u0026per_page=12")
+         }
+         Dribbble.Segment.page(segmentPageProperties)
+         Dribbble.Segment.processPending();
+         
+      </script>
+      <script>
+         setTimeout(function() {
+           Dribbble.Ads.enable();
+           Dribbble.Ads.load("footer");
+         }, 1);
+      </script>
+   </body>
+</html>

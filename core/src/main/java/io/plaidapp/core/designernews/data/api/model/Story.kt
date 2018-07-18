@@ -39,13 +39,11 @@ data class Story(
     @SerializedName("comment_count") val commentCount: Int = 0,
     @SerializedName("vote_count") val voteCount: Int = 0,
     @SerializedName("user_id") val userId: Long = 0L,
-    @SerializedName("created_at") val createdAt: Date? = null,
+    @SerializedName("created_at") val createdAt: Date,
     @SerializedName("links") val links: StoryLinks? = null,
     @Deprecated("Removed in DN API V2")
     @SerializedName("user_display_name") val userDisplayName: String? = null,
     @Deprecated("Removed in DN API V2")
     @SerializedName("user_portrait_url") val userPortraitUrl: String? = null,
-    @SerializedName("user_job") val userJob: String? = null,
-    @Deprecated("Removed in DN API V2")
-    @SerializedName("comments") var comments: List<Comment>? = emptyList()
+    @SerializedName("user_job") val userJob: String? = null
 ) : PlaidItem(id, title, url), Parcelable
