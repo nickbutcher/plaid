@@ -21,7 +21,7 @@ test_apk() {
     mkdir -p "$TEST_DIR/$RESULTS_DIR"
 
 	# Pull down test results
-	gsutil -m cp -r -U "gs://TODO-PROJECT-ID/$RESULTS_DIR/*" "$TEST_DIR/$RESULTS_DIR"
+	gsutil -m cp -r -U "gs://android-devrel-ci/$RESULTS_DIR/*" "$TEST_DIR/$RESULTS_DIR"
 }
 
 test_apk \
