@@ -29,8 +29,9 @@ import com.bumptech.glide.Glide;
 
 import java.io.File;
 
+import io.plaidapp.core.dribbble.data.api.model.Images;
 import io.plaidapp.dribbble.BuildConfig;
-import io.plaidapp.core.data.api.dribbble.model.Shot;
+import io.plaidapp.core.dribbble.data.api.model.Shot;
 
 /**
  * An AsyncTask which retrieves a File from the Glide cache then shares it.
@@ -47,12 +48,13 @@ class ShareDribbbleImageTask extends AsyncTask<Void, Void, File> {
 
     @Override
     protected File doInBackground(Void... params) {
-        final String url = shot.images.best();
+        final String url = shot.getImages().best();
+        final Images.ImageSize size = shot.getImages().bestSize();
         try {
             return Glide
                     .with(activity)
                     .load(url)
-                    .downloadOnly((int) shot.width, (int) shot.height)
+                    .downloadOnly(size.getWidth(), size.getHeight())
                     .get();
         } catch (Exception ex) {
             Log.w("SHARE", "Sharing " + url + " failed", ex);
@@ -65,7 +67,7 @@ class ShareDribbbleImageTask extends AsyncTask<Void, Void, File> {
         if (result == null) { return; }
         // glide cache uses an unfriendly & extension-less name,
         // massage it based on the original
-        String fileName = shot.images.best();
+        String fileName = shot.getImages().best();
         fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
         File renamed = new File(result.getParent(), fileName);
         result.renameTo(renamed);
@@ -79,7 +81,7 @@ class ShareDribbbleImageTask extends AsyncTask<Void, Void, File> {
     }
 
     private String getShareText() {
-        return "“" + shot.getTitle() + "” by " + shot.user.name + "\n" + shot.getUrl();
+        return "“" + shot.getTitle() + "” by " + shot.getUser().getName() + "\n" + shot.getUrl();
     }
 
     private String getImageMimeType(@NonNull String fileName) {

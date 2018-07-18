@@ -21,8 +21,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import io.plaidapp.core.designernews.data.api.DesignerNewsService;
-import io.plaidapp.core.designernews.data.api.model.User;
-import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRepository;
+import io.plaidapp.core.designernews.data.users.model.User;
+import io.plaidapp.core.designernews.data.login.LoginRepository;
 import io.plaidapp.core.util.ShortcutHelper;
 
 /**
@@ -32,7 +32,7 @@ public class DesignerNewsPrefs {
 
     private static volatile DesignerNewsPrefs singleton;
 
-    private DesignerNewsLoginRepository loginRepository;
+    private LoginRepository loginRepository;
 
     public static DesignerNewsPrefs get(Context context) {
         if (singleton == null) {
@@ -44,7 +44,7 @@ public class DesignerNewsPrefs {
         return singleton;
     }
 
-    private DesignerNewsPrefs(DesignerNewsLoginRepository loginRepository) {
+    private DesignerNewsPrefs(LoginRepository loginRepository) {
         this.loginRepository = loginRepository;
     }
 

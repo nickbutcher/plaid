@@ -42,7 +42,7 @@
 
 
         <activity
-            android:name="io.plaidapp.ui.designernews.story.DesignerNewsStory"
+            android:name="io.plaidapp.designernews.ui.story.DesignerNewsStory"
             android:parentActivityName="io.plaidapp.ui.HomeActivity"
             android:theme="@style/Plaid.Translucent.DesignerNewsStory">
             <intent-filter>
@@ -51,13 +51,13 @@
         </activity>
 
         <activity
-            android:name="io.plaidapp.ui.designernews.DesignerNewsLogin"
+            android:name="io.plaidapp.designernews.ui.login.DesignerNewsLogin"
             android:exported="false"
             android:theme="@style/Plaid.Translucent.DesignerNewsLogin"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name="io.plaidapp.ui.designernews.PostNewDesignerNewsStory"
+            android:name="io.plaidapp.designernews.PostNewDesignerNewsStory"
             android:exported="true"
             android:theme="@style/Plaid.Translucent.PostDesignerNewsStory">
             <intent-filter>
@@ -69,11 +69,11 @@
         </activity>
 
         <service
-            android:name="io.plaidapp.core.designernews.data.api.PostStoryService"
+            android:name="io.plaidapp.core.designernews.data.poststory.PostStoryService"
             android:exported="false" />
 
         <service
-            android:name="io.plaidapp.core.designernews.data.api.UpvoteStoryService"
+            android:name="io.plaidapp.core.designernews.data.votes.UpvoteStoryService"
             android:exported="false" />
     </application>
 

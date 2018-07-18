@@ -26,7 +26,7 @@ import android.support.customtabs.CustomTabsSession
 import android.support.v4.content.ContextCompat
 import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.R
-import io.plaidapp.core.designernews.data.api.UpvoteStoryService
+import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
 
 /**
  * Helpers to start activities in a modularized world.
@@ -75,14 +75,14 @@ object Activities {
          * DesignerNewsLogin Activity
          */
         object Login : AddressableActivity {
-            override val className = "$PACKAGE_NAME.ui.designernews.DesignerNewsLogin"
+            override val className = "$PACKAGE_NAME.designernews.ui.login.DesignerNewsLogin"
         }
 
         /**
          * DesignerNewsStory Activity
          */
         object Story : AddressableActivity {
-            override val className = "$PACKAGE_NAME.ui.designernews.story.DesignerNewsStory"
+            override val className = "$PACKAGE_NAME.designernews.ui.story.DesignerNewsStory"
             const val EXTRA_STORY = "story"
 
             /**
@@ -90,7 +90,7 @@ object Activities {
              */
             fun customTabIntent(
                 context: Context,
-                story: io.plaidapp.core.designernews.data.api.model.Story,
+                story: io.plaidapp.core.designernews.data.stories.model.Story,
                 session: CustomTabsSession?
             ): CustomTabsIntent.Builder {
                 val upvoteStory = Intent(context, UpvoteStoryService::class.java)
@@ -127,10 +127,10 @@ object Activities {
      */
     object Dribbble {
         /**
-         * DribbbleShot Activity
+         * DribbbleShotActivity
          */
         object Shot : AddressableActivity {
-            override val className = "$PACKAGE_NAME.dribbble.ui.DribbbleShot"
+            override val className = "$PACKAGE_NAME.dribbble.ui.DribbbleShotActivity"
 
             const val EXTRA_SHOT = "EXTRA_SHOT"
             const val RESULT_EXTRA_SHOT_ID = "RESULT_EXTRA_SHOT_ID"

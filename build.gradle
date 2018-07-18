@@ -24,6 +24,7 @@ buildscript {
             'constraintLayout'  : '1.1.2',
             'glide'             : '4.7.1',
             'kotlin'            : '1.2.51',
+            'lifecycle'         : '1.1.1',
             'retrofit'          : '2.4.0',
             'okhttp'            : '3.10.0',
             'gson'              : '2.8.5',
@@ -37,12 +38,12 @@ buildscript {
             'espresso'          : '3.0.2',
             'mockito'           : '2.19.0',
             'ktlint'            : '0.24.0',
-            'chrashlytics'      : '2.9.4',
+            'crashlytics'       : '2.9.4',
             'googleServices'    : '4.0.1',
             'fabric'            : '1.25.4'
     ]
     ext.names = [
-            'applicationId'   : 'io.plaidapp'
+            'applicationId': 'io.plaidapp'
     ]
 
     repositories {

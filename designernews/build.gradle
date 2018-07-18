@@ -25,6 +25,9 @@ android {
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         resConfig 'en'
+
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+
     }
 
     compileOptions {
@@ -40,4 +43,12 @@ repositories {
 
 dependencies {
     implementation project(':app')
+
+    api "android.arch.lifecycle:viewmodel:${versions.lifecycle}"
+    api "android.arch.lifecycle:extensions:${versions.lifecycle}"
+
+    testImplementation project(':test_shared')
+    testImplementation "junit:junit:${versions.junit}"
+    testImplementation "org.mockito:mockito-core:${versions.mockito}"
+    testImplementation "android.arch.core:core-testing:${versions.lifecycle}"
 }
