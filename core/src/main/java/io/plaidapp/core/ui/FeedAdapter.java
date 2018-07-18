@@ -70,6 +70,7 @@ import io.plaidapp.core.data.DataLoadingSubject;
 import io.plaidapp.core.data.PlaidItem;
 import io.plaidapp.core.data.PlaidItemSorting;
 import io.plaidapp.core.dribbble.data.api.ShotWeigher;
+import io.plaidapp.core.dribbble.data.api.model.Images;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.data.pocket.PocketUtils;
 import io.plaidapp.core.data.prefs.SourceManager;
@@ -325,7 +326,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void bindDribbbleShotHolder(final Shot shot,
             final DribbbleShotHolder holder,
             int position) {
-        final int[] imageSize = shot.getImages().bestSize();
+        final Images.ImageSize imageSize = shot.getImages().bestSize();
         GlideApp.with(host)
                 .load(shot.getImages().best())
                 .listener(new RequestListener<Drawable>() {
@@ -370,7 +371,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .fitCenter()
                 .transition(DrawableTransitionOptions.withCrossFade())
-                .override(imageSize[0], imageSize[1])
+                .override(imageSize.getWidth(), imageSize.getHeight())
                 .into(new DribbbleTarget(holder.image, false));
         // need both placeholder & background to prevent seeing through shot as it fades in
         holder.image.setBackground(
