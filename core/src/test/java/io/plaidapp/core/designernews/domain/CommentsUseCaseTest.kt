@@ -30,7 +30,7 @@ import io.plaidapp.core.designernews.data.api.user1
 import io.plaidapp.core.designernews.data.api.user2
 import io.plaidapp.core.designernews.data.users.UserRepository
 import io.plaidapp.core.designernews.domain.model.CommentWithReplies
-import io.plaidapp.core.provideFakeCoroutinesContextProvider
+import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -46,9 +46,9 @@ class CommentsUseCaseTest {
     private val commentsWithRepliesUseCase = Mockito.mock(CommentsWithRepliesUseCase::class.java)
     private val userRepository = Mockito.mock(UserRepository::class.java)
     private val repository = CommentsUseCase(
-            commentsWithRepliesUseCase,
-            userRepository,
-            provideFakeCoroutinesContextProvider()
+        commentsWithRepliesUseCase,
+        userRepository,
+        provideFakeCoroutinesContextProvider()
     )
 
     @Test
