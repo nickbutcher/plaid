@@ -131,7 +131,7 @@ object Activities {
          * DribbbleShotActivity
          */
         object Shot : AddressableActivity {
-            override val className = "$PACKAGE_NAME.dribbble.ui.DribbbleShotActivity"
+            override val className = "$PACKAGE_NAME.dribbble.ui.shot.DribbbleShotActivity"
 
             const val EXTRA_SHOT = "EXTRA_SHOT"
             const val RESULT_EXTRA_SHOT_ID = "RESULT_EXTRA_SHOT_ID"
