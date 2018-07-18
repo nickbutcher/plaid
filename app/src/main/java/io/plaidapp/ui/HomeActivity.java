@@ -77,7 +77,7 @@ import io.plaidapp.R;
 import io.plaidapp.core.data.DataManager;
 import io.plaidapp.core.data.PlaidItem;
 import io.plaidapp.core.data.Source;
-import io.plaidapp.core.data.api.dribbble.model.Shot;
+import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.data.pocket.PocketUtils;
 import io.plaidapp.core.data.prefs.SourceManager;
 import io.plaidapp.core.designernews.DesignerNewsPrefs;

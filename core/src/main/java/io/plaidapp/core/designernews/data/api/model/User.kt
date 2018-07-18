@@ -22,10 +22,9 @@ import com.google.gson.annotations.SerializedName
  * Models a Designer News User
  */
 data class User(
-    @SerializedName("id") val id: Long = 0L,
-    @SerializedName("first_name") val firstName: String? = null,
-    @SerializedName("last_name") val lastName: String? = null,
-    @SerializedName("display_name") val displayName: String? = null,
-    @SerializedName("portrait_url") val portraitUrl: String? = null,
-    @SerializedName("cover_photo_url") val coverPhotoUrl: String? = null
+    @SerializedName("id") val id: Long,
+    @SerializedName("first_name") val firstName: String,
+    @SerializedName("last_name") val lastName: String,
+    @SerializedName("display_name") val displayName: String,
+    @SerializedName("portrait_url") val portraitUrl: String? = null
 )

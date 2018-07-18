@@ -28,12 +28,17 @@ import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.core.designernews.data.api.DesignerNewsAuthTokenLocalDataSource
 import io.plaidapp.core.designernews.data.api.DesignerNewsRepository
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRemoteDataSource
-import io.plaidapp.core.designernews.data.api.comments.DesignerNewsCommentsRepository
-import io.plaidapp.core.designernews.data.api.votes.DesignerNewsVotesRepository
-import io.plaidapp.core.designernews.login.data.DesignerNewsLoginLocalDataSource
-import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRemoteDataSource
-import io.plaidapp.core.designernews.login.data.DesignerNewsLoginRepository
+import io.plaidapp.core.designernews.login.data.LoginLocalDataSource
+import io.plaidapp.core.designernews.login.data.LoginRemoteDataSource
+import io.plaidapp.core.designernews.login.data.LoginRepository
+import io.plaidapp.core.designernews.data.comments.CommentsRepository
+import io.plaidapp.core.designernews.data.votes.DesignerNewsVotesRepository
+import io.plaidapp.core.designernews.data.votes.VotesRemoteDataSource
+import io.plaidapp.core.designernews.data.comments.DesignerNewsCommentsRemoteDataSource
+import io.plaidapp.core.designernews.data.users.UserRemoteDataSource
+import io.plaidapp.core.designernews.data.users.UserRepository
+import io.plaidapp.core.designernews.domain.CommentsUseCase
+import io.plaidapp.core.designernews.domain.CommentsWithRepliesUseCase
 import io.plaidapp.core.loggingInterceptor
 import io.plaidapp.core.provideCoroutinesContextProvider
 import io.plaidapp.core.provideSharedPreferences
@@ -47,22 +52,22 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Once we have a dependency injection framework or a service locator, this should be removed.
  */
 
-fun provideDesignerNewsLoginLocalDataSource(context: Context): DesignerNewsLoginLocalDataSource {
+fun provideDesignerNewsLoginLocalDataSource(context: Context): LoginLocalDataSource {
     val preferences = provideSharedPreferences(
             context,
-            DesignerNewsLoginLocalDataSource.DESIGNER_NEWS_PREF)
-    return DesignerNewsLoginLocalDataSource(preferences)
+            LoginLocalDataSource.DESIGNER_NEWS_PREF)
+    return LoginLocalDataSource(preferences)
 }
 
-fun provideDesignerNewsLoginRepository(context: Context): DesignerNewsLoginRepository {
-    return DesignerNewsLoginRepository.getInstance(
+fun provideDesignerNewsLoginRepository(context: Context): LoginRepository {
+    return LoginRepository.getInstance(
             provideDesignerNewsLoginLocalDataSource(context),
             provideDesignerNewsLoginRemoteDataSource(context))
 }
 
-fun provideDesignerNewsLoginRemoteDataSource(context: Context): DesignerNewsLoginRemoteDataSource {
+fun provideDesignerNewsLoginRemoteDataSource(context: Context): LoginRemoteDataSource {
     val tokenHolder = provideDesignerNewsAuthTokenLocalDataSource(context)
-    return DesignerNewsLoginRemoteDataSource(tokenHolder, provideDesignerNewsService(tokenHolder))
+    return LoginRemoteDataSource(tokenHolder, provideDesignerNewsService(tokenHolder))
 }
 
 private fun provideDesignerNewsAuthTokenLocalDataSource(
@@ -106,32 +111,50 @@ private fun provideDesignerNewsRepository(service: DesignerNewsService): Designe
     return DesignerNewsRepository.getInstance(service)
 }
 
-fun provideDesignerNewsCommentsRepository(context: Context): DesignerNewsCommentsRepository {
-    return provideDesignerNewsCommentsRepository(
-            provideDesignerNewsCommentsRemoteDataSource(provideDesignerNewsService(context)),
+fun provideCommentsUseCase(context: Context): CommentsUseCase {
+    val service = provideDesignerNewsService(context)
+    val commentsRepository = provideCommentsRepository(
+            provideDesignerNewsCommentsRemoteDataSource(service))
+    val userRepository = provideUserRepository(provideUserRemoteDataSource(service))
+    return provideCommentsUseCase(
+            provideCommentsWithRepliesUseCase(commentsRepository),
+            userRepository,
             provideCoroutinesContextProvider())
 }
 
-private fun provideDesignerNewsCommentsRepository(
-    remoteDataSource: DesignerNewsCommentsRemoteDataSource,
+fun provideCommentsRepository(dataSource: DesignerNewsCommentsRemoteDataSource) =
+        CommentsRepository.getInstance(dataSource)
+
+fun provideCommentsWithRepliesUseCase(commentsRepository: CommentsRepository) =
+        CommentsWithRepliesUseCase(commentsRepository)
+
+fun provideCommentsUseCase(
+    commentsWithCommentsWithRepliesUseCase: CommentsWithRepliesUseCase,
+    userRepository: UserRepository,
     contextProvider: CoroutinesContextProvider
-): DesignerNewsCommentsRepository {
-    return DesignerNewsCommentsRepository.getInstance(remoteDataSource, contextProvider)
-}
+) = CommentsUseCase(commentsWithCommentsWithRepliesUseCase, userRepository, contextProvider)
+
+private fun provideUserRemoteDataSource(service: DesignerNewsService) =
+        UserRemoteDataSource(service)
+
+private fun provideUserRepository(dataSource: UserRemoteDataSource) =
+        UserRepository.getInstance(dataSource)
 
 private fun provideDesignerNewsCommentsRemoteDataSource(service: DesignerNewsService) =
         DesignerNewsCommentsRemoteDataSource.getInstance(service)
 
 fun provideDesignerNewsVotesRepository(context: Context): DesignerNewsVotesRepository {
     return provideDesignerNewsVotesRepository(
-            provideDesignerNewsService(context),
+            provideVotesRemoteDataSource(provideDesignerNewsService(context)),
             provideCoroutinesContextProvider()
     )
 }
 
+private fun provideVotesRemoteDataSource(service: DesignerNewsService) = VotesRemoteDataSource(service)
+
 private fun provideDesignerNewsVotesRepository(
-    service: DesignerNewsService,
+    remoteDataSource: VotesRemoteDataSource,
     contextProvider: CoroutinesContextProvider
 ): DesignerNewsVotesRepository {
-    return DesignerNewsVotesRepository.getInstance(service, contextProvider)
+    return DesignerNewsVotesRepository.getInstance(remoteDataSource, contextProvider)
 }

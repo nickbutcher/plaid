@@ -19,10 +19,12 @@ package io.plaidapp.core.designernews.data.api
 import io.plaidapp.core.data.api.EnvelopePayload
 import io.plaidapp.core.designernews.data.api.model.AccessToken
 import io.plaidapp.core.designernews.data.api.model.Comment
+import io.plaidapp.core.designernews.data.api.model.CommentResponse
 import io.plaidapp.core.designernews.data.api.model.NewStoryRequest
 import io.plaidapp.core.designernews.data.api.model.Story
 import io.plaidapp.core.designernews.data.api.model.User
-import io.plaidapp.core.designernews.data.api.votes.model.UpvoteRequest
+import io.plaidapp.core.designernews.data.votes.model.UpvoteCommentRequest
+import io.plaidapp.core.designernews.data.votes.model.UpvoteStoryRequest
 import kotlinx.coroutines.experimental.Deferred
 import retrofit2.Call
 import retrofit2.Response
@@ -65,21 +67,24 @@ interface DesignerNewsService {
     fun search(@Query("query") query: String, @Query("page") page: Int?): Call<List<Story>>
 
     @EnvelopePayload("users")
+    @GET("api/v2/users/{ids}")
+    fun getUsers(@Path("ids") userids: String): Deferred<Response<List<User>>>
+
+    @EnvelopePayload("users")
     @GET("api/v2/me")
-    fun getAuthedUser(): Call<List<User>>
+    fun getAuthedUser(): Deferred<Response<List<User>>>
 
     @FormUrlEncoded
     @POST("oauth/token")
-    fun login(@FieldMap loginParams: Map<String, String>): Call<AccessToken>
+    fun login(@FieldMap loginParams: Map<String, String>): Deferred<Response<AccessToken>>
 
     @EnvelopePayload("story")
     @POST("api/v2/stories/{id}/upvote")
     fun upvoteStory(@Path("id") storyId: Long): Call<Story>
 
-    @EnvelopePayload("story")
     @Headers("Content-Type: application/vnd.api+json")
     @POST("api/v2/upvotes")
-    fun upvoteStoryV2(@Body request: UpvoteRequest): Deferred<Response<Unit>>
+    fun upvoteStoryV2(@Body request: UpvoteStoryRequest): Deferred<Response<Unit>>
 
     @EnvelopePayload("stories")
     @Headers("Content-Type: application/vnd.api+json")
@@ -88,7 +93,7 @@ interface DesignerNewsService {
 
     @EnvelopePayload("comments")
     @GET("api/v2/comments/{ids}")
-    fun getComments(@Path("ids") commentIds: String): Deferred<Response<List<Comment>>>
+    fun getComments(@Path("ids") commentIds: String): Deferred<Response<List<CommentResponse>>>
 
     @FormUrlEncoded
     @POST("api/v1/stories/{id}/reply")
@@ -104,8 +109,9 @@ interface DesignerNewsService {
         @Field("comment[body]") comment: String
     ): Call<Comment>
 
-    @POST("api/v1/comments/{id}/upvote")
-    fun upvoteComment(@Path("id") commentId: Long): Call<Comment>
+    @Headers("Content-Type: application/vnd.api+json")
+    @POST("api/v2/comment_upvotes")
+    fun upvoteComment(@Body request: UpvoteCommentRequest): Deferred<Response<Unit>>
 
     companion object {
         const val ENDPOINT = "https://www.designernews.co/"

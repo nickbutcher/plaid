@@ -57,7 +57,7 @@ import java.util.List;
 import io.plaidapp.search.R;
 import io.plaidapp.core.data.PlaidItem;
 import io.plaidapp.core.data.SearchDataManager;
-import io.plaidapp.core.data.api.dribbble.model.Shot;
+import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.data.pocket.PocketUtils;
 import io.plaidapp.core.ui.FeedAdapter;
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener;
