@@ -57,7 +57,9 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
+
 import in.uncod.android.bypass.Bypass;
+import in.uncod.android.bypass.Markdown;
 import io.plaidapp.core.data.Result;
 import io.plaidapp.core.designernews.DesignerNewsPrefs;
 import io.plaidapp.core.designernews.Injection;
@@ -129,7 +131,7 @@ public class DesignerNewsStory extends Activity {
     private DesignerNewsVotesRepository votesRepository;
 
     private DesignerNewsPrefs designerNewsPrefs;
-    private Bypass markdown;
+    private Markdown markdown;
     private CustomTabActivityHelper customTab;
 
     @Override
