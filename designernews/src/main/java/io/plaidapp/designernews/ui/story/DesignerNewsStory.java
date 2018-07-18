@@ -99,7 +99,6 @@ import static io.plaidapp.core.util.AnimUtils.getFastOutLinearInInterpolator;
 import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
 import static io.plaidapp.core.util.AnimUtils.getLinearOutSlowInInterpolator;
 
-
 public class DesignerNewsStory extends Activity {
 
     private static final int RC_LOGIN_UPVOTE = 7;
