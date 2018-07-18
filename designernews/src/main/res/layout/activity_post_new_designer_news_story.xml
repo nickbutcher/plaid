@@ -23,7 +23,7 @@
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="io.plaidapp.ui.designernews.PostNewDesignerNewsStory">
+    tools:context=".PostNewDesignerNewsStory">
 
     <LinearLayout
         android:id="@+id/bottom_sheet_content"

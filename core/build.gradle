@@ -62,6 +62,8 @@ repositories {
 }
 
 dependencies {
+    api project(':bypass')
+
     api "androidx.core:core-ktx:${versions.coreKtx}"
     api "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
     api "com.android.support:customtabs:${versions.supportLibrary}"
@@ -84,12 +86,14 @@ dependencies {
     api "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:" +
             "${versions.retrofitCoroutines}"
     api "org.jsoup:jsoup:${versions.jsoup}"
-    api project(':bypass')
+    api "android.arch.lifecycle:viewmodel:${versions.lifecycle}"
+    api "android.arch.lifecycle:extensions:${versions.lifecycle}"
 
-
+    testImplementation project(':test_shared')
     testImplementation "junit:junit:${versions.junit}"
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
     testImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
+    testImplementation "android.arch.core:core-testing:${versions.lifecycle}"
 
     androidTestImplementation "com.android.support.test:runner:${versions.test_runner}"
     androidTestImplementation "com.android.support.test:rules:${versions.test_rules}"
