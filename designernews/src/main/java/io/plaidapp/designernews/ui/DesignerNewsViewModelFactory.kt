@@ -26,7 +26,7 @@ import io.plaidapp.designernews.ui.login.LoginViewModel
 import io.plaidapp.designernews.ui.story.StoryViewModel
 
 /**
- * Factory for ViewModels
+ * Factory for Designer News [ViewModel]s
  */
 class DesignerNewsViewModelFactory(
     private val loginRepository: LoginRepository,
