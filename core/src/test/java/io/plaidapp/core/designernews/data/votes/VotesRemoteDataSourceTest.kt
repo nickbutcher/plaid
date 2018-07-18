@@ -19,7 +19,7 @@ package io.plaidapp.core.designernews.data.votes
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.api.any
-import io.plaidapp.core.designernews.data.api.errorResponseBody
+import io.plaidapp.core.designernews.errorResponseBody
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals

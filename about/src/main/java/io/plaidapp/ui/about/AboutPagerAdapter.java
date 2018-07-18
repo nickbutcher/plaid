@@ -39,6 +39,7 @@ import android.widget.TextView;
 import java.security.InvalidParameterException;
 
 import in.uncod.android.bypass.Bypass;
+import in.uncod.android.bypass.Markdown;
 import io.plaidapp.about.R;
 import io.plaidapp.core.util.ColorUtils;
 import io.plaidapp.core.util.HtmlUtils;
@@ -56,7 +57,7 @@ class AboutPagerAdapter extends PagerAdapter {
     private RecyclerView libsList;
 
     private final LayoutInflater layoutInflater;
-    private final Bypass markdown;
+    private final Markdown markdown;
     private final Activity host;
     private final Resources resources;
 

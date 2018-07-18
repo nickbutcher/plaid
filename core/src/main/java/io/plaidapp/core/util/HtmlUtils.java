@@ -29,7 +29,8 @@ import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.widget.TextView;
 
-import in.uncod.android.bypass.Bypass;
+import in.uncod.android.bypass.LoadImageCallback;
+import in.uncod.android.bypass.Markdown;
 import in.uncod.android.bypass.style.TouchableUrlSpan;
 
 /**
@@ -110,7 +111,7 @@ public class HtmlUtils {
     /**
      * Parse Markdown and plain-text links.
      * <p/>
-     * {@link Bypass} does not handle plain text links (i.e. not md syntax) and requires a
+     * {@link Markdown} does not handle plain text links (i.e. not md syntax) and requires a
      * {@code String} input (i.e. squashes any spans). {@link Linkify} handles plain links but also
      * removes any existing spans. So we can't just run our input through both.
      * <p/>
@@ -120,10 +121,10 @@ public class HtmlUtils {
      */
     public static CharSequence parseMarkdownAndPlainLinks(
             String input,
-            Bypass markdown,
+            Markdown markdown,
             ColorStateList linkTextColors,
             @ColorInt int highlightColor,
-            Bypass.LoadImageCallback loadImageCallback) {
+            LoadImageCallback loadImageCallback) {
         CharSequence markedUp = markdown.markdownToSpannable(input, linkTextColors, highlightColor,
                 loadImageCallback);
         return linkifyPlainLinks(markedUp, linkTextColors, highlightColor);
@@ -136,10 +137,10 @@ public class HtmlUtils {
     public static void parseMarkdownAndSetText(
             TextView textView,
             String input,
-            Bypass markdown,
+            Markdown markdown,
             ColorStateList linkTextColors,
             @ColorInt int highlightColor,
-            Bypass.LoadImageCallback loadImageCallback) {
+            LoadImageCallback loadImageCallback) {
         if (TextUtils.isEmpty(input)) return;
         setTextWithNiceLinks(textView,
                 parseMarkdownAndPlainLinks(input, markdown, linkTextColors, highlightColor,

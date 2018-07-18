@@ -21,8 +21,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import io.plaidapp.core.designernews.data.api.DesignerNewsService;
-import io.plaidapp.core.designernews.data.api.model.User;
-import io.plaidapp.core.designernews.login.data.LoginRepository;
+import io.plaidapp.core.designernews.data.users.model.User;
+import io.plaidapp.core.designernews.data.login.LoginRepository;
 import io.plaidapp.core.util.ShortcutHelper;
 
 /**

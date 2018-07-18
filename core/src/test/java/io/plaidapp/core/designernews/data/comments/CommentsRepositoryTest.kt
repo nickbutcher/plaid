@@ -17,7 +17,7 @@
 package io.plaidapp.core.designernews.data.comments
 
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.api.repliesResponses
+import io.plaidapp.core.designernews.repliesResponses
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test

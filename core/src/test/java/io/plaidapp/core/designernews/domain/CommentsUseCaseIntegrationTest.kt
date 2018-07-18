@@ -18,19 +18,19 @@ package io.plaidapp.core.designernews.domain
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.api.errorResponseBody
-import io.plaidapp.core.designernews.data.api.model.Comment
-import io.plaidapp.core.designernews.data.api.model.CommentResponse
-import io.plaidapp.core.designernews.data.api.model.User
-import io.plaidapp.core.designernews.data.api.parentComment
-import io.plaidapp.core.designernews.data.api.parentCommentResponse
-import io.plaidapp.core.designernews.data.api.parentCommentWithoutReplies
-import io.plaidapp.core.designernews.data.api.repliesResponses
-import io.plaidapp.core.designernews.data.api.reply1
-import io.plaidapp.core.designernews.data.api.reply1NoUser
-import io.plaidapp.core.designernews.data.api.replyResponse1
-import io.plaidapp.core.designernews.data.api.user1
-import io.plaidapp.core.designernews.data.api.user2
+import io.plaidapp.core.designernews.errorResponseBody
+import io.plaidapp.core.designernews.domain.model.Comment
+import io.plaidapp.core.designernews.data.comments.model.CommentResponse
+import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.core.designernews.parentComment
+import io.plaidapp.core.designernews.parentCommentResponse
+import io.plaidapp.core.designernews.parentCommentWithoutReplies
+import io.plaidapp.core.designernews.repliesResponses
+import io.plaidapp.core.designernews.reply1
+import io.plaidapp.core.designernews.reply1NoUser
+import io.plaidapp.core.designernews.replyResponse1
+import io.plaidapp.core.designernews.user1
+import io.plaidapp.core.designernews.user2
 import io.plaidapp.core.designernews.data.comments.CommentsRepository
 import io.plaidapp.core.designernews.data.comments.DesignerNewsCommentsRemoteDataSource
 import io.plaidapp.core.designernews.data.users.UserRemoteDataSource
@@ -82,7 +82,9 @@ class CommentsUseCaseIntegrationTest {
     @Test
     fun getComments_noReplies_whenCommentsRequestFailed() {
         // Given that the service responds with failure
-        val apiResult = Response.error<List<CommentResponse>>(400, errorResponseBody)
+        val apiResult = Response.error<List<CommentResponse>>(400,
+            errorResponseBody
+        )
         Mockito.`when`(service.getComments("11")).thenReturn(CompletableDeferred(apiResult))
         var result: Result<List<Comment>>? = null
 
@@ -123,7 +125,9 @@ class CommentsUseCaseIntegrationTest {
         // When requesting replies for ids 1 from service we get the parent comment
         withComments(parentCommentResponse, "1")
         // When requesting replies for ids 11 and 12 from service we get an error
-        val resultChildrenError = Response.error<List<CommentResponse>>(400, errorResponseBody)
+        val resultChildrenError = Response.error<List<CommentResponse>>(400,
+            errorResponseBody
+        )
         Mockito.`when`(service.getComments("11,12"))
                 .thenReturn(CompletableDeferred(resultChildrenError))
         // Given that the user request responds with success
@@ -148,7 +152,9 @@ class CommentsUseCaseIntegrationTest {
         // without replies embedded (since that's what the next call is doing)
         withComments(replyResponse1, "11")
         // Given that the user request responds with failure
-        val userError = Response.error<List<User>>(400, errorResponseBody)
+        val userError = Response.error<List<User>>(400,
+            errorResponseBody
+        )
         Mockito.`when`(service.getUsers("111"))
                 .thenReturn(CompletableDeferred(userError))
         var result: Result<List<Comment>>? = null

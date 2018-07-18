@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -28,7 +29,7 @@ import in.uncod.android.bypass.style.HorizontalLineSpan;
 import in.uncod.android.bypass.style.ImageLoadingSpan;
 import in.uncod.android.bypass.style.TouchableUrlSpan;
 
-public class Bypass {
+public class Bypass implements Markdown {
     static {
         System.loadLibrary("bypass");
     }
@@ -92,8 +93,12 @@ public class Bypass {
         builder.setSpan(new AbsoluteSizeSpan(height, true), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
-    public CharSequence markdownToSpannable(String markdown, ColorStateList linksColors,
-            int highlightColor, LoadImageCallback loadImageCallback) {
+    @NonNull
+    @Override
+    public CharSequence markdownToSpannable(@NonNull String markdown,
+                                            @NonNull ColorStateList linksColors,
+                                            int highlightColor,
+                                            @NonNull LoadImageCallback loadImageCallback) {
         Document document = processMarkdown(markdown);
 
         int size = document.getElementCount();
@@ -304,15 +309,6 @@ public class Bypass {
         }
 
         return builder;
-    }
-
-    public interface LoadImageCallback {
-        /**
-         * A callback to load an image found in a markdown document.
-         * @param src The source (url) of the image.
-         * @param loadingSpan A placeholder span making where the image should be inserted.
-         */
-        void loadImage(String src, ImageLoadingSpan loadingSpan);
     }
 
     /**
