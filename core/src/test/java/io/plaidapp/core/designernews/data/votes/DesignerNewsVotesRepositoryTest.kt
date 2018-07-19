@@ -17,7 +17,6 @@
 package io.plaidapp.core.designernews.data.votes
 
 import io.plaidapp.core.data.Result
-import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -35,20 +34,16 @@ class DesignerNewsVotesRepositoryTest {
     private val commentId = 999L
 
     private val dataSource = Mockito.mock(VotesRemoteDataSource::class.java)
-    private val votesRepository = DesignerNewsVotesRepository(
-        dataSource,
-        provideFakeCoroutinesContextProvider()
-    )
+    private val votesRepository = DesignerNewsVotesRepository(dataSource)
 
     @Test
     fun upvoteStory_whenRequestSuccessful() = runBlocking {
         // Given that the data source responds with success
         val response = Result.Success(Unit)
         Mockito.`when`(dataSource.upvoteStory(storyId, userId)).thenReturn(response)
-        var result: Result<Unit>? = null
 
         // When upvoting a story
-        votesRepository.upvoteStory(storyId, userId) { result = it }
+        val result = votesRepository.upvoteStory(storyId, userId)
 
         // Then the result is successful
         assertEquals(Result.Success(Unit), result)
@@ -59,10 +54,9 @@ class DesignerNewsVotesRepositoryTest {
         // Given that the data source responds with error
         val response = Result.Error(IOException("Error upvoting"))
         Mockito.`when`(dataSource.upvoteStory(storyId, userId)).thenReturn(response)
-        var result: Result<Unit>? = null
 
         // When upvoting a story
-        votesRepository.upvoteStory(storyId, userId) { result = it }
+        val result = votesRepository.upvoteStory(storyId, userId)
 
         // Then the result is error
         assertTrue(result is Result.Error)
@@ -73,10 +67,9 @@ class DesignerNewsVotesRepositoryTest {
         // Given that the data source responds with success
         val response = Result.Success(Unit)
         Mockito.`when`(dataSource.upvoteComment(commentId, userId)).thenReturn(response)
-        var result: Result<Unit>? = null
 
         // When upvoting a comment
-        votesRepository.upvoteComment(commentId, userId) { result = it }
+        val result = votesRepository.upvoteComment(commentId, userId)
 
         // Then the result is successful
         assertEquals(Result.Success(Unit), result)
@@ -87,10 +80,9 @@ class DesignerNewsVotesRepositoryTest {
         // Given that the data source responds with error
         val response = Result.Error(IOException("Error upvoting"))
         Mockito.`when`(dataSource.upvoteComment(commentId, userId)).thenReturn(response)
-        var result: Result<Unit>? = null
 
         // When upvoting a comment
-        votesRepository.upvoteComment(commentId, userId) { result = it }
+        val result = votesRepository.upvoteComment(commentId, userId)
 
         // Then the result is error
         assertTrue(result is Result.Error)
