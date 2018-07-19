@@ -43,6 +43,11 @@ jobs:
           command: scripts/copy_lint_results.sh
       - store_artifacts:
           path: ci_results/lint
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
+            - app/build
 
   test_instrumented:
     <<: *config_gcloud
