@@ -26,5 +26,5 @@ test_apk() {
 
 test_apk \
 	"app" \
-	"app/build/outputs/apk/debug/app-debug.apk" \
-	"app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk"
+	"app/build/outputs/apk/debug/plaid-debug.apk" \
+	"app/build/outputs/apk/androidTest/debug/plaid-debug-androidTest.apk"
