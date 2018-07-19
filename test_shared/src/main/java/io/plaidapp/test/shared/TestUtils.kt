@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.api
+package io.plaidapp.test.shared
 
 import org.mockito.Mockito
 
