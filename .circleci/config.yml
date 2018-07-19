@@ -36,8 +36,8 @@ jobs:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
       - run:
-          name: Run JVM Tests & Lint, assemble app and app test APKs for debug and release
-          command: ./gradlew check assemble assembleTest
+          name: Run JVM Tests & Lint, assemble app and test APKs for debug and release
+          command: ./gradlew check assemble assembleAndroidTest
       - run:
           name: Gather Lint results
           command: scripts/copy_lint_results.sh
