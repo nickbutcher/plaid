@@ -64,7 +64,7 @@ class LoginLocalDataSourceTest {
         dataSource.user = user
 
         // Then it can then be retrieved
-        assertEquals(user, dataSource.user)
+        assertEquals(user.copy(firstName = "", lastName = ""), dataSource.user)
     }
 
     @Test
