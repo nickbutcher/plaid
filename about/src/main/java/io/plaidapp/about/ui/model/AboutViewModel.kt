@@ -16,7 +16,7 @@
 
 package io.plaidapp.about.ui.model
 
-import `in`.uncod.android.bypass.Bypass
+import `in`.uncod.android.bypass.Markdown
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
@@ -26,30 +26,32 @@ import android.support.annotation.ColorInt
 import android.support.annotation.StringRes
 import android.support.annotation.VisibleForTesting
 import android.text.Layout
+import android.text.Spannable
 import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextUtils
+import android.text.SpannableStringBuilder
 import android.text.style.AlignmentSpan
+import androidx.core.text.plusAssign
+import androidx.core.text.toSpannable
 import io.plaidapp.about.R
 import io.plaidapp.about.domain.model.Library
 import io.plaidapp.about.ui.AboutStyler
 import io.plaidapp.core.util.event.Event
+import kotlin.LazyThreadSafetyMode.NONE
 
 /**
  * [ViewModel] for the about module.
  */
 internal class AboutViewModel(
     private val aboutStyler: AboutStyler,
-    private val resources: Resources
+    private val resources: Resources,
+    private val markdown: Markdown
 ) : ViewModel() {
-
-    private val markdown = Bypass(resources.displayMetrics, Bypass.Options())
 
     private val _navigationTarget = MutableLiveData<Event<String>>()
     val navigationTarget: LiveData<Event<String>>
         get() = _navigationTarget
 
-    private val appAboutText: CharSequence by lazy {
+    private val appAboutText: CharSequence by lazy(NONE) {
         with(aboutStyler) {
             // fun with spans & markdown
             val about0 = getSpannableFromMarkdown(
@@ -58,49 +60,36 @@ internal class AboutViewModel(
                 highlightColor
             )
 
-            val about1 = SpannableString(resources.getString(R.string.about_plaid_1)).apply {
-                setSpan(
-                    AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                    0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
+            val about1 = SpannableString(resources.getString(R.string.about_plaid_1))
+            about1 += AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER)
 
-            val about2 = SpannableString(
-                getSpannableFromMarkdown(
-                    R.string.about_plaid_2,
-                    linksColor, highlightColor
-                )
-            ).apply {
-                setSpan(
-                    AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                    0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-            val about3 = SpannableString(
-                getSpannableFromMarkdown(
-                    R.string.about_plaid_3,
-                    linksColor, highlightColor
-                )
-            ).apply {
-                setSpan(
-                    AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                    0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-            TextUtils.concat(about0, "\n\n", about1, "\n", about2, "\n\n", about3)
+            val about2 = getSpannableFromMarkdown(
+                R.string.about_plaid_2,
+                linksColor,
+                highlightColor
+            )
+            about2 += AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER)
+
+            val about3 = getSpannableFromMarkdown(
+                R.string.about_plaid_3,
+                linksColor, highlightColor
+            )
+            about3 += AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER)
+            spannableFrom(about0, "\n\n", about1, "\n", about2, "\n\n", about3)
         }
     }
 
-    private val iconAboutText: CharSequence by lazy {
+    private val iconAboutText: CharSequence by lazy(NONE) {
 
         val icon0 = resources.getString(R.string.about_icon_0)
         with(aboutStyler) {
             val icon1 = getSpannableFromMarkdown(R.string.about_icon_1, linksColor, highlightColor)
-            TextUtils.concat(icon0, "\n", icon1)
+            spannableFrom(icon0, "\n", icon1)
         }
     }
 
-    val libraries = listOf(
+    @VisibleForTesting
+    internal val libraries = listOf(
         Library(
             "Android support libraries",
             "The Android support libraries offer a number of features that are " +
@@ -147,12 +136,14 @@ internal class AboutViewModel(
         )
     )
 
-    val uiModel = AboutUiModel(
-        appAboutText,
-        iconAboutText,
-        LibrariesUiModel(libraries) {
-            onLibraryClick(it)
-        })
+    val uiModel by lazy(NONE) {
+        AboutUiModel(
+            appAboutText,
+            iconAboutText,
+            LibrariesUiModel(libraries) {
+                onLibraryClick(it)
+            })
+    }
 
     @VisibleForTesting
     internal fun onLibraryClick(library: Library) {
@@ -163,10 +154,16 @@ internal class AboutViewModel(
         @StringRes stringId: Int,
         linksColor: ColorStateList,
         @ColorInt highlightColor: Int
-    ): CharSequence {
+    ): Spannable {
         return markdown.markdownToSpannable(
             resources.getString(stringId), linksColor,
             highlightColor, null
-        )
+        ).toSpannable()
+    }
+
+    private fun spannableFrom(vararg text: CharSequence): CharSequence {
+        return SpannableStringBuilder().apply {
+            text.forEach { append(it) }
+        }
     }
 }

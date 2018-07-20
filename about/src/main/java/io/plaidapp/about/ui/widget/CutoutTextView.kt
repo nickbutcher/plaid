@@ -54,8 +54,10 @@ class CutoutTextView(context: Context, attrs: AttributeSet) : View(context, attr
         val a = getContext().obtainStyledAttributes(attrs, R.styleable.CutoutTextView, 0, 0)
         if (a.hasValue(R.styleable.CutoutTextView_android_fontFamily)) {
             try {
-                val font = ResourcesCompat.getFont(getContext(),
-                        a.getResourceId(R.styleable.CutoutTextView_android_fontFamily, 0))
+                val font = ResourcesCompat.getFont(
+                    getContext(),
+                    a.getResourceId(R.styleable.CutoutTextView_android_fontFamily, 0)
+                )
                 if (font != null) {
                     textPaint.typeface = font
                 }
@@ -63,15 +65,18 @@ class CutoutTextView(context: Context, attrs: AttributeSet) : View(context, attr
             }
         }
         if (a.hasValue(R.styleable.CutoutTextView_foregroundColor)) {
-            foregroundColor = a.getColor(R.styleable.CutoutTextView_foregroundColor,
-                    foregroundColor)
+            foregroundColor = a.getColor(
+                R.styleable.CutoutTextView_foregroundColor,
+                foregroundColor
+            )
         }
         text = if (a.hasValue(R.styleable.CutoutTextView_android_text)) {
             a.getString(R.styleable.CutoutTextView_android_text)
         } else {
             ""
         }
-        maxTextSize = context.resources.getDimensionPixelSize(coreR.dimen.display_4_text_size).toFloat()
+        maxTextSize =
+                context.resources.getDimensionPixelSize(coreR.dimen.display_4_text_size).toFloat()
         a.recycle()
     }
 
@@ -84,9 +89,10 @@ class CutoutTextView(context: Context, attrs: AttributeSet) : View(context, attr
     private fun calculateTextPosition() {
         val targetWidth = width / PHI
         val textSize = ViewUtils.getSingleLineTextSize(
-                text, textPaint,
-                targetWidth, 0f, maxTextSize, 0.5f,
-                resources.displayMetrics)
+            text, textPaint,
+            targetWidth, 0f, maxTextSize, 0.5f,
+            resources.displayMetrics
+        )
         textPaint.textSize = textSize
 
         // measuring text is fun :] see: https://chris.banes.me/2014/03/27/measuring-text/
