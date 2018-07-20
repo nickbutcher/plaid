@@ -27,10 +27,8 @@ import android.transition.TransitionInflater
 import androidx.core.net.toUri
 import io.plaidapp.about.R
 import io.plaidapp.about.ui.adapter.AboutPagerAdapter
-import io.plaidapp.about.ui.model.AboutUiModel
 import io.plaidapp.about.ui.model.AboutViewModel
 import io.plaidapp.about.ui.model.AboutViewModelFactory
-import io.plaidapp.about.ui.model.LibrariesUiModel
 import io.plaidapp.about.ui.widget.InkPageIndicator
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
@@ -53,7 +51,6 @@ class AboutActivity : AppCompatActivity() {
         val pager = findViewById<ViewPager>(R.id.pager)
         val pageIndicator = findViewById<InkPageIndicator>(R.id.indicator)
 
-
         val aboutViewModelFactory = AboutViewModelFactory(AboutStyler(this), resources)
         val viewModel = ViewModelProviders
             .of(this, aboutViewModelFactory)
@@ -64,17 +61,8 @@ class AboutActivity : AppCompatActivity() {
                 })
             }
 
-        val uiModel = with(viewModel) {
-            AboutUiModel(
-                appAboutText,
-                iconAboutText,
-                LibrariesUiModel(libraries) {
-                    onLibraryClick(it)
-                })
-        }
-
         pager.apply {
-            adapter = AboutPagerAdapter(uiModel)
+            adapter = AboutPagerAdapter(viewModel.uiModel)
             pageMargin = resources.getDimensionPixelSize(appR.dimen.spacing_normal)
         }
 

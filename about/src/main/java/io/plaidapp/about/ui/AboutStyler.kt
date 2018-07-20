@@ -22,6 +22,9 @@ import android.support.v4.content.ContextCompat
 import io.plaidapp.core.R as coreR
 import io.plaidapp.core.util.ColorUtils
 
+/**
+ * Provide style colors to links and highlights in about activity.
+ */
 class AboutStyler(activity: Activity) {
 
     val linksColor = ContextCompat.getColorStateList(activity, coreR.color.plaid_links)!!
