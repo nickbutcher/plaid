@@ -17,7 +17,6 @@
 package io.plaidapp.about.ui.model
 
 import `in`.uncod.android.bypass.Bypass
-import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
@@ -25,16 +24,18 @@ import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.support.annotation.ColorInt
 import android.support.annotation.StringRes
+import android.support.annotation.VisibleForTesting
 import android.text.Layout
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.AlignmentSpan
 import io.plaidapp.about.R
 import io.plaidapp.about.domain.model.Library
+import io.plaidapp.about.ui.AboutStyler
 import io.plaidapp.core.util.event.Event
 
 /**
- * [AndroidViewModel] for the about module.
+ * [ViewModel] for the about module.
  */
 internal class AboutViewModel(
     private val aboutStyler: AboutStyler,
@@ -47,7 +48,7 @@ internal class AboutViewModel(
     val navigationTarget: LiveData<Event<String>>
         get() = _navigationTarget
 
-    val appAboutText: CharSequence by lazy {
+    private val appAboutText: CharSequence by lazy {
         with(aboutStyler) {
             // fun with spans & markdown
             val about0 = getSpannableFromMarkdown(
@@ -89,7 +90,8 @@ internal class AboutViewModel(
         }
     }
 
-    val iconAboutText: CharSequence by lazy {
+    private val iconAboutText: CharSequence by lazy {
+
         val icon0 = resources.getString(R.string.about_icon_0)
         with(aboutStyler) {
             val icon1 = getSpannableFromMarkdown(R.string.about_icon_1, linksColor, highlightColor)
@@ -144,7 +146,15 @@ internal class AboutViewModel(
         )
     )
 
-    fun onLibraryClick(library: Library) {
+    val uiModel = AboutUiModel(
+        appAboutText,
+        iconAboutText,
+        LibrariesUiModel(libraries) {
+            onLibraryClick(it)
+        })
+
+    @VisibleForTesting
+    internal fun onLibraryClick(library: Library) {
         _navigationTarget.value = Event(library.link)
     }
 

@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 
-package io.plaidapp.about.ui.model
+package io.plaidapp.about.ui
 
-import android.content.res.ColorStateList
+import android.app.Activity
 import android.support.annotation.ColorInt
+import android.support.v4.content.ContextCompat
+import io.plaidapp.core.R as coreR
+import io.plaidapp.core.util.ColorUtils
 
-data class AboutStyler(val linksColor: ColorStateList, @ColorInt val highlightColor: Int)
+class AboutStyler(activity: Activity) {
+
+    val linksColor = ContextCompat.getColorStateList(activity, coreR.color.plaid_links)!!
+    @ColorInt
+    val highlightColor = ColorUtils.getThemeColor(activity, coreR.attr.colorPrimary, coreR.color.primary)
+}
