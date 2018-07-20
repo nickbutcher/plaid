@@ -37,6 +37,7 @@ buildscript {
             'test_rules'        : '1.0.2',
             'espresso'          : '3.0.2',
             'mockito'           : '2.19.0',
+            'mockito_kotlin'    : '1.6.0',
             'ktlint'            : '0.24.0',
             'crashlytics'       : '2.9.4',
             'googleServices'    : '4.0.1',

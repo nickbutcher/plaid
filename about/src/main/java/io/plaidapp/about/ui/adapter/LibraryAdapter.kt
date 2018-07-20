@@ -61,7 +61,6 @@ internal class LibraryAdapter(
     override fun getItemCount() = uiModel.libraries.size + 1 // + 1 for the static intro view
 
     companion object {
-
         private const val VIEW_TYPE_INTRO = 0
         private const val VIEW_TYPE_LIBRARY = 1
     }
