@@ -39,7 +39,7 @@ import io.plaidapp.core.util.event.Event
 import kotlin.LazyThreadSafetyMode.NONE
 
 /**
- * [ViewModel] for the about module.
+ * [ViewModel] for the [io.plaidapp.about.ui.AboutActivity].
  */
 internal class AboutViewModel(
     private val aboutStyler: AboutStyler,
