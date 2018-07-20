@@ -10,7 +10,7 @@ test_apk() {
 	    --type instrumentation \
 	    --app $2 \
 	    --test $3 \
-	    --device model=Nexus6P,version=27,locale=en_US,orientation=portrait \
+	    --device model=Pixel2,version=28,locale=en_US,orientation=portrait \
 	    --timeout 30m \
 	    --results-bucket cloud-test-android-devrel-ci \
 	    --results-dir=$RESULTS_DIR
