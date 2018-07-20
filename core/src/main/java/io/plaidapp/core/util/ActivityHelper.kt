@@ -72,10 +72,10 @@ object Activities {
      */
     object DesignerNews {
         /**
-         * DesignerNewsLogin Activity
+         * DesignerNews LoginActivity
          */
         object Login : AddressableActivity {
-            override val className = "$PACKAGE_NAME.designernews.ui.login.DesignerNewsLogin"
+            override val className = "$PACKAGE_NAME.designernews.ui.login.LoginActivity"
         }
 
         /**
@@ -115,7 +115,7 @@ object Activities {
          * PostNewDesignerNewsStory Activity
          */
         object PostStory : AddressableActivity {
-            override val className = "$PACKAGE_NAME.ui.designernews.PostNewDesignerNewsStory"
+            override val className = "$PACKAGE_NAME.designernews.PostNewDesignerNewsStory"
 
             const val RESULT_DRAG_DISMISSED = 3
             const val RESULT_POSTING = 4

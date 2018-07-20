@@ -88,7 +88,7 @@ import io.plaidapp.core.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.core.util.glide.GlideApp;
 import io.plaidapp.core.util.glide.ImageSpanTarget;
 import io.plaidapp.designernews.R;
-import io.plaidapp.designernews.ui.login.DesignerNewsLogin;
+import io.plaidapp.designernews.ui.login.LoginActivity;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import kotlin.Unit;
 import retrofit2.Call;
@@ -621,7 +621,7 @@ public class DesignerNewsStory extends Activity {
 
     private void needsLogin(View triggeringView, int requestCode) {
         Intent login = new Intent(DesignerNewsStory.this,
-                DesignerNewsLogin.class);
+                LoginActivity.class);
         MorphTransform.addExtras(login, ContextCompat.getColor(this,
                 io.plaidapp.R.color.background_light),
                 triggeringView.getHeight() / 2);
