@@ -57,8 +57,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
+
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
+
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
 import in.uncod.android.bypass.Bypass;
 import in.uncod.android.bypass.Markdown;
 import io.plaidapp.core.data.Result;
@@ -89,12 +97,6 @@ import kotlin.Unit;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 import static io.plaidapp.core.util.AnimUtils.getFastOutLinearInInterpolator;
@@ -497,11 +499,11 @@ public class DesignerNewsStory extends AppCompatActivity {
         final TextView share = header.findViewById(R.id.story_share_action);
         share.setOnClickListener(v -> {
             ((AnimatedVectorDrawable) share.getCompoundDrawables()[1]).start();
-            startActivity(ShareCompat.IntentBuilder.from(DesignerNewsStory.this)
+            ShareCompat.IntentBuilder.from(DesignerNewsStory.this)
                     .setText(story.getUrl())
                     .setType("text/plain")
                     .setSubject(story.getTitle())
-                    .getIntent());
+                    .startChooser();
         });
 
         TextView storyPosterTime = header.findViewById(R.id.story_poster_time);
