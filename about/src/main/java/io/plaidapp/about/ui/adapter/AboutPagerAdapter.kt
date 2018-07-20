@@ -28,6 +28,9 @@ import io.plaidapp.core.util.HtmlUtils
 import io.plaidapp.about.ui.model.AboutUiModel
 import java.security.InvalidParameterException
 
+/**
+ * Adapter creating and holding on to pages displayed within [io.plaidapp.about.ui.AboutActivity].
+ */
 internal class AboutPagerAdapter(private val uiModel: AboutUiModel) : PagerAdapter() {
 
     private var aboutPlaid: View? = null
