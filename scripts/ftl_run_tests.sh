@@ -13,9 +13,7 @@ test_apk() {
 	    --device model=Nexus6P,version=27,locale=en_US,orientation=portrait \
 	    --timeout 30m \
 	    --results-bucket cloud-test-android-devrel-ci \
-	    --results-dir=$RESULTS_DIR \
-	    --no-record-video \
-	    --no-performance-metrics
+	    --results-dir=$RESULTS_DIR
 
     # Make result dir
     mkdir -p "$TEST_DIR/$RESULTS_DIR"
@@ -27,4 +25,4 @@ test_apk() {
 test_apk \
 	"app" \
 	"app/build/outputs/apk/debug/plaid-debug.apk" \
-	"app/build/outputs/apk/androidTest/debug/core-debug-androidTest.apk"
+	"app/build/outputs/apk/androidTest/debug/plaid-debug-androidTest.apk"
