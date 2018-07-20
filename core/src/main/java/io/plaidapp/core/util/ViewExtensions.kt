@@ -16,7 +16,10 @@
 
 package io.plaidapp.core.util
 
+import android.support.annotation.LayoutRes
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 
 /**
  * An extension which performs an [action] if the view has been measured, otherwise waits for it to
@@ -43,4 +46,12 @@ inline fun View.measured(crossinline action: () -> Unit) {
             }
         })
     }
+}
+
+/**
+ * Inflate a [View] with given layoutId and attach it to the calling [ViewGroup].
+ * @param layout Id of the layout to inflate.
+ */
+fun ViewGroup.inflateView(@LayoutRes layout: Int): View {
+    return LayoutInflater.from(this.context).inflate(layout, this, false)
 }

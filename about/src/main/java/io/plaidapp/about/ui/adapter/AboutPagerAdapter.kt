@@ -16,16 +16,15 @@
 
 package io.plaidapp.about.ui.adapter
 
-import android.support.annotation.LayoutRes
 import android.support.v4.view.PagerAdapter
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import io.plaidapp.about.R
 import io.plaidapp.core.util.HtmlUtils
 import io.plaidapp.about.ui.model.AboutUiModel
+import io.plaidapp.core.util.inflateView
 import java.security.InvalidParameterException
 
 /**
@@ -61,7 +60,7 @@ internal class AboutPagerAdapter(private val uiModel: AboutUiModel) : PagerAdapt
     }
 
     private fun getAboutIconPage(parent: ViewGroup): View {
-        return aboutIcon ?: inflateView(parent, R.layout.about_icon).apply {
+        return aboutIcon ?: parent.inflateView(R.layout.about_icon).apply {
             findViewById<TextView>(R.id.icon_description).apply {
                 HtmlUtils.setTextWithNiceLinks(this, uiModel.iconAboutText)
             }
@@ -70,7 +69,7 @@ internal class AboutPagerAdapter(private val uiModel: AboutUiModel) : PagerAdapt
     }
 
     private fun getAboutAppPage(parent: ViewGroup): View {
-        return aboutPlaid ?: inflateView(parent, R.layout.about_plaid)
+        return aboutPlaid ?: parent.inflateView(R.layout.about_plaid)
             .apply {
                 findViewById<TextView>(R.id.about_description).apply {
                     HtmlUtils.setTextWithNiceLinks(this, uiModel.appAboutText)
@@ -80,15 +79,11 @@ internal class AboutPagerAdapter(private val uiModel: AboutUiModel) : PagerAdapt
     }
 
     private fun getAboutLibsPage(parent: ViewGroup): View {
-        return aboutLibs ?: inflateView(parent, R.layout.about_libs).apply {
+        return aboutLibs ?: parent.inflateView(R.layout.about_libs).apply {
             findViewById<RecyclerView>(R.id.libs_list).apply {
                 adapter = LibraryAdapter(uiModel.librariesUiModel)
             }
             aboutLibs = this
         }
-    }
-
-    private fun inflateView(parent: ViewGroup, @LayoutRes layout: Int): View {
-        return LayoutInflater.from(parent.context).inflate(layout, parent, false)
     }
 }
