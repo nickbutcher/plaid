@@ -43,7 +43,7 @@ class DesignerNewsStoryHolder(
     pocketIsInstalled: Boolean,
     private val onPocketClicked: (story: Story, adapterPosition: Int) -> Unit,
     private val onCommentsClicked: (data: TransitionData) -> Unit,
-    private val onItemClicked: (story: Story) -> Unit
+    private val onItemClicked: (data: TransitionData) -> Unit
 ) : RecyclerView.ViewHolder(itemView), Divided {
     private var story: Story? = null
     private val title: BaselineGridTextView = itemView.findViewById(R.id.story_title)
@@ -71,7 +71,19 @@ class DesignerNewsStoryHolder(
                 onCommentsClicked(data)
             }
         }
-        itemView.setOnClickListener { story?.let { onItemClicked(it) } }
+        itemView.setOnClickListener {
+            story?.let {
+                val data =
+                    TransitionData(
+                        it,
+                        adapterPosition,
+                        title,
+                        getSharedElementsForTransition(),
+                        itemView
+                    )
+                onItemClicked(data)
+            }
+        }
     }
 
     fun bind(story: Story) {
