@@ -31,12 +31,12 @@ import org.mockito.Mockito
 import retrofit2.Response
 
 /**
- * Tests for [DesignerNewsCommentsRemoteDataSource] that mock the Designer News API
+ * Tests for [CommentsRemoteDataSource] that mock the Designer News API
  */
-class DesignerNewsCommentsRemoteDataSourceTest {
+class CommentsRemoteDataSourceTest {
 
     private val service = Mockito.mock(DesignerNewsService::class.java)
-    private val dataSource = DesignerNewsCommentsRemoteDataSource(service)
+    private val dataSource = CommentsRemoteDataSource(service)
 
     @Test
     fun getComments_whenRequestSuccessful() = runBlocking {

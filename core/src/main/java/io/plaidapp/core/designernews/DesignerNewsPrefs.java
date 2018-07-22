@@ -38,7 +38,7 @@ public class DesignerNewsPrefs {
         if (singleton == null) {
             synchronized (DesignerNewsPrefs.class) {
                 singleton = new DesignerNewsPrefs(
-                        Injection.provideDesignerNewsLoginRepository(context));
+                        Injection.provideLoginRepository(context));
             }
         }
         return singleton;

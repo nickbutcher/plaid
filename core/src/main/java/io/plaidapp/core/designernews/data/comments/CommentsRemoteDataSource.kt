@@ -24,7 +24,7 @@ import java.io.IOException
 /**
  * Work with the Designer News API to get comments. The class knows how to construct the requests.
  */
-class DesignerNewsCommentsRemoteDataSource(private val service: DesignerNewsService) {
+class CommentsRemoteDataSource(private val service: DesignerNewsService) {
 
     /**
      * Get a list of comments based on ids from Designer News API.
@@ -42,11 +42,11 @@ class DesignerNewsCommentsRemoteDataSource(private val service: DesignerNewsServ
     }
 
     companion object {
-        @Volatile private var INSTANCE: DesignerNewsCommentsRemoteDataSource? = null
+        @Volatile private var INSTANCE: CommentsRemoteDataSource? = null
 
-        fun getInstance(service: DesignerNewsService): DesignerNewsCommentsRemoteDataSource {
+        fun getInstance(service: DesignerNewsService): CommentsRemoteDataSource {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: DesignerNewsCommentsRemoteDataSource(service).also { INSTANCE = it }
+                INSTANCE ?: CommentsRemoteDataSource(service).also { INSTANCE = it }
             }
         }
     }

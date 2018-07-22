@@ -18,21 +18,21 @@ package io.plaidapp.core.base.designernews.data.login
 
 import android.content.Context
 import android.support.test.InstrumentationRegistry
-import io.plaidapp.core.designernews.data.login.DesignerNewsAuthTokenLocalDataSource
+import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 
 /**
- * Tests for [DesignerNewsAuthTokenLocalDataSource] using shared preferences from instrumentation
+ * Tests for [AuthTokenLocalDataSource] using shared preferences from instrumentation
  * context
  */
-class DesignerNewsAuthTokenLocalDataSourceTest {
+class AuthTokenLocalDataSourceTest {
     private var sharedPreferences = InstrumentationRegistry.getInstrumentation().context
             .getSharedPreferences("test", Context.MODE_PRIVATE)
 
-    private var dataSource = DesignerNewsAuthTokenLocalDataSource(sharedPreferences)
+    private var dataSource = AuthTokenLocalDataSource(sharedPreferences)
 
     @After
     fun tearDown() {

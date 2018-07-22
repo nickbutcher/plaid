@@ -19,7 +19,7 @@ package io.plaidapp.designernews.domain
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.designernews.data.users.model.User
-import io.plaidapp.core.designernews.data.votes.DesignerNewsVotesRepository
+import io.plaidapp.core.designernews.data.votes.VotesRepository
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -43,7 +43,7 @@ class UpvoteCommentUseCaseTest {
     )
 
     private val loginRepository = Mockito.mock(LoginRepository::class.java)
-    private val votesRepository = Mockito.mock(DesignerNewsVotesRepository::class.java)
+    private val votesRepository = Mockito.mock(VotesRepository::class.java)
     private val upvoteCommentUseCase = UpvoteCommentUseCase(loginRepository, votesRepository)
 
     @Test(expected = IllegalStateException::class)

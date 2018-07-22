@@ -22,7 +22,7 @@ import io.plaidapp.core.designernews.data.comments.model.CommentResponse
 /**
  * Class that knows how to get and store Designer News comments.
  */
-class CommentsRepository(private val remoteDataSource: DesignerNewsCommentsRemoteDataSource) {
+class CommentsRepository(private val remoteDataSource: CommentsRemoteDataSource) {
 
     /**
      * Get the list of [CommentResponse]s corresponding to [ids]
@@ -36,7 +36,7 @@ class CommentsRepository(private val remoteDataSource: DesignerNewsCommentsRemot
         private var INSTANCE: CommentsRepository? = null
 
         fun getInstance(
-            remoteDataSource: DesignerNewsCommentsRemoteDataSource
+            remoteDataSource: CommentsRemoteDataSource
         ): CommentsRepository {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: CommentsRepository(remoteDataSource).also { INSTANCE = it }

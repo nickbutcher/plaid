@@ -27,7 +27,7 @@ import java.io.IOException
  * for login (auth and /me) and updates the auth token after authorizing.
  */
 class LoginRemoteDataSource(
-    private val tokenLocalDataSource: DesignerNewsAuthTokenLocalDataSource,
+    private val tokenLocalDataSource: AuthTokenLocalDataSource,
     val service: DesignerNewsService
 ) {
 

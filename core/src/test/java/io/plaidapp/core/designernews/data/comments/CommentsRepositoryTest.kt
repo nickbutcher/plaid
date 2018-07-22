@@ -28,7 +28,7 @@ import java.io.IOException
  * Tests for [CommentsRepository] mocking all dependencies
  */
 class CommentsRepositoryTest {
-    private val dataSource = Mockito.mock(DesignerNewsCommentsRemoteDataSource::class.java)
+    private val dataSource = Mockito.mock(CommentsRemoteDataSource::class.java)
     private val repository = CommentsRepository(dataSource)
 
     @Test
