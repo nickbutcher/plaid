@@ -29,7 +29,7 @@ import org.mockito.Mockito
 import retrofit2.Response
 
 /**
- * Test for [DesignerNewsVotesRepository] mocking all dependencies.
+ * Test for [VotesRepository] mocking all dependencies.
  */
 class VotesRemoteDataSourceTest {
 

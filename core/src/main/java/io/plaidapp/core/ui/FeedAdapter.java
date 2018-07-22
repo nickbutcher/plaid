@@ -76,7 +76,7 @@ import io.plaidapp.core.data.pocket.PocketUtils;
 import io.plaidapp.core.data.prefs.SourceManager;
 import io.plaidapp.core.designernews.domain.StoryWeigher;
 import io.plaidapp.core.designernews.data.stories.model.Story;
-import io.plaidapp.core.designernews.ui.stories.DesignerNewsStoryHolder;
+import io.plaidapp.core.designernews.ui.stories.StoryViewHolder;
 import io.plaidapp.core.producthunt.data.api.PostWeigher;
 import io.plaidapp.core.producthunt.data.api.model.Post;
 import io.plaidapp.core.producthunt.ui.ProductHuntPostHolder;
@@ -183,7 +183,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case TYPE_DESIGNER_NEWS_STORY:
-                ((DesignerNewsStoryHolder) holder).bind((Story) getItem(position));
+                ((StoryViewHolder) holder).bind((Story) getItem(position));
                 break;
             case TYPE_DRIBBBLE_SHOT:
                 bindDribbbleShotHolder(
@@ -211,8 +211,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     @NonNull
-    private DesignerNewsStoryHolder createDesignerNewsStoryHolder(ViewGroup parent) {
-        final DesignerNewsStoryHolder holder = new DesignerNewsStoryHolder(
+    private StoryViewHolder createDesignerNewsStoryHolder(ViewGroup parent) {
+        final StoryViewHolder holder = new StoryViewHolder(
                 layoutInflater.inflate(R.layout.designer_news_story_item, parent, false),
                 pocketIsInstalled,
                 (story, position) -> {
@@ -238,7 +238,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return holder;
     }
 
-    private void openDesignerNewsStory(DesignerNewsStoryHolder.TransitionData data) {
+    private void openDesignerNewsStory(StoryViewHolder.TransitionData data) {
         final Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.Story.INSTANCE);
         intent.putExtra(Activities.DesignerNews.Story.EXTRA_STORY, data.getStory());
         ReflowText.addExtras(intent, new ReflowText.ReflowableTextView(data.getTitle()));

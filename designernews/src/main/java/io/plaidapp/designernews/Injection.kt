@@ -17,7 +17,7 @@
 package io.plaidapp.designernews
 
 import android.content.Context
-import io.plaidapp.core.designernews.provideDesignerNewsLoginRepository
+import io.plaidapp.core.designernews.provideLoginRepository
 import io.plaidapp.core.designernews.provideVotesRepository
 import io.plaidapp.core.provideCoroutinesContextProvider
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
@@ -32,7 +32,7 @@ import io.plaidapp.designernews.ui.DesignerNewsViewModelFactory
 
 fun provideViewModelFactory(context: Context): DesignerNewsViewModelFactory {
     return DesignerNewsViewModelFactory(
-        provideDesignerNewsLoginRepository(context),
+        provideLoginRepository(context),
         provideUpvoteStoryUseCase(context),
         provideUpvoteCommentUseCase(context),
         provideCoroutinesContextProvider()
@@ -40,13 +40,13 @@ fun provideViewModelFactory(context: Context): DesignerNewsViewModelFactory {
 }
 
 fun provideUpvoteStoryUseCase(context: Context): UpvoteStoryUseCase {
-    val loginRepository = provideDesignerNewsLoginRepository(context)
+    val loginRepository = provideLoginRepository(context)
     val votesRepository = provideVotesRepository(context)
     return UpvoteStoryUseCase(loginRepository, votesRepository)
 }
 
 fun provideUpvoteCommentUseCase(context: Context): UpvoteCommentUseCase {
-    val loginRepository = provideDesignerNewsLoginRepository(context)
+    val loginRepository = provideLoginRepository(context)
     val votesRepository = provideVotesRepository(context)
     return UpvoteCommentUseCase(loginRepository, votesRepository)
 }

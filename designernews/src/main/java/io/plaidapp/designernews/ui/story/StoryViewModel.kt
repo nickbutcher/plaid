@@ -26,7 +26,7 @@ import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 
 /**
- * [ViewModel] responsible for providing data for [DesignerNewsStory] and for handling user actions.
+ * [ViewModel] responsible for providing data for [StoryActivity] and for handling user actions.
  *  TODO replace the mix of result and coroutines with events.
  */
 class StoryViewModel(

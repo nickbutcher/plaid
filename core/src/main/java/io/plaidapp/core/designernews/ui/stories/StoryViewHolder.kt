@@ -38,7 +38,7 @@ import io.plaidapp.core.util.AnimUtils
 import io.plaidapp.core.util.ViewUtils
 import java.util.Arrays
 
-class DesignerNewsStoryHolder(
+class StoryViewHolder(
     itemView: View,
     pocketIsInstalled: Boolean,
     private val onPocketClicked: (story: Story, adapterPosition: Int) -> Unit,

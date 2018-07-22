@@ -18,14 +18,14 @@ package io.plaidapp.designernews.domain
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.login.LoginRepository
-import io.plaidapp.core.designernews.data.votes.DesignerNewsVotesRepository
+import io.plaidapp.core.designernews.data.votes.VotesRepository
 
 /**
  * Use case that based on a comment id and on the id of the logged in user upvotes a comment.
  */
 class UpvoteCommentUseCase(
     private val loginRepository: LoginRepository,
-    private val votesRepository: DesignerNewsVotesRepository
+    private val votesRepository: VotesRepository
 ) {
     suspend fun upvoteComment(commentId: Long): Result<Unit> {
         val userId = loginRepository.user?.id

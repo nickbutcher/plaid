@@ -42,7 +42,7 @@
 
 
         <activity
-            android:name="io.plaidapp.designernews.ui.story.DesignerNewsStory"
+            android:name="io.plaidapp.designernews.ui.story.StoryActivity"
             android:parentActivityName="io.plaidapp.ui.HomeActivity"
             android:theme="@style/Plaid.Translucent.DesignerNewsStory">
             <intent-filter>

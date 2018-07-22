@@ -28,7 +28,7 @@ import retrofit2.Response
 /**
  * Repository class that handles work with Designer News.
  */
-class DesignerNewsRepository(private val service: DesignerNewsService) {
+class StoriesRepository(private val service: DesignerNewsService) {
     private val inflight: MutableMap<String, Call<*>> = HashMap()
 
     fun loadTopStories(page: Int, callback: LoadSourceCallback) {
@@ -110,12 +110,12 @@ class DesignerNewsRepository(private val service: DesignerNewsService) {
 
     companion object {
         @Volatile
-        private var INSTANCE: DesignerNewsRepository? = null
+        private var INSTANCE: StoriesRepository? = null
 
-        fun getInstance(service: DesignerNewsService): DesignerNewsRepository {
+        fun getInstance(service: DesignerNewsService): StoriesRepository {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE
-                        ?: DesignerNewsRepository(service).also { INSTANCE = it }
+                        ?: StoriesRepository(service).also { INSTANCE = it }
             }
         }
     }

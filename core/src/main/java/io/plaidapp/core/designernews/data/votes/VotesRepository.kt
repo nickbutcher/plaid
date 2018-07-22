@@ -21,7 +21,7 @@ import io.plaidapp.core.data.Result
 /**
  * Repository for Designer News votes.
  */
-class DesignerNewsVotesRepository(private val remoteDataSource: VotesRemoteDataSource) {
+class VotesRepository(private val remoteDataSource: VotesRemoteDataSource) {
 
     suspend fun upvoteStory(storyId: Long, userId: Long): Result<Unit> {
         // TODO save the response in the database
@@ -35,11 +35,11 @@ class DesignerNewsVotesRepository(private val remoteDataSource: VotesRemoteDataS
 
     companion object {
         @Volatile
-        private var INSTANCE: DesignerNewsVotesRepository? = null
+        private var INSTANCE: VotesRepository? = null
 
-        fun getInstance(remoteDataSource: VotesRemoteDataSource): DesignerNewsVotesRepository {
+        fun getInstance(remoteDataSource: VotesRemoteDataSource): VotesRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: DesignerNewsVotesRepository(remoteDataSource).also { INSTANCE = it }
+                INSTANCE ?: VotesRepository(remoteDataSource).also { INSTANCE = it }
             }
         }
     }

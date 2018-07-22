@@ -33,7 +33,7 @@
 
     <!-- we use this view during the fab click animation. It provides placeholder UI for the
          chrome custom tab. Its background is faded from the fab color to white (controlled by
-         DesignerNewsStory#doFabExpand) and the foreground drawable imitates a toolbar -->
+         StoryActivity#doFabExpand) and the foreground drawable imitates a toolbar -->
     <FrameLayout
         android:id="@+id/fab_expand"
         android:layout_width="match_parent"
