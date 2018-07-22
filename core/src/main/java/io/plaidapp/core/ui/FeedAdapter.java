@@ -225,9 +225,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     openDesignerNewsStory(data);
                     return Unit.INSTANCE;
                 },
-                story -> {
-                    if (story.getUrl() != null) {
-                        openTabDesignerNews(story);
+                data -> {
+                    if (data.getStory().getUrl() != null) {
+                        openTabDesignerNews(data.getStory());
+                    } else {
+                        openDesignerNewsStory(data);
                     }
                     return Unit.INSTANCE;
                 }
