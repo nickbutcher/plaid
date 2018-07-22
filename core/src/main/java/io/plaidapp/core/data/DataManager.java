@@ -22,7 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import io.plaidapp.core.data.prefs.SourceManager;
 import io.plaidapp.core.designernews.Injection;
-import io.plaidapp.core.designernews.data.stories.DesignerNewsRepository;
+import io.plaidapp.core.designernews.data.stories.StoriesRepository;
 import io.plaidapp.core.dribbble.DribbbleInjection;
 import io.plaidapp.core.dribbble.data.DribbbleRepository;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
@@ -44,7 +44,7 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
         implements LoadSourceCallback {
 
     private final DribbbleRepository dribbbleRepository;
-    final DesignerNewsRepository designerNewsRepository;
+    final StoriesRepository storiesRepository;
     private final ProductHuntRepository productHuntRepository;
     private final FilterAdapter filterAdapter;
     Map<String, Integer> pageIndexes;
@@ -53,7 +53,7 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
     public DataManager(Context context, FilterAdapter filterAdapter) {
         super();
         dribbbleRepository = DribbbleInjection.provideDribbbleRepository();
-        designerNewsRepository = Injection.provideDesignerNewsRepository(context);
+        storiesRepository = Injection.provideStoriesRepository(context);
         productHuntRepository = ProductHuntInjection.provideProductHuntRepository();
 
         this.filterAdapter = filterAdapter;
@@ -77,7 +77,7 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
             inflightCalls.clear();
         }
         dribbbleRepository.cancelAllSearches();
-        designerNewsRepository.cancelAllRequests();
+        storiesRepository.cancelAllRequests();
         productHuntRepository.cancelAllRequests();
     }
 
@@ -94,7 +94,7 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
                             if (call != null) call.cancel();
                             inflightCalls.remove(key);
                         }
-                        designerNewsRepository.cancelRequestOfSource(key);
+                        storiesRepository.cancelRequestOfSource(key);
                         // clear the page index for the source
                         pageIndexes.put(key, 0);
                     }
@@ -166,16 +166,16 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
     }
 
     private void loadDesignerNewsTopStories(final int page) {
-        designerNewsRepository.loadTopStories(page, this);
+        storiesRepository.loadTopStories(page, this);
     }
 
     private void loadDesignerNewsRecent(final int page) {
-        designerNewsRepository.loadRecent(page, this);
+        storiesRepository.loadRecent(page, this);
     }
 
     private void loadDesignerNewsSearch(final Source.DesignerNewsSearchSource source,
                                         final int page) {
-        designerNewsRepository.search(source.key, page, this);
+        storiesRepository.search(source.key, page, this);
     }
 
     private void loadDribbbleSearch(final Source.DribbbleSearchSource source, final int page) {

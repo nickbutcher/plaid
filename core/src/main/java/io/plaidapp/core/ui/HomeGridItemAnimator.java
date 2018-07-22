@@ -26,7 +26,7 @@ import android.util.Pair;
 
 import java.util.List;
 
-import io.plaidapp.core.designernews.ui.stories.DesignerNewsStoryHolder;
+import io.plaidapp.core.designernews.ui.stories.StoryViewHolder;
 import io.plaidapp.core.ui.recyclerview.SlideInItemAnimator;
 
 
@@ -40,12 +40,12 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
     public static final int STORY_COMMENTS_RETURN = 2;
 
     // Pending animations
-    private DesignerNewsStoryHolder pendingAddToPocket;
-    private DesignerNewsStoryHolder pendingStoryCommentsReturn;
+    private StoryViewHolder pendingAddToPocket;
+    private StoryViewHolder pendingStoryCommentsReturn;
 
     // Currently running animations
-    private Pair<DesignerNewsStoryHolder, Animator> runningAddToPocket;
-    private Pair<DesignerNewsStoryHolder, Animator> runningStoryCommentsReturn;
+    private Pair<StoryViewHolder, Animator> runningAddToPocket;
+    private Pair<StoryViewHolder, Animator> runningStoryCommentsReturn;
 
     @Override
     public boolean canReuseUpdatedViewHolder(@NonNull RecyclerView.ViewHolder viewHolder) {
@@ -85,11 +85,11 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
         if (preInfo instanceof HomeGridItemHolderInfo) {
             HomeGridItemHolderInfo info = (HomeGridItemHolderInfo) preInfo;
             if (info.animateAddToPocket) {
-                pendingAddToPocket = (DesignerNewsStoryHolder) newHolder;
+                pendingAddToPocket = (StoryViewHolder) newHolder;
                 runPending = true;
             }
             if (info.returnFromComments) {
-                pendingStoryCommentsReturn = (DesignerNewsStoryHolder) newHolder;
+                pendingStoryCommentsReturn = (StoryViewHolder) newHolder;
                 runPending = true;
             }
         }
@@ -155,7 +155,7 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
                 && runningStoryCommentsReturn.second.isRunning());
     }
 
-    private void animateAddToPocket(final DesignerNewsStoryHolder holder) {
+    private void animateAddToPocket(final StoryViewHolder holder) {
         endAnimation(holder);
 
         Animator addToPocketAnim = holder.createAddToPocketAnimator();
@@ -181,7 +181,7 @@ public class HomeGridItemAnimator extends SlideInItemAnimator {
         addToPocketAnim.start();
     }
 
-    private void animateStoryCommentReturn(final DesignerNewsStoryHolder holder) {
+    private void animateStoryCommentReturn(final StoryViewHolder holder) {
         endAnimation(holder);
 
         Animator animator = holder.createStoryCommentReturnAnimator();

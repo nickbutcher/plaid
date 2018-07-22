@@ -28,7 +28,7 @@ import java.util.List;
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchService;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.designernews.Injection;
-import io.plaidapp.core.designernews.data.stories.DesignerNewsRepository;
+import io.plaidapp.core.designernews.data.stories.StoriesRepository;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,7 +40,7 @@ import retrofit2.Response;
 public abstract class SearchDataManager extends BaseDataManager<List<? extends PlaidItem>>
         implements LoadSourceCallback {
 
-    private final DesignerNewsRepository designerNewsRepository;
+    private final StoriesRepository storiesRepository;
     // state
     private String query = "";
     private int page = 1;
@@ -48,7 +48,7 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
 
     public SearchDataManager(Context context) {
         super();
-        designerNewsRepository = Injection.provideDesignerNewsRepository(context);
+        storiesRepository = Injection.provideStoriesRepository(context);
         inflight = new ArrayList<>();
     }
 
@@ -81,7 +81,7 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
                 call.cancel();
             }
             inflight.clear();
-            designerNewsRepository.cancelAllRequests();
+            storiesRepository.cancelAllRequests();
         }
     }
 
@@ -92,7 +92,7 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
     private void searchDesignerNews(final String query, final int resultsPage) {
         loadStarted();
         String source = Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query;
-        designerNewsRepository.search(source, resultsPage, this);
+        storiesRepository.search(source, resultsPage, this);
     }
 
     private void searchDribbble(final String query, final int resultsPage) {

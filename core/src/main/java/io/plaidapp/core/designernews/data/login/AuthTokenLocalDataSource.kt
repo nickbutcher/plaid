@@ -22,7 +22,7 @@ import androidx.core.content.edit
 /**
  * Local storage for auth token.
  */
-class DesignerNewsAuthTokenLocalDataSource(private val prefs: SharedPreferences) {
+class AuthTokenLocalDataSource(private val prefs: SharedPreferences) {
 
     private var _authToken: String? = prefs.getString(KEY_ACCESS_TOKEN, null)
 
@@ -45,13 +45,13 @@ class DesignerNewsAuthTokenLocalDataSource(private val prefs: SharedPreferences)
         private const val KEY_ACCESS_TOKEN = "KEY_ACCESS_TOKEN"
 
         @Volatile
-        private var INSTANCE: DesignerNewsAuthTokenLocalDataSource? = null
+        private var INSTANCE: AuthTokenLocalDataSource? = null
 
         fun getInstance(
             sharedPreferences: SharedPreferences
-        ): DesignerNewsAuthTokenLocalDataSource {
+        ): AuthTokenLocalDataSource {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: DesignerNewsAuthTokenLocalDataSource(sharedPreferences).also {
+                INSTANCE ?: AuthTokenLocalDataSource(sharedPreferences).also {
                     INSTANCE = it
                 }
             }

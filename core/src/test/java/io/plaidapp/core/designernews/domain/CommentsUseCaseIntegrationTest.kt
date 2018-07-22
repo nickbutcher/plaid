@@ -32,7 +32,7 @@ import io.plaidapp.core.designernews.replyResponse1
 import io.plaidapp.core.designernews.user1
 import io.plaidapp.core.designernews.user2
 import io.plaidapp.core.designernews.data.comments.CommentsRepository
-import io.plaidapp.core.designernews.data.comments.DesignerNewsCommentsRemoteDataSource
+import io.plaidapp.core.designernews.data.comments.CommentsRemoteDataSource
 import io.plaidapp.core.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.core.designernews.data.users.UserRepository
 import io.plaidapp.core.designernews.provideCommentsUseCase
@@ -53,7 +53,7 @@ import retrofit2.Response
  */
 class CommentsUseCaseIntegrationTest {
     private val service = Mockito.mock(DesignerNewsService::class.java)
-    private val dataSource = DesignerNewsCommentsRemoteDataSource(service)
+    private val dataSource = CommentsRemoteDataSource(service)
     private val commentsRepository = CommentsRepository(dataSource)
     private val userRepository = UserRepository(UserRemoteDataSource(service))
     private val repository = provideCommentsUseCase(
