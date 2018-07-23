@@ -32,6 +32,7 @@ import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.core.designernews.data.login.LoginRemoteDataSource
 import io.plaidapp.core.designernews.data.login.LoginRepository
+import io.plaidapp.core.designernews.data.stories.StoriesRemoteDataSource
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.core.designernews.data.users.UserRepository
@@ -107,11 +108,19 @@ private fun provideDesignerNewsService(
 }
 
 fun provideStoriesRepository(context: Context): StoriesRepository {
-    return provideStoriesRepository(DesignerNewsPrefs.get(context).api)
+    return provideStoriesRepository(
+        provideStoriesRemoteDataSource(
+            DesignerNewsPrefs.get(context).api
+        )
+    )
 }
 
-private fun provideStoriesRepository(service: DesignerNewsService): StoriesRepository {
-    return StoriesRepository.getInstance(service)
+private fun provideStoriesRepository(remoteDataSource: StoriesRemoteDataSource): StoriesRepository {
+    return StoriesRepository.getInstance(remoteDataSource, provideCoroutinesContextProvider())
+}
+
+private fun provideStoriesRemoteDataSource(service: DesignerNewsService): StoriesRemoteDataSource {
+    return StoriesRemoteDataSource.getInstance(service)
 }
 
 fun provideCommentsUseCase(context: Context): CommentsUseCase {

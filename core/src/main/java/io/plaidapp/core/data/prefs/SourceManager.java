@@ -20,6 +20,8 @@ package io.plaidapp.core.data.prefs;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
+import io.plaidapp.core.R;
+import io.plaidapp.core.data.Source;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,16 +29,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.plaidapp.core.R;
-import io.plaidapp.core.data.Source;
-
 /**
  * Manage saving and retrieving data sources from disk.
  */
 public class SourceManager {
 
     public static final String SOURCE_DESIGNER_NEWS_POPULAR = "SOURCE_DESIGNER_NEWS_POPULAR";
-    public static final String SOURCE_DESIGNER_NEWS_RECENT = "SOURCE_DESIGNER_NEWS_RECENT";
     public static final String SOURCE_PRODUCT_HUNT = "SOURCE_PRODUCT_HUNT";
     private static final String SOURCES_PREF = "SOURCES_PREF";
     private static final String KEY_SOURCES = "KEY_SOURCES";
@@ -55,6 +53,8 @@ public class SourceManager {
                 sources.add(new Source.DribbbleSearchSource(
                         sourceKey.replace(Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX, ""),
                         prefs.getBoolean(sourceKey, false)));
+            } else if (DesignerNewsV1SourceRemover.checkAndRemoveDesignerNewsRecentSource(sourceKey, prefs)) {
+                continue;
             } else if (sourceKey.startsWith(Source.DesignerNewsSearchSource
                     .DESIGNER_NEWS_QUERY_PREFIX)) {
                 sources.add(new Source.DesignerNewsSearchSource(
@@ -124,8 +124,6 @@ public class SourceManager {
         ArrayList<Source> defaultSources = new ArrayList<>(11);
         defaultSources.add(new Source.DesignerNewsSource(SOURCE_DESIGNER_NEWS_POPULAR, 100,
                 context.getString(R.string.source_designer_news_popular), true));
-        defaultSources.add(new Source.DesignerNewsSource(SOURCE_DESIGNER_NEWS_RECENT, 101,
-                context.getString(R.string.source_designer_news_recent), false));
         // 200 sort order range left for DN searches
         defaultSources.add(new Source.DribbbleSearchSource(context.getString(R.string
                 .source_dribbble_search_material_design), true));

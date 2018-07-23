@@ -30,9 +30,6 @@ android {
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
 
         buildConfigField 'String', 'DESIGNER_NEWS_CLIENT_ID', "\"${designer_news_client_id}\""
-        buildConfigField 'boolean', 'DESIGNER_NEWS_V2', 'true' // May be overridden by a build type.
-
-        buildConfigField 'String', 'DESIGNER_NEWS_CLIENT_ID', "\"${designer_news_client_id}\""
         buildConfigField 'String',
                 'DESIGNER_NEWS_CLIENT_SECRET', "\"${designer_news_client_secret}\""
 
@@ -44,7 +41,6 @@ android {
 
     buildTypes {
         release {
-            buildConfigField 'boolean', 'DESIGNER_NEWS_V2', 'false'
             consumerProguardFiles 'proguard-rules.pro'
         }
     }

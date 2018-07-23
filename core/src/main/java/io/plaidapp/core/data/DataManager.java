@@ -107,10 +107,7 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
             final int page = getNextPageIndex(source.key);
             switch (source.key) {
                 case SourceManager.SOURCE_DESIGNER_NEWS_POPULAR:
-                    loadDesignerNewsTopStories(page);
-                    break;
-                case SourceManager.SOURCE_DESIGNER_NEWS_RECENT:
-                    loadDesignerNewsRecent(page);
+                    loadDesignerNewsStories(page);
                     break;
                 case SourceManager.SOURCE_PRODUCT_HUNT:
                     loadProductHunt(page);
@@ -165,12 +162,8 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
         inflightCalls.remove(source);
     }
 
-    private void loadDesignerNewsTopStories(final int page) {
-        storiesRepository.loadTopStories(page, this);
-    }
-
-    private void loadDesignerNewsRecent(final int page) {
-        storiesRepository.loadRecent(page, this);
+    private void loadDesignerNewsStories(final int page) {
+        storiesRepository.loadStories(page, this);
     }
 
     private void loadDesignerNewsSearch(final Source.DesignerNewsSearchSource source,
