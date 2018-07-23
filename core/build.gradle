@@ -90,9 +90,10 @@ dependencies {
     api "android.arch.lifecycle:extensions:${versions.lifecycle}"
 
     testImplementation project(':test_shared')
+    testImplementation "com.nhaarman:mockito-kotlin:${versions.mockito_kotlin}"
+    testImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
     testImplementation "junit:junit:${versions.junit}"
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
-    testImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
 
     androidTestImplementation "com.android.support.test:runner:${versions.test_runner}"
     androidTestImplementation "com.android.support.test:rules:${versions.test_rules}"

@@ -20,10 +20,13 @@ import android.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
+import io.plaidapp.core.data.Result
+import io.plaidapp.core.dribbble.data.DribbbleRepository
+import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.util.event.Event
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
 import io.plaidapp.dribbble.domain.ShareShotInfo
-import io.plaidapp.dribbble.shot
+import io.plaidapp.dribbble.testShot
 import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
 import org.junit.Assert.assertEquals
@@ -40,17 +43,40 @@ class DribbbleShotViewModelTest {
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    private val shotId = 1337L
+    private val repo: DribbbleRepository = mock()
     private val getShareShotInfoUseCase: GetShareShotInfoUseCase = mock()
-    private val viewModel = DribbbleShotViewModel(
-        provideFakeCoroutinesContextProvider(),
-        getShareShotInfoUseCase
-    )
+
+    @Test
+    fun loadShot_existsInRepo() {
+        // Given that the repo successfully returns the requested shot
+        // When view model is constructed
+        val viewModel = withViewModel()
+
+        // Then the shot is present
+        assertNotNull(viewModel.shot)
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun loadShot_notInRepo() {
+        // Given that the repo fails to return the requested shot
+        whenever(repo.getShot(shotId)).thenReturn(Result.Error(Exception()))
+
+        // When the view model is constructed
+        DribbbleShotViewModel(
+            shotId,
+            repo,
+            getShareShotInfoUseCase,
+            provideFakeCoroutinesContextProvider()
+        )
+        // Then it throws
+    }
 
     @Test
     fun shotClicked_sendsOpenLinkEvent() {
-        // Given a view model with a shot with a given url
+        // Given a view model with a shot with a known URL
         val url = "https://dribbble.com/shots/2344334-Plaid-Product-Icon"
-        viewModel.shot = shot.copy(htmlUrl = url)
+        val viewModel = withViewModel(shot = testShot.copy(htmlUrl = url))
 
         // When there is a request to view the shot
         viewModel.viewShotRequested()
@@ -64,9 +90,8 @@ class DribbbleShotViewModelTest {
     @Test
     fun shotShareClicked_sendsShareInfoEvent() {
         // Given a VM with a mocked use case which return a known Share Info object
-        viewModel.shot = shot
         val expected = ShareShotInfo(mock(), "Title", "Share Text", "Mime")
-        whenever(getShareShotInfoUseCase.invoke(any())).thenReturn(expected)
+        val viewModel = withViewModel(shareInfo = expected)
 
         // When there is a request to share the shot
         viewModel.shareShotRequested()
@@ -75,5 +100,21 @@ class DribbbleShotViewModelTest {
         val shareInfoEvent: Event<ShareShotInfo>? = LiveDataTestUtil.getValue(viewModel.shareShot)
         assertNotNull(shareInfoEvent)
         assertEquals(expected, shareInfoEvent!!.peek())
+    }
+
+    private fun withViewModel(
+        shot: Shot = testShot,
+        shareInfo: ShareShotInfo? = null
+    ): DribbbleShotViewModel {
+        whenever(repo.getShot(shotId)).thenReturn(Result.Success(shot))
+        if (shareInfo != null) {
+            whenever(getShareShotInfoUseCase.invoke(any())).thenReturn(shareInfo)
+        }
+        return DribbbleShotViewModel(
+            shotId,
+            repo,
+            getShareShotInfoUseCase,
+            provideFakeCoroutinesContextProvider()
+        )
     }
 }

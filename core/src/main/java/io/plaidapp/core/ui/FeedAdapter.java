@@ -273,8 +273,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.image.setBadgeColor(initialGifBadgeColor);
         holder.image.setOnClickListener(view -> {
             Intent intent = ActivityHelper.intentTo(Activities.Dribbble.Shot.INSTANCE);
-            intent.putExtra(Activities.Dribbble.Shot.EXTRA_SHOT,
-                    (Shot) getItem(holder.getAdapterPosition()));
+            intent.putExtra(Activities.Dribbble.Shot.EXTRA_SHOT_ID,
+                    getItem(holder.getAdapterPosition()).getId());
             setGridItemContentTransitions(holder.image);
             ActivityOptions options =
                     ActivityOptions.makeSceneTransitionAnimation(host,

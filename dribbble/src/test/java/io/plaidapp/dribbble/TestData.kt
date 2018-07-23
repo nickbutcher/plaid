@@ -30,7 +30,7 @@ val player = User(
     username = "nickbutcher"
 )
 
-val shot = Shot(
+val testShot = Shot(
     id = 1L,
     title = "Foo",
     description = "",
