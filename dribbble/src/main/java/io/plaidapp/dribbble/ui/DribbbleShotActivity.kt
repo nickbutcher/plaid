@@ -35,7 +35,6 @@ import android.util.TypedValue
 import android.view.View
 import android.view.View.GONE
 import android.view.View.OnClickListener
-import android.view.View.OnScrollChangeListener
 import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.ImageButton
@@ -128,16 +127,14 @@ class DribbbleShotActivity : AppCompatActivity() {
         ) = false
     }
 
-    private val scrollListener = OnScrollChangeListener { _, _, scrollY, _, _ ->
-        imageView?.offset = -scrollY
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dribbble_shot)
         bindResources()
 
-        bodyScroll?.setOnScrollChangeListener(scrollListener)
+        bodyScroll?.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+            imageView?.offset = -scrollY
+        }
         back?.setOnClickListener { setResultAndFinish() }
         chromeFader = object : ElasticDragDismissFrameLayout.SystemChromeFader(this) {
             override fun onDragDismissed() {
