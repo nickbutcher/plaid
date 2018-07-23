@@ -86,6 +86,7 @@
             android:background="@drawable/fab"
             android:elevation="@dimen/z_fab"
             android:src="@drawable/ic_add_dark"
+            android:visibility="gone"
             android:stateListAnimator="@animator/raise" />
 
         <ViewStub
