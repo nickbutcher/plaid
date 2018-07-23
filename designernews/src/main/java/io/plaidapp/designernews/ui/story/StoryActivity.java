@@ -559,6 +559,8 @@ public class StoryActivity extends AppCompatActivity {
             enterComment.clearFocus();
         });
         enterComment.setOnFocusChangeListener(enterCommentFocus);
+        // hide the comment view until we know that posting a DN comment works
+        enterCommentView.setVisibility(View.GONE);
         return enterCommentView;
     }
 
