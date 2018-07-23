@@ -21,10 +21,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
 import android.app.assist.AssistContent;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -35,8 +34,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -70,11 +72,10 @@ import in.uncod.android.bypass.Markdown;
 import io.plaidapp.core.data.Result;
 import io.plaidapp.core.designernews.DesignerNewsPrefs;
 import io.plaidapp.core.designernews.Injection;
-import io.plaidapp.core.designernews.domain.model.Comment;
 import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.designernews.data.users.model.User;
-import io.plaidapp.core.designernews.data.votes.DesignerNewsVotesRepository;
 import io.plaidapp.core.designernews.domain.CommentsUseCase;
+import io.plaidapp.core.designernews.domain.model.Comment;
 import io.plaidapp.core.ui.transitions.GravityArcMotion;
 import io.plaidapp.core.ui.transitions.MorphTransform;
 import io.plaidapp.core.ui.transitions.ReflowText;
@@ -87,7 +88,9 @@ import io.plaidapp.core.util.ViewUtils;
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.core.util.glide.GlideApp;
 import io.plaidapp.core.util.glide.ImageSpanTarget;
+import io.plaidapp.designernews.InjectionKt;
 import io.plaidapp.designernews.R;
+import io.plaidapp.designernews.ui.DesignerNewsViewModelFactory;
 import io.plaidapp.designernews.ui.login.LoginActivity;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import kotlin.Unit;
@@ -100,7 +103,7 @@ import static io.plaidapp.core.util.AnimUtils.getFastOutLinearInInterpolator;
 import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
 import static io.plaidapp.core.util.AnimUtils.getLinearOutSlowInInterpolator;
 
-public class DesignerNewsStory extends Activity {
+public class DesignerNewsStory extends AppCompatActivity {
 
     private static final int RC_LOGIN_UPVOTE = 7;
 
@@ -129,7 +132,7 @@ public class DesignerNewsStory extends Activity {
     private Story story;
 
     private CommentsUseCase commentsUseCase;
-    private DesignerNewsVotesRepository votesRepository;
+    private StoryViewModel viewModel;
 
     private DesignerNewsPrefs designerNewsPrefs;
     private Markdown markdown;
@@ -140,8 +143,10 @@ public class DesignerNewsStory extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_story);
 
+        DesignerNewsViewModelFactory factory = InjectionKt.provideViewModelFactory(this);
+        viewModel = ViewModelProviders.of(this, factory).get(StoryViewModel.class);
+
         commentsUseCase = Injection.provideCommentsUseCase(this);
-        votesRepository = Injection.provideDesignerNewsVotesRepository(this);
 
         bindResources();
 
@@ -159,7 +164,7 @@ public class DesignerNewsStory extends Activity {
 
         fab.setOnClickListener(fabClick);
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this);
-        markdown = new Bypass(this, new Bypass.Options()
+        markdown = new Bypass(getResources().getDisplayMetrics(), new Bypass.Options()
                 .setBlockQuoteLineColor(
                         ContextCompat.getColor(this, io.plaidapp.R.color.designer_news_quote_line))
                 .setBlockQuoteLineWidth(2) // dps
@@ -495,10 +500,10 @@ public class DesignerNewsStory extends Activity {
         share.setOnClickListener(v -> {
             ((AnimatedVectorDrawable) share.getCompoundDrawables()[1]).start();
             ShareCompat.IntentBuilder.from(DesignerNewsStory.this)
-                                     .setText(story.getUrl())
-                                     .setType("text/plain")
-                                     .setSubject(story.getTitle())
-                                     .startChooser();
+                    .setText(story.getUrl())
+                    .setType("text/plain")
+                    .setSubject(story.getTitle())
+                    .startChooser();
         });
 
         TextView storyPosterTime = header.findViewById(R.id.story_poster_time);
@@ -591,7 +596,7 @@ public class DesignerNewsStory extends Activity {
         if (designerNewsPrefs.isLoggedIn()) {
             if (!upvoteStory.isActivated()) {
                 upvoteStory.setActivated(true);
-                votesRepository.upvoteStory(story.getId(), designerNewsPrefs.getUser().getId(),
+                viewModel.storyUpvoteRequested(story.getId(),
                         it -> {
                             if (it instanceof Result.Success) {
                                 storyUpvoted(story.getVoteCount() + 1);
@@ -625,10 +630,11 @@ public class DesignerNewsStory extends Activity {
         MorphTransform.addExtras(login, ContextCompat.getColor(this,
                 io.plaidapp.R.color.background_light),
                 triggeringView.getHeight() / 2);
-        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                 DesignerNewsStory.this,
                 triggeringView, getString(io.plaidapp.R.string.transition_designer_news_login));
-        startActivityForResult(login, requestCode, options.toBundle());
+
+        ActivityCompat.startActivityForResult(this, login, requestCode, options.toBundle());
     }
 
     private void unnestComments(List<Comment> nested, List<Comment> flat) {
@@ -914,7 +920,7 @@ public class DesignerNewsStory extends Activity {
                                              Comment comment) {
             if (isUserLoggedIn) {
                 if (!holder.getCommentVotes().isActivated()) {
-                    votesRepository.upvoteComment(story.getId(), designerNewsPrefs.getUser().getId(),
+                    viewModel.commentUpvoteRequested(story.getId(),
                             result -> {
                                 if (result instanceof Result.Success) {
                                     comment.setUpvoted(true);

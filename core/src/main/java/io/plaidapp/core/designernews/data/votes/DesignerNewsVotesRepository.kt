@@ -16,48 +16,30 @@
 
 package io.plaidapp.core.designernews.data.votes
 
-import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
 
 /**
  * Repository for Designer News votes.
  */
-class DesignerNewsVotesRepository(
-    private val remoteDataSource: VotesRemoteDataSource,
-    private val contextProvider: CoroutinesContextProvider
-) {
-    fun upvoteStory(
-        storyId: Long,
-        userId: Long,
-        onResult: (result: Result<Unit>) -> Unit
-    ) = launch(contextProvider.io) {
+class DesignerNewsVotesRepository(private val remoteDataSource: VotesRemoteDataSource) {
+
+    suspend fun upvoteStory(storyId: Long, userId: Long): Result<Unit> {
         // TODO save the response in the database
-        val response = remoteDataSource.upvoteStory(storyId, userId)
-        withContext(contextProvider.main) { onResult(response) }
+        return remoteDataSource.upvoteStory(storyId, userId)
     }
 
-    fun upvoteComment(
-        commentId: Long,
-        userId: Long,
-        onResult: (result: Result<Unit>) -> Unit
-    ) = launch(contextProvider.io) {
+    suspend fun upvoteComment(commentId: Long, userId: Long): Result<Unit> {
         // TODO save the response in the database
-        val response = remoteDataSource.upvoteComment(commentId, userId)
-        withContext(contextProvider.main) { onResult(response) }
+        return remoteDataSource.upvoteComment(commentId, userId)
     }
 
     companion object {
         @Volatile
         private var INSTANCE: DesignerNewsVotesRepository? = null
 
-        fun getInstance(
-            remoteDataSource: VotesRemoteDataSource,
-            contextProvider: CoroutinesContextProvider
-        ): DesignerNewsVotesRepository {
+        fun getInstance(remoteDataSource: VotesRemoteDataSource): DesignerNewsVotesRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: DesignerNewsVotesRepository(remoteDataSource, contextProvider).also { INSTANCE = it }
+                INSTANCE ?: DesignerNewsVotesRepository(remoteDataSource).also { INSTANCE = it }
             }
         }
     }

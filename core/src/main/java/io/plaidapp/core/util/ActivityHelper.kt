@@ -64,7 +64,7 @@ object Activities {
      * AboutActivity
      */
     object About : AddressableActivity {
-        override val className = "$PACKAGE_NAME.ui.about.AboutActivity"
+        override val className = "$PACKAGE_NAME.about.ui.AboutActivity"
     }
 
     /**

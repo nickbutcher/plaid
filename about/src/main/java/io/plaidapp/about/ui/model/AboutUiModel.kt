@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 
-package `in`.uncod.android.bypass
-
-import android.content.res.ColorStateList
-import android.support.annotation.ColorInt
+package io.plaidapp.about.ui.model
 
 /**
- *  Interface for Markdown capabilities.
+ * Hold values displayed in the about Ui.
  */
-interface Markdown {
-    /**
-     * Create a spannable [CharSequence] from a text containing markdown data.
-     */
-    fun markdownToSpannable(
-        content: String,
-        linksColor: ColorStateList,
-        @ColorInt highlightColor: Int,
-        callback: LoadImageCallback?
-    ): CharSequence
-}
+internal data class AboutUiModel(
+    val appAboutText: CharSequence,
+    val iconAboutText: CharSequence,
+    val librariesUiModel: LibrariesUiModel
+)

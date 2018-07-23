@@ -52,3 +52,9 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
     testImplementation "android.arch.core:core-testing:${versions.lifecycle}"
 }
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}

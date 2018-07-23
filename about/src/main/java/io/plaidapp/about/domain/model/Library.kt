@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package `in`.uncod.android.bypass
-
-import android.content.res.ColorStateList
-import android.support.annotation.ColorInt
+package io.plaidapp.about.domain.model
 
 /**
- *  Interface for Markdown capabilities.
+ * Models an open source library we want to credit
  */
-interface Markdown {
-    /**
-     * Create a spannable [CharSequence] from a text containing markdown data.
-     */
-    fun markdownToSpannable(
-        content: String,
-        linksColor: ColorStateList,
-        @ColorInt highlightColor: Int,
-        callback: LoadImageCallback?
-    ): CharSequence
-}
+internal data class Library(
+    val name: String,
+    val description: String,
+    val link: String,
+    val imageUrl: String,
+    val circleCrop: Boolean
+)

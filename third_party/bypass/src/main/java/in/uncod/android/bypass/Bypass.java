@@ -1,11 +1,12 @@
 package in.uncod.android.bypass;
 
-import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -49,30 +50,28 @@ public class Bypass implements Markdown {
     // We need to track multiple ordered lists at once because of nesting.
     private final Map<Element, Integer> mOrderedListNumber = new ConcurrentHashMap<Element, Integer>();
 
-    public Bypass(Context context, Options options) {
+    public Bypass(DisplayMetrics displayMetrics, Options options) {
         mOptions = options;
 
-        DisplayMetrics dm = context.getResources().getDisplayMetrics();
-
         mListItemIndent = (int) TypedValue.applyDimension(mOptions.mListItemIndentUnit,
-                mOptions.mListItemIndentSize, dm);
+                mOptions.mListItemIndentSize, displayMetrics);
 
         mBlockQuoteIndent = (int) TypedValue.applyDimension(mOptions.mBlockQuoteIndentUnit,
-                mOptions.mBlockQuoteIndentSize, dm);
+                mOptions.mBlockQuoteIndentSize, displayMetrics);
 
         mBlockQuoteLineWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                mOptions.mBlockQuoteLineWidth, dm);
+                mOptions.mBlockQuoteLineWidth, displayMetrics);
 
         mBlockQuoteLineIndent = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                mOptions.mBlockQuoteLineIndent, dm);
+                mOptions.mBlockQuoteLineIndent, displayMetrics);
 
         mCodeBlockIndent = (int) TypedValue.applyDimension(mOptions.mCodeBlockIndentUnit,
-                mOptions.mCodeBlockIndentSize, dm);
+                mOptions.mCodeBlockIndentSize, displayMetrics);
 
         mHruleSize = (int) TypedValue.applyDimension(mOptions.mHruleUnit,
-                mOptions.mHruleSize, dm);
+                mOptions.mHruleSize, displayMetrics);
 
-        mHruleTopBottomPadding = (int) dm.density * 10;
+        mHruleTopBottomPadding = (int) displayMetrics.density * 10;
     }
 
     private static void setSpan(SpannableStringBuilder builder, Object what) {
@@ -98,7 +97,7 @@ public class Bypass implements Markdown {
     public CharSequence markdownToSpannable(@NonNull String markdown,
                                             @NonNull ColorStateList linksColors,
                                             int highlightColor,
-                                            @NonNull LoadImageCallback loadImageCallback) {
+                                            @Nullable LoadImageCallback loadImageCallback) {
         Document document = processMarkdown(markdown);
 
         int size = document.getElementCount();

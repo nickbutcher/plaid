@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.about
+package io.plaidapp.about.ui.model
 
-import android.support.v7.widget.RecyclerView
-import android.view.View
+import io.plaidapp.about.domain.model.Library
+import io.plaidapp.about.ui.adapter.OnClick
 
-internal class LibraryIntroHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+/**
+ * * Hold values displayed in the libraries Ui.
+ */
+internal data class LibrariesUiModel(val libraries: List<Library>, val onClick: OnClick)

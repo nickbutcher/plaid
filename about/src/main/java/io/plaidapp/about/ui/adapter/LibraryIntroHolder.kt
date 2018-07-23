@@ -14,22 +14,9 @@
  * limitations under the License.
  */
 
-package `in`.uncod.android.bypass
+package io.plaidapp.about.ui.adapter
 
-import android.content.res.ColorStateList
-import android.support.annotation.ColorInt
+import android.support.v7.widget.RecyclerView
+import android.view.View
 
-/**
- *  Interface for Markdown capabilities.
- */
-interface Markdown {
-    /**
-     * Create a spannable [CharSequence] from a text containing markdown data.
-     */
-    fun markdownToSpannable(
-        content: String,
-        linksColor: ColorStateList,
-        @ColorInt highlightColor: Int,
-        callback: LoadImageCallback?
-    ): CharSequence
-}
+internal class LibraryIntroHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

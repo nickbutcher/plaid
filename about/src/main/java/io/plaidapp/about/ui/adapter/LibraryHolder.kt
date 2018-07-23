@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.ui.about
+package io.plaidapp.about.ui.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -22,15 +22,16 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
-
 import io.plaidapp.about.R
+import io.plaidapp.about.domain.model.Library
 import io.plaidapp.core.util.glide.GlideApp
+import io.plaidapp.R as appR
 
-typealias OnClick = (link: String, position: Int) -> Unit
+internal typealias OnClick = (library: Library) -> Unit
 
 internal class LibraryHolder(
     itemView: View,
-    private val onClicked: OnClick
+    private val onClick: OnClick
 ) : RecyclerView.ViewHolder(itemView) {
 
     private var library: Library? = null
@@ -41,8 +42,8 @@ internal class LibraryHolder(
     private var link: Button = itemView.findViewById(R.id.library_link)
 
     init {
-        itemView.setOnClickListener { library?.let { onClicked(it.link, adapterPosition) } }
-        link.setOnClickListener { library?.let { onClicked(it.link, adapterPosition) } }
+        itemView.setOnClickListener { library?.let { onClick(it) } }
+        link.setOnClickListener { library?.let { onClick(it) } }
     }
 
     fun bind(lib: Library) {
@@ -52,7 +53,7 @@ internal class LibraryHolder(
         val request = GlideApp.with(image.context)
                 .load(lib.imageUrl)
                 .transition(withCrossFade())
-                .placeholder(io.plaidapp.R.drawable.avatar_placeholder)
+                .placeholder(appR.drawable.avatar_placeholder)
         if (lib.circleCrop) {
             request.circleCrop()
         }

@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package `in`.uncod.android.bypass
+package io.plaidapp.core.util.event
 
-import android.content.res.ColorStateList
-import android.support.annotation.ColorInt
+import android.arch.lifecycle.Observer
 
 /**
- *  Interface for Markdown capabilities.
+ * An [Observer] for [Event]s, simplifying the pattern of checking if the [Event]'s content has
+ * already been consumed.
+ *
+ * [onEventUnconsumedContent] is *only* called if the [Event]'s contents has not been consumed.
  */
-interface Markdown {
-    /**
-     * Create a spannable [CharSequence] from a text containing markdown data.
-     */
-    fun markdownToSpannable(
-        content: String,
-        linksColor: ColorStateList,
-        @ColorInt highlightColor: Int,
-        callback: LoadImageCallback?
-    ): CharSequence
+class EventObserver<T>(private val onEventUnconsumedContent: (T) -> Unit) : Observer<Event<T>> {
+    override fun onChanged(event: Event<T>?) {
+        event?.consume()?.let { value ->
+            onEventUnconsumedContent(value)
+        }
+    }
 }
