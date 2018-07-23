@@ -16,20 +16,17 @@
 
 package io.plaidapp.core.dribbble.data.api.model
 
-import android.os.Parcelable
 import io.plaidapp.core.dribbble.data.api.model.Images.ImageSize.NORMAL_IMAGE_SIZE
 import io.plaidapp.core.dribbble.data.api.model.Images.ImageSize.TWO_X_IMAGE_SIZE
-import kotlinx.android.parcel.Parcelize
 
 /**
  * Models links to the various quality of images of a shot.
  */
-@Parcelize
 data class Images(
     val hidpi: String? = null,
     val normal: String? = null,
     val teaser: String? = null
-) : Parcelable {
+) {
 
     fun best(): String? {
         return if (!hidpi.isNullOrEmpty()) hidpi else normal
