@@ -16,65 +16,36 @@
 
 package io.plaidapp.core.designernews.data.stories
 
-import io.plaidapp.core.BuildConfig
+import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.LoadSourceCallback
+import io.plaidapp.core.data.Result
 import io.plaidapp.core.data.prefs.SourceManager
-import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.stories.model.Story
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 
 /**
- * Repository class that handles work with Designer News.
+ * Repository class that handles work with Designer News Stories.
  */
-class StoriesRepository(private val service: DesignerNewsService) {
-    private val inflight: MutableMap<String, Call<*>> = HashMap()
+class StoriesRepository(
+    private val remoteDataSource: StoriesRemoteDataSource,
+    private val contextProvider: CoroutinesContextProvider
+) {
 
-    fun loadTopStories(page: Int, callback: LoadSourceCallback) {
-        val topStories = if (BuildConfig.DESIGNER_NEWS_V2) {
-            service.getTopStoriesV2(page)
-        } else {
-            service.getTopStories(page)
+    private val parentJobs = mutableMapOf<String, Job>()
+    private val cache = mutableMapOf<Long, Story>()
+
+    fun loadStories(page: Int, callback: LoadSourceCallback) {
+        val jobId = "${SourceManager.SOURCE_DESIGNER_NEWS_POPULAR}::$page"
+        parentJobs[jobId] = launchRequest(
+            SourceManager.SOURCE_DESIGNER_NEWS_POPULAR,
+            page,
+            callback,
+            jobId
+        ) {
+            remoteDataSource.loadStories(page)
         }
-        topStories.enqueue(object : Callback<List<Story>> {
-            override fun onResponse(call: Call<List<Story>>, response: Response<List<Story>>) {
-                if (response.isSuccessful) {
-                    callback.sourceLoaded(response.body(), page, SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
-                } else {
-                    inflight.remove(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
-                    callback.loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
-                }
-            }
-
-            override fun onFailure(call: Call<List<Story>>, t: Throwable) {
-                inflight.remove(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
-                callback.loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
-            }
-        })
-        inflight[SourceManager.SOURCE_DESIGNER_NEWS_POPULAR] = topStories
-    }
-
-    fun loadRecent(page: Int, callback: LoadSourceCallback) {
-        val recentStoriesCall = if (BuildConfig.DESIGNER_NEWS_V2) {
-            service.getRecentStoriesV2(page)
-        } else {
-            service.getRecentStories(page)
-        }
-        recentStoriesCall.enqueue(object : Callback<List<Story>> {
-            override fun onResponse(call: Call<List<Story>>, response: Response<List<Story>>) {
-                if (response.isSuccessful) {
-                    callback.sourceLoaded(response.body(), page, SourceManager.SOURCE_DESIGNER_NEWS_RECENT)
-                } else {
-                    callback.loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_RECENT)
-                }
-            }
-
-            override fun onFailure(call: Call<List<Story>>, t: Throwable) {
-                callback.loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_RECENT)
-            }
-        })
-        inflight[SourceManager.SOURCE_DESIGNER_NEWS_RECENT] = recentStoriesCall
     }
 
     fun search(
@@ -82,40 +53,55 @@ class StoriesRepository(private val service: DesignerNewsService) {
         page: Int,
         callback: LoadSourceCallback
     ) {
-        val searchCall = service.search(query, page)
-        searchCall.enqueue(object : Callback<List<Story>> {
-            override fun onResponse(call: Call<List<Story>>, response: Response<List<Story>>) {
-                if (response.isSuccessful) {
-                    callback.sourceLoaded(response.body(), page, query)
-                } else {
-                    callback.loadFailed(query)
-                }
-            }
+        val jobId = "$query::$page"
+        parentJobs[jobId] = launchRequest(query, page, callback, jobId) {
+            remoteDataSource.search(query, page)
+        }
+    }
 
-            override fun onFailure(call: Call<List<Story>>, t: Throwable) {
-                callback.loadFailed(query)
+    private fun launchRequest(
+        query: String,
+        page: Int,
+        callback: LoadSourceCallback,
+        jobId: String,
+        request: suspend () -> Result<List<Story>>
+    ) = launch(contextProvider.io) {
+        val result = request.invoke()
+        parentJobs.remove(jobId)
+        if (result is Result.Success) {
+            cache(result.data)
+            withContext(contextProvider.main) {
+                callback.sourceLoaded(result.data, page, query)
             }
-        })
-
-        inflight[query] = searchCall
+        } else {
+            withContext(contextProvider.main) { callback.loadFailed(query) }
+        }
     }
 
     fun cancelAllRequests() {
-        for (request in inflight.values) request.cancel()
+        parentJobs.values.forEach { it.cancel() }
     }
 
     fun cancelRequestOfSource(source: String) {
-        inflight[source].apply { this?.cancel() }
+        parentJobs[source].apply { this?.cancel() }
+    }
+
+    private fun cache(data: List<Story>) {
+        data.associateTo(cache) { it.id to it }
     }
 
     companion object {
         @Volatile
         private var INSTANCE: StoriesRepository? = null
 
-        fun getInstance(service: DesignerNewsService): StoriesRepository {
+        fun getInstance(
+            remoteDataSource: StoriesRemoteDataSource,
+            contextProvider: CoroutinesContextProvider
+        ): StoriesRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE
-                        ?: StoriesRepository(service).also { INSTANCE = it }
+                INSTANCE ?: StoriesRepository(remoteDataSource, contextProvider).also {
+                    INSTANCE = it
+                }
             }
         }
     }
