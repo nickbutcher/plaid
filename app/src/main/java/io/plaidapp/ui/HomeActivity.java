@@ -68,16 +68,10 @@ import android.widget.Toolbar;
 
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import io.plaidapp.R;
 import io.plaidapp.core.data.DataManager;
 import io.plaidapp.core.data.PlaidItem;
 import io.plaidapp.core.data.Source;
-import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.data.pocket.PocketUtils;
 import io.plaidapp.core.data.prefs.SourceManager;
 import io.plaidapp.core.designernews.DesignerNewsPrefs;
@@ -648,7 +642,7 @@ public class HomeActivity extends Activity {
     private void animateToolbar() {
         // this is gross but toolbar doesn't expose it's children to animate them :(
         View t = toolbar.getChildAt(0);
-        if (t != null && t instanceof TextView) {
+        if (t instanceof TextView) {
             TextView title = (TextView) t;
 
             // fade in and space out the title.  Animating the letterSpacing performs horribly so

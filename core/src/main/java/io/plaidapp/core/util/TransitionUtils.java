@@ -82,7 +82,7 @@ public class TransitionUtils {
             group.setClipChildren(clipChildren);
         }
         ViewParent parent = view.getParent();
-        if (parent != null && parent instanceof ViewGroup) {
+        if (parent instanceof ViewGroup) {
             setAncestralClipping((ViewGroup) parent, clipChildren, was);
         }
         return was;
@@ -94,7 +94,7 @@ public class TransitionUtils {
             group.setClipChildren(was.remove(0));
         }
         ViewParent parent = view.getParent();
-        if (parent != null && parent instanceof ViewGroup) {
+        if (parent instanceof ViewGroup) {
             restoreAncestralClipping((ViewGroup) parent, was);
         }
     }
