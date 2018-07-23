@@ -385,7 +385,7 @@ public class InkPageIndicator extends View implements ViewPager.OnPageChangeList
 
         if ((joiningFraction == 0f || joiningFraction == INVALID_FRACTION)
                 && dotRevealFraction == 0f
-                && !(page == currentPage && selectedDotInPosition == true)) {
+                && !(page == currentPage && selectedDotInPosition)) {
 
             // case #1 – At rest
             unselectedDotPath.addCircle(dotCenterX[page], dotCenterY, dotRadius, Path.Direction.CW);

@@ -34,7 +34,7 @@ import retrofit2.Response
  * Tests for [LoginRemoteDataSource] using shared preferences from instrumentation
  * context and mocked API service.
  */
-class DesignerNewsLoginRemoteDataSourceTest {
+class LoginRemoteDataSourceTest {
 
     private val user = User(
         id = 3,
@@ -46,7 +46,7 @@ class DesignerNewsLoginRemoteDataSourceTest {
     private val accessToken = AccessToken("token")
 
     private val service = Mockito.mock(DesignerNewsService::class.java)
-    private val authTokenDataSource = Mockito.mock(DesignerNewsAuthTokenLocalDataSource::class.java)
+    private val authTokenDataSource = Mockito.mock(AuthTokenLocalDataSource::class.java)
     private val dataSource = LoginRemoteDataSource(authTokenDataSource, service)
 
     @Test

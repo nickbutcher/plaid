@@ -26,17 +26,17 @@ import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.api.DenvelopingConverter
 import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
+import io.plaidapp.core.designernews.data.comments.CommentsRemoteDataSource
 import io.plaidapp.core.designernews.data.comments.CommentsRepository
-import io.plaidapp.core.designernews.data.comments.DesignerNewsCommentsRemoteDataSource
-import io.plaidapp.core.designernews.data.login.DesignerNewsAuthTokenLocalDataSource
+import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.core.designernews.data.login.LoginRemoteDataSource
 import io.plaidapp.core.designernews.data.login.LoginRepository
-import io.plaidapp.core.designernews.data.stories.DesignerNewsRepository
+import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.core.designernews.data.users.UserRepository
-import io.plaidapp.core.designernews.data.votes.DesignerNewsVotesRepository
 import io.plaidapp.core.designernews.data.votes.VotesRemoteDataSource
+import io.plaidapp.core.designernews.data.votes.VotesRepository
 import io.plaidapp.core.designernews.domain.CommentsUseCase
 import io.plaidapp.core.designernews.domain.CommentsWithRepliesUseCase
 import io.plaidapp.core.loggingInterceptor
@@ -52,7 +52,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Once we have a dependency injection framework or a service locator, this should be removed.
  */
 
-fun provideDesignerNewsLoginLocalDataSource(context: Context): LoginLocalDataSource {
+fun provideLoginLocalDataSource(context: Context): LoginLocalDataSource {
     val preferences = provideSharedPreferences(
         context,
         LoginLocalDataSource.DESIGNER_NEWS_PREF
@@ -60,36 +60,34 @@ fun provideDesignerNewsLoginLocalDataSource(context: Context): LoginLocalDataSou
     return LoginLocalDataSource(preferences)
 }
 
-fun provideDesignerNewsLoginRepository(context: Context): LoginRepository {
+fun provideLoginRepository(context: Context): LoginRepository {
     return LoginRepository.getInstance(
-        provideDesignerNewsLoginLocalDataSource(context),
-        provideDesignerNewsLoginRemoteDataSource(context)
+        provideLoginLocalDataSource(context),
+        provideLoginRemoteDataSource(context)
     )
 }
 
-fun provideDesignerNewsLoginRemoteDataSource(context: Context): LoginRemoteDataSource {
-    val tokenHolder = provideDesignerNewsAuthTokenLocalDataSource(context)
+fun provideLoginRemoteDataSource(context: Context): LoginRemoteDataSource {
+    val tokenHolder = provideAuthTokenLocalDataSource(context)
     return LoginRemoteDataSource(tokenHolder, provideDesignerNewsService(tokenHolder))
 }
 
-private fun provideDesignerNewsAuthTokenLocalDataSource(
-    context: Context
-): DesignerNewsAuthTokenLocalDataSource {
-    return DesignerNewsAuthTokenLocalDataSource.getInstance(
+private fun provideAuthTokenLocalDataSource(context: Context): AuthTokenLocalDataSource {
+    return AuthTokenLocalDataSource.getInstance(
         provideSharedPreferences(
             context,
-            DesignerNewsAuthTokenLocalDataSource.DESIGNER_NEWS_AUTH_PREF
+            AuthTokenLocalDataSource.DESIGNER_NEWS_AUTH_PREF
         )
     )
 }
 
 fun provideDesignerNewsService(context: Context): DesignerNewsService {
-    val tokenHolder = provideDesignerNewsAuthTokenLocalDataSource(context)
+    val tokenHolder = provideAuthTokenLocalDataSource(context)
     return provideDesignerNewsService(tokenHolder)
 }
 
 private fun provideDesignerNewsService(
-    authTokenDataSource: DesignerNewsAuthTokenLocalDataSource
+    authTokenDataSource: AuthTokenLocalDataSource
 ): DesignerNewsService {
     val client = OkHttpClient.Builder()
         .addInterceptor(
@@ -108,12 +106,12 @@ private fun provideDesignerNewsService(
         .create(DesignerNewsService::class.java)
 }
 
-fun provideDesignerNewsRepository(context: Context): DesignerNewsRepository {
-    return provideDesignerNewsRepository(DesignerNewsPrefs.get(context).api)
+fun provideStoriesRepository(context: Context): StoriesRepository {
+    return provideStoriesRepository(DesignerNewsPrefs.get(context).api)
 }
 
-private fun provideDesignerNewsRepository(service: DesignerNewsService): DesignerNewsRepository {
-    return DesignerNewsRepository.getInstance(service)
+private fun provideStoriesRepository(service: DesignerNewsService): StoriesRepository {
+    return StoriesRepository.getInstance(service)
 }
 
 fun provideCommentsUseCase(context: Context): CommentsUseCase {
@@ -129,7 +127,7 @@ fun provideCommentsUseCase(context: Context): CommentsUseCase {
     )
 }
 
-fun provideCommentsRepository(dataSource: DesignerNewsCommentsRemoteDataSource) =
+fun provideCommentsRepository(dataSource: CommentsRemoteDataSource) =
     CommentsRepository.getInstance(dataSource)
 
 fun provideCommentsWithRepliesUseCase(commentsRepository: CommentsRepository) =
@@ -148,9 +146,9 @@ private fun provideUserRepository(dataSource: UserRemoteDataSource) =
     UserRepository.getInstance(dataSource)
 
 private fun provideDesignerNewsCommentsRemoteDataSource(service: DesignerNewsService) =
-    DesignerNewsCommentsRemoteDataSource.getInstance(service)
+    CommentsRemoteDataSource.getInstance(service)
 
-fun provideVotesRepository(context: Context): DesignerNewsVotesRepository {
+fun provideVotesRepository(context: Context): VotesRepository {
     return provideVotesRepository(
         provideVotesRemoteDataSource(provideDesignerNewsService(context))
     )
@@ -159,8 +157,5 @@ fun provideVotesRepository(context: Context): DesignerNewsVotesRepository {
 private fun provideVotesRemoteDataSource(service: DesignerNewsService) =
     VotesRemoteDataSource(service)
 
-private fun provideVotesRepository(
-    remoteDataSource: VotesRemoteDataSource
-): DesignerNewsVotesRepository {
-    return DesignerNewsVotesRepository.getInstance(remoteDataSource)
-}
+private fun provideVotesRepository(remoteDataSource: VotesRemoteDataSource) =
+    VotesRepository.getInstance(remoteDataSource)

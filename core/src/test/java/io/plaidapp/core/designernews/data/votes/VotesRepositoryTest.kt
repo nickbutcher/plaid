@@ -25,16 +25,16 @@ import org.mockito.Mockito
 import java.io.IOException
 
 /**
- * Test for [DesignerNewsVotesRepository] mocking all dependencies.
+ * Test for [VotesRepository] mocking all dependencies.
  */
-class DesignerNewsVotesRepositoryTest {
+class VotesRepositoryTest {
 
     private val userId = 3L
     private val storyId = 1345L
     private val commentId = 999L
 
     private val dataSource = Mockito.mock(VotesRemoteDataSource::class.java)
-    private val votesRepository = DesignerNewsVotesRepository(dataSource)
+    private val votesRepository = VotesRepository(dataSource)
 
     @Test
     fun upvoteStory_whenRequestSuccessful() = runBlocking {

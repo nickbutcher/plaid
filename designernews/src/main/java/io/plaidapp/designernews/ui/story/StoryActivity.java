@@ -103,7 +103,7 @@ import static io.plaidapp.core.util.AnimUtils.getFastOutLinearInInterpolator;
 import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
 import static io.plaidapp.core.util.AnimUtils.getLinearOutSlowInInterpolator;
 
-public class DesignerNewsStory extends AppCompatActivity {
+public class StoryActivity extends AppCompatActivity {
 
     private static final int RC_LOGIN_UPVOTE = 7;
 
@@ -411,9 +411,9 @@ public class DesignerNewsStory extends AppCompatActivity {
         public void onClick(View v) {
             doFabExpand();
             CustomTabActivityHelper.openCustomTab(
-                    DesignerNewsStory.this,
+                    StoryActivity.this,
                     Activities.DesignerNews.Story.INSTANCE
-                            .customTabIntent(DesignerNewsStory.this, story,
+                            .customTabIntent(StoryActivity.this, story,
                                     customTab.getSession())
                             .setStartAnimations(getApplicationContext(),
                                     io.plaidapp.R.anim.chrome_custom_tab_enter,
@@ -463,7 +463,7 @@ public class DesignerNewsStory extends AppCompatActivity {
 
         // play 'em all together with the material interpolator
         AnimatorSet show = new AnimatorSet();
-        show.setInterpolator(getFastOutSlowInInterpolator(DesignerNewsStory.this));
+        show.setInterpolator(getFastOutSlowInInterpolator(StoryActivity.this));
         show.playTogether(reveal, background, position, fadeOutFab);
         show.start();
     }
@@ -479,7 +479,7 @@ public class DesignerNewsStory extends AppCompatActivity {
 
             CharSequence text = HtmlUtils.parseMarkdownAndPlainLinks(story.getComment(), markdown,
                     linksColor, highlightColor,
-                    (src, loadingSpan) -> GlideApp.with(DesignerNewsStory.this)
+                    (src, loadingSpan) -> GlideApp.with(StoryActivity.this)
                             .asBitmap()
                             .load(src)
                             .transition(BitmapTransitionOptions.withCrossFade())
@@ -499,7 +499,7 @@ public class DesignerNewsStory extends AppCompatActivity {
         final TextView share = header.findViewById(R.id.story_share_action);
         share.setOnClickListener(v -> {
             ((AnimatedVectorDrawable) share.getCompoundDrawables()[1]).start();
-            ShareCompat.IntentBuilder.from(DesignerNewsStory.this)
+            ShareCompat.IntentBuilder.from(StoryActivity.this)
                     .setText(story.getUrl())
                     .setType("text/plain")
                     .setSubject(story.getTitle())
@@ -625,13 +625,13 @@ public class DesignerNewsStory extends AppCompatActivity {
     }
 
     private void needsLogin(View triggeringView, int requestCode) {
-        Intent login = new Intent(DesignerNewsStory.this,
+        Intent login = new Intent(StoryActivity.this,
                 LoginActivity.class);
         MorphTransform.addExtras(login, ContextCompat.getColor(this,
                 io.plaidapp.R.color.background_light),
                 triggeringView.getHeight() / 2);
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                DesignerNewsStory.this,
+                StoryActivity.this,
                 triggeringView, getString(io.plaidapp.R.string.transition_designer_news_login));
 
         ActivityCompat.startActivityForResult(this, login, requestCode, options.toBundle());
@@ -868,7 +868,7 @@ public class DesignerNewsStory extends AppCompatActivity {
                         markdown,
                         linksColor,
                         highlightColor,
-                        (src, loadingSpan) -> GlideApp.with(DesignerNewsStory.this)
+                        (src, loadingSpan) -> GlideApp.with(StoryActivity.this)
                                 .asBitmap()
                                 .load(src)
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -930,7 +930,7 @@ public class DesignerNewsStory extends AppCompatActivity {
                                     holder.getCommentVotes().setText(String.valueOf(comment.getUpvotesCount()));
                                     holder.getCommentVotes().setActivated(true);
                                 } else {
-                                    Toast.makeText(DesignerNewsStory.this, "Unable to upvote comment",
+                                    Toast.makeText(StoryActivity.this, "Unable to upvote comment",
                                             Toast.LENGTH_LONG)
                                             .show();
                                 }

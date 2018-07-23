@@ -14,34 +14,30 @@
  * limitations under the License.
  */
 
-package io.plaidapp.about.ui.model
+package io.plaidapp.dribbble.ui
 
-import `in`.uncod.android.bypass.Bypass
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import android.content.res.Resources
-import io.plaidapp.about.ui.AboutStyler
+import io.plaidapp.core.data.CoroutinesContextProvider
+import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
+import io.plaidapp.dribbble.ui.shot.DribbbleShotViewModel
 
 /**
- * Factory to create [AboutViewModel]
+ * Factory for Dribbble [ViewModel]s
  */
-internal class AboutViewModelFactory(
-    private val aboutStyler: AboutStyler,
-    val resources: Resources
+class DribbbleViewModelFactory(
+    private val contextProvider: CoroutinesContextProvider,
+    private val getShareShotInfoUseCase: GetShareShotInfoUseCase
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return if (modelClass.isAssignableFrom(AboutViewModel::class.java)) {
-            AboutViewModel(
-                aboutStyler,
-                resources,
-                Bypass(resources.displayMetrics, Bypass.Options())
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(DribbbleShotViewModel::class.java)) {
+            return DribbbleShotViewModel(
+                contextProvider,
+                getShareShotInfoUseCase
             ) as T
-        } else {
-            throw IllegalArgumentException(
-                "Class ${modelClass.name} is not supported in this factory."
-            )
         }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

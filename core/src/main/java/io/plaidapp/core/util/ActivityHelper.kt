@@ -26,6 +26,7 @@ import android.support.customtabs.CustomTabsSession
 import android.support.v4.content.ContextCompat
 import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.R
+import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
 
 /**
@@ -82,7 +83,7 @@ object Activities {
          * DesignerNewsStory Activity
          */
         object Story : AddressableActivity {
-            override val className = "$PACKAGE_NAME.designernews.ui.story.DesignerNewsStory"
+            override val className = "$PACKAGE_NAME.designernews.ui.story.StoryActivity"
             const val EXTRA_STORY = "story"
 
             /**
@@ -130,7 +131,7 @@ object Activities {
          * DribbbleShotActivity
          */
         object Shot : AddressableActivity {
-            override val className = "$PACKAGE_NAME.dribbble.ui.DribbbleShotActivity"
+            override val className = "$PACKAGE_NAME.dribbble.ui.shot.DribbbleShotActivity"
 
             const val EXTRA_SHOT = "EXTRA_SHOT"
             const val RESULT_EXTRA_SHOT_ID = "RESULT_EXTRA_SHOT_ID"
