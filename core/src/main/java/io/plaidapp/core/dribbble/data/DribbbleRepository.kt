@@ -31,7 +31,9 @@ class DribbbleRepository(
     private val remoteDataSource: DribbbleSearchRemoteDataSource,
     private val contextProvider: CoroutinesContextProvider
 ) {
+
     private val inflight = mutableMapOf<String, Job>()
+    private val shotCache = mutableMapOf<Long, Shot>()
 
     fun search(
         query: String,
@@ -40,6 +42,15 @@ class DribbbleRepository(
     ) {
         val id = "$query::$page"
         inflight[id] = launchSearch(query, page, id, onResult)
+    }
+
+    fun getShot(id: Long): Result<Shot> {
+        val shot = shotCache[id]
+        return if (shot != null) {
+            Result.Success(shot)
+        } else {
+            Result.Error(IllegalStateException("Shot $id not cached"))
+        }
     }
 
     fun cancelAllSearches() {
@@ -55,7 +66,14 @@ class DribbbleRepository(
     ) = launch(contextProvider.io) {
         val result = remoteDataSource.search(query, page)
         inflight.remove(id)
+        if (result is Result.Success) {
+            cache(result.data)
+        }
         withContext(contextProvider.main) { onResult(result) }
+    }
+
+    private fun cache(shots: List<Shot>) {
+        shots.associateTo(shotCache) { it.id to it }
     }
 
     companion object {

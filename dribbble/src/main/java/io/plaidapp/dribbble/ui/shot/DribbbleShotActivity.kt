@@ -49,7 +49,6 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
 import io.plaidapp.core.ui.widget.ParallaxScrimageView
 import io.plaidapp.core.util.Activities
@@ -63,7 +62,7 @@ import io.plaidapp.core.util.glide.GlideApp
 import io.plaidapp.core.util.glide.getBitmap
 import io.plaidapp.dribbble.R
 import io.plaidapp.dribbble.domain.ShareShotInfo
-import io.plaidapp.dribbble.provideViewModelFactory
+import io.plaidapp.dribbble.provideDribbbleShotViewModelFactory
 import java.text.NumberFormat
 
 /**
@@ -87,7 +86,6 @@ class DribbbleShotActivity : AppCompatActivity() {
     private var shotSpacer: View? = null
 
     private lateinit var viewModel: DribbbleShotViewModel
-    private var shot: Shot? = null
     private var largeAvatarSize: Int = 0
 
     // TODO invoke with data binding
@@ -135,10 +133,16 @@ class DribbbleShotActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val shotId = intent.getLongExtra(Activities.Dribbble.Shot.EXTRA_SHOT_ID, -1L)
+        if (shotId == -1L) {
+            finishAfterTransition()
+        }
+
         setContentView(R.layout.activity_dribbble_shot)
         bindResources()
 
-        val factory = provideViewModelFactory(this)
+        val factory = provideDribbbleShotViewModelFactory(shotId, this)
         viewModel = ViewModelProviders.of(this, factory).get(DribbbleShotViewModel::class.java)
         viewModel.openLink.observe(this, EventObserver { openLink(it) })
         viewModel.shareShot.observe(this, EventObserver { shareShot(it) })
@@ -152,14 +156,7 @@ class DribbbleShotActivity : AppCompatActivity() {
                 setResultAndFinish()
             }
         }
-
-        if (intent.hasExtra(Activities.Dribbble.Shot.EXTRA_SHOT)) {
-            shot = intent.getParcelableExtra(Activities.Dribbble.Shot.EXTRA_SHOT)
-            bindShot()
-            viewModel.shot = shot // todo remove this when vm retrieves shot from repo
-        } else {
-            finishAfterTransition()
-        }
+        bindShot()
     }
 
     override fun onResume() {
@@ -182,7 +179,7 @@ class DribbbleShotActivity : AppCompatActivity() {
     }
 
     override fun onProvideAssistContent(outContent: AssistContent) {
-        outContent.webUri = Uri.parse(shot?.url)
+        outContent.webUri = Uri.parse(viewModel.shot.url)
     }
 
     private fun bindResources() {
@@ -203,7 +200,7 @@ class DribbbleShotActivity : AppCompatActivity() {
     }
 
     private fun bindShot() {
-        val shot = shot ?: return
+        val shot = viewModel.shot
         val res = resources
 
         // load the main image
@@ -353,9 +350,7 @@ class DribbbleShotActivity : AppCompatActivity() {
 
     internal fun setResultAndFinish() {
         val resultData = Intent().apply {
-            shot?.let {
-                putExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID, it.id)
-            }
+            putExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID, viewModel.shot.id)
         }
         setResult(Activity.RESULT_OK, resultData)
         finishAfterTransition()

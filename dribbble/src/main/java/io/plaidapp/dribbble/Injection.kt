@@ -17,10 +17,11 @@
 package io.plaidapp.dribbble
 
 import android.content.Context
+import io.plaidapp.core.dribbble.provideDribbbleRepository
 import io.plaidapp.core.provideCoroutinesContextProvider
 import io.plaidapp.dribbble.domain.DribbbleImageUriProvider
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
-import io.plaidapp.dribbble.ui.DribbbleViewModelFactory
+import io.plaidapp.dribbble.ui.shot.DribbbleShotViewModelFactory
 
 /**
  * File providing different dependencies.
@@ -28,10 +29,12 @@ import io.plaidapp.dribbble.ui.DribbbleViewModelFactory
  * Once we have a dependency injection framework or a service locator, this should be removed.
  */
 
-fun provideViewModelFactory(context: Context) =
-    DribbbleViewModelFactory(
-        provideCoroutinesContextProvider(),
-        provideGetShareShotInfoUseCase(context)
+fun provideDribbbleShotViewModelFactory(shotId: Long, context: Context) =
+    DribbbleShotViewModelFactory(
+        shotId,
+        provideDribbbleRepository(),
+        provideGetShareShotInfoUseCase(context),
+        provideCoroutinesContextProvider()
     )
 
 fun provideGetShareShotInfoUseCase(context: Context) =

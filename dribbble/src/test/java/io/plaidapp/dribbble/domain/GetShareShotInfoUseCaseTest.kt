@@ -22,7 +22,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.dribbble.data.api.model.Images
 import io.plaidapp.core.dribbble.data.api.model.Shot
-import io.plaidapp.dribbble.shot
+import io.plaidapp.dribbble.testShot
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -105,7 +105,7 @@ class GetShareShotInfoUseCaseTest {
     }
 
     private fun withUrl(url: String?): Shot {
-        val shot = shot.copy(images = Images(hidpi = url))
+        val shot = testShot.copy(images = Images(hidpi = url))
         whenever(imageUriProvider.invoke(any(), any())).thenReturn(uri)
         return shot
     }
