@@ -35,12 +35,12 @@ repositories {
     google()
     jcenter()
 }
+
 dependencies {
     implementation project(':core')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
-
+    implementation "org.mockito:mockito-core:${versions.mockito}"
 }
-
