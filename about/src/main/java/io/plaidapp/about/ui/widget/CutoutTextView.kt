@@ -75,8 +75,7 @@ class CutoutTextView(context: Context, attrs: AttributeSet) : View(context, attr
         } else {
             ""
         }
-        maxTextSize =
-                context.resources.getDimensionPixelSize(coreR.dimen.display_4_text_size).toFloat()
+        maxTextSize = context.resources.getDimensionPixelSize(coreR.dimen.display_4_text_size).toFloat()
         a.recycle()
     }
 
