@@ -347,6 +347,7 @@ public class StoryActivity extends AppCompatActivity {
         final boolean replyCommentFocused = commentsAdapter.isReplyToCommentFocused();
 
         final boolean fabShouldBeVisible =
+                story.getUrl() != null &&
                 ((firstVisibleItemPosition == 0 && !enterCommentFocused) || !footerVisible)
                         && !replyCommentFocused;
 
