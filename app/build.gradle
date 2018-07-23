@@ -27,7 +27,7 @@ android {
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         versionCode rootProject.gitCommitCount
-        versionName = '1.0.2'
+        versionName = '1.0.3'
         archivesBaseName = 'plaid'
 
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
