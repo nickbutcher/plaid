@@ -26,9 +26,11 @@ import io.plaidapp.about.ui.AboutStyler
  * Factory to create [AboutViewModel]
  */
 internal class AboutViewModelFactory(
-    val aboutStyler: AboutStyler,
+    private val aboutStyler: AboutStyler,
     val resources: Resources
 ) : ViewModelProvider.Factory {
+
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(AboutViewModel::class.java)) {
             AboutViewModel(

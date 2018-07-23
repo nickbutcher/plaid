@@ -16,6 +16,7 @@
 
 package io.plaidapp.about.ui.adapter
 
+import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Button
@@ -42,10 +43,13 @@ internal class LibraryHolder(
     private var link: Button = itemView.findViewById(R.id.library_link)
 
     init {
-        itemView.setOnClickListener { library?.let { onClick(it) } }
-        link.setOnClickListener { library?.let { onClick(it) } }
+        View.OnClickListener { library?.let { onClick(it) } }.apply {
+            itemView.setOnClickListener(this)
+            link.setOnClickListener(this)
+        }
     }
 
+    @SuppressLint("CheckResult")
     fun bind(lib: Library) {
         library = lib
         name.text = lib.name
