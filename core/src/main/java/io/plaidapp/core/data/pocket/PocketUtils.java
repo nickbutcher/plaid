@@ -30,25 +30,14 @@ public class PocketUtils {
 
     private final static String PACKAGE = "com.ideashower.readitlater.pro";
     private final static String MIME_TYPE = "text/plain";
-    private static final String EXTRA_SOURCE_PACKAGE = "source";
-    private static final String EXTRA_TWEET_STATUS_ID = "tweetStatusId";
+    private final static String EXTRA_SOURCE_PACKAGE = "source";
 
-    public static void addToPocket(Context context,
-                                   String url) {
-        addToPocket(context, url, null);
-    }
-
-    public static void addToPocket(Context context,
-                                   String url,
-                                   String tweetStatusId) {
+    public static void addToPocket(Context context, String url) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setPackage(PACKAGE);
         intent.setType(MIME_TYPE);
 
         intent.putExtra(Intent.EXTRA_TEXT, url);
-        if (tweetStatusId != null && tweetStatusId.length() > 0) {
-            intent.putExtra(EXTRA_TWEET_STATUS_ID, tweetStatusId);
-        }
         intent.putExtra(EXTRA_SOURCE_PACKAGE, context.getPackageName());
         context.startActivity(intent);
     }
