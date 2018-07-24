@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Check if service key environment variable is set; exit if not
-if if [ -z "$GCLOUD_SERVICE_KEY" ]; then
+if [ -z "$GCLOUD_SERVICE_KEY" ]; then
   echo "GCLOUD_SERVICE_KEY env variable is empty. Exiting."
   exit 1
 fi
