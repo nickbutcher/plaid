@@ -65,28 +65,23 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
-
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import io.plaidapp.R;
 import io.plaidapp.core.data.DataManager;
 import io.plaidapp.core.data.PlaidItem;
 import io.plaidapp.core.data.Source;
-import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.data.pocket.PocketUtils;
 import io.plaidapp.core.data.prefs.SourceManager;
 import io.plaidapp.core.designernews.DesignerNewsPrefs;
 import io.plaidapp.core.designernews.data.poststory.PostStoryService;
 import io.plaidapp.core.designernews.data.stories.model.Story;
+import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.ui.FeedAdapter;
 import io.plaidapp.core.ui.FilterAdapter;
 import io.plaidapp.core.ui.HomeGridItemAnimator;
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener;
+import io.plaidapp.core.ui.transitions.FabTransform;
 import io.plaidapp.core.util.Activities;
 import io.plaidapp.core.util.ActivityHelper;
 import io.plaidapp.core.util.AnimUtils;
@@ -94,7 +89,9 @@ import io.plaidapp.core.util.DrawableUtils;
 import io.plaidapp.core.util.ViewUtils;
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
-import io.plaidapp.core.ui.transitions.FabTransform;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class HomeActivity extends Activity {
 
@@ -648,7 +645,7 @@ public class HomeActivity extends Activity {
     private void animateToolbar() {
         // this is gross but toolbar doesn't expose it's children to animate them :(
         View t = toolbar.getChildAt(0);
-        if (t != null && t instanceof TextView) {
+        if (t instanceof TextView) {
             TextView title = (TextView) t;
 
             // fade in and space out the title.  Animating the letterSpacing performs horribly so
