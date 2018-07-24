@@ -16,6 +16,8 @@
 
 package io.plaidapp.designernews.domain
 
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.designernews.data.users.model.User
@@ -24,7 +26,6 @@ import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.Mockito
 import java.io.IOException
 
 /**
@@ -42,14 +43,14 @@ class UpvoteCommentUseCaseTest {
         portraitUrl = "www"
     )
 
-    private val loginRepository = Mockito.mock(LoginRepository::class.java)
-    private val votesRepository = Mockito.mock(VotesRepository::class.java)
+    private val loginRepository: LoginRepository = mock()
+    private val votesRepository: VotesRepository = mock()
     private val upvoteCommentUseCase = UpvoteCommentUseCase(loginRepository, votesRepository)
 
     @Test(expected = IllegalStateException::class)
     fun upvoteComment_throws_whenUserNull() {
         // Given that the user is null
-        Mockito.`when`(loginRepository.user).thenReturn(null)
+        whenever(loginRepository.user).thenReturn(null)
 
         // When upvoting a comment
         // Then an exception is thrown
@@ -59,9 +60,9 @@ class UpvoteCommentUseCaseTest {
     @Test
     fun upvoteComment_whenCommentUpvotedSuccessfully() = runBlocking {
         // Given that the login repository returns a user
-        Mockito.`when`(loginRepository.user).thenReturn(user)
+        whenever(loginRepository.user).thenReturn(user)
         // And the repository upvoted successfully
-        Mockito.`when`(votesRepository.upvoteComment(commentId, userId))
+        whenever(votesRepository.upvoteComment(commentId, userId))
             .thenReturn(Result.Success(Unit))
 
         // When upvoting a comment
@@ -74,9 +75,9 @@ class UpvoteCommentUseCaseTest {
     @Test
     fun upvoteComment_whenCommentUpvotedFailed() = runBlocking {
         // Given that the login repository returns a user
-        Mockito.`when`(loginRepository.user).thenReturn(user)
+        whenever(loginRepository.user).thenReturn(user)
         // And the repository upvote failed
-        Mockito.`when`(votesRepository.upvoteComment(commentId, userId))
+        whenever(votesRepository.upvoteComment(commentId, userId))
             .thenReturn(Result.Error(IOException("error")))
 
         // When upvoting a comment

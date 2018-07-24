@@ -16,6 +16,8 @@
 
 package io.plaidapp.designernews.ui.story
 
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase
@@ -24,7 +26,6 @@ import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.Mockito
 import java.io.IOException
 
 /**
@@ -35,8 +36,8 @@ class StoryViewModelTest {
     private val storyId = 1345L
     private val commentId = 999L
 
-    private val upvoteStoryUseCase = Mockito.mock(UpvoteStoryUseCase::class.java)
-    private val upvoteCommentUseCase = Mockito.mock(UpvoteCommentUseCase::class.java)
+    private val upvoteStoryUseCase: UpvoteStoryUseCase = mock()
+    private val upvoteCommentUseCase: UpvoteCommentUseCase = mock()
     private val viewModel = StoryViewModel(
         upvoteStoryUseCase,
         upvoteCommentUseCase,
@@ -46,7 +47,7 @@ class StoryViewModelTest {
     @Test
     fun upvoteStory_whenUpvoteSuccessful() = runBlocking {
         // Given that the use case responds with success
-        Mockito.`when`(upvoteStoryUseCase.upvoteStory(storyId)).thenReturn(Result.Success(Unit))
+        whenever(upvoteStoryUseCase.upvoteStory(storyId)).thenReturn(Result.Success(Unit))
         var result: Result<Unit>? = null
 
         // When upvoting a story
@@ -60,7 +61,7 @@ class StoryViewModelTest {
     fun upvoteStory_whenUpvoteFailed() = runBlocking {
         // Given that the use case responds with error
         val response = Result.Error(IOException("Error upvoting"))
-        Mockito.`when`(upvoteStoryUseCase.upvoteStory(storyId)).thenReturn(response)
+        whenever(upvoteStoryUseCase.upvoteStory(storyId)).thenReturn(response)
         var result: Result<Unit>? = null
 
         // When upvoting a story
@@ -73,7 +74,7 @@ class StoryViewModelTest {
     @Test
     fun upvoteComment_whenUpvoteSuccessful() = runBlocking {
         // Given that the use case responds with success
-        Mockito.`when`(upvoteCommentUseCase.upvoteComment(commentId))
+        whenever(upvoteCommentUseCase.upvoteComment(commentId))
             .thenReturn(Result.Success(Unit))
         var result: Result<Unit>? = null
 
@@ -88,7 +89,7 @@ class StoryViewModelTest {
     fun upvoteComment_whenUpvoteFailed() = runBlocking {
         // Given that the use case responds with error
         val response = Result.Error(IOException("Error upvoting"))
-        Mockito.`when`(upvoteCommentUseCase.upvoteComment(commentId)).thenReturn(response)
+        whenever(upvoteCommentUseCase.upvoteComment(commentId)).thenReturn(response)
         var result: Result<Unit>? = null
 
         // When upvoting a comment

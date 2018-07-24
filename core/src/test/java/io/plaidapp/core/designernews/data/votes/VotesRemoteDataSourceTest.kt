@@ -16,6 +16,8 @@
 
 package io.plaidapp.core.designernews.data.votes
 
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.api.any
@@ -25,7 +27,6 @@ import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.Mockito
 import retrofit2.Response
 
 /**
@@ -36,14 +37,14 @@ class VotesRemoteDataSourceTest {
     private val userId = 3L
     private val storyId = 1345L
 
-    private val service = Mockito.mock(DesignerNewsService::class.java)
+    private val service: DesignerNewsService = mock()
     private val dataSource = VotesRemoteDataSource(service)
 
     @Test
     fun upvoteStory_whenRequestSuccessful() = runBlocking {
         // Given that the service responds with success
         val response = Response.success(Unit)
-        Mockito.`when`(service.upvoteStoryV2(any())).thenReturn(CompletableDeferred(response))
+        whenever(service.upvoteStoryV2(any())).thenReturn(CompletableDeferred(response))
 
         // When upvoting a story
         val result = dataSource.upvoteStory(storyId, userId)
@@ -56,7 +57,7 @@ class VotesRemoteDataSourceTest {
     fun upvoteStory_whenRequestFailed() = runBlocking {
         // Given that the service responds with error
         val response = Response.error<Unit>(404, errorResponseBody)
-        Mockito.`when`(service.upvoteStoryV2(any())).thenReturn(CompletableDeferred(response))
+        whenever(service.upvoteStoryV2(any())).thenReturn(CompletableDeferred(response))
 
         // When upvoting a story
         val result = dataSource.upvoteStory(storyId, userId)
@@ -69,7 +70,7 @@ class VotesRemoteDataSourceTest {
     fun upvoteComment_whenRequestSuccessful() = runBlocking {
         // Given that the service responds with success
         val response = Response.success(Unit)
-        Mockito.`when`(service.upvoteComment(any())).thenReturn(CompletableDeferred(response))
+        whenever(service.upvoteComment(any())).thenReturn(CompletableDeferred(response))
 
         // When upvoting a story
         val result = dataSource.upvoteComment(storyId, userId)
@@ -82,7 +83,7 @@ class VotesRemoteDataSourceTest {
     fun upvoteComment_whenRequestFailed() = runBlocking {
         // Given that the service responds with error
         val response = Response.error<Unit>(404, errorResponseBody)
-        Mockito.`when`(service.upvoteComment(any())).thenReturn(CompletableDeferred(response))
+        whenever(service.upvoteComment(any())).thenReturn(CompletableDeferred(response))
 
         // When upvoting a story
         val result = dataSource.upvoteComment(storyId, userId)

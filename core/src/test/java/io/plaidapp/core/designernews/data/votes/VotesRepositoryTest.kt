@@ -16,12 +16,13 @@
 
 package io.plaidapp.core.designernews.data.votes
 
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.Mockito
 import java.io.IOException
 
 /**
@@ -33,14 +34,14 @@ class VotesRepositoryTest {
     private val storyId = 1345L
     private val commentId = 999L
 
-    private val dataSource = Mockito.mock(VotesRemoteDataSource::class.java)
+    private val dataSource: VotesRemoteDataSource = mock()
     private val votesRepository = VotesRepository(dataSource)
 
     @Test
     fun upvoteStory_whenRequestSuccessful() = runBlocking {
         // Given that the data source responds with success
         val response = Result.Success(Unit)
-        Mockito.`when`(dataSource.upvoteStory(storyId, userId)).thenReturn(response)
+        whenever(dataSource.upvoteStory(storyId, userId)).thenReturn(response)
 
         // When upvoting a story
         val result = votesRepository.upvoteStory(storyId, userId)
@@ -53,7 +54,7 @@ class VotesRepositoryTest {
     fun upvoteStory_whenRequestFailed() = runBlocking {
         // Given that the data source responds with error
         val response = Result.Error(IOException("Error upvoting"))
-        Mockito.`when`(dataSource.upvoteStory(storyId, userId)).thenReturn(response)
+        whenever(dataSource.upvoteStory(storyId, userId)).thenReturn(response)
 
         // When upvoting a story
         val result = votesRepository.upvoteStory(storyId, userId)
@@ -66,7 +67,7 @@ class VotesRepositoryTest {
     fun upvoteComment_whenRequestSuccessful() = runBlocking {
         // Given that the data source responds with success
         val response = Result.Success(Unit)
-        Mockito.`when`(dataSource.upvoteComment(commentId, userId)).thenReturn(response)
+        whenever(dataSource.upvoteComment(commentId, userId)).thenReturn(response)
 
         // When upvoting a comment
         val result = votesRepository.upvoteComment(commentId, userId)
@@ -79,7 +80,7 @@ class VotesRepositoryTest {
     fun upvoteComment_whenRequestFailed() = runBlocking {
         // Given that the data source responds with error
         val response = Result.Error(IOException("Error upvoting"))
-        Mockito.`when`(dataSource.upvoteComment(commentId, userId)).thenReturn(response)
+        whenever(dataSource.upvoteComment(commentId, userId)).thenReturn(response)
 
         // When upvoting a comment
         val result = votesRepository.upvoteComment(commentId, userId)

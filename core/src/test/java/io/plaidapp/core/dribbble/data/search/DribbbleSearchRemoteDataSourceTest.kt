@@ -16,6 +16,9 @@
 
 package io.plaidapp.core.dribbble.data.search
 
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.errorResponseBody
@@ -27,7 +30,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.Mockito
 import retrofit2.Response
 
 /**
@@ -35,7 +37,7 @@ import retrofit2.Response
  */
 class DribbbleSearchRemoteDataSourceTest {
 
-    private val service = Mockito.mock(DribbbleSearchService::class.java)
+    private val service: DribbbleSearchService = mock()
     private val dataSource = DribbbleSearchRemoteDataSource(service)
 
     private val query = "Plaid shirts"
@@ -60,7 +62,7 @@ class DribbbleSearchRemoteDataSourceTest {
     fun search_whenRequestFailed() = runBlocking {
         // Given that the service responds with failure
         val result = Response.error<List<Shot>>(400, errorResponseBody)
-        Mockito.`when`(service.searchDeferred(query, page, defaultSortOrder, defaultResultsPerPage))
+        whenever(service.searchDeferred(query, page, defaultSortOrder, defaultResultsPerPage))
             .thenReturn(CompletableDeferred(result))
 
         // When performing a search
@@ -91,7 +93,7 @@ class DribbbleSearchRemoteDataSourceTest {
         runBlocking { dataSource.search(query, page) }
 
         // Then the default values for these params are used
-        Mockito.verify(service).searchDeferred(query, page, defaultSortOrder, defaultResultsPerPage)
+        verify(service).searchDeferred(query, page, defaultSortOrder, defaultResultsPerPage)
     }
 
     @Test
@@ -100,19 +102,19 @@ class DribbbleSearchRemoteDataSourceTest {
         val popularSearchParam = ""
         val customPerPage = 20
         val result = Response.success(shots)
-        Mockito.`when`(service.searchDeferred(query, page, popularSearchParam, customPerPage))
+        whenever(service.searchDeferred(query, page, popularSearchParam, customPerPage))
             .thenReturn(CompletableDeferred(result))
 
         // When performing a search & specifying non-default sort & results per page
         runBlocking { dataSource.search(query, page, SortOrder.POPULAR, customPerPage) }
 
         // Then the supplied values for these params are used
-        Mockito.verify(service).searchDeferred(query, page, popularSearchParam, customPerPage)
+        verify(service).searchDeferred(query, page, popularSearchParam, customPerPage)
     }
 
     private fun withSuccess(shots: List<Shot>?) {
         val result = Response.success(shots)
-        Mockito.`when`(service.searchDeferred(query, page, defaultSortOrder, defaultResultsPerPage))
+        whenever(service.searchDeferred(query, page, defaultSortOrder, defaultResultsPerPage))
             .thenReturn(CompletableDeferred(result))
     }
 }

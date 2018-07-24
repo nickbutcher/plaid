@@ -16,7 +16,11 @@
 
 package io.plaidapp.core.designernews.domain
 
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
+import io.plaidapp.core.designernews.data.comments.CommentsRepository
 import io.plaidapp.core.designernews.parentCommentResponse
 import io.plaidapp.core.designernews.parentCommentWithReplies
 import io.plaidapp.core.designernews.parentCommentWithRepliesWithoutReplies
@@ -24,13 +28,11 @@ import io.plaidapp.core.designernews.reply1
 import io.plaidapp.core.designernews.replyResponse1
 import io.plaidapp.core.designernews.replyResponse2
 import io.plaidapp.core.designernews.replyWithReplies1
-import io.plaidapp.core.designernews.data.comments.CommentsRepository
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.Mockito
 import java.io.IOException
 
 /**
@@ -38,7 +40,7 @@ import java.io.IOException
  */
 class CommentsWithRepliesUseCaseTest {
 
-    private val repository = Mockito.mock(CommentsRepository::class.java)
+    private val repository: CommentsRepository = mock()
     private val useCase = CommentsWithRepliesUseCase(repository)
 
     @Test
@@ -46,13 +48,13 @@ class CommentsWithRepliesUseCaseTest {
         // Given that the repository responds with success
         val ids = listOf(reply1.id)
         val repositoryResult = Result.Success(listOf(replyResponse1))
-        Mockito.`when`(repository.getComments(ids)).thenReturn(repositoryResult)
+        whenever(repository.getComments(ids)).thenReturn(repositoryResult)
 
         // When getting the replies
         val result = useCase.getCommentsWithReplies(ids)
 
         // Then the correct list of comments was requested
-        Mockito.verify(repository).getComments(ids)
+        verify(repository).getComments(ids)
         // Then the correct list is received
         assertEquals(Result.Success(listOf(replyWithReplies1)), result)
     }
@@ -62,7 +64,7 @@ class CommentsWithRepliesUseCaseTest {
         // Given that the repository responds with error
         val ids = listOf(11L)
         val repositoryResult = Result.Error(IOException("Unable to get comments"))
-        Mockito.`when`(repository.getComments(ids)).thenReturn(repositoryResult)
+        whenever(repository.getComments(ids)).thenReturn(repositoryResult)
 
         // When getting the comments
         val result = useCase.getCommentsWithReplies(ids)
@@ -79,21 +81,23 @@ class CommentsWithRepliesUseCaseTest {
         // without replies embedded (since that's what the next call is doing)
         val resultParent = Result.Success(listOf(parentCommentResponse))
         val parentIds = listOf(1L)
-        Mockito.`when`(repository.getComments(parentIds)).thenReturn(resultParent)
+        whenever(repository.getComments(parentIds)).thenReturn(resultParent)
         // When requesting replies for ids 11 and 12 from repository we get the children
         val childrenIds = listOf(11L, 12L)
-        val resultChildren = Result.Success(listOf(
-            replyResponse1,
-            replyResponse2
-        ))
-        Mockito.`when`(repository.getComments(childrenIds)).thenReturn(resultChildren)
+        val resultChildren = Result.Success(
+            listOf(
+                replyResponse1,
+                replyResponse2
+            )
+        )
+        whenever(repository.getComments(childrenIds)).thenReturn(resultChildren)
 
         // When getting the comments from the useCase
         val result = useCase.getCommentsWithReplies(listOf(1L))
 
         // Then  requests were triggered
-        Mockito.verify(repository).getComments(parentIds)
-        Mockito.verify(repository).getComments(childrenIds)
+        verify(repository).getComments(parentIds)
+        verify(repository).getComments(childrenIds)
         // Then the correct result is received
         assertEquals(Result.Success(arrayListOf(parentCommentWithReplies)), result)
     }
@@ -104,18 +108,18 @@ class CommentsWithRepliesUseCaseTest {
         // When requesting replies for ids 1 from repository we get the parent comment
         val resultParent = Result.Success(listOf(parentCommentResponse))
         val parentIds = listOf(1L)
-        Mockito.`when`(repository.getComments(parentIds)).thenReturn(resultParent)
+        whenever(repository.getComments(parentIds)).thenReturn(resultParent)
         // When requesting replies for ids 11 and 12 from repository we get an error
         val resultChildrenError = Result.Error(IOException("Unable to get comments"))
         val childrenIds = listOf(11L, 12L)
-        Mockito.`when`(repository.getComments(childrenIds)).thenReturn(resultChildrenError)
+        whenever(repository.getComments(childrenIds)).thenReturn(resultChildrenError)
 
         // When getting the comments from the useCase
         val result = useCase.getCommentsWithReplies(listOf(1L))
 
         // Then  API requests were triggered
-        Mockito.verify(repository).getComments(parentIds)
-        Mockito.verify(repository).getComments(childrenIds)
+        verify(repository).getComments(parentIds)
+        verify(repository).getComments(childrenIds)
         // Then the correct result is received
         assertEquals(Result.Success(arrayListOf(parentCommentWithRepliesWithoutReplies)), result)
     }
