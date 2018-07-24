@@ -49,7 +49,8 @@ public class ImeUtils {
     public static void hideIme(@NonNull View view) {
         InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context
                 .INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
-
 }
