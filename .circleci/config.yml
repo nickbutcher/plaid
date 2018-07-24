@@ -60,7 +60,7 @@ jobs:
           command: scripts/ftl_setup.sh
       - run:
           name: Run tests on Firebase Test Lab and download results
-          command: echo "TODO"
+          command: echo "TODO: Integrate with Firebase Test Lab"
 #          command: scripts/ftl_run_tests.sh $CIRCLE_BUILD_NUM firebase_test_results
           when: always
       - store_artifacts:
