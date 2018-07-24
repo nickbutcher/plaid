@@ -18,11 +18,12 @@ package io.plaidapp.dribbble.domain
 
 import android.content.Context
 import android.net.Uri
-import android.support.annotation.WorkerThread
 import android.support.v4.content.FileProvider
 import com.bumptech.glide.Glide
 import io.plaidapp.core.dribbble.data.api.model.Images
 import io.plaidapp.dribbble.BuildConfig
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.async
 import java.io.File
 
 /**
@@ -33,18 +34,17 @@ class DribbbleImageUriProvider(context: Context) {
     // Only hold the app context to avoid leaks
     private val appContext = context.applicationContext
 
-    @WorkerThread
-    operator fun invoke(url: String, size: Images.ImageSize): Uri {
+    operator fun invoke(url: String, size: Images.ImageSize): Deferred<Uri> = async {
         // Retrieve the image from Glide (hopefully cached) as a File
         val file = Glide.with(appContext)
             .asFile()
             .load(url)
             .submit(size.width, size.height)
             .get()
-        // Glide cache uses an unfriendly & extension-less name, massage it based on the original
+        // Glide cache uses an unfriendly & extension-less name. Massage it based on the original.
         val fileName = url.substring(url.lastIndexOf('/') + 1)
         val renamed = File(file.parent, fileName)
         file.renameTo(renamed)
-        return FileProvider.getUriForFile(appContext, BuildConfig.FILES_AUTHORITY, renamed)
+        FileProvider.getUriForFile(appContext, BuildConfig.FILES_AUTHORITY, renamed)
     }
 }

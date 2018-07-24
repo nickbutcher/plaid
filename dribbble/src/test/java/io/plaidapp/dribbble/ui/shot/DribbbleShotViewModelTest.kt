@@ -29,6 +29,7 @@ import io.plaidapp.dribbble.domain.ShareShotInfo
 import io.plaidapp.dribbble.testShot
 import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Rule
@@ -108,7 +109,9 @@ class DribbbleShotViewModelTest {
     ): DribbbleShotViewModel {
         whenever(repo.getShot(shotId)).thenReturn(Result.Success(shot))
         if (shareInfo != null) {
-            whenever(getShareShotInfoUseCase.invoke(any())).thenReturn(shareInfo)
+            runBlocking {
+                whenever(getShareShotInfoUseCase(any())).thenReturn(shareInfo)
+            }
         }
         return DribbbleShotViewModel(
             shotId,
