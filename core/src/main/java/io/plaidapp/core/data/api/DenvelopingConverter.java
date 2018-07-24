@@ -38,14 +38,14 @@ import retrofit2.Retrofit;
  */
 public class DenvelopingConverter extends Converter.Factory {
 
-    final Gson gson;
+    private final Gson gson;
 
     public DenvelopingConverter(@NonNull Gson gson) {
         this.gson = gson;
     }
 
     @Override
-    public Converter<ResponseBody, ?> responseBodyConverter(
+    public @Nullable Converter<ResponseBody, ?> responseBodyConverter(
             Type type, Annotation[] annotations, Retrofit retrofit) {
 
         // This converter requires an annotation providing the name of the payload in the envelope;
@@ -71,7 +71,7 @@ public class DenvelopingConverter extends Converter.Factory {
         };
     }
 
-    private @Nullable String getPayloadName(Annotation[] annotations) {
+    private @Nullable String getPayloadName(@Nullable Annotation[] annotations) {
         if (annotations == null) return null;
         for (Annotation annotation : annotations) {
             if (annotation instanceof EnvelopePayload) {
