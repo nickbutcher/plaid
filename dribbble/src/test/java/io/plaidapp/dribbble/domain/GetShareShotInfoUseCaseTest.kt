@@ -23,6 +23,8 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.dribbble.data.api.model.Images
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.dribbble.testShot
+import kotlinx.coroutines.experimental.CompletableDeferred
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -39,7 +41,7 @@ class GetShareShotInfoUseCaseTest {
     private val getShareShotInfoUseCase = GetShareShotInfoUseCase(imageUriProvider)
 
     @Test
-    fun getShareInfo_Png() {
+    fun getShareInfo_Png() = runBlocking {
         // Given a shot with a png image
         val shot =
             withUrl("https://cdn.dribbble.com/users/6295/screenshots/2344334/plaid_dribbble.png")
@@ -50,7 +52,7 @@ class GetShareShotInfoUseCaseTest {
         // Then the expected share info is returned
         assertNotNull(shareInfo)
         assertEquals(shot.title, shareInfo.title)
-        assertFalse(shareInfo.shareText.isNullOrBlank())
+        assertFalse(shareInfo.shareText.isBlank())
         assertTrue(shareInfo.shareText.contains(shot.title))
         assertTrue(shareInfo.shareText.contains(shot.user.name))
         assertTrue(shareInfo.shareText.contains(shot.htmlUrl))
@@ -58,7 +60,7 @@ class GetShareShotInfoUseCaseTest {
     }
 
     @Test
-    fun getShareInfo_Gif() {
+    fun getShareInfo_Gif() = runBlocking {
         // Given a shot with a gif image
         val shot =
             withUrl("https://cdn.dribbble.com/users/213811/screenshots/2916762/password_visibility_toggle.gif")
@@ -69,7 +71,7 @@ class GetShareShotInfoUseCaseTest {
         // Then the expected share info is returned
         assertNotNull(shareInfo)
         assertEquals(shot.title, shareInfo.title)
-        assertFalse(shareInfo.shareText.isNullOrBlank())
+        assertFalse(shareInfo.shareText.isBlank())
         assertTrue(shareInfo.shareText.contains(shot.title))
         assertTrue(shareInfo.shareText.contains(shot.user.name))
         assertTrue(shareInfo.shareText.contains(shot.htmlUrl))
@@ -77,7 +79,7 @@ class GetShareShotInfoUseCaseTest {
     }
 
     @Test
-    fun getShareInfo_Jpeg() {
+    fun getShareInfo_Jpeg() = runBlocking {
         // Given a shot with a jpg image
         val shot = withUrl("https://cdn.dribbble.com/users/3557/screenshots/1550672/full2.jpg")
 
@@ -87,7 +89,7 @@ class GetShareShotInfoUseCaseTest {
         // Then the expected share info is returned
         assertNotNull(shareInfo)
         assertEquals(shot.title, shareInfo.title)
-        assertFalse(shareInfo.shareText.isNullOrBlank())
+        assertFalse(shareInfo.shareText.isBlank())
         assertTrue(shareInfo.shareText.contains(shot.title))
         assertTrue(shareInfo.shareText.contains(shot.user.name))
         assertTrue(shareInfo.shareText.contains(shot.htmlUrl))
@@ -95,18 +97,19 @@ class GetShareShotInfoUseCaseTest {
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun getShareInfo_withoutUrlThrows() {
+    fun getShareInfo_withoutUrlThrows() = runBlocking {
         // Given a shot without a valid image URL
         val shot = withUrl(null)
 
         // When invoking the use case
         getShareShotInfoUseCase(shot)
         // Then it should throw
+        Unit
     }
 
     private fun withUrl(url: String?): Shot {
         val shot = testShot.copy(images = Images(hidpi = url))
-        whenever(imageUriProvider.invoke(any(), any())).thenReturn(uri)
+        whenever(imageUriProvider(any(), any())).thenReturn(CompletableDeferred(uri))
         return shot
     }
 }
