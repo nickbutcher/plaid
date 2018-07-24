@@ -16,24 +16,27 @@
 
 package io.plaidapp.core.designernews.data.users
 
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.errorResponseBody
 import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.core.designernews.errorResponseBody
 import io.plaidapp.core.designernews.users
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.Mockito
 import retrofit2.Response
 
 /**
  * Tests for [UserRemoteDataSource] with mocked dependencies.
  */
 class UserRemoteDataSourceTest {
-    private val service = Mockito.mock(DesignerNewsService::class.java)
+
+    private val service: DesignerNewsService = mock()
     private val dataSource = UserRemoteDataSource(service)
 
     @Test
@@ -45,7 +48,7 @@ class UserRemoteDataSourceTest {
         val result = dataSource.getUsers(listOf(111L, 222L))
 
         // Then there's one request to the service
-        Mockito.verify(service).getUsers("111,222")
+        verify(service).getUsers("111,222")
         // Then the correct set of users is returned
         assertEquals(Result.Success(users), result)
     }
@@ -64,13 +67,14 @@ class UserRemoteDataSourceTest {
 
     private fun withUsersSuccess(ids: String, users: List<User>) {
         val result = Response.success(users)
-        Mockito.`when`(service.getUsers(ids)).thenReturn(CompletableDeferred(result))
+        whenever(service.getUsers(ids)).thenReturn(CompletableDeferred(result))
     }
 
     private fun withUsersError(ids: String) {
-        val result = Response.error<List<User>>(400,
+        val result = Response.error<List<User>>(
+            400,
             errorResponseBody
         )
-        Mockito.`when`(service.getUsers(ids)).thenReturn(CompletableDeferred(result))
+        whenever(service.getUsers(ids)).thenReturn(CompletableDeferred(result))
     }
 }

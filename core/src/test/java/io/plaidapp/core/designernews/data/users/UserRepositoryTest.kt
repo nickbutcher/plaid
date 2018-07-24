@@ -16,6 +16,9 @@
 
 package io.plaidapp.core.designernews.data.users
 
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.core.designernews.user1
@@ -25,7 +28,6 @@ import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.Mockito
 import java.io.IOException
 
 /**
@@ -33,7 +35,7 @@ import java.io.IOException
  */
 class UserRepositoryTest {
 
-    private val dataSource = Mockito.mock(UserRemoteDataSource::class.java)
+    private val dataSource: UserRemoteDataSource = mock()
     private val repository = UserRepository(dataSource)
 
     @Test
@@ -46,7 +48,7 @@ class UserRepositoryTest {
         val result = repository.getUsers(setOf(111L, 222L))
 
         // Then there's one request to the dataSource
-        Mockito.verify(dataSource).getUsers(ids)
+        verify(dataSource).getUsers(ids)
         // Then the correct set of users is returned
         assertEquals(Result.Success(users.toSet()), result)
     }
@@ -75,7 +77,7 @@ class UserRepositoryTest {
         // When requesting a list of users
         val result = repository.getUsers(setOf(111L, 222L))
         // Then there's one request to the dataSource
-        Mockito.verify(dataSource).getUsers(listOf(222L))
+        verify(dataSource).getUsers(listOf(222L))
         // Then the correct set of users is returned
         assertEquals(Result.Success(users.toSet()), result)
     }
@@ -97,11 +99,11 @@ class UserRepositoryTest {
 
     private fun withUsersSuccess(ids: List<Long>, users: List<User>) = runBlocking {
         val result = Result.Success(users)
-        Mockito.`when`(dataSource.getUsers(ids)).thenReturn(result)
+        whenever(dataSource.getUsers(ids)).thenReturn(result)
     }
 
     private fun withUsersError(ids: List<Long>) = runBlocking {
         val result = Result.Error(IOException("Users error"))
-        Mockito.`when`(dataSource.getUsers(ids)).thenReturn(result)
+        whenever(dataSource.getUsers(ids)).thenReturn(result)
     }
 }
