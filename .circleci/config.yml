@@ -60,7 +60,8 @@ jobs:
           command: scripts/ftl_setup.sh
       - run:
           name: Run tests on Firebase Test Lab and download results
-          command: scripts/ftl_run_tests.sh $CIRCLE_BUILD_NUM firebase_test_results
+          command: echo "TODO"
+#          command: scripts/ftl_run_tests.sh $CIRCLE_BUILD_NUM firebase_test_results
           when: always
       - store_artifacts:
           path: firebase_test_results
