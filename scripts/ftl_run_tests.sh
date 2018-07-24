@@ -1,6 +1,9 @@
 #!/bin/sh
 
+# The Continuous Integration build ID, unique for each CI test run
 BUILD_ID=$1
+
+# The directory that will contain the FTL test results
 TEST_DIR=$2
 
 test_apk() {
