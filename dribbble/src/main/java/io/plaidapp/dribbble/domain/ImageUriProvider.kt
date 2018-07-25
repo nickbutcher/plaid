@@ -29,7 +29,7 @@ import java.io.File
 /**
  * A class responsible for resolving an image as identified by Url into a sharable [Uri].
  */
-class DribbbleImageUriProvider(context: Context) {
+class ImageUriProvider(context: Context) {
 
     // Only hold the app context to avoid leaks
     private val appContext = context.applicationContext

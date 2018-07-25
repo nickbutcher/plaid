@@ -21,7 +21,7 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.dribbble.data.DribbbleRepository
+import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.util.event.Event
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
@@ -36,16 +36,16 @@ import org.junit.Rule
 import org.junit.Test
 
 /**
- * Tests for [DribbbleShotViewModel], mocking out its dependencies.
+ * Tests for [ShotViewModel], mocking out its dependencies.
  */
-class DribbbleShotViewModelTest {
+class ShotViewModelTest {
 
     // Executes tasks in the Architecture Components in the same thread
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val shotId = 1337L
-    private val repo: DribbbleRepository = mock()
+    private val repo: ShotsRepository = mock()
     private val getShareShotInfoUseCase: GetShareShotInfoUseCase = mock()
 
     @Test
@@ -64,7 +64,7 @@ class DribbbleShotViewModelTest {
         whenever(repo.getShot(shotId)).thenReturn(Result.Error(Exception()))
 
         // When the view model is constructed
-        DribbbleShotViewModel(
+        ShotViewModel(
             shotId,
             repo,
             getShareShotInfoUseCase,
@@ -106,14 +106,14 @@ class DribbbleShotViewModelTest {
     private fun withViewModel(
         shot: Shot = testShot,
         shareInfo: ShareShotInfo? = null
-    ): DribbbleShotViewModel {
+    ): ShotViewModel {
         whenever(repo.getShot(shotId)).thenReturn(Result.Success(shot))
         if (shareInfo != null) {
             runBlocking {
                 whenever(getShareShotInfoUseCase(any())).thenReturn(shareInfo)
             }
         }
-        return DribbbleShotViewModel(
+        return ShotViewModel(
             shotId,
             repo,
             getShareShotInfoUseCase,

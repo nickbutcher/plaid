@@ -21,7 +21,7 @@ import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
-import io.plaidapp.core.dribbble.data.search.DribbbleSearchRemoteDataSource
+import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
 import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
@@ -31,12 +31,12 @@ import org.junit.Test
 import java.io.IOException
 
 /**
- * Tests for [DribbbleRepository] which mocks all dependencies.
+ * Tests for [ShotsRepository] which mocks all dependencies.
  */
-class DribbbleRepositoryTest {
+class ShotsRepositoryTest {
 
-    private val dataSource: DribbbleSearchRemoteDataSource = mock()
-    private val repository = DribbbleRepository(
+    private val dataSource: SearchRemoteDataSource = mock()
+    private val repository = ShotsRepository(
         dataSource,
         provideFakeCoroutinesContextProvider()
     )
