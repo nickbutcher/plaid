@@ -22,7 +22,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.errorResponseBody
-import io.plaidapp.core.dribbble.data.search.DribbbleSearchRemoteDataSource.SortOrder
+import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource.SortOrder
 import io.plaidapp.core.dribbble.data.shots
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
@@ -33,12 +33,12 @@ import org.junit.Test
 import retrofit2.Response
 
 /**
- * Tests for [DribbbleSearchRemoteDataSource] which mocks the search service dependency.
+ * Tests for [SearchRemoteDataSource] which mocks the search service dependency.
  */
-class DribbbleSearchRemoteDataSourceTest {
+class SearchRemoteDataSourceTest {
 
     private val service: DribbbleSearchService = mock()
-    private val dataSource = DribbbleSearchRemoteDataSource(service)
+    private val dataSource = SearchRemoteDataSource(service)
 
     private val query = "Plaid shirts"
     private val page = 0

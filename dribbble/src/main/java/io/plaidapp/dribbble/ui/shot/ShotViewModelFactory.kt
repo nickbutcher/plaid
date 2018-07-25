@@ -19,25 +19,25 @@ package io.plaidapp.dribbble.ui.shot
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import io.plaidapp.core.data.CoroutinesContextProvider
-import io.plaidapp.core.dribbble.data.DribbbleRepository
+import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
 
 /**
- * Factory for creating [DribbbleShotViewModel] with args.
+ * Factory for creating [ShotViewModel] with args.
  */
-class DribbbleShotViewModelFactory(
+class ShotViewModelFactory(
     private val shotId: Long,
-    private val shotRepository: DribbbleRepository,
+    private val shotRepository: ShotsRepository,
     private val getShareShotInfoUseCase: GetShareShotInfoUseCase,
     private val contextProvider: CoroutinesContextProvider
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass != DribbbleShotViewModel::class.java) {
+        if (modelClass != ShotViewModel::class.java) {
             throw IllegalArgumentException("Unknown ViewModel class")
         }
-        return DribbbleShotViewModel(
+        return ShotViewModel(
             shotId,
             shotRepository,
             getShareShotInfoUseCase,

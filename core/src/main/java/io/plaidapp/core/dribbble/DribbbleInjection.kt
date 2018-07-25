@@ -22,8 +22,8 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.Coroutin
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchConverter
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchService
-import io.plaidapp.core.dribbble.data.DribbbleRepository
-import io.plaidapp.core.dribbble.data.search.DribbbleSearchRemoteDataSource
+import io.plaidapp.core.dribbble.data.ShotsRepository
+import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
 import io.plaidapp.core.loggingInterceptor
 import io.plaidapp.core.provideCoroutinesContextProvider
 import okhttp3.OkHttpClient
@@ -35,8 +35,8 @@ import retrofit2.Retrofit
  * Once we have a dependency injection framework or a service locator, this should be removed.
  */
 
-fun provideDribbbleRepository() = provideDribbbleRepository(
-    provideDribbleSearchRemoteDataSource(provideDribbbleSearchService()),
+fun provideShotsRepository() = provideShotsRepository(
+    provideSearchRemoteDataSource(provideDribbbleSearchService()),
     provideCoroutinesContextProvider()
 )
 
@@ -53,10 +53,10 @@ private fun provideDribbbleSearchService(): DribbbleSearchService {
         .create(DribbbleSearchService::class.java)
 }
 
-private fun provideDribbbleRepository(
-    remoteDataSource: DribbbleSearchRemoteDataSource,
+private fun provideShotsRepository(
+    remoteDataSource: SearchRemoteDataSource,
     contextProvider: CoroutinesContextProvider
-) = DribbbleRepository.getInstance(remoteDataSource, contextProvider)
+) = ShotsRepository.getInstance(remoteDataSource, contextProvider)
 
-private fun provideDribbleSearchRemoteDataSource(service: DribbbleSearchService) =
-    DribbbleSearchRemoteDataSource.getInstance(service)
+private fun provideSearchRemoteDataSource(service: DribbbleSearchService) =
+    SearchRemoteDataSource.getInstance(service)

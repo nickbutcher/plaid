@@ -22,7 +22,7 @@ import io.plaidapp.core.dribbble.data.api.model.Shot
 /**
  * A UseCase which prepares the information required to share a shot.
  */
-class GetShareShotInfoUseCase(private val imageUriProvider: DribbbleImageUriProvider) {
+class GetShareShotInfoUseCase(private val imageUriProvider: ImageUriProvider) {
 
     suspend operator fun invoke(shot: Shot): ShareShotInfo {
         val url = shot.images.best() ?: throw IllegalArgumentException()

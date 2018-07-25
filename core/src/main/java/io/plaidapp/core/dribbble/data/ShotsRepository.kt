@@ -19,7 +19,7 @@ package io.plaidapp.core.dribbble.data
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
-import io.plaidapp.core.dribbble.data.search.DribbbleSearchRemoteDataSource
+import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
@@ -27,8 +27,8 @@ import kotlinx.coroutines.experimental.withContext
 /**
  * Repository class that handles working with Dribbble.
  */
-class DribbbleRepository(
-    private val remoteDataSource: DribbbleSearchRemoteDataSource,
+class ShotsRepository(
+    private val remoteDataSource: SearchRemoteDataSource,
     private val contextProvider: CoroutinesContextProvider
 ) {
 
@@ -77,14 +77,14 @@ class DribbbleRepository(
     }
 
     companion object {
-        @Volatile private var INSTANCE: DribbbleRepository? = null
+        @Volatile private var INSTANCE: ShotsRepository? = null
 
         fun getInstance(
-            remoteDataSource: DribbbleSearchRemoteDataSource,
+            remoteDataSource: SearchRemoteDataSource,
             contextProvider: CoroutinesContextProvider
-        ): DribbbleRepository {
+        ): ShotsRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: DribbbleRepository(remoteDataSource, contextProvider)
+                INSTANCE ?: ShotsRepository(remoteDataSource, contextProvider)
                     .also { INSTANCE = it }
             }
         }
