@@ -36,7 +36,7 @@ import org.junit.Test
  */
 class GetShareShotInfoUseCaseTest {
 
-    private val imageUriProvider: DribbbleImageUriProvider = mock()
+    private val imageUriProvider: ImageUriProvider = mock()
     private val uri: Uri = mock()
     private val getShareShotInfoUseCase = GetShareShotInfoUseCase(imageUriProvider)
 

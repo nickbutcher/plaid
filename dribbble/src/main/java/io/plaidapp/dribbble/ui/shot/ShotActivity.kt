@@ -62,13 +62,13 @@ import io.plaidapp.core.util.glide.GlideApp
 import io.plaidapp.core.util.glide.getBitmap
 import io.plaidapp.dribbble.R
 import io.plaidapp.dribbble.domain.ShareShotInfo
-import io.plaidapp.dribbble.provideDribbbleShotViewModelFactory
+import io.plaidapp.dribbble.provideShotViewModelFactory
 import java.text.NumberFormat
 
 /**
  * Activity displaying a single Dribbble shot.
  */
-class DribbbleShotActivity : AppCompatActivity() {
+class ShotActivity : AppCompatActivity() {
 
     private var draggableFrame: ElasticDragDismissFrameLayout? = null
     private var bodyScroll: NestedScrollView? = null
@@ -85,7 +85,7 @@ class DribbbleShotActivity : AppCompatActivity() {
     private var imageView: ParallaxScrimageView? = null
     private var shotSpacer: View? = null
 
-    private lateinit var viewModel: DribbbleShotViewModel
+    private lateinit var viewModel: ShotViewModel
     private var largeAvatarSize: Int = 0
 
     // TODO invoke with data binding
@@ -109,7 +109,7 @@ class DribbbleShotActivity : AppCompatActivity() {
             val twentyFourDip = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 24f,
-                this@DribbbleShotActivity.resources.displayMetrics
+                this@ShotActivity.resources.displayMetrics
             ).toInt()
             Palette.from(bitmap)
                 .maximumColorCount(3)
@@ -142,8 +142,8 @@ class DribbbleShotActivity : AppCompatActivity() {
         setContentView(R.layout.activity_dribbble_shot)
         bindResources()
 
-        val factory = provideDribbbleShotViewModelFactory(shotId, this)
-        viewModel = ViewModelProviders.of(this, factory).get(DribbbleShotViewModel::class.java)
+        val factory = provideShotViewModelFactory(shotId, this)
+        viewModel = ViewModelProviders.of(this, factory).get(ShotViewModel::class.java)
         viewModel.openLink.observe(this, EventObserver { openLink(it) })
         viewModel.shareShot.observe(this, EventObserver { shareShot(it) })
 
@@ -280,7 +280,7 @@ class DribbbleShotActivity : AppCompatActivity() {
             this,
             CustomTabsIntent.Builder()
                 .setToolbarColor(
-                    ContextCompat.getColor(this@DribbbleShotActivity, io.plaidapp.R.color.dribbble)
+                    ContextCompat.getColor(this@ShotActivity, io.plaidapp.R.color.dribbble)
                 )
                 .addDefaultShareMenuItem()
                 .build(),
@@ -290,7 +290,7 @@ class DribbbleShotActivity : AppCompatActivity() {
 
     private fun shareShot(shareInfo: ShareShotInfo) {
         with(shareInfo) {
-            ShareCompat.IntentBuilder.from(this@DribbbleShotActivity)
+            ShareCompat.IntentBuilder.from(this@ShotActivity)
                 .setText(shareText)
                 .setSubject(title)
                 .setStream(imageUri)
@@ -303,12 +303,12 @@ class DribbbleShotActivity : AppCompatActivity() {
         // color the ripple on the image spacer (default is grey)
         shotSpacer?.background = ViewUtils.createRipple(
             palette, 0.25f, 0.5f,
-            ContextCompat.getColor(this@DribbbleShotActivity, io.plaidapp.R.color.mid_grey), true
+            ContextCompat.getColor(this@ShotActivity, io.plaidapp.R.color.mid_grey), true
         )
         // slightly more opaque ripple on the pinned image to compensate for the scrim
         imageView?.foreground = ViewUtils.createRipple(
             palette, 0.3f, 0.6f,
-            ContextCompat.getColor(this@DribbbleShotActivity, io.plaidapp.R.color.mid_grey), true
+            ContextCompat.getColor(this@ShotActivity, io.plaidapp.R.color.mid_grey), true
         )
     }
 
@@ -322,7 +322,7 @@ class DribbbleShotActivity : AppCompatActivity() {
 
         if (!isDark) { // make back icon dark on light images
             back?.setColorFilter(
-                ContextCompat.getColor(this@DribbbleShotActivity, io.plaidapp.R.color.dark_icon)
+                ContextCompat.getColor(this@ShotActivity, io.plaidapp.R.color.dark_icon)
             )
         }
 
@@ -343,7 +343,7 @@ class DribbbleShotActivity : AppCompatActivity() {
                     window.statusBarColor = animation.animatedValue as Int
                 }
                 duration = 1000L
-                interpolator = getFastOutSlowInInterpolator(this@DribbbleShotActivity)
+                interpolator = getFastOutSlowInInterpolator(this@ShotActivity)
             }.start()
         }
     }

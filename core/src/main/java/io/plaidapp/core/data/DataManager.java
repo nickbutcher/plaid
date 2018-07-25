@@ -24,7 +24,7 @@ import io.plaidapp.core.data.prefs.SourceManager;
 import io.plaidapp.core.designernews.Injection;
 import io.plaidapp.core.designernews.data.stories.StoriesRepository;
 import io.plaidapp.core.dribbble.DribbbleInjection;
-import io.plaidapp.core.dribbble.data.DribbbleRepository;
+import io.plaidapp.core.dribbble.data.ShotsRepository;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.producthunt.data.api.ProductHuntInjection;
 import io.plaidapp.core.producthunt.data.api.ProductHuntRepository;
@@ -43,7 +43,7 @@ import java.util.Map;
 public abstract class DataManager extends BaseDataManager<List<? extends PlaidItem>>
         implements LoadSourceCallback {
 
-    private final DribbbleRepository dribbbleRepository;
+    private final ShotsRepository shotsRepository;
     final StoriesRepository storiesRepository;
     private final ProductHuntRepository productHuntRepository;
     private final FilterAdapter filterAdapter;
@@ -52,7 +52,7 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
 
     public DataManager(Context context, FilterAdapter filterAdapter) {
         super();
-        dribbbleRepository = DribbbleInjection.provideDribbbleRepository();
+        shotsRepository = DribbbleInjection.provideShotsRepository();
         storiesRepository = Injection.provideStoriesRepository(context);
         productHuntRepository = ProductHuntInjection.provideProductHuntRepository();
 
@@ -76,7 +76,7 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
             }
             inflightCalls.clear();
         }
-        dribbbleRepository.cancelAllSearches();
+        shotsRepository.cancelAllSearches();
         storiesRepository.cancelAllRequests();
         productHuntRepository.cancelAllRequests();
     }
@@ -179,7 +179,7 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
     }
 
     private void loadDribbbleSearch(final Source.DribbbleSearchSource source, final int page) {
-        dribbbleRepository.search(source.query, page, result -> {
+        shotsRepository.search(source.query, page, result -> {
             if (result instanceof Result.Success) {
                 Result.Success<List<Shot>> success = (Result.Success<List<Shot>>) result;
                 sourceLoaded(success.getData(), page, source.key);
