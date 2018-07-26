@@ -23,7 +23,7 @@ android {
     compileSdkVersion versions.compileSdk
 
     defaultConfig {
-        applicationId names.applicationId
+        applicationId 'io.plaidapp'
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         versionCode rootProject.gitCommitCount
@@ -41,7 +41,6 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix '.debug'
-            rootProject.ext.names.applicationId += '.debug'
             versionNameSuffix '-DEBUG'
         }
         release {
