@@ -24,9 +24,7 @@ import android.content.Intent
 import android.support.customtabs.CustomTabsIntent
 import android.support.customtabs.CustomTabsSession
 import android.support.v4.content.ContextCompat
-import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.R
-import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
 
 /**
@@ -40,7 +38,7 @@ private const val PACKAGE_NAME = "io.plaidapp"
  */
 fun intentTo(addressableActivity: AddressableActivity): Intent {
     return Intent(Intent.ACTION_VIEW).setClassName(
-            BuildConfig.PACKAGE,
+            PACKAGE_NAME,
             addressableActivity.className)
 }
 
