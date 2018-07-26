@@ -36,7 +36,7 @@ android {
         buildConfigField 'String',
                 'PRODUCT_HUNT_DEVELOPER_TOKEN', "\"${product_hunt_developer_token}\""
 
-        buildConfigField 'String', 'PACKAGE', "\"${names.applicationId}\""
+        buildConfigField 'String', 'PACKAGE', "\"${applicationId}\""
     }
 
     buildTypes {

@@ -24,7 +24,7 @@ android {
     defaultConfig {
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
-        def filesAuthorityValue = names.applicationId + '.shareprovider'
+        def filesAuthorityValue = applicationId + '.shareprovider'
         buildConfigField 'String', 'FILES_AUTHORITY', "\"${filesAuthorityValue}\""
         manifestPlaceholders = [filesAuthority: filesAuthorityValue]
     }
