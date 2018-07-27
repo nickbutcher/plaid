@@ -53,6 +53,10 @@ dependencies {
     testImplementation "com.nhaarman:mockito-kotlin:${versions.mockito_kotlin}"
     testImplementation "junit:junit:${versions.junit}"
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
+
+    // Work around issue with runtime classpath version conflict
+    androidTestImplementation "com.android.support:support-core-utils:${versions.supportLibrary}"
+    androidTestImplementation "android.arch.lifecycle:runtime:${versions.lifecycle}"
 }
 
 kotlin {

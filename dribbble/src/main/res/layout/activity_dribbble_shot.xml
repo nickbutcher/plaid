@@ -16,205 +16,223 @@
   ~
   -->
 
-<io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/draggable_frame"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:transitionGroup="false"
-    app:dragDismissDistance="@dimen/drag_dismiss_distance"
-    app:dragDismissScale="0.95"
-    tools:context=".ui.shot.ShotActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Use a separate view for the background, rather than on the root view because it is a
-         shared element. Otherwise it interferes with the window enter transition i.e. as it is
-         resized for the shared element transition, many views are considered 'off-screen' so
-         visibility transitions are not run. -->
-    <View
-        android:id="@+id/background"
+    <data>
+
+        <variable
+            name="viewModel"
+            type="io.plaidapp.dribbble.ui.shot.ShotViewModel" />
+
+        <variable
+            name="shotUiModel"
+            type="io.plaidapp.core.dribbble.data.api.model.Shot" />
+
+    </data>
+
+    <io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
+        android:id="@+id/draggable_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_light"
-        android:transitionName="@string/transition_shot_background" />
+        android:transitionGroup="false"
+        app:dragDismissDistance="@dimen/drag_dismiss_distance"
+        app:dragDismissScale="0.95"
+        tools:context=".ui.shot.ShotActivity">
 
-    <io.plaidapp.core.ui.widget.ParallaxScrimageView
-        android:id="@+id/shot"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="@dimen/shot_collapsed_app_bar_height"
-        android:foreground="@drawable/mid_grey_ripple"
-        android:stateListAnimator="@animator/app_bar_pin"
-        android:transitionName="@string/transition_shot"
-        android:background="@color/light_grey"
-        app:scrimColor="@color/scrim"
-        app:scrimAlpha="0"
-        app:maxScrimAlpha="0.4"
-        app:parallaxFactor="-0.5" />
+        <!-- Use a separate view for the background, rather than on the root view because it is a
+             shared element. Otherwise it interferes with the window enter transition i.e. as it is
+             resized for the shared element transition, many views are considered 'off-screen' so
+             visibility transitions are not run. -->
+        <View
+            android:id="@+id/background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background_light"
+            android:transitionName="@string/transition_shot_background" />
 
-    <!-- We're 'faking' a toolbar here as we just want a back button.
-         This approach lets the borderless ripple extend beyond the back button's bounds,
-         toolbar clips it. Wrapping layout needed for the ripple. -->
-    <FrameLayout
-        android:id="@+id/back_wrapper"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:elevation="@dimen/z_fab_over_touchable_app_bar">
-
-        <!-- animate alpha in DribbleShot#enterAnimation
-             margins push out parent for the borderless ripple -->
-        <ImageButton
-            android:id="@+id/back"
-            android:layout_width="?android:actionBarSize"
-            android:layout_height="?android:actionBarSize"
-            android:layout_marginEnd="@dimen/padding_normal"
-            android:layout_marginBottom="@dimen/padding_normal"
-            android:src="@drawable/ic_arrow_back"
-            android:background="@drawable/mid_grey_ripple" />
-
-    </FrameLayout>
-
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/body_scroll"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="@dimen/padding_normal"
-        android:clipToPadding="false"
-        android:orientation="vertical"
-        android:scrollbars="vertical"
-        android:scrollbarStyle="insideOverlay">
-
-        <android.support.constraint.ConstraintLayout
+        <io.plaidapp.core.ui.widget.ParallaxScrimageView
+            android:id="@+id/shot"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:transitionGroup="false"
-            android:background="@android:color/transparent">
-            <!-- transparent background needed for the ripple on the spacer -->
+            android:minHeight="@dimen/shot_collapsed_app_bar_height"
+            android:foreground="@drawable/mid_grey_ripple"
+            android:stateListAnimator="@animator/app_bar_pin"
+            android:transitionName="@string/transition_shot"
+            android:background="@color/light_grey"
+            android:onClick="@{() -> viewModel.viewShotRequested()}"
+            app:scrimColor="@color/scrim"
+            app:scrimAlpha="0"
+            app:maxScrimAlpha="0.4"
+            app:parallaxFactor="-0.5" />
 
-            <!-- spacer for the image -->
-            <View
-                android:id="@+id/shot_spacer"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintDimensionRatio="h,4:3"
-                android:background="@drawable/mid_grey_bounded_ripple" />
+        <!-- We're 'faking' a toolbar here as we just want a back button.
+             This approach lets the borderless ripple extend beyond the back button's bounds,
+             toolbar clips it. Wrapping layout needed for the ripple. -->
+        <FrameLayout
+            android:id="@+id/back_wrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:elevation="@dimen/z_fab_over_touchable_app_bar">
 
-            <io.plaidapp.core.ui.widget.BaselineGridTextView
-                android:id="@+id/shot_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/shot_spacer"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:background="@color/light_grey"
-                android:paddingBottom="@dimen/padding_normal"
-                android:paddingEnd="@dimen/padding_normal"
-                android:paddingStart="@dimen/padding_normal"
-                android:paddingTop="@dimen/padding_normal"
-                android:textAppearance="@style/TextAppearance.DribbbleShotTitle"
-                tools:text="Dribbble shot title" />
-
-            <io.plaidapp.core.ui.widget.BaselineGridTextView
-                android:id="@+id/shot_description"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/shot_title"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/spacing_large"
-                android:paddingEnd="@dimen/padding_normal"
-                android:paddingStart="@dimen/padding_normal"
-                android:textAppearance="@style/TextAppearance.DribbbleShotDescription"
-                android:textColorHighlight="@color/dribbble_link_highlight"
-                android:textColorLink="@color/dribbble_links"
-                tools:text="Check out this sweet eye candy!" />
-
-            <Button
-                android:id="@+id/shot_like_count"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/shot_view_count"
-                app:layout_constraintTop_toBottomOf="@id/shot_description"
-                app:layout_constraintHorizontal_weight="1"
-                android:layout_marginTop="@dimen/spacing_large"
-                android:drawableTop="@drawable/avd_likes"
-                android:background="@null"
-                tools:text="33 likes"
-                style="@style/Widget.Plaid.InlineActionButton" />
-
-            <Button
-                android:id="@+id/shot_view_count"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toEndOf="@id/shot_like_count"
-                app:layout_constraintEnd_toStartOf="@id/shot_share_action"
-                app:layout_constraintBaseline_toBaselineOf="@id/shot_like_count"
-                app:layout_constraintHorizontal_weight="1"
-                android:drawableTop="@drawable/avd_views"
-                android:background="@null"
-                tools:text="33 views"
-                style="@style/Widget.Plaid.InlineActionButton" />
-
-            <Button
-                android:id="@+id/shot_share_action"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toEndOf="@id/shot_view_count"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBaseline_toBaselineOf="@id/shot_like_count"
-                app:layout_constraintHorizontal_weight="1"
-                android:drawableTop="@drawable/avd_share"
-                android:text="@string/share"
-                style="@style/Widget.Plaid.InlineActionButton" />
-
-            <io.plaidapp.core.ui.widget.BaselineGridTextView
-                android:id="@+id/player_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/player_avatar"
-                app:layout_constraintTop_toBottomOf="@id/shot_view_count"
-                android:layout_marginTop="@dimen/padding_normal"
-                android:layout_marginEnd="@dimen/avatar_margin"
-                android:paddingStart="@dimen/padding_normal"
-                android:gravity="end"
-                android:paddingTop="@dimen/spacing_normal"
-                android:textAppearance="@style/TextAppearance.CommentAuthor"
-                android:clickable="false"
-                tools:text="—Nick B" />
-
-            <io.plaidapp.core.ui.widget.BaselineGridTextView
-                android:id="@+id/shot_time_ago"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/player_avatar"
-                app:layout_constraintTop_toBottomOf="@id/player_name"
-                android:paddingStart="@dimen/padding_normal"
-                android:gravity="end"
-                android:textAppearance="@style/TextAppearance.CommentTimestamp"
-                tools:text="3 hours ago" />
-
-            <io.plaidapp.ui.widget.CircularImageView
-                android:id="@+id/player_avatar"
-                android:layout_width="@dimen/avatar_bounds"
-                android:layout_height="@dimen/avatar_bounds"
+            <!-- animate alpha in DribbleShot#enterAnimation
+                 margins push out parent for the borderless ripple -->
+            <ImageButton
+                android:id="@+id/back"
+                android:layout_width="?android:actionBarSize"
+                android:layout_height="?android:actionBarSize"
                 android:layout_marginEnd="@dimen/padding_normal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/player_name"
-                app:layout_constraintBottom_toBottomOf="@id/player_name"
-                android:padding="@dimen/avatar_padding"
-                android:src="@drawable/avatar_placeholder"
-                android:foreground="@drawable/avatar_ripple" />
+                android:layout_marginBottom="@dimen/padding_normal"
+                android:src="@drawable/ic_arrow_back"
+                android:background="@drawable/mid_grey_ripple" />
 
-        </android.support.constraint.ConstraintLayout>
+        </FrameLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/body_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/padding_normal"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:scrollbars="vertical"
+            android:scrollbarStyle="insideOverlay">
 
-</io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout>
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:transitionGroup="false"
+                android:background="@android:color/transparent">
+                <!-- transparent background needed for the ripple on the spacer -->
+
+                <!-- spacer for the image -->
+                <View
+                    android:id="@+id/shot_spacer"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintDimensionRatio="h,4:3"
+                    android:onClick="@{() -> viewModel.viewShotRequested()}"
+                    android:background="@drawable/mid_grey_bounded_ripple" />
+
+                <io.plaidapp.core.ui.widget.BaselineGridTextView
+                    android:id="@+id/shot_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/shot_spacer"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:background="@color/light_grey"
+                    android:paddingBottom="@dimen/padding_normal"
+                    android:paddingEnd="@dimen/padding_normal"
+                    android:paddingStart="@dimen/padding_normal"
+                    android:paddingTop="@dimen/padding_normal"
+                    android:textAppearance="@style/TextAppearance.DribbbleShotTitle"
+                    android:text="@{shotUiModel.title}" />
+
+                <io.plaidapp.core.ui.widget.BaselineGridTextView
+                    android:id="@+id/shot_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/shot_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="@dimen/spacing_large"
+                    android:paddingEnd="@dimen/padding_normal"
+                    android:paddingStart="@dimen/padding_normal"
+                    android:textAppearance="@style/TextAppearance.DribbbleShotDescription"
+                    android:textColorHighlight="@color/dribbble_link_highlight"
+                    android:textColorLink="@color/dribbble_links"
+                    tools:text="Check out this sweet eye candy!" />
+
+                <Button
+                    android:id="@+id/shot_like_count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/shot_view_count"
+                    app:layout_constraintTop_toBottomOf="@id/shot_description"
+                    app:layout_constraintHorizontal_weight="1"
+                    android:layout_marginTop="@dimen/spacing_large"
+                    android:drawableTop="@drawable/avd_likes"
+                    android:background="@null"
+                    tools:text="33 likes"
+                    style="@style/Widget.Plaid.InlineActionButton" />
+
+                <Button
+                    android:id="@+id/shot_view_count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@id/shot_like_count"
+                    app:layout_constraintEnd_toStartOf="@id/shot_share_action"
+                    app:layout_constraintBaseline_toBaselineOf="@id/shot_like_count"
+                    app:layout_constraintHorizontal_weight="1"
+                    android:drawableTop="@drawable/avd_views"
+                    android:background="@null"
+                    tools:text="33 views"
+                    style="@style/Widget.Plaid.InlineActionButton" />
+
+                <Button
+                    android:id="@+id/shot_share_action"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@id/shot_view_count"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBaseline_toBaselineOf="@id/shot_like_count"
+                    app:layout_constraintHorizontal_weight="1"
+                    android:drawableTop="@drawable/avd_share"
+                    android:text="@string/share"
+                    style="@style/Widget.Plaid.InlineActionButton" />
+
+                <io.plaidapp.core.ui.widget.BaselineGridTextView
+                    android:id="@+id/player_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/player_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/shot_view_count"
+                    android:layout_marginTop="@dimen/padding_normal"
+                    android:layout_marginEnd="@dimen/avatar_margin"
+                    android:paddingStart="@dimen/padding_normal"
+                    android:gravity="end"
+                    android:paddingTop="@dimen/spacing_normal"
+                    android:textAppearance="@style/TextAppearance.CommentAuthor"
+                    android:clickable="false"
+                    tools:text="—Nick B" />
+
+                <io.plaidapp.core.ui.widget.BaselineGridTextView
+                    android:id="@+id/shot_time_ago"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/player_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/player_name"
+                    android:paddingStart="@dimen/padding_normal"
+                    android:gravity="end"
+                    android:textAppearance="@style/TextAppearance.CommentTimestamp"
+                    tools:text="3 hours ago" />
+
+                <io.plaidapp.core.ui.widget.CircularImageView
+                    android:id="@+id/player_avatar"
+                    android:layout_width="@dimen/avatar_bounds"
+                    android:layout_height="@dimen/avatar_bounds"
+                    android:layout_marginEnd="@dimen/padding_normal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/player_name"
+                    app:layout_constraintBottom_toBottomOf="@id/player_name"
+                    android:padding="@dimen/avatar_padding"
+                    android:src="@drawable/avatar_placeholder"
+                    android:foreground="@drawable/avatar_ripple" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout>
+
+</layout>
