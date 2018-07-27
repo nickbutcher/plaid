@@ -19,6 +19,8 @@ package io.plaidapp.designernews.ui.story
 import android.arch.lifecycle.ViewModel
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
+import io.plaidapp.core.designernews.data.stories.StoriesRepository
+import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase
 import kotlinx.coroutines.experimental.Job
@@ -30,10 +32,24 @@ import kotlinx.coroutines.experimental.withContext
  *  TODO replace the mix of result and coroutines with events.
  */
 class StoryViewModel(
+    storyId: Long,
+    storiesRepository: StoriesRepository,
     private val upvoteStoryUseCase: UpvoteStoryUseCase,
     private val upvoteCommentUseCase: UpvoteCommentUseCase,
     private val contextProvider: CoroutinesContextProvider
 ) : ViewModel() {
+
+    val story: Story
+
+    init {
+        val result = storiesRepository.getStory(storyId)
+        if (result is Result.Success) {
+            story = result.data
+        } else {
+            // TODO re-throw Error.exception once Loading state removed.
+            throw IllegalStateException("Could not retrieve story $storyId")
+        }
+    }
 
     private val parentJob = Job()
 

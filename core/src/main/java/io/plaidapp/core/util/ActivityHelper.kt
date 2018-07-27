@@ -84,7 +84,7 @@ object Activities {
          */
         object Story : AddressableActivity {
             override val className = "$PACKAGE_NAME.designernews.ui.story.StoryActivity"
-            const val EXTRA_STORY = "story"
+            const val EXTRA_STORY_ID = "story_id"
 
             /**
              * Create the intent for this Activity's custom tab.

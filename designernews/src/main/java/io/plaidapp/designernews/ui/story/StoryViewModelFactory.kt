@@ -14,26 +14,37 @@
  * limitations under the License.
  */
 
-package io.plaidapp.designernews.ui
+package io.plaidapp.designernews.ui.story
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import io.plaidapp.core.data.CoroutinesContextProvider
-import io.plaidapp.core.designernews.data.login.LoginRepository
-import io.plaidapp.designernews.ui.login.LoginViewModel
+import io.plaidapp.core.designernews.data.stories.StoriesRepository
+import io.plaidapp.designernews.domain.UpvoteCommentUseCase
+import io.plaidapp.designernews.domain.UpvoteStoryUseCase
 
 /**
- * Factory for Designer News [ViewModel]s
+ * Factory for creating [StoryViewModel] with args.
  */
-class DesignerNewsViewModelFactory(
-    private val loginRepository: LoginRepository,
+class StoryViewModelFactory(
+    private val storyId: Long,
+    private val storiesRepository: StoriesRepository,
+    private val upvoteStoryUseCase: UpvoteStoryUseCase,
+    private val upvoteCommentUseCase: UpvoteCommentUseCase,
     private val contextProvider: CoroutinesContextProvider
 ) : ViewModelProvider.Factory {
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
-            return LoginViewModel(loginRepository, contextProvider) as T
+        if (modelClass != StoryViewModel::class.java) {
+            throw IllegalArgumentException("Unknown ViewModel class")
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
+        return StoryViewModel(
+            storyId,
+            storiesRepository,
+            upvoteStoryUseCase,
+            upvoteCommentUseCase,
+            contextProvider
+        ) as T
     }
 }

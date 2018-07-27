@@ -18,11 +18,13 @@ package io.plaidapp.designernews
 
 import android.content.Context
 import io.plaidapp.core.designernews.provideLoginRepository
+import io.plaidapp.core.designernews.provideStoriesRepository
 import io.plaidapp.core.designernews.provideVotesRepository
 import io.plaidapp.core.provideCoroutinesContextProvider
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase
 import io.plaidapp.designernews.ui.DesignerNewsViewModelFactory
+import io.plaidapp.designernews.ui.story.StoryViewModelFactory
 
 /**
  * File providing different dependencies.
@@ -33,6 +35,14 @@ import io.plaidapp.designernews.ui.DesignerNewsViewModelFactory
 fun provideViewModelFactory(context: Context): DesignerNewsViewModelFactory {
     return DesignerNewsViewModelFactory(
         provideLoginRepository(context),
+        provideCoroutinesContextProvider()
+    )
+}
+
+fun provideStoryViewModelFactory(storyId: Long, context: Context): StoryViewModelFactory {
+    return StoryViewModelFactory(
+        storyId,
+        provideStoriesRepository(context),
         provideUpvoteStoryUseCase(context),
         provideUpvoteCommentUseCase(context),
         provideCoroutinesContextProvider()

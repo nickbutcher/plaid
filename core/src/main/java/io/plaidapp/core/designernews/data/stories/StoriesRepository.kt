@@ -59,6 +59,15 @@ class StoriesRepository(
         }
     }
 
+    fun getStory(id: Long): Result<Story> {
+        val story = cache[id]
+        return if (story != null) {
+            Result.Success(story)
+        } else {
+            Result.Error(IllegalStateException("Story $id not cached"))
+        }
+    }
+
     private fun launchRequest(
         query: String,
         page: Int,
