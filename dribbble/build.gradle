@@ -17,6 +17,7 @@
 
 apply plugin: 'com.android.dynamic-feature'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -27,6 +28,10 @@ android {
         def filesAuthorityValue = names.applicationId + '.shareprovider'
         buildConfigField 'String', 'FILES_AUTHORITY', "\"${filesAuthorityValue}\""
         manifestPlaceholders = [filesAuthority: filesAuthorityValue]
+    }
+
+    dataBinding {
+        enabled true
     }
 
     compileOptions {

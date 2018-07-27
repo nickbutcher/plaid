@@ -15,9 +15,10 @@
  */
 
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'io.fabric'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -38,6 +39,11 @@ android {
                 crashlyticsEnabled: false
         ]
     }
+
+    dataBinding {
+        enabled true
+    }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -46,10 +52,12 @@ android {
             manifestPlaceholders += [crashlyticsEnabled: true]
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     dynamicFeatures = [':about', ':designernews', ':dribbble']
 }
 
