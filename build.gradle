@@ -41,7 +41,8 @@ buildscript {
             'ktlint'            : '0.24.0',
             'crashlytics'       : '2.9.4',
             'googleServices'    : '4.0.1',
-            'fabric'            : '1.25.4'
+            'fabric'            : '1.25.4',
+            'firebase'          : '16.0.1'
     ]
     ext.names = [
             'applicationId': 'io.plaidapp'
