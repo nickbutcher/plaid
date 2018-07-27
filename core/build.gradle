@@ -38,6 +38,10 @@ android {
 
     }
 
+    dataBinding {
+        enabled true
+    }
+
     buildTypes {
         release {
             consumerProguardFiles 'proguard-rules.pro'
