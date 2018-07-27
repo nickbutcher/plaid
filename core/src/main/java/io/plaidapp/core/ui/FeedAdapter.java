@@ -240,7 +240,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private void openDesignerNewsStory(StoryViewHolder.TransitionData data) {
         final Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.Story.INSTANCE);
-        intent.putExtra(Activities.DesignerNews.Story.EXTRA_STORY, data.getStory());
+        intent.putExtra(Activities.DesignerNews.Story.EXTRA_STORY_ID, data.getStory().getId());
         ReflowText.addExtras(intent, new ReflowText.ReflowableTextView(data.getTitle()));
         setGridItemContentTransitions(data.getItemView());
 

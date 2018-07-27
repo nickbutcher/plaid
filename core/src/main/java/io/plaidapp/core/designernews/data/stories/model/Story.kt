@@ -16,10 +16,8 @@
 
 package io.plaidapp.core.designernews.data.stories.model
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import io.plaidapp.core.data.PlaidItem
-import kotlinx.android.parcel.Parcelize
 import java.util.Date
 
 fun getDefaultUrl(id: Long) = "https://www.designernews.co/click/stories/$id"
@@ -28,7 +26,6 @@ fun getDefaultUrl(id: Long) = "https://www.designernews.co/click/stories/$id"
  * Models a Designer News story.
  * TODO split this into StoryRequest and Story, so we can keep the object immutable.
  */
-@Parcelize
 data class Story(
     @SerializedName("id") override val id: Long,
     @SerializedName("title") override val title: String,
@@ -46,4 +43,4 @@ data class Story(
     @Deprecated("Removed in DN API V2")
     @SerializedName("user_portrait_url") val userPortraitUrl: String? = null,
     @SerializedName("user_job") val userJob: String? = null
-) : PlaidItem(id, title, url), Parcelable
+) : PlaidItem(id, title, url)

@@ -57,16 +57,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
-
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
-
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import in.uncod.android.bypass.Bypass;
 import in.uncod.android.bypass.Markdown;
 import io.plaidapp.core.data.Result;
@@ -90,13 +82,18 @@ import io.plaidapp.core.util.glide.GlideApp;
 import io.plaidapp.core.util.glide.ImageSpanTarget;
 import io.plaidapp.designernews.InjectionKt;
 import io.plaidapp.designernews.R;
-import io.plaidapp.designernews.ui.DesignerNewsViewModelFactory;
 import io.plaidapp.designernews.ui.login.LoginActivity;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import kotlin.Unit;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 import static io.plaidapp.core.util.AnimUtils.getFastOutLinearInInterpolator;
@@ -143,14 +140,17 @@ public class StoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_story);
 
-        DesignerNewsViewModelFactory factory = InjectionKt.provideViewModelFactory(this);
+        Long storyId = getIntent().getLongExtra(Activities.DesignerNews.Story.EXTRA_STORY_ID, -1);
+        if (storyId == -1) {
+            finishAfterTransition();
+        }
+        StoryViewModelFactory factory = InjectionKt.provideStoryViewModelFactory(storyId, this);
         viewModel = ViewModelProviders.of(this, factory).get(StoryViewModel.class);
-
         commentsUseCase = Injection.provideCommentsUseCase(this);
 
         bindResources();
 
-        story = getIntent().getParcelableExtra(Activities.DesignerNews.Story.EXTRA_STORY);
+        story = viewModel.getStory();
 
         commentsUseCase.getComments(story.getLinks().getComments(),
                 result -> {
@@ -348,7 +348,7 @@ public class StoryActivity extends AppCompatActivity {
 
         final boolean fabShouldBeVisible =
                 story.getUrl() != null &&
-                ((firstVisibleItemPosition == 0 && !enterCommentFocused) || !footerVisible)
+                        ((firstVisibleItemPosition == 0 && !enterCommentFocused) || !footerVisible)
                         && !replyCommentFocused;
 
         if (!fabShouldBeVisible && fabIsVisible) {
