@@ -26,6 +26,7 @@ import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
@@ -43,6 +44,13 @@ class StoriesRepositoryTest {
         Story(id = 876L, title = "Plaid 2.0 is bug free", createdAt = createdDate)
     private val stories = listOf(story, storySequel)
     private val query = "Plaid 2.0"
+    private val emptyCallback = object : LoadSourceCallback {
+        override fun sourceLoaded(result: List<PlaidItem>?, page: Int, source: String) {
+        }
+
+        override fun loadFailed(source: String) {
+        }
+    }
 
     private val dataSource: StoriesRemoteDataSource = mock()
     private val repository = StoriesRepository(dataSource, provideFakeCoroutinesContextProvider())
@@ -153,5 +161,63 @@ class StoriesRepositoryTest {
 
         // The correct callback was called
         assertTrue(sourceLoadingFailed)
+    }
+
+    @Test
+    fun getStory_whenLoadSucceeded() = runBlocking {
+        // Given that a load has been performed successfully and data cached
+        whenever(dataSource.loadStories(1)).thenReturn(Result.Success(stories))
+        repository.loadStories(1, emptyCallback)
+
+        // When getting a story by id
+        val result = repository.getStory(stories[0].id)
+
+        // Then it is successfully retrieved
+        assertNotNull(result)
+        assertTrue(result is Result.Success)
+        assertEquals(stories[0], (result as Result.Success).data)
+    }
+
+    @Test
+    fun getStory_whenLoadFailed() = runBlocking {
+        // Given that a search fails so no data is cached
+        whenever(dataSource.loadStories(1)).thenReturn(Result.Error(IOException("error")))
+        repository.loadStories(1, emptyCallback)
+
+        // When getting a story by id
+        val result = repository.getStory(stories[0].id)
+
+        // Then an Error is reported
+        assertNotNull(result)
+        assertTrue(result is Result.Error)
+    }
+
+    @Test
+    fun getStory_whenSearchSucceeded() = runBlocking {
+        // Given that a search has been performed successfully and data cached
+        whenever(dataSource.search(query, 1)).thenReturn(Result.Success(stories))
+        repository.search(query, 1, emptyCallback)
+
+        // When getting a story by id
+        val result = repository.getStory(stories[0].id)
+
+        // Then it is successfully retrieved
+        assertNotNull(result)
+        assertTrue(result is Result.Success)
+        assertEquals(stories[0], (result as Result.Success).data)
+    }
+
+    @Test
+    fun getStory_whenSearchFailed() = runBlocking {
+        // Given that a search fails so no data is cached
+        whenever(dataSource.search(query, 1)).thenReturn(Result.Error(IOException("error")))
+        repository.search(query, 1, emptyCallback)
+
+        // When getting a story by id
+        val result = repository.getStory(stories[0].id)
+
+        // Then an Error is reported
+        assertNotNull(result)
+        assertTrue(result is Result.Error)
     }
 }
