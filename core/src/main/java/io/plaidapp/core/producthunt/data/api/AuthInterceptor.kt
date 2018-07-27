@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.data.api
+package io.plaidapp.core.producthunt.data.api
 
 import okhttp3.Interceptor
 import okhttp3.Response
