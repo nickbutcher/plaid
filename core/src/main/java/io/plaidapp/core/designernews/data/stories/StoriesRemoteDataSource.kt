@@ -18,7 +18,7 @@ package io.plaidapp.core.designernews.data.stories
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.stories.model.Story
+import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import retrofit2.Response
 import java.io.IOException
 
@@ -27,7 +27,7 @@ import java.io.IOException
  */
 class StoriesRemoteDataSource(private val service: DesignerNewsService) {
 
-    suspend fun loadStories(page: Int): Result<List<Story>> {
+    suspend fun loadStories(page: Int): Result<List<StoryResponse>> {
         val response = service.getStories(page).await()
         return getResult(response = response, onError = {
             Result.Error(
@@ -36,7 +36,7 @@ class StoriesRemoteDataSource(private val service: DesignerNewsService) {
         })
     }
 
-    suspend fun search(query: String, page: Int): Result<List<Story>> {
+    suspend fun search(query: String, page: Int): Result<List<StoryResponse>> {
         val response = service.search(query, page).await()
         return getResult(response = response, onError = {
             Result.Error(
@@ -46,9 +46,9 @@ class StoriesRemoteDataSource(private val service: DesignerNewsService) {
     }
 
     private inline fun getResult(
-        response: Response<List<Story>>,
+        response: Response<List<StoryResponse>>,
         onError: () -> Result.Error
-    ): Result<List<Story>> {
+    ): Result<List<StoryResponse>> {
         if (response.isSuccessful) {
             val body = response.body()
             if (body != null) {
