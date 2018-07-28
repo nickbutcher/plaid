@@ -19,8 +19,8 @@ package io.plaidapp.designernews.ui.story
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
+import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase
 import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
@@ -44,7 +44,7 @@ class StoryViewModelTest {
     private val testStory =
         Story(id = storyId, title = "Plaid 2.0 was released", createdAt = createdDate)
 
-    private val storiesRepository: StoriesRepository = mock()
+    private val getStoryUseCase: GetStoryUseCase = mock()
     private val upvoteStoryUseCase: UpvoteStoryUseCase = mock()
     private val upvoteCommentUseCase: UpvoteCommentUseCase = mock()
 
@@ -61,12 +61,12 @@ class StoryViewModelTest {
     @Test(expected = IllegalStateException::class)
     fun loadStory_notInRepo() {
         // Given that the repo fails to return the requested story
-        whenever(storiesRepository.getStory(storyId)).thenReturn(Result.Error(Exception()))
+        whenever(getStoryUseCase(storyId)).thenReturn(Result.Error(Exception()))
 
         // When the view model is constructed
         StoryViewModel(
             storyId,
-            storiesRepository,
+            getStoryUseCase,
             upvoteStoryUseCase,
             upvoteCommentUseCase,
             provideFakeCoroutinesContextProvider()
@@ -138,10 +138,10 @@ class StoryViewModelTest {
     }
 
     private fun withViewModel(): StoryViewModel {
-        whenever(storiesRepository.getStory(storyId)).thenReturn(Result.Success(testStory))
+        whenever(getStoryUseCase(storyId)).thenReturn(Result.Success(testStory))
         return StoryViewModel(
             storyId,
-            storiesRepository,
+            getStoryUseCase,
             upvoteStoryUseCase,
             upvoteCommentUseCase,
             provideFakeCoroutinesContextProvider()

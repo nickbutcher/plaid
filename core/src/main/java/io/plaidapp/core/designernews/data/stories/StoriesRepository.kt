@@ -16,50 +16,31 @@
 
 package io.plaidapp.core.designernews.data.stories
 
-import io.plaidapp.core.data.CoroutinesContextProvider
-import io.plaidapp.core.data.LoadSourceCallback
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.data.prefs.SourceManager
-import io.plaidapp.core.designernews.data.stories.model.Story
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 
 /**
  * Repository class that handles work with Designer News Stories.
  */
-class StoriesRepository(
-    private val remoteDataSource: StoriesRemoteDataSource,
-    private val contextProvider: CoroutinesContextProvider
-) {
+class StoriesRepository(private val remoteDataSource: StoriesRemoteDataSource) {
 
-    private val parentJobs = mutableMapOf<String, Job>()
-    private val cache = mutableMapOf<Long, Story>()
+    private val cache = mutableMapOf<Long, StoryResponse>()
 
-    fun loadStories(page: Int, callback: LoadSourceCallback) {
-        val jobId = "${SourceManager.SOURCE_DESIGNER_NEWS_POPULAR}::$page"
-        parentJobs[jobId] = launchRequest(
-            SourceManager.SOURCE_DESIGNER_NEWS_POPULAR,
-            page,
-            callback,
-            jobId
-        ) {
-            remoteDataSource.loadStories(page)
+    suspend fun loadStories(page: Int) = getData { remoteDataSource.loadStories(page) }
+
+    suspend fun search(query: String, page: Int) = getData { remoteDataSource.search(query, page) }
+
+    private suspend fun getData(
+        request: suspend () -> Result<List<StoryResponse>>
+    ): Result<List<StoryResponse>> {
+        val result = request.invoke()
+        if (result is Result.Success) {
+            cache(result.data)
         }
+        return result
     }
 
-    fun search(
-        query: String,
-        page: Int,
-        callback: LoadSourceCallback
-    ) {
-        val jobId = "$query::$page"
-        parentJobs[jobId] = launchRequest(query, page, callback, jobId) {
-            remoteDataSource.search(query, page)
-        }
-    }
-
-    fun getStory(id: Long): Result<Story> {
+    fun getStory(id: Long): Result<StoryResponse> {
         val story = cache[id]
         return if (story != null) {
             Result.Success(story)
@@ -68,34 +49,7 @@ class StoriesRepository(
         }
     }
 
-    private fun launchRequest(
-        query: String,
-        page: Int,
-        callback: LoadSourceCallback,
-        jobId: String,
-        request: suspend () -> Result<List<Story>>
-    ) = launch(contextProvider.io) {
-        val result = request.invoke()
-        parentJobs.remove(jobId)
-        if (result is Result.Success) {
-            cache(result.data)
-            withContext(contextProvider.main) {
-                callback.sourceLoaded(result.data, page, query)
-            }
-        } else {
-            withContext(contextProvider.main) { callback.loadFailed(query) }
-        }
-    }
-
-    fun cancelAllRequests() {
-        parentJobs.values.forEach { it.cancel() }
-    }
-
-    fun cancelRequestOfSource(source: String) {
-        parentJobs[source].apply { this?.cancel() }
-    }
-
-    private fun cache(data: List<Story>) {
+    private fun cache(data: List<StoryResponse>) {
         data.associateTo(cache) { it.id to it }
     }
 
@@ -103,12 +57,9 @@ class StoriesRepository(
         @Volatile
         private var INSTANCE: StoriesRepository? = null
 
-        fun getInstance(
-            remoteDataSource: StoriesRemoteDataSource,
-            contextProvider: CoroutinesContextProvider
-        ): StoriesRepository {
+        fun getInstance(remoteDataSource: StoriesRemoteDataSource): StoriesRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: StoriesRepository(remoteDataSource, contextProvider).also {
+                INSTANCE ?: StoriesRepository(remoteDataSource).also {
                     INSTANCE = it
                 }
             }

@@ -21,6 +21,7 @@ import io.plaidapp.core.designernews.provideLoginRepository
 import io.plaidapp.core.designernews.provideStoriesRepository
 import io.plaidapp.core.designernews.provideVotesRepository
 import io.plaidapp.core.provideCoroutinesContextProvider
+import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase
 import io.plaidapp.designernews.ui.DesignerNewsViewModelFactory
@@ -42,12 +43,14 @@ fun provideViewModelFactory(context: Context): DesignerNewsViewModelFactory {
 fun provideStoryViewModelFactory(storyId: Long, context: Context): StoryViewModelFactory {
     return StoryViewModelFactory(
         storyId,
-        provideStoriesRepository(context),
+        provideGetStoryUseCase(context),
         provideUpvoteStoryUseCase(context),
         provideUpvoteCommentUseCase(context),
         provideCoroutinesContextProvider()
     )
 }
+
+fun provideGetStoryUseCase(context: Context) = GetStoryUseCase(provideStoriesRepository(context))
 
 fun provideUpvoteStoryUseCase(context: Context): UpvoteStoryUseCase {
     val loginRepository = provideLoginRepository(context)

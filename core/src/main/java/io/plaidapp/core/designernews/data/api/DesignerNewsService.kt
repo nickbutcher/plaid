@@ -21,6 +21,7 @@ import io.plaidapp.core.designernews.data.comments.model.CommentResponse
 import io.plaidapp.core.designernews.data.login.model.AccessToken
 import io.plaidapp.core.designernews.data.poststory.model.NewStoryRequest
 import io.plaidapp.core.designernews.data.stories.model.Story
+import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.core.designernews.data.votes.model.UpvoteCommentRequest
 import io.plaidapp.core.designernews.data.votes.model.UpvoteStoryRequest
@@ -48,11 +49,14 @@ interface DesignerNewsService {
 
     @EnvelopePayload("stories")
     @GET("api/v2/stories")
-    fun getStories(@Query("page") page: Int?): Deferred<Response<List<Story>>>
+    fun getStories(@Query("page") page: Int?): Deferred<Response<List<StoryResponse>>>
 
     @EnvelopePayload("stories")
     @GET("api/v1/stories/search")
-    fun search(@Query("query") query: String, @Query("page") page: Int?): Deferred<Response<List<Story>>>
+    fun search(
+        @Query("query") query: String,
+        @Query("page") page: Int?
+    ): Deferred<Response<List<StoryResponse>>>
 
     @EnvelopePayload("users")
     @GET("api/v2/users/{ids}")
