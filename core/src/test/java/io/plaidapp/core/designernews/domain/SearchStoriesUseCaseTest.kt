@@ -26,9 +26,9 @@ import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
 import kotlinx.coroutines.experimental.runBlocking
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Test
 import java.io.IOException
 import java.util.Date
@@ -74,7 +74,7 @@ class SearchStoriesUseCaseTest {
             }
 
             override fun loadFailed(source: String) {
-                Assert.fail("Search shouldn't have failed")
+                fail("Search shouldn't have failed")
             }
         }
 
@@ -94,7 +94,7 @@ class SearchStoriesUseCaseTest {
         // Given a callback where we check the validity of the data received
         val callback = object : LoadSourceCallback {
             override fun sourceLoaded(result: List<PlaidItem>?, page: Int, source: String) {
-                Assert.fail("Search shouldn't have succeeded")
+                fail("Search shouldn't have succeeded")
             }
 
             override fun loadFailed(source: String) {
