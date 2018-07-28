@@ -33,7 +33,7 @@ class StoriesRepository(private val remoteDataSource: StoriesRemoteDataSource) {
     private suspend fun getData(
         request: suspend () -> Result<List<StoryResponse>>
     ): Result<List<StoryResponse>> {
-        val result = request.invoke()
+        val result = request()
         if (result is Result.Success) {
             cache(result.data)
         }
