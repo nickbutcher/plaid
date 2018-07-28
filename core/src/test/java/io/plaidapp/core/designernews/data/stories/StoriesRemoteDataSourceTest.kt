@@ -21,7 +21,7 @@ import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.stories.model.Story
+import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.errorResponseBody
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
@@ -38,9 +38,10 @@ import java.util.GregorianCalendar
 class StoriesRemoteDataSourceTest {
 
     private val createdDate: Date = GregorianCalendar(2018, 1, 13).time
-    private val story = Story(id = 45L, title = "Plaid 2.0 was released", createdAt = createdDate)
+    private val story =
+        StoryResponse(id = 45L, title = "Plaid 2.0 was released", created_at = createdDate)
     private val storySequel =
-        Story(id = 876L, title = "Plaid 2.0 is bug free", createdAt = createdDate)
+        StoryResponse(id = 876L, title = "Plaid 2.0 is bug free", created_at = createdDate)
     private val stories = listOf(story, storySequel)
     private val query = "Plaid 2.0"
 
@@ -99,26 +100,26 @@ class StoriesRemoteDataSourceTest {
         assertTrue(result is Result.Error)
     }
 
-    private fun withStoriesSuccess(page: Int, users: List<Story>) {
+    private fun withStoriesSuccess(page: Int, users: List<StoryResponse>) {
         val result = Response.success(users)
         whenever(service.getStories(page)).thenReturn(CompletableDeferred(result))
     }
 
     private fun withStoriesError(page: Int) {
-        val result = Response.error<List<Story>>(
+        val result = Response.error<List<StoryResponse>>(
             400,
             errorResponseBody
         )
         whenever(service.getStories(page)).thenReturn(CompletableDeferred(result))
     }
 
-    private fun withSearchSuccess(query: String, page: Int, users: List<Story>) {
+    private fun withSearchSuccess(query: String, page: Int, users: List<StoryResponse>) {
         val result = Response.success(users)
         whenever(service.search(query, page)).thenReturn(CompletableDeferred(result))
     }
 
     private fun withSearchError(query: String, page: Int) {
-        val result = Response.error<List<Story>>(
+        val result = Response.error<List<StoryResponse>>(
             400,
             errorResponseBody
         )

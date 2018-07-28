@@ -19,8 +19,8 @@ package io.plaidapp.designernews.ui.story
 import android.arch.lifecycle.ViewModel
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
+import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase
 import kotlinx.coroutines.experimental.Job
@@ -33,7 +33,7 @@ import kotlinx.coroutines.experimental.withContext
  */
 class StoryViewModel(
     storyId: Long,
-    storiesRepository: StoriesRepository,
+    getStoryUseCase: GetStoryUseCase,
     private val upvoteStoryUseCase: UpvoteStoryUseCase,
     private val upvoteCommentUseCase: UpvoteCommentUseCase,
     private val contextProvider: CoroutinesContextProvider
@@ -42,7 +42,7 @@ class StoryViewModel(
     val story: Story
 
     init {
-        val result = storiesRepository.getStory(storyId)
+        val result = getStoryUseCase(storyId)
         if (result is Result.Success) {
             story = result.data
         } else {
