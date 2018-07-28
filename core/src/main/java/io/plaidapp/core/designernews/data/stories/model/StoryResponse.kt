@@ -37,9 +37,9 @@ fun StoryResponse.toStory() = Story(
  * Models a Designer News story response.
  */
 data class StoryResponse(
-    @SerializedName("id")  val id: Long,
-    @SerializedName("title")  val title: String,
-    @SerializedName("url")  var url: String? = getDefaultStoryUrl(id),
+    @SerializedName("id") val id: Long,
+    @SerializedName("title") val title: String,
+    @SerializedName("url") var url: String? = getDefaultStoryUrl(id),
     @SerializedName("comment") val comment: String? = null,
     @SerializedName("comment_html") val comment_html: String? = null,
     @SerializedName("comment_count") val comment_count: Int = 0,
