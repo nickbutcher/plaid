@@ -2,9 +2,10 @@
 
 # Check if this script is running on the main, non-forked repository.
 # Environment variables are not set in forked repository builds;
-# skip Firebase Test Lab steps in this case.
+# in this case, skip Firebase Test Lab steps and finish the build.
 if [ -z "$IS_MAIN_PLAID_REPO" ]; then
   echo "Running build on a forked repository - skipping FTL tests."
+  circleci step halt
   exit 0
 fi
 
