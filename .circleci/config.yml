@@ -48,6 +48,7 @@ jobs:
           paths:
             - build
             - app/build
+            - core/build
 
   test_instrumented:
     <<: *config_gcloud
