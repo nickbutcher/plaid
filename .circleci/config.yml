@@ -49,7 +49,7 @@ jobs:
           root: .
           paths:
             - build
-            - **/build
+            - ./**/build
 
   test_instrumented:
     <<: *config_gcloud
