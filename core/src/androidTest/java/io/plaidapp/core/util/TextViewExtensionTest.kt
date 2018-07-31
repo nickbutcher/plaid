@@ -18,6 +18,7 @@ package io.plaidapp.core.util
 
 import android.support.test.InstrumentationRegistry
 import android.widget.TextView
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean
@@ -37,6 +38,11 @@ class TextViewExtensionTest {
 
         view.text = "text"
         assertTrue(called.get())
+    }
+
+    @Test
+    fun itFailes() {
+        assertEquals("Foo", "Bar")
     }
 
     @Test
