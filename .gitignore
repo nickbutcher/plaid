@@ -9,3 +9,4 @@ prebuilts
 local.properties
 .gradle
 ktlint
+google-services.json
