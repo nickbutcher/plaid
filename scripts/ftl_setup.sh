@@ -1,5 +1,13 @@
 #!/bin/sh
 
+# Check if this script is running on the main, non-forked repository.
+# Environment variables are not set in forked repository builds;
+# skip Firebase Test Lab steps in this case.
+if [ -z "$IS_MAIN_PLAID_REPO" ]; then
+  echo "Running build on a forked repository - skipping FTL tests."
+# exit 0
+fi
+
 # Check if service key environment variable is set; exit if not
 if [ -z "$GCLOUD_SERVICE_KEY" ]; then
   echo "GCLOUD_SERVICE_KEY env variable is empty. Exiting."
