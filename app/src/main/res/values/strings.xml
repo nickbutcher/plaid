@@ -22,6 +22,7 @@
     <string name="logged_in_as">Logged in as</string>
     <string name="comment">Comment</string>
     <string name="hint_reply">Reply</string>
+    <string name="share">share</string>
 
     <!-- main screen -->
     <string name="search">Search</string>
@@ -34,19 +35,4 @@
     <string name="edit">Edit</string>
     <string name="no_filters_selected">No filters selected, press the filter button above (<annotation src="@drawable/ic_filter_small">&#2228;</annotation>)\n<i><annotation foregroundColor="@color/text_secondary_light">or swipe from the&#160;right</annotation></i></string>
 
-      <!-- dribbble shot screen -->
-    <!-- using strings for the number of views/likes as we run them through NumberFormat -->
-    <plurals name="likes">
-        <item quantity="zero">no likes</item>
-        <item quantity="one">%s like</item>
-        <item quantity="other">%s likes</item>
-    </plurals>
-    <plurals name="views">
-        <item quantity="zero">no views</item>
-        <item quantity="one">%s view</item>
-        <item quantity="other">%s views</item>
-    </plurals>
-    <string name="share">share</string>
-    <string name="prospects_cant_post">Sorry but prospects cannot comment :(</string>
-    <string name="bad_dribbble_shot_url">Can\'t open that link :(</string>
 </resources>

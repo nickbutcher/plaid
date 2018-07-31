@@ -31,6 +31,16 @@
             name="shotUiModel"
             type="io.plaidapp.core.dribbble.data.api.model.Shot" />
 
+        <variable
+            name="shotLoadListener"
+            type="com.bumptech.glide.request.RequestListener&lt;Drawable&gt;" />
+
+        <import type="io.plaidapp.dribbble.R" />
+
+        <import type="io.plaidapp.R" alias="appR" />
+
+        <import type="android.graphics.drawable.Drawable" />
+
     </data>
 
     <io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
@@ -63,6 +73,8 @@
             android:transitionName="@string/transition_shot"
             android:background="@color/light_grey"
             android:onClick="@{() -> viewModel.viewShotRequested()}"
+            app:shot="@{shotUiModel}"
+            app:listener="@{shotLoadListener}"
             app:scrimColor="@color/scrim"
             app:scrimAlpha="0"
             app:maxScrimAlpha="0.4"
@@ -148,6 +160,7 @@
                     android:textAppearance="@style/TextAppearance.DribbbleShotDescription"
                     android:textColorHighlight="@color/dribbble_link_highlight"
                     android:textColorLink="@color/dribbble_links"
+                    app:htmlText="@{shotUiModel.description}"
                     tools:text="Check out this sweet eye candy!" />
 
                 <Button
@@ -161,7 +174,9 @@
                     android:layout_marginTop="@dimen/spacing_large"
                     android:drawableTop="@drawable/avd_likes"
                     android:background="@null"
-                    tools:text="33 likes"
+                    app:numberFormattedPlural="@{R.plurals.likes}"
+                    app:pluralQuantity="@{shotUiModel.likesCount}"
+                    app:animatedOnClick="@{true}"
                     style="@style/Widget.Plaid.InlineActionButton" />
 
                 <Button
@@ -174,7 +189,9 @@
                     app:layout_constraintHorizontal_weight="1"
                     android:drawableTop="@drawable/avd_views"
                     android:background="@null"
-                    tools:text="33 views"
+                    app:numberFormattedPlural="@{R.plurals.views}"
+                    app:pluralQuantity="@{shotUiModel.viewsCount}"
+                    app:animatedOnClick="@{true}"
                     style="@style/Widget.Plaid.InlineActionButton" />
 
                 <Button
@@ -187,6 +204,7 @@
                     app:layout_constraintHorizontal_weight="1"
                     android:drawableTop="@drawable/avd_share"
                     android:text="@string/share"
+                    app:animatedOnClick="@{() -> viewModel.shareShotRequested()}"
                     style="@style/Widget.Plaid.InlineActionButton" />
 
                 <io.plaidapp.core.ui.widget.BaselineGridTextView
@@ -203,7 +221,7 @@
                     android:paddingTop="@dimen/spacing_normal"
                     android:textAppearance="@style/TextAppearance.CommentAuthor"
                     android:clickable="false"
-                    tools:text="—Nick B" />
+                    android:text="@{shotUiModel.user.name.toLowerCase()}" />
 
                 <io.plaidapp.core.ui.widget.BaselineGridTextView
                     android:id="@+id/shot_time_ago"
@@ -215,7 +233,7 @@
                     android:paddingStart="@dimen/padding_normal"
                     android:gravity="end"
                     android:textAppearance="@style/TextAppearance.CommentTimestamp"
-                    tools:text="3 hours ago" />
+                    app:relativeTime="@{shotUiModel.createdAt}" />
 
                 <io.plaidapp.core.ui.widget.CircularImageView
                     android:id="@+id/player_avatar"
@@ -225,6 +243,10 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/player_name"
                     app:layout_constraintBottom_toBottomOf="@id/player_name"
+                    app:imageUrl="@{shotUiModel.user.highQualityAvatarUrl}"
+                    app:placeholder="@{appR.drawable.avatar_placeholder}"
+                    app:circleCrop="@{true}"
+                    app:crossFade="@{true}"
                     android:padding="@dimen/avatar_padding"
                     android:src="@drawable/avatar_placeholder"
                     android:foreground="@drawable/avatar_ripple" />

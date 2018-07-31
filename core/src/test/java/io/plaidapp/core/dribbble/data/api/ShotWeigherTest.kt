@@ -31,16 +31,16 @@ class ShotWeigherTest {
     private val weigher = ShotWeigher()
 
     private val shot0 = Shot(
-        likesCount = 0L,
+        likesCount = 0,
         id = 1L,
         title = "Foo",
         description = "",
         images = Images(),
         user = player
     )
-    private val shot20 = shot0.copy(likesCount = 20L)
-    private val shot99 = shot0.copy(likesCount = 99L)
-    private val shot200 = shot0.copy(likesCount = 200L)
+    private val shot20 = shot0.copy(likesCount = 20)
+    private val shot99 = shot0.copy(likesCount = 99)
+    private val shot200 = shot0.copy(likesCount = 200)
 
     @Before
     fun resetWeights() {
