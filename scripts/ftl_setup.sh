@@ -5,7 +5,7 @@
 # skip Firebase Test Lab steps in this case.
 if [ -z "$IS_MAIN_PLAID_REPO" ]; then
   echo "Running build on a forked repository - skipping FTL tests."
-# exit 0
+  exit 0
 fi
 
 # Check if service key environment variable is set; exit if not
