@@ -40,6 +40,7 @@ buildscript {
             'okhttp'            : '3.10.0',
             'retrofit'          : '2.4.0',
             'retrofitCoroutines': '1.0.0',
+            'room'              : '1.1.1',
             'supportLibrary'    : '27.1.1',
             'test_rules'        : '1.0.2',
             'test_runner'       : '1.0.2'
