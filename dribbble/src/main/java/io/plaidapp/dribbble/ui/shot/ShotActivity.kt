@@ -29,19 +29,12 @@ import android.os.Bundle
 import android.support.customtabs.CustomTabsIntent
 import android.support.v4.app.ShareCompat
 import android.support.v4.content.ContextCompat
-import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.graphics.Palette
 import android.text.format.DateUtils
 import android.util.TypedValue
-import android.view.View
 import android.view.View.GONE
-import android.view.View.OnClickListener
-import android.view.ViewTreeObserver
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.core.view.doOnPreDraw
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -49,49 +42,35 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
-import io.plaidapp.core.ui.widget.ParallaxScrimageView
 import io.plaidapp.core.util.Activities
 import io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator
 import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.core.util.HtmlUtils
 import io.plaidapp.core.util.ViewUtils
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
+import io.plaidapp.core.util.delegates.contentView
 import io.plaidapp.core.util.event.EventObserver
 import io.plaidapp.core.util.glide.GlideApp
 import io.plaidapp.core.util.glide.getBitmap
 import io.plaidapp.dribbble.R
+import io.plaidapp.dribbble.databinding.ActivityDribbbleShotBinding
 import io.plaidapp.dribbble.domain.ShareShotInfo
-import io.plaidapp.dribbble.provideViewModelFactory
+import io.plaidapp.dribbble.provideShotViewModelFactory
 import java.text.NumberFormat
 
 /**
  * Activity displaying a single Dribbble shot.
  */
-class DribbbleShotActivity : AppCompatActivity() {
+class ShotActivity : AppCompatActivity() {
 
-    private var draggableFrame: ElasticDragDismissFrameLayout? = null
-    private var bodyScroll: NestedScrollView? = null
-    private var likeCount: Button? = null
-    private var viewCount: Button? = null
-    private var share: Button? = null
-    private var playerAvatar: ImageView? = null
-    private var title: TextView? = null
-    private var description: TextView? = null
-    private var playerName: TextView? = null
-    private var shotTimeAgo: TextView? = null
+    private val binding by contentView<ShotActivity, ActivityDribbbleShotBinding>(
+        R.layout.activity_dribbble_shot
+    )
     private var chromeFader: ElasticDragDismissFrameLayout.SystemChromeFader? = null
-    private var back: ImageButton? = null
-    private var imageView: ParallaxScrimageView? = null
-    private var shotSpacer: View? = null
 
-    private lateinit var viewModel: DribbbleShotViewModel
-    private var shot: Shot? = null
+    private lateinit var viewModel: ShotViewModel
     private var largeAvatarSize: Int = 0
-
-    // TODO invoke with data binding
-    private val shotClick = OnClickListener { viewModel.viewShotRequested() }
 
     private val shotLoadListener = object : RequestListener<Drawable> {
         override fun onResourceReady(
@@ -111,7 +90,7 @@ class DribbbleShotActivity : AppCompatActivity() {
             val twentyFourDip = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 24f,
-                this@DribbbleShotActivity.resources.displayMetrics
+                this@ShotActivity.resources.displayMetrics
             ).toInt()
             Palette.from(bitmap)
                 .maximumColorCount(3)
@@ -121,7 +100,7 @@ class DribbbleShotActivity : AppCompatActivity() {
                 .generate { palette -> applyTopPalette(bitmap, palette) }
 
             // TODO should keep the background if the image contains transparency?!
-            imageView?.background = null
+            binding.shot.background = null
             return false
         }
 
@@ -135,40 +114,40 @@ class DribbbleShotActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dribbble_shot)
-        bindResources()
 
-        val factory = provideViewModelFactory(this)
-        viewModel = ViewModelProviders.of(this, factory).get(DribbbleShotViewModel::class.java)
+        val shotId = intent.getLongExtra(Activities.Dribbble.Shot.EXTRA_SHOT_ID, -1L)
+        if (shotId == -1L) {
+            finishAfterTransition()
+        }
+
+        largeAvatarSize = resources.getDimensionPixelSize(io.plaidapp.R.dimen.large_avatar_size)
+
+        val factory = provideShotViewModelFactory(shotId, this)
+        viewModel = ViewModelProviders.of(this, factory).get(ShotViewModel::class.java)
         viewModel.openLink.observe(this, EventObserver { openLink(it) })
         viewModel.shareShot.observe(this, EventObserver { shareShot(it) })
+        binding.viewModel = viewModel
+        binding.shotUiModel = viewModel.shot // TODO this should be a Live Data of a UI Model
 
-        bodyScroll?.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            imageView?.offset = -scrollY
+        binding.bodyScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+            binding.shot.offset = -scrollY
         }
-        back?.setOnClickListener { setResultAndFinish() }
+        binding.back.setOnClickListener { setResultAndFinish() }
         chromeFader = object : ElasticDragDismissFrameLayout.SystemChromeFader(this) {
             override fun onDragDismissed() {
                 setResultAndFinish()
             }
         }
-
-        if (intent.hasExtra(Activities.Dribbble.Shot.EXTRA_SHOT)) {
-            shot = intent.getParcelableExtra(Activities.Dribbble.Shot.EXTRA_SHOT)
-            bindShot()
-            viewModel.shot = shot // todo remove this when vm retrieves shot from repo
-        } else {
-            finishAfterTransition()
-        }
+        bindShot()
     }
 
     override fun onResume() {
         super.onResume()
-        draggableFrame?.addListener(chromeFader)
+        binding.draggableFrame.addListener(chromeFader)
     }
 
     override fun onPause() {
-        draggableFrame?.removeListener(chromeFader)
+        binding.draggableFrame.removeListener(chromeFader)
         super.onPause()
     }
 
@@ -182,28 +161,11 @@ class DribbbleShotActivity : AppCompatActivity() {
     }
 
     override fun onProvideAssistContent(outContent: AssistContent) {
-        outContent.webUri = Uri.parse(shot?.url)
-    }
-
-    private fun bindResources() {
-        draggableFrame = findViewById(R.id.draggable_frame)
-        back = findViewById(R.id.back)
-        imageView = findViewById(R.id.shot)
-        bodyScroll = findViewById(R.id.body_scroll)
-        shotSpacer = findViewById(R.id.shot_spacer)
-        title = findViewById(R.id.shot_title)
-        description = findViewById(R.id.shot_description)
-        likeCount = findViewById(R.id.shot_like_count)
-        viewCount = findViewById(R.id.shot_view_count)
-        share = findViewById(R.id.shot_share_action)
-        playerName = findViewById(R.id.player_name)
-        playerAvatar = findViewById(R.id.player_avatar)
-        shotTimeAgo = findViewById(R.id.shot_time_ago)
-        largeAvatarSize = resources.getDimensionPixelSize(io.plaidapp.R.dimen.large_avatar_size)
+        outContent.webUri = Uri.parse(viewModel.shot.url)
     }
 
     private fun bindShot() {
-        val shot = shot ?: return
+        val shot = viewModel.shot
         val res = resources
 
         // load the main image
@@ -215,62 +177,54 @@ class DribbbleShotActivity : AppCompatActivity() {
             .priority(Priority.IMMEDIATE)
             .override(width, height)
             .transition(DrawableTransitionOptions.withCrossFade())
-            .into(imageView!!)
-        imageView?.setOnClickListener(shotClick)
-        shotSpacer?.setOnClickListener(shotClick)
+            .into(binding.shot)
 
         postponeEnterTransition()
-        imageView?.viewTreeObserver?.addOnPreDrawListener(
-            object : ViewTreeObserver.OnPreDrawListener {
-                override fun onPreDraw(): Boolean {
-                    imageView?.viewTreeObserver?.removeOnPreDrawListener(this)
-                    startPostponedEnterTransition()
-                    return true
-                }
-            })
+        binding.shot.doOnPreDraw {
+            startPostponedEnterTransition()
+        }
 
-        title?.text = shot.title
-        if (!shot.description.isNullOrEmpty()) {
+        if (shot.description.isNotEmpty()) {
             val descText = HtmlUtils.parseHtml(
                 shot.description,
                 ContextCompat.getColorStateList(this, R.color.dribbble_links),
                 ContextCompat.getColor(this, io.plaidapp.R.color.dribbble_link_highlight)
             )
-            HtmlUtils.setTextWithNiceLinks(description!!, descText)
+            HtmlUtils.setTextWithNiceLinks(binding.shotDescription, descText)
         } else {
-            description?.visibility = GONE
+            binding.shotDescription.visibility = GONE
         }
         val nf = NumberFormat.getInstance()
-        likeCount?.text = res.getQuantityString(
+        binding.shotLikeCount.text = res.getQuantityString(
             io.plaidapp.R.plurals.likes,
             shot.likesCount.toInt(),
             nf.format(shot.likesCount)
         )
-        likeCount?.setOnClickListener {
-            (likeCount!!.compoundDrawables[1] as AnimatedVectorDrawable).start()
+        binding.shotLikeCount.setOnClickListener {
+            (binding.shotLikeCount.compoundDrawables[1] as AnimatedVectorDrawable).start()
         }
-        viewCount?.text = res.getQuantityString(
+        binding.shotViewCount.text = res.getQuantityString(
             io.plaidapp.R.plurals.views,
             shot.viewsCount.toInt(),
             nf.format(shot.viewsCount)
         )
-        viewCount?.setOnClickListener {
-            (viewCount!!.compoundDrawables[1] as? AnimatedVectorDrawable)?.start()
+        binding.shotViewCount.setOnClickListener {
+            (binding.shotViewCount.compoundDrawables[1] as? AnimatedVectorDrawable)?.start()
         }
-        share?.setOnClickListener {
-            (share!!.compoundDrawables[1] as AnimatedVectorDrawable).start()
+        binding.shotShareAction.setOnClickListener {
+            (binding.shotShareAction.compoundDrawables[1] as AnimatedVectorDrawable).start()
             viewModel.shareShotRequested()
         }
-        playerName?.text = shot.user.name.toLowerCase()
+        binding.playerName.text = shot.user.name.toLowerCase()
         GlideApp.with(this)
             .load(shot.user.highQualityAvatarUrl)
             .circleCrop()
             .placeholder(io.plaidapp.R.drawable.avatar_placeholder)
             .override(largeAvatarSize, largeAvatarSize)
             .transition(DrawableTransitionOptions.withCrossFade())
-            .into(playerAvatar!!)
+            .into(binding.playerAvatar)
         if (shot.createdAt != null) {
-            shotTimeAgo?.text = DateUtils.getRelativeTimeSpanString(
+            binding.shotTimeAgo.text = DateUtils.getRelativeTimeSpanString(
                 shot.createdAt!!.time,
                 System.currentTimeMillis(),
                 DateUtils.SECOND_IN_MILLIS
@@ -283,7 +237,7 @@ class DribbbleShotActivity : AppCompatActivity() {
             this,
             CustomTabsIntent.Builder()
                 .setToolbarColor(
-                    ContextCompat.getColor(this@DribbbleShotActivity, io.plaidapp.R.color.dribbble)
+                    ContextCompat.getColor(this@ShotActivity, io.plaidapp.R.color.dribbble)
                 )
                 .addDefaultShareMenuItem()
                 .build(),
@@ -293,7 +247,7 @@ class DribbbleShotActivity : AppCompatActivity() {
 
     private fun shareShot(shareInfo: ShareShotInfo) {
         with(shareInfo) {
-            ShareCompat.IntentBuilder.from(this@DribbbleShotActivity)
+            ShareCompat.IntentBuilder.from(this@ShotActivity)
                 .setText(shareText)
                 .setSubject(title)
                 .setStream(imageUri)
@@ -304,14 +258,14 @@ class DribbbleShotActivity : AppCompatActivity() {
 
     internal fun applyFullImagePalette(palette: Palette) {
         // color the ripple on the image spacer (default is grey)
-        shotSpacer?.background = ViewUtils.createRipple(
+        binding.shotSpacer.background = ViewUtils.createRipple(
             palette, 0.25f, 0.5f,
-            ContextCompat.getColor(this@DribbbleShotActivity, io.plaidapp.R.color.mid_grey), true
+            ContextCompat.getColor(this@ShotActivity, io.plaidapp.R.color.mid_grey), true
         )
         // slightly more opaque ripple on the pinned image to compensate for the scrim
-        imageView?.foreground = ViewUtils.createRipple(
+        binding.shot.foreground = ViewUtils.createRipple(
             palette, 0.3f, 0.6f,
-            ContextCompat.getColor(this@DribbbleShotActivity, io.plaidapp.R.color.mid_grey), true
+            ContextCompat.getColor(this@ShotActivity, io.plaidapp.R.color.mid_grey), true
         )
     }
 
@@ -324,8 +278,8 @@ class DribbbleShotActivity : AppCompatActivity() {
         }
 
         if (!isDark) { // make back icon dark on light images
-            back?.setColorFilter(
-                ContextCompat.getColor(this@DribbbleShotActivity, io.plaidapp.R.color.dark_icon)
+            binding.back.setColorFilter(
+                ContextCompat.getColor(this@ShotActivity, io.plaidapp.R.color.dark_icon)
             )
         }
 
@@ -335,27 +289,25 @@ class DribbbleShotActivity : AppCompatActivity() {
             statusBarColor = ColorUtils.scrimify(it.rgb, isDark, SCRIM_ADJUSTMENT)
             // set a light status bar
             if (!isDark) {
-                ViewUtils.setLightStatusBar(imageView!!)
+                ViewUtils.setLightStatusBar(binding.shot)
             }
         }
 
         if (statusBarColor != window.statusBarColor) {
-            imageView?.setScrimColor(statusBarColor)
+            binding.shot.setScrimColor(statusBarColor)
             ValueAnimator.ofArgb(window.statusBarColor, statusBarColor).apply {
                 addUpdateListener { animation ->
                     window.statusBarColor = animation.animatedValue as Int
                 }
                 duration = 1000L
-                interpolator = getFastOutSlowInInterpolator(this@DribbbleShotActivity)
+                interpolator = getFastOutSlowInInterpolator(this@ShotActivity)
             }.start()
         }
     }
 
     internal fun setResultAndFinish() {
         val resultData = Intent().apply {
-            shot?.let {
-                putExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID, it.id)
-            }
+            putExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID, viewModel.shot.id)
         }
         setResult(Activity.RESULT_OK, resultData)
         finishAfterTransition()

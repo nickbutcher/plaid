@@ -16,6 +16,8 @@
 
 package io.plaidapp.core.designernews.data.login
 
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.users.model.User
 import kotlinx.coroutines.experimental.runBlocking
@@ -24,7 +26,6 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.Mockito
 import java.io.IOException
 
 /**
@@ -43,8 +44,8 @@ class LoginRepositoryTest {
         portraitUrl = "www"
     )
 
-    private var localDataSource = Mockito.mock(LoginLocalDataSource::class.java)
-    private val remoteDataSource = Mockito.mock(LoginRemoteDataSource::class.java)
+    private var localDataSource: LoginLocalDataSource = mock()
+    private val remoteDataSource: LoginRemoteDataSource = mock()
     private val repository = LoginRepository(localDataSource, remoteDataSource)
 
     @Test
@@ -119,11 +120,11 @@ class LoginRepositoryTest {
 
     private fun withLoginSuccessful(username: String, pass: String) = runBlocking {
         val result = Result.Success(user)
-        Mockito.`when`(remoteDataSource.login(username, pass)).thenReturn(result)
+        whenever(remoteDataSource.login(username, pass)).thenReturn(result)
     }
 
     private fun withLoginFailed(username: String, pass: String) = runBlocking {
-        Mockito.`when`(remoteDataSource.login(username, pass))
+        whenever(remoteDataSource.login(username, pass))
             .thenReturn(Result.Error(IOException("error")))
     }
 }

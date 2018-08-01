@@ -17,6 +17,7 @@
 package io.plaidapp.core.designernews.data.stories.model
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -24,8 +25,8 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class StoryLinks(
-    val user: String,
-    val comments: List<Long>,
-    val upvotes: List<String>,
-    val downvotes: List<String>
+    @SerializedName("user") val user: String,
+    @SerializedName("comments") val comments: List<Long>,
+    @SerializedName("upvotes") val upvotes: List<String>,
+    @SerializedName("downvotes") val downvotes: List<String>
 ) : Parcelable

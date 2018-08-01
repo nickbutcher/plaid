@@ -16,106 +16,52 @@
 
 package io.plaidapp.core.designernews.data.stories
 
-import io.plaidapp.core.BuildConfig
-import io.plaidapp.core.data.LoadSourceCallback
-import io.plaidapp.core.data.prefs.SourceManager
-import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.stories.model.Story
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import io.plaidapp.core.data.Result
+import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 
 /**
- * Repository class that handles work with Designer News.
+ * Repository class that handles work with Designer News Stories.
  */
-class StoriesRepository(private val service: DesignerNewsService) {
-    private val inflight: MutableMap<String, Call<*>> = HashMap()
+class StoriesRepository(private val remoteDataSource: StoriesRemoteDataSource) {
 
-    fun loadTopStories(page: Int, callback: LoadSourceCallback) {
-        val topStories = if (BuildConfig.DESIGNER_NEWS_V2) {
-            service.getTopStoriesV2(page)
-        } else {
-            service.getTopStories(page)
+    private val cache = mutableMapOf<Long, StoryResponse>()
+
+    suspend fun loadStories(page: Int) = getData { remoteDataSource.loadStories(page) }
+
+    suspend fun search(query: String, page: Int) = getData { remoteDataSource.search(query, page) }
+
+    private suspend fun getData(
+        request: suspend () -> Result<List<StoryResponse>>
+    ): Result<List<StoryResponse>> {
+        val result = request()
+        if (result is Result.Success) {
+            cache(result.data)
         }
-        topStories.enqueue(object : Callback<List<Story>> {
-            override fun onResponse(call: Call<List<Story>>, response: Response<List<Story>>) {
-                if (response.isSuccessful) {
-                    callback.sourceLoaded(response.body(), page, SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
-                } else {
-                    inflight.remove(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
-                    callback.loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
-                }
-            }
-
-            override fun onFailure(call: Call<List<Story>>, t: Throwable) {
-                inflight.remove(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
-                callback.loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
-            }
-        })
-        inflight[SourceManager.SOURCE_DESIGNER_NEWS_POPULAR] = topStories
+        return result
     }
 
-    fun loadRecent(page: Int, callback: LoadSourceCallback) {
-        val recentStoriesCall = if (BuildConfig.DESIGNER_NEWS_V2) {
-            service.getRecentStoriesV2(page)
+    fun getStory(id: Long): Result<StoryResponse> {
+        val story = cache[id]
+        return if (story != null) {
+            Result.Success(story)
         } else {
-            service.getRecentStories(page)
+            Result.Error(IllegalStateException("Story $id not cached"))
         }
-        recentStoriesCall.enqueue(object : Callback<List<Story>> {
-            override fun onResponse(call: Call<List<Story>>, response: Response<List<Story>>) {
-                if (response.isSuccessful) {
-                    callback.sourceLoaded(response.body(), page, SourceManager.SOURCE_DESIGNER_NEWS_RECENT)
-                } else {
-                    callback.loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_RECENT)
-                }
-            }
-
-            override fun onFailure(call: Call<List<Story>>, t: Throwable) {
-                callback.loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_RECENT)
-            }
-        })
-        inflight[SourceManager.SOURCE_DESIGNER_NEWS_RECENT] = recentStoriesCall
     }
 
-    fun search(
-        query: String,
-        page: Int,
-        callback: LoadSourceCallback
-    ) {
-        val searchCall = service.search(query, page)
-        searchCall.enqueue(object : Callback<List<Story>> {
-            override fun onResponse(call: Call<List<Story>>, response: Response<List<Story>>) {
-                if (response.isSuccessful) {
-                    callback.sourceLoaded(response.body(), page, query)
-                } else {
-                    callback.loadFailed(query)
-                }
-            }
-
-            override fun onFailure(call: Call<List<Story>>, t: Throwable) {
-                callback.loadFailed(query)
-            }
-        })
-
-        inflight[query] = searchCall
-    }
-
-    fun cancelAllRequests() {
-        for (request in inflight.values) request.cancel()
-    }
-
-    fun cancelRequestOfSource(source: String) {
-        inflight[source].apply { this?.cancel() }
+    private fun cache(data: List<StoryResponse>) {
+        data.associateTo(cache) { it.id to it }
     }
 
     companion object {
         @Volatile
         private var INSTANCE: StoriesRepository? = null
 
-        fun getInstance(service: DesignerNewsService): StoriesRepository {
+        fun getInstance(remoteDataSource: StoriesRemoteDataSource): StoriesRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE
-                        ?: StoriesRepository(service).also { INSTANCE = it }
+                INSTANCE ?: StoriesRepository(remoteDataSource).also {
+                    INSTANCE = it
+                }
             }
         }
     }

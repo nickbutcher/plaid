@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.base.designernews.data.login
+package io.plaidapp.core.designernews.data.login
 
 import android.content.Context
 import android.support.test.InstrumentationRegistry
-import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

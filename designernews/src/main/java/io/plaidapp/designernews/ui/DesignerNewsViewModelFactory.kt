@@ -20,26 +20,19 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.designernews.data.login.LoginRepository
-import io.plaidapp.designernews.domain.UpvoteCommentUseCase
-import io.plaidapp.designernews.domain.UpvoteStoryUseCase
 import io.plaidapp.designernews.ui.login.LoginViewModel
-import io.plaidapp.designernews.ui.story.StoryViewModel
 
 /**
  * Factory for Designer News [ViewModel]s
  */
 class DesignerNewsViewModelFactory(
     private val loginRepository: LoginRepository,
-    private val upvoteStoryUseCase: UpvoteStoryUseCase,
-    private val upvoteCommentUseCase: UpvoteCommentUseCase,
     private val contextProvider: CoroutinesContextProvider
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             return LoginViewModel(loginRepository, contextProvider) as T
-        } else if (modelClass.isAssignableFrom(StoryViewModel::class.java)) {
-            return StoryViewModel(upvoteStoryUseCase, upvoteCommentUseCase, contextProvider) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

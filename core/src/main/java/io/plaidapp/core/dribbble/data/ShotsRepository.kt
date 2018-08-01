@@ -19,7 +19,7 @@ package io.plaidapp.core.dribbble.data
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
-import io.plaidapp.core.dribbble.data.search.DribbbleSearchRemoteDataSource
+import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
@@ -27,11 +27,13 @@ import kotlinx.coroutines.experimental.withContext
 /**
  * Repository class that handles working with Dribbble.
  */
-class DribbbleRepository(
-    private val remoteDataSource: DribbbleSearchRemoteDataSource,
+class ShotsRepository(
+    private val remoteDataSource: SearchRemoteDataSource,
     private val contextProvider: CoroutinesContextProvider
 ) {
+
     private val inflight = mutableMapOf<String, Job>()
+    private val shotCache = mutableMapOf<Long, Shot>()
 
     fun search(
         query: String,
@@ -40,6 +42,15 @@ class DribbbleRepository(
     ) {
         val id = "$query::$page"
         inflight[id] = launchSearch(query, page, id, onResult)
+    }
+
+    fun getShot(id: Long): Result<Shot> {
+        val shot = shotCache[id]
+        return if (shot != null) {
+            Result.Success(shot)
+        } else {
+            Result.Error(IllegalStateException("Shot $id not cached"))
+        }
     }
 
     fun cancelAllSearches() {
@@ -55,18 +66,25 @@ class DribbbleRepository(
     ) = launch(contextProvider.io) {
         val result = remoteDataSource.search(query, page)
         inflight.remove(id)
+        if (result is Result.Success) {
+            cache(result.data)
+        }
         withContext(contextProvider.main) { onResult(result) }
     }
 
+    private fun cache(shots: List<Shot>) {
+        shots.associateTo(shotCache) { it.id to it }
+    }
+
     companion object {
-        @Volatile private var INSTANCE: DribbbleRepository? = null
+        @Volatile private var INSTANCE: ShotsRepository? = null
 
         fun getInstance(
-            remoteDataSource: DribbbleSearchRemoteDataSource,
+            remoteDataSource: SearchRemoteDataSource,
             contextProvider: CoroutinesContextProvider
-        ): DribbbleRepository {
+        ): ShotsRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: DribbbleRepository(remoteDataSource, contextProvider)
+                INSTANCE ?: ShotsRepository(remoteDataSource, contextProvider)
                     .also { INSTANCE = it }
             }
         }

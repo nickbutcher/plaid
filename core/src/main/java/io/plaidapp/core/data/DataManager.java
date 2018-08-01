@@ -22,9 +22,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import io.plaidapp.core.data.prefs.SourceManager;
 import io.plaidapp.core.designernews.Injection;
-import io.plaidapp.core.designernews.data.stories.StoriesRepository;
+import io.plaidapp.core.designernews.domain.LoadStoriesUseCase;
+import io.plaidapp.core.designernews.domain.SearchStoriesUseCase;
 import io.plaidapp.core.dribbble.DribbbleInjection;
-import io.plaidapp.core.dribbble.data.DribbbleRepository;
+import io.plaidapp.core.dribbble.data.ShotsRepository;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.producthunt.data.api.ProductHuntInjection;
 import io.plaidapp.core.producthunt.data.api.ProductHuntRepository;
@@ -43,8 +44,9 @@ import java.util.Map;
 public abstract class DataManager extends BaseDataManager<List<? extends PlaidItem>>
         implements LoadSourceCallback {
 
-    private final DribbbleRepository dribbbleRepository;
-    final StoriesRepository storiesRepository;
+    private final ShotsRepository shotsRepository;
+    private final LoadStoriesUseCase loadStoriesUseCase;
+    private final SearchStoriesUseCase searchStoriesUseCase;
     private final ProductHuntRepository productHuntRepository;
     private final FilterAdapter filterAdapter;
     Map<String, Integer> pageIndexes;
@@ -52,8 +54,9 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
 
     public DataManager(Context context, FilterAdapter filterAdapter) {
         super();
-        dribbbleRepository = DribbbleInjection.provideDribbbleRepository();
-        storiesRepository = Injection.provideStoriesRepository(context);
+        shotsRepository = DribbbleInjection.provideShotsRepository();
+        loadStoriesUseCase = Injection.provideLoadStoriesUseCase(context);
+        searchStoriesUseCase = Injection.provideSearchStoriesUseCase(context);
         productHuntRepository = ProductHuntInjection.provideProductHuntRepository();
 
         this.filterAdapter = filterAdapter;
@@ -76,8 +79,9 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
             }
             inflightCalls.clear();
         }
-        dribbbleRepository.cancelAllSearches();
-        storiesRepository.cancelAllRequests();
+        shotsRepository.cancelAllSearches();
+        loadStoriesUseCase.cancelAllRequests();
+        searchStoriesUseCase.cancelAllRequests();
         productHuntRepository.cancelAllRequests();
     }
 
@@ -94,7 +98,8 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
                             if (call != null) call.cancel();
                             inflightCalls.remove(key);
                         }
-                        storiesRepository.cancelRequestOfSource(key);
+                        loadStoriesUseCase.cancelRequestOfSource(key);
+                        searchStoriesUseCase.cancelRequestOfSource(key);
                         // clear the page index for the source
                         pageIndexes.put(key, 0);
                     }
@@ -107,10 +112,7 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
             final int page = getNextPageIndex(source.key);
             switch (source.key) {
                 case SourceManager.SOURCE_DESIGNER_NEWS_POPULAR:
-                    loadDesignerNewsTopStories(page);
-                    break;
-                case SourceManager.SOURCE_DESIGNER_NEWS_RECENT:
-                    loadDesignerNewsRecent(page);
+                    loadDesignerNewsStories(page);
                     break;
                 case SourceManager.SOURCE_PRODUCT_HUNT:
                     loadProductHunt(page);
@@ -165,21 +167,17 @@ public abstract class DataManager extends BaseDataManager<List<? extends PlaidIt
         inflightCalls.remove(source);
     }
 
-    private void loadDesignerNewsTopStories(final int page) {
-        storiesRepository.loadTopStories(page, this);
-    }
-
-    private void loadDesignerNewsRecent(final int page) {
-        storiesRepository.loadRecent(page, this);
+    private void loadDesignerNewsStories(final int page) {
+        loadStoriesUseCase.invoke(page, this);
     }
 
     private void loadDesignerNewsSearch(final Source.DesignerNewsSearchSource source,
                                         final int page) {
-        storiesRepository.search(source.key, page, this);
+        searchStoriesUseCase.invoke(source.key, page, this);
     }
 
     private void loadDribbbleSearch(final Source.DribbbleSearchSource source, final int page) {
-        dribbbleRepository.search(source.query, page, result -> {
+        shotsRepository.search(source.query, page, result -> {
             if (result instanceof Result.Success) {
                 Result.Success<List<Shot>> success = (Result.Success<List<Shot>>) result;
                 sourceLoaded(success.getData(), page, source.key);
