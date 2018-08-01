@@ -1,8 +1,8 @@
 version: 2
 
 references:
-  cache_key: &cache_key
-    key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+#  cache_key: &cache_key
+#    key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
 
   config_android: &config_android
     docker:
@@ -25,16 +25,16 @@ jobs:
     <<: *config_android
     steps:
       - checkout
-      - restore_cache:
-          <<: *cache_key
+#      - restore_cache:
+#          <<: *cache_key
       - run:
           name: Download Dependencies
           command: ./gradlew dependencies
-      - save_cache:
-          <<: *cache_key
-          paths:
-            - ~/.gradle/caches
-            - ~/.gradle/wrapper
+#      - save_cache:
+#          <<: *cache_key
+#          paths:
+#            - ~/.gradle/caches
+#            - ~/.gradle/wrapper
       - run:
           name: Run JVM Tests & Lint, assemble app and test APKs for debug and release
           command: ./gradlew check assemble assembleAndroidTest
