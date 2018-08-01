@@ -63,6 +63,7 @@ repositories {
 dependencies {
     api project(':bypass')
 
+    api "android.arch.persistence.room:runtime:${versions.room}"
     api "androidx.core:core-ktx:${versions.coreKtx}"
     api "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
     api "com.android.support:customtabs:${versions.supportLibrary}"
@@ -87,6 +88,7 @@ dependencies {
     api "org.jsoup:jsoup:${versions.jsoup}"
     api "android.arch.lifecycle:viewmodel:${versions.lifecycle}"
     api "android.arch.lifecycle:extensions:${versions.lifecycle}"
+    kapt "android.arch.persistence.room:compiler:${versions.room}"
 
     testImplementation project(':test_shared')
     testImplementation "com.nhaarman:mockito-kotlin:${versions.mockito_kotlin}"
