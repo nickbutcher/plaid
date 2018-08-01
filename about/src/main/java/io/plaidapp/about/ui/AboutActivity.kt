@@ -25,6 +25,7 @@ import android.support.v7.app.AppCompatActivity
 import android.transition.TransitionInflater
 import androidx.core.net.toUri
 import io.plaidapp.about.R
+import io.plaidapp.about.dagger.inject
 import io.plaidapp.about.ui.adapter.AboutPagerAdapter
 import io.plaidapp.about.ui.model.AboutViewModel
 import io.plaidapp.about.ui.model.AboutViewModelFactory
@@ -32,6 +33,7 @@ import io.plaidapp.about.ui.widget.InkPageIndicator
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
 import io.plaidapp.core.util.event.EventObserver
+import javax.inject.Inject
 import io.plaidapp.R as appR
 
 /**
@@ -42,6 +44,8 @@ import io.plaidapp.R as appR
  */
 class AboutActivity : AppCompatActivity() {
 
+    @Inject internal lateinit var aboutViewModelFactory: AboutViewModelFactory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
@@ -50,7 +54,8 @@ class AboutActivity : AppCompatActivity() {
         val pager = findViewById<ViewPager>(R.id.pager)
         val pageIndicator = findViewById<InkPageIndicator>(R.id.indicator)
 
-        val aboutViewModelFactory = AboutViewModelFactory(AboutStyler(this), resources)
+        inject()
+
         val viewModel = ViewModelProviders
             .of(this, aboutViewModelFactory)
             .get(AboutViewModel::class.java)
