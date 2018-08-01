@@ -76,7 +76,6 @@ dependencies {
     api "com.android.support:recyclerview-v7:${versions.supportLibrary}"
     api "com.android.support:support-dynamic-animation:${versions.supportLibrary}"
     api "com.github.bumptech.glide:glide:${versions.glide}"
-    kapt "com.github.bumptech.glide:compiler:${versions.glide}"
     api "com.github.bumptech.glide:okhttp3-integration:${versions.glide}"
     api "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
     api "com.google.code.gson:gson:${versions.gson}"
@@ -94,6 +93,8 @@ dependencies {
     api "android.arch.lifecycle:viewmodel:${versions.lifecycle}"
     api "android.arch.lifecycle:extensions:${versions.lifecycle}"
     kapt "android.arch.persistence.room:compiler:${versions.room}"
+    kapt "com.github.bumptech.glide:compiler:${versions.glide}"
+    kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 
     testImplementation project(':test_shared')
     testImplementation "com.nhaarman:mockito-kotlin:${versions.mockito_kotlin}"

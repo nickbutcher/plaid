@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-package io.plaidapp.about.ui
+package io.plaidapp.about.dagger
 
-import android.support.annotation.ColorInt
-import android.support.v4.content.ContextCompat
-import io.plaidapp.core.R as coreR
-import io.plaidapp.core.util.ColorUtils
-import javax.inject.Inject
+import io.plaidapp.about.ui.AboutActivity
+import io.plaidapp.core.dagger.MarkdownModule
 
 /**
- * Provide style colors to links and highlights in [AboutActivity].
+ * Inject all required modules into [AboutActivity].
  */
-class AboutStyler @Inject constructor(activity: AboutActivity) {
-
-    val linksColor = ContextCompat.getColorStateList(activity, coreR.color.plaid_links)!!
-    @ColorInt
-    val highlightColor = ColorUtils.getThemeColor(
-        activity,
-        coreR.attr.colorPrimary,
-        coreR.color.primary
-    )
+fun AboutActivity.inject() {
+    DaggerAboutComponent.builder()
+        .aboutActivityModule(AboutActivityModule(this))
+        .markdownModule(MarkdownModule(resources.displayMetrics))
+        .build().apply {
+            activity(this@inject)
+        }
 }
