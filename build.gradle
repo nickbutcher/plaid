@@ -24,6 +24,7 @@ buildscript {
             'coreKtx'           : '0.3',
             'coroutines'        : '0.22.5',
             'crashlytics'       : '2.9.4',
+            'dagger'            : '2.16',
             'espresso'          : '3.0.2',
             'fabric'            : '1.25.4',
             'firebase'          : '16.0.1',
