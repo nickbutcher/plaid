@@ -17,6 +17,7 @@
 
 apply plugin: 'com.android.dynamic-feature'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -43,6 +44,7 @@ repositories {
 
 dependencies {
     implementation project(':app')
+    kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 
     testImplementation project(':test_shared')
     testImplementation "android.arch.core:core-testing:${versions.lifecycle}"

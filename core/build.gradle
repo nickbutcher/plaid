@@ -80,6 +80,7 @@ dependencies {
     api "com.github.bumptech.glide:okhttp3-integration:${versions.glide}"
     api "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
     api "com.google.code.gson:gson:${versions.gson}"
+    api "com.google.dagger:dagger:${versions.dagger}"
     api "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     api "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
     api "com.squareup.okhttp3:okhttp:${versions.okhttp}"
