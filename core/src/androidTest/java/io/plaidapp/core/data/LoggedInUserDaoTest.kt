@@ -26,24 +26,24 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
+/**
+ * These tests verify [LoggedInUserDao] Room database operations for a [LoggedInUser].
+ */
 class LoggedInUserDaoTest {
     private lateinit var database: AppDatabase
     private lateinit var loggedInUserDao: LoggedInUserDao
 
-    @Before
-    fun createDb() {
+    @Before fun createDb() {
         val context = InstrumentationRegistry.getInstrumentation().context
         database = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
         loggedInUserDao = database.loggedInUserDao()
     }
 
-    @After
-    fun closeDb() {
+    @After fun closeDb() {
         database.close()
     }
 
-    @Test
-    fun insertAndGetLoggedInUser() {
+    @Test fun insertAndGetLoggedInUser() {
         val user = LoggedInUser(
             id = 1L,
             displayName = "Loggy L",
@@ -56,8 +56,7 @@ class LoggedInUserDaoTest {
         assertEquals(user, userFromDb)
     }
 
-    @Test
-    fun replaceLoggedInUser() {
+    @Test fun replaceLoggedInUser() {
         val user = LoggedInUser(
             id = 1L,
             displayName = "Loggy L",

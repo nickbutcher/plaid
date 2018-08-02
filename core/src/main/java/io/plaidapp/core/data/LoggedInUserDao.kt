@@ -23,6 +23,9 @@ import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 
+/**
+ * This Data Access Object handles Room database operations for the [LoggedInUser] class.
+ */
 @Dao
 interface LoggedInUserDao {
     @Query("SELECT * FROM logged_in_user LIMIT 1")
