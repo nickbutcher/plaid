@@ -18,7 +18,7 @@ package io.plaidapp.core.designernews.data.login
 
 import android.content.Context
 import android.support.test.InstrumentationRegistry.getInstrumentation
-import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -51,7 +51,7 @@ class LoginLocalDataSourceTest {
     @Test
     fun user_set() {
         // Given a user
-        val user = User(
+        val loggedInUser = LoggedInUser(
             id = 3,
             firstName = "Pladinium",
             lastName = "Plaidescu",
@@ -60,23 +60,23 @@ class LoginLocalDataSourceTest {
         )
 
         // When inserting it in the data source
-        dataSource.user = user
+        dataSource.user = loggedInUser
 
         // Then it can then be retrieved
-        assertEquals(user.copy(firstName = "", lastName = ""), dataSource.user)
+        assertEquals(loggedInUser.copy(firstName = "", lastName = ""), dataSource.user)
     }
 
     @Test
     fun logout() {
         // Given a user set
-        val user = User(
+        val loggedInUser = LoggedInUser(
             id = 3,
             firstName = "Plaidy",
             lastName = "Plaidinkski",
             displayName = "Plaidy Plaidinski",
             portraitUrl = "www"
         )
-        dataSource.user = user
+        dataSource.user = loggedInUser
 
         // When logging out
         dataSource.logout()
