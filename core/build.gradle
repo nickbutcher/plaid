@@ -53,6 +53,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    packagingOptions {
+        exclude 'META-INF/core_debug.kotlin_module'
+    }
+
 }
 
 repositories {
