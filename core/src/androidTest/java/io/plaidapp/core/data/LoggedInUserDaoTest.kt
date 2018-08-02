@@ -20,7 +20,6 @@ import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
 import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 import io.plaidapp.test.shared.LiveDataTestUtil
-
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -31,43 +30,46 @@ import org.junit.Test
  */
 class LoggedInUserDaoTest {
     private lateinit var database: AppDatabase
+    private lateinit var loggedInUser: LoggedInUser
     private lateinit var loggedInUserDao: LoggedInUserDao
 
-    @Before fun createDb() {
+    @Before fun setup() {
         val context = InstrumentationRegistry.getInstrumentation().context
         database = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
         loggedInUserDao = database.loggedInUserDao()
+        loggedInUser = LoggedInUser(
+            id = 1L,
+            displayName = "Loggy L",
+            firstName = "Loggy",
+            lastName = "Loggerson",
+            portraitUrl = "www"
+        )
     }
 
-    @After fun closeDb() {
+    @After fun tearDown() {
         database.close()
     }
 
     @Test fun insertAndGetLoggedInUser() {
-        val user = LoggedInUser(
-            id = 1L,
-            displayName = "Loggy L",
-            firstName = "Loggy",
-            lastName = "Loggerson",
-            portraitUrl = "www")
-        loggedInUserDao.insertLoggedInUser(user)
+        // Given a LoggedInUser that has been inserted into the DB
+        loggedInUserDao.insertLoggedInUser(loggedInUser)
 
+        // When getting the LoggedInUser via the DAO
         val userFromDb = LiveDataTestUtil.getValue(loggedInUserDao.getLoggedInUser())
-        assertEquals(user, userFromDb)
+
+        // Then the retrieved LoggedInUser matches the original LoggedInUser object
+        assertEquals(loggedInUser, userFromDb)
     }
 
     @Test fun replaceLoggedInUser() {
-        val user = LoggedInUser(
-            id = 1L,
-            displayName = "Loggy L",
-            firstName = "Loggy",
-            lastName = "Loggerson",
-            portraitUrl = "www")
-        loggedInUserDao.insertLoggedInUser(user)
+        // Given a LoggedInUser that has been inserted into the DB
+        loggedInUserDao.insertLoggedInUser(loggedInUser)
 
-        val updatedUser = user.copy(displayName = "LL Cool L")
+        // When the user's information changes and a subsequent insert is triggered
+        val updatedUser = loggedInUser.copy(displayName = "LL Cool L")
         loggedInUserDao.insertLoggedInUser(updatedUser)
 
+        // Then a subsequent query for the LoggedInUser should show the updated information
         val userFromDb = LiveDataTestUtil.getValue(loggedInUserDao.getLoggedInUser())
         assertEquals(updatedUser, userFromDb)
     }
