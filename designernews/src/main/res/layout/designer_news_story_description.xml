@@ -103,7 +103,7 @@
             android:textAppearance="@style/TextAppearance.CommentTimestamp"
             tools:text="Nick B, Designer+Developer @ Google" />
 
-        <io.plaidapp.ui.widget.CircularImageView
+        <io.plaidapp.core.ui.widget.CircularImageView
             android:id="@+id/story_poster_avatar"
             android:layout_width="@dimen/avatar_bounds"
             android:layout_height="@dimen/avatar_bounds"
