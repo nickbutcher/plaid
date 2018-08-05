@@ -28,21 +28,29 @@ import java.io.IOException
 class StoriesRemoteDataSource(private val service: DesignerNewsService) {
 
     suspend fun loadStories(page: Int): Result<List<StoryResponse>> {
-        val response = service.getStories(page).await()
-        return getResult(response = response, onError = {
-            Result.Error(
-                IOException("Error getting stories ${response.code()} ${response.message()}")
-            )
-        })
+        return try {
+            val response = service.getStories(page).await()
+            getResult(response = response, onError = {
+                Result.Error(
+                    IOException("Error getting stories ${response.code()} ${response.message()}")
+                )
+            })
+        } catch (e: Exception) {
+            Result.Error(IOException("Error getting stories", e))
+        }
     }
 
     suspend fun search(query: String, page: Int): Result<List<StoryResponse>> {
-        val response = service.search(query, page).await()
-        return getResult(response = response, onError = {
-            Result.Error(
-                IOException("Error searching $query ${response.code()} ${response.message()}")
-            )
-        })
+        return try {
+            val response = service.search(query, page).await()
+            getResult(response = response, onError = {
+                Result.Error(
+                    IOException("Error searching $query ${response.code()} ${response.message()}")
+                )
+            })
+        } catch (e: Exception) {
+            Result.Error(IOException("Error searching $query", e))
+        }
     }
 
     private inline fun getResult(

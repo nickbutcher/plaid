@@ -16,6 +16,7 @@
 
 package io.plaidapp.core.designernews.data.stories
 
+import com.nhaarman.mockito_kotlin.doAnswer
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
@@ -29,6 +30,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import retrofit2.Response
+import java.net.UnknownHostException
 import java.util.Date
 import java.util.GregorianCalendar
 
@@ -75,6 +77,19 @@ class StoriesRemoteDataSourceTest {
     }
 
     @Test
+    fun loadStories_withException() = runBlocking {
+        // Given that the service throws an exception
+        doAnswer { throw UnknownHostException() }
+            .whenever(service).getStories(1)
+
+        // When requesting stories
+        val result = dataSource.loadStories(1)
+
+        // Then error is returned
+        assertTrue(result is Result.Error)
+    }
+
+    @Test
     fun search_withSuccess() = runBlocking {
         // Given that the service responds with success
         withSearchSuccess(query, 2, stories)
@@ -92,6 +107,18 @@ class StoriesRemoteDataSourceTest {
     fun search_withError() = runBlocking {
         // Given that the service responds with error
         withSearchError(query, 1)
+
+        // When searching for stories
+        val result = dataSource.search(query, 1)
+
+        // Then error is returned
+        assertTrue(result is Result.Error)
+    }
+
+    @Test
+    fun search_withException() = runBlocking {
+        // Given that the service throws an exception
+        whenever(service.search(query, 1)).thenThrow(IllegalStateException::class.java)
 
         // When searching for stories
         val result = dataSource.search(query, 1)

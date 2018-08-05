@@ -16,6 +16,7 @@
 
 package io.plaidapp.core.designernews.data.users
 
+import com.nhaarman.mockito_kotlin.doAnswer
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
@@ -30,6 +31,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import retrofit2.Response
+import java.net.UnknownHostException
 
 /**
  * Tests for [UserRemoteDataSource] with mocked dependencies.
@@ -57,6 +59,19 @@ class UserRemoteDataSourceTest {
     fun getUsers_withError() = runBlocking {
         // Given that the service responds with error
         withUsersError("111,222")
+
+        // When requesting the users
+        val result = dataSource.getUsers(listOf(111L, 222L))
+
+        // Then error is returned
+        assertTrue(result is Result.Error)
+    }
+
+    @Test
+    fun getUsers_withException() = runBlocking {
+        // Given that the service throws an exception
+        doAnswer { throw UnknownHostException() }
+            .whenever(service).getUsers("111,222")
 
         // When requesting the users
         val result = dataSource.getUsers(listOf(111L, 222L))
