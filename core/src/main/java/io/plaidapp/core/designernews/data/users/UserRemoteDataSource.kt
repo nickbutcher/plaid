@@ -19,6 +19,7 @@ package io.plaidapp.core.designernews.data.users
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.core.util.safeApiCall
 import java.io.IOException
 
 /**
@@ -26,7 +27,12 @@ import java.io.IOException
  */
 class UserRemoteDataSource(private val service: DesignerNewsService) {
 
-    suspend fun getUsers(userIds: List<Long>): Result<List<User>> {
+    suspend fun getUsers(userIds: List<Long>) = safeApiCall(
+        call = { requestGetUsers(userIds) },
+        errorMessage = "Error getting user"
+    )
+
+    private suspend fun requestGetUsers(userIds: List<Long>): Result<List<User>> {
         val requestIds = userIds.joinToString(",")
 
         val response = service.getUsers(requestIds).await()
@@ -37,7 +43,8 @@ class UserRemoteDataSource(private val service: DesignerNewsService) {
             }
         }
 
-        return Result.Error(IOException(
-                "Error getting users ${response.code()} ${response.message()}"))
+        return Result.Error(
+            IOException("Error getting users ${response.code()} ${response.message()}")
+        )
     }
 }

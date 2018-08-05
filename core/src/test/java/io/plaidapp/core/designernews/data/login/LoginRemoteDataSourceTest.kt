@@ -17,6 +17,7 @@
 package io.plaidapp.core.designernews.data.login
 
 import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.doAnswer
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.verify
@@ -33,6 +34,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import retrofit2.Response
+import java.net.UnknownHostException
 
 /**
  * Tests for [LoginRemoteDataSource] using shared preferences from instrumentation
@@ -106,6 +108,37 @@ class LoginRemoteDataSourceTest {
             errorResponseBody
         )
         whenever(service.getAuthedUser()).thenReturn(CompletableDeferred(failureResponse))
+
+        // When logging in
+        val result = dataSource.login("test", "test")
+
+        // Then error is triggered
+        assertTrue(result is Result.Error)
+    }
+
+    @Test
+    fun login_failed_whenAccessTokenThrowsException() = runBlocking {
+        // Given that the auth token retrieval throws an exception
+        doAnswer { throw UnknownHostException() }
+            .whenever(service).login(any())
+
+        // When logging in
+        val result = dataSource.login("test", "test")
+
+        // Then get authed user is never called
+        verify(service, never()).getAuthedUser()
+        // Then the login fails
+        assertTrue(result is Result.Error)
+    }
+
+    @Test
+    fun login_failed_whenGetUserThrowsException() = runBlocking {
+        // Given that the access token is retrieved successfully
+        val accessTokenRespone = Response.success(accessToken)
+        whenever(service.login(any())).thenReturn(CompletableDeferred(accessTokenRespone))
+        // And the get authed user throws an exception
+        doAnswer { throw UnknownHostException() }
+            .whenever(service).getAuthedUser()
 
         // When logging in
         val result = dataSource.login("test", "test")

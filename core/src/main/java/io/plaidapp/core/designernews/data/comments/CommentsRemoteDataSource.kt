@@ -19,6 +19,7 @@ package io.plaidapp.core.designernews.data.comments
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.comments.model.CommentResponse
+import io.plaidapp.core.util.safeApiCall
 import java.io.IOException
 
 /**
@@ -29,7 +30,12 @@ class CommentsRemoteDataSource(private val service: DesignerNewsService) {
     /**
      * Get a list of comments based on ids from Designer News API.
      */
-    suspend fun getComments(ids: List<Long>): Result<List<CommentResponse>> {
+    suspend fun getComments(ids: List<Long>) = safeApiCall(
+        call = { requestGetComments(ids) },
+        errorMessage = "Error getting comments"
+    )
+
+    private suspend fun requestGetComments(ids: List<Long>): Result<List<CommentResponse>> {
         val requestIds = ids.joinToString(",")
         val response = service.getComments(requestIds).await()
         if (response.isSuccessful) {
@@ -38,7 +44,9 @@ class CommentsRemoteDataSource(private val service: DesignerNewsService) {
                 return Result.Success(body)
             }
         }
-        return Result.Error(IOException("Error getting comments ${response.code()} ${response.message()}"))
+        return Result.Error(
+            IOException("Error getting comments ${response.code()} ${response.message()}")
+        )
     }
 
     companion object {
