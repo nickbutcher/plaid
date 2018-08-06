@@ -53,7 +53,7 @@ class LoggedInUserDaoTest {
 
     @Test fun insertAndGetLoggedInUser() {
         // Given a LoggedInUser that has been inserted into the DB
-        loggedInUserDao.insertLoggedInUser(loggedInUser)
+        loggedInUserDao.setLoggedInUser(loggedInUser)
 
         // When getting the LoggedInUser via the DAO
         val userFromDb = LiveDataTestUtil.getValue(loggedInUserDao.getLoggedInUser())
@@ -64,20 +64,39 @@ class LoggedInUserDaoTest {
 
     @Test fun replaceLoggedInUser() {
         // Given a LoggedInUser that has been inserted into the DB
-        loggedInUserDao.insertLoggedInUser(loggedInUser)
+        loggedInUserDao.setLoggedInUser(loggedInUser)
 
         // When the user's information changes and a subsequent insert is triggered
         val updatedUser = loggedInUser.copy(displayName = "LL Cool L")
-        loggedInUserDao.insertLoggedInUser(updatedUser)
+        loggedInUserDao.setLoggedInUser(updatedUser)
 
         // Then a subsequent query for the LoggedInUser should show the updated information
         val userFromDb = LiveDataTestUtil.getValue(loggedInUserDao.getLoggedInUser())
         assertEquals(updatedUser, userFromDb)
     }
 
+    @Test fun uniqueLoggedInUser() {
+        // Given a LoggedInUser that has been inserted into the DB
+        loggedInUserDao.setLoggedInUser(loggedInUser)
+
+        // When inserting another LoggedInUser without first deleting the previous user
+        val newUser = LoggedInUser(
+            id = 2L,
+            displayName = "Moggy M",
+            firstName = "Moggy",
+            lastName = "Moggerson",
+            portraitUrl = "www"
+        )
+        loggedInUserDao.setLoggedInUser(newUser)
+
+        // Then a query for LoggedInUser should return the new user
+        val userFromDb = LiveDataTestUtil.getValue(loggedInUserDao.getLoggedInUser())
+        assertEquals(newUser, userFromDb)
+    }
+
     @Test fun deleteLoggedInUser() {
         // Given a LoggedInUser that has been inserted into the DB
-        loggedInUserDao.insertLoggedInUser(loggedInUser)
+        loggedInUserDao.setLoggedInUser(loggedInUser)
 
         // When the user is deleted from the database
         loggedInUserDao.deleteLoggedInUser()

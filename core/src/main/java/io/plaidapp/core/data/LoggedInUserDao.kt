@@ -21,19 +21,26 @@ import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
+import android.arch.persistence.room.Transaction
 import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 
 /**
  * This Data Access Object handles Room database operations for the [LoggedInUser] class.
  */
 @Dao
-interface LoggedInUserDao {
+abstract class LoggedInUserDao {
     @Query("SELECT * FROM logged_in_user LIMIT 1")
-    fun getLoggedInUser(): LiveData<LoggedInUser>
+    abstract fun getLoggedInUser(): LiveData<LoggedInUser>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertLoggedInUser(loggedInUser: LoggedInUser)
+    @Transaction
+    open fun setLoggedInUser(loggedInUser: LoggedInUser) {
+        deleteLoggedInUser()
+        insertLoggedInUser(loggedInUser)
+    }
 
     @Query("DELETE FROM logged_in_user")
-    fun deleteLoggedInUser()
+    abstract fun deleteLoggedInUser()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertLoggedInUser(loggedInUser: LoggedInUser)
 }
