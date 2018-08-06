@@ -95,7 +95,14 @@ internal class AboutViewModel(
             "The Android support libraries offer a number of features that are " +
                     "not built into the framework.",
             "https://developer.android.com/topic/libraries/support-library",
-            "https://developer.android.com/images/android_icon_125.png",
+            "https://avatars.githubusercontent.com/u/32689599",
+            false
+        ),
+        Library(
+            "android-ktx",
+            "A set of Kotlin extensions for Android app development.",
+            "https://android.googlesource.com/platform/frameworks/support/",
+            "https://avatars.githubusercontent.com/u/32689599",
             false
         ),
         Library(
@@ -104,6 +111,28 @@ internal class AboutViewModel(
             "https://github.com/Uncodin/bypass",
             "https://avatars.githubusercontent.com/u/1072254",
             true
+        ),
+        Library(
+            "Crashlytics",
+            "The most powerful, yet lightest weight crash reporting solution.",
+            "https://firebase.google.com/products/crashlytics/",
+            "https://get.fabric.io/assets/logo_crashlytics-9b74c30b45657fa925e1659ff5e550a8.png",
+            false
+        ),
+        Library(
+            "Dagger2",
+            "Dagger is a fully static, compile-time dependency injection framework" +
+                    "for both Java and Android.",
+            "https://google.github.io/dagger/",
+            "https://avatars.githubusercontent.com/u/1342004",
+            true
+        ),
+        Library(
+            "Firebase",
+            "A comprehensive mobile development platform",
+            "https://firebase.google.com/",
+            "https://www.gstatic.com/mobilesdk/160503_mobilesdk/logo/2x/firebase_96dp.png",
+            false
         ),
         Library(
             "Glide",
@@ -121,6 +150,29 @@ internal class AboutViewModel(
             true
         ),
         Library(
+            "ktlint",
+            "An anti-bikeshedding Kotlin linter with built-in formatter",
+            "https://github.com/shyiko/ktlint",
+            "https://avatars.githubusercontent.com/u/370176",
+            true
+        ),
+        Library(
+            "Mockito",
+            "Tasty mocking framework for unit tests in Java",
+            "http://site.mockito.org/",
+            "https://raw.githubusercontent.com/mockito/mockito/master/src/javadoc/org/mockito/logo.png",
+            false
+
+        ),
+        Library(
+            "Mockito-Kotlin",
+            "A small library that provides helper functions to work with Mockito in Kotlin.",
+            "https://github.com/nhaarman/mockito-kotlin",
+            "https://avatars.githubusercontent.com/u/3015152",
+            true
+
+        ),
+        Library(
             "OkHttp",
             "An HTTP & HTTP/2 client for Android and Java applications.",
             "http://square.github.io/okhttp/",
@@ -133,6 +185,13 @@ internal class AboutViewModel(
             "http://square.github.io/retrofit/",
             "https://avatars.githubusercontent.com/u/82592",
             false
+        ),
+        Library(
+            "Kotlin Coroutine Adapter",
+            "A Retrofit 2 CallAdapter.Factory for Kotlin coroutine's Deferred.",
+            "https://github.com/JakeWharton/retrofit2-kotlin-coroutines-adapter",
+            "https://avatars.githubusercontent.com/u/66577",
+            true
         )
     )
 
