@@ -22,6 +22,7 @@ import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 import io.plaidapp.test.shared.LiveDataTestUtil
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 
@@ -72,5 +73,17 @@ class LoggedInUserDaoTest {
         // Then a subsequent query for the LoggedInUser should show the updated information
         val userFromDb = LiveDataTestUtil.getValue(loggedInUserDao.getLoggedInUser())
         assertEquals(updatedUser, userFromDb)
+    }
+
+    @Test fun deleteLoggedInUser() {
+        // Given a LoggedInUser that has been inserted into the DB
+        loggedInUserDao.insertLoggedInUser(loggedInUser)
+
+        // When the user is deleted from the database
+        loggedInUserDao.deleteLoggedInUser()
+
+        // Then a query for the LoggedInUser should be null
+        val userFromDb = LiveDataTestUtil.getValue(loggedInUserDao.getLoggedInUser())
+        assertNull(userFromDb)
     }
 }
