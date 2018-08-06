@@ -33,4 +33,7 @@ interface LoggedInUserDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLoggedInUser(loggedInUser: LoggedInUser)
+
+    @Query("DELETE FROM logged_in_user")
+    fun deleteLoggedInUser()
 }
