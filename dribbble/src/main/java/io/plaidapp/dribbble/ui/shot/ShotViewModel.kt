@@ -20,6 +20,8 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import io.plaidapp.core.data.CoroutinesContextProvider
+import io.plaidapp.core.data.Result
+import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.util.event.Event
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
@@ -28,14 +30,27 @@ import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch
 
 /**
- * View model for [DribbbleShotActivity].
+ * View model for [ShotActivity].
  */
-class DribbbleShotViewModel(
-    private val contextProvider: CoroutinesContextProvider,
-    private val getShareShotInfoUseCase: GetShareShotInfoUseCase
+class ShotViewModel(
+    shotId: Long,
+    shotsRepository: ShotsRepository,
+    private val getShareShotInfoUseCase: GetShareShotInfoUseCase,
+    private val contextProvider: CoroutinesContextProvider
 ) : ViewModel() {
 
-    var shot: Shot? = null // TODO retrieve this from the repo
+    val shot: Shot
+
+    init {
+        val result = shotsRepository.getShot(shotId)
+        if (result is Result.Success) {
+            shot = result.data
+        } else {
+            // TODO re-throw Error.exception once Loading state removed.
+            throw IllegalStateException("Could not retrieve shot $shotId")
+        }
+    }
+
     private var shareShotJob: Job? = null
 
     private val _openLink = MutableLiveData<Event<String>>()
@@ -52,7 +67,6 @@ class DribbbleShotViewModel(
     }
 
     fun viewShotRequested() {
-        val shot = shot ?: return
         _openLink.value = Event(shot.htmlUrl)
     }
 
@@ -61,7 +75,7 @@ class DribbbleShotViewModel(
     }
 
     private fun launchShare() = launch(contextProvider.io) {
-        val shareInfo = getShareShotInfoUseCase(shot!!)
+        val shareInfo = getShareShotInfoUseCase(shot)
         _shareShot.postValue(Event(shareInfo))
     }
 }

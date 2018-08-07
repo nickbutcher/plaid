@@ -16,17 +16,13 @@
 
 package io.plaidapp.core.dribbble.data.api.model
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import io.plaidapp.core.data.PlaidItem
-import kotlinx.android.parcel.IgnoredOnParcel
-import kotlinx.android.parcel.Parcelize
 import java.util.Date
 
 /**
  * Models a dibbble shot
  */
-@Parcelize
 data class Shot(
     @SerializedName("id") override val id: Long,
     @SerializedName("title") override val title: String,
@@ -38,8 +34,8 @@ data class Shot(
     @SerializedName("html_url") val htmlUrl: String = "https://dribbble.com/shots/$id",
     @SerializedName("animated") val animated: Boolean = false,
     @SerializedName("user") val user: User
-) : PlaidItem(id, title, htmlUrl), Parcelable {
+) : PlaidItem(id, title, htmlUrl) {
 
     // todo move this into a decorator
-    @IgnoredOnParcel var hasFadedIn = false
+    var hasFadedIn = false
 }

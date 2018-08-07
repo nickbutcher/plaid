@@ -20,7 +20,6 @@ package io.plaidapp.core.producthunt.data.api
 
 import com.google.gson.Gson
 import io.plaidapp.core.BuildConfig
-import io.plaidapp.core.data.api.AuthInterceptor
 import io.plaidapp.core.data.api.DenvelopingConverter
 import io.plaidapp.core.loggingInterceptor
 import okhttp3.OkHttpClient

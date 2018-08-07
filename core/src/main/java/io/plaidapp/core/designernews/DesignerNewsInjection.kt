@@ -32,6 +32,7 @@ import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.core.designernews.data.login.LoginRemoteDataSource
 import io.plaidapp.core.designernews.data.login.LoginRepository
+import io.plaidapp.core.designernews.data.stories.StoriesRemoteDataSource
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.core.designernews.data.users.UserRepository
@@ -39,6 +40,8 @@ import io.plaidapp.core.designernews.data.votes.VotesRemoteDataSource
 import io.plaidapp.core.designernews.data.votes.VotesRepository
 import io.plaidapp.core.designernews.domain.CommentsUseCase
 import io.plaidapp.core.designernews.domain.CommentsWithRepliesUseCase
+import io.plaidapp.core.designernews.domain.LoadStoriesUseCase
+import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
 import io.plaidapp.core.loggingInterceptor
 import io.plaidapp.core.provideCoroutinesContextProvider
 import io.plaidapp.core.provideSharedPreferences
@@ -107,11 +110,29 @@ private fun provideDesignerNewsService(
 }
 
 fun provideStoriesRepository(context: Context): StoriesRepository {
-    return provideStoriesRepository(DesignerNewsPrefs.get(context).api)
+    return provideStoriesRepository(
+        provideStoriesRemoteDataSource(
+            DesignerNewsPrefs.get(context).api
+        )
+    )
 }
 
-private fun provideStoriesRepository(service: DesignerNewsService): StoriesRepository {
-    return StoriesRepository.getInstance(service)
+private fun provideStoriesRepository(remoteDataSource: StoriesRemoteDataSource) =
+    StoriesRepository.getInstance(remoteDataSource)
+
+private fun provideStoriesRemoteDataSource(service: DesignerNewsService): StoriesRemoteDataSource {
+    return StoriesRemoteDataSource.getInstance(service)
+}
+
+fun provideLoadStoriesUseCase(context: Context): LoadStoriesUseCase {
+    return LoadStoriesUseCase(provideStoriesRepository(context), provideCoroutinesContextProvider())
+}
+
+fun provideSearchStoriesUseCase(context: Context): SearchStoriesUseCase {
+    return SearchStoriesUseCase(
+        provideStoriesRepository(context),
+        provideCoroutinesContextProvider()
+    )
 }
 
 fun provideCommentsUseCase(context: Context): CommentsUseCase {

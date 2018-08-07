@@ -240,7 +240,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private void openDesignerNewsStory(StoryViewHolder.TransitionData data) {
         final Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.Story.INSTANCE);
-        intent.putExtra(Activities.DesignerNews.Story.EXTRA_STORY, data.getStory());
+        intent.putExtra(Activities.DesignerNews.Story.EXTRA_STORY_ID, data.getStory().getId());
         ReflowText.addExtras(intent, new ReflowText.ReflowableTextView(data.getTitle()));
         setGridItemContentTransitions(data.getItemView());
 
@@ -273,8 +273,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.image.setBadgeColor(initialGifBadgeColor);
         holder.image.setOnClickListener(view -> {
             Intent intent = ActivityHelper.intentTo(Activities.Dribbble.Shot.INSTANCE);
-            intent.putExtra(Activities.Dribbble.Shot.EXTRA_SHOT,
-                    (Shot) getItem(holder.getAdapterPosition()));
+            intent.putExtra(Activities.Dribbble.Shot.EXTRA_SHOT_ID,
+                    getItem(holder.getAdapterPosition()).getId());
             setGridItemContentTransitions(holder.image);
             ActivityOptions options =
                     ActivityOptions.makeSceneTransitionAnimation(host,

@@ -1,34 +1,79 @@
 version: 2
 
 references:
-  cache_key: &cache_key
-    key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+#  cache_key: &cache_key
+#    key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+
+  config_android: &config_android
+    docker:
+      - image: circleci/android:api-28-alpha
+    working_directory: ~/plaid
+    environment:
+      JVM_OPTS: "-Xmx1536m"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
+      TERM: dumb
+
+  config_gcloud: &config_gcloud
+    docker:
+      - image: google/cloud-sdk:latest
+    working_directory: ~/plaid
+    environment:
+      TERM: dumb
 
 jobs:
   build:
-    docker:
-      - image: circleci/android:api-28-alpha
-    environment:
-      JVM_OPTS: "-Xmx1024m"
-      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
-      TERM: dumb
+    <<: *config_android
     steps:
       - checkout
-      - restore_cache:
-          <<: *cache_key
+#      - restore_cache:
+#          <<: *cache_key
       - run:
           name: Download Dependencies
           command: ./gradlew dependencies
-      - save_cache:
-          <<: *cache_key
-          paths:
-            - ~/.gradle/caches
-            - ~/.gradle/wrapper
+#      - save_cache:
+#          <<: *cache_key
+#          paths:
+#            - ~/.gradle/caches
+#            - ~/.gradle/wrapper
       - run:
-          name: Run JVM Tests & Lint
-          command: ./gradlew check
+          name: Run JVM Tests & Lint, assemble app and test APKs for debug and release
+          command: ./gradlew check assemble assembleAndroidTest
       - run:
           name: Gather Lint results
           command: scripts/copy_lint_results.sh
       - store_artifacts:
           path: ci_results/lint
+
+      # Persist build directory for all modules
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
+            - ./**/build
+
+  test_instrumented:
+    <<: *config_gcloud
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/plaid
+      - run:
+          name: Setup Google Cloud auth
+          command: scripts/ftl_setup.sh
+      - run:
+          name: Run tests on Firebase Test Lab and download results
+          command: scripts/ftl_run_tests.sh $CIRCLE_BUILD_NUM firebase_test_results
+          when: always
+      - store_artifacts:
+          path: firebase_test_results
+      - store_test_Results:
+          path: firebase_test_results
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test_instrumented:
+          requires:
+            - build

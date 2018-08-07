@@ -16,6 +16,9 @@
 
 package io.plaidapp.core.designernews.domain
 
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.designernews.data.users.model.User
@@ -36,15 +39,14 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.Mockito
 import java.io.IOException
 
 /**
  * Tests for [CommentsUseCase] where all the dependencies are mocked.
  */
 class CommentsUseCaseTest {
-    private val commentsWithRepliesUseCase = Mockito.mock(CommentsWithRepliesUseCase::class.java)
-    private val userRepository = Mockito.mock(UserRepository::class.java)
+    private val commentsWithRepliesUseCase: CommentsWithRepliesUseCase = mock()
+    private val userRepository: UserRepository = mock()
     private val repository = CommentsUseCase(
         commentsWithRepliesUseCase,
         userRepository,
@@ -72,7 +74,7 @@ class CommentsUseCaseTest {
         // Given that the commentsWithRepliesUseCase responds with failure
         val resultError = Result.Error(IOException("Comment error"))
         val ids = listOf(11L)
-        Mockito.`when`(commentsWithRepliesUseCase.getCommentsWithReplies(ids)).thenReturn(resultError)
+        whenever(commentsWithRepliesUseCase.getCommentsWithReplies(ids)).thenReturn(resultError)
         var result: Result<List<Comment>>? = null
 
         // When getting the comments
@@ -97,7 +99,7 @@ class CommentsUseCaseTest {
         repository.getComments(listOf(1L)) { it -> result = it }
 
         // Then comments were requested for correct ids
-        Mockito.verify(commentsWithRepliesUseCase).getCommentsWithReplies(parentIds)
+        verify(commentsWithRepliesUseCase).getCommentsWithReplies(parentIds)
         // Then the correct result is received
         assertEquals(Result.Success(listOf(parentComment)), result)
     }
@@ -115,7 +117,7 @@ class CommentsUseCaseTest {
         repository.getComments(listOf(1L)) { it -> result = it }
 
         // Then comments were requested for correct ids
-        Mockito.verify(commentsWithRepliesUseCase).getCommentsWithReplies(parentIds)
+        verify(commentsWithRepliesUseCase).getCommentsWithReplies(parentIds)
         // Then the correct result is received
         assertEquals(Result.Success(arrayListOf(parentCommentWithoutReplies)), result)
     }
@@ -129,14 +131,14 @@ class CommentsUseCaseTest {
         withComment(replyWithReplies1, ids)
         // Given that the user request responds with failure
         val userError = Result.Error(IOException("User error"))
-        Mockito.`when`(userRepository.getUsers(setOf(11L))).thenReturn(userError)
+        whenever(userRepository.getUsers(setOf(11L))).thenReturn(userError)
         var result: Result<List<Comment>>? = null
 
         // When getting the comments from the repository
         repository.getComments(listOf(11L)) { it -> result = it }
 
         // Then comments were requested for correct ids
-        Mockito.verify(commentsWithRepliesUseCase).getCommentsWithReplies(ids)
+        verify(commentsWithRepliesUseCase).getCommentsWithReplies(ids)
         // Then the correct result is received
         assertEquals(Result.Success(arrayListOf(reply1NoUser)), result)
     }
@@ -144,16 +146,11 @@ class CommentsUseCaseTest {
     // Given that the users request responds with success
     private fun withUsers(users: Set<User>, ids: Set<Long>) = runBlocking {
         val userResult = Result.Success(users)
-        Mockito.`when`(userRepository.getUsers(ids)).thenReturn(userResult)
+        whenever(userRepository.getUsers(ids)).thenReturn(userResult)
     }
 
     private fun withComment(comment: CommentWithReplies, ids: List<Long>) = runBlocking {
         val resultParent = Result.Success(listOf(comment))
-        Mockito.`when`(commentsWithRepliesUseCase.getCommentsWithReplies(ids)).thenReturn(resultParent)
-    }
-
-    private fun withComments(comment: List<CommentWithReplies>, ids: List<Long>) = runBlocking {
-        val resultParent = Result.Success(comment)
-        Mockito.`when`(commentsWithRepliesUseCase.getCommentsWithReplies(ids)).thenReturn(resultParent)
+        whenever(commentsWithRepliesUseCase.getCommentsWithReplies(ids)).thenReturn(resultParent)
     }
 }

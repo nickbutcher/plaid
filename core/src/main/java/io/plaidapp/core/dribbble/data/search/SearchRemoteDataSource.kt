@@ -18,14 +18,14 @@ package io.plaidapp.core.dribbble.data.search
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
-import io.plaidapp.core.dribbble.data.search.DribbbleSearchRemoteDataSource.SortOrder.RECENT
+import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource.SortOrder.RECENT
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchService.Companion.PER_PAGE_DEFAULT
 import java.io.IOException
 
 /**
  * Work with our fake Dribbble API to search for shots by query term.
  */
-class DribbbleSearchRemoteDataSource(private val service: DribbbleSearchService) {
+class SearchRemoteDataSource(private val service: DribbbleSearchService) {
 
     suspend fun search(
         query: String,
@@ -51,11 +51,11 @@ class DribbbleSearchRemoteDataSource(private val service: DribbbleSearchService)
     }
 
     companion object {
-        @Volatile private var INSTANCE: DribbbleSearchRemoteDataSource? = null
+        @Volatile private var INSTANCE: SearchRemoteDataSource? = null
 
-        fun getInstance(service: DribbbleSearchService): DribbbleSearchRemoteDataSource {
+        fun getInstance(service: DribbbleSearchService): SearchRemoteDataSource {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: DribbbleSearchRemoteDataSource(service).also { INSTANCE = it }
+                INSTANCE ?: SearchRemoteDataSource(service).also { INSTANCE = it }
             }
         }
     }

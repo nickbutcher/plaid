@@ -16,25 +16,30 @@
 
 package io.plaidapp.core.dribbble.data
 
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
-import io.plaidapp.core.dribbble.data.search.DribbbleSearchRemoteDataSource
+import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
 import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.Mockito
 import java.io.IOException
 
 /**
- * Tests for [DribbbleRepository] which mocks all dependencies.
+ * Tests for [ShotsRepository] which mocks all dependencies.
  */
-class DribbbleRepositoryTest {
+class ShotsRepositoryTest {
 
-    private val dataSource = Mockito.mock(DribbbleSearchRemoteDataSource::class.java)
-    private val repository = DribbbleRepository(dataSource, provideFakeCoroutinesContextProvider())
+    private val dataSource: SearchRemoteDataSource = mock()
+    private val repository = ShotsRepository(
+        dataSource,
+        provideFakeCoroutinesContextProvider()
+    )
     private val query = "Plaid shirts"
     private val page = 0
 
@@ -42,14 +47,14 @@ class DribbbleRepositoryTest {
     fun search_whenRequestSuccessful() = runBlocking {
         // Given that the data source responds with success
         val result = Result.Success(shots)
-        Mockito.`when`(dataSource.search(query, page)).thenReturn(result)
+        whenever(dataSource.search(query, page)).thenReturn(result)
         var data: Result<List<Shot>>? = null
 
         // When searching for a query
         repository.search(query, page) { data = it }
 
         // Then the correct method was called
-        Mockito.verify(dataSource).search(query, page)
+        verify(dataSource).search(query, page)
         // And the expected result was returned to the callback
         assertEquals(Result.Success(shots), data)
     }
@@ -58,7 +63,7 @@ class DribbbleRepositoryTest {
     fun search_whenRequestFailed() = runBlocking {
         // Given that the data source responds with failure
         val result = Result.Error(IOException("error"))
-        Mockito.`when`(dataSource.search(query, page)).thenReturn(result)
+        whenever(dataSource.search(query, page)).thenReturn(result)
         var data: Result<List<Shot>>? = null
 
         // When searching for a query
@@ -67,5 +72,34 @@ class DribbbleRepositoryTest {
         // Then an error result is reported
         assertNotNull(data)
         assertTrue(data is Result.Error)
+    }
+
+    @Test
+    fun getShot_whenSearchSucceeded() = runBlocking {
+        // Given that a search has been performed successfully and data cached
+        whenever(dataSource.search(query, page)).thenReturn(Result.Success(shots))
+        repository.search(query, page) { }
+
+        // When getting a shot by id
+        val result = repository.getShot(shots[0].id)
+
+        // Then it is successfully retrieved
+        assertNotNull(result)
+        assertTrue(result is Result.Success)
+        assertEquals(shots[0], (result as Result.Success).data)
+    }
+
+    @Test
+    fun getShot_whenSearchFailed() = runBlocking {
+        // Given that a search fails so no data is cached
+        whenever(dataSource.search(query, page)).thenReturn(Result.Error(IOException("error")))
+        repository.search(query, page) { }
+
+        // When getting a shot by id
+        val result = repository.getShot(shots[0].id)
+
+        // Then an Error is reported
+        assertNotNull(result)
+        assertTrue(result is Result.Error)
     }
 }

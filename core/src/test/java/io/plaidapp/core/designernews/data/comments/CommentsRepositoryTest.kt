@@ -16,19 +16,20 @@
 
 package io.plaidapp.core.designernews.data.comments
 
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.repliesResponses
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.mockito.Mockito
 import java.io.IOException
 
 /**
  * Tests for [CommentsRepository] mocking all dependencies
  */
 class CommentsRepositoryTest {
-    private val dataSource = Mockito.mock(CommentsRemoteDataSource::class.java)
+    private val dataSource: CommentsRemoteDataSource = mock()
     private val repository = CommentsRepository(dataSource)
 
     @Test
@@ -36,7 +37,7 @@ class CommentsRepositoryTest {
         // Given a list of comment responses that are return for a specific list of ids
         val ids = listOf(1L)
         val result = Result.Success(repliesResponses)
-        Mockito.`when`(dataSource.getComments(ids)).thenReturn(result)
+        whenever(dataSource.getComments(ids)).thenReturn(result)
 
         // When requesting the comments
         val data = repository.getComments(ids)
@@ -50,7 +51,7 @@ class CommentsRepositoryTest {
         // Given a list of comment responses that are return for a specific list of ids
         val ids = listOf(1L)
         val result = Result.Error(IOException("error"))
-        Mockito.`when`(dataSource.getComments(ids)).thenReturn(result)
+        whenever(dataSource.getComments(ids)).thenReturn(result)
 
         // When requesting the comments
         val data = repository.getComments(ids)

@@ -15,9 +15,10 @@
  */
 
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'io.fabric'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -38,12 +39,12 @@ android {
                 crashlyticsEnabled: false
         ]
     }
+
+    dataBinding {
+        enabled true
+    }
+
     buildTypes {
-        debug {
-            applicationIdSuffix '.debug'
-            rootProject.ext.names.applicationId += '.debug'
-            versionNameSuffix '-DEBUG'
-        }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
@@ -51,10 +52,12 @@ android {
             manifestPlaceholders += [crashlyticsEnabled: true]
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     dynamicFeatures = [':about', ':designernews', ':dribbble']
 }
 
@@ -70,6 +73,7 @@ dependencies {
     implementation project(':search')
 
     implementation "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
+    implementation "com.google.firebase:firebase-core:${versions.firebase}"
 }
 
 // Must be applied after dependencies. See https://stackoverflow.com/a/38018985

@@ -123,7 +123,7 @@ public class PostStoryService extends IntentService {
         final Intent success = new Intent(BROADCAST_ACTION_SUCCESS);
         // API doesn't fill in author details so add them here
         final Story newStory = getStory(stories, user);
-        success.putExtra(EXTRA_NEW_STORY, newStory);
+        success.putExtra(EXTRA_NEW_STORY, newStory.getId());
         LocalBroadcastManager.getInstance(getApplicationContext())
                 .sendBroadcast(success);
     }

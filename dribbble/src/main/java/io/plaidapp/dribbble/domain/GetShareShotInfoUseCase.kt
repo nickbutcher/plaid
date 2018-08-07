@@ -17,18 +17,16 @@
 package io.plaidapp.dribbble.domain
 
 import android.net.Uri
-import android.support.annotation.WorkerThread
 import io.plaidapp.core.dribbble.data.api.model.Shot
 
 /**
  * A UseCase which prepares the information required to share a shot.
  */
-class GetShareShotInfoUseCase(private val imageUriProvider: DribbbleImageUriProvider) {
+class GetShareShotInfoUseCase(private val imageUriProvider: ImageUriProvider) {
 
-    @WorkerThread
-    operator fun invoke(shot: Shot): ShareShotInfo {
+    suspend operator fun invoke(shot: Shot): ShareShotInfo {
         val url = shot.images.best() ?: throw IllegalArgumentException()
-        val uri = imageUriProvider(url, shot.images.bestSize())
+        val uri = imageUriProvider(url, shot.images.bestSize()).await()
         val text = "“${shot.title}” by ${shot.user.name}\n${shot.url}"
         val mime = getImageMimeType(url)
         return ShareShotInfo(uri, shot.title, text, mime)
