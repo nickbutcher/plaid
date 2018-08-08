@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.data
+package io.plaidapp.core.designernews.data
 
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.Dao
@@ -41,6 +41,11 @@ abstract class LoggedInUserDao {
     @Query("DELETE FROM logged_in_user")
     abstract fun deleteLoggedInUser()
 
+    /**
+     * This method should not be used.  Instead, use [setLoggedInUser],
+     * as that method guarantees only a single [LoggedInUser] will reside
+     * in the table.
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertLoggedInUser(loggedInUser: LoggedInUser)
 }
