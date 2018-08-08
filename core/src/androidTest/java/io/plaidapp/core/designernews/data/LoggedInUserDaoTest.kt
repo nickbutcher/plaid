@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.data
+package io.plaidapp.core.designernews.data
 
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
+import io.plaidapp.core.data.AppDatabase
 import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 import io.plaidapp.test.shared.LiveDataTestUtil
 import org.junit.After
