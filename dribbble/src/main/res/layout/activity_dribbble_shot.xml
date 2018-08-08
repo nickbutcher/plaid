@@ -28,8 +28,8 @@
             type="io.plaidapp.dribbble.ui.shot.ShotViewModel" />
 
         <variable
-            name="shotUiModel"
-            type="io.plaidapp.core.dribbble.data.api.model.Shot" />
+            name="uiModel"
+            type="io.plaidapp.dribbble.ui.shot.ShotUiModel" />
 
         <variable
             name="shotLoadListener"
@@ -73,8 +73,11 @@
             android:transitionName="@string/transition_shot"
             android:background="@color/light_grey"
             android:onClick="@{() -> viewModel.viewShotRequested()}"
-            app:shot="@{shotUiModel}"
-            app:listener="@{shotLoadListener}"
+            app:imageUrl="@{uiModel.imageUrl}"
+            app:imageLoadListener="@{shotLoadListener}"
+            app:crossFadeImage="@{true}"
+            app:overrideImageWidth="@{uiModel.imageWidth}"
+            app:overrideImageHeight="@{uiModel.imageHeight}"
             app:scrimColor="@color/scrim"
             app:scrimAlpha="0"
             app:maxScrimAlpha="0.4"
@@ -145,7 +148,7 @@
                     android:paddingStart="@dimen/padding_normal"
                     android:paddingTop="@dimen/padding_normal"
                     android:textAppearance="@style/TextAppearance.DribbbleShotTitle"
-                    android:text="@{shotUiModel.title}" />
+                    android:text="@{uiModel.title}" />
 
                 <io.plaidapp.core.ui.widget.BaselineGridTextView
                     android:id="@+id/shot_description"
@@ -160,7 +163,8 @@
                     android:textAppearance="@style/TextAppearance.DribbbleShotDescription"
                     android:textColorHighlight="@color/dribbble_link_highlight"
                     android:textColorLink="@color/dribbble_links"
-                    app:htmlText="@{shotUiModel.description}"
+                    app:htmlText="@{uiModel.formattedDescription}"
+                    app:goneUnless="@{uiModel.hideDescription}"
                     tools:text="Check out this sweet eye candy!" />
 
                 <Button
@@ -175,7 +179,8 @@
                     android:drawableTop="@drawable/avd_likes"
                     android:background="@null"
                     app:numberFormattedPlural="@{R.plurals.likes}"
-                    app:pluralQuantity="@{shotUiModel.likesCount}"
+                    app:pluralQuantity="@{uiModel.likesCount}"
+                    app:pluralValue="@{uiModel.formattedLikesCount}"
                     app:animatedOnClick="@{true}"
                     style="@style/Widget.Plaid.InlineActionButton" />
 
@@ -190,7 +195,8 @@
                     android:drawableTop="@drawable/avd_views"
                     android:background="@null"
                     app:numberFormattedPlural="@{R.plurals.views}"
-                    app:pluralQuantity="@{shotUiModel.viewsCount}"
+                    app:pluralQuantity="@{uiModel.viewsCount}"
+                    app:pluralValue="@{uiModel.formattedViewsCount}"
                     app:animatedOnClick="@{true}"
                     style="@style/Widget.Plaid.InlineActionButton" />
 
@@ -221,7 +227,7 @@
                     android:paddingTop="@dimen/spacing_normal"
                     android:textAppearance="@style/TextAppearance.CommentAuthor"
                     android:clickable="false"
-                    android:text="@{shotUiModel.user.name.toLowerCase()}" />
+                    android:text="@{uiModel.userName}" />
 
                 <io.plaidapp.core.ui.widget.BaselineGridTextView
                     android:id="@+id/shot_time_ago"
@@ -233,7 +239,7 @@
                     android:paddingStart="@dimen/padding_normal"
                     android:gravity="end"
                     android:textAppearance="@style/TextAppearance.CommentTimestamp"
-                    app:relativeTime="@{shotUiModel.createdAt}" />
+                    app:relativeTime="@{uiModel.createdAt}" />
 
                 <io.plaidapp.core.ui.widget.CircularImageView
                     android:id="@+id/player_avatar"
@@ -243,10 +249,10 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/player_name"
                     app:layout_constraintBottom_toBottomOf="@id/player_name"
-                    app:imageUrl="@{shotUiModel.user.highQualityAvatarUrl}"
-                    app:placeholder="@{appR.drawable.avatar_placeholder}"
-                    app:circleCrop="@{true}"
-                    app:crossFade="@{true}"
+                    app:imageUrl="@{uiModel.userAvatarUrl}"
+                    app:imagePlaceholder="@{appR.drawable.avatar_placeholder}"
+                    app:circleCropImage="@{true}"
+                    app:crossFadeImage="@{true}"
                     android:padding="@dimen/avatar_padding"
                     android:src="@drawable/avatar_placeholder"
                     android:foreground="@drawable/avatar_ripple" />

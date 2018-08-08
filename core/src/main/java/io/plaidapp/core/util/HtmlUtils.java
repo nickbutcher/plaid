@@ -57,25 +57,7 @@ public class HtmlUtils {
         textView.setLongClickable(false);
     }
 
-    /**
-     * Parse the given input using {@link TouchableUrlSpan}s rather than vanilla {@link URLSpan}s
-     * so that they respond to touch.
-     */
-    public static SpannableStringBuilder parseHtml(
-            String input,
-            ColorStateList linkTextColor,
-            @ColorInt int linkHighlightColor) {
-        SpannableStringBuilder spanned = fromHtml(input);
-
-        // strip any trailing newlines
-        while (spanned.charAt(spanned.length() - 1) == '\n') {
-            spanned = spanned.delete(spanned.length() - 1, spanned.length());
-        }
-
-        return linkifyPlainLinks(spanned, linkTextColor, linkHighlightColor);
-    }
-
-    private static SpannableStringBuilder linkifyPlainLinks(
+    static SpannableStringBuilder linkifyPlainLinks(
             CharSequence input,
             ColorStateList linkTextColor,
             @ColorInt int linkHighlightColor) {
@@ -98,14 +80,6 @@ public class HtmlUtils {
         }
 
         return ssb;
-    }
-
-    private static SpannableStringBuilder fromHtml(String input) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return (SpannableStringBuilder) Html.fromHtml(input, Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            return (SpannableStringBuilder) Html.fromHtml(input);
-        }
     }
 
     /**

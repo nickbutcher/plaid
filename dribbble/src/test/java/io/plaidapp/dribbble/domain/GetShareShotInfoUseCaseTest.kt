@@ -20,9 +20,8 @@ import android.net.Uri
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import io.plaidapp.core.dribbble.data.api.model.Images
-import io.plaidapp.core.dribbble.data.api.model.Shot
-import io.plaidapp.dribbble.testShot
+import io.plaidapp.dribbble.testUiModel
+import io.plaidapp.dribbble.ui.shot.ShotUiModel
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
@@ -43,73 +42,62 @@ class GetShareShotInfoUseCaseTest {
     @Test
     fun getShareInfo_Png() = runBlocking {
         // Given a shot with a png image
-        val shot =
+        val uiModel =
             withUrl("https://cdn.dribbble.com/users/6295/screenshots/2344334/plaid_dribbble.png")
 
         // When invoking the use case
-        val shareInfo = getShareShotInfoUseCase(shot)
+        val shareInfo = getShareShotInfoUseCase(uiModel)
 
         // Then the expected share info is returned
         assertNotNull(shareInfo)
-        assertEquals(shot.title, shareInfo.title)
+        assertEquals(uiModel.title, shareInfo.title)
         assertFalse(shareInfo.shareText.isBlank())
-        assertTrue(shareInfo.shareText.contains(shot.title))
-        assertTrue(shareInfo.shareText.contains(shot.user.name))
-        assertTrue(shareInfo.shareText.contains(shot.htmlUrl))
+        assertTrue(shareInfo.shareText.contains(uiModel.title))
+        assertTrue(shareInfo.shareText.contains(uiModel.userName))
+        assertTrue(shareInfo.shareText.contains(uiModel.url))
         assertTrue(shareInfo.mimeType.contains("png"))
     }
 
     @Test
     fun getShareInfo_Gif() = runBlocking {
         // Given a shot with a gif image
-        val shot =
+        val uiModel =
             withUrl("https://cdn.dribbble.com/users/213811/screenshots/2916762/password_visibility_toggle.gif")
 
         // When invoking the use case
-        val shareInfo = getShareShotInfoUseCase(shot)
+        val shareInfo = getShareShotInfoUseCase(uiModel)
 
         // Then the expected share info is returned
         assertNotNull(shareInfo)
-        assertEquals(shot.title, shareInfo.title)
+        assertEquals(uiModel.title, shareInfo.title)
         assertFalse(shareInfo.shareText.isBlank())
-        assertTrue(shareInfo.shareText.contains(shot.title))
-        assertTrue(shareInfo.shareText.contains(shot.user.name))
-        assertTrue(shareInfo.shareText.contains(shot.htmlUrl))
+        assertTrue(shareInfo.shareText.contains(uiModel.title))
+        assertTrue(shareInfo.shareText.contains(uiModel.userName))
+        assertTrue(shareInfo.shareText.contains(uiModel.url))
         assertTrue(shareInfo.mimeType.contains("gif"))
     }
 
     @Test
     fun getShareInfo_Jpeg() = runBlocking {
         // Given a shot with a jpg image
-        val shot = withUrl("https://cdn.dribbble.com/users/3557/screenshots/1550672/full2.jpg")
+        val uiModel = withUrl("https://cdn.dribbble.com/users/3557/screenshots/1550672/full2.jpg")
 
         // When invoking the use case
-        val shareInfo = getShareShotInfoUseCase(shot)
+        val shareInfo = getShareShotInfoUseCase(uiModel)
 
         // Then the expected share info is returned
         assertNotNull(shareInfo)
-        assertEquals(shot.title, shareInfo.title)
+        assertEquals(uiModel.title, shareInfo.title)
         assertFalse(shareInfo.shareText.isBlank())
-        assertTrue(shareInfo.shareText.contains(shot.title))
-        assertTrue(shareInfo.shareText.contains(shot.user.name))
-        assertTrue(shareInfo.shareText.contains(shot.htmlUrl))
+        assertTrue(shareInfo.shareText.contains(uiModel.title))
+        assertTrue(shareInfo.shareText.contains(uiModel.userName))
+        assertTrue(shareInfo.shareText.contains(uiModel.url))
         assertTrue(shareInfo.mimeType.contains("jpeg"))
     }
 
-    @Test(expected = IllegalArgumentException::class)
-    fun getShareInfo_withoutUrlThrows() = runBlocking {
-        // Given a shot without a valid image URL
-        val shot = withUrl(null)
-
-        // When invoking the use case
-        getShareShotInfoUseCase(shot)
-        // Then it should throw
-        Unit
-    }
-
-    private fun withUrl(url: String?): Shot {
-        val shot = testShot.copy(images = Images(hidpi = url))
-        whenever(imageUriProvider(any(), any())).thenReturn(CompletableDeferred(uri))
-        return shot
+    private fun withUrl(url: String): ShotUiModel {
+        val uiModel = testUiModel.copy(imageUrl = url)
+        whenever(imageUriProvider(any(), any(), any())).thenReturn(CompletableDeferred(uri))
+        return uiModel
     }
 }

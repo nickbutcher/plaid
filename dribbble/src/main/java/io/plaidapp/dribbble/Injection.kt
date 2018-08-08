@@ -19,6 +19,8 @@ package io.plaidapp.dribbble
 import android.content.Context
 import io.plaidapp.core.dribbble.provideShotsRepository
 import io.plaidapp.core.provideCoroutinesContextProvider
+import io.plaidapp.core.util.HtmlParser
+import io.plaidapp.dribbble.domain.CreateShotUiModelUseCase
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
 import io.plaidapp.dribbble.domain.ImageUriProvider
 import io.plaidapp.dribbble.ui.shot.ShotViewModelFactory
@@ -33,11 +35,16 @@ fun provideShotViewModelFactory(shotId: Long, context: Context) =
     ShotViewModelFactory(
         shotId,
         provideShotsRepository(),
+        provideCreateShotUiModelUseCase(),
         provideGetShareShotInfoUseCase(context),
         provideCoroutinesContextProvider()
     )
+
+fun provideCreateShotUiModelUseCase() = CreateShotUiModelUseCase(provideHtmlParser())
 
 fun provideGetShareShotInfoUseCase(context: Context) =
     GetShareShotInfoUseCase(provideImageUriProvider(context))
 
 fun provideImageUriProvider(context: Context) = ImageUriProvider(context)
+
+fun provideHtmlParser() = HtmlParser()

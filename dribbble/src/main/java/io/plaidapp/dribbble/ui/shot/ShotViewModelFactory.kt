@@ -20,6 +20,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.dribbble.data.ShotsRepository
+import io.plaidapp.dribbble.domain.CreateShotUiModelUseCase
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
 
 /**
@@ -28,6 +29,7 @@ import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
 class ShotViewModelFactory(
     private val shotId: Long,
     private val shotRepository: ShotsRepository,
+    private val createShotUiModel: CreateShotUiModelUseCase,
     private val getShareShotInfoUseCase: GetShareShotInfoUseCase,
     private val contextProvider: CoroutinesContextProvider
 ) : ViewModelProvider.Factory {
@@ -40,6 +42,7 @@ class ShotViewModelFactory(
         return ShotViewModel(
             shotId,
             shotRepository,
+            createShotUiModel,
             getShareShotInfoUseCase,
             contextProvider
         ) as T

@@ -20,7 +20,6 @@ import android.content.Context
 import android.net.Uri
 import android.support.v4.content.FileProvider
 import com.bumptech.glide.Glide
-import io.plaidapp.core.dribbble.data.api.model.Images
 import io.plaidapp.dribbble.BuildConfig
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
@@ -34,12 +33,12 @@ class ImageUriProvider(context: Context) {
     // Only hold the app context to avoid leaks
     private val appContext = context.applicationContext
 
-    operator fun invoke(url: String, size: Images.ImageSize): Deferred<Uri> = async {
+    operator fun invoke(url: String, width: Int, height: Int): Deferred<Uri> = async {
         // Retrieve the image from Glide (hopefully cached) as a File
         val file = Glide.with(appContext)
             .asFile()
             .load(url)
-            .submit(size.width, size.height)
+            .submit(width, height)
             .get()
         // Glide cache uses an unfriendly & extension-less name. Massage it based on the original.
         val fileName = url.substring(url.lastIndexOf('/') + 1)

@@ -19,40 +19,27 @@ package io.plaidapp.dribbble.ui.shot
 import android.databinding.BindingAdapter
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.support.annotation.PluralsRes
-import android.support.v4.content.ContextCompat
-import android.support.v7.content.res.AppCompatResources
 import android.text.format.DateUtils
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Priority.IMMEDIATE
-import com.bumptech.glide.load.engine.DiskCacheStrategy.DATA
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
-import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.util.HtmlUtils
 import io.plaidapp.core.util.glide.GlideApp
-import io.plaidapp.dribbble.R
-import java.text.NumberFormat
 import java.util.Date
 
-@BindingAdapter("numberFormattedPlural", "pluralQuantity", requireAll = true)
+@BindingAdapter("numberFormattedPlural", "pluralQuantity", "pluralValue", requireAll = true)
 fun bindNumberFormattedPlural(
     textView: TextView,
     @PluralsRes plural: Int,
-    pluralQuantity: Int
+    pluralQuantity: Int,
+    pluralValue: String?
 ) {
-    @Suppress("DEPRECATION")
-    val formatter = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        NumberFormat.getInstance(textView.resources.configuration.locales[0])
-    } else {
-        NumberFormat.getInstance(textView.resources.configuration.locale)
-    }
     textView.text = textView.resources.getQuantityString(
         plural,
         pluralQuantity,
-        formatter.format(pluralQuantity)
+        pluralValue ?: pluralValue.toString()
     )
 }
 
@@ -96,31 +83,27 @@ private fun setAnimatedOnClick(
     }
 }
 
-@BindingAdapter("shot", "listener", requireAll = true)
-fun bindShot(
-    imageView: ImageView,
-    shot: Shot,
-    listener: RequestListener<Drawable>
-) {
-    val (width, height) = shot.images.bestSize()
-    GlideApp.with(imageView.context)
-        .load(shot.images.best())
-        .listener(listener)
-        .diskCacheStrategy(DATA)
-        .priority(IMMEDIATE)
-        .override(width, height)
-        .transition(DrawableTransitionOptions.withCrossFade())
-        .into(imageView)
-}
-
-@BindingAdapter("imageUrl", "placeholder", "circleCrop", "crossFade", requireAll = false)
+@BindingAdapter(
+    "imageUrl",
+    "imagePlaceholder",
+    "circleCropImage",
+    "crossFadeImage",
+    "overrideImageWidth",
+    "overrideImageHeight",
+    "imageLoadListener",
+    requireAll = false
+)
 fun bindImage(
     imageView: ImageView,
-    imageUrl: String,
+    imageUrl: String?,
     placeholder: Int? = null,
     circleCrop: Boolean? = false,
-    crossFade: Boolean? = false
+    crossFade: Boolean? = false,
+    overrideWidth: Int? = null,
+    overrideHeight: Int? = null,
+    listener: RequestListener<Drawable>?
 ) {
+    if (imageUrl == null) return
     var request = GlideApp.with(imageView.context).load(imageUrl)
     if (placeholder != null) {
         request = request.placeholder(placeholder)
@@ -131,18 +114,20 @@ fun bindImage(
     if (crossFade == true) {
         request = request.transition(DrawableTransitionOptions.withCrossFade())
     }
+    if (overrideWidth != null && overrideHeight != null) {
+        request = request.override(overrideWidth, overrideHeight)
+    }
+    if (listener != null) {
+        request = request.listener(listener)
+    }
     request.into(imageView)
 }
 
 @BindingAdapter("htmlText")
 fun bindHtmlText(
     textView: TextView,
-    text: String
+    htmlText: CharSequence?
 ) {
-    val descText = HtmlUtils.parseHtml(
-        text,
-        AppCompatResources.getColorStateList(textView.context, R.color.dribbble_links),
-        ContextCompat.getColor(textView.context, io.plaidapp.R.color.dribbble_link_highlight)
-    )
-    HtmlUtils.setTextWithNiceLinks(textView, descText)
+    if (htmlText == null) return
+    HtmlUtils.setTextWithNiceLinks(textView, htmlText)
 }

@@ -22,12 +22,14 @@ import android.arch.lifecycle.ViewModel
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.ShotsRepository
-import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.util.event.Event
+import io.plaidapp.core.util.exhaustive
+import io.plaidapp.dribbble.domain.CreateShotUiModelUseCase
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
 import io.plaidapp.dribbble.domain.ShareShotInfo
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 
 /**
  * View model for [ShotActivity].
@@ -35,23 +37,15 @@ import kotlinx.coroutines.experimental.launch
 class ShotViewModel(
     shotId: Long,
     shotsRepository: ShotsRepository,
-    private val getShareShotInfoUseCase: GetShareShotInfoUseCase,
+    private val createShotUiModel: CreateShotUiModelUseCase,
+    private val getShareShotInfo: GetShareShotInfoUseCase,
     private val contextProvider: CoroutinesContextProvider
 ) : ViewModel() {
 
-    val shot: Shot
-
-    init {
-        val result = shotsRepository.getShot(shotId)
-        if (result is Result.Success) {
-            shot = result.data
-        } else {
-            // TODO re-throw Error.exception once Loading state removed.
-            throw IllegalStateException("Could not retrieve shot $shotId")
-        }
-    }
+    private val shotUiModel = MutableLiveData<ShotUiModel>()
 
     private var shareShotJob: Job? = null
+    private var createUiModelJob: Job? = null
 
     private val _openLink = MutableLiveData<Event<String>>()
     val openLink: LiveData<Event<String>>
@@ -61,21 +55,64 @@ class ShotViewModel(
     val shareShot: LiveData<Event<ShareShotInfo>>
         get() = _shareShot
 
+    init {
+        val result = shotsRepository.getShot(shotId)
+        when (result) {
+            is Result.Success -> shotUiModel.value = result.data.toShotUiModelSync()
+            is Result.Error -> throw IllegalStateException(
+                "Could not retrieve shot $shotId",
+                result.exception
+            )
+        }.exhaustive
+    }
+
+    fun getShotUiModel(styler: ShotStyler): LiveData<ShotUiModel> {
+        // only allow one job at a time
+        if (createUiModelJob == null) {
+            createUiModelJob = launchCreateShotUiModel(styler)
+        }
+        return shotUiModel
+    }
+
     fun shareShotRequested() {
         shareShotJob?.cancel()
         shareShotJob = launchShare()
     }
 
     fun viewShotRequested() {
-        _openLink.value = Event(shot.htmlUrl)
+        shotUiModel.value?.let { model ->
+            _openLink.value = Event(model.url)
+        }
+    }
+
+    fun getShotId(): Long {
+        return shotUiModel.value?.id ?: -1L
+    }
+
+    fun getAssistWebUrl(): String {
+        return shotUiModel.value?.url.orEmpty()
     }
 
     override fun onCleared() {
         shareShotJob?.cancel()
+        createUiModelJob?.cancel()
+    }
+
+    private fun launchCreateShotUiModel(styler: ShotStyler) = launch(contextProvider.io) {
+        shotUiModel.value?.let { model ->
+            val newModel = createShotUiModel(model, styler).await()
+            withContext(contextProvider.main) {
+                shotUiModel.value = newModel
+            }
+        }
     }
 
     private fun launchShare() = launch(contextProvider.io) {
-        val shareInfo = getShareShotInfoUseCase(shot)
-        _shareShot.postValue(Event(shareInfo))
+        shotUiModel.value?.let { model ->
+            val shareInfo = getShareShotInfo(model)
+            withContext(contextProvider.main) {
+                _shareShot.value = Event(shareInfo)
+            }
+        }
     }
 }

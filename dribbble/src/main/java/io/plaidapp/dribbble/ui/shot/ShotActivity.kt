@@ -19,11 +19,11 @@ package io.plaidapp.dribbble.ui.shot
 import android.animation.ValueAnimator
 import android.app.Activity
 import android.app.assist.AssistContent
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.support.customtabs.CustomTabsIntent
 import android.support.v4.app.ShareCompat
@@ -31,6 +31,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.graphics.Palette
 import android.util.TypedValue
+import androidx.core.net.toUri
 import androidx.core.view.doOnPreDraw
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -49,6 +50,7 @@ import io.plaidapp.dribbble.R
 import io.plaidapp.dribbble.databinding.ActivityDribbbleShotBinding
 import io.plaidapp.dribbble.domain.ShareShotInfo
 import io.plaidapp.dribbble.provideShotViewModelFactory
+import kotlin.LazyThreadSafetyMode.NONE
 
 /**
  * Activity displaying a single Dribbble shot.
@@ -58,7 +60,6 @@ class ShotActivity : AppCompatActivity() {
     private val binding by contentView<ShotActivity, ActivityDribbbleShotBinding>(
         R.layout.activity_dribbble_shot
     )
-    private var chromeFader: ElasticDragDismissFrameLayout.SystemChromeFader? = null
 
     private lateinit var viewModel: ShotViewModel
 
@@ -102,6 +103,14 @@ class ShotActivity : AppCompatActivity() {
         ) = false
     }
 
+    private val chromeFader by lazy(NONE) {
+        object : ElasticDragDismissFrameLayout.SystemChromeFader(this) {
+            override fun onDragDismissed() {
+                setResultAndFinish()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -112,20 +121,19 @@ class ShotActivity : AppCompatActivity() {
 
         val factory = provideShotViewModelFactory(shotId, this)
         viewModel = ViewModelProviders.of(this, factory).get(ShotViewModel::class.java)
+        viewModel.getShotUiModel(ShotStyler(this)).observe(this, Observer {
+            binding.uiModel = it
+        })
         viewModel.openLink.observe(this, EventObserver { openLink(it) })
         viewModel.shareShot.observe(this, EventObserver { shareShot(it) })
-        binding.viewModel = viewModel
-        binding.shotUiModel = viewModel.shot // TODO this should be a UI Model
-        binding.shotLoadListener = shotLoadListener
-
-        binding.bodyScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            binding.shot.offset = -scrollY
-        }
-        binding.back.setOnClickListener { setResultAndFinish() }
-        chromeFader = object : ElasticDragDismissFrameLayout.SystemChromeFader(this) {
-            override fun onDragDismissed() {
-                setResultAndFinish()
+        binding.apply {
+            setLifecycleOwner(this@ShotActivity)
+            viewModel = this@ShotActivity.viewModel
+            shotLoadListener = this@ShotActivity.shotLoadListener
+            bodyScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+                shot.offset = -scrollY
             }
+            back.setOnClickListener { setResultAndFinish() }
         }
         postponeEnterTransition()
         binding.shot.doOnPreDraw {
@@ -153,7 +161,7 @@ class ShotActivity : AppCompatActivity() {
     }
 
     override fun onProvideAssistContent(outContent: AssistContent) {
-        outContent.webUri = Uri.parse(viewModel.shot.url)
+        outContent.webUri = viewModel.getAssistWebUrl().toUri()
     }
 
     private fun openLink(url: String) {
@@ -231,7 +239,7 @@ class ShotActivity : AppCompatActivity() {
 
     internal fun setResultAndFinish() {
         val resultData = Intent().apply {
-            putExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID, viewModel.shot.id)
+            putExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID, viewModel.getShotId())
         }
         setResult(Activity.RESULT_OK, resultData)
         finishAfterTransition()
