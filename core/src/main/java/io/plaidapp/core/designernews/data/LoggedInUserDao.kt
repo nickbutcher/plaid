@@ -32,6 +32,13 @@ abstract class LoggedInUserDao {
     @Query("SELECT * FROM logged_in_user LIMIT 1")
     abstract fun getLoggedInUser(): LiveData<LoggedInUser>
 
+    /**
+     * Sets the [LoggedInUser]. This method guarantees that only one
+     * LoggedInUser is ever in the table by first deleting all table
+     * data before inserting the LoggedInUser.
+     *
+     * This method should be used instead of [insertLoggedInUser].
+     */
     @Transaction
     open fun setLoggedInUser(loggedInUser: LoggedInUser) {
         deleteLoggedInUser()
