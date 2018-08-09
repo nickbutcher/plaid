@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.designernews.ui
+package io.plaidapp.core.util
 
 import android.databinding.BindingAdapter
 import android.view.View

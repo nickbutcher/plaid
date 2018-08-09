@@ -107,7 +107,7 @@ class LoginViewModel(
         return username.isNotBlank() && password.isNotBlank()
     }
 
-    private fun enableLogin(enabled: Boolean) {
+    private fun enableLogin(enabled: Boolean) = launch {
         emitUiState(enableLoginButton = enabled)
     }
 
@@ -116,9 +116,9 @@ class LoginViewModel(
         showError: Event<Int>? = null,
         showSuccess: Event<LoginResultUiModel>? = null,
         enableLoginButton: Boolean = false
-    ) {
+    ) = launch(contextProvider.main, parent = currentJob) {
         val uiModel = LoginUiModel(showProgress, showError, showSuccess, enableLoginButton)
-        _uiState.postValue(uiModel)
+        _uiState.value = uiModel
     }
 }
 
