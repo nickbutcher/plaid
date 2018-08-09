@@ -70,8 +70,7 @@ class LoginActivity : AppCompatActivity() {
                 uiModel.showError.consume()?.let { showLoginFailed(it) }
             }
             if (uiModel.showSuccess != null && !uiModel.showSuccess.consumed) {
-                val userData = uiModel.showSuccess.peek()
-                updateUiWithUser(userData)
+                uiModel.showSuccess.consume()?.let { updateUiWithUser(it) }
                 setResult(Activity.RESULT_OK)
                 finish()
             }
