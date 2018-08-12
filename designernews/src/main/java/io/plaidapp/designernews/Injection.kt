@@ -17,6 +17,7 @@
 package io.plaidapp.designernews
 
 import android.content.Context
+import io.plaidapp.core.designernews.provideCommentsUseCase
 import io.plaidapp.core.designernews.provideLoginRepository
 import io.plaidapp.core.designernews.provideStoriesRepository
 import io.plaidapp.core.designernews.provideVotesRepository
@@ -44,6 +45,7 @@ fun provideStoryViewModelFactory(storyId: Long, context: Context): StoryViewMode
     return StoryViewModelFactory(
         storyId,
         provideGetStoryUseCase(context),
+        provideCommentsUseCase(context),
         provideUpvoteStoryUseCase(context),
         provideUpvoteCommentUseCase(context),
         provideCoroutinesContextProvider()

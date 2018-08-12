@@ -22,7 +22,6 @@ import android.content.Context
 import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import io.plaidapp.core.BuildConfig
-import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.api.DenvelopingConverter
 import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
@@ -143,8 +142,7 @@ fun provideCommentsUseCase(context: Context): CommentsUseCase {
     val userRepository = provideUserRepository(provideUserRemoteDataSource(service))
     return provideCommentsUseCase(
         provideCommentsWithRepliesUseCase(commentsRepository),
-        userRepository,
-        provideCoroutinesContextProvider()
+        userRepository
     )
 }
 
@@ -156,9 +154,8 @@ fun provideCommentsWithRepliesUseCase(commentsRepository: CommentsRepository) =
 
 fun provideCommentsUseCase(
     commentsWithCommentsWithRepliesUseCase: CommentsWithRepliesUseCase,
-    userRepository: UserRepository,
-    contextProvider: CoroutinesContextProvider
-) = CommentsUseCase(commentsWithCommentsWithRepliesUseCase, userRepository, contextProvider)
+    userRepository: UserRepository
+) = CommentsUseCase(commentsWithCommentsWithRepliesUseCase, userRepository)
 
 private fun provideUserRemoteDataSource(service: DesignerNewsService) =
     UserRemoteDataSource(service)
