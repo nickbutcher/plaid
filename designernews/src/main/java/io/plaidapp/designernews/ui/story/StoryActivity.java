@@ -63,10 +63,8 @@ import in.uncod.android.bypass.Bypass;
 import in.uncod.android.bypass.Markdown;
 import io.plaidapp.core.data.Result;
 import io.plaidapp.core.designernews.DesignerNewsPrefs;
-import io.plaidapp.core.designernews.Injection;
 import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.designernews.data.users.model.User;
-import io.plaidapp.core.designernews.domain.CommentsUseCase;
 import io.plaidapp.core.designernews.domain.model.Comment;
 import io.plaidapp.core.ui.transitions.GravityArcMotion;
 import io.plaidapp.core.ui.transitions.MorphTransform;
@@ -128,7 +126,6 @@ public class StoryActivity extends AppCompatActivity {
 
     private Story story;
 
-    private CommentsUseCase commentsUseCase;
     private StoryViewModel viewModel;
 
     private DesignerNewsPrefs designerNewsPrefs;
@@ -146,21 +143,12 @@ public class StoryActivity extends AppCompatActivity {
         }
         StoryViewModelFactory factory = InjectionKt.provideStoryViewModelFactory(storyId, this);
         viewModel = ViewModelProviders.of(this, factory).get(StoryViewModel.class);
-        commentsUseCase = Injection.provideCommentsUseCase(this);
 
         bindResources();
 
         story = viewModel.getStory();
-
-        commentsUseCase.getComments(story.getLinks().getComments(),
-                result -> {
-                    if (result instanceof Result.Success) {
-                        Result.Success<List<Comment>> success = (Result.Success<List<Comment>>) result;
-                        List<Comment> data = success.getData();
-                        setupComments(data);
-                    }
-                    return Unit.INSTANCE;
-                });
+        viewModel.getUiState().observe(this,
+                storyUiModel -> setupComments(storyUiModel.getComments()));
 
         fab.setOnClickListener(fabClick);
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this);

@@ -16,10 +16,14 @@
 
 package io.plaidapp.designernews.ui.story
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.model.Story
+import io.plaidapp.core.designernews.domain.CommentsUseCase
+import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase
@@ -34,10 +38,15 @@ import kotlinx.coroutines.experimental.withContext
 class StoryViewModel(
     storyId: Long,
     getStoryUseCase: GetStoryUseCase,
+    private val commentsUseCase: CommentsUseCase,
     private val upvoteStoryUseCase: UpvoteStoryUseCase,
     private val upvoteCommentUseCase: UpvoteCommentUseCase,
     private val contextProvider: CoroutinesContextProvider
 ) : ViewModel() {
+
+    private val _uiState = MutableLiveData<StoryUiModel>()
+    val uiState: LiveData<StoryUiModel>
+        get() = _uiState
 
     val story: Story
 
@@ -45,6 +54,7 @@ class StoryViewModel(
         val result = getStoryUseCase(storyId)
         if (result is Result.Success) {
             story = result.data
+            getComments()
         } else {
             // TODO re-throw Error.exception once Loading state removed.
             throw IllegalStateException("Could not retrieve story $storyId")
@@ -73,4 +83,26 @@ class StoryViewModel(
         parentJob.cancel()
         super.onCleared()
     }
+
+    private fun getComments() = launch(contextProvider.io, parent = parentJob) {
+        story.links?.let {
+            val result = commentsUseCase.getComments(it.comments)
+            if (result is Result.Success) {
+                emitUiModel(result.data)
+            }
+        }
+    }
+
+    private fun emitUiModel(comments: List<Comment>) =
+        launch(contextProvider.main, parent = parentJob) {
+            _uiState.value = StoryUiModel(comments)
+        }
 }
+
+/**
+ * UI Model for [StoryActivity].
+ * TODO update to hold the entire story
+ */
+data class StoryUiModel(
+    val comments: List<Comment>
+)
