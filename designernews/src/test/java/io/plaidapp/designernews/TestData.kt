@@ -125,7 +125,6 @@ val repliesResponses = listOf(
     replyResponse1,
     replyResponse2
 )
-val replies = listOf(reply1, reply2)
 
 val parentLinks = CommentLinksResponse(
     userId = user2.id,
