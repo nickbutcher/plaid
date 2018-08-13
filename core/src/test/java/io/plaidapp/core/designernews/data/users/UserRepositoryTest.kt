@@ -21,9 +21,6 @@ import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.users.model.User
-import io.plaidapp.core.designernews.user1
-import io.plaidapp.core.designernews.user2
-import io.plaidapp.core.designernews.users
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -34,6 +31,21 @@ import java.io.IOException
  * Test for [UserRepository] that mocks all the dependencies.
  */
 class UserRepositoryTest {
+    private val user1 = User(
+        id = 111L,
+        firstName = "Plaicent",
+        lastName = "van Plaid",
+        displayName = "Plaicent van Plaid",
+        portraitUrl = "www"
+    )
+    private val user2 = User(
+        id = 222L,
+        firstName = "Plaude",
+        lastName = "Pladon",
+        displayName = "Plaude Pladon",
+        portraitUrl = "www"
+    )
+    private val users = listOf(user1, user2)
 
     private val dataSource: UserRemoteDataSource = mock()
     private val repository = UserRepository(dataSource)

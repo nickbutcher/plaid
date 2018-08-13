@@ -20,6 +20,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.model.Story
+import io.plaidapp.designernews.domain.CommentsUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase
@@ -45,6 +46,7 @@ class StoryViewModelTest {
         Story(id = storyId, title = "Plaid 2.0 was released", createdAt = createdDate)
 
     private val getStoryUseCase: GetStoryUseCase = mock()
+    private val commentsUseCase: CommentsUseCase = mock()
     private val upvoteStoryUseCase: UpvoteStoryUseCase = mock()
     private val upvoteCommentUseCase: UpvoteCommentUseCase = mock()
 
@@ -67,6 +69,7 @@ class StoryViewModelTest {
         StoryViewModel(
             storyId,
             getStoryUseCase,
+            commentsUseCase,
             upvoteStoryUseCase,
             upvoteCommentUseCase,
             provideFakeCoroutinesContextProvider()
@@ -142,6 +145,7 @@ class StoryViewModelTest {
         return StoryViewModel(
             storyId,
             getStoryUseCase,
+            commentsUseCase,
             upvoteStoryUseCase,
             upvoteCommentUseCase,
             provideFakeCoroutinesContextProvider()
