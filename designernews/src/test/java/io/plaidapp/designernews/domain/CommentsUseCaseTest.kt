@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.domain
+package io.plaidapp.designernews.domain
 
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
@@ -23,15 +23,15 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.users.UserRepository
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.core.designernews.domain.model.CommentWithReplies
-import io.plaidapp.core.designernews.parentComment
-import io.plaidapp.core.designernews.parentCommentWithReplies
-import io.plaidapp.core.designernews.parentCommentWithRepliesWithoutReplies
-import io.plaidapp.core.designernews.parentCommentWithoutReplies
-import io.plaidapp.core.designernews.reply1
-import io.plaidapp.core.designernews.reply1NoUser
-import io.plaidapp.core.designernews.replyWithReplies1
-import io.plaidapp.core.designernews.user1
-import io.plaidapp.core.designernews.user2
+import io.plaidapp.designernews.parentComment
+import io.plaidapp.designernews.parentCommentWithReplies
+import io.plaidapp.designernews.parentCommentWithRepliesWithoutReplies
+import io.plaidapp.designernews.parentCommentWithoutReplies
+import io.plaidapp.designernews.reply1
+import io.plaidapp.designernews.reply1NoUser
+import io.plaidapp.designernews.replyWithReplies1
+import io.plaidapp.designernews.user1
+import io.plaidapp.designernews.user2
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull

@@ -19,7 +19,7 @@ package io.plaidapp.designernews.ui.story
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import io.plaidapp.core.data.CoroutinesContextProvider
-import io.plaidapp.core.designernews.domain.CommentsUseCase
+import io.plaidapp.designernews.domain.CommentsUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase

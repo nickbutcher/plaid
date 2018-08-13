@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.domain
+package io.plaidapp.designernews.domain
 
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
@@ -27,18 +27,18 @@ import io.plaidapp.core.designernews.data.comments.model.CommentResponse
 import io.plaidapp.core.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.core.designernews.data.users.UserRepository
 import io.plaidapp.core.designernews.data.users.model.User
-import io.plaidapp.core.designernews.errorResponseBody
-import io.plaidapp.core.designernews.parentComment
-import io.plaidapp.core.designernews.parentCommentResponse
-import io.plaidapp.core.designernews.parentCommentWithoutReplies
-import io.plaidapp.core.designernews.provideCommentsUseCase
-import io.plaidapp.core.designernews.provideCommentsWithRepliesUseCase
-import io.plaidapp.core.designernews.repliesResponses
-import io.plaidapp.core.designernews.reply1
-import io.plaidapp.core.designernews.reply1NoUser
-import io.plaidapp.core.designernews.replyResponse1
-import io.plaidapp.core.designernews.user1
-import io.plaidapp.core.designernews.user2
+import io.plaidapp.designernews.errorResponseBody
+import io.plaidapp.designernews.parentComment
+import io.plaidapp.designernews.parentCommentResponse
+import io.plaidapp.designernews.parentCommentWithoutReplies
+import io.plaidapp.designernews.provideCommentsUseCase
+import io.plaidapp.designernews.provideCommentsWithRepliesUseCase
+import io.plaidapp.designernews.repliesResponses
+import io.plaidapp.designernews.reply1
+import io.plaidapp.designernews.reply1NoUser
+import io.plaidapp.designernews.replyResponse1
+import io.plaidapp.designernews.user1
+import io.plaidapp.designernews.user2
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals

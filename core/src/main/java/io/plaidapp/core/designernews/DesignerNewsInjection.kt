@@ -33,12 +33,8 @@ import io.plaidapp.core.designernews.data.login.LoginRemoteDataSource
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.designernews.data.stories.StoriesRemoteDataSource
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
-import io.plaidapp.core.designernews.data.users.UserRemoteDataSource
-import io.plaidapp.core.designernews.data.users.UserRepository
 import io.plaidapp.core.designernews.data.votes.VotesRemoteDataSource
 import io.plaidapp.core.designernews.data.votes.VotesRepository
-import io.plaidapp.core.designernews.domain.CommentsUseCase
-import io.plaidapp.core.designernews.domain.CommentsWithRepliesUseCase
 import io.plaidapp.core.designernews.domain.LoadStoriesUseCase
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
 import io.plaidapp.core.loggingInterceptor
@@ -134,37 +130,8 @@ fun provideSearchStoriesUseCase(context: Context): SearchStoriesUseCase {
     )
 }
 
-fun provideCommentsUseCase(context: Context): CommentsUseCase {
-    val service = provideDesignerNewsService(context)
-    val commentsRepository = provideCommentsRepository(
-        provideDesignerNewsCommentsRemoteDataSource(service)
-    )
-    val userRepository = provideUserRepository(provideUserRemoteDataSource(service))
-    return provideCommentsUseCase(
-        provideCommentsWithRepliesUseCase(commentsRepository),
-        userRepository
-    )
-}
-
 fun provideCommentsRepository(dataSource: CommentsRemoteDataSource) =
     CommentsRepository.getInstance(dataSource)
-
-fun provideCommentsWithRepliesUseCase(commentsRepository: CommentsRepository) =
-    CommentsWithRepliesUseCase(commentsRepository)
-
-fun provideCommentsUseCase(
-    commentsWithCommentsWithRepliesUseCase: CommentsWithRepliesUseCase,
-    userRepository: UserRepository
-) = CommentsUseCase(commentsWithCommentsWithRepliesUseCase, userRepository)
-
-private fun provideUserRemoteDataSource(service: DesignerNewsService) =
-    UserRemoteDataSource(service)
-
-private fun provideUserRepository(dataSource: UserRemoteDataSource) =
-    UserRepository.getInstance(dataSource)
-
-private fun provideDesignerNewsCommentsRemoteDataSource(service: DesignerNewsService) =
-    CommentsRemoteDataSource.getInstance(service)
 
 fun provideVotesRepository(context: Context): VotesRepository {
     return provideVotesRepository(

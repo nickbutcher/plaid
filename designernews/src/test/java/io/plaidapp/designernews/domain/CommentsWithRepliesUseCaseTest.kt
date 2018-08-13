@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.domain
+package io.plaidapp.designernews.domain
 
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.comments.CommentsRepository
-import io.plaidapp.core.designernews.parentCommentResponse
-import io.plaidapp.core.designernews.parentCommentWithReplies
-import io.plaidapp.core.designernews.parentCommentWithRepliesWithoutReplies
-import io.plaidapp.core.designernews.reply1
-import io.plaidapp.core.designernews.replyResponse1
-import io.plaidapp.core.designernews.replyResponse2
-import io.plaidapp.core.designernews.replyWithReplies1
+import io.plaidapp.designernews.parentCommentResponse
+import io.plaidapp.designernews.parentCommentWithReplies
+import io.plaidapp.designernews.parentCommentWithRepliesWithoutReplies
+import io.plaidapp.designernews.reply1
+import io.plaidapp.designernews.replyResponse1
+import io.plaidapp.designernews.replyResponse2
+import io.plaidapp.designernews.replyWithReplies1
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
