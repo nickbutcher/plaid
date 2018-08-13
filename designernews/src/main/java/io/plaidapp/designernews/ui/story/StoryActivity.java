@@ -209,11 +209,7 @@ public class StoryActivity extends AppCompatActivity {
 
     private void setupComments(List<Comment> comments) {
         if (comments.size() > 0) {
-            // flatten the comments from a nested structure {@see Comment#comments} to a
-            // list appropriate for our adapter (using the depth attribute).
-            List<Comment> flattened = new ArrayList<>(story.getCommentCount());
-            unnestComments(comments, flattened);
-            commentsAdapter.updateList(flattened);
+            commentsAdapter.updateList(comments);
             commentsList.setAdapter(commentsAdapter);
         }
     }
@@ -628,15 +624,6 @@ public class StoryActivity extends AppCompatActivity {
         ActivityCompat.startActivityForResult(this, login, requestCode, options.toBundle());
     }
 
-    private void unnestComments(List<Comment> nested, List<Comment> flat) {
-        for (Comment comment : nested) {
-            flat.add(comment);
-            if (comment.getReplies().size() > 0) {
-                unnestComments(comment.getReplies(), flat);
-            }
-        }
-    }
-
     private View.OnFocusChangeListener enterCommentFocus = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View view, boolean hasFocus) {
@@ -1033,7 +1020,6 @@ public class StoryActivity extends AppCompatActivity {
                                     new Date(),
                                     replyDepth,
                                     0,
-                                    Collections.emptyList(),
                                     user.getId(),
                                     user.getDisplayName(),
                                     user.getPortraitUrl(),

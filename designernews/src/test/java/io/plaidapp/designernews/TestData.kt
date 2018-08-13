@@ -16,10 +16,10 @@
 
 package io.plaidapp.designernews
 
-import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.designernews.data.comments.model.CommentLinksResponse
 import io.plaidapp.core.designernews.data.comments.model.CommentResponse
 import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.designernews.domain.model.CommentWithReplies
 import okhttp3.MediaType
 import okhttp3.ResponseBody
@@ -64,13 +64,13 @@ val replyResponse1 = CommentResponse(
 
 // constructed based on replyResponse1 data flattened, with replies
 val replyWithReplies1 = CommentWithReplies(
-        id = replyResponse1.id,
-        parentId = replyResponse1.links.parentComment,
-        body = replyResponse1.body,
-        createdAt = replyResponse1.created_at,
-        userId = replyResponse1.links.userId,
-        storyId = replyResponse1.links.story,
-        replies = emptyList()
+    id = replyResponse1.id,
+    parentId = replyResponse1.links.parentComment,
+    body = replyResponse1.body,
+    createdAt = replyResponse1.created_at,
+    userId = replyResponse1.links.userId,
+    storyId = replyResponse1.links.story,
+    replies = emptyList()
 )
 
 // constructed based on replyWithReplies1 data flattened, with user data
@@ -81,7 +81,6 @@ val reply1 = Comment(
     createdAt = replyResponse1.created_at,
     depth = replyResponse1.depth,
     upvotesCount = replyResponse1.vote_count,
-    replies = emptyList(),
     userId = replyResponse1.links.userId,
     userDisplayName = user1.displayName,
     userPortraitUrl = user1.portraitUrl,
@@ -99,13 +98,13 @@ val replyResponse2 = CommentResponse(
 
 // constructed based on replyResponse2 data flattened, with replies
 val replyWithReplies2 = CommentWithReplies(
-        id = replyResponse2.id,
-        parentId = replyResponse2.links.parentComment,
-        body = replyResponse2.body,
-        createdAt = replyResponse2.created_at,
-        userId = replyResponse2.links.userId,
-        storyId = replyResponse2.links.story,
-        replies = emptyList()
+    id = replyResponse2.id,
+    parentId = replyResponse2.links.parentComment,
+    body = replyResponse2.body,
+    createdAt = replyResponse2.created_at,
+    userId = replyResponse2.links.userId,
+    storyId = replyResponse2.links.story,
+    replies = emptyList()
 )
 
 // constructed based on replyWithReplies2 data flattened, with user data
@@ -116,7 +115,6 @@ val reply2 = Comment(
     createdAt = replyResponse2.created_at,
     depth = replyResponse2.depth,
     upvotesCount = replyResponse2.vote_count,
-    replies = emptyList(),
     userId = replyResponse2.links.userId,
     userDisplayName = user1.displayName,
     userPortraitUrl = user1.portraitUrl,
@@ -145,16 +143,16 @@ val parentCommentResponse = CommentResponse(
 
 // constructed based on parentCommentResponse data flattened, with replies
 val parentCommentWithReplies = CommentWithReplies(
-        id = parentCommentResponse.id,
-        parentId = parentCommentResponse.links.parentComment,
-        body = parentCommentResponse.body,
-        createdAt = parentCommentResponse.created_at,
-        userId = parentCommentResponse.links.userId,
-        storyId = parentCommentResponse.links.story,
-        replies = listOf(
-            replyWithReplies1,
-            replyWithReplies2
-        )
+    id = parentCommentResponse.id,
+    parentId = parentCommentResponse.links.parentComment,
+    body = parentCommentResponse.body,
+    createdAt = parentCommentResponse.created_at,
+    userId = parentCommentResponse.links.userId,
+    storyId = parentCommentResponse.links.story,
+    replies = listOf(
+        replyWithReplies1,
+        replyWithReplies2
+    )
 )
 
 val parentCommentWithRepliesWithoutReplies = parentCommentWithReplies.copy(replies = emptyList())
@@ -167,13 +165,14 @@ val parentComment = Comment(
     createdAt = parentCommentResponse.created_at,
     depth = parentCommentResponse.depth,
     upvotesCount = parentCommentResponse.vote_count,
-    replies = replies,
     userId = user2.id,
     userDisplayName = user2.displayName,
     userPortraitUrl = user2.portraitUrl,
     upvoted = false
 )
 
-val parentCommentWithoutReplies = parentComment.copy(replies = emptyList())
+val flattendCommentsWithReplies = listOf(parentComment, reply1, reply2)
+
+val flattenedCommentsWithoutReplies = listOf(parentComment)
 
 val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")
