@@ -22,8 +22,8 @@ import android.arch.lifecycle.ViewModel
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.model.Story
-import io.plaidapp.core.designernews.domain.CommentsUseCase
 import io.plaidapp.core.designernews.domain.model.Comment
+import io.plaidapp.designernews.domain.CommentsUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase

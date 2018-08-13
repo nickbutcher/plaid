@@ -23,10 +23,10 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.users.model.User
-import io.plaidapp.core.designernews.errorResponseBody
-import io.plaidapp.core.designernews.users
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
+import okhttp3.MediaType
+import okhttp3.ResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -37,6 +37,22 @@ import java.net.UnknownHostException
  * Tests for [UserRemoteDataSource] with mocked dependencies.
  */
 class UserRemoteDataSourceTest {
+    private val user1 = User(
+        id = 111L,
+        firstName = "Plaicent",
+        lastName = "van Plaid",
+        displayName = "Plaicent van Plaid",
+        portraitUrl = "www"
+    )
+    private val user2 = User(
+        id = 222L,
+        firstName = "Plaude",
+        lastName = "Pladon",
+        displayName = "Plaude Pladon",
+        portraitUrl = "www"
+    )
+    private val users = listOf(user1, user2)
+    private val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")
 
     private val service: DesignerNewsService = mock()
     private val dataSource = UserRemoteDataSource(service)
