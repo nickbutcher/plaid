@@ -59,7 +59,7 @@ class CommentsUseCaseTest {
         withUsers(setOf(user1), setOf(111L))
 
         // When getting the replies
-        val result = repository.getComments(ids)
+        val result = repository(ids)
 
         // Then the correct list is received
         assertEquals(Result.Success(listOf(reply1)), result)
@@ -73,7 +73,7 @@ class CommentsUseCaseTest {
         whenever(commentsWithRepliesUseCase.getCommentsWithReplies(ids)).thenReturn(resultError)
 
         // When getting the comments
-        val result = repository.getComments(ids)
+        val result = repository(ids)
 
         // Then the result is not successful
         assertNotNull(result)
@@ -90,7 +90,7 @@ class CommentsUseCaseTest {
         withUsers(setOf(user1, user2), setOf(111L, 222L))
 
         // When getting the comments from the repository
-        val result = repository.getComments(listOf(1L))
+        val result = repository(listOf(1L))
 
         // Then comments were requested for correct ids
         verify(commentsWithRepliesUseCase).getCommentsWithReplies(parentIds)
@@ -107,7 +107,7 @@ class CommentsUseCaseTest {
         withUsers(setOf(user2), setOf(222))
 
         // When getting the comments from the repository
-        val result = repository.getComments(listOf(1L))
+        val result = repository(listOf(1L))
 
         // Then comments were requested for correct ids
         verify(commentsWithRepliesUseCase).getCommentsWithReplies(parentIds)
@@ -127,7 +127,7 @@ class CommentsUseCaseTest {
         whenever(userRepository.getUsers(setOf(11L))).thenReturn(userError)
 
         // When getting the comments from the repository
-        val result = repository.getComments(listOf(11L))
+        val result = repository(listOf(11L))
 
         // Then comments were requested for correct ids
         verify(commentsWithRepliesUseCase).getCommentsWithReplies(ids)

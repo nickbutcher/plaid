@@ -30,7 +30,7 @@ class CommentsUseCase(
     private val commentsWithRepliesUseCase: CommentsWithRepliesUseCase,
     private val userRepository: UserRepository
 ) {
-    suspend fun getComments(ids: List<Long>): Result<List<Comment>> {
+    suspend operator fun invoke(ids: List<Long>): Result<List<Comment>> {
         // Get the comments with replies
         val commentsWithRepliesResult = commentsWithRepliesUseCase.getCommentsWithReplies(ids)
         if (commentsWithRepliesResult is Result.Error) {

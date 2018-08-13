@@ -52,12 +52,12 @@ class StoryViewModel(
 
     init {
         val result = getStoryUseCase(storyId)
-        if (result is Result.Success) {
-            story = result.data
-            getComments()
-        } else {
-            // TODO re-throw Error.exception once Loading state removed.
-            throw IllegalStateException("Could not retrieve story $storyId")
+        when (result) {
+            is Result.Success -> {
+                story = result.data
+                getComments()
+            }
+            is Result.Error -> throw result.exception
         }
     }
 
@@ -86,7 +86,7 @@ class StoryViewModel(
 
     private fun getComments() = launch(contextProvider.io, parent = parentJob) {
         story.links?.let {
-            val result = commentsUseCase.getComments(it.comments)
+            val result = commentsUseCase(it.comments)
             if (result is Result.Success) {
                 emitUiModel(result.data)
             }
