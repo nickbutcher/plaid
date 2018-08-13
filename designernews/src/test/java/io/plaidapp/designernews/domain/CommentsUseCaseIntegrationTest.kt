@@ -69,7 +69,7 @@ class CommentsUseCaseIntegrationTest {
         withUsers(listOf(user1), "111")
 
         // When getting the replies
-        val result = repository.getComments(listOf(11L))
+        val result = repository(listOf(11L))
 
         // Then the correct list of comments was requested from the API
         verify(service).getComments("11")
@@ -87,7 +87,7 @@ class CommentsUseCaseIntegrationTest {
         whenever(service.getComments("11")).thenReturn(CompletableDeferred(apiResult))
 
         // When getting the comments
-        val result = repository.getComments(listOf(11L))
+        val result = repository(listOf(11L))
 
         // Then the result is not successful
         assertNotNull(result)
@@ -106,7 +106,7 @@ class CommentsUseCaseIntegrationTest {
         withUsers(listOf(user1, user2), "222,111")
 
         // When getting the comments from the repository
-        val result = repository.getComments(listOf(1L))
+        val result = repository(listOf(1L))
 
         // Then  API requests were triggered
         verify(service).getComments("1")
@@ -132,7 +132,7 @@ class CommentsUseCaseIntegrationTest {
         withUsers(listOf(user2), "222")
 
         // When getting the comments from the repository
-        val result = repository.getComments(listOf(1L))
+        val result = repository(listOf(1L))
 
         // Then  API requests were triggered
         verify(service).getComments("1")
@@ -157,7 +157,7 @@ class CommentsUseCaseIntegrationTest {
             .thenReturn(CompletableDeferred(userError))
 
         // When getting the comments from the repository
-        val result = repository.getComments(listOf(11L))
+        val result = repository(listOf(11L))
 
         // Then  API requests were triggered
         verify(service).getComments("11")
