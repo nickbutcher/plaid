@@ -28,9 +28,9 @@ import io.plaidapp.core.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.core.designernews.data.users.UserRepository
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.designernews.errorResponseBody
-import io.plaidapp.designernews.parentComment
+import io.plaidapp.designernews.flattendCommentsWithReplies
+import io.plaidapp.designernews.flattenedCommentsWithoutReplies
 import io.plaidapp.designernews.parentCommentResponse
-import io.plaidapp.designernews.parentCommentWithoutReplies
 import io.plaidapp.designernews.provideCommentsUseCase
 import io.plaidapp.designernews.provideCommentsWithRepliesUseCase
 import io.plaidapp.designernews.repliesResponses
@@ -113,7 +113,7 @@ class CommentsUseCaseIntegrationTest {
         verify(service).getComments("11,12")
         verify(service).getUsers("222,111")
         // Then the correct result is received
-        assertEquals(Result.Success(listOf(parentComment)), result)
+        assertEquals(Result.Success(flattendCommentsWithReplies), result)
     }
 
     @Test
@@ -139,7 +139,7 @@ class CommentsUseCaseIntegrationTest {
         verify(service).getComments("11,12")
         verify(service).getUsers("222")
         // Then the correct result is received
-        assertEquals(Result.Success(arrayListOf(parentCommentWithoutReplies)), result)
+        assertEquals(Result.Success(flattenedCommentsWithoutReplies), result)
     }
 
     @Test

@@ -65,18 +65,22 @@ class CommentsUseCase(
         users: Set<User>
     ): List<Comment> {
         val userMapping = users.map { it.id to it }.toMap()
-        return match(commentsWithReplies, userMapping)
+        val comments = mutableListOf<Comment>()
+        unnestCommentsWithReplies(commentsWithReplies, userMapping, comments)
+        return comments
     }
 
-    private fun match(
+    private fun unnestCommentsWithReplies(
         commentsWithReplies: List<CommentWithReplies>,
-        users: Map<Long, User>
-    ): List<Comment> {
-        val comments = mutableListOf<Comment>()
+        users: Map<Long, User>,
+        comments: MutableList<Comment>
+    ) {
         commentsWithReplies.forEach {
             val user = users[it.userId]
-            comments += it.toComment(match(it.replies, users), user)
+            comments.add(it.toComment(user))
+            if (it.replies.isNotEmpty()) {
+                unnestCommentsWithReplies(it.replies, users, comments)
+            }
         }
-        return comments
     }
 }

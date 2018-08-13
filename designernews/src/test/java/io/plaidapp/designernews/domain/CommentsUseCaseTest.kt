@@ -23,10 +23,10 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.users.UserRepository
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.core.designernews.domain.model.CommentWithReplies
-import io.plaidapp.designernews.parentComment
+import io.plaidapp.designernews.flattendCommentsWithReplies
+import io.plaidapp.designernews.flattenedCommentsWithoutReplies
 import io.plaidapp.designernews.parentCommentWithReplies
 import io.plaidapp.designernews.parentCommentWithRepliesWithoutReplies
-import io.plaidapp.designernews.parentCommentWithoutReplies
 import io.plaidapp.designernews.reply1
 import io.plaidapp.designernews.reply1NoUser
 import io.plaidapp.designernews.replyWithReplies1
@@ -95,7 +95,7 @@ class CommentsUseCaseTest {
         // Then comments were requested for correct ids
         verify(commentsWithRepliesUseCase).getCommentsWithReplies(parentIds)
         // Then the correct result is received
-        assertEquals(Result.Success(listOf(parentComment)), result)
+        assertEquals(Result.Success(flattendCommentsWithReplies), result)
     }
 
     @Test
@@ -112,7 +112,7 @@ class CommentsUseCaseTest {
         // Then comments were requested for correct ids
         verify(commentsWithRepliesUseCase).getCommentsWithReplies(parentIds)
         // Then the correct result is received
-        assertEquals(Result.Success(arrayListOf(parentCommentWithoutReplies)), result)
+        assertEquals(Result.Success(flattenedCommentsWithoutReplies), result)
     }
 
     @Test
