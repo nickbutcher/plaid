@@ -44,7 +44,8 @@ class LoggedInUserDaoTest {
             displayName = "Loggy L",
             firstName = "Loggy",
             lastName = "Loggerson",
-            portraitUrl = "www"
+            portraitUrl = "www",
+            upvotes = listOf("1", "2", "3")
         )
     }
 
@@ -86,7 +87,8 @@ class LoggedInUserDaoTest {
             displayName = "Moggy M",
             firstName = "Moggy",
             lastName = "Moggerson",
-            portraitUrl = "www"
+            portraitUrl = "www",
+            upvotes = listOf("4", "5", "6")
         )
         loggedInUserDao.setLoggedInUser(newUser)
 

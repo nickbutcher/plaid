@@ -42,5 +42,9 @@ data class LoggedInUser(
 
     @ColumnInfo(name = "potrait_url")
     @SerializedName("portrait_url")
-    val portraitUrl: String? = null
+    val portraitUrl: String? = null,
+
+    @ColumnInfo(name = "upvotes")
+    @SerializedName("upvotes")
+    val upvotes: List<String>
 )
