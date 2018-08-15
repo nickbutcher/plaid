@@ -26,7 +26,7 @@ import io.plaidapp.core.designernews.domain.model.toComment
 /**
  * Use case that builds [Comment]s based on comments with replies and users
  */
-class CommentsUseCase(
+class CommentsWithRepliesAndUsersUseCase(
     private val commentsWithRepliesUseCase: CommentsWithRepliesUseCase,
     private val userRepository: UserRepository
 ) {
@@ -34,7 +34,7 @@ class CommentsUseCase(
         // Get the comments with replies
         val commentsWithRepliesResult = commentsWithRepliesUseCase.getCommentsWithReplies(ids)
         if (commentsWithRepliesResult is Result.Error) {
-            return Result.Error(commentsWithRepliesResult.exception)
+            return commentsWithRepliesResult
         }
         val commentsWithReplies = (commentsWithRepliesResult as? Result.Success)?.data.orEmpty()
         // get the ids of the users that posted comments

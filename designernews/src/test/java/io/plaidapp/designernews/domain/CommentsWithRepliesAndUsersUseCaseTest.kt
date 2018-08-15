@@ -40,12 +40,12 @@ import org.junit.Test
 import java.io.IOException
 
 /**
- * Tests for [CommentsUseCase] where all the dependencies are mocked.
+ * Tests for [CommentsWithRepliesAndUsersUseCase] where all the dependencies are mocked.
  */
-class CommentsUseCaseTest {
+class CommentsWithRepliesAndUsersUseCaseTest {
     private val commentsWithRepliesUseCase: CommentsWithRepliesUseCase = mock()
     private val userRepository: UserRepository = mock()
-    private val repository = CommentsUseCase(
+    private val repository = CommentsWithRepliesAndUsersUseCase(
         commentsWithRepliesUseCase,
         userRepository
     )
