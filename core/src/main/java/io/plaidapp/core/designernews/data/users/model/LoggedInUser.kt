@@ -46,5 +46,5 @@ data class LoggedInUser(
 
     @ColumnInfo(name = "upvotes")
     @SerializedName("upvotes")
-    val upvotes: List<String>
+    val upvotes: List<Long>
 )

@@ -27,10 +27,10 @@ class ConvertersTest {
         val csv = "1"
 
         // When the string is converted via the type converter
-        val actualStringList = Converters().csvToStringArray(csv)
+        val actualLongList = Converters().csvToLongArray(csv)
 
         // Then it should return a list with one element
-        assertEquals(listOf("1"), actualStringList)
+        assertEquals(listOf(1L), actualLongList)
     }
 
     @Test fun csvToStringArray_multipleValues() {
@@ -38,10 +38,10 @@ class ConvertersTest {
         val csv = "1,2,3"
 
         // When the string is converted via the type converter
-        val actualStringList = Converters().csvToStringArray(csv)
+        val actualLongList = Converters().csvToLongArray(csv)
 
         // Then it should return a list of the strings, split by the delimiter
-        assertEquals(listOf("1", "2", "3"), actualStringList)
+        assertEquals(listOf(1L, 2L, 3L), actualLongList)
     }
 
     @Test fun csvToStringArray_emptyString() {
@@ -49,18 +49,18 @@ class ConvertersTest {
         val csv = ""
 
         // When the string is converted via the type converter
-        val actualStringList = Converters().csvToStringArray(csv)
+        val actualLongList = Converters().csvToLongArray(csv)
 
         // Then it should return an empty list
-        assertEquals(emptyList<String>(), actualStringList)
+        assertEquals(emptyList<String>(), actualLongList)
     }
 
     @Test fun stringListToCsv_oneValue() {
         // Given a list with one element
-        val list = listOf("1")
+        val list = listOf(1L)
 
         // When the list is converted via the type converter
-        val actualCsv = Converters().stringListToCsv(list)
+        val actualCsv = Converters().longListToCsv(list)
 
         // Then it should return a CSV string with one value
         assertEquals("1", actualCsv)
@@ -68,10 +68,10 @@ class ConvertersTest {
 
     @Test fun stringListToCsv_multipleValues() {
         // Given a list with multiple elements
-        val list = listOf("1", "2", "3")
+        val list = listOf(1L, 2L, 3L)
 
         // When the list is converted via the type converter
-        val actualCsv = Converters().stringListToCsv(list)
+        val actualCsv = Converters().longListToCsv(list)
 
         // Then it should return a CSV string with multiple values
         assertEquals("1,2,3", actualCsv)
@@ -79,10 +79,10 @@ class ConvertersTest {
 
     @Test fun stringListToCsv_emptyList() {
         // Given an empty list
-        val list = emptyList<String>()
+        val list = emptyList<Long>()
 
         // When the list is converted via the type converter
-        val actualCsv = Converters().stringListToCsv(list)
+        val actualCsv = Converters().longListToCsv(list)
 
         // Then it should return an empty string
         assertEquals("", actualCsv)

@@ -22,17 +22,20 @@ import android.arch.persistence.room.TypeConverter
  * Type converters to allow Room to reference complex data types.
  */
 class Converters {
-    private val delimiter = ","
 
-    @TypeConverter fun csvToStringArray(csvString: String): List<String> {
+    @TypeConverter fun csvToLongArray(csvString: String): List<Long> {
         return if (csvString.isEmpty()) {
             emptyList()
         } else {
-            csvString.split(delimiter)
+            csvString.split(CSV_DELIMITER).map { it.toLong() }
         }
     }
 
-    @TypeConverter fun stringListToCsv(stringList: List<String>): String {
-        return stringList.joinToString(delimiter)
+    @TypeConverter fun longListToCsv(longList: List<Long>): String {
+        return longList.joinToString(CSV_DELIMITER)
+    }
+
+    companion object {
+        private const val CSV_DELIMITER = ","
     }
 }
