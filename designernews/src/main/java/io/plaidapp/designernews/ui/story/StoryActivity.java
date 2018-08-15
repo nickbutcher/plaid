@@ -89,7 +89,6 @@ import retrofit2.Response;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -147,7 +146,7 @@ public class StoryActivity extends AppCompatActivity {
         bindResources();
 
         story = viewModel.getStory();
-        viewModel.getUiState().observe(this,
+        viewModel.getUiModel().observe(this,
                 storyUiModel -> setupComments(storyUiModel.getComments()));
 
         fab.setOnClickListener(fabClick);

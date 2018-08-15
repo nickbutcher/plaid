@@ -22,7 +22,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryLinks
-import io.plaidapp.designernews.domain.CommentsUseCase
+import io.plaidapp.designernews.domain.CommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase
@@ -66,7 +66,7 @@ class StoryViewModelTest {
     )
 
     private val getStoryUseCase: GetStoryUseCase = mock()
-    private val commentsUseCase: CommentsUseCase = mock()
+    private val commentsWithRepliesAndUsers: CommentsWithRepliesAndUsersUseCase = mock()
     private val upvoteStoryUseCase: UpvoteStoryUseCase = mock()
     private val upvoteCommentUseCase: UpvoteCommentUseCase = mock()
 
@@ -89,7 +89,7 @@ class StoryViewModelTest {
         StoryViewModel(
             storyId,
             getStoryUseCase,
-            commentsUseCase,
+            commentsWithRepliesAndUsers,
             upvoteStoryUseCase,
             upvoteCommentUseCase,
             provideFakeCoroutinesContextProvider()
@@ -104,7 +104,7 @@ class StoryViewModelTest {
         val viewModel = withViewModel()
 
         // Then the correct UI model is created
-        val event = LiveDataTestUtil.getValue(viewModel.uiState)
+        val event = LiveDataTestUtil.getValue(viewModel.uiModel)
         assertEquals(event!!.comments, flattendCommentsWithReplies)
     }
 
@@ -174,7 +174,7 @@ class StoryViewModelTest {
     private fun withViewModel(): StoryViewModel {
         whenever(getStoryUseCase(storyId)).thenReturn(Result.Success(testStory))
         runBlocking {
-            whenever(commentsUseCase(commentIds)).thenReturn(
+            whenever(commentsWithRepliesAndUsers(commentIds)).thenReturn(
                 Result.Success(
                     flattendCommentsWithReplies
                 )
@@ -183,7 +183,7 @@ class StoryViewModelTest {
         return StoryViewModel(
             storyId,
             getStoryUseCase,
-            commentsUseCase,
+            commentsWithRepliesAndUsers,
             upvoteStoryUseCase,
             upvoteCommentUseCase,
             provideFakeCoroutinesContextProvider()

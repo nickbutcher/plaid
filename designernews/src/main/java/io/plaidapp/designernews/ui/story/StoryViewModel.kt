@@ -23,7 +23,7 @@ import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.domain.model.Comment
-import io.plaidapp.designernews.domain.CommentsUseCase
+import io.plaidapp.designernews.domain.CommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase
@@ -38,15 +38,15 @@ import kotlinx.coroutines.experimental.withContext
 class StoryViewModel(
     storyId: Long,
     getStoryUseCase: GetStoryUseCase,
-    private val commentsUseCase: CommentsUseCase,
+    private val commentsWithRepliesAndUsers: CommentsWithRepliesAndUsersUseCase,
     private val upvoteStoryUseCase: UpvoteStoryUseCase,
     private val upvoteCommentUseCase: UpvoteCommentUseCase,
     private val contextProvider: CoroutinesContextProvider
 ) : ViewModel() {
 
-    private val _uiState = MutableLiveData<StoryUiModel>()
-    val uiState: LiveData<StoryUiModel>
-        get() = _uiState
+    private val _uiModel = MutableLiveData<StoryUiModel>()
+    val uiModel: LiveData<StoryUiModel>
+        get() = _uiModel
 
     val story: Story
 
@@ -86,7 +86,7 @@ class StoryViewModel(
 
     private fun getComments() = launch(contextProvider.io, parent = parentJob) {
         story.links?.let {
-            val result = commentsUseCase(it.comments)
+            val result = commentsWithRepliesAndUsers(it.comments)
             if (result is Result.Success) {
                 emitUiModel(result.data)
             }
@@ -95,7 +95,7 @@ class StoryViewModel(
 
     private fun emitUiModel(comments: List<Comment>) =
         launch(contextProvider.main, parent = parentJob) {
-            _uiState.value = StoryUiModel(comments)
+            _uiModel.value = StoryUiModel(comments)
         }
 }
 
