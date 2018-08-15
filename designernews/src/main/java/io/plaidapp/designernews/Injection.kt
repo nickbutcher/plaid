@@ -28,7 +28,7 @@ import io.plaidapp.core.designernews.provideLoginRepository
 import io.plaidapp.core.designernews.provideStoriesRepository
 import io.plaidapp.core.designernews.provideVotesRepository
 import io.plaidapp.core.provideCoroutinesContextProvider
-import io.plaidapp.designernews.domain.CommentsUseCase
+import io.plaidapp.designernews.domain.CommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.domain.CommentsWithRepliesUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
@@ -53,7 +53,7 @@ fun provideStoryViewModelFactory(storyId: Long, context: Context): StoryViewMode
     return StoryViewModelFactory(
         storyId,
         provideGetStoryUseCase(context),
-        provideCommentsUseCase(context),
+        provideCommentsWithRepliesAndUsersUseCase(context),
         provideUpvoteStoryUseCase(context),
         provideUpvoteCommentUseCase(context),
         provideCoroutinesContextProvider()
@@ -74,13 +74,13 @@ fun provideUpvoteCommentUseCase(context: Context): UpvoteCommentUseCase {
     return UpvoteCommentUseCase(loginRepository, votesRepository)
 }
 
-fun provideCommentsUseCase(context: Context): CommentsUseCase {
+fun provideCommentsWithRepliesAndUsersUseCase(context: Context): CommentsWithRepliesAndUsersUseCase {
     val service = provideDesignerNewsService(context)
     val commentsRepository = provideCommentsRepository(
         provideCommentsRemoteDataSource(service)
     )
     val userRepository = provideUserRepository(provideUserRemoteDataSource(service))
-    return provideCommentsUseCase(
+    return provideCommentsWithRepliesAndUsersUseCase(
         provideCommentsWithRepliesUseCase(commentsRepository),
         userRepository
     )
@@ -89,10 +89,10 @@ fun provideCommentsUseCase(context: Context): CommentsUseCase {
 fun provideCommentsWithRepliesUseCase(commentsRepository: CommentsRepository) =
     CommentsWithRepliesUseCase(commentsRepository)
 
-fun provideCommentsUseCase(
+fun provideCommentsWithRepliesAndUsersUseCase(
     commentsWithCommentsWithRepliesUseCase: CommentsWithRepliesUseCase,
     userRepository: UserRepository
-) = CommentsUseCase(commentsWithCommentsWithRepliesUseCase, userRepository)
+) = CommentsWithRepliesAndUsersUseCase(commentsWithCommentsWithRepliesUseCase, userRepository)
 
 private fun provideUserRemoteDataSource(service: DesignerNewsService) =
     UserRemoteDataSource(service)

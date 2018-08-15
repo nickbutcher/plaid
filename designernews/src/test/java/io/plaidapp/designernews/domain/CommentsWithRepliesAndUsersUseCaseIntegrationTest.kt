@@ -31,7 +31,7 @@ import io.plaidapp.designernews.errorResponseBody
 import io.plaidapp.designernews.flattendCommentsWithReplies
 import io.plaidapp.designernews.flattenedCommentsWithoutReplies
 import io.plaidapp.designernews.parentCommentResponse
-import io.plaidapp.designernews.provideCommentsUseCase
+import io.plaidapp.designernews.provideCommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.provideCommentsWithRepliesUseCase
 import io.plaidapp.designernews.repliesResponses
 import io.plaidapp.designernews.reply1
@@ -48,15 +48,15 @@ import org.junit.Test
 import retrofit2.Response
 
 /**
- * Integration test for [CommentsUseCase] where only the responses from the [DesignerNewsService]
+ * Integration test for [CommentsWithRepliesAndUsersUseCase] where only the responses from the [DesignerNewsService]
  * are mocked. Everything else uses real implementation.
  */
-class CommentsUseCaseIntegrationTest {
+class CommentsWithRepliesAndUsersUseCaseIntegrationTest {
     private val service: DesignerNewsService = mock()
     private val dataSource = CommentsRemoteDataSource(service)
     private val commentsRepository = CommentsRepository(dataSource)
     private val userRepository = UserRepository(UserRemoteDataSource(service))
-    private val repository = provideCommentsUseCase(
+    private val repository = provideCommentsWithRepliesAndUsersUseCase(
         provideCommentsWithRepliesUseCase(commentsRepository),
         userRepository
     )
