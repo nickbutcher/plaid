@@ -17,7 +17,7 @@
 package io.plaidapp.core.designernews.domain.model
 
 import io.plaidapp.core.designernews.data.users.model.User
-import java.util.Date
+import java.util.*
 
 fun CommentWithReplies.toComment(
     user: User?
@@ -47,4 +47,11 @@ data class CommentWithReplies(
     val userId: Long,
     val storyId: Long,
     val replies: List<CommentWithReplies> = emptyList()
-)
+) {
+    /**
+     * @return a flattened, recursive sequence of this [CommentWithReplies] and all its nested
+     * [replies].
+     */
+    val flattenWithReplies: Sequence<CommentWithReplies>
+        get() = sequenceOf(this) + replies.asSequence().flatMap(CommentWithReplies::flattenWithReplies)
+}
