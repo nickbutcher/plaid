@@ -64,23 +64,10 @@ class CommentsWithRepliesAndUsersUseCase(
         commentsWithReplies: List<CommentWithReplies>,
         users: Set<User>
     ): List<Comment> {
-        val userMapping = users.map { it.id to it }.toMap()
-        val comments = mutableListOf<Comment>()
-        unnestCommentsWithReplies(commentsWithReplies, userMapping, comments)
-        return comments
-    }
-
-    private fun unnestCommentsWithReplies(
-        commentsWithReplies: List<CommentWithReplies>,
-        users: Map<Long, User>,
-        comments: MutableList<Comment>
-    ) {
-        commentsWithReplies.forEach {
-            val user = users[it.userId]
-            comments.add(it.toComment(user))
-            if (it.replies.isNotEmpty()) {
-                unnestCommentsWithReplies(it.replies, users, comments)
-            }
-        }
+        val userMapping = users.associateBy(User::id)
+        return commentsWithReplies.asSequence()
+                .flatMap(CommentWithReplies::flattenWithReplies)
+                .map { it.toComment(userMapping[it.userId]) }
+                .toList()
     }
 }
