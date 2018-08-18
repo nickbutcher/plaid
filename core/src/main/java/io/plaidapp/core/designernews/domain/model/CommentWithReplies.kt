@@ -17,7 +17,7 @@
 package io.plaidapp.core.designernews.domain.model
 
 import io.plaidapp.core.designernews.data.users.model.User
-import java.util.*
+import java.util.Date
 
 fun CommentWithReplies.toComment(
     user: User?
