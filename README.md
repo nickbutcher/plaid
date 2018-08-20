@@ -32,7 +32,7 @@ from the ktlint [README](https://github.com/shyiko/ktlint/blob/master/README.md)
 - Close Android Studio if it's open
 - Download ktlint:
 
-  `curl -sSLO https://github.com/shyiko/ktlint/releases/download/0.24.0/ktlint && chmod a+x ktlint`
+  `curl -sSLO https://github.com/shyiko/ktlint/releases/download/0.27.0/ktlint && chmod a+x ktlint`
 
 - Inside the project root directory run:
 
