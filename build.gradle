@@ -32,7 +32,7 @@ buildscript {
             'gson'              : '2.8.5',
             'jsoup'             : '1.11.3',
             'junit'             : '4.12',
-            'kotlin'            : '1.2.60',
+            'kotlin'            : '1.2.61',
             'ktlint'            : '0.24.0',
             'lifecycle'         : '1.1.1',
             'mockito'           : '2.19.0',
