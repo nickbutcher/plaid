@@ -20,6 +20,7 @@ import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.core.util.safeApiCall
 import java.io.IOException
 
 /**
@@ -38,7 +39,12 @@ class LoginRemoteDataSource(
         tokenLocalDataSource.authToken = null
     }
 
-    suspend fun login(username: String, password: String): Result<User> {
+    suspend fun login(username: String, password: String) = safeApiCall(
+        call = { requestLogin(username, password) },
+        errorMessage = "Error logging in"
+    )
+
+    private suspend fun requestLogin(username: String, password: String): Result<User> {
         val response = service.login(buildLoginParams(username, password)).await()
         if (response.isSuccessful) {
             val body = response.body()

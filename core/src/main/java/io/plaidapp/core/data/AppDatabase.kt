@@ -19,13 +19,16 @@ package io.plaidapp.core.data
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
+import android.arch.persistence.room.TypeConverters
 import android.content.Context
+import io.plaidapp.core.designernews.data.LoggedInUserDao
 import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 
 /**
  * The Room database for this app
  */
 @Database(entities = [LoggedInUser::class], version = 1, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun loggedInUserDao(): LoggedInUserDao
 

@@ -16,6 +16,7 @@
 
 package io.plaidapp.core.designernews.data.votes
 
+import com.nhaarman.mockito_kotlin.doAnswer
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
@@ -28,6 +29,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import retrofit2.Response
+import java.net.UnknownHostException
 
 /**
  * Test for [VotesRepository] mocking all dependencies.
@@ -67,6 +69,19 @@ class VotesRemoteDataSourceTest {
     }
 
     @Test
+    fun upvoteStory_whenExceptionThrown() = runBlocking {
+        // Given that the service trows an exception
+        doAnswer { throw UnknownHostException() }
+            .whenever(service).upvoteStoryV2(any())
+
+        // When upvoting a story
+        val result = dataSource.upvoteStory(storyId, userId)
+
+        // Then the result is error
+        assertTrue(result is Result.Error)
+    }
+
+    @Test
     fun upvoteComment_whenRequestSuccessful() = runBlocking {
         // Given that the service responds with success
         val response = Response.success(Unit)
@@ -84,6 +99,19 @@ class VotesRemoteDataSourceTest {
         // Given that the service responds with error
         val response = Response.error<Unit>(404, errorResponseBody)
         whenever(service.upvoteComment(any())).thenReturn(CompletableDeferred(response))
+
+        // When upvoting a story
+        val result = dataSource.upvoteComment(storyId, userId)
+
+        // Then the result is error
+        assertTrue(result is Result.Error)
+    }
+
+    @Test
+    fun upvoteComment_whenExceptionThrown() = runBlocking {
+        // Given that the service throws an exception
+        doAnswer { throw UnknownHostException() }
+            .whenever(service).upvoteComment(any())
 
         // When upvoting a story
         val result = dataSource.upvoteComment(storyId, userId)

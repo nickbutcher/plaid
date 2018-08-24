@@ -20,6 +20,7 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.votes.model.UpvoteCommentRequest
 import io.plaidapp.core.designernews.data.votes.model.UpvoteStoryRequest
+import io.plaidapp.core.util.safeApiCall
 import java.io.IOException
 
 /**
@@ -27,25 +28,41 @@ import java.io.IOException
  */
 class VotesRemoteDataSource(private val service: DesignerNewsService) {
 
-    suspend fun upvoteStory(storyId: Long, userId: Long): Result<Unit> {
+    suspend fun upvoteStory(storyId: Long, userId: Long) = safeApiCall(
+        call = { requestUpvoteStory(storyId, userId) },
+        errorMessage = "Unable to upvote story"
+    )
+
+    private suspend fun requestUpvoteStory(storyId: Long, userId: Long): Result<Unit> {
         val request = UpvoteStoryRequest(storyId, userId)
-        // right now we just care whether the response is successful or not.
         val response = service.upvoteStoryV2(request).await()
         return if (response.isSuccessful) {
             Result.Success(Unit)
         } else {
-            Result.Error(IOException("Unable to upvote story ${response.code()} ${response.errorBody()?.string()}"))
+            Result.Error(
+                IOException(
+                    "Unable to upvote story ${response.code()} ${response.errorBody()?.string()}"
+                )
+            )
         }
     }
 
-    suspend fun upvoteComment(commentId: Long, userId: Long): Result<Unit> {
+    suspend fun upvoteComment(commentId: Long, userId: Long) = safeApiCall(
+        call = { requestUpvoteComment(commentId, userId) },
+        errorMessage = "Unable to upvote comment"
+    )
+
+    private suspend fun requestUpvoteComment(commentId: Long, userId: Long): Result<Unit> {
         val request = UpvoteCommentRequest(commentId, userId)
-        // right now we just care whether the response is successful or not.
         val response = service.upvoteComment(request).await()
         return if (response.isSuccessful) {
             Result.Success(Unit)
         } else {
-            Result.Error(IOException("Unable to upvote comment ${response.code()} ${response.errorBody()?.string()}"))
+            Result.Error(
+                IOException(
+                    "Unable to upvote comment ${response.code()} ${response.errorBody()?.string()}"
+                )
+            )
         }
     }
 }

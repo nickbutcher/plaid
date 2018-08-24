@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.domain.model
+package io.plaidapp.designernews.ui.login
 
-import java.util.Date
+import android.databinding.BindingAdapter
+import android.support.annotation.ColorRes
+import android.support.v4.content.ContextCompat
+import android.view.Gravity
+import android.view.View
+import io.plaidapp.core.util.ScrimUtil
 
-/**
- * Models a comment on a designer news story.
- */
-data class Comment(
-    val id: Long,
-    val parentCommentId: Long?,
-    val body: String,
-    val createdAt: Date,
-    val depth: Int,
-    val upvotesCount: Int,
-    val userId: Long,
-    val userDisplayName: String?,
-    val userPortraitUrl: String?,
-    var upvoted: Boolean // TODO change this to val when getting to the upvoting
-)
+@BindingAdapter("backgroundScrimGradientColor")
+fun bindBackgroundScrimGradientColor(view: View, @ColorRes color: Int) {
+    view.background = ScrimUtil.makeCubicGradientScrimDrawable(
+        ContextCompat.getColor(view.context, color),
+        5,
+        Gravity.BOTTOM
+    )
+}

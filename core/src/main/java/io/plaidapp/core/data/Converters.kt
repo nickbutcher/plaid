@@ -16,21 +16,26 @@
 
 package io.plaidapp.core.data
 
-import android.arch.lifecycle.LiveData
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.OnConflictStrategy
-import android.arch.persistence.room.Query
-import io.plaidapp.core.designernews.data.users.model.LoggedInUser
+import android.arch.persistence.room.TypeConverter
 
 /**
- * This Data Access Object handles Room database operations for the [LoggedInUser] class.
+ * Type converters to allow Room to reference complex data types.
  */
-@Dao
-interface LoggedInUserDao {
-    @Query("SELECT * FROM logged_in_user LIMIT 1")
-    fun getLoggedInUser(): LiveData<LoggedInUser>
+class Converters {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertLoggedInUser(loggedInUser: LoggedInUser)
+    @TypeConverter fun csvToLongArray(csvString: String): List<Long> {
+        return if (csvString.isEmpty()) {
+            emptyList()
+        } else {
+            csvString.split(CSV_DELIMITER).map { it.toLong() }
+        }
+    }
+
+    @TypeConverter fun longListToCsv(longList: List<Long>): String {
+        return longList.joinToString(CSV_DELIMITER)
+    }
+
+    companion object {
+        private const val CSV_DELIMITER = ","
+    }
 }

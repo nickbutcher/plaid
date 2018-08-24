@@ -18,8 +18,9 @@ package io.plaidapp.core.dribbble.data.search
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
-import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource.SortOrder.RECENT
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchService.Companion.PER_PAGE_DEFAULT
+import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource.SortOrder.RECENT
+import io.plaidapp.core.util.safeApiCall
 import java.io.IOException
 
 /**
@@ -28,6 +29,16 @@ import java.io.IOException
 class SearchRemoteDataSource(private val service: DribbbleSearchService) {
 
     suspend fun search(
+        query: String,
+        page: Int,
+        sortOrder: SortOrder = RECENT,
+        pageSize: Int = PER_PAGE_DEFAULT
+    ) = safeApiCall(
+        call = { requestSearch(query, page, sortOrder, pageSize) },
+        errorMessage = "Error getting Dribbble data"
+    )
+
+    private suspend fun requestSearch(
         query: String,
         page: Int,
         sortOrder: SortOrder = RECENT,
@@ -41,7 +52,7 @@ class SearchRemoteDataSource(private val service: DribbbleSearchService) {
             }
         }
         return Result.Error(
-            IOException("Error getting comments ${response.code()} ${response.message()}")
+            IOException("Error getting Dribbble data ${response.code()} ${response.message()}")
         )
     }
 
@@ -51,7 +62,8 @@ class SearchRemoteDataSource(private val service: DribbbleSearchService) {
     }
 
     companion object {
-        @Volatile private var INSTANCE: SearchRemoteDataSource? = null
+        @Volatile
+        private var INSTANCE: SearchRemoteDataSource? = null
 
         fun getInstance(service: DribbbleSearchService): SearchRemoteDataSource {
             return INSTANCE ?: synchronized(this) {

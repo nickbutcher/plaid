@@ -107,6 +107,10 @@ dependencies {
     androidTestImplementation "org.mockito:mockito-core:${versions.mockito}"
     androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
     androidTestImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
+
+    // Work around issue with runtime classpath version conflict
+    androidTestImplementation "com.android.support:support-core-utils:${versions.supportLibrary}"
+    androidTestImplementation "android.arch.lifecycle:runtime:${versions.lifecycle}"
 }
 
 kotlin {

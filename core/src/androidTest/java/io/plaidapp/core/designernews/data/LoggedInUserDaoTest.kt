@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.data
+package io.plaidapp.core.designernews.data
 
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
+import io.plaidapp.core.data.AppDatabase
 import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 import io.plaidapp.test.shared.LiveDataTestUtil
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 
@@ -42,7 +44,8 @@ class LoggedInUserDaoTest {
             displayName = "Loggy L",
             firstName = "Loggy",
             lastName = "Loggerson",
-            portraitUrl = "www"
+            portraitUrl = "www",
+            upvotes = listOf(1L, 2L, 3L)
         )
     }
 
@@ -52,7 +55,7 @@ class LoggedInUserDaoTest {
 
     @Test fun insertAndGetLoggedInUser() {
         // Given a LoggedInUser that has been inserted into the DB
-        loggedInUserDao.insertLoggedInUser(loggedInUser)
+        loggedInUserDao.setLoggedInUser(loggedInUser)
 
         // When getting the LoggedInUser via the DAO
         val userFromDb = LiveDataTestUtil.getValue(loggedInUserDao.getLoggedInUser())
@@ -63,14 +66,46 @@ class LoggedInUserDaoTest {
 
     @Test fun replaceLoggedInUser() {
         // Given a LoggedInUser that has been inserted into the DB
-        loggedInUserDao.insertLoggedInUser(loggedInUser)
+        loggedInUserDao.setLoggedInUser(loggedInUser)
 
         // When the user's information changes and a subsequent insert is triggered
         val updatedUser = loggedInUser.copy(displayName = "LL Cool L")
-        loggedInUserDao.insertLoggedInUser(updatedUser)
+        loggedInUserDao.setLoggedInUser(updatedUser)
 
         // Then a subsequent query for the LoggedInUser should show the updated information
         val userFromDb = LiveDataTestUtil.getValue(loggedInUserDao.getLoggedInUser())
         assertEquals(updatedUser, userFromDb)
+    }
+
+    @Test fun uniqueLoggedInUser() {
+        // Given a LoggedInUser that has been inserted into the DB
+        loggedInUserDao.setLoggedInUser(loggedInUser)
+
+        // When inserting another LoggedInUser without first deleting the previous user
+        val newUser = LoggedInUser(
+            id = 2L,
+            displayName = "Moggy M",
+            firstName = "Moggy",
+            lastName = "Moggerson",
+            portraitUrl = "www",
+            upvotes = listOf(4L, 5L, 6L)
+        )
+        loggedInUserDao.setLoggedInUser(newUser)
+
+        // Then a query for LoggedInUser should return the new user
+        val userFromDb = LiveDataTestUtil.getValue(loggedInUserDao.getLoggedInUser())
+        assertEquals(newUser, userFromDb)
+    }
+
+    @Test fun deleteLoggedInUser() {
+        // Given a LoggedInUser that has been inserted into the DB
+        loggedInUserDao.setLoggedInUser(loggedInUser)
+
+        // When the user is deleted from the database
+        loggedInUserDao.deleteLoggedInUser()
+
+        // Then a query for the LoggedInUser should be null
+        val userFromDb = LiveDataTestUtil.getValue(loggedInUserDao.getLoggedInUser())
+        assertNull(userFromDb)
     }
 }

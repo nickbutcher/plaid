@@ -17,10 +17,19 @@
 package io.plaidapp.designernews
 
 import android.content.Context
+import io.plaidapp.core.designernews.data.api.DesignerNewsService
+import io.plaidapp.core.designernews.data.comments.CommentsRemoteDataSource
+import io.plaidapp.core.designernews.data.comments.CommentsRepository
+import io.plaidapp.core.designernews.data.users.UserRemoteDataSource
+import io.plaidapp.core.designernews.data.users.UserRepository
+import io.plaidapp.core.designernews.provideCommentsRepository
+import io.plaidapp.core.designernews.provideDesignerNewsService
 import io.plaidapp.core.designernews.provideLoginRepository
 import io.plaidapp.core.designernews.provideStoriesRepository
 import io.plaidapp.core.designernews.provideVotesRepository
 import io.plaidapp.core.provideCoroutinesContextProvider
+import io.plaidapp.designernews.domain.CommentsWithRepliesAndUsersUseCase
+import io.plaidapp.designernews.domain.CommentsWithRepliesUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase
@@ -44,6 +53,7 @@ fun provideStoryViewModelFactory(storyId: Long, context: Context): StoryViewMode
     return StoryViewModelFactory(
         storyId,
         provideGetStoryUseCase(context),
+        provideCommentsWithRepliesAndUsersUseCase(context),
         provideUpvoteStoryUseCase(context),
         provideUpvoteCommentUseCase(context),
         provideCoroutinesContextProvider()
@@ -63,3 +73,32 @@ fun provideUpvoteCommentUseCase(context: Context): UpvoteCommentUseCase {
     val votesRepository = provideVotesRepository(context)
     return UpvoteCommentUseCase(loginRepository, votesRepository)
 }
+
+fun provideCommentsWithRepliesAndUsersUseCase(context: Context): CommentsWithRepliesAndUsersUseCase {
+    val service = provideDesignerNewsService(context)
+    val commentsRepository = provideCommentsRepository(
+        provideCommentsRemoteDataSource(service)
+    )
+    val userRepository = provideUserRepository(provideUserRemoteDataSource(service))
+    return provideCommentsWithRepliesAndUsersUseCase(
+        provideCommentsWithRepliesUseCase(commentsRepository),
+        userRepository
+    )
+}
+
+fun provideCommentsWithRepliesUseCase(commentsRepository: CommentsRepository) =
+    CommentsWithRepliesUseCase(commentsRepository)
+
+fun provideCommentsWithRepliesAndUsersUseCase(
+    commentsWithCommentsWithRepliesUseCase: CommentsWithRepliesUseCase,
+    userRepository: UserRepository
+) = CommentsWithRepliesAndUsersUseCase(commentsWithCommentsWithRepliesUseCase, userRepository)
+
+private fun provideUserRemoteDataSource(service: DesignerNewsService) =
+    UserRemoteDataSource(service)
+
+private fun provideUserRepository(dataSource: UserRemoteDataSource) =
+    UserRepository.getInstance(dataSource)
+
+private fun provideCommentsRemoteDataSource(service: DesignerNewsService) =
+    CommentsRemoteDataSource.getInstance(service)

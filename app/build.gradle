@@ -28,7 +28,7 @@ android {
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         versionCode rootProject.gitCommitCount
-        versionName = '1.0.3'
+        versionName = '1.0.4'
         archivesBaseName = 'plaid'
 
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
@@ -46,7 +46,9 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            // There's a Dex Splitter issue when enabling DataBinding & proguard in dynamic features
+            // The temporary workaround is to disable shrinking
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard-rules.pro'
             manifestPlaceholders += [crashlyticsEnabled: true]

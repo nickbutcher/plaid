@@ -14,37 +14,27 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.domain
+package io.plaidapp.designernews.domain
 
-import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.domain.model.Comment
-import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.core.designernews.data.users.UserRepository
+import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.designernews.domain.model.CommentWithReplies
 import io.plaidapp.core.designernews.domain.model.toComment
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
 
 /**
  * Use case that builds [Comment]s based on comments with replies and users
  */
-class CommentsUseCase(
+class CommentsWithRepliesAndUsersUseCase(
     private val commentsWithRepliesUseCase: CommentsWithRepliesUseCase,
-    private val userRepository: UserRepository,
-    private val contextProvider: CoroutinesContextProvider
+    private val userRepository: UserRepository
 ) {
-    fun getComments(
-        ids: List<Long>,
-        onResult: (result: Result<List<Comment>>) -> Unit
-    ) = launch(contextProvider.io) {
+    suspend operator fun invoke(ids: List<Long>): Result<List<Comment>> {
         // Get the comments with replies
         val commentsWithRepliesResult = commentsWithRepliesUseCase.getCommentsWithReplies(ids)
         if (commentsWithRepliesResult is Result.Error) {
-            withContext(contextProvider.main) {
-                onResult(Result.Error(commentsWithRepliesResult.exception))
-            }
-            return@launch
+            return commentsWithRepliesResult
         }
         val commentsWithReplies = (commentsWithRepliesResult as? Result.Success)?.data.orEmpty()
         // get the ids of the users that posted comments
@@ -60,7 +50,7 @@ class CommentsUseCase(
         }
         // create the comments based on the comments with replies and users
         val comments = createComments(commentsWithReplies, users)
-        withContext(contextProvider.main) { onResult(Result.Success(comments)) }
+        return Result.Success(comments)
     }
 
     private fun createUserIds(comments: List<CommentWithReplies>, userIds: MutableSet<Long>) {
@@ -75,18 +65,22 @@ class CommentsUseCase(
         users: Set<User>
     ): List<Comment> {
         val userMapping = users.map { it.id to it }.toMap()
-        return match(commentsWithReplies, userMapping)
+        val comments = mutableListOf<Comment>()
+        unnestCommentsWithReplies(commentsWithReplies, userMapping, comments)
+        return comments
     }
 
-    private fun match(
+    private fun unnestCommentsWithReplies(
         commentsWithReplies: List<CommentWithReplies>,
-        users: Map<Long, User>
-    ): List<Comment> {
-        val comments = mutableListOf<Comment>()
+        users: Map<Long, User>,
+        comments: MutableList<Comment>
+    ) {
         commentsWithReplies.forEach {
             val user = users[it.userId]
-            comments += it.toComment(match(it.replies, users), user)
+            comments.add(it.toComment(user))
+            if (it.replies.isNotEmpty()) {
+                unnestCommentsWithReplies(it.replies, users, comments)
+            }
         }
-        return comments
     }
 }

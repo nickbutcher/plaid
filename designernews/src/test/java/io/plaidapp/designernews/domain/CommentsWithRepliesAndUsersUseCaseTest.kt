@@ -14,26 +14,24 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.domain
+package io.plaidapp.designernews.domain
 
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.domain.model.Comment
-import io.plaidapp.core.designernews.data.users.model.User
-import io.plaidapp.core.designernews.parentComment
-import io.plaidapp.core.designernews.parentCommentWithReplies
-import io.plaidapp.core.designernews.parentCommentWithRepliesWithoutReplies
-import io.plaidapp.core.designernews.parentCommentWithoutReplies
-import io.plaidapp.core.designernews.reply1
-import io.plaidapp.core.designernews.reply1NoUser
-import io.plaidapp.core.designernews.replyWithReplies1
-import io.plaidapp.core.designernews.user1
-import io.plaidapp.core.designernews.user2
 import io.plaidapp.core.designernews.data.users.UserRepository
+import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.core.designernews.domain.model.CommentWithReplies
-import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
+import io.plaidapp.designernews.flattendCommentsWithReplies
+import io.plaidapp.designernews.flattenedCommentsWithoutReplies
+import io.plaidapp.designernews.parentCommentWithReplies
+import io.plaidapp.designernews.parentCommentWithRepliesWithoutReplies
+import io.plaidapp.designernews.reply1
+import io.plaidapp.designernews.reply1NoUser
+import io.plaidapp.designernews.replyWithReplies1
+import io.plaidapp.designernews.user1
+import io.plaidapp.designernews.user2
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -42,15 +40,14 @@ import org.junit.Test
 import java.io.IOException
 
 /**
- * Tests for [CommentsUseCase] where all the dependencies are mocked.
+ * Tests for [CommentsWithRepliesAndUsersUseCase] where all the dependencies are mocked.
  */
-class CommentsUseCaseTest {
+class CommentsWithRepliesAndUsersUseCaseTest {
     private val commentsWithRepliesUseCase: CommentsWithRepliesUseCase = mock()
     private val userRepository: UserRepository = mock()
-    private val repository = CommentsUseCase(
+    private val repository = CommentsWithRepliesAndUsersUseCase(
         commentsWithRepliesUseCase,
-        userRepository,
-        provideFakeCoroutinesContextProvider()
+        userRepository
     )
 
     @Test
@@ -60,10 +57,9 @@ class CommentsUseCaseTest {
         withComment(replyWithReplies1, ids)
         // Given that the user request responds with success
         withUsers(setOf(user1), setOf(111L))
-        var result: Result<List<Comment>>? = null
 
         // When getting the replies
-        repository.getComments(ids) { it -> result = it }
+        val result = repository(ids)
 
         // Then the correct list is received
         assertEquals(Result.Success(listOf(reply1)), result)
@@ -75,10 +71,9 @@ class CommentsUseCaseTest {
         val resultError = Result.Error(IOException("Comment error"))
         val ids = listOf(11L)
         whenever(commentsWithRepliesUseCase.getCommentsWithReplies(ids)).thenReturn(resultError)
-        var result: Result<List<Comment>>? = null
 
         // When getting the comments
-        repository.getComments(ids) { it -> result = it }
+        val result = repository(ids)
 
         // Then the result is not successful
         assertNotNull(result)
@@ -93,15 +88,14 @@ class CommentsUseCaseTest {
         val parentIds = listOf(1L)
         withComment(parentCommentWithReplies, parentIds)
         withUsers(setOf(user1, user2), setOf(111L, 222L))
-        var result: Result<List<Comment>>? = null
 
         // When getting the comments from the repository
-        repository.getComments(listOf(1L)) { it -> result = it }
+        val result = repository(listOf(1L))
 
         // Then comments were requested for correct ids
         verify(commentsWithRepliesUseCase).getCommentsWithReplies(parentIds)
         // Then the correct result is received
-        assertEquals(Result.Success(listOf(parentComment)), result)
+        assertEquals(Result.Success(flattendCommentsWithReplies), result)
     }
 
     @Test
@@ -111,15 +105,14 @@ class CommentsUseCaseTest {
         withComment(parentCommentWithRepliesWithoutReplies, parentIds)
         // Given that the user request responds with success
         withUsers(setOf(user2), setOf(222))
-        var result: Result<List<Comment>>? = null
 
         // When getting the comments from the repository
-        repository.getComments(listOf(1L)) { it -> result = it }
+        val result = repository(listOf(1L))
 
         // Then comments were requested for correct ids
         verify(commentsWithRepliesUseCase).getCommentsWithReplies(parentIds)
         // Then the correct result is received
-        assertEquals(Result.Success(arrayListOf(parentCommentWithoutReplies)), result)
+        assertEquals(Result.Success(flattenedCommentsWithoutReplies), result)
     }
 
     @Test
@@ -132,10 +125,9 @@ class CommentsUseCaseTest {
         // Given that the user request responds with failure
         val userError = Result.Error(IOException("User error"))
         whenever(userRepository.getUsers(setOf(11L))).thenReturn(userError)
-        var result: Result<List<Comment>>? = null
 
         // When getting the comments from the repository
-        repository.getComments(listOf(11L)) { it -> result = it }
+        val result = repository(listOf(11L))
 
         // Then comments were requested for correct ids
         verify(commentsWithRepliesUseCase).getCommentsWithReplies(ids)

@@ -63,10 +63,8 @@ import in.uncod.android.bypass.Bypass;
 import in.uncod.android.bypass.Markdown;
 import io.plaidapp.core.data.Result;
 import io.plaidapp.core.designernews.DesignerNewsPrefs;
-import io.plaidapp.core.designernews.Injection;
 import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.designernews.data.users.model.User;
-import io.plaidapp.core.designernews.domain.CommentsUseCase;
 import io.plaidapp.core.designernews.domain.model.Comment;
 import io.plaidapp.core.ui.transitions.GravityArcMotion;
 import io.plaidapp.core.ui.transitions.MorphTransform;
@@ -91,7 +89,6 @@ import retrofit2.Response;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -128,7 +125,6 @@ public class StoryActivity extends AppCompatActivity {
 
     private Story story;
 
-    private CommentsUseCase commentsUseCase;
     private StoryViewModel viewModel;
 
     private DesignerNewsPrefs designerNewsPrefs;
@@ -146,21 +142,12 @@ public class StoryActivity extends AppCompatActivity {
         }
         StoryViewModelFactory factory = InjectionKt.provideStoryViewModelFactory(storyId, this);
         viewModel = ViewModelProviders.of(this, factory).get(StoryViewModel.class);
-        commentsUseCase = Injection.provideCommentsUseCase(this);
 
         bindResources();
 
         story = viewModel.getStory();
-
-        commentsUseCase.getComments(story.getLinks().getComments(),
-                result -> {
-                    if (result instanceof Result.Success) {
-                        Result.Success<List<Comment>> success = (Result.Success<List<Comment>>) result;
-                        List<Comment> data = success.getData();
-                        setupComments(data);
-                    }
-                    return Unit.INSTANCE;
-                });
+        viewModel.getUiModel().observe(this,
+                storyUiModel -> setupComments(storyUiModel.getComments()));
 
         fab.setOnClickListener(fabClick);
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this);
@@ -221,11 +208,7 @@ public class StoryActivity extends AppCompatActivity {
 
     private void setupComments(List<Comment> comments) {
         if (comments.size() > 0) {
-            // flatten the comments from a nested structure {@see Comment#comments} to a
-            // list appropriate for our adapter (using the depth attribute).
-            List<Comment> flattened = new ArrayList<>(story.getCommentCount());
-            unnestComments(comments, flattened);
-            commentsAdapter.updateList(flattened);
+            commentsAdapter.updateList(comments);
             commentsList.setAdapter(commentsAdapter);
         }
     }
@@ -640,15 +623,6 @@ public class StoryActivity extends AppCompatActivity {
         ActivityCompat.startActivityForResult(this, login, requestCode, options.toBundle());
     }
 
-    private void unnestComments(List<Comment> nested, List<Comment> flat) {
-        for (Comment comment : nested) {
-            flat.add(comment);
-            if (comment.getReplies().size() > 0) {
-                unnestComments(comment.getReplies(), flat);
-            }
-        }
-    }
-
     private View.OnFocusChangeListener enterCommentFocus = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View view, boolean hasFocus) {
@@ -1045,7 +1019,6 @@ public class StoryActivity extends AppCompatActivity {
                                     new Date(),
                                     replyDepth,
                                     0,
-                                    Collections.emptyList(),
                                     user.getId(),
                                     user.getDisplayName(),
                                     user.getPortraitUrl(),

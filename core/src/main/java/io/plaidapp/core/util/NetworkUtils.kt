@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.domain.model
+package io.plaidapp.core.util
 
-import java.util.Date
+import io.plaidapp.core.data.Result
+import java.io.IOException
 
 /**
- * Models a comment on a designer news story.
+ * Wrap a suspending API [call] in try/catch. In case an exception is thrown, a [Result.Error] is
+ * created based on the [errorMessage].
  */
-data class Comment(
-    val id: Long,
-    val parentCommentId: Long?,
-    val body: String,
-    val createdAt: Date,
-    val depth: Int,
-    val upvotesCount: Int,
-    val userId: Long,
-    val userDisplayName: String?,
-    val userPortraitUrl: String?,
-    var upvoted: Boolean // TODO change this to val when getting to the upvoting
-)
+suspend fun <T : Any> safeApiCall(call: suspend () -> Result<T>, errorMessage: String): Result<T> {
+    return try {
+        call()
+    } catch (e: Exception) {
+        // An exception was thrown when calling the API so we're converting this to an IOException
+        Result.Error(IOException(errorMessage, e))
+    }
+}
