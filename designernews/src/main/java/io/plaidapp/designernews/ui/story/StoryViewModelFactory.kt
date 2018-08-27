@@ -21,6 +21,8 @@ import android.arch.lifecycle.ViewModelProvider
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.designernews.domain.CommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
+import io.plaidapp.designernews.domain.PostReplyUseCase
+import io.plaidapp.designernews.domain.PostStoryCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase
 
@@ -30,6 +32,8 @@ import io.plaidapp.designernews.domain.UpvoteStoryUseCase
 class StoryViewModelFactory(
     private val storyId: Long,
     private val getStoryUseCase: GetStoryUseCase,
+    private var postStoryComment: PostStoryCommentUseCase,
+    private var postReply: PostReplyUseCase,
     private val commentsWithRepliesAndUsersUseCase: CommentsWithRepliesAndUsersUseCase,
     private val upvoteStoryUseCase: UpvoteStoryUseCase,
     private val upvoteCommentUseCase: UpvoteCommentUseCase,
@@ -44,6 +48,8 @@ class StoryViewModelFactory(
         return StoryViewModel(
             storyId,
             getStoryUseCase,
+            postStoryComment,
+            postReply,
             commentsWithRepliesAndUsersUseCase,
             upvoteStoryUseCase,
             upvoteCommentUseCase,

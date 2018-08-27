@@ -20,6 +20,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.repliesResponses
+import io.plaidapp.core.designernews.replyResponse1
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -29,6 +30,8 @@ import java.io.IOException
  * Tests for [CommentsRepository] mocking all dependencies
  */
 class CommentsRepositoryTest {
+    private val body = "Plaid 2.0 is awesome"
+
     private val dataSource: CommentsRemoteDataSource = mock()
     private val repository = CommentsRepository(dataSource)
 
@@ -55,6 +58,86 @@ class CommentsRepositoryTest {
 
         // When requesting the comments
         val data = repository.getComments(ids)
+
+        // The correct response is returned
+        assertEquals(result, data)
+    }
+
+    @Test
+    fun postStoryComment_withSuccess() = runBlocking {
+        // Given that a result is return when posting a story comment
+        val result = Result.Success(replyResponse1)
+        whenever(
+            dataSource.comment(
+                commentBody = body,
+                parentCommentId = null,
+                storyId = 11L,
+                userId = 111L
+            )
+        ).thenReturn(result)
+
+        // When posting a story comment
+        val data = repository.postStoryComment(body, 11L, 111L)
+
+        // The correct response is returned
+        assertEquals(result, data)
+    }
+
+    @Test
+    fun postStoryComment_withError() = runBlocking {
+        // Given that an error result is return when posting a story comment
+        val result = Result.Error(IOException("error"))
+        whenever(
+            dataSource.comment(
+                commentBody = body,
+                parentCommentId = null,
+                storyId = 11L,
+                userId = 111L
+            )
+        ).thenReturn(result)
+
+        // When posting a story comment
+        val data = repository.postStoryComment(body, 11L, 111L)
+
+        // The correct response is returned
+        assertEquals(result, data)
+    }
+
+    @Test
+    fun postReply_withSuccess() = runBlocking {
+        // Given that a result is return when posting a story comment
+        val result = Result.Success(replyResponse1)
+        whenever(
+            dataSource.comment(
+                commentBody = body,
+                parentCommentId = 11L,
+                storyId = null,
+                userId = 111L
+            )
+        ).thenReturn(result)
+
+        // When posting reply
+        val data = repository.postReply(body, 11L, 111L)
+
+        // The correct response is returned
+        assertEquals(result, data)
+    }
+
+    @Test
+    fun postReply_withError() = runBlocking {
+        // Given that an error result is return when posting a reply to a comment
+        val result = Result.Error(IOException("error"))
+        whenever(
+            dataSource.comment(
+                commentBody = body,
+                parentCommentId = 11L,
+                storyId = null,
+                userId = 111L
+            )
+        ).thenReturn(result)
+
+        // When posting reply
+        val data = repository.postReply(body, 11L, 111L)
 
         // The correct response is returned
         assertEquals(result, data)

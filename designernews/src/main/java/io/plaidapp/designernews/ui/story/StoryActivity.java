@@ -83,9 +83,6 @@ import io.plaidapp.designernews.R;
 import io.plaidapp.designernews.ui.login.LoginActivity;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import kotlin.Unit;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -546,19 +543,15 @@ public class StoryActivity extends AppCompatActivity {
     }
 
     private void addComment() {
-        final Call<Comment> comment = designerNewsPrefs.getApi()
-                .comment(story.getId(), enterComment.getText().toString());
-        comment.enqueue(new Callback<Comment>() {
-            @Override
-            public void onResponse(Call<Comment> call, Response<Comment> response) {
-                Comment responseComment = response.body();
+        // TODO move the result handling in the
+        viewModel.storyReplyRequested(enterComment.getText(), result -> {
+            if (result instanceof Result.Success) {
+                Comment responseComment = ((Result.Success<Comment>) result).getData();
                 commentAdded(responseComment);
-            }
-
-            @Override
-            public void onFailure(Call<Comment> call, Throwable t) {
+            } else {
                 commentAddingFailed();
             }
+            return Unit.INSTANCE;
         });
     }
 
@@ -874,19 +867,13 @@ public class StoryActivity extends AppCompatActivity {
         }
 
         private void replyToComment(Long commentId, String reply) {
-            final Call<Comment> replyToComment = designerNewsPrefs.getApi()
-                    .replyToComment(commentId, reply);
-            replyToComment.enqueue(new Callback<Comment>() {
-                @Override
-                public void onResponse(Call<Comment> call, Response<Comment> response) {
-
-                }
-
-                @Override
-                public void onFailure(Call<Comment> call, Throwable t) {
+            // TODO move the result handling in the VM
+            viewModel.commentReplyRequested(reply, commentId, result -> {
+                if (result instanceof Result.Error) {
                     Toast.makeText(getApplicationContext(),
                             "Failed to post comment :(", Toast.LENGTH_SHORT).show();
                 }
+                return Unit.INSTANCE;
             });
         }
 

@@ -22,11 +22,15 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryLinks
+import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.designernews.domain.CommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
+import io.plaidapp.designernews.domain.PostReplyUseCase
+import io.plaidapp.designernews.domain.PostStoryCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase
 import io.plaidapp.designernews.flattendCommentsWithReplies
+import io.plaidapp.designernews.reply1
 import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
 import kotlinx.coroutines.experimental.runBlocking
@@ -65,10 +69,12 @@ class StoryViewModelTest {
         links = storyLinks
     )
 
-    private val getStoryUseCase: GetStoryUseCase = mock()
+    private val getStory: GetStoryUseCase = mock()
+    private val postStoryComment: PostStoryCommentUseCase = mock()
+    private val postComment: PostReplyUseCase = mock()
     private val commentsWithRepliesAndUsers: CommentsWithRepliesAndUsersUseCase = mock()
-    private val upvoteStoryUseCase: UpvoteStoryUseCase = mock()
-    private val upvoteCommentUseCase: UpvoteCommentUseCase = mock()
+    private val upvoteStory: UpvoteStoryUseCase = mock()
+    private val upvoteComment: UpvoteCommentUseCase = mock()
 
     @Test
     fun loadStory_existsInRepo() {
@@ -83,15 +89,17 @@ class StoryViewModelTest {
     @Test(expected = IllegalStateException::class)
     fun loadStory_notInRepo() {
         // Given that the repo fails to return the requested story
-        whenever(getStoryUseCase(storyId)).thenReturn(Result.Error(IllegalStateException()))
+        whenever(getStory(storyId)).thenReturn(Result.Error(IllegalStateException()))
 
         // When the view model is constructed
         StoryViewModel(
             storyId,
-            getStoryUseCase,
+            getStory,
+            postStoryComment,
+            postComment,
             commentsWithRepliesAndUsers,
-            upvoteStoryUseCase,
-            upvoteCommentUseCase,
+            upvoteStory,
+            upvoteComment,
             provideFakeCoroutinesContextProvider()
         )
         // Then it throws
@@ -111,7 +119,7 @@ class StoryViewModelTest {
     @Test
     fun upvoteStory_whenUpvoteSuccessful() = runBlocking {
         // Given that the use case responds with success
-        whenever(upvoteStoryUseCase.invoke(storyId)).thenReturn(Result.Success(Unit))
+        whenever(upvoteStory(storyId)).thenReturn(Result.Success(Unit))
         // And the view model is constructed
         val viewModel = withViewModel()
         var result: Result<Unit>? = null
@@ -127,7 +135,7 @@ class StoryViewModelTest {
     fun upvoteStory_whenUpvoteFailed() = runBlocking {
         // Given that the use case responds with error
         val response = Result.Error(IOException("Error upvoting"))
-        whenever(upvoteStoryUseCase.invoke(storyId)).thenReturn(response)
+        whenever(upvoteStory(storyId)).thenReturn(response)
         // And the view model is constructed
         val viewModel = withViewModel()
         var result: Result<Unit>? = null
@@ -142,7 +150,7 @@ class StoryViewModelTest {
     @Test
     fun upvoteComment_whenUpvoteSuccessful() = runBlocking {
         // Given that the use case responds with success
-        whenever(upvoteCommentUseCase.invoke(commentId))
+        whenever(upvoteComment(commentId))
             .thenReturn(Result.Success(Unit))
         // And the view model is constructed
         val viewModel = withViewModel()
@@ -159,7 +167,7 @@ class StoryViewModelTest {
     fun upvoteComment_whenUpvoteFailed() = runBlocking {
         // Given that the use case responds with error
         val response = Result.Error(IOException("Error upvoting"))
-        whenever(upvoteCommentUseCase(commentId)).thenReturn(response)
+        whenever(upvoteComment(commentId)).thenReturn(response)
         // And the view model is constructed
         val viewModel = withViewModel()
         var result: Result<Unit>? = null
@@ -171,8 +179,77 @@ class StoryViewModelTest {
         assertTrue(result is Result.Error)
     }
 
+    @Test
+    fun commentReplyRequested_withSuccess() = runBlocking {
+        // Given that the comment reply is posted successfully
+        val expected = Result.Success(reply1)
+        whenever(postComment.invoke(reply1.body, reply1.parentCommentId!!)).thenReturn(expected)
+        // And the view model is constructed
+        val viewModel = withViewModel()
+        var result: Result<Comment>? = null
+
+        // When posting a comment reply
+        viewModel.commentReplyRequested(reply1.body, reply1.parentCommentId!!) {
+            result = it
+        }
+
+        // Then the result is the expected one
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun commentReplyRequested_withError() = runBlocking {
+        // Given that the comment reply is posted with error
+        val expected = Result.Error(IOException("Error"))
+        whenever(postComment.invoke(reply1.body, reply1.parentCommentId!!)).thenReturn(expected)
+        // And the view model is constructed
+        val viewModel = withViewModel()
+        var result: Result<Comment>? = null
+
+        // When posting a comment reply
+        viewModel.commentReplyRequested(reply1.body, reply1.parentCommentId!!) {
+            result = it
+        }
+
+        // Then the result is the expected one
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun storyReplyRequested_withSuccess() = runBlocking {
+        // Given that the comment reply is posted successfully
+        val expected = Result.Success(reply1)
+        whenever(postStoryComment.invoke(reply1.body, storyId))
+            .thenReturn(expected)
+        // And the view model is constructed
+        val viewModel = withViewModel()
+        var result: Result<Comment>? = null
+
+        // When posting a comment reply
+        viewModel.storyReplyRequested(reply1.body) { result = it }
+
+        // Then the result is the expected one
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun storyReplyRequested_withError() = runBlocking {
+        // Given that the comment reply is posted with error
+        val expected = Result.Error(IOException("Error"))
+        whenever(postStoryComment.invoke(reply1.body, storyId)).thenReturn(expected)
+        // And the view model is constructed
+        val viewModel = withViewModel()
+        var result: Result<Comment>? = null
+
+        // When posting a comment reply
+        viewModel.storyReplyRequested(reply1.body) { result = it }
+
+        // Then the result is the expected one
+        assertEquals(expected, result)
+    }
+
     private fun withViewModel(): StoryViewModel {
-        whenever(getStoryUseCase(storyId)).thenReturn(Result.Success(testStory))
+        whenever(getStory(storyId)).thenReturn(Result.Success(testStory))
         runBlocking {
             whenever(commentsWithRepliesAndUsers(commentIds)).thenReturn(
                 Result.Success(
@@ -182,10 +259,12 @@ class StoryViewModelTest {
         }
         return StoryViewModel(
             storyId,
-            getStoryUseCase,
+            getStory,
+            postStoryComment,
+            postComment,
             commentsWithRepliesAndUsers,
-            upvoteStoryUseCase,
-            upvoteCommentUseCase,
+            upvoteStory,
+            upvoteComment,
             provideFakeCoroutinesContextProvider()
         )
     }
