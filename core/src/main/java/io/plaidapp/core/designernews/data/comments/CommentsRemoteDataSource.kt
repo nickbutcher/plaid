@@ -19,6 +19,7 @@ package io.plaidapp.core.designernews.data.comments
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.comments.model.CommentResponse
+import io.plaidapp.core.designernews.data.comments.model.NewCommentRequest
 import io.plaidapp.core.util.safeApiCall
 import java.io.IOException
 
@@ -49,8 +50,51 @@ class CommentsRemoteDataSource(private val service: DesignerNewsService) {
         )
     }
 
+    /**
+     * Post a comment to a story or as a reply to another comment.
+     * Either the parent comment id or the story need to be present.
+     */
+    suspend fun comment(
+        commentBody: String,
+        parentCommentId: Long?,
+        storyId: Long?,
+        userId: Long
+    ): Result<CommentResponse> {
+        check(
+            parentCommentId != null || storyId != null
+        ) { "Unable to post comment. Either parent comment or the story need to be present" }
+
+        return safeApiCall(
+            call = { postComment(commentBody, parentCommentId, storyId, userId) },
+            errorMessage = "Unable to post comment"
+        )
+    }
+
+    private suspend fun postComment(
+        commentBody: String,
+        parentCommentId: Long?,
+        storyId: Long?,
+        userId: Long
+    ): Result<CommentResponse> {
+        val request = NewCommentRequest(
+            body = commentBody,
+            parent_comment = parentCommentId?.toString(),
+            story = storyId?.toString(),
+            user = userId.toString()
+        )
+        val response = service.comment(request).await()
+        if (response.isSuccessful) {
+            val body = response.body()
+            if (body != null && !body.comments.isEmpty()) {
+                return Result.Success(body.comments[0])
+            }
+        }
+        return Result.Error(IOException("Error posting comment ${response.code()} ${response.message()}"))
+    }
+
     companion object {
-        @Volatile private var INSTANCE: CommentsRemoteDataSource? = null
+        @Volatile
+        private var INSTANCE: CommentsRemoteDataSource? = null
 
         fun getInstance(service: DesignerNewsService): CommentsRemoteDataSource {
             return INSTANCE ?: synchronized(this) {
