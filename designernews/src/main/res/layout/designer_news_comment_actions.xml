@@ -56,7 +56,6 @@
             android:gravity="top"
             android:inputType="textMultiLine|textCapSentences"
             android:textSize="16sp"
-            android:enabled="false"
             android:textColor="@color/text_primary_dark" />
 
     </android.support.design.widget.TextInputLayout>
