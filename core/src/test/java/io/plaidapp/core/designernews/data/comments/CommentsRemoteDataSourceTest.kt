@@ -22,8 +22,11 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.comments.model.CommentResponse
+import io.plaidapp.core.designernews.data.comments.model.NewCommentRequest
+import io.plaidapp.core.designernews.data.comments.model.PostCommentResponse
 import io.plaidapp.core.designernews.errorResponseBody
 import io.plaidapp.core.designernews.repliesResponses
+import io.plaidapp.core.designernews.replyResponse1
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
@@ -37,6 +40,8 @@ import java.net.UnknownHostException
  * Tests for [CommentsRemoteDataSource] that mock the Designer News API
  */
 class CommentsRemoteDataSourceTest {
+
+    private val body = "Plaid is awesome"
 
     private val service: DesignerNewsService = mock()
     private val dataSource = CommentsRemoteDataSource(service)
@@ -109,5 +114,57 @@ class CommentsRemoteDataSourceTest {
 
         // Then the response is not successful
         assertTrue(response is Result.Error)
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun comment_whenParentCommentIdAndStoryIdNull() = runBlocking {
+        // When posting a comment with both the parent comment id and the story id are null
+        dataSource.comment("text", null, null, 11L)
+        // Then an exception is thrown
+        Unit
+    }
+
+    @Test
+    fun comment_whenException() = runBlocking {
+        // Given that the service throws an exception
+        val request = NewCommentRequest(body, "11", null, "111")
+        doAnswer { throw UnknownHostException() }
+            .whenever(service).comment(request)
+
+        // When adding a comment
+        val response = dataSource.comment(body, 11L, null, 111L)
+
+        // Then the response is not successful
+        assertTrue(response is Result.Error)
+    }
+
+    @Test
+    fun comment_withNoComments() = runBlocking {
+        // Given a response returned for a request
+        val response = Response.success(PostCommentResponse(emptyList()))
+        val request = NewCommentRequest(body, "11", null, "111")
+        whenever(service.comment(request)).thenReturn(CompletableDeferred(response))
+
+        // When adding a comment
+        val result = dataSource.comment(body, 11L, null, 111L)
+
+        // Then the result is not successful
+        assertTrue(result is Result.Error)
+    }
+
+    @Test
+    fun comment_withComments() = runBlocking {
+        // Given a response returned for a request
+        val response = Response.success(
+            PostCommentResponse(listOf(replyResponse1))
+        )
+        val request = NewCommentRequest(body, "11", null, "111")
+        whenever(service.comment(request)).thenReturn(CompletableDeferred(response))
+
+        // When adding a comment
+        val result = dataSource.comment(body, 11L, null, 111L)
+
+        // Then the result is successful
+        assertEquals(result, Result.Success(replyResponse1))
     }
 }

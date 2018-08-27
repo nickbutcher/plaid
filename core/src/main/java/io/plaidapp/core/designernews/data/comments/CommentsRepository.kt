@@ -31,6 +31,38 @@ class CommentsRepository(private val remoteDataSource: CommentsRemoteDataSource)
         return remoteDataSource.getComments(ids)
     }
 
+    /**
+     * Post a comment to a story.
+     */
+    suspend fun postStoryComment(
+        body: String,
+        storyId: Long,
+        userId: Long
+    ): Result<CommentResponse> {
+        return remoteDataSource.comment(
+            commentBody = body,
+            parentCommentId = null,
+            storyId = storyId,
+            userId = userId
+        )
+    }
+
+    /**
+     * Post a reply to a comment.
+     */
+    suspend fun postReply(
+        body: String,
+        parentCommentId: Long,
+        userId: Long
+    ): Result<CommentResponse> {
+        return remoteDataSource.comment(
+            commentBody = body,
+            parentCommentId = parentCommentId,
+            storyId = null,
+            userId = userId
+        )
+    }
+
     companion object {
         @Volatile
         private var INSTANCE: CommentsRepository? = null
