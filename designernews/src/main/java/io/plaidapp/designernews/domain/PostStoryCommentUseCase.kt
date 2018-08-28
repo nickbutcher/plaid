@@ -21,17 +21,16 @@ import io.plaidapp.core.designernews.data.comments.CommentsRepository
 import io.plaidapp.core.designernews.data.comments.model.toCommentWithNoReplies
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.designernews.domain.model.Comment
+import io.plaidapp.core.util.exhaustive
 
 /**
- * Post a comment to a story.
+ * Post a comment to a story on behalf of the logged in user.
  */
 class PostStoryCommentUseCase(
     private val commentsRepository: CommentsRepository,
     private val loginRepository: LoginRepository
 ) {
-    /**
-     * Post a comment to a story.
-     */
+
     suspend operator fun invoke(body: String, storyId: Long): Result<Comment> {
         checkNotNull(loginRepository.user) {
             "User should be logged in, in order to post a comment"
@@ -44,6 +43,6 @@ class PostStoryCommentUseCase(
                 return Result.Success(commentResponse.toCommentWithNoReplies(user))
             }
             is Result.Error -> result
-        }
+        }.exhaustive
     }
 }

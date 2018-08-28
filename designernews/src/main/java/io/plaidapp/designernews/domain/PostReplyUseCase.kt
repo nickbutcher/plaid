@@ -21,17 +21,16 @@ import io.plaidapp.core.designernews.data.comments.CommentsRepository
 import io.plaidapp.core.designernews.data.comments.model.toCommentWithNoReplies
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.designernews.domain.model.Comment
+import io.plaidapp.core.util.exhaustive
 
 /**
- * Use case that knows how to get the info of the user that posts a reply
+ * Use case that posts a reply from the logged in user to a comment.
  */
 class PostReplyUseCase(
     private val commentsRepository: CommentsRepository,
     private val loginRepository: LoginRepository
 ) {
-    /**
-     * Post a reply to a comment
-     */
+
     suspend operator fun invoke(
         body: String,
         parentCommentId: Long
@@ -51,6 +50,6 @@ class PostReplyUseCase(
                 return Result.Success(commentResponse.toCommentWithNoReplies(user))
             }
             is Result.Error -> result
-        }
+        }.exhaustive
     }
 }

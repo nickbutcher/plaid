@@ -48,7 +48,7 @@ data class PostCommentRequest(
 )
 
 data class CommentData(
-    @SerializedName("body") val body: CharSequence
+    @SerializedName("body") val body: String
 )
 
 data class CommentLinks(
