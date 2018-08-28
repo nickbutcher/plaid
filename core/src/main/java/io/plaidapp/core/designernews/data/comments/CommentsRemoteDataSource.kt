@@ -93,8 +93,7 @@ class CommentsRemoteDataSource(private val service: DesignerNewsService) {
     }
 
     companion object {
-        @Volatile
-        private var INSTANCE: CommentsRemoteDataSource? = null
+        @Volatile private var INSTANCE: CommentsRemoteDataSource? = null
 
         fun getInstance(service: DesignerNewsService): CommentsRemoteDataSource {
             return INSTANCE ?: synchronized(this) {
