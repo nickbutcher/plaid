@@ -27,7 +27,7 @@ class UpvoteStoryUseCase(
     private val loginRepository: LoginRepository,
     private val votesRepository: VotesRepository
 ) {
-    suspend fun upvoteStory(storyId: Long): Result<Unit> {
+    suspend operator fun invoke(storyId: Long): Result<Unit> {
         val userId = loginRepository.user?.id
             ?: throw IllegalStateException("User must be logged in to upvote a comment")
         return votesRepository.upvoteStory(storyId, userId)
