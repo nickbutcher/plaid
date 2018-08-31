@@ -25,6 +25,8 @@ import io.plaidapp.core.data.prefs.SourceManager
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
+import io.plaidapp.core.designernews.storyLinks
+import io.plaidapp.core.designernews.userId
 import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
@@ -40,14 +42,32 @@ import java.util.GregorianCalendar
  */
 class LoadStoriesUseCaseTest {
     private val createdDate: Date = GregorianCalendar(2018, 1, 13).time
-    private val storyResponse =
-        StoryResponse(id = 45L, title = "Plaid 2.0 was released", created_at = createdDate)
-    private val storySequelResponse =
-        StoryResponse(id = 876L, title = "Plaid 2.0 is bug free", created_at = createdDate)
-    private val story =
-        Story(id = 45L, title = "Plaid 2.0 was released", createdAt = createdDate)
-    private val storySequel =
-        Story(id = 876L, title = "Plaid 2.0 is bug free", createdAt = createdDate)
+    private val storyResponse = StoryResponse(
+        id = 45L,
+        title = "Plaid 2.0 was released",
+        created_at = createdDate,
+        links = storyLinks
+    )
+    private val storySequelResponse = StoryResponse(
+        id = 876L,
+        title = "Plaid 2.0 is bug free",
+        created_at = createdDate,
+        links = storyLinks
+    )
+    private val story = Story(
+        id = 45L,
+        title = "Plaid 2.0 was released",
+        createdAt = createdDate,
+        userId = userId,
+        links = storyLinks
+    )
+    private val storySequel = Story(
+        id = 876L,
+        title = "Plaid 2.0 is bug free",
+        createdAt = createdDate,
+        userId = userId,
+        links = storyLinks
+    )
     private val storyResponses = listOf(storyResponse, storySequelResponse)
     private val stories = listOf(story, storySequel)
 

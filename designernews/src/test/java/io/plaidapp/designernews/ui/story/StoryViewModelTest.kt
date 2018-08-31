@@ -48,12 +48,13 @@ class StoryViewModelTest {
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    private val userId = 5L
     private val storyId = 1345L
     private val commentId = 999L
     private val createdDate: Date = GregorianCalendar(2018, 1, 13).time
     private val commentIds = listOf(11L, 12L)
     private val storyLinks = StoryLinks(
-        user = 5L,
+        user = userId,
         comments = commentIds,
         upvotes = emptyList(),
         downvotes = emptyList()
@@ -62,6 +63,7 @@ class StoryViewModelTest {
         id = storyId,
         title = "Plaid 2.0 was released",
         createdAt = createdDate,
+        userId = userId,
         links = storyLinks
     )
 

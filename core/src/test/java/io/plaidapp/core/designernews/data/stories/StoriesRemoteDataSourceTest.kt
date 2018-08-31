@@ -24,6 +24,7 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.errorResponseBody
+import io.plaidapp.core.designernews.storyLinks
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
@@ -40,10 +41,18 @@ import java.util.GregorianCalendar
 class StoriesRemoteDataSourceTest {
 
     private val createdDate: Date = GregorianCalendar(2018, 1, 13).time
-    private val story =
-        StoryResponse(id = 45L, title = "Plaid 2.0 was released", created_at = createdDate)
-    private val storySequel =
-        StoryResponse(id = 876L, title = "Plaid 2.0 is bug free", created_at = createdDate)
+    private val story = StoryResponse(
+        id = 45L,
+        title = "Plaid 2.0 was released",
+        created_at = createdDate,
+        links = storyLinks
+    )
+    private val storySequel = StoryResponse(
+        id = 876L,
+        title = "Plaid 2.0 is bug free",
+        created_at = createdDate,
+        links = storyLinks
+    )
     private val stories = listOf(story, storySequel)
     private val query = "Plaid 2.0"
 
