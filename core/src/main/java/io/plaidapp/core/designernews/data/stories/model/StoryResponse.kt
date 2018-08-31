@@ -29,6 +29,7 @@ fun StoryResponse.toStory() = Story(
     commentHtml = comment_html,
     commentCount = comment_count,
     voteCount = vote_count,
+    userId = links?.user ?: 0,
     createdAt = created_at,
     links = links
 )

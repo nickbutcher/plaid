@@ -53,7 +53,7 @@ class StoryViewModelTest {
     private val createdDate: Date = GregorianCalendar(2018, 1, 13).time
     private val commentIds = listOf(11L, 12L)
     private val storyLinks = StoryLinks(
-        user = "",
+        user = 5L,
         comments = commentIds,
         upvotes = emptyList(),
         downvotes = emptyList()
