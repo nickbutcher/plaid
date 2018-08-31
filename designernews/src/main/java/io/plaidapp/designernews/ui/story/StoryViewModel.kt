@@ -39,8 +39,8 @@ class StoryViewModel(
     storyId: Long,
     getStoryUseCase: GetStoryUseCase,
     private val commentsWithRepliesAndUsers: CommentsWithRepliesAndUsersUseCase,
-    private val upvoteStoryUseCase: UpvoteStoryUseCase,
-    private val upvoteCommentUseCase: UpvoteCommentUseCase,
+    private val upvoteStory: UpvoteStoryUseCase,
+    private val upvoteComment: UpvoteCommentUseCase,
     private val contextProvider: CoroutinesContextProvider
 ) : ViewModel() {
 
@@ -67,7 +67,7 @@ class StoryViewModel(
         context = contextProvider.io,
         parent = parentJob
     ) {
-        val result = upvoteStoryUseCase(storyId)
+        val result = upvoteStory(storyId)
         withContext(contextProvider.io) { onResult(result) }
     }
 
@@ -75,7 +75,7 @@ class StoryViewModel(
         context = contextProvider.io,
         parent = parentJob
     ) {
-        val result = upvoteCommentUseCase(commentId)
+        val result = upvoteComment(commentId)
         withContext(contextProvider.io) { onResult(result) }
     }
 
