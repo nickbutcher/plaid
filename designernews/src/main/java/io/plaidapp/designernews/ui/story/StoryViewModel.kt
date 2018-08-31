@@ -67,7 +67,7 @@ class StoryViewModel(
         context = contextProvider.io,
         parent = parentJob
     ) {
-        val result = upvoteStoryUseCase.upvoteStory(storyId)
+        val result = upvoteStoryUseCase(storyId)
         withContext(contextProvider.io) { onResult(result) }
     }
 
@@ -75,7 +75,7 @@ class StoryViewModel(
         context = contextProvider.io,
         parent = parentJob
     ) {
-        val result = upvoteCommentUseCase.upvoteComment(commentId)
+        val result = upvoteCommentUseCase(commentId)
         withContext(contextProvider.io) { onResult(result) }
     }
 

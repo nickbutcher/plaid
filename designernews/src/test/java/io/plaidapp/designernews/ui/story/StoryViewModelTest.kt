@@ -111,7 +111,7 @@ class StoryViewModelTest {
     @Test
     fun upvoteStory_whenUpvoteSuccessful() = runBlocking {
         // Given that the use case responds with success
-        whenever(upvoteStoryUseCase.upvoteStory(storyId)).thenReturn(Result.Success(Unit))
+        whenever(upvoteStoryUseCase.invoke(storyId)).thenReturn(Result.Success(Unit))
         // And the view model is constructed
         val viewModel = withViewModel()
         var result: Result<Unit>? = null
@@ -127,7 +127,7 @@ class StoryViewModelTest {
     fun upvoteStory_whenUpvoteFailed() = runBlocking {
         // Given that the use case responds with error
         val response = Result.Error(IOException("Error upvoting"))
-        whenever(upvoteStoryUseCase.upvoteStory(storyId)).thenReturn(response)
+        whenever(upvoteStoryUseCase.invoke(storyId)).thenReturn(response)
         // And the view model is constructed
         val viewModel = withViewModel()
         var result: Result<Unit>? = null
@@ -142,7 +142,7 @@ class StoryViewModelTest {
     @Test
     fun upvoteComment_whenUpvoteSuccessful() = runBlocking {
         // Given that the use case responds with success
-        whenever(upvoteCommentUseCase.upvoteComment(commentId))
+        whenever(upvoteCommentUseCase.invoke(commentId))
             .thenReturn(Result.Success(Unit))
         // And the view model is constructed
         val viewModel = withViewModel()
@@ -159,7 +159,7 @@ class StoryViewModelTest {
     fun upvoteComment_whenUpvoteFailed() = runBlocking {
         // Given that the use case responds with error
         val response = Result.Error(IOException("Error upvoting"))
-        whenever(upvoteCommentUseCase.upvoteComment(commentId)).thenReturn(response)
+        whenever(upvoteCommentUseCase(commentId)).thenReturn(response)
         // And the view model is constructed
         val viewModel = withViewModel()
         var result: Result<Unit>? = null
