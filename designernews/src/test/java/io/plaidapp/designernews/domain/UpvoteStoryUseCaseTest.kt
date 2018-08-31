@@ -53,7 +53,7 @@ class UpvoteStoryUseCaseTest {
 
         // When upvoting a story
         // Then an exception is thrown
-        runBlocking { upvoteStoryUseCase.upvoteStory(1L) }
+        runBlocking { upvoteStoryUseCase(1L) }
     }
 
     @Test
@@ -65,7 +65,7 @@ class UpvoteStoryUseCaseTest {
             .thenReturn(Result.Success(Unit))
 
         // When upvoting a story
-        val result = upvoteStoryUseCase.upvoteStory(storyId)
+        val result = upvoteStoryUseCase(storyId)
 
         // Then the use case returns success
         Assert.assertEquals(Result.Success(Unit), result)
@@ -80,7 +80,7 @@ class UpvoteStoryUseCaseTest {
             .thenReturn(Result.Error(IOException("error")))
 
         // When upvoting a story
-        val result = upvoteStoryUseCase.upvoteStory(storyId)
+        val result = upvoteStoryUseCase(storyId)
 
         // Then the use case returns with error
         Assert.assertTrue(result is Result.Error)

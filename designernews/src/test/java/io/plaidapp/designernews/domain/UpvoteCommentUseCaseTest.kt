@@ -54,7 +54,7 @@ class UpvoteCommentUseCaseTest {
 
         // When upvoting a comment
         // Then an exception is thrown
-        runBlocking { upvoteCommentUseCase.upvoteComment(1L) }
+        runBlocking { upvoteCommentUseCase(1L) }
     }
 
     @Test
@@ -66,7 +66,7 @@ class UpvoteCommentUseCaseTest {
             .thenReturn(Result.Success(Unit))
 
         // When upvoting a comment
-        val result = upvoteCommentUseCase.upvoteComment(commentId)
+        val result = upvoteCommentUseCase(commentId)
 
         // Then the use case returns success
         assertEquals(Result.Success(Unit), result)
@@ -81,7 +81,7 @@ class UpvoteCommentUseCaseTest {
             .thenReturn(Result.Error(IOException("error")))
 
         // When upvoting a comment
-        val result = upvoteCommentUseCase.upvoteComment(commentId)
+        val result = upvoteCommentUseCase(commentId)
 
         // Then the use case returns with error
         assertTrue(result is Result.Error)
