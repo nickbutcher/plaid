@@ -25,7 +25,7 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class StoryLinks(
-    @SerializedName("user") val user: String,
+    @SerializedName("user") val user: Long,
     @SerializedName("comments") val comments: List<Long>,
     @SerializedName("upvotes") val upvotes: List<String>,
     @SerializedName("downvotes") val downvotes: List<String>
