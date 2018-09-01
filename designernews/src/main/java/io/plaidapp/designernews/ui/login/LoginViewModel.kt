@@ -116,9 +116,9 @@ class LoginViewModel(
         showError: Event<Int>? = null,
         showSuccess: Event<LoginResultUiModel>? = null,
         enableLoginButton: Boolean = false
-    ) = launch(contextProvider.main, parent = currentJob) {
+    ) {
         val uiModel = LoginUiModel(showProgress, showError, showSuccess, enableLoginButton)
-        _uiState.value = uiModel
+        _uiState.postValue(uiModel)
     }
 }
 

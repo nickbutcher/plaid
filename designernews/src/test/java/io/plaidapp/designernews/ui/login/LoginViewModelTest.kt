@@ -131,12 +131,7 @@ class LoginViewModelTest {
             showSuccess = null,
             enableLoginButton = true
         )
-        // TODO leave only the last assert
         val uiState = LiveDataTestUtil.getValue(viewModel.uiState)
-        assertEquals(expectedUiModel.showProgress, uiState!!.showProgress)
-        assertEquals(expectedUiModel.showError, uiState.showError)
-        assertEquals(expectedUiModel.showSuccess, uiState.showSuccess)
-        assertEquals(expectedUiModel.enableLoginButton, uiState.enableLoginButton)
         assertEquals(expectedUiModel, uiState)
     }
 
