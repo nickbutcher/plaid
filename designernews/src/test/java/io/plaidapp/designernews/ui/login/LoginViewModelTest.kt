@@ -117,25 +117,6 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun loginDataChanged_withValidLogin() = runBlocking {
-        // Given a view model
-        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesContextProvider())
-
-        // When login data changed with valid login data
-        viewModel.loginDataChanged(username, password)
-
-        // Then the correct UI model is created
-        val expectedUiModel = LoginUiModel(
-            showProgress = false,
-            showError = null,
-            showSuccess = null,
-            enableLoginButton = true
-        )
-        val uiState = LiveDataTestUtil.getValue(viewModel.uiState)
-        assertEquals(expectedUiModel, uiState)
-    }
-
-    @Test
     fun loginDataChanged_withEmptyUsername() = runBlocking {
         // Given a view model
         val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesContextProvider())
