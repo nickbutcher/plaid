@@ -24,9 +24,9 @@ import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.comments.CommentsRemoteDataSource
 import io.plaidapp.core.designernews.data.comments.CommentsRepository
 import io.plaidapp.core.designernews.data.comments.model.CommentResponse
-import io.plaidapp.core.designernews.data.users.UserRemoteDataSource
-import io.plaidapp.core.designernews.data.users.UserRepository
 import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.designernews.data.users.UserRemoteDataSource
+import io.plaidapp.designernews.data.users.UserRepository
 import io.plaidapp.designernews.errorResponseBody
 import io.plaidapp.designernews.flattendCommentsWithReplies
 import io.plaidapp.designernews.flattenedCommentsWithoutReplies
