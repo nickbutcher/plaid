@@ -55,14 +55,14 @@ class StoryViewHolder(
             visibility = if (pocketIsInstalled) View.VISIBLE else View.GONE
             if (pocketIsInstalled) {
                 imageAlpha = 178 // grumble... no xml setter, grumble...
-                setOnClickListener { story?.let { onPocketClicked(it, adapterPosition) } }
+                setOnClickListener { story?.let { story -> onPocketClicked(story, adapterPosition) } }
             }
         }
         comments.setOnClickListener {
-            story?.let {
+            story?.let { story ->
                 val data =
                     TransitionData(
-                        it,
+                        story,
                         adapterPosition,
                         title,
                         getSharedElementsForTransition(),
@@ -72,10 +72,10 @@ class StoryViewHolder(
             }
         }
         itemView.setOnClickListener {
-            story?.let {
+            story?.let { story ->
                 val data =
                     TransitionData(
-                        it,
+                        story,
                         adapterPosition,
                         title,
                         getSharedElementsForTransition(),
