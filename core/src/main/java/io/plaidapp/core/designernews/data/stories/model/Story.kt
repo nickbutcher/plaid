@@ -37,7 +37,7 @@ data class Story(
     @SerializedName("vote_count") val voteCount: Int = 0,
     @SerializedName("user_id") val userId: Long,
     @SerializedName("created_at") val createdAt: Date,
-    @SerializedName("links") val links: StoryLinks,
+    @SerializedName("links") val links: StoryLinks?,
     @Deprecated("Removed in DN API V2")
     @SerializedName("user_display_name") val userDisplayName: String? = null,
     @Deprecated("Removed in DN API V2")
