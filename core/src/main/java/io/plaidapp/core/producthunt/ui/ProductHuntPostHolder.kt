@@ -39,8 +39,8 @@ class ProductHuntPostHolder(
     private var comments: TextView = itemView.findViewById(R.id.story_comments)
 
     init {
-        comments.setOnClickListener { post?.let { commentsClicked(it) } }
-        itemView.setOnClickListener { post?.let { viewClicked(it) } }
+        comments.setOnClickListener { post?.let { post -> commentsClicked(post) } }
+        itemView.setOnClickListener { post?.let { post -> viewClicked(post) } }
     }
 
     fun bind(item: Post) {
