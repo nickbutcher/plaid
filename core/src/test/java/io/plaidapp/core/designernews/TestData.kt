@@ -18,6 +18,7 @@ package io.plaidapp.core.designernews
 
 import io.plaidapp.core.designernews.data.comments.model.CommentLinksResponse
 import io.plaidapp.core.designernews.data.comments.model.CommentResponse
+import io.plaidapp.core.designernews.data.stories.model.StoryLinks
 import io.plaidapp.core.designernews.data.users.model.User
 import okhttp3.MediaType
 import okhttp3.ResponseBody
@@ -63,3 +64,12 @@ val repliesResponses = listOf(
 )
 
 val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")
+
+val userId = 123L
+
+val storyLinks = StoryLinks(
+    user = userId,
+    comments = listOf(1, 2, 3),
+    upvotes = listOf(11, 22, 33),
+    downvotes = listOf(111, 222, 333)
+)

@@ -17,21 +17,36 @@
 package io.plaidapp.core.designernews.data.comments.model
 
 import com.google.gson.annotations.SerializedName
+import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.designernews.domain.model.CommentWithReplies
 import java.util.Date
+
+fun CommentResponse.toCommentWithNoReplies(user: User) = Comment(
+    id = id,
+    parentCommentId = links.parentComment,
+    body = body,
+    createdAt = created_at,
+    depth = depth,
+    upvotesCount = links.commentUpvotes.size,
+    userId = user.id,
+    userDisplayName = user.displayName,
+    userPortraitUrl = user.portraitUrl,
+    upvoted = false
+)
 
 fun CommentResponse.toCommentsWithReplies(
     replies: List<CommentWithReplies>
 ) = CommentWithReplies(
-        id = id,
-        parentId = links.parentComment,
-        body = body,
-        createdAt = created_at,
-        depth = depth,
-        upvotesCount = links.commentUpvotes.size,
-        userId = links.userId,
-        storyId = links.story,
-        replies = replies
+    id = id,
+    parentId = links.parentComment,
+    body = body,
+    createdAt = created_at,
+    depth = depth,
+    upvotesCount = links.commentUpvotes.size,
+    userId = links.userId,
+    storyId = links.story,
+    replies = replies
 )
 
 /**

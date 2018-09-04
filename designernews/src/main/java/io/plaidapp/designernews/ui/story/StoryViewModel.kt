@@ -25,6 +25,8 @@ import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.designernews.domain.CommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
+import io.plaidapp.designernews.domain.PostReplyUseCase
+import io.plaidapp.designernews.domain.PostStoryCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase
 import kotlinx.coroutines.experimental.Job
@@ -38,9 +40,11 @@ import kotlinx.coroutines.experimental.withContext
 class StoryViewModel(
     storyId: Long,
     getStoryUseCase: GetStoryUseCase,
+    private var postStoryComment: PostStoryCommentUseCase,
+    private var postReply: PostReplyUseCase,
     private val commentsWithRepliesAndUsers: CommentsWithRepliesAndUsersUseCase,
-    private val upvoteStoryUseCase: UpvoteStoryUseCase,
-    private val upvoteCommentUseCase: UpvoteCommentUseCase,
+    private val upvoteStory: UpvoteStoryUseCase,
+    private val upvoteComment: UpvoteCommentUseCase,
     private val contextProvider: CoroutinesContextProvider
 ) : ViewModel() {
 
@@ -67,7 +71,7 @@ class StoryViewModel(
         context = contextProvider.io,
         parent = parentJob
     ) {
-        val result = upvoteStoryUseCase.upvoteStory(storyId)
+        val result = upvoteStory(storyId)
         withContext(contextProvider.io) { onResult(result) }
     }
 
@@ -75,8 +79,25 @@ class StoryViewModel(
         context = contextProvider.io,
         parent = parentJob
     ) {
-        val result = upvoteCommentUseCase.upvoteComment(commentId)
+        val result = upvoteComment(commentId)
         withContext(contextProvider.io) { onResult(result) }
+    }
+
+    fun commentReplyRequested(
+        text: CharSequence,
+        commentId: Long,
+        onResult: (result: Result<Comment>) -> Unit
+    ) = launch(contextProvider.io, parent = parentJob) {
+        val result = postReply(text.toString(), commentId)
+        withContext(contextProvider.main) { onResult(result) }
+    }
+
+    fun storyReplyRequested(
+        text: CharSequence,
+        onResult: (result: Result<Comment>) -> Unit
+    ) = launch(contextProvider.io, parent = parentJob) {
+        val result = postStoryComment(text.toString(), story.id)
+        withContext(contextProvider.main) { onResult(result) }
     }
 
     override fun onCleared() {

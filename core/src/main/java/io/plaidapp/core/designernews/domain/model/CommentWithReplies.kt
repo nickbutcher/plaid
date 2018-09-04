@@ -47,4 +47,11 @@ data class CommentWithReplies(
     val userId: Long,
     val storyId: Long,
     val replies: List<CommentWithReplies> = emptyList()
-)
+) {
+    /**
+     * @return a flattened, recursive sequence of this [CommentWithReplies] and all its nested
+     * [replies].
+     */
+    val flattenWithReplies: Sequence<CommentWithReplies>
+        get() = sequenceOf(this) + replies.asSequence().flatMap(CommentWithReplies::flattenWithReplies)
+}

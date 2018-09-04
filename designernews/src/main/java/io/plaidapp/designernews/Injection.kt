@@ -31,6 +31,8 @@ import io.plaidapp.core.provideCoroutinesContextProvider
 import io.plaidapp.designernews.domain.CommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.domain.CommentsWithRepliesUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
+import io.plaidapp.designernews.domain.PostStoryCommentUseCase
+import io.plaidapp.designernews.domain.PostReplyUseCase
 import io.plaidapp.designernews.domain.UpvoteCommentUseCase
 import io.plaidapp.designernews.domain.UpvoteStoryUseCase
 import io.plaidapp.designernews.ui.DesignerNewsViewModelFactory
@@ -53,6 +55,8 @@ fun provideStoryViewModelFactory(storyId: Long, context: Context): StoryViewMode
     return StoryViewModelFactory(
         storyId,
         provideGetStoryUseCase(context),
+        providePostStoryCommentUseCase(context),
+        providePostReplyUseCase(context),
         provideCommentsWithRepliesAndUsersUseCase(context),
         provideUpvoteStoryUseCase(context),
         provideUpvoteCommentUseCase(context),
@@ -102,3 +106,21 @@ private fun provideUserRepository(dataSource: UserRemoteDataSource) =
 
 private fun provideCommentsRemoteDataSource(service: DesignerNewsService) =
     CommentsRemoteDataSource.getInstance(service)
+
+fun providePostReplyUseCase(context: Context): PostReplyUseCase {
+    val service = provideDesignerNewsService(context)
+    val commentsRepository = provideCommentsRepository(
+        provideCommentsRemoteDataSource(service)
+    )
+    val loginRepository = provideLoginRepository(context)
+    return PostReplyUseCase(commentsRepository, loginRepository)
+}
+
+fun providePostStoryCommentUseCase(context: Context): PostStoryCommentUseCase {
+    val service = provideDesignerNewsService(context)
+    val commentsRepository = provideCommentsRepository(
+        provideCommentsRemoteDataSource(service)
+    )
+    val loginRepository = provideLoginRepository(context)
+    return PostStoryCommentUseCase(commentsRepository, loginRepository)
+}

@@ -18,20 +18,16 @@
 package io.plaidapp.core.data;
 
 import android.content.Context;
-
+import io.plaidapp.core.designernews.Injection;
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase;
+import io.plaidapp.core.dribbble.DribbbleInjection;
+import io.plaidapp.core.dribbble.data.ShotsRepository;
+import io.plaidapp.core.dribbble.data.api.model.Shot;
+import kotlin.Unit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import io.plaidapp.core.dribbble.data.search.DribbbleSearchService;
-import io.plaidapp.core.dribbble.data.api.model.Shot;
-import io.plaidapp.core.designernews.Injection;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Responsible for loading search results from dribbble and designer news. Instantiating classes are
@@ -41,15 +37,16 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
         implements LoadSourceCallback {
 
     private final SearchStoriesUseCase searchStoriesUseCase;
+    private final ShotsRepository shotsRepository;
+
     // state
     private String query = "";
     private int page = 1;
-    private List<Call> inflight;
 
     public SearchDataManager(Context context) {
         super();
         searchStoriesUseCase = Injection.provideSearchStoriesUseCase(context);
-        inflight = new ArrayList<>();
+        shotsRepository = DribbbleInjection.provideShotsRepository();
     }
 
     public void searchFor(String query) {
@@ -76,13 +73,8 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
 
     @Override
     public void cancelLoading() {
-        if (inflight.size() > 0) {
-            for (Call call : inflight) {
-                call.cancel();
-            }
-            inflight.clear();
-            searchStoriesUseCase.cancelAllRequests();
-        }
+        searchStoriesUseCase.cancelAllRequests();
+        shotsRepository.cancelAllSearches();
     }
 
     public String getQuery() {
@@ -97,38 +89,23 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
 
     private void searchDribbble(final String query, final int resultsPage) {
         loadStarted();
-        final Call<List<Shot>> dribbbleSearchCall = getDribbbleSearchApi().search(
-                query, resultsPage, DribbbleSearchService.PER_PAGE_DEFAULT,
-                DribbbleSearchService.SORT_POPULAR);
-        dribbbleSearchCall.enqueue(new Callback<List<Shot>>() {
-            @Override
-            public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
-                if (response.isSuccessful()) {
-                    loadFinished();
-                    final List<Shot> shots = response.body();
-                    if (shots != null) {
-                        setPage(shots, resultsPage);
-                        setDataSource(shots,
-                                Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX + query);
-                        onDataLoaded(shots);
-                    }
-                    inflight.remove(dribbbleSearchCall);
-                } else {
-                    failure(dribbbleSearchCall);
-                }
+        shotsRepository.search(query, page, result -> {
+            loadFinished();
+            if (result instanceof Result.Success) {
+                List<Shot> shots = ((Result.Success<? extends List<Shot>>) result).getData();
+                setPage(shots, resultsPage);
+                setDataSource(shots,
+                        Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX + query);
+                onDataLoaded(shots);
             }
-
-            @Override
-            public void onFailure(Call<List<Shot>> call, Throwable t) {
-                failure(dribbbleSearchCall);
-            }
+            return Unit.INSTANCE;
         });
-        inflight.add(dribbbleSearchCall);
+
     }
 
     @Override
     public void sourceLoaded(@Nullable List<? extends PlaidItem> result, int page,
-            @NotNull String source) {
+                             @NotNull String source) {
         loadFinished();
         if (result != null) {
             setPage(result, page);
@@ -141,11 +118,6 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
     @Override
     public void loadFailed(@NotNull String source) {
         loadFinished();
-    }
-
-    private void failure(Call call) {
-        loadFinished();
-        inflight.remove(call);
     }
 
 }
