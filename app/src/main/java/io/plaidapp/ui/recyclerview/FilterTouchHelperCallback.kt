@@ -172,7 +172,9 @@ class FilterTouchHelperCallback(
                 iconColorFilter = iconColor
             }
             if (circleRadius > 0f) {
-                c.drawCircle(cx, cy, circleRadius, circlePaint)
+                circlePaint?.let { paint ->
+                    c.drawCircle(cx, cy, circleRadius, paint)
+                }
             }
             it.draw(c)
         }
