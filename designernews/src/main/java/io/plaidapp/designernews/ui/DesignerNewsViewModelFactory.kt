@@ -30,6 +30,7 @@ class DesignerNewsViewModelFactory(
     private val contextProvider: CoroutinesContextProvider
 ) : ViewModelProvider.Factory {
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             return LoginViewModel(loginRepository, contextProvider) as T
