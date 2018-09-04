@@ -20,9 +20,9 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.users.UserRepository
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.core.designernews.domain.model.CommentWithReplies
+import io.plaidapp.designernews.data.users.UserRepository
 import io.plaidapp.designernews.flattendCommentsWithReplies
 import io.plaidapp.designernews.flattenedCommentsWithoutReplies
 import io.plaidapp.designernews.parentCommentWithReplies
