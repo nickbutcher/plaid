@@ -107,7 +107,7 @@ class LoginViewModel(
         return username.isNotBlank() && password.isNotBlank()
     }
 
-    private fun enableLogin(enabled: Boolean) = launch {
+    private fun enableLogin(enabled: Boolean) {
         emitUiState(enableLoginButton = enabled)
     }
 
