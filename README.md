@@ -1,5 +1,7 @@
 # \[ 🚧 Work in progress 👷‍♀️⛏👷🔧️👷🔧 🚧 \] Plaid 2.0 
 
+[![Build Status](https://travis-ci.org/XinyueZ/plaid.svg?branch=master)](https://travis-ci.org/XinyueZ/plaid)
+
 Rewriting Plaid using [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/), in Kotlin. 
 
 🛑 During the initial development stage, we're not accepting external PRs. 🛑
