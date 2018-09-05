@@ -18,7 +18,7 @@ package io.plaidapp.designernews.domain
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.login.LoginRepository
-import io.plaidapp.core.designernews.data.votes.VotesRepository
+import io.plaidapp.designernews.data.votes.VotesRepository
 
 /**
  * Use case that based on a story id and on the id of the logged in user upvotes a story.
