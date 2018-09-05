@@ -106,11 +106,9 @@ class StoryViewModel(
     }
 
     private fun getComments() = launch(contextProvider.io, parent = parentJob) {
-        story.links?.let {
-            val result = commentsWithRepliesAndUsers(it.comments)
-            if (result is Result.Success) {
-                emitUiModel(result.data)
-            }
+        val result = commentsWithRepliesAndUsers(story.links.comments)
+        if (result is Result.Success) {
+            emitUiModel(result.data)
         }
     }
 
