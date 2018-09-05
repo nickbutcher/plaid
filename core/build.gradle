@@ -62,6 +62,7 @@ android {
 repositories {
     google()
     jcenter()
+    maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
 }
 
 dependencies {
@@ -87,8 +88,7 @@ dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
-    api "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:" +
-            "${versions.retrofitCoroutines}"
+    api "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:${versions.retrofitCoroutines}"
     api "org.jsoup:jsoup:${versions.jsoup}"
     api "android.arch.lifecycle:viewmodel:${versions.lifecycle}"
     api "android.arch.lifecycle:extensions:${versions.lifecycle}"
@@ -111,12 +111,6 @@ dependencies {
     // Work around issue with runtime classpath version conflict
     androidTestImplementation "com.android.support:support-core-utils:${versions.supportLibrary}"
     androidTestImplementation "android.arch.lifecycle:runtime:${versions.lifecycle}"
-}
-
-kotlin {
-    experimental {
-        coroutines 'enable'
-    }
 }
 
 androidExtensions {

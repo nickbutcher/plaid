@@ -39,8 +39,8 @@ import io.plaidapp.designernews.reply1NoUser
 import io.plaidapp.designernews.replyResponse1
 import io.plaidapp.designernews.user1
 import io.plaidapp.designernews.user2
-import kotlinx.coroutines.experimental.CompletableDeferred
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue

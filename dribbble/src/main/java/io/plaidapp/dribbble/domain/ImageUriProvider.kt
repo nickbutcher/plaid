@@ -22,8 +22,8 @@ import android.support.v4.content.FileProvider
 import com.bumptech.glide.Glide
 import io.plaidapp.core.dribbble.data.api.model.Images
 import io.plaidapp.dribbble.BuildConfig
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import java.io.File
 
 /**

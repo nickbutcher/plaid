@@ -18,11 +18,11 @@
 
 package io.plaidapp.core.dribbble
 
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import io.plaidapp.core.data.CoroutinesContextProvider
+import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchConverter
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchService
-import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
 import io.plaidapp.core.loggingInterceptor
 import io.plaidapp.core.provideCoroutinesContextProvider

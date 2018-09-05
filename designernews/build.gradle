@@ -45,6 +45,7 @@ android {
 repositories {
     google()
     jcenter()
+    maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
 }
 
 dependencies {
@@ -59,10 +60,4 @@ dependencies {
     // Work around issue with runtime classpath version conflict
     androidTestImplementation "com.android.support:support-core-utils:${versions.supportLibrary}"
     androidTestImplementation "android.arch.lifecycle:runtime:${versions.lifecycle}"
-}
-
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
 }

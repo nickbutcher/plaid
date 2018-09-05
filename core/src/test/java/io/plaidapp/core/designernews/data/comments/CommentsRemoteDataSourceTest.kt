@@ -27,8 +27,8 @@ import io.plaidapp.core.designernews.data.comments.model.PostCommentResponse
 import io.plaidapp.core.designernews.errorResponseBody
 import io.plaidapp.core.designernews.repliesResponses
 import io.plaidapp.core.designernews.replyResponse1
-import kotlinx.coroutines.experimental.CompletableDeferred
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
