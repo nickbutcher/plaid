@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.votes
+package io.plaidapp.designernews.data.votes
 
+import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.doAnswer
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.api.any
-import io.plaidapp.core.designernews.errorResponseBody
+import io.plaidapp.designernews.errorResponseBody
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
@@ -38,6 +38,7 @@ class VotesRemoteDataSourceTest {
 
     private val userId = 3L
     private val storyId = 1345L
+    private val commentId = 435L
 
     private val service: DesignerNewsService = mock()
     private val dataSource = VotesRemoteDataSource(service)
@@ -87,7 +88,7 @@ class VotesRemoteDataSourceTest {
         val response = Response.success(Unit)
         whenever(service.upvoteComment(any())).thenReturn(CompletableDeferred(response))
 
-        // When upvoting a story
+        // When upvoting a comment
         val result = dataSource.upvoteComment(storyId, userId)
 
         // Then the result is successful
@@ -100,7 +101,7 @@ class VotesRemoteDataSourceTest {
         val response = Response.error<Unit>(404, errorResponseBody)
         whenever(service.upvoteComment(any())).thenReturn(CompletableDeferred(response))
 
-        // When upvoting a story
+        // When upvoting a comment
         val result = dataSource.upvoteComment(storyId, userId)
 
         // Then the result is error
@@ -113,8 +114,8 @@ class VotesRemoteDataSourceTest {
         doAnswer { throw UnknownHostException() }
             .whenever(service).upvoteComment(any())
 
-        // When upvoting a story
-        val result = dataSource.upvoteComment(storyId, userId)
+        // When upvoting a comment
+        val result = dataSource.upvoteComment(commentId, userId)
 
         // Then the result is error
         assertTrue(result is Result.Error)

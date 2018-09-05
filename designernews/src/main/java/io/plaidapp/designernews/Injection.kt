@@ -24,10 +24,11 @@ import io.plaidapp.core.designernews.provideCommentsRepository
 import io.plaidapp.core.designernews.provideDesignerNewsService
 import io.plaidapp.core.designernews.provideLoginRepository
 import io.plaidapp.core.designernews.provideStoriesRepository
-import io.plaidapp.core.designernews.provideVotesRepository
 import io.plaidapp.core.provideCoroutinesContextProvider
 import io.plaidapp.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.designernews.data.users.UserRepository
+import io.plaidapp.designernews.data.votes.VotesRemoteDataSource
+import io.plaidapp.designernews.data.votes.VotesRepository
 import io.plaidapp.designernews.domain.CommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.domain.CommentsWithRepliesUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
@@ -124,3 +125,15 @@ fun providePostStoryCommentUseCase(context: Context): PostStoryCommentUseCase {
     val loginRepository = provideLoginRepository(context)
     return PostStoryCommentUseCase(commentsRepository, loginRepository)
 }
+
+fun provideVotesRepository(context: Context): VotesRepository {
+    return provideVotesRepository(
+        provideVotesRemoteDataSource(provideDesignerNewsService(context))
+    )
+}
+
+private fun provideVotesRemoteDataSource(service: DesignerNewsService) =
+    VotesRemoteDataSource(service)
+
+private fun provideVotesRepository(remoteDataSource: VotesRemoteDataSource) =
+    VotesRepository.getInstance(remoteDataSource)

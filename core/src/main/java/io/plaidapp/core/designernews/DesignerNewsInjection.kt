@@ -33,8 +33,6 @@ import io.plaidapp.core.designernews.data.login.LoginRemoteDataSource
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.designernews.data.stories.StoriesRemoteDataSource
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
-import io.plaidapp.core.designernews.data.votes.VotesRemoteDataSource
-import io.plaidapp.core.designernews.data.votes.VotesRepository
 import io.plaidapp.core.designernews.domain.LoadStoriesUseCase
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
 import io.plaidapp.core.loggingInterceptor
@@ -132,15 +130,3 @@ fun provideSearchStoriesUseCase(context: Context): SearchStoriesUseCase {
 
 fun provideCommentsRepository(dataSource: CommentsRemoteDataSource) =
     CommentsRepository.getInstance(dataSource)
-
-fun provideVotesRepository(context: Context): VotesRepository {
-    return provideVotesRepository(
-        provideVotesRemoteDataSource(provideDesignerNewsService(context))
-    )
-}
-
-private fun provideVotesRemoteDataSource(service: DesignerNewsService) =
-    VotesRemoteDataSource(service)
-
-private fun provideVotesRepository(remoteDataSource: VotesRemoteDataSource) =
-    VotesRepository.getInstance(remoteDataSource)
