@@ -63,7 +63,14 @@ class LoginLocalDataSourceTest {
         dataSource.user = user
 
         // Then it can then be retrieved
-        assertEquals(user.copy(firstName = "", lastName = ""), dataSource.user)
+        val expected = User(
+            id = 3,
+            firstName = "",
+            lastName = "",
+            displayName = "Plaidinium Plaidescu",
+            portraitUrl = "www"
+        )
+        assertEquals(expected, dataSource.user)
     }
 
     @Test
