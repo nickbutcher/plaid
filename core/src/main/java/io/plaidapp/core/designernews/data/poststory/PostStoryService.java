@@ -27,8 +27,9 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import io.plaidapp.core.designernews.DesignerNewsPrefs;
+import io.plaidapp.core.designernews.Injection;
 import io.plaidapp.core.designernews.data.api.DesignerNewsService;
+import io.plaidapp.core.designernews.data.login.LoginRepository;
 import io.plaidapp.core.designernews.data.poststory.model.NewStoryRequest;
 import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.designernews.data.users.model.User;
@@ -64,8 +65,11 @@ public class PostStoryService extends IntentService {
         if (intent == null) return;
         if (ACTION_POST_NEW_STORY.equals(intent.getAction())) {
             final boolean broadcastResult = intent.getBooleanExtra(EXTRA_BROADCAST_RESULT, false);
-            final DesignerNewsPrefs designerNewsPrefs = DesignerNewsPrefs.get(this);
-            if (!designerNewsPrefs.isLoggedIn()) return; // shouldn't happen...
+
+            final DesignerNewsService service = Injection.provideDesignerNewsService(this);
+            final LoginRepository repository = Injection.provideLoginRepository(this);
+
+            if (!repository.isLoggedIn()) return; // shouldn't happen...
 
             final String title = intent.getStringExtra(EXTRA_STORY_TITLE);
             final String url = intent.getStringExtra(EXTRA_STORY_URL);
@@ -75,8 +79,7 @@ public class PostStoryService extends IntentService {
             NewStoryRequest storyToPost = getNewStoryRequest(title, url, comment);
             if (storyToPost == null) return;
 
-            postStory(broadcastResult, designerNewsPrefs.getApi(), designerNewsPrefs.getUser(),
-                    storyToPost);
+            postStory(broadcastResult, service, repository.getUser(), storyToPost);
         }
     }
 
