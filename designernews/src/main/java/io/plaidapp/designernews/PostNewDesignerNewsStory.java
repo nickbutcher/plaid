@@ -38,9 +38,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import io.plaidapp.core.designernews.Injection;
+import io.plaidapp.core.designernews.data.login.LoginRepository;
 import io.plaidapp.core.util.ActivityHelper;
 import io.plaidapp.core.designernews.data.poststory.PostStoryService;
-import io.plaidapp.core.designernews.DesignerNewsPrefs;
 import io.plaidapp.core.ui.transitions.FabTransform;
 import io.plaidapp.core.ui.transitions.MorphTransform;
 import io.plaidapp.core.ui.widget.BottomSheet;
@@ -253,7 +254,8 @@ public class PostNewDesignerNewsStory extends Activity {
     }
 
     protected void postNewStory() {
-        if (DesignerNewsPrefs.get(this).isLoggedIn()) {
+        LoginRepository repository = Injection.provideLoginRepository(this);
+        if (repository.isLoggedIn()) {
             ImeUtils.hideIme(title);
             Intent postIntent = new Intent(PostStoryService.ACTION_POST_NEW_STORY, null,
                     this, PostStoryService.class);

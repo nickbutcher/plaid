@@ -104,9 +104,7 @@ private fun provideDesignerNewsService(
 
 fun provideStoriesRepository(context: Context): StoriesRepository {
     return provideStoriesRepository(
-        provideStoriesRemoteDataSource(
-            DesignerNewsPrefs.get(context).api
-        )
+        provideStoriesRemoteDataSource(provideDesignerNewsService(context))
     )
 }
 

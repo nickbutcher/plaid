@@ -62,7 +62,8 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
 import in.uncod.android.bypass.Bypass;
 import in.uncod.android.bypass.Markdown;
 import io.plaidapp.core.data.Result;
-import io.plaidapp.core.designernews.DesignerNewsPrefs;
+import io.plaidapp.core.designernews.Injection;
+import io.plaidapp.core.designernews.data.login.LoginRepository;
 import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.designernews.data.users.model.User;
 import io.plaidapp.core.designernews.domain.model.Comment;
@@ -124,7 +125,7 @@ public class StoryActivity extends AppCompatActivity {
 
     private StoryViewModel viewModel;
 
-    private DesignerNewsPrefs designerNewsPrefs;
+    private LoginRepository loginRepository;
     private Markdown markdown;
     private CustomTabActivityHelper customTab;
 
@@ -139,7 +140,7 @@ public class StoryActivity extends AppCompatActivity {
         }
         StoryViewModelFactory factory = InjectionKt.provideStoryViewModelFactory(storyId, this);
         viewModel = ViewModelProviders.of(this, factory).get(StoryViewModel.class);
-
+        loginRepository = Injection.provideLoginRepository(this);
         bindResources();
 
         story = viewModel.getStory();
@@ -157,7 +158,6 @@ public class StoryActivity extends AppCompatActivity {
                 .setBlockQuoteIndentSize(TypedValue.COMPLEX_UNIT_DIP, 2f)
                 .setBlockQuoteTextColor(
                         ContextCompat.getColor(this, io.plaidapp.R.color.designer_news_quote)));
-        designerNewsPrefs = DesignerNewsPrefs.get(this);
         layoutManager = new LinearLayoutManager(this);
         commentsList.setLayoutManager(layoutManager);
         commentsList.setItemAnimator(new CommentAnimator(
@@ -528,7 +528,7 @@ public class StoryActivity extends AppCompatActivity {
         enterComment = enterCommentView.findViewById(R.id.comment);
         postComment = enterCommentView.findViewById(R.id.post_comment);
         postComment.setOnClickListener(v -> {
-            if (designerNewsPrefs.isLoggedIn()) {
+            if (loginRepository.isLoggedIn()) {
                 if (TextUtils.isEmpty(enterComment.getText())) return;
                 enterComment.setEnabled(false);
                 postComment.setEnabled(false);
@@ -570,7 +570,7 @@ public class StoryActivity extends AppCompatActivity {
     }
 
     private void upvoteStory() {
-        if (designerNewsPrefs.isLoggedIn()) {
+        if (loginRepository.isLoggedIn()) {
             if (!upvoteStory.isActivated()) {
                 upvoteStory.setActivated(true);
                 viewModel.storyUpvoteRequested(story.getId(),
@@ -979,11 +979,11 @@ public class StoryActivity extends AppCompatActivity {
 
             holder.getCommentVotes().setOnClickListener(v -> {
                 Comment comment = getComment(holder.getAdapterPosition());
-                handleCommentVotesClick(holder, designerNewsPrefs.isLoggedIn(), comment);
+                handleCommentVotesClick(holder, loginRepository.isLoggedIn(), comment);
             });
 
             holder.getPostReply().setOnClickListener(v -> {
-                if (designerNewsPrefs.isLoggedIn()) {
+                if (loginRepository.isLoggedIn()) {
                     String reply = holder.getCommentReply().getText().toString();
                     if (reply.isEmpty()) return;
 
@@ -994,7 +994,7 @@ public class StoryActivity extends AppCompatActivity {
                     // insert a locally created comment before actually
                     // hitting the API for immediate response
                     int replyDepth = replyingTo.getDepth() + 1;
-                    User user = designerNewsPrefs.getUser();
+                    User user = loginRepository.getUser();
                     String commentBody = holder.getCommentReply().getText().toString();
                     final int newReplyPosition = commentsAdapter.addCommentReply(
                             new Comment(

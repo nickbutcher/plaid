@@ -77,10 +77,11 @@ import io.plaidapp.R;
 import io.plaidapp.core.data.DataManager;
 import io.plaidapp.core.data.PlaidItem;
 import io.plaidapp.core.data.Source;
+import io.plaidapp.core.designernews.Injection;
+import io.plaidapp.core.designernews.data.login.LoginRepository;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.data.pocket.PocketUtils;
 import io.plaidapp.core.data.prefs.SourceManager;
-import io.plaidapp.core.designernews.DesignerNewsPrefs;
 import io.plaidapp.core.designernews.data.poststory.PostStoryService;
 import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.ui.FeedAdapter;
@@ -91,6 +92,7 @@ import io.plaidapp.core.util.Activities;
 import io.plaidapp.core.util.ActivityHelper;
 import io.plaidapp.core.util.AnimUtils;
 import io.plaidapp.core.util.DrawableUtils;
+import io.plaidapp.core.util.ShortcutHelper;
 import io.plaidapp.core.util.ViewUtils;
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
@@ -120,7 +122,7 @@ public class HomeActivity extends Activity {
     DataManager dataManager;
     FeedAdapter adapter;
     FilterAdapter filtersAdapter;
-    private DesignerNewsPrefs designerNewsPrefs;
+    private LoginRepository loginRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +140,7 @@ public class HomeActivity extends Activity {
         }
         setExitSharedElementCallback(FeedAdapter.createSharedElementReenterCallback(this));
 
-        designerNewsPrefs = DesignerNewsPrefs.get(this);
+        loginRepository = Injection.provideLoginRepository(this);
         filtersAdapter = new FilterAdapter(this, SourceManager.getSources(this));
         dataManager = new DataManager(this, filtersAdapter) {
             @Override
@@ -311,7 +313,7 @@ public class HomeActivity extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         final MenuItem designerNewsLogin = menu.findItem(R.id.menu_designer_news_login);
         if (designerNewsLogin != null) {
-            designerNewsLogin.setTitle(designerNewsPrefs.isLoggedIn() ?
+            designerNewsLogin.setTitle(loginRepository.isLoggedIn() ?
                     R.string.designer_news_log_out : R.string.designer_news_login);
         }
         return true;
@@ -330,10 +332,11 @@ public class HomeActivity extends Activity {
                 startActivityForResult(ActivityHelper.intentTo(Activities.Search.INSTANCE), RC_SEARCH, options);
                 return true;
             case R.id.menu_designer_news_login:
-                if (!designerNewsPrefs.isLoggedIn()) {
+                if (!loginRepository.isLoggedIn()) {
                     startActivity(ActivityHelper.intentTo(Activities.DesignerNews.Login.INSTANCE));
                 } else {
-                    designerNewsPrefs.logout(HomeActivity.this);
+                    loginRepository.logout();
+                    ShortcutHelper.disablePostShortcut(this);
                     // TODO something better than a toast!!
                     Toast.makeText(getApplicationContext(), R.string.designer_news_logged_out,
                             Toast.LENGTH_SHORT).show();
@@ -453,7 +456,7 @@ public class HomeActivity extends Activity {
     };
 
     protected void fabClick() {
-        if (designerNewsPrefs.isLoggedIn()) {
+        if (loginRepository.isLoggedIn()) {
             Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.PostStory.INSTANCE);
             FabTransform.addExtras(intent,
                     ContextCompat.getColor(this, R.color.accent), R.drawable.ic_add_dark);
