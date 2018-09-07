@@ -17,7 +17,6 @@
 package io.plaidapp.core.designernews.data.login
 
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.users.model.User
 
 /**
@@ -60,11 +59,6 @@ class LoginRepository(
     private fun setLoggedInUser(loggedInUser: User) {
         user = loggedInUser
         localDataSource.user = user
-    }
-
-    // exposing this for now, until we can remove the API usage from the DesignerNewsPrefs
-    fun getService(): DesignerNewsService {
-        return remoteDataSource.service
     }
 
     companion object {
