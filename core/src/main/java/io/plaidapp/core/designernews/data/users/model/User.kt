@@ -16,15 +16,32 @@
 
 package io.plaidapp.core.designernews.data.users.model
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 /**
  * Models a Designer News User
  */
-data class User(
-    @SerializedName("id") val id: Long,
-    @SerializedName("first_name") val firstName: String,
-    @SerializedName("last_name") val lastName: String,
-    @SerializedName("display_name") val displayName: String,
-    @SerializedName("portrait_url") val portraitUrl: String? = null
+open class User(
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    @SerializedName("id")
+    val id: Long,
+
+    @ColumnInfo(name = "first_name")
+    @SerializedName("first_name")
+    val firstName: String,
+
+    @ColumnInfo(name = "last_name")
+    @SerializedName("last_name")
+    val lastName: String,
+
+    @ColumnInfo(name = "display_name")
+    @SerializedName("display_name")
+    val displayName: String,
+
+    @ColumnInfo(name = "potrait_url")
+    @SerializedName("portrait_url")
+    val portraitUrl: String? = null
 )

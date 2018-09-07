@@ -69,7 +69,14 @@ class LoggedInUserDaoTest {
         loggedInUserDao.setLoggedInUser(loggedInUser)
 
         // When the user's information changes and a subsequent insert is triggered
-        val updatedUser = loggedInUser.copy(displayName = "LL Cool L")
+        val updatedUser = LoggedInUser(
+            id = 1L,
+            displayName = "LL Cool L",
+            firstName = "Loggy",
+            lastName = "Loggerson",
+            portraitUrl = "www",
+            upvotes = listOf(1L, 2L, 3L)
+        )
         loggedInUserDao.setLoggedInUser(updatedUser)
 
         // Then a subsequent query for the LoggedInUser should show the updated information
