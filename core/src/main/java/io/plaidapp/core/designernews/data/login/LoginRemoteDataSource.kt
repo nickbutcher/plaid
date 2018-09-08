@@ -19,6 +19,7 @@ package io.plaidapp.core.designernews.data.login
 import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
+import io.plaidapp.core.designernews.data.login.model.toLoggedInUser
 import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 import io.plaidapp.core.util.safeApiCall
 import java.io.IOException
@@ -62,7 +63,7 @@ class LoginRemoteDataSource(
         if (response.isSuccessful) {
             val users = response.body()
             if (users != null && users.isNotEmpty()) {
-                return Result.Success(users[0])
+                return Result.Success(users[0].toLoggedInUser())
             }
         }
         return Result.Error(IOException("Failed to get authed user ${response.code()} ${response.message()}"))
