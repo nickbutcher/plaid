@@ -25,6 +25,8 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.login.model.AccessToken
+import io.plaidapp.core.designernews.data.login.model.LoggedInUserResponse
+import io.plaidapp.core.designernews.data.login.model.UserLinks
 import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 import io.plaidapp.core.designernews.errorResponseBody
 import kotlinx.coroutines.experimental.CompletableDeferred
@@ -41,6 +43,15 @@ import java.net.UnknownHostException
  * context and mocked API service.
  */
 class LoginRemoteDataSourceTest {
+
+    private val response = LoggedInUserResponse(
+        id = 3,
+        first_name = "Plaidy",
+        last_name = "Plaidinski",
+        display_name = "Plaidy Plaidinski",
+        portrait_url = "www",
+        userLinks = UserLinks(listOf(123L, 234L, 345L))
+    )
 
     private val user = LoggedInUser(
         id = 3,
@@ -70,7 +81,7 @@ class LoginRemoteDataSourceTest {
         // Given that all API calls are successful
         val accessTokenResponse = Response.success(accessToken)
         whenever(service.login(any())).thenReturn(CompletableDeferred(accessTokenResponse))
-        val authUserResponse = Response.success(listOf(user))
+        val authUserResponse = Response.success(listOf(response))
         whenever(service.getAuthedUser()).thenReturn(CompletableDeferred(authUserResponse))
 
         // When logging in
@@ -104,7 +115,7 @@ class LoginRemoteDataSourceTest {
         val accessTokenRespone = Response.success(accessToken)
         whenever(service.login(any())).thenReturn(CompletableDeferred(accessTokenRespone))
         // And the get authed user failed
-        val failureResponse = Response.error<List<LoggedInUser>>(
+        val failureResponse = Response.error<List<LoggedInUserResponse>>(
             400,
             errorResponseBody
         )
