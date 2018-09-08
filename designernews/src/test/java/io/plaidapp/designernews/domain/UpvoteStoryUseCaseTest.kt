@@ -20,7 +20,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.login.LoginRepository
-import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 import io.plaidapp.designernews.data.votes.VotesRepository
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert
@@ -34,12 +34,13 @@ class UpvoteStoryUseCaseTest {
 
     private val storyId = 24L
     private val userId = 63L
-    private val user = User(
+    private val user = LoggedInUser(
         id = userId,
         firstName = "Plaicent",
         lastName = "van Plaid",
         displayName = "Plaicent van Plaid",
-        portraitUrl = "www"
+        portraitUrl = "www",
+        upvotes = listOf(123L)
     )
 
     private val loginRepository: LoginRepository = mock()

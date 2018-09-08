@@ -19,7 +19,7 @@ package io.plaidapp.core.designernews.data.login
 import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 import io.plaidapp.core.util.safeApiCall
 import java.io.IOException
 
@@ -44,7 +44,7 @@ class LoginRemoteDataSource(
         errorMessage = "Error logging in"
     )
 
-    private suspend fun requestLogin(username: String, password: String): Result<User> {
+    private suspend fun requestLogin(username: String, password: String): Result<LoggedInUser> {
         val response = service.login(buildLoginParams(username, password)).await()
         if (response.isSuccessful) {
             val body = response.body()
@@ -57,7 +57,7 @@ class LoginRemoteDataSource(
         return Result.Error(IOException("Access token retrieval failed ${response.code()} ${response.message()}"))
     }
 
-    private suspend fun requestUser(): Result<User> {
+    private suspend fun requestUser(): Result<LoggedInUser> {
         val response = service.getAuthedUser().await()
         if (response.isSuccessful) {
             val users = response.body()

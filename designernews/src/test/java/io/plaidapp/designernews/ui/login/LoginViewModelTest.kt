@@ -24,7 +24,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.R
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.login.LoginRepository
-import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 import io.plaidapp.core.util.event.Event
 import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
@@ -60,12 +60,13 @@ class LoginViewModelTest {
         // Given a view model
         val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesContextProvider())
         // Given that the repository returns a user
-        val user = User(
+        val user = LoggedInUser(
             id = 3,
             firstName = "Plaida",
             lastName = "Plaidich",
             displayName = "Plaida Plaidich",
-            portraitUrl = "www"
+            portraitUrl = "www",
+            upvotes = listOf(123L, 234L)
         )
 
         whenever(loginRepo.login(username, password)).thenReturn(Result.Success(user))
