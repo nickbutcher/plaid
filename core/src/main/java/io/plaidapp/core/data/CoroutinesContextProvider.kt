@@ -16,9 +16,9 @@
 
 package io.plaidapp.core.data
 
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.CommonPool
+import kotlinx.coroutines.android.UI
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Provide coroutines context.

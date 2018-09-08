@@ -26,8 +26,8 @@ import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.util.event.Event
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
 import io.plaidapp.dribbble.domain.ShareShotInfo
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 /**
  * View model for [ShotActivity].

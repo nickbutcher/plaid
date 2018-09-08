@@ -23,7 +23,7 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
 import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue

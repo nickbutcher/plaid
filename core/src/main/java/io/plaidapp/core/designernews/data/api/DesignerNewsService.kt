@@ -28,7 +28,7 @@ import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.core.designernews.data.votes.model.UpvoteCommentRequest
 import io.plaidapp.core.designernews.data.votes.model.UpvoteStoryRequest
 import io.plaidapp.core.designernews.domain.model.Comment
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.Deferred
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body

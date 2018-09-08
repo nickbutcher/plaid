@@ -20,7 +20,7 @@ package io.plaidapp.core.designernews
 
 import android.content.Context
 import com.google.gson.Gson
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.data.api.DenvelopingConverter
 import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor

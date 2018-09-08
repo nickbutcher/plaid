@@ -70,6 +70,7 @@ repositories {
     google()
     maven { url 'https://maven.fabric.io/public' }
     jcenter()
+    maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
 }
 
 dependencies {
