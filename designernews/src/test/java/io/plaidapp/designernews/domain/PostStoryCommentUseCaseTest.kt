@@ -22,8 +22,8 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.comments.CommentsRepository
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.designernews.domain.model.Comment
+import io.plaidapp.designernews.loggedInUser
 import io.plaidapp.designernews.replyResponse1
-import io.plaidapp.designernews.user1
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -55,7 +55,7 @@ class PostStoryCommentUseCaseTest {
     @Test
     fun postStoryComment_errorReturned() = runBlocking {
         // Given a logged in user
-        whenever(loginRepository.user).thenReturn(user1)
+        whenever(loginRepository.user).thenReturn(loggedInUser)
         // Given that the comment is posted with error
         whenever(repository.postStoryComment(body, 123L, 111L))
             .thenReturn(Result.Error(IOException("Error")))
@@ -70,7 +70,7 @@ class PostStoryCommentUseCaseTest {
     @Test
     fun postStoryComment_success() = runBlocking {
         // Given a logged in user
-        whenever(loginRepository.user).thenReturn(user1)
+        whenever(loginRepository.user).thenReturn(loggedInUser)
         // Given that the comment is posted successfully
         whenever(repository.postStoryComment(replyResponse1.body, 123L, 111L))
             .thenReturn(Result.Success(replyResponse1))
@@ -85,9 +85,9 @@ class PostStoryCommentUseCaseTest {
             createdAt = replyResponse1.created_at,
             depth = replyResponse1.depth,
             upvotesCount = replyResponse1.links.commentUpvotes.size,
-            userId = user1.id,
-            userDisplayName = user1.displayName,
-            userPortraitUrl = user1.portraitUrl,
+            userId = loggedInUser.id,
+            userDisplayName = loggedInUser.displayName,
+            userPortraitUrl = loggedInUser.portraitUrl,
             upvoted = false
         )
         // Then the result is the expected one

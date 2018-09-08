@@ -22,6 +22,7 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.comments.CommentsRepository
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.designernews.domain.model.Comment
+import io.plaidapp.designernews.loggedInUser
 import io.plaidapp.designernews.replyResponse1
 import io.plaidapp.designernews.user1
 import kotlinx.coroutines.experimental.runBlocking
@@ -55,7 +56,7 @@ class PostReplyUseCaseTest {
     @Test
     fun postReply_errorReturned() = runBlocking {
         // Given a logged in user
-        whenever(loginRepository.user).thenReturn(user1)
+        whenever(loginRepository.user).thenReturn(loggedInUser)
         // Given that the comment is posted with error
         whenever(repository.postReply(body, 123L, 111L))
             .thenReturn(Result.Error(IOException("Error")))
@@ -70,7 +71,7 @@ class PostReplyUseCaseTest {
     @Test
     fun postReply_success() = runBlocking {
         // Given a logged in user
-        whenever(loginRepository.user).thenReturn(user1)
+        whenever(loginRepository.user).thenReturn(loggedInUser)
         // Given that the comment is posted successfully
         whenever(repository.postReply(replyResponse1.body, 123L, 111L))
             .thenReturn(Result.Success(replyResponse1))
