@@ -19,6 +19,7 @@ package io.plaidapp.designernews
 import io.plaidapp.core.designernews.data.comments.model.CommentLinksResponse
 import io.plaidapp.core.designernews.data.comments.model.CommentResponse
 import io.plaidapp.core.designernews.data.stories.model.StoryLinks
+import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.designernews.domain.model.CommentWithReplies
@@ -31,6 +32,15 @@ import java.util.GregorianCalendar
  * Test data for comments
  */
 val createdDate: Date = GregorianCalendar(1997, 12, 28).time
+
+val loggedInUser = LoggedInUser(
+    id = 111L,
+    firstName = "Plaicent",
+    lastName = "van Plaid",
+    displayName = "Plaicent van Plaid",
+    portraitUrl = "www",
+    upvotes = listOf(123L, 234L, 345L)
+)
 
 val user1 = User(
     id = 111L,

@@ -24,6 +24,7 @@ import io.plaidapp.core.designernews.data.login.model.AccessToken
 import io.plaidapp.core.designernews.data.poststory.model.NewStoryRequest
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
+import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.core.designernews.data.votes.model.UpvoteCommentRequest
 import io.plaidapp.core.designernews.data.votes.model.UpvoteStoryRequest
@@ -66,7 +67,7 @@ interface DesignerNewsService {
 
     @EnvelopePayload("users")
     @GET("api/v2/me")
-    fun getAuthedUser(): Deferred<Response<List<User>>>
+    fun getAuthedUser(): Deferred<Response<List<LoggedInUser>>>
 
     @FormUrlEncoded
     @POST("oauth/token")
