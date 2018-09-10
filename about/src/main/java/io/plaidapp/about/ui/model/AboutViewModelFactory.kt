@@ -18,16 +18,13 @@ package io.plaidapp.about.ui.model
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import android.content.res.Resources
 import javax.inject.Inject
 
 /**
  * Factory to create [AboutViewModel]
  */
 
-internal class AboutViewModelFactory @Inject constructor(
-    val resources: Resources
-) : ViewModelProvider.Factory {
+internal class AboutViewModelFactory @Inject constructor() : ViewModelProvider.Factory {
 
     @Inject lateinit var aboutViewModel: AboutViewModel
 

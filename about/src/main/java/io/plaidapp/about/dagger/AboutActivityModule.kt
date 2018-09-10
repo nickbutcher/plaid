@@ -38,5 +38,5 @@ import javax.inject.Singleton
 
     @Provides
     @Singleton
-    fun provideAboutStyler(activity: AboutActivity) = AboutStyler(activity)
+    fun provideAboutStyler() = AboutStyler(activity)
 }

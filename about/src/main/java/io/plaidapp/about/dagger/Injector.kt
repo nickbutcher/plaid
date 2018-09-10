@@ -24,9 +24,9 @@ import io.plaidapp.core.dagger.MarkdownModule
  */
 fun AboutActivity.inject() {
     DaggerAboutComponent.builder()
+        .activity(this)
         .aboutActivityModule(AboutActivityModule(this))
         .markdownModule(MarkdownModule(resources.displayMetrics))
-        .build().apply {
-            activity(this@inject)
-        }
+        .build()
+        .inject(this)
 }
