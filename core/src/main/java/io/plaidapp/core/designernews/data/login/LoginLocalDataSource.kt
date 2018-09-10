@@ -18,7 +18,7 @@ package io.plaidapp.core.designernews.data.login
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import io.plaidapp.core.designernews.data.users.model.LoggedInUser
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 
 /**
  * Local storage for Designer News login related data, implemented using SharedPreferences

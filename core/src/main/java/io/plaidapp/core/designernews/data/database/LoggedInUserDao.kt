@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data
+package io.plaidapp.core.designernews.data.database
 
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.Dao
@@ -22,7 +22,7 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import android.arch.persistence.room.Transaction
-import io.plaidapp.core.designernews.data.users.model.LoggedInUser
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 
 /**
  * This Data Access Object handles Room database operations for the [LoggedInUser] class.

@@ -17,7 +17,7 @@
 package io.plaidapp.core.designernews.data.login
 
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.users.model.LoggedInUser
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 
 /**
  * Repository that handles Designer News login data. It knows what data sources need to be

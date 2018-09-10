@@ -17,7 +17,7 @@
 package io.plaidapp.core.designernews.data.comments.model
 
 import com.google.gson.annotations.SerializedName
-import io.plaidapp.core.designernews.data.users.model.LoggedInUser
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.designernews.domain.model.CommentWithReplies
 import java.util.Date
