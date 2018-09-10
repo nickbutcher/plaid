@@ -22,8 +22,6 @@ import android.support.v4.content.FileProvider
 import com.bumptech.glide.Glide
 import io.plaidapp.core.dribbble.data.api.model.Images
 import io.plaidapp.dribbble.BuildConfig
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.async
 import java.io.File
 
 /**
@@ -34,7 +32,14 @@ class ImageUriProvider(context: Context) {
     // Only hold the app context to avoid leaks
     private val appContext = context.applicationContext
 
-    operator fun invoke(url: String, size: Images.ImageSize): Deferred<Uri> = async {
+    /**
+     * Long running method! Making this a suspend function so it's only executed from a coroutine.
+     *
+     * Retrieve the image from Glide, as file, rename it, since Glide caches an unfriendly and
+     * extension-less name, and then get the Uri.
+     */
+    @Suppress("RedundantSuspendModifier")
+    suspend operator fun invoke(url: String, size: Images.ImageSize): Uri {
         // Retrieve the image from Glide (hopefully cached) as a File
         val file = Glide.with(appContext)
             .asFile()
@@ -45,6 +50,6 @@ class ImageUriProvider(context: Context) {
         val fileName = url.substring(url.lastIndexOf('/') + 1)
         val renamed = File(file.parent, fileName)
         file.renameTo(renamed)
-        FileProvider.getUriForFile(appContext, BuildConfig.FILES_AUTHORITY, renamed)
+        return FileProvider.getUriForFile(appContext, BuildConfig.FILES_AUTHORITY, renamed)
     }
 }
