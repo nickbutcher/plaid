@@ -21,9 +21,8 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
 import android.content.Context
-import io.plaidapp.core.data.Converters
-import io.plaidapp.core.designernews.data.LoggedInUserDao
-import io.plaidapp.core.designernews.data.users.model.LoggedInUser
+import io.plaidapp.core.data.database.Converters
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 
 /**
  * The Room database for this app
@@ -31,6 +30,7 @@ import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 @Database(entities = [LoggedInUser::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class DesignerNewsDatabase : RoomDatabase() {
+
     abstract fun loggedInUserDao(): LoggedInUserDao
 
     companion object {
@@ -41,17 +41,14 @@ abstract class DesignerNewsDatabase : RoomDatabase() {
         @Volatile private var instance: DesignerNewsDatabase? = null
 
         fun getInstance(context: Context): DesignerNewsDatabase {
-            return instance
-                ?: synchronized(this) {
-                instance
-                    ?: buildDatabase(
-                        context
-                    ).also { instance = it }
+            return instance ?: synchronized(this) {
+                instance ?: buildDatabase(context).also { instance = it }
             }
         }
 
         private fun buildDatabase(context: Context): DesignerNewsDatabase {
-            return Room.databaseBuilder(context, DesignerNewsDatabase::class.java,
+            return Room.databaseBuilder(
+                context, DesignerNewsDatabase::class.java,
                 DATABASE_NAME
             ).build()
         }

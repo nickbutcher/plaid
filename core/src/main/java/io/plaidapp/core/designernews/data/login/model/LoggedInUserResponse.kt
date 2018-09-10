@@ -17,7 +17,6 @@
 package io.plaidapp.core.designernews.data.login.model
 
 import com.google.gson.annotations.SerializedName
-import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 
 fun LoggedInUserResponse.toLoggedInUser(): LoggedInUser {
     return LoggedInUser(

@@ -23,7 +23,7 @@ import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.data.api.DenvelopingConverter
-import io.plaidapp.core.designernews.data.LoggedInUserDao
+import io.plaidapp.core.designernews.data.database.LoggedInUserDao
 import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.comments.CommentsRemoteDataSource

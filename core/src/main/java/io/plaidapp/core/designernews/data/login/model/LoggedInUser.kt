@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.users.model
+package io.plaidapp.core.designernews.data.login.model
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
