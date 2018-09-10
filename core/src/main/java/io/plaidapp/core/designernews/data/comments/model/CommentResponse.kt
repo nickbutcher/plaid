@@ -17,12 +17,12 @@
 package io.plaidapp.core.designernews.data.comments.model
 
 import com.google.gson.annotations.SerializedName
-import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.designernews.domain.model.CommentWithReplies
 import java.util.Date
 
-fun CommentResponse.toCommentWithNoReplies(user: User) = Comment(
+fun CommentResponse.toCommentWithNoReplies(user: LoggedInUser) = Comment(
     id = id,
     parentCommentId = links.parentComment,
     body = body,

@@ -32,6 +32,7 @@ import io.plaidapp.core.designernews.data.api.DesignerNewsService;
 import io.plaidapp.core.designernews.data.login.LoginRepository;
 import io.plaidapp.core.designernews.data.poststory.model.NewStoryRequest;
 import io.plaidapp.core.designernews.data.stories.model.Story;
+import io.plaidapp.core.designernews.data.users.model.LoggedInUser;
 import io.plaidapp.core.designernews.data.users.model.User;
 import io.plaidapp.core.designernews.data.stories.model.StoryKt;
 import retrofit2.Call;
@@ -97,7 +98,7 @@ public class PostStoryService extends IntentService {
     private void postStory(
             boolean broadcastResult,
             DesignerNewsService service,
-            User user,
+            LoggedInUser user,
             NewStoryRequest storyToPost) {
         final Call<List<Story>> postStoryCall =
                 service.postStory(storyToPost);
@@ -122,7 +123,7 @@ public class PostStoryService extends IntentService {
         }
     }
 
-    private void broadcastSuccess(List<Story> stories, User user) {
+    private void broadcastSuccess(List<Story> stories, LoggedInUser user) {
         final Intent success = new Intent(BROADCAST_ACTION_SUCCESS);
         // API doesn't fill in author details so add them here
         final Story newStory = getStory(stories, user);
@@ -139,7 +140,7 @@ public class PostStoryService extends IntentService {
     }
 
     @NonNull
-    private Story getStory(List<Story> stories, User user) {
+    private Story getStory(List<Story> stories, LoggedInUser user) {
         final Story returnedStory = stories.get(0);
         // API doesn't add a self URL, so potentially add one for consistency
         String defaultUrl = TextUtils.isEmpty(returnedStory.getUrl()) ?
