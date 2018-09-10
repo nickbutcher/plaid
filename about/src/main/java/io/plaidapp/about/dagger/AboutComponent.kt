@@ -16,6 +16,7 @@
 
 package io.plaidapp.about.dagger
 
+import dagger.BindsInstance
 import dagger.Component
 import io.plaidapp.about.ui.AboutActivity
 import io.plaidapp.core.dagger.MarkdownModule
@@ -28,5 +29,17 @@ import javax.inject.Singleton
 @Component(modules = [AboutActivityModule::class, MarkdownModule::class])
 interface AboutComponent {
 
-    fun activity(activity: AboutActivity)
+    fun inject(activity: AboutActivity)
+
+    @Component.Builder
+    interface Builder {
+
+        fun build(): AboutComponent
+
+        @BindsInstance fun activity(activity: AboutActivity): Builder
+
+        fun aboutActivityModule(module: AboutActivityModule): Builder
+
+        fun markdownModule(module: MarkdownModule): Builder
+    }
 }
