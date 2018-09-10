@@ -33,7 +33,7 @@ class LoginLocalDataSource(private val prefs: SharedPreferences) {
             val userId = prefs.getLong(KEY_USER_ID, 0L)
             val username = prefs.getString(KEY_USER_NAME, null)
             val userAvatar = prefs.getString(KEY_USER_AVATAR, null)
-            if (userId == 0L && username == null && userAvatar == null) {
+            if (userId == 0L || username == null) {
                 return null
             }
             // TODO save the entire user
