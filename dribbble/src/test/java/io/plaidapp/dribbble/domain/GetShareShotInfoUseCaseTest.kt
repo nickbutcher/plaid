@@ -23,7 +23,6 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.dribbble.data.api.model.Images
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.dribbble.testShot
-import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -109,7 +108,7 @@ class GetShareShotInfoUseCaseTest {
 
     private fun withUrl(url: String?): Shot {
         val shot = testShot.copy(images = Images(hidpi = url))
-        whenever(imageUriProvider(any(), any())).thenReturn(CompletableDeferred(uri))
+        runBlocking { whenever(imageUriProvider(any(), any())).thenReturn(uri) }
         return shot
     }
 }
