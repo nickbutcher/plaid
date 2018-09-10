@@ -65,6 +65,7 @@ import io.plaidapp.core.data.Result;
 import io.plaidapp.core.designernews.Injection;
 import io.plaidapp.core.designernews.data.login.LoginRepository;
 import io.plaidapp.core.designernews.data.stories.model.Story;
+import io.plaidapp.core.designernews.data.users.model.LoggedInUser;
 import io.plaidapp.core.designernews.data.users.model.User;
 import io.plaidapp.core.designernews.domain.model.Comment;
 import io.plaidapp.core.ui.transitions.GravityArcMotion;
@@ -994,7 +995,7 @@ public class StoryActivity extends AppCompatActivity {
                     // insert a locally created comment before actually
                     // hitting the API for immediate response
                     int replyDepth = replyingTo.getDepth() + 1;
-                    User user = loginRepository.getUser();
+                    LoggedInUser user = loginRepository.getUser();
                     String commentBody = holder.getCommentReply().getText().toString();
                     final int newReplyPosition = commentsAdapter.addCommentReply(
                             new Comment(
