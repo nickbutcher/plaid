@@ -16,6 +16,7 @@
 
 package io.plaidapp.core.data
 
+import io.plaidapp.core.data.database.Converters
 import org.junit.Test
 
 import org.junit.Assert.assertEquals

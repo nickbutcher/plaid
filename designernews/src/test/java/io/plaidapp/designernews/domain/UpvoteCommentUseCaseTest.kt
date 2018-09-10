@@ -20,7 +20,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.login.LoginRepository
-import io.plaidapp.core.designernews.data.users.model.LoggedInUser
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 import io.plaidapp.designernews.data.votes.VotesRepository
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.assertEquals

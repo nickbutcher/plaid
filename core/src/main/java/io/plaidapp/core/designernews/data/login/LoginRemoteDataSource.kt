@@ -20,7 +20,7 @@ import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.login.model.toLoggedInUser
-import io.plaidapp.core.designernews.data.users.model.LoggedInUser
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 import io.plaidapp.core.util.safeApiCall
 import java.io.IOException
 

@@ -19,7 +19,7 @@ package io.plaidapp.designernews
 import io.plaidapp.core.designernews.data.comments.model.CommentLinksResponse
 import io.plaidapp.core.designernews.data.comments.model.CommentResponse
 import io.plaidapp.core.designernews.data.stories.model.StoryLinks
-import io.plaidapp.core.designernews.data.users.model.LoggedInUser
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.designernews.domain.model.CommentWithReplies
