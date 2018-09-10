@@ -18,7 +18,7 @@ package io.plaidapp.core.designernews.data
 
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
-import io.plaidapp.core.data.AppDatabase
+import io.plaidapp.core.designernews.data.database.DesignerNewsDatabase
 import io.plaidapp.core.designernews.data.users.model.LoggedInUser
 import io.plaidapp.test.shared.LiveDataTestUtil
 import org.junit.After
@@ -31,13 +31,13 @@ import org.junit.Test
  * These tests verify [LoggedInUserDao] Room database operations for a [LoggedInUser].
  */
 class LoggedInUserDaoTest {
-    private lateinit var database: AppDatabase
+    private lateinit var database: DesignerNewsDatabase
     private lateinit var loggedInUser: LoggedInUser
     private lateinit var loggedInUserDao: LoggedInUserDao
 
     @Before fun setup() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        database = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
+        database = Room.inMemoryDatabaseBuilder(context, DesignerNewsDatabase::class.java).build()
         loggedInUserDao = database.loggedInUserDao()
         loggedInUser = LoggedInUser(
             id = 1L,
