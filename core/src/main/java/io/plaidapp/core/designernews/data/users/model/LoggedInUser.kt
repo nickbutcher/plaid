@@ -18,32 +18,33 @@ package io.plaidapp.core.designernews.data.users.model
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "logged_in_user")
-class LoggedInUser(
-    id: Long,
-    firstName: String,
-    lastName: String,
-    displayName: String,
-    portraitUrl: String? = null,
+data class LoggedInUser(
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    @SerializedName("id")
+    val id: Long,
+
+    @ColumnInfo(name = "first_name")
+    @SerializedName("first_name")
+    val firstName: String,
+
+    @ColumnInfo(name = "last_name")
+    @SerializedName("last_name")
+    val lastName: String,
+
+    @ColumnInfo(name = "display_name")
+    @SerializedName("display_name")
+    val displayName: String,
+
+    @ColumnInfo(name = "potrait_url")
+    @SerializedName("portrait_url")
+    val portraitUrl: String? = null,
 
     @ColumnInfo(name = "upvotes")
     @SerializedName("upvotes")
     val upvotes: List<Long>
-) : User(id, firstName, lastName, displayName, portraitUrl) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as LoggedInUser
-
-        if (upvotes != other.upvotes) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return upvotes.hashCode()
-    }
-}
+)
