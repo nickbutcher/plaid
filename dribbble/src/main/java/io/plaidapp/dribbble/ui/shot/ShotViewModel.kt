@@ -28,11 +28,12 @@ import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
 import io.plaidapp.dribbble.domain.ShareShotInfo
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch
+import javax.inject.Inject
 
 /**
  * View model for [ShotActivity].
  */
-class ShotViewModel(
+class ShotViewModel @Inject constructor(
     shotId: Long,
     shotsRepository: ShotsRepository,
     private val getShareShotInfoUseCase: GetShareShotInfoUseCase,

@@ -14,29 +14,14 @@
  * limitations under the License.
  */
 
-package io.plaidapp.about.dagger
+package io.plaidapp.core.dagger
 
-import android.content.res.Resources
 import dagger.Module
 import dagger.Provides
-import io.plaidapp.about.ui.AboutActivity
-import io.plaidapp.about.ui.AboutStyler
-import io.plaidapp.core.dagger.scope.ModuleScope
+import io.plaidapp.core.data.BaseDataManager
+import io.plaidapp.core.data.PlaidItem
 
-/**
- * Dagger module providing stuff for [AboutActivity].
- */
-@Module class AboutActivityModule(private val activity: AboutActivity) {
+@Module class OnDataLoadedModule(private val callback: BaseDataManager.OnDataLoadedCallback<List<PlaidItem>>) {
 
-    @Provides
-    @ModuleScope
-    fun provideContext(): AboutActivity = activity
-
-    @Provides
-    @ModuleScope
-    fun provideResources(): Resources = activity.resources
-
-    @Provides
-    @ModuleScope
-    fun provideAboutStyler() = AboutStyler(activity)
+    @Provides fun provideOnDataLoadedCallback() = callback
 }

@@ -23,12 +23,12 @@ import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.data.api.DenvelopingConverter
-import io.plaidapp.core.designernews.data.database.LoggedInUserDao
 import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.comments.CommentsRemoteDataSource
 import io.plaidapp.core.designernews.data.comments.CommentsRepository
 import io.plaidapp.core.designernews.data.database.DesignerNewsDatabase
+import io.plaidapp.core.designernews.data.database.LoggedInUserDao
 import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.core.designernews.data.login.LoginRemoteDataSource
@@ -49,7 +49,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  *
  * Once we have a dependency injection framework or a service locator, this should be removed.
  */
-
+@Deprecated("Use dagger")
 fun provideLoginLocalDataSource(context: Context): LoginLocalDataSource {
     val preferences = provideSharedPreferences(
         context,
@@ -58,10 +58,12 @@ fun provideLoginLocalDataSource(context: Context): LoginLocalDataSource {
     return LoginLocalDataSource(preferences)
 }
 
+@Deprecated("Use dagger")
 fun provideLoggedInUserDao(context: Context): LoggedInUserDao {
     return DesignerNewsDatabase.getInstance(context).loggedInUserDao()
 }
 
+@Deprecated("Use dagger")
 fun provideLoginRepository(context: Context): LoginRepository {
     return LoginRepository.getInstance(
         provideLoginLocalDataSource(context),
@@ -69,11 +71,13 @@ fun provideLoginRepository(context: Context): LoginRepository {
     )
 }
 
+@Deprecated("Use dagger")
 fun provideLoginRemoteDataSource(context: Context): LoginRemoteDataSource {
     val tokenHolder = provideAuthTokenLocalDataSource(context)
     return LoginRemoteDataSource(tokenHolder, provideDesignerNewsService(tokenHolder))
 }
 
+@Deprecated("Use dagger")
 private fun provideAuthTokenLocalDataSource(context: Context): AuthTokenLocalDataSource {
     return AuthTokenLocalDataSource.getInstance(
         provideSharedPreferences(
@@ -83,11 +87,13 @@ private fun provideAuthTokenLocalDataSource(context: Context): AuthTokenLocalDat
     )
 }
 
+@Deprecated("Use dagger")
 fun provideDesignerNewsService(context: Context): DesignerNewsService {
     val tokenHolder = provideAuthTokenLocalDataSource(context)
     return provideDesignerNewsService(tokenHolder)
 }
 
+@Deprecated("Use dagger")
 private fun provideDesignerNewsService(
     authTokenDataSource: AuthTokenLocalDataSource
 ): DesignerNewsService {
@@ -108,23 +114,28 @@ private fun provideDesignerNewsService(
         .create(DesignerNewsService::class.java)
 }
 
+@Deprecated("Use dagger")
 fun provideStoriesRepository(context: Context): StoriesRepository {
     return provideStoriesRepository(
         provideStoriesRemoteDataSource(provideDesignerNewsService(context))
     )
 }
 
+@Deprecated("Use dagger")
 private fun provideStoriesRepository(remoteDataSource: StoriesRemoteDataSource) =
     StoriesRepository.getInstance(remoteDataSource)
 
+@Deprecated("Use dagger")
 private fun provideStoriesRemoteDataSource(service: DesignerNewsService): StoriesRemoteDataSource {
     return StoriesRemoteDataSource.getInstance(service)
 }
 
+@Deprecated("Use dagger")
 fun provideLoadStoriesUseCase(context: Context): LoadStoriesUseCase {
     return LoadStoriesUseCase(provideStoriesRepository(context), provideCoroutinesContextProvider())
 }
 
+@Deprecated("Use dagger")
 fun provideSearchStoriesUseCase(context: Context): SearchStoriesUseCase {
     return SearchStoriesUseCase(
         provideStoriesRepository(context),
@@ -132,5 +143,6 @@ fun provideSearchStoriesUseCase(context: Context): SearchStoriesUseCase {
     )
 }
 
+@Deprecated("Use dagger")
 fun provideCommentsRepository(dataSource: CommentsRemoteDataSource) =
     CommentsRepository.getInstance(dataSource)

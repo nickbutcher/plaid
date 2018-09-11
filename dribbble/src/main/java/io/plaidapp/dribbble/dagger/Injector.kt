@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.dagger
+package io.plaidapp.dribbble.dagger
 
-import `in`.uncod.android.bypass.Bypass
-import `in`.uncod.android.bypass.Markdown
-import android.util.DisplayMetrics
-import dagger.Module
-import dagger.Provides
-import javax.inject.Inject
+import io.plaidapp.dribbble.ui.shot.ShotActivity
+import io.plaidapp.ui.PlaidApplication
 
 /**
- * Provide [Markdown] to this app's components.
+ * Inject dependencies into [ShotActivity]
  */
-@Module class MarkdownModule @Inject constructor(private val displayMetrics: DisplayMetrics) {
-
-    @Provides fun provideMarkdown(): Markdown = Bypass(displayMetrics, Bypass.Options())
+fun ShotActivity.inject(shotId: Long) {
+    DaggerDribbbleComponent.builder()
+        .activity(this)
+            .dribbbleModule(DribbbleModule(this, shotId))
+            .coreComponent(PlaidApplication.coreComponent(this))
+            .build()
+            .inject(this)
 }

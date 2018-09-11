@@ -14,19 +14,25 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.dagger
+package io.plaidapp.ui
 
-import `in`.uncod.android.bypass.Bypass
-import `in`.uncod.android.bypass.Markdown
-import android.util.DisplayMetrics
-import dagger.Module
-import dagger.Provides
-import javax.inject.Inject
+import android.app.Application
+import android.content.Context
+import io.plaidapp.core.dagger.CoreComponent
+import io.plaidapp.core.dagger.DaggerCoreComponent
 
 /**
- * Provide [Markdown] to this app's components.
+ * Io and Behold
  */
-@Module class MarkdownModule @Inject constructor(private val displayMetrics: DisplayMetrics) {
+class PlaidApplication : Application() {
 
-    @Provides fun provideMarkdown(): Markdown = Bypass(displayMetrics, Bypass.Options())
+    val coreComponent: CoreComponent by lazy {
+        DaggerCoreComponent.create()
+    }
+
+    companion object {
+        @JvmStatic
+        fun coreComponent(context: Context) =
+            (context.applicationContext as PlaidApplication).coreComponent
+    }
 }

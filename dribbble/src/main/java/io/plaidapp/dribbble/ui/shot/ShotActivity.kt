@@ -19,7 +19,6 @@ package io.plaidapp.dribbble.ui.shot
 import android.animation.ValueAnimator
 import android.app.Activity
 import android.app.assist.AssistContent
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.AnimatedVectorDrawable
@@ -54,22 +53,24 @@ import io.plaidapp.core.util.event.EventObserver
 import io.plaidapp.core.util.glide.GlideApp
 import io.plaidapp.core.util.glide.getBitmap
 import io.plaidapp.dribbble.R
+import io.plaidapp.dribbble.dagger.inject
 import io.plaidapp.dribbble.databinding.ActivityDribbbleShotBinding
 import io.plaidapp.dribbble.domain.ShareShotInfo
-import io.plaidapp.dribbble.provideShotViewModelFactory
 import java.text.NumberFormat
+import javax.inject.Inject
 
 /**
  * Activity displaying a single Dribbble shot.
  */
 class ShotActivity : AppCompatActivity() {
 
+    @Inject internal lateinit var viewModel: ShotViewModel
+    @Inject internal lateinit var chromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
+
     private val binding by contentView<ShotActivity, ActivityDribbbleShotBinding>(
         R.layout.activity_dribbble_shot
     )
-    private var chromeFader: ElasticDragDismissFrameLayout.SystemChromeFader? = null
 
-    private lateinit var viewModel: ShotViewModel
     private var largeAvatarSize: Int = 0
 
     private val shotLoadListener = object : RequestListener<Drawable> {
@@ -120,10 +121,10 @@ class ShotActivity : AppCompatActivity() {
             finishAfterTransition()
         }
 
+        inject(shotId)
+
         largeAvatarSize = resources.getDimensionPixelSize(io.plaidapp.R.dimen.large_avatar_size)
 
-        val factory = provideShotViewModelFactory(shotId, this)
-        viewModel = ViewModelProviders.of(this, factory).get(ShotViewModel::class.java)
         viewModel.openLink.observe(this, EventObserver { openLink(it) })
         viewModel.shareShot.observe(this, EventObserver { shareShot(it) })
         binding.viewModel = viewModel
@@ -133,11 +134,6 @@ class ShotActivity : AppCompatActivity() {
             binding.shot.offset = -scrollY
         }
         binding.back.setOnClickListener { setResultAndFinish() }
-        chromeFader = object : ElasticDragDismissFrameLayout.SystemChromeFader(this) {
-            override fun onDragDismissed() {
-                setResultAndFinish()
-            }
-        }
         bindShot()
     }
 

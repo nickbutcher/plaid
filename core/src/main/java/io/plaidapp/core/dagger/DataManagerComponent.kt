@@ -16,17 +16,7 @@
 
 package io.plaidapp.core.dagger
 
-import `in`.uncod.android.bypass.Bypass
-import `in`.uncod.android.bypass.Markdown
-import android.util.DisplayMetrics
-import dagger.Module
-import dagger.Provides
-import javax.inject.Inject
+import dagger.Component
 
-/**
- * Provide [Markdown] to this app's components.
- */
-@Module class MarkdownModule @Inject constructor(private val displayMetrics: DisplayMetrics) {
-
-    @Provides fun provideMarkdown(): Markdown = Bypass(displayMetrics, Bypass.Options())
-}
+@Component(modules = [DataManagerModule::class])
+interface DataManagerComponent
