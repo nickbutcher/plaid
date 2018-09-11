@@ -98,6 +98,8 @@ import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
 import io.plaidapp.core.ui.transitions.FabTransform;
 
+import static io.plaidapp.core.AppInjection.provideCoroutinesContextProvider;
+
 public class HomeActivity extends Activity {
 
     private static final int RC_SEARCH = 0;
@@ -335,7 +337,7 @@ public class HomeActivity extends Activity {
                 if (!loginRepository.isLoggedIn()) {
                     startActivity(ActivityHelper.intentTo(Activities.DesignerNews.Login.INSTANCE));
                 } else {
-                    loginRepository.logout();
+                    loginRepository.logout(provideCoroutinesContextProvider());
                     ShortcutHelper.disablePostShortcut(this);
                     // TODO something better than a toast!!
                     Toast.makeText(getApplicationContext(), R.string.designer_news_logged_out,

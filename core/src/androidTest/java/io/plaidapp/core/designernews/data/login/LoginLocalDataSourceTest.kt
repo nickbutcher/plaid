@@ -16,40 +16,45 @@
 
 package io.plaidapp.core.designernews.data.login
 
-import android.content.Context
-import android.support.test.InstrumentationRegistry.getInstrumentation
+import android.arch.persistence.room.Room
+import android.support.test.InstrumentationRegistry
+import io.plaidapp.core.designernews.data.database.DesignerNewsDatabase
+import io.plaidapp.core.designernews.data.database.LoggedInUserDao
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 
 /**
- * Tests for [LoginLocalDataSource] using shared preferences from instrumentation
- * context
+ * Tests for [LoginLocalDataSource] using the on device database.
  */
 class LoginLocalDataSourceTest {
 
-    private var sharedPreferences = getInstrumentation().context
-        .getSharedPreferences("test", Context.MODE_PRIVATE)
+    private val database = Room.inMemoryDatabaseBuilder(
+        InstrumentationRegistry.getInstrumentation().context,
+        DesignerNewsDatabase::class.java
+    ).allowMainThreadQueries()
+        .build()
 
-    private var dataSource = LoginLocalDataSource(sharedPreferences)
+    private val dao: LoggedInUserDao = database.loggedInUserDao()
+    private var dataSource = LoginLocalDataSource(dao)
 
     @After
     fun tearDown() {
-        // cleanup the shared preferences after every test
-        sharedPreferences.edit().clear().commit()
+        database.close()
     }
 
     @Test
-    fun user_default() {
+    fun user_default() = runBlocking {
         // When getting the default user from the data source
         // Then it should be null
-        assertNull(dataSource.user)
+        assertNull(dataSource.getUser())
     }
 
     @Test
-    fun user_set() {
+    fun user_set() = runBlocking {
         // Given a user
         val user = LoggedInUser(
             id = 3,
@@ -61,22 +66,14 @@ class LoginLocalDataSourceTest {
         )
 
         // When inserting it in the data source
-        dataSource.user = user
+        dataSource.setUser(user)
 
         // Then it can then be retrieved
-        val expected = LoggedInUser(
-            id = 3,
-            firstName = "",
-            lastName = "",
-            displayName = "Plaidinium Plaidescu",
-            portraitUrl = "www",
-            upvotes = emptyList()
-        )
-        assertEquals(expected, dataSource.user)
+        assertEquals(user, dataSource.getUser())
     }
 
     @Test
-    fun logout() {
+    fun logout() = runBlocking {
         // Given a user set
         val user = LoggedInUser(
             id = 3,
@@ -86,12 +83,12 @@ class LoginLocalDataSourceTest {
             portraitUrl = "www",
             upvotes = listOf(123L, 234L, 345L)
         )
-        dataSource.user = user
+        dataSource.setUser(user)
 
         // When logging out
         dataSource.logout()
 
         // Then the user is null
-        assertNull(dataSource.user)
+        assertNull(dataSource.getUser())
     }
 }

@@ -24,18 +24,20 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.widget.Toast;
-
-import java.util.List;
-
 import io.plaidapp.core.designernews.Injection;
 import io.plaidapp.core.designernews.data.api.DesignerNewsService;
 import io.plaidapp.core.designernews.data.login.LoginRepository;
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser;
 import io.plaidapp.core.designernews.data.poststory.model.NewStoryRequest;
 import io.plaidapp.core.designernews.data.stories.model.Story;
-import io.plaidapp.core.designernews.data.login.model.LoggedInUser;
 import io.plaidapp.core.designernews.data.stories.model.StoryKt;
+import kotlin.Unit;
 import retrofit2.Call;
 import retrofit2.Response;
+
+import java.util.List;
+
+import static io.plaidapp.core.AppInjection.provideCoroutinesContextProvider;
 
 /**
  * An intent service which posts a new story to Designer News. Invokers can listen for results by
@@ -79,7 +81,10 @@ public class PostStoryService extends IntentService {
             NewStoryRequest storyToPost = getNewStoryRequest(title, url, comment);
             if (storyToPost == null) return;
 
-            postStory(broadcastResult, service, repository.getUser(), storyToPost);
+            repository.getUser(user -> {
+                postStory(broadcastResult, service, user, storyToPost);
+                return Unit.INSTANCE;
+            }, provideCoroutinesContextProvider());
         }
     }
 

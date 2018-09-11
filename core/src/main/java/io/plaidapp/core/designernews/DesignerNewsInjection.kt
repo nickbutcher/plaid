@@ -23,12 +23,12 @@ import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.data.api.DenvelopingConverter
-import io.plaidapp.core.designernews.data.database.LoggedInUserDao
 import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.comments.CommentsRemoteDataSource
 import io.plaidapp.core.designernews.data.comments.CommentsRepository
 import io.plaidapp.core.designernews.data.database.DesignerNewsDatabase
+import io.plaidapp.core.designernews.data.database.LoggedInUserDao
 import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.core.designernews.data.login.LoginRemoteDataSource
@@ -51,11 +51,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  */
 
 fun provideLoginLocalDataSource(context: Context): LoginLocalDataSource {
-    val preferences = provideSharedPreferences(
-        context,
-        LoginLocalDataSource.DESIGNER_NEWS_PREF
-    )
-    return LoginLocalDataSource(preferences)
+    return LoginLocalDataSource(provideLoggedInUserDao(context))
 }
 
 fun provideLoggedInUserDao(context: Context): LoggedInUserDao {

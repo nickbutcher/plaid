@@ -69,23 +69,23 @@ class LoginRepositoryTest {
         // The user is logged in
         assertTrue(repository.isLoggedIn)
         // The user cached is the expected user
-        assertEquals(repository.user, user)
+        assertEquals(repository.getUser(), user)
     }
 
     @Test
-    fun userNull_byDefault() {
-        assertNull(repository.user)
+    fun userNull_byDefault() = runBlocking {
+        assertNull(repository.getUser())
     }
 
     @Test
-    fun logout() {
+    fun logout() = runBlocking {
         // When logging out
         repository.logout()
 
         // Then the user is not logged in
         assertFalse(repository.isLoggedIn)
         // The cached user is null
-        assertNull(repository.user)
+        assertNull(repository.getUser())
     }
 
     @Test
@@ -100,7 +100,7 @@ class LoginRepositoryTest {
         // Then the user is logged out
         assertFalse(repository.isLoggedIn)
         // The cached user is null
-        assertNull(repository.user)
+        assertNull(repository.getUser())
     }
 
     @Test
@@ -116,7 +116,7 @@ class LoginRepositoryTest {
         // The user is not logged in
         assertFalse(repository.isLoggedIn)
         // The cached user is null
-        assertNull(repository.user)
+        assertNull(repository.getUser())
     }
 
     private fun withLoginSuccessful(username: String, pass: String) = runBlocking {

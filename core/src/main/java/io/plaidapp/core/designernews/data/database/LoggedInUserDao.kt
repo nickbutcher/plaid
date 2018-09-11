@@ -16,7 +16,6 @@
 
 package io.plaidapp.core.designernews.data.database
 
-import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
@@ -30,7 +29,7 @@ import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 @Dao
 abstract class LoggedInUserDao {
     @Query("SELECT * FROM logged_in_user LIMIT 1")
-    abstract fun getLoggedInUser(): LiveData<LoggedInUser>
+    abstract fun getLoggedInUser(): LoggedInUser?
 
     /**
      * Sets the [LoggedInUser]. This method guarantees that only one

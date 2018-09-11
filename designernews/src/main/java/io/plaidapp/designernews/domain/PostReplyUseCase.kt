@@ -35,14 +35,14 @@ class PostReplyUseCase(
         body: String,
         parentCommentId: Long
     ): Result<Comment> {
-        checkNotNull(loginRepository.user) {
+        val user = loginRepository.getUser()
+        checkNotNull(user) {
             "User should be logged in, in order to post a comment"
         }
-        val user = loginRepository.user!!
         val result = commentsRepository.postReply(
             body,
             parentCommentId,
-            user.id
+            user!!.id
         )
         return when (result) {
             is Result.Success -> {

@@ -91,6 +91,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+import static io.plaidapp.core.AppInjection.provideCoroutinesContextProvider;
 import static io.plaidapp.core.util.AnimUtils.getFastOutLinearInInterpolator;
 import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
 import static io.plaidapp.core.util.AnimUtils.getLinearOutSlowInInterpolator;
@@ -994,27 +995,29 @@ public class StoryActivity extends AppCompatActivity {
                     // insert a locally created comment before actually
                     // hitting the API for immediate response
                     int replyDepth = replyingTo.getDepth() + 1;
-                    LoggedInUser user = loginRepository.getUser();
-                    String commentBody = holder.getCommentReply().getText().toString();
-                    final int newReplyPosition = commentsAdapter.addCommentReply(
-                            new Comment(
-                                    0,
-                                    replyingTo.getId(),
-                                    commentBody,
-                                    new Date(),
-                                    replyDepth,
-                                    0,
-                                    user.getId(),
-                                    user.getDisplayName(),
-                                    user.getPortraitUrl(),
-                                    false
-                            ),
-                            inReplyToCommentPosition);
+                    loginRepository.getUser(user -> {
+                        String commentBody = holder.getCommentReply().getText().toString();
+                        final int newReplyPosition = commentsAdapter.addCommentReply(
+                                new Comment(
+                                        0,
+                                        replyingTo.getId(),
+                                        commentBody,
+                                        new Date(),
+                                        replyDepth,
+                                        0,
+                                        user.getId(),
+                                        user.getDisplayName(),
+                                        user.getPortraitUrl(),
+                                        false
+                                ),
+                                inReplyToCommentPosition);
 
-                    replyToComment(replyingTo.getId(), reply);
-                    holder.getCommentReply().getText().clear();
-                    ImeUtils.hideIme(holder.getCommentReply());
-                    commentsList.scrollToPosition(newReplyPosition);
+                        replyToComment(replyingTo.getId(), reply);
+                        holder.getCommentReply().getText().clear();
+                        ImeUtils.hideIme(holder.getCommentReply());
+                        commentsList.scrollToPosition(newReplyPosition);
+                        return Unit.INSTANCE;
+                    }, provideCoroutinesContextProvider());
                 } else {
                     needsLogin(holder.getPostReply(), 0);
                 }

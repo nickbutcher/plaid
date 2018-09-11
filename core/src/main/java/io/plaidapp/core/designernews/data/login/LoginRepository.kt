@@ -16,8 +16,10 @@
 
 package io.plaidapp.core.designernews.data.login
 
+import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Repository that handles Designer News login data. It knows what data sources need to be
@@ -30,23 +32,41 @@ class LoginRepository(
 
     // local cache of the user object, so we don't retrieve it from the local storage every time
     // we need it
-    var user: LoggedInUser? = null
-        private set
+    private var user: LoggedInUser? = null
 
     val isLoggedIn: Boolean
         get() = user != null
 
-    init {
-        user = localDataSource.user
+    suspend fun getUser(): LoggedInUser? {
+        if (user != null) {
+            return user
+        }
+        user = localDataSource.getUser()
+        return user
     }
 
-    fun logout() {
+    fun getUser(
+        onResult: (user: LoggedInUser?) -> Unit,
+        contextProvider: CoroutinesContextProvider
+    ) = launch(contextProvider.io) {
+        if (user != null) {
+            onResult(user)
+        }
+        user = localDataSource.getUser()
+        onResult(user)
+    }
+
+    suspend fun logout() {
         user = null
 
         localDataSource.logout()
         remoteDataSource.logout()
     }
 
+    fun logout(contextProvider: CoroutinesContextProvider) = launch(contextProvider.io){
+        localDataSource.logout()
+    }
+    
     suspend fun login(username: String, password: String): Result<LoggedInUser> {
         val result = remoteDataSource.login(username, password)
 
@@ -56,9 +76,9 @@ class LoginRepository(
         return result
     }
 
-    private fun setLoggedInUser(loggedInUser: LoggedInUser) {
+    private suspend fun setLoggedInUser(loggedInUser: LoggedInUser) {
         user = loggedInUser
-        localDataSource.user = user
+        localDataSource.setUser(loggedInUser)
     }
 
     companion object {

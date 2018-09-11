@@ -32,11 +32,11 @@ class PostStoryCommentUseCase(
 ) {
 
     suspend operator fun invoke(body: String, storyId: Long): Result<Comment> {
-        checkNotNull(loginRepository.user) {
+        val user = loginRepository.getUser()
+        checkNotNull(user) {
             "User should be logged in, in order to post a comment"
         }
-        val user = loginRepository.user!!
-        val result = commentsRepository.postStoryComment(body, storyId, user.id)
+        val result = commentsRepository.postStoryComment(body, storyId, user!!.id)
         return when (result) {
             is Result.Success -> {
                 val commentResponse = result.data
