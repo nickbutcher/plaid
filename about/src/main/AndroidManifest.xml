@@ -26,7 +26,7 @@
         <dist:fusing dist:include="true" />
     </dist:module>
 
-    <application>
+    <application android:name="io.plaidapp.ui.PlaidApplication">
     <activity
         android:name="io.plaidapp.about.ui.AboutActivity"
         android:theme="@style/Plaid.Translucent.About"

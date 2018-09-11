@@ -17,8 +17,6 @@
 
 package io.plaidapp.core.ui;
 
-import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -48,7 +46,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.DataSource;
@@ -59,38 +56,36 @@ import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import io.plaidapp.core.R;
 import io.plaidapp.core.data.DataLoadingSubject;
 import io.plaidapp.core.data.PlaidItem;
 import io.plaidapp.core.data.PlaidItemSorting;
+import io.plaidapp.core.data.pocket.PocketUtils;
+import io.plaidapp.core.data.prefs.SourceManager;
+import io.plaidapp.core.designernews.data.stories.model.Story;
+import io.plaidapp.core.designernews.domain.StoryWeigher;
+import io.plaidapp.core.designernews.ui.stories.StoryViewHolder;
 import io.plaidapp.core.dribbble.data.api.ShotWeigher;
 import io.plaidapp.core.dribbble.data.api.model.Images;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
-import io.plaidapp.core.data.pocket.PocketUtils;
-import io.plaidapp.core.data.prefs.SourceManager;
-import io.plaidapp.core.designernews.domain.StoryWeigher;
-import io.plaidapp.core.designernews.data.stories.model.Story;
-import io.plaidapp.core.designernews.ui.stories.StoryViewHolder;
 import io.plaidapp.core.producthunt.data.api.PostWeigher;
 import io.plaidapp.core.producthunt.data.api.model.Post;
 import io.plaidapp.core.producthunt.ui.ProductHuntPostHolder;
 import io.plaidapp.core.ui.transitions.ReflowText;
 import io.plaidapp.core.ui.widget.BadgedFourThreeImageView;
-import io.plaidapp.core.util.Activities;
-import io.plaidapp.core.util.ActivityHelper;
-import io.plaidapp.core.util.ObservableColorMatrix;
-import io.plaidapp.core.util.TransitionUtils;
-import io.plaidapp.core.util.ViewUtils;
+import io.plaidapp.core.util.*;
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.core.util.glide.DribbbleTarget;
 import io.plaidapp.core.util.glide.GlideApp;
 import kotlin.Unit;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
 
 /**
  * Adapter for displaying a grid of {@link PlaidItem}s.
@@ -126,6 +121,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private StoryWeigher storyWeigher;
     private PostWeigher postWeigher;
 
+    @Inject
     public FeedAdapter(Activity hostActivity,
             @Nullable DataLoadingSubject dataLoading,
             int columns,
@@ -326,8 +322,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private void bindDribbbleShotHolder(final Shot shot,
-            final DribbbleShotHolder holder,
-            int position) {
+                                        final DribbbleShotHolder holder,
+                                        int position) {
         final Images.ImageSize imageSize = shot.getImages().bestSize();
         GlideApp.with(host)
                 .load(shot.getImages().best())
@@ -335,8 +331,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model,
-                            Target<Drawable> target, DataSource dataSource,
-                            boolean isFirstResource) {
+                                                   Target<Drawable> target, DataSource dataSource,
+                                                   boolean isFirstResource) {
                         if (!shot.getHasFadedIn()) {
                             holder.image.setHasTransientState(true);
                             final ObservableColorMatrix cm = new ObservableColorMatrix();
@@ -365,7 +361,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model,
-                            Target<Drawable> target, boolean isFirstResource) {
+                                                Target<Drawable> target, boolean isFirstResource) {
                         return false;
                     }
                 })

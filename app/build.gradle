@@ -81,6 +81,7 @@ dependencies {
     androidTestImplementation "com.android.support.test:rules:${versions.test_rules}"
     androidTestImplementation "com.android.support.test.espresso:espresso-contrib:${versions.espresso}"
     androidTestImplementation "com.android.support.test.uiautomator:uiautomator-v18:${versions.ui_automator}"
+    kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }
 
 // Must be applied after dependencies. See https://stackoverflow.com/a/38018985

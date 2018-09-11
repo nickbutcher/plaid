@@ -14,32 +14,30 @@
  * limitations under the License.
  */
 
-package io.plaidapp.about.dagger
+package io.plaidapp.dribbble.dagger
 
 import dagger.BindsInstance
 import dagger.Component
-import io.plaidapp.about.ui.AboutActivity
-import io.plaidapp.core.dagger.MarkdownModule
-import io.plaidapp.core.dagger.scope.ModuleScope
+import io.plaidapp.core.dagger.CoreComponent
+import io.plaidapp.dribbble.ui.shot.ShotActivity
 
 /**
- * Dagger component for `about` feature module.
+ * Component binding injections for the :dribbble feature module.
  */
-@ModuleScope
-@Component(modules = [AboutActivityModule::class, MarkdownModule::class])
-interface AboutComponent {
+@Component(modules = [DribbbleModule::class], dependencies = [CoreComponent::class])
+interface DribbbleComponent {
 
-    fun inject(activity: AboutActivity)
+    fun inject(activity: ShotActivity)
 
     @Component.Builder
     interface Builder {
 
-        fun build(): AboutComponent
+        fun build(): DribbbleComponent
 
-        @BindsInstance fun activity(activity: AboutActivity): Builder
+        @BindsInstance fun activity(activity: ShotActivity): Builder
 
-        fun aboutActivityModule(module: AboutActivityModule): Builder
+        fun coreComponent(component: CoreComponent): Builder
 
-        fun markdownModule(module: MarkdownModule): Builder
+        fun dribbbleModule(module: DribbbleModule): Builder
     }
 }

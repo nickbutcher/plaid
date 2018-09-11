@@ -42,4 +42,5 @@ fun provideSharedPreferences(context: Context, name: String): SharedPreferences 
             .getSharedPreferences(name, Context.MODE_PRIVATE)
 }
 
+@Deprecated("Use Dagger CoroutinesContextProviderModule instead")
 fun provideCoroutinesContextProvider(): CoroutinesContextProvider = CoroutinesContextProvider()

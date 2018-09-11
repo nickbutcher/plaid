@@ -37,9 +37,8 @@
         android:supportsRtl="true"
         android:extractNativeLibs="false"
         android:appCategory="image"
-        android:theme="@style/Plaid">
-
-
+        android:theme="@style/Plaid"
+        android:name="io.plaidapp.ui.PlaidApplication">
 
         <activity
             android:name="io.plaidapp.designernews.ui.story.StoryActivity"

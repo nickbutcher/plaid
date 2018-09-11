@@ -42,31 +42,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
-import android.widget.CheckedTextView;
-import android.widget.ImageButton;
-import android.widget.ProgressBar;
-import android.widget.SearchView;
-import android.widget.TextView;
-
+import android.widget.*;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
-
-import java.util.List;
-
-import io.plaidapp.search.R;
-import io.plaidapp.core.data.PlaidItem;
 import io.plaidapp.core.data.SearchDataManager;
-import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.data.pocket.PocketUtils;
+import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.ui.FeedAdapter;
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.core.ui.recyclerview.SlideInItemAnimator;
-import io.plaidapp.ui.search.transitions.CircularReveal;
 import io.plaidapp.core.util.Activities;
 import io.plaidapp.core.util.ImeUtils;
 import io.plaidapp.core.util.ShortcutHelper;
 import io.plaidapp.core.util.TransitionUtils;
+import io.plaidapp.search.R;
+import io.plaidapp.ui.search.transitions.CircularReveal;
+
+import java.util.List;
 
 public class SearchActivity extends Activity {
 
@@ -101,26 +93,23 @@ public class SearchActivity extends Activity {
         bindResources();
         setupSearchView();
 
-        dataManager = new SearchDataManager(this) {
-            @Override
-            public void onDataLoaded(List<? extends PlaidItem> data) {
-                if (data != null && data.size() > 0) {
-                    if (results.getVisibility() != View.VISIBLE) {
-                        TransitionManager.beginDelayedTransition(container,
-                                getTransition(R.transition.search_show_results));
-                        progress.setVisibility(View.GONE);
-                        results.setVisibility(View.VISIBLE);
-                        fab.setVisibility(View.VISIBLE);
-                    }
-                    adapter.addAndResort(data);
-                } else {
-                    TransitionManager.beginDelayedTransition(
-                            container, getTransition(io.plaidapp.core.R.transition.auto));
+        dataManager = new SearchDataManager(this, data -> {
+            if (data != null && data.size() > 0) {
+                if (results.getVisibility() != View.VISIBLE) {
+                    TransitionManager.beginDelayedTransition(container,
+                            getTransition(R.transition.search_show_results));
                     progress.setVisibility(View.GONE);
-                    setNoResultsVisibility(View.VISIBLE);
+                    results.setVisibility(View.VISIBLE);
+                    fab.setVisibility(View.VISIBLE);
                 }
+                adapter.addAndResort(data);
+            } else {
+                TransitionManager.beginDelayedTransition(
+                        container, getTransition(io.plaidapp.core.R.transition.auto));
+                progress.setVisibility(View.GONE);
+                setNoResultsVisibility(View.VISIBLE);
             }
-        };
+        });
         ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider = new ViewPreloadSizeProvider<>();
         adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this),
                 shotPreloadSizeProvider);

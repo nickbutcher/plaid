@@ -14,29 +14,18 @@
  * limitations under the License.
  */
 
-package io.plaidapp.about.dagger
+package io.plaidapp.core.dagger
 
-import android.content.res.Resources
+import android.content.Context
 import dagger.Module
 import dagger.Provides
-import io.plaidapp.about.ui.AboutActivity
-import io.plaidapp.about.ui.AboutStyler
-import io.plaidapp.core.dagger.scope.ModuleScope
+import io.plaidapp.core.data.prefs.SourceManager
+import io.plaidapp.core.ui.FilterAdapter
 
 /**
- * Dagger module providing stuff for [AboutActivity].
+ * Module to provide [FilterAdapter].
  */
-@Module class AboutActivityModule(private val activity: AboutActivity) {
+@Module class FilterAdapterModule(val context: Context) {
 
-    @Provides
-    @ModuleScope
-    fun provideContext(): AboutActivity = activity
-
-    @Provides
-    @ModuleScope
-    fun provideResources(): Resources = activity.resources
-
-    @Provides
-    @ModuleScope
-    fun provideAboutStyler() = AboutStyler(activity)
+    @Provides fun provideFilterAdapter() = FilterAdapter(context, SourceManager.getSources(context))
 }

@@ -14,29 +14,24 @@
  * limitations under the License.
  */
 
-package io.plaidapp.about.dagger
+package io.plaidapp.core.dagger
 
-import android.content.res.Resources
 import dagger.Module
 import dagger.Provides
-import io.plaidapp.about.ui.AboutActivity
-import io.plaidapp.about.ui.AboutStyler
-import io.plaidapp.core.dagger.scope.ModuleScope
+import io.plaidapp.core.data.CoroutinesContextProvider
+import io.plaidapp.core.dribbble.data.ShotsRepository
+import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
 
 /**
- * Dagger module providing stuff for [AboutActivity].
+ * Provide [ShotsRepository].
+ *
+ * TODO: make this an app wide singleton.
  */
-@Module class AboutActivityModule(private val activity: AboutActivity) {
+@Module(includes = [CoroutinesContextProviderModule::class, DribbleSearchServiceProvider::class])
+class ShotsRepositoryModule {
 
-    @Provides
-    @ModuleScope
-    fun provideContext(): AboutActivity = activity
-
-    @Provides
-    @ModuleScope
-    fun provideResources(): Resources = activity.resources
-
-    @Provides
-    @ModuleScope
-    fun provideAboutStyler() = AboutStyler(activity)
+    @Provides fun provideShotsRepository(
+        remoteDataSource: SearchRemoteDataSource,
+        contextProvider: CoroutinesContextProvider
+    ) = ShotsRepository.getInstance(remoteDataSource, contextProvider)
 }

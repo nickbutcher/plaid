@@ -32,11 +32,6 @@ import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import io.plaidapp.core.R;
 import io.plaidapp.core.data.Source;
 import io.plaidapp.core.data.prefs.SourceManager;
@@ -44,6 +39,10 @@ import io.plaidapp.core.ui.recyclerview.FilterSwipeDismissListener;
 import io.plaidapp.core.util.AnimUtils;
 import io.plaidapp.core.util.ColorUtils;
 import io.plaidapp.core.util.ViewUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Adapter for showing the list of data sources used as filters for the home grid.
