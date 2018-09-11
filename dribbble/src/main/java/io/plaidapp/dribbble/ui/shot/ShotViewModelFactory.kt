@@ -21,11 +21,12 @@ import android.arch.lifecycle.ViewModelProvider
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
+import javax.inject.Inject
 
 /**
  * Factory for creating [ShotViewModel] with args.
  */
-class ShotViewModelFactory(
+class ShotViewModelFactory @Inject constructor(
     private val shotId: Long,
     private val shotRepository: ShotsRepository,
     private val getShareShotInfoUseCase: GetShareShotInfoUseCase,

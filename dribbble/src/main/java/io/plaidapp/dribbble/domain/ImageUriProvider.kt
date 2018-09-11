@@ -23,11 +23,12 @@ import com.bumptech.glide.Glide
 import io.plaidapp.core.dribbble.data.api.model.Images
 import io.plaidapp.dribbble.BuildConfig
 import java.io.File
+import javax.inject.Inject
 
 /**
  * A class responsible for resolving an image as identified by Url into a sharable [Uri].
  */
-class ImageUriProvider(context: Context) {
+class ImageUriProvider @Inject constructor(context: Context) {
 
     // Only hold the app context to avoid leaks
     private val appContext = context.applicationContext

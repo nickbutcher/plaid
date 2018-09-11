@@ -14,29 +14,16 @@
  * limitations under the License.
  */
 
-package io.plaidapp.about.dagger
+package io.plaidapp.core.dagger
 
-import android.content.res.Resources
 import dagger.Module
 import dagger.Provides
-import io.plaidapp.about.ui.AboutActivity
-import io.plaidapp.about.ui.AboutStyler
-import io.plaidapp.core.dagger.scope.ModuleScope
+import io.plaidapp.core.dribbble.data.search.DribbbleSearchService
+import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
 
-/**
- * Dagger module providing stuff for [AboutActivity].
- */
-@Module class AboutActivityModule(private val activity: AboutActivity) {
+@Module(includes = [DribbbleDataModule::class])
+class DribbleSearchServiceProvider {
 
-    @Provides
-    @ModuleScope
-    fun provideContext(): AboutActivity = activity
-
-    @Provides
-    @ModuleScope
-    fun provideResources(): Resources = activity.resources
-
-    @Provides
-    @ModuleScope
-    fun provideAboutStyler() = AboutStyler(activity)
+    @Provides fun provideDribbbleSearchService(dribbbleSearchService: DribbbleSearchService) =
+        SearchRemoteDataSource.getInstance(dribbbleSearchService)
 }

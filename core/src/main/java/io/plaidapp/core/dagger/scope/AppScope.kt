@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.dagger
+package io.plaidapp.core.dagger.scope
 
-import `in`.uncod.android.bypass.Bypass
-import `in`.uncod.android.bypass.Markdown
-import android.util.DisplayMetrics
-import dagger.Module
-import dagger.Provides
-import javax.inject.Inject
+import javax.inject.Scope
+import kotlin.annotation.AnnotationRetention.RUNTIME
 
 /**
- * Provide [Markdown] to this app's components.
+ * Scope for the entire app runtime.
  */
-@Module class MarkdownModule @Inject constructor(private val displayMetrics: DisplayMetrics) {
-
-    @Provides fun provideMarkdown(): Markdown = Bypass(displayMetrics, Bypass.Options())
-}
+@Scope
+@Retention(RUNTIME)
+annotation class AppScope

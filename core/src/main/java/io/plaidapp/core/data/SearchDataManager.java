@@ -27,13 +27,14 @@ import kotlin.Unit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.inject.Inject;
 import java.util.List;
 
 /**
  * Responsible for loading search results from dribbble and designer news. Instantiating classes are
  * responsible for providing the {code onDataLoaded} method to do something with the data.
  */
-public abstract class SearchDataManager extends BaseDataManager<List<? extends PlaidItem>>
+public class SearchDataManager extends BaseDataManager<List<? extends PlaidItem>>
         implements LoadSourceCallback {
 
     private final SearchStoriesUseCase searchStoriesUseCase;
@@ -43,8 +44,10 @@ public abstract class SearchDataManager extends BaseDataManager<List<? extends P
     private String query = "";
     private int page = 1;
 
-    public SearchDataManager(Context context) {
+    @Inject public SearchDataManager(Context context,
+                                     OnDataLoadedCallback<List<? extends PlaidItem>> onDataLoadedCallback) {
         super();
+        setOnDataLoadedCallback(onDataLoadedCallback);
         searchStoriesUseCase = Injection.provideSearchStoriesUseCase(context);
         shotsRepository = DribbbleInjection.provideShotsRepository();
     }

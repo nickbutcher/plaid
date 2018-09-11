@@ -20,9 +20,9 @@ package io.plaidapp.core.dribbble
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import io.plaidapp.core.data.CoroutinesContextProvider
+import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchConverter
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchService
-import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
 import io.plaidapp.core.loggingInterceptor
 import io.plaidapp.core.provideCoroutinesContextProvider
@@ -35,11 +35,13 @@ import retrofit2.Retrofit
  * Once we have a dependency injection framework or a service locator, this should be removed.
  */
 
+@Deprecated("Use dagger")
 fun provideShotsRepository() = provideShotsRepository(
     provideSearchRemoteDataSource(provideDribbbleSearchService()),
     provideCoroutinesContextProvider()
 )
 
+@Deprecated("Use dagger")
 private fun provideDribbbleSearchService(): DribbbleSearchService {
     val client = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
@@ -53,10 +55,12 @@ private fun provideDribbbleSearchService(): DribbbleSearchService {
         .create(DribbbleSearchService::class.java)
 }
 
+@Deprecated("Use dagger")
 private fun provideShotsRepository(
     remoteDataSource: SearchRemoteDataSource,
     contextProvider: CoroutinesContextProvider
 ) = ShotsRepository.getInstance(remoteDataSource, contextProvider)
 
+@Deprecated("Use dagger")
 private fun provideSearchRemoteDataSource(service: DribbbleSearchService) =
     SearchRemoteDataSource.getInstance(service)

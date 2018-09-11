@@ -24,7 +24,6 @@ import io.plaidapp.core.data.prefs.SourceManager;
 import io.plaidapp.core.designernews.Injection;
 import io.plaidapp.core.designernews.domain.LoadStoriesUseCase;
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase;
-import io.plaidapp.core.dribbble.DribbbleInjection;
 import io.plaidapp.core.dribbble.data.ShotsRepository;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.producthunt.data.api.ProductHuntInjection;
@@ -33,6 +32,7 @@ import io.plaidapp.core.ui.FilterAdapter;
 import kotlin.Unit;
 import retrofit2.Call;
 
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,25 +41,29 @@ import java.util.Map;
  * Responsible for loading data from the various sources. Instantiating classes are responsible for
  * providing the {code onDataLoaded} method to do something with the data.
  */
-public abstract class DataManager extends BaseDataManager<List<? extends PlaidItem>>
+public class DataManager extends BaseDataManager<List<? extends PlaidItem>>
         implements LoadSourceCallback {
 
     private final ShotsRepository shotsRepository;
+    private final FilterAdapter filterAdapter;
     private final LoadStoriesUseCase loadStoriesUseCase;
     private final SearchStoriesUseCase searchStoriesUseCase;
     private final ProductHuntRepository productHuntRepository;
-    private final FilterAdapter filterAdapter;
     Map<String, Integer> pageIndexes;
     Map<String, Call> inflightCalls;
 
-    public DataManager(Context context, FilterAdapter filterAdapter) {
+    @Inject public DataManager(Context context,
+                       OnDataLoadedCallback<List<? extends PlaidItem>> onDataLoadedCallback,
+                       ShotsRepository shotsRepository,
+                       FilterAdapter filterAdapter) {
         super();
-        shotsRepository = DribbbleInjection.provideShotsRepository();
         loadStoriesUseCase = Injection.provideLoadStoriesUseCase(context);
         searchStoriesUseCase = Injection.provideSearchStoriesUseCase(context);
         productHuntRepository = ProductHuntInjection.provideProductHuntRepository();
-
+        this.shotsRepository = shotsRepository;
         this.filterAdapter = filterAdapter;
+        setOnDataLoadedCallback(onDataLoadedCallback);
+
         filterAdapter.registerFilterChangedCallback(filterListener);
         setupPageIndexes();
         inflightCalls = new HashMap<>();
