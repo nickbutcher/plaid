@@ -80,21 +80,9 @@ dependencies {
     implementation "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
     implementation "com.google.firebase:firebase-core:${versions.firebase}"
 
-    testImplementation project(':test_shared')
-    testImplementation "android.arch.core:core-testing:${versions.lifecycle}"
-    testImplementation "com.nhaarman:mockito-kotlin:${versions.mockito_kotlin}"
-    testImplementation "junit:junit:${versions.junit}"
-
-    androidTestImplementation project(':test_shared')
-    androidTestImplementation "android.arch.core:core-testing:${versions.lifecycle}"
-    androidTestImplementation "com.android.support.test:runner:${versions.test_runner}"
     androidTestImplementation "com.android.support.test:rules:${versions.test_rules}"
     androidTestImplementation "com.android.support.test.espresso:espresso-contrib:${versions.espresso}"
-    androidTestImplementation "com.android.support.test.espresso:espresso-core:${versions.espresso}"
     androidTestImplementation "com.android.support.test.uiautomator:uiautomator-v18:${versions.ui_automator}"
-    androidTestImplementation "com.nhaarman:mockito-kotlin:${versions.mockito_kotlin}"
-    androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
-    androidTestImplementation "org.mockito:mockito-core:${versions.mockito}"
 }
 
 // Must be applied after dependencies. See https://stackoverflow.com/a/38018985
