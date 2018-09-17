@@ -16,25 +16,27 @@
 
 package io.plaidapp.core.dagger
 
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
-import io.plaidapp.core.dribbble.data.search.DribbbleSearchConverter
-import io.plaidapp.core.dribbble.data.search.DribbbleSearchService
+import io.plaidapp.core.BuildConfig
 import okhttp3.OkHttpClient
-import retrofit2.Retrofit
+import okhttp3.logging.HttpLoggingInterceptor
 
 /**
- * Module to set up retrofit.
+ * Module to provide [OkHttpClient] and [HttpLoggingInterceptor].
  */
-@Module(includes = [OkHttpModule::class])
-class DribbbleRetrofitModule {
+@Module class OkHttpModule {
 
-    @Provides fun provideRetrofitInterface(client: OkHttpClient): Retrofit =
-        Retrofit.Builder()
-            .baseUrl(DribbbleSearchService.ENDPOINT)
-            .addConverterFactory(DribbbleSearchConverter.Factory())
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
-            .client(client)
-            .build()
+    @Provides fun provideLoggingInterceptor(): HttpLoggingInterceptor {
+        return HttpLoggingInterceptor().apply {
+            level = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
+        }
+    }
+
+    @Provides fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+        OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()
 }
