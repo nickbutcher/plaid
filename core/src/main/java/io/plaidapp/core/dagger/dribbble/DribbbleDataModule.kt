@@ -16,72 +16,14 @@
 
 package io.plaidapp.core.dagger.dribbble
 
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
-import io.plaidapp.core.BuildConfig
-import io.plaidapp.core.dagger.CoroutinesContextProviderModule
-import io.plaidapp.core.data.CoroutinesContextProvider
-import io.plaidapp.core.dribbble.data.ShotsRepository
-import io.plaidapp.core.dribbble.data.search.DribbbleSearchConverter
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchService
-import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Converter
 import retrofit2.Retrofit
 
-/**
- * Dagger module providing classes required to dribbble with data.
- */
-@Module(includes = [CoroutinesContextProviderModule::class])
+@Module(includes = [DribbbleRetrofitModule::class])
 class DribbbleDataModule {
 
-    @Provides
-    fun provideShotsRepository(
-        remoteDataSource: SearchRemoteDataSource,
-        contextProvider: CoroutinesContextProvider
-    ) = ShotsRepository.getInstance(remoteDataSource, contextProvider)
-
-    @Provides
-    fun provideDribbbleSearchService(): DribbbleSearchService =
-        provideRetrofit(
-            DribbbleSearchService.ENDPOINT,
-            provideDribbleSearchConverterFactory()
-        )
-            .create(DribbbleSearchService::class.java)
-
-    @Provides
-    fun provideRetrofit(
-        baseUrl: String,
-        factory: Converter.Factory
-    ): Retrofit {
-        return provideRetrofitBuilder()
-            .baseUrl(baseUrl)
-            .addConverterFactory(factory)
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
-            .client(provideOkHttpClient(provideLoggingInterceptor()))
-            .build()
-    }
-
-    @Provides
-    fun provideRetrofitBuilder() = Retrofit.Builder()
-
-    @Provides
-    fun provideDribbleSearchConverterFactory() = DribbbleSearchConverter.Factory()
-
-    @Provides
-    fun provideLoggingInterceptor(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor().apply {
-            level = if (BuildConfig.DEBUG) {
-                HttpLoggingInterceptor.Level.BODY
-            } else {
-                HttpLoggingInterceptor.Level.NONE
-            }
-        }
-    }
-
-    @Provides
-    fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
-        OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()
+    @Provides fun provideDribbbleSearchService(retrofit: Retrofit): DribbbleSearchService =
+        retrofit.create(DribbbleSearchService::class.java)
 }
