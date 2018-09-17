@@ -21,6 +21,9 @@ import dagger.Provides
 import io.plaidapp.core.data.BaseDataManager
 import io.plaidapp.core.data.PlaidItem
 
+/**
+ * Module to provide [BaseDataManager.OnDataLoadedCallback].
+ */
 @Module class OnDataLoadedModule(private val callback: BaseDataManager.OnDataLoadedCallback<List<PlaidItem>>) {
 
     @Provides fun provideOnDataLoadedCallback() = callback

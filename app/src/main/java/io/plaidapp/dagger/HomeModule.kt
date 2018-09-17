@@ -22,25 +22,12 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.R
-import io.plaidapp.core.dagger.CoroutinesContextProviderModule
 import io.plaidapp.core.dagger.DataManagerModule
-import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
-import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
-import io.plaidapp.core.dagger.ShotsRepositoryModule
 import io.plaidapp.core.data.pocket.PocketUtils
 import io.plaidapp.core.dribbble.data.api.model.Shot
 
-@Module(
-    includes = [
-        CoroutinesContextProviderModule::class,
-        DataManagerModule::class,
-        DribbbleDataModule::class,
-        FilterAdapterModule::class,
-        ShotsRepositoryModule::class,
-        OnDataLoadedModule::class
-    ]
-)
+@Module(includes = [DataManagerModule::class, OnDataLoadedModule::class])
 class HomeModule(private val activity: Activity) {
 
     @Provides fun context(): Context = activity
