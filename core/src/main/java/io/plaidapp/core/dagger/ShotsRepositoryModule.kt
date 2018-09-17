@@ -18,7 +18,7 @@ package io.plaidapp.core.dagger
 
 import dagger.Module
 import dagger.Provides
-import io.plaidapp.core.dagger.dribbble.DribbleSearchServiceProvider
+import io.plaidapp.core.dagger.dribbble.DribbbleSearchServiceModule
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
@@ -28,7 +28,7 @@ import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
  *
  * TODO: make this an app wide singleton.
  */
-@Module(includes = [CoroutinesContextProviderModule::class, DribbleSearchServiceProvider::class])
+@Module(includes = [CoroutinesContextProviderModule::class, DribbbleSearchServiceModule::class])
 class ShotsRepositoryModule {
 
     @Provides fun provideShotsRepository(

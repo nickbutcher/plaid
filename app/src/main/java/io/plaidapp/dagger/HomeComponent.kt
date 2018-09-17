@@ -19,17 +19,15 @@ package io.plaidapp.dagger
 import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
-import io.plaidapp.core.dagger.CoroutinesContextProviderModule
 import io.plaidapp.core.dagger.DataManagerModule
-import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
-import io.plaidapp.core.dagger.dribbble.DribbbleRetrofitModule
 import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
-import io.plaidapp.core.dagger.dribbble.DribbleSearchServiceProvider
-import io.plaidapp.core.dagger.ShotsRepositoryModule
 import io.plaidapp.ui.HomeActivity
 
-@Component(modules = [HomeModule::class, ShotsRepositoryModule::class])
+/**
+ * Dagger component for the [HomeActivity].
+ */
+@Component(modules = [HomeModule::class])
 interface HomeComponent {
 
     fun inject(activity: HomeActivity)
@@ -41,14 +39,9 @@ interface HomeComponent {
         @BindsInstance
         fun context(context: Context): Builder
 
-        fun coroutinesContextProviderModule(module: CoroutinesContextProviderModule): Builder
         fun dataLoadedModule(module: OnDataLoadedModule): Builder
         fun dataManagerModule(module: DataManagerModule): Builder
-        fun dribbbleDataModule(module: DribbbleDataModule): Builder
-        fun retrofitModule(module: DribbbleRetrofitModule): Builder
         fun homeModule(module: HomeModule): Builder
         fun filterAdapterModule(module: FilterAdapterModule): Builder
-        fun searchRemoteDataSourceModule(module: DribbleSearchServiceProvider): Builder
-        fun shotsRepositoryModule(module: ShotsRepositoryModule): Builder
     }
 }
