@@ -35,8 +35,10 @@ val debugLevel = if (BuildConfig.DEBUG) {
     HttpLoggingInterceptor.Level.NONE
 }
 
+@Deprecated("Use Dagger LoggingInterceptorModule instead")
 val loggingInterceptor = HttpLoggingInterceptor().apply { level = debugLevel }
 
+@Deprecated("Use Dagger SharedPreferenceModule instead")
 fun provideSharedPreferences(context: Context, name: String): SharedPreferences {
     return context.applicationContext
             .getSharedPreferences(name, Context.MODE_PRIVATE)
