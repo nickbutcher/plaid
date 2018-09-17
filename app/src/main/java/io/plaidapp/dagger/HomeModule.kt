@@ -24,7 +24,7 @@ import dagger.Provides
 import io.plaidapp.R
 import io.plaidapp.core.dagger.CoroutinesContextProviderModule
 import io.plaidapp.core.dagger.DataManagerModule
-import io.plaidapp.core.dagger.DribbbleDataModule
+import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
 import io.plaidapp.core.dagger.ShotsRepositoryModule

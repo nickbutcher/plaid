@@ -18,6 +18,7 @@ package io.plaidapp.core.dagger
 
 import dagger.Module
 import dagger.Provides
+import io.plaidapp.core.dagger.dribbble.DribbleSearchServiceProvider
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource

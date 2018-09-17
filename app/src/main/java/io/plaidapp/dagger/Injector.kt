@@ -18,11 +18,11 @@ package io.plaidapp.dagger
 
 import io.plaidapp.core.dagger.CoroutinesContextProviderModule
 import io.plaidapp.core.dagger.DataManagerModule
-import io.plaidapp.core.dagger.DribbbleDataModule
-import io.plaidapp.core.dagger.DribbbleRetrofitModule
+import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
+import io.plaidapp.core.dagger.dribbble.DribbbleRetrofitModule
 import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
-import io.plaidapp.core.dagger.DribbleSearchServiceProvider
+import io.plaidapp.core.dagger.dribbble.DribbleSearchServiceProvider
 import io.plaidapp.core.dagger.ShotsRepositoryModule
 import io.plaidapp.core.data.BaseDataManager
 import io.plaidapp.core.data.PlaidItem
