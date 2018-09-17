@@ -14,9 +14,19 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.dagger
+package io.plaidapp.core.dagger.dribbble
 
-import dagger.Component
+import dagger.Module
+import dagger.Provides
+import io.plaidapp.core.dribbble.data.search.DribbbleSearchService
+import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
 
-@Component(modules = [DataManagerModule::class])
-interface DataManagerComponent
+/**
+ * Module to provide [DribbbleSearchService].
+ */
+@Module(includes = [DribbbleDataModule::class])
+class DribbbleSearchServiceModule {
+
+    @Provides fun provideDribbbleSearchService(dribbbleSearchService: DribbbleSearchService) =
+        SearchRemoteDataSource.getInstance(dribbbleSearchService)
+}
