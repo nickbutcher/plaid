@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.dagger
+package io.plaidapp.core.dagger.dribbble
 
 import dagger.Module
 import dagger.Provides
