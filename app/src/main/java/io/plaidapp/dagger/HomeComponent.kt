@@ -16,9 +16,8 @@
 
 package io.plaidapp.dagger
 
-import android.content.Context
-import dagger.BindsInstance
 import dagger.Component
+import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.DataManagerModule
 import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
@@ -27,21 +26,19 @@ import io.plaidapp.ui.HomeActivity
 /**
  * Dagger component for the [HomeActivity].
  */
-@Component(modules = [HomeModule::class])
+@Component(modules = [HomeModule::class], dependencies = [CoreComponent::class])
 interface HomeComponent {
 
     fun inject(activity: HomeActivity)
 
     @Component.Builder
     interface Builder {
+
         fun build(): HomeComponent
-
-        @BindsInstance
-        fun context(context: Context): Builder
-
-        fun dataLoadedModule(module: OnDataLoadedModule): Builder
+        fun coreComponent(module: CoreComponent): Builder
         fun dataManagerModule(module: DataManagerModule): Builder
-        fun homeModule(module: HomeModule): Builder
+        fun dataLoadedModule(module: OnDataLoadedModule): Builder
         fun filterAdapterModule(module: FilterAdapterModule): Builder
+        fun homeModule(module: HomeModule): Builder
     }
 }

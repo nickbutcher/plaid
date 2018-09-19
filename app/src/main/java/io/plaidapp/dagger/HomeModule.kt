@@ -23,20 +23,37 @@ import dagger.Module
 import dagger.Provides
 import io.plaidapp.R
 import io.plaidapp.core.dagger.DataManagerModule
+import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
+import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.data.pocket.PocketUtils
 import io.plaidapp.core.dribbble.data.api.model.Shot
 
-@Module(includes = [DataManagerModule::class, OnDataLoadedModule::class])
+/**
+ * Dagger module for [io.plaidapp.ui.HomeActivity].
+ */
+@Module(
+    includes = [
+        DataManagerModule::class,
+        DribbbleDataModule::class,
+        FilterAdapterModule::class,
+        OnDataLoadedModule::class
+    ]
+)
 class HomeModule(private val activity: Activity) {
 
-    @Provides fun context(): Context = activity
+    @Provides
+    fun context(): Context = activity
 
-    @Provides fun activity(): Activity = activity
+    @Provides
+    fun activity(): Activity = activity
 
-    @Provides fun columns(): Int = activity.resources.getInteger(R.integer.num_columns)
+    @Provides
+    fun columns(): Int = activity.resources.getInteger(R.integer.num_columns)
 
-    @Provides fun viewPreloadSizeProvider() = ViewPreloadSizeProvider<Shot>()
+    @Provides
+    fun viewPreloadSizeProvider() = ViewPreloadSizeProvider<Shot>()
 
-    @Provides fun isPocketInstalled() = PocketUtils.isPocketInstalled(activity)
+    @Provides
+    fun isPocketInstalled() = PocketUtils.isPocketInstalled(activity)
 }

@@ -19,6 +19,7 @@ package io.plaidapp.core.dagger
 import android.content.Context
 import dagger.Module
 import dagger.Provides
+import io.plaidapp.core.data.Source
 import io.plaidapp.core.data.prefs.SourceManager
 import io.plaidapp.core.ui.FilterAdapter
 
@@ -27,5 +28,7 @@ import io.plaidapp.core.ui.FilterAdapter
  */
 @Module class FilterAdapterModule(val context: Context) {
 
-    @Provides fun provideFilterAdapter() = FilterAdapter(context, SourceManager.getSources(context))
+    @Provides fun provideFilterAdapter() = FilterAdapter(context, provideSources())
+
+    @Provides fun provideSources(): MutableList<Source> = SourceManager.getSources(context)
 }

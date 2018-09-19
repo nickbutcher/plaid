@@ -30,6 +30,7 @@
             android:supportsRtl="true"
             android:extractNativeLibs="false"
             android:appCategory="image"
+            android:name=".ui.PlaidApplication"
             android:theme="@style/Plaid">
 
         <activity

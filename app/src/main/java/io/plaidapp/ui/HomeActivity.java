@@ -56,6 +56,7 @@ import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.ui.FeedAdapter;
 import io.plaidapp.core.ui.FilterAdapter;
+import io.plaidapp.core.ui.FilterAnimator;
 import io.plaidapp.core.ui.HomeGridItemAnimator;
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.core.ui.transitions.FabTransform;
@@ -121,13 +122,7 @@ public class HomeActivity extends Activity {
         setExitSharedElementCallback(FeedAdapter.createSharedElementReenterCallback(this));
 
         loginRepository = Injection.provideLoginRepository(this);
-//        filtersAdapter = new FilterAdapter(this, SourceManager.getSources(this));
-//        dataManager = new DataManager(this, data -> {
-//                adapter.addAndResort(data);
-//                checkEmptyState();
-//            });
         ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider = new ViewPreloadSizeProvider<>();
-//        adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this), shotPreloadSizeProvider);
 
         grid.setAdapter(adapter);
         layoutManager = new GridLayoutManager(this, columns);
@@ -211,7 +206,7 @@ public class HomeActivity extends Activity {
         setupTaskDescription();
 
         filtersList.setAdapter(filtersAdapter);
-        filtersList.setItemAnimator(new FilterAdapter.FilterAnimator());
+        filtersList.setItemAnimator(new FilterAnimator());
         filtersAdapter.registerFilterChangedCallback(filtersChangedCallbacks);
         dataManager.loadAllDataSources();
         ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter, this);
