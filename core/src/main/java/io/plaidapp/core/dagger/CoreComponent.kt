@@ -20,15 +20,22 @@ import dagger.Component
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 
 /**
- * Component providing application wide singletons
+ * Component providing application wide singletons.
+ * To call this make use of PlaidApplication.coreComponent.
  */
 @Component(
     modules = [
-        CoroutinesContextProviderModule::class,
         DribbbleDataModule::class,
         MarkdownModule::class,
-        OnDataLoadedModule::class,
         SharedPreferencesModule::class
     ]
 )
-interface CoreComponent
+interface CoreComponent {
+
+    @Component.Builder interface Builder {
+        fun build(): CoreComponent
+        fun dribbbleDataModule(module: DribbbleDataModule): Builder
+        fun markdownModule(module: MarkdownModule): Builder
+        fun sharedPreferencesModuleModule(module: SharedPreferencesModule): Builder
+    }
+}

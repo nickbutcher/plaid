@@ -16,14 +16,9 @@
 
 package io.plaidapp.core.data
 
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
 import kotlin.coroutines.experimental.CoroutineContext
 
 /**
  * Provide coroutines context.
  */
-data class CoroutinesContextProvider(
-    val main: CoroutineContext = UI,
-    val io: CoroutineContext = CommonPool
-)
+data class CoroutinesContextProvider(val main: CoroutineContext, val io: CoroutineContext)

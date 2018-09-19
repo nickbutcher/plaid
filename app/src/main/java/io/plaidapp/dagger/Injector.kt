@@ -22,6 +22,7 @@ import io.plaidapp.core.dagger.OnDataLoadedModule
 import io.plaidapp.core.data.BaseDataManager
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.ui.HomeActivity
+import io.plaidapp.ui.PlaidApplication
 
 /**
  * Injector for HomeActivity.
@@ -36,11 +37,11 @@ object Injector {
         dataLoadedCallback: BaseDataManager.OnDataLoadedCallback<List<PlaidItem>>
     ) {
         DaggerHomeComponent.builder()
-            .context(activity)
-            .dataLoadedModule(OnDataLoadedModule(dataLoadedCallback))
+            .coreComponent(PlaidApplication.coreComponent(activity))
             .dataManagerModule(DataManagerModule(activity))
-            .homeModule(HomeModule(activity))
+            .dataLoadedModule(OnDataLoadedModule(dataLoadedCallback))
             .filterAdapterModule(FilterAdapterModule(activity))
+            .homeModule(HomeModule(activity))
             .build()
             .inject(activity)
     }

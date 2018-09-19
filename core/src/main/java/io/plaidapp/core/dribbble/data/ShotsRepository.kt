@@ -23,12 +23,11 @@ import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
-import javax.inject.Inject
 
 /**
  * Repository class that handles working with Dribbble.
  */
-class ShotsRepository @Inject constructor(
+class ShotsRepository constructor(
     private val remoteDataSource: SearchRemoteDataSource,
     private val contextProvider: CoroutinesContextProvider
 ) {

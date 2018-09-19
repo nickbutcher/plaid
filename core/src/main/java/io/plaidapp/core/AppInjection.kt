@@ -21,6 +21,8 @@ package io.plaidapp.core
 import android.content.Context
 import android.content.SharedPreferences
 import io.plaidapp.core.data.CoroutinesContextProvider
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
 import okhttp3.logging.HttpLoggingInterceptor
 
 /**
@@ -45,4 +47,4 @@ fun provideSharedPreferences(context: Context, name: String): SharedPreferences 
 }
 
 @Deprecated("Use Dagger CoroutinesContextProviderModule instead")
-fun provideCoroutinesContextProvider(): CoroutinesContextProvider = CoroutinesContextProvider()
+fun provideCoroutinesContextProvider() = CoroutinesContextProvider(UI, CommonPool)
