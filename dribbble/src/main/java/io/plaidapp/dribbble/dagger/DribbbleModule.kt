@@ -20,7 +20,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import dagger.Module
 import dagger.Provides
-import io.plaidapp.core.dagger.CoroutinesContextProviderModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.dribbble.data.ShotsRepository
@@ -33,7 +32,7 @@ import io.plaidapp.dribbble.ui.shot.ShotViewModelFactory
 /**
  * Module providing injections for the :dribbble feature module.
  */
-@Module(includes = [CoroutinesContextProviderModule::class, DribbbleDataModule::class])
+@Module(includes = [DribbbleDataModule::class])
 class DribbbleModule(private val activity: ShotActivity, private val shotId: Long) {
 
     @Provides

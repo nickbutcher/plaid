@@ -19,11 +19,13 @@ package io.plaidapp.core.dagger
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.data.CoroutinesContextProvider
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
 
 /**
  * Provide [CoroutinesContextProvider] to this app's components.
  */
 @Module class CoroutinesContextProviderModule {
 
-    @Provides fun provideCoroutinesContextProvider() = CoroutinesContextProvider()
+    @Provides fun provideCoroutinesContextProvider() = CoroutinesContextProvider(UI, CommonPool)
 }
