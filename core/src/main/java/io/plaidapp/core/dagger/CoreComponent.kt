@@ -34,7 +34,6 @@ interface CoreComponent {
 
     @Component.Builder interface Builder {
         fun build(): CoreComponent
-        fun dribbbleDataModule(module: DribbbleDataModule): Builder
         fun markdownModule(module: MarkdownModule): Builder
         fun sharedPreferencesModuleModule(module: SharedPreferencesModule): Builder
     }

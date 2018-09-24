@@ -21,7 +21,6 @@ import android.content.Context
 import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.DaggerCoreComponent
 import io.plaidapp.core.dagger.MarkdownModule
-import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 
 /**
  * Io and Behold
@@ -31,7 +30,6 @@ class PlaidApplication : Application() {
     val coreComponent: CoreComponent by lazy {
         DaggerCoreComponent
             .builder()
-            .dribbbleDataModule(DribbbleDataModule())
             .markdownModule(MarkdownModule(resources.displayMetrics))
             .build()
     }

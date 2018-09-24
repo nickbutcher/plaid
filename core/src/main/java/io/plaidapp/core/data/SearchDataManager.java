@@ -20,7 +20,6 @@ package io.plaidapp.core.data;
 import android.content.Context;
 import io.plaidapp.core.designernews.Injection;
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase;
-import io.plaidapp.core.dribbble.DribbbleInjection;
 import io.plaidapp.core.dribbble.data.ShotsRepository;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import kotlin.Unit;
@@ -38,7 +37,7 @@ public class SearchDataManager extends BaseDataManager<List<? extends PlaidItem>
         implements LoadSourceCallback {
 
     private final SearchStoriesUseCase searchStoriesUseCase;
-    private final ShotsRepository shotsRepository;
+    @Inject ShotsRepository shotsRepository;
 
     // state
     private String query = "";
@@ -49,7 +48,6 @@ public class SearchDataManager extends BaseDataManager<List<? extends PlaidItem>
         super();
         setOnDataLoadedCallback(onDataLoadedCallback);
         searchStoriesUseCase = Injection.provideSearchStoriesUseCase(context);
-        shotsRepository = DribbbleInjection.provideShotsRepository();
     }
 
     public void searchFor(String query) {
