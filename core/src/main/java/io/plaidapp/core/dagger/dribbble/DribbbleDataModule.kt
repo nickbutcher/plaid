@@ -28,6 +28,7 @@ import io.plaidapp.core.dribbble.data.search.DribbbleSearchService
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Converter
 import retrofit2.Retrofit
 
 /**
@@ -36,24 +37,41 @@ import retrofit2.Retrofit
 @Module(includes = [CoroutinesContextProviderModule::class])
 class DribbbleDataModule {
 
-    @Provides fun provideShotsRepository(
+    @Provides
+    fun provideShotsRepository(
         remoteDataSource: SearchRemoteDataSource,
         contextProvider: CoroutinesContextProvider
     ) = ShotsRepository.getInstance(remoteDataSource, contextProvider)
 
-    @Provides fun provideDribbbleSearchService(): DribbbleSearchService =
-        provideRetrofit().create(DribbbleSearchService::class.java)
+    @Provides
+    fun provideDribbbleSearchService(): DribbbleSearchService =
+        provideRetrofit(
+            DribbbleSearchService.ENDPOINT,
+            provideDribbleSearchConverterFactory()
+        )
+            .create(DribbbleSearchService::class.java)
 
-    @Provides fun provideRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(DribbbleSearchService.ENDPOINT)
-            .addConverterFactory(DribbbleSearchConverter.Factory())
+    @Provides
+    fun provideRetrofit(
+        baseUrl: String,
+        factory: Converter.Factory
+    ): Retrofit {
+        return provideRetrofitBuilder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(factory)
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .client(provideOkHttpClient(provideLoggingInterceptor()))
             .build()
     }
 
-    @Provides fun provideLoggingInterceptor(): HttpLoggingInterceptor {
+    @Provides
+    fun provideRetrofitBuilder() = Retrofit.Builder()
+
+    @Provides
+    fun provideDribbleSearchConverterFactory() = DribbbleSearchConverter.Factory()
+
+    @Provides
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) {
                 HttpLoggingInterceptor.Level.BODY
@@ -63,6 +81,7 @@ class DribbbleDataModule {
         }
     }
 
-    @Provides fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+    @Provides
+    fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
         OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()
 }
