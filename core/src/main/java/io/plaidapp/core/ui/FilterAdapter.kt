@@ -43,20 +43,18 @@ import java.util.Collections
  */
 class FilterAdapter constructor(
     context: Context,
-    internal val filters: MutableList<Source>
+    val filters: MutableList<Source>
 ) : RecyclerView.Adapter<FilterViewHolder>(), FilterSwipeDismissListener {
 
     private val context: Context = context.applicationContext
     private var callbacks: MutableList<FiltersChangedCallbacks> = ArrayList()
 
     val enabledSourcesCount: Int
-        get() = filters.count { it.active }
+        get() = filters.count(Source::active)
 
     init {
         setHasStableIds(true)
     }
-
-    fun getFilters() = filters
 
     /**
      * Adds a new data source to the list of filters. If the source already exists then it is simply
@@ -207,18 +205,14 @@ class FilterAdapter constructor(
     }
 
     private fun dispatchFiltersChanged(filter: Source) {
-        if (!callbacks.isEmpty()) {
-            for (callback in callbacks) {
-                callback.onFiltersChanged(filter)
-            }
+        for (callback in callbacks) {
+            callback.onFiltersChanged(filter)
         }
     }
 
     private fun dispatchFilterRemoved(filter: Source) {
-        if (!callbacks.isEmpty()) {
-            for (callback in callbacks) {
-                callback.onFilterRemoved(filter)
-            }
+        for (callback in callbacks) {
+            callback.onFilterRemoved(filter)
         }
     }
 
