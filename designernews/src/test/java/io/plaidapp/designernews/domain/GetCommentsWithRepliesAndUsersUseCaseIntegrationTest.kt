@@ -48,10 +48,10 @@ import org.junit.Test
 import retrofit2.Response
 
 /**
- * Integration test for [CommentsWithRepliesAndUsersUseCase] where only the responses from the [DesignerNewsService]
+ * Integration test for [GetCommentsWithRepliesAndUsersUseCase] where only the responses from the [DesignerNewsService]
  * are mocked. Everything else uses real implementation.
  */
-class CommentsWithRepliesAndUsersUseCaseIntegrationTest {
+class GetCommentsWithRepliesAndUsersUseCaseIntegrationTest {
     private val service: DesignerNewsService = mock()
     private val dataSource = CommentsRemoteDataSource(service)
     private val commentsRepository = CommentsRepository(dataSource)

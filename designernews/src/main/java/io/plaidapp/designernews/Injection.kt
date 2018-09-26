@@ -29,8 +29,8 @@ import io.plaidapp.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.designernews.data.users.UserRepository
 import io.plaidapp.designernews.data.votes.VotesRemoteDataSource
 import io.plaidapp.designernews.data.votes.VotesRepository
-import io.plaidapp.designernews.domain.CommentsWithRepliesAndUsersUseCase
-import io.plaidapp.designernews.domain.CommentsWithRepliesUseCase
+import io.plaidapp.designernews.domain.GetCommentsWithRepliesAndUsersUseCase
+import io.plaidapp.designernews.domain.GetCommentsWithRepliesUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.PostReplyUseCase
 import io.plaidapp.designernews.domain.PostStoryCommentUseCase
@@ -79,7 +79,7 @@ fun provideUpvoteCommentUseCase(context: Context): UpvoteCommentUseCase {
     return UpvoteCommentUseCase(loginRepository, votesRepository)
 }
 
-fun provideCommentsWithRepliesAndUsersUseCase(context: Context): CommentsWithRepliesAndUsersUseCase {
+fun provideCommentsWithRepliesAndUsersUseCase(context: Context): GetCommentsWithRepliesAndUsersUseCase {
     val service = provideDesignerNewsService(context)
     val commentsRepository = provideCommentsRepository(
         provideCommentsRemoteDataSource(service)
@@ -92,12 +92,12 @@ fun provideCommentsWithRepliesAndUsersUseCase(context: Context): CommentsWithRep
 }
 
 fun provideCommentsWithRepliesUseCase(commentsRepository: CommentsRepository) =
-    CommentsWithRepliesUseCase(commentsRepository)
+    GetCommentsWithRepliesUseCase(commentsRepository)
 
 fun provideCommentsWithRepliesAndUsersUseCase(
-    commentsWithCommentsWithRepliesUseCase: CommentsWithRepliesUseCase,
+    commentsWithGetCommentsWithReplies: GetCommentsWithRepliesUseCase,
     userRepository: UserRepository
-) = CommentsWithRepliesAndUsersUseCase(commentsWithCommentsWithRepliesUseCase, userRepository)
+) = GetCommentsWithRepliesAndUsersUseCase(commentsWithGetCommentsWithReplies, userRepository)
 
 private fun provideUserRemoteDataSource(service: DesignerNewsService) =
     UserRemoteDataSource(service)

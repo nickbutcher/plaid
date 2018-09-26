@@ -40,13 +40,13 @@ import org.junit.Test
 import java.io.IOException
 
 /**
- * Tests for [CommentsWithRepliesAndUsersUseCase] where all the dependencies are mocked.
+ * Tests for [GetCommentsWithRepliesAndUsersUseCase] where all the dependencies are mocked.
  */
-class CommentsWithRepliesAndUsersUseCaseTest {
-    private val commentsWithRepliesUseCase: CommentsWithRepliesUseCase = mock()
+class GetCommentsWithRepliesAndUsersUseCaseTest {
+    private val getCommentsWithReplies: GetCommentsWithRepliesUseCase = mock()
     private val userRepository: UserRepository = mock()
-    private val repository = CommentsWithRepliesAndUsersUseCase(
-        commentsWithRepliesUseCase,
+    private val repository = GetCommentsWithRepliesAndUsersUseCase(
+        getCommentsWithReplies,
         userRepository
     )
 
@@ -67,10 +67,10 @@ class CommentsWithRepliesAndUsersUseCaseTest {
 
     @Test
     fun getComments_noReplies_whenCommentsRequestFailed() = runBlocking {
-        // Given that the commentsWithRepliesUseCase responds with failure
+        // Given that the getCommentsWithReplies responds with failure
         val resultError = Result.Error(IOException("Comment error"))
         val ids = listOf(11L)
-        whenever(commentsWithRepliesUseCase.getCommentsWithReplies(ids)).thenReturn(resultError)
+        whenever(getCommentsWithReplies.invoke(ids)).thenReturn(resultError)
 
         // When getting the comments
         val result = repository(ids)
@@ -83,7 +83,7 @@ class CommentsWithRepliesAndUsersUseCaseTest {
     @Test
     fun getComments_multipleReplies_whenCommentsAndUsersRequestsSuccessful() = runBlocking {
         // Given that:
-        // When requesting replies for ids 1 from commentsWithRepliesUseCase we get the parent comment but
+        // When requesting replies for ids 1 from getCommentsWithReplies we get the parent comment but
         // without replies embedded (since that's what the next call is doing)
         val parentIds = listOf(1L)
         withComment(parentCommentWithReplies, parentIds)
@@ -93,14 +93,14 @@ class CommentsWithRepliesAndUsersUseCaseTest {
         val result = repository(listOf(1L))
 
         // Then comments were requested for correct ids
-        verify(commentsWithRepliesUseCase).getCommentsWithReplies(parentIds)
+        verify(getCommentsWithReplies).invoke(parentIds)
         // Then the correct result is received
         assertEquals(Result.Success(flattendCommentsWithReplies), result)
     }
 
     @Test
     fun getComments_multipleReplies_whenRepliesRequestFailed() = runBlocking {
-        // Given that when requesting replies for ids 1 from commentsWithRepliesUseCase we get the parent comment
+        // Given that when requesting replies for ids 1 from getCommentsWithReplies we get the parent comment
         val parentIds = listOf(1L)
         withComment(parentCommentWithRepliesWithoutReplies, parentIds)
         // Given that the user request responds with success
@@ -110,7 +110,7 @@ class CommentsWithRepliesAndUsersUseCaseTest {
         val result = repository(listOf(1L))
 
         // Then comments were requested for correct ids
-        verify(commentsWithRepliesUseCase).getCommentsWithReplies(parentIds)
+        verify(getCommentsWithReplies).invoke(parentIds)
         // Then the correct result is received
         assertEquals(Result.Success(flattenedCommentsWithoutReplies), result)
     }
@@ -118,7 +118,7 @@ class CommentsWithRepliesAndUsersUseCaseTest {
     @Test
     fun getComments_whenUserRequestFailed() = runBlocking {
         // Given that:
-        // When requesting replies for ids 1 from commentsWithRepliesUseCase we get the parent comment but
+        // When requesting replies for ids 1 from getCommentsWithReplies we get the parent comment but
         // without replies embedded (since that's what the next call is doing)
         val ids = listOf(11L)
         withComment(replyWithReplies1, ids)
@@ -130,7 +130,7 @@ class CommentsWithRepliesAndUsersUseCaseTest {
         val result = repository(listOf(11L))
 
         // Then comments were requested for correct ids
-        verify(commentsWithRepliesUseCase).getCommentsWithReplies(ids)
+        verify(getCommentsWithReplies).invoke(ids)
         // Then the correct result is received
         assertEquals(Result.Success(arrayListOf(reply1NoUser)), result)
     }
@@ -143,6 +143,6 @@ class CommentsWithRepliesAndUsersUseCaseTest {
 
     private fun withComment(comment: CommentWithReplies, ids: List<Long>) = runBlocking {
         val resultParent = Result.Success(listOf(comment))
-        whenever(commentsWithRepliesUseCase.getCommentsWithReplies(ids)).thenReturn(resultParent)
+        whenever(getCommentsWithReplies(ids)).thenReturn(resultParent)
     }
 }

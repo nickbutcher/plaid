@@ -23,7 +23,7 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryLinks
 import io.plaidapp.core.designernews.domain.model.Comment
-import io.plaidapp.designernews.domain.CommentsWithRepliesAndUsersUseCase
+import io.plaidapp.designernews.domain.GetCommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.PostReplyUseCase
 import io.plaidapp.designernews.domain.PostStoryCommentUseCase
@@ -74,7 +74,7 @@ class StoryViewModelTest {
     private val getStory: GetStoryUseCase = mock()
     private val postStoryComment: PostStoryCommentUseCase = mock()
     private val postComment: PostReplyUseCase = mock()
-    private val commentsWithRepliesAndUsers: CommentsWithRepliesAndUsersUseCase = mock()
+    private val getCommentsWithRepliesAndUsers: GetCommentsWithRepliesAndUsersUseCase = mock()
     private val upvoteStory: UpvoteStoryUseCase = mock()
     private val upvoteComment: UpvoteCommentUseCase = mock()
 
@@ -99,7 +99,7 @@ class StoryViewModelTest {
             getStory,
             postStoryComment,
             postComment,
-            commentsWithRepliesAndUsers,
+            getCommentsWithRepliesAndUsers,
             upvoteStory,
             upvoteComment,
             provideFakeCoroutinesContextProvider()
@@ -253,7 +253,7 @@ class StoryViewModelTest {
     private fun withViewModel(): StoryViewModel {
         whenever(getStory(storyId)).thenReturn(Result.Success(testStory))
         runBlocking {
-            whenever(commentsWithRepliesAndUsers(commentIds)).thenReturn(
+            whenever(getCommentsWithRepliesAndUsers(commentIds)).thenReturn(
                 Result.Success(
                     flattendCommentsWithReplies
                 )
@@ -264,7 +264,7 @@ class StoryViewModelTest {
             getStory,
             postStoryComment,
             postComment,
-            commentsWithRepliesAndUsers,
+            getCommentsWithRepliesAndUsers,
             upvoteStory,
             upvoteComment,
             provideFakeCoroutinesContextProvider()
