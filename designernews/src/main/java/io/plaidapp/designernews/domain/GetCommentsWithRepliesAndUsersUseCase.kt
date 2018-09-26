@@ -26,13 +26,13 @@ import io.plaidapp.designernews.data.users.UserRepository
 /**
  * Use case that builds [Comment]s based on comments with replies and users
  */
-class CommentsWithRepliesAndUsersUseCase(
-    private val commentsWithRepliesUseCase: CommentsWithRepliesUseCase,
+class GetCommentsWithRepliesAndUsersUseCase(
+    private val getCommentsWithReplies: GetCommentsWithRepliesUseCase,
     private val userRepository: UserRepository
 ) {
     suspend operator fun invoke(ids: List<Long>): Result<List<Comment>> {
         // Get the comments with replies
-        val commentsWithRepliesResult = commentsWithRepliesUseCase.getCommentsWithReplies(ids)
+        val commentsWithRepliesResult = getCommentsWithReplies(ids)
         if (commentsWithRepliesResult is Result.Error) {
             return commentsWithRepliesResult
         }

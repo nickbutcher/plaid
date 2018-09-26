@@ -27,13 +27,13 @@ import java.io.IOException
  * Use case that constructs the entire comments and replies tree for a list of comments. Works
  * with the [CommentsRepository] to get the data.
  */
-class CommentsWithRepliesUseCase(private val commentsRepository: CommentsRepository) {
+class GetCommentsWithRepliesUseCase(private val commentsRepository: CommentsRepository) {
 
     /**
      * Get all comments and their replies. If we get an error on any reply depth level, ignore it
      * and just use the comments retrieved until that point.
      */
-    suspend fun getCommentsWithReplies(parentIds: List<Long>): Result<List<CommentWithReplies>> {
+    suspend operator fun invoke(parentIds: List<Long>): Result<List<CommentWithReplies>> {
         val replies = mutableListOf<List<CommentResponse>>()
         // get the first level of comments
         var parentComments = commentsRepository.getComments(parentIds)
@@ -56,12 +56,10 @@ class CommentsWithRepliesUseCase(private val commentsRepository: CommentsReposit
         }
         // the last request was unsuccessful
         // if we already got some comments and replies, then use that data and ignore the error
-        return if (replies.isNotEmpty()) {
-            Result.Success(matchComments(replies))
-        } else if (parentComments is Result.Error) {
-            parentComments
-        } else {
-            Result.Error(IOException("Unable to get comments"))
+        return when {
+            replies.isNotEmpty() -> Result.Success(matchComments(replies))
+            parentComments is Result.Error -> parentComments
+            else -> Result.Error(IOException("Unable to get comments"))
         }
     }
 

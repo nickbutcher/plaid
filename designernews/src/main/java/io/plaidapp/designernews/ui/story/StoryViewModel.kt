@@ -23,7 +23,8 @@ import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.domain.model.Comment
-import io.plaidapp.designernews.domain.CommentsWithRepliesAndUsersUseCase
+import io.plaidapp.core.util.exhaustive
+import io.plaidapp.designernews.domain.GetCommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.PostReplyUseCase
 import io.plaidapp.designernews.domain.PostStoryCommentUseCase
@@ -42,7 +43,7 @@ class StoryViewModel(
     getStoryUseCase: GetStoryUseCase,
     private var postStoryComment: PostStoryCommentUseCase,
     private var postReply: PostReplyUseCase,
-    private val commentsWithRepliesAndUsers: CommentsWithRepliesAndUsersUseCase,
+    private val getCommentsWithRepliesAndUsers: GetCommentsWithRepliesAndUsersUseCase,
     private val upvoteStory: UpvoteStoryUseCase,
     private val upvoteComment: UpvoteCommentUseCase,
     private val contextProvider: CoroutinesContextProvider
@@ -62,7 +63,7 @@ class StoryViewModel(
                 getComments()
             }
             is Result.Error -> throw result.exception
-        }
+        }.exhaustive
     }
 
     private val parentJob = Job()
@@ -106,7 +107,7 @@ class StoryViewModel(
     }
 
     private fun getComments() = launch(contextProvider.io, parent = parentJob) {
-        val result = commentsWithRepliesAndUsers(story.links.comments)
+        val result = getCommentsWithRepliesAndUsers(story.links.comments)
         if (result is Result.Success) {
             emitUiModel(result.data)
         }
