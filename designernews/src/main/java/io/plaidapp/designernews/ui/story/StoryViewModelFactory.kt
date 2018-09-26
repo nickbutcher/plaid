@@ -19,7 +19,7 @@ package io.plaidapp.designernews.ui.story
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import io.plaidapp.core.data.CoroutinesContextProvider
-import io.plaidapp.designernews.domain.CommentsWithRepliesAndUsersUseCase
+import io.plaidapp.designernews.domain.GetCommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.PostReplyUseCase
 import io.plaidapp.designernews.domain.PostStoryCommentUseCase
@@ -34,7 +34,7 @@ class StoryViewModelFactory(
     private val getStoryUseCase: GetStoryUseCase,
     private var postStoryComment: PostStoryCommentUseCase,
     private var postReply: PostReplyUseCase,
-    private val commentsWithRepliesAndUsersUseCase: CommentsWithRepliesAndUsersUseCase,
+    private val getCommentsWithRepliesAndUsersUseCase: GetCommentsWithRepliesAndUsersUseCase,
     private val upvoteStoryUseCase: UpvoteStoryUseCase,
     private val upvoteCommentUseCase: UpvoteCommentUseCase,
     private val contextProvider: CoroutinesContextProvider
@@ -50,7 +50,7 @@ class StoryViewModelFactory(
             getStoryUseCase,
             postStoryComment,
             postReply,
-            commentsWithRepliesAndUsersUseCase,
+            getCommentsWithRepliesAndUsersUseCase,
             upvoteStoryUseCase,
             upvoteCommentUseCase,
             contextProvider

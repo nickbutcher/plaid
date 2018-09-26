@@ -36,12 +36,12 @@ import org.junit.Test
 import java.io.IOException
 
 /**
- * Tests for [CommentsWithRepliesUseCase] where all the dependencies are mocked.
+ * Tests for [GetCommentsWithRepliesUseCase] where all the dependencies are mocked.
  */
-class CommentsWithRepliesUseCaseTest {
+class GetCommentsWithRepliesUseCaseTest {
 
     private val repository: CommentsRepository = mock()
-    private val useCase = CommentsWithRepliesUseCase(repository)
+    private val useCase = GetCommentsWithRepliesUseCase(repository)
 
     @Test
     fun getComments_noReplies_whenRequestSuccessful() = runBlocking {
@@ -51,7 +51,7 @@ class CommentsWithRepliesUseCaseTest {
         whenever(repository.getComments(ids)).thenReturn(repositoryResult)
 
         // When getting the replies
-        val result = useCase.getCommentsWithReplies(ids)
+        val result = useCase(ids)
 
         // Then the correct list of comments was requested
         verify(repository).getComments(ids)
@@ -67,7 +67,7 @@ class CommentsWithRepliesUseCaseTest {
         whenever(repository.getComments(ids)).thenReturn(repositoryResult)
 
         // When getting the comments
-        val result = useCase.getCommentsWithReplies(ids)
+        val result = useCase(ids)
 
         // Then the result is not successful
         assertNotNull(result)
@@ -93,7 +93,7 @@ class CommentsWithRepliesUseCaseTest {
         whenever(repository.getComments(childrenIds)).thenReturn(resultChildren)
 
         // When getting the comments from the useCase
-        val result = useCase.getCommentsWithReplies(listOf(1L))
+        val result = useCase(listOf(1L))
 
         // Then  requests were triggered
         verify(repository).getComments(parentIds)
@@ -115,7 +115,7 @@ class CommentsWithRepliesUseCaseTest {
         whenever(repository.getComments(childrenIds)).thenReturn(resultChildrenError)
 
         // When getting the comments from the useCase
-        val result = useCase.getCommentsWithReplies(listOf(1L))
+        val result = useCase(listOf(1L))
 
         // Then  API requests were triggered
         verify(repository).getComments(parentIds)
