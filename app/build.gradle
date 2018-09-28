@@ -63,7 +63,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    dynamicFeatures = [':about', ':designernews', ':dribbble']
+    dynamicFeatures = [':about', ':designernews', ':dribbble', ':search']
 }
 
 repositories {
@@ -74,8 +74,6 @@ repositories {
 
 dependencies {
     api project(':core')
-
-    implementation project(':search')
 
     implementation "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
     implementation "com.google.firebase:firebase-core:${versions.firebase}"

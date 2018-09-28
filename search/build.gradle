@@ -15,7 +15,7 @@
  *
  */
 
-apply plugin: 'com.android.library'
+apply plugin: 'com.android.dynamic-feature'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -37,5 +37,5 @@ repositories {
 }
 
 dependencies {
-    implementation project(':core')
+    implementation project(':app')
 }
