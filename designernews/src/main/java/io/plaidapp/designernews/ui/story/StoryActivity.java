@@ -46,7 +46,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.style.TextAppearanceSpan;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
@@ -59,13 +58,11 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
-import in.uncod.android.bypass.Bypass;
 import in.uncod.android.bypass.Markdown;
 import io.plaidapp.core.data.Result;
-import io.plaidapp.core.designernews.Injection;
 import io.plaidapp.core.designernews.data.login.LoginRepository;
-import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser;
+import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.designernews.domain.model.Comment;
 import io.plaidapp.core.ui.transitions.GravityArcMotion;
 import io.plaidapp.core.ui.transitions.MorphTransform;
@@ -79,12 +76,13 @@ import io.plaidapp.core.util.ViewUtils;
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.core.util.glide.GlideApp;
 import io.plaidapp.core.util.glide.ImageSpanTarget;
-import io.plaidapp.designernews.InjectionKt;
 import io.plaidapp.designernews.R;
+import io.plaidapp.designernews.dagger.Injector;
 import io.plaidapp.designernews.ui.login.LoginActivity;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import kotlin.Unit;
 
+import javax.inject.Inject;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -123,10 +121,10 @@ public class StoryActivity extends AppCompatActivity {
 
     private Story story;
 
-    private StoryViewModel viewModel;
+    @Inject StoryViewModel viewModel;
+    @Inject LoginRepository loginRepository;
+    @Inject Markdown markdown;
 
-    private LoginRepository loginRepository;
-    private Markdown markdown;
     private CustomTabActivityHelper customTab;
 
     @Override
@@ -134,13 +132,12 @@ public class StoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_story);
 
-        Long storyId = getIntent().getLongExtra(Activities.DesignerNews.Story.EXTRA_STORY_ID, -1);
+        long storyId = getIntent().getLongExtra(Activities.DesignerNews.Story.EXTRA_STORY_ID, -1);
         if (storyId == -1) {
             finishAfterTransition();
         }
-        StoryViewModelFactory factory = InjectionKt.provideStoryViewModelFactory(storyId, this);
-        viewModel = ViewModelProviders.of(this, factory).get(StoryViewModel.class);
-        loginRepository = Injection.provideLoginRepository(this);
+
+        Injector.inject(storyId, this);
         bindResources();
 
         story = viewModel.getStory();
@@ -149,15 +146,6 @@ public class StoryActivity extends AppCompatActivity {
 
         fab.setOnClickListener(fabClick);
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this);
-        markdown = new Bypass(getResources().getDisplayMetrics(), new Bypass.Options()
-                .setBlockQuoteLineColor(
-                        ContextCompat.getColor(this, io.plaidapp.R.color.designer_news_quote_line))
-                .setBlockQuoteLineWidth(2) // dps
-                .setBlockQuoteLineIndent(8) // dps
-                .setPreImageLinebreakHeight(4) //dps
-                .setBlockQuoteIndentSize(TypedValue.COMPLEX_UNIT_DIP, 2f)
-                .setBlockQuoteTextColor(
-                        ContextCompat.getColor(this, io.plaidapp.R.color.designer_news_quote)));
         layoutManager = new LinearLayoutManager(this);
         commentsList.setLayoutManager(layoutManager);
         commentsList.setItemAnimator(new CommentAnimator(

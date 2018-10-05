@@ -24,6 +24,8 @@ import io.plaidapp.core.data.BaseDataManager
 import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.DataManager
 import io.plaidapp.core.data.PlaidItem
+import io.plaidapp.core.designernews.domain.LoadStoriesUseCase
+import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.ui.FilterAdapter
 
@@ -38,26 +40,50 @@ class DataManagerModule(val context: Context) {
     @Provides
     fun provideDataManager(
         onDataLoadedCallback: BaseDataManager.OnDataLoadedCallback<List<PlaidItem>>,
+        loadStoriesUseCase: LoadStoriesUseCase,
+        searchStoriesUseCase: SearchStoriesUseCase,
         shotsRepository: ShotsRepository,
         filterAdapter: FilterAdapter
-    ): DataManager = getDataManager(onDataLoadedCallback, shotsRepository, filterAdapter)
+    ): DataManager = getDataManager(
+        onDataLoadedCallback,
+        loadStoriesUseCase,
+        searchStoriesUseCase,
+        shotsRepository,
+        filterAdapter
+    )
 
     @Provides
     fun provideDataLoadingSubject(
         onDataLoadedCallback: BaseDataManager.OnDataLoadedCallback<List<PlaidItem>>,
+        loadStoriesUseCase: LoadStoriesUseCase,
+        searchStoriesUseCase: SearchStoriesUseCase,
         shotsRepository: ShotsRepository,
         filterAdapter: FilterAdapter
-    ): DataLoadingSubject = getDataManager(onDataLoadedCallback, shotsRepository, filterAdapter)
+    ): DataLoadingSubject = getDataManager(
+        onDataLoadedCallback,
+        loadStoriesUseCase,
+        searchStoriesUseCase,
+        shotsRepository,
+        filterAdapter
+    )
 
     private fun getDataManager(
         onDataLoadedCallback: BaseDataManager.OnDataLoadedCallback<List<PlaidItem>>,
+        loadStoriesUseCase: LoadStoriesUseCase,
+        searchStoriesUseCase: SearchStoriesUseCase,
         shotsRepository: ShotsRepository,
         filterAdapter: FilterAdapter
     ): DataManager {
         return if (::manager.isInitialized) {
             manager
         } else {
-            manager = DataManager(context, onDataLoadedCallback, shotsRepository, filterAdapter)
+            manager = DataManager(
+                onDataLoadedCallback,
+                loadStoriesUseCase,
+                searchStoriesUseCase,
+                shotsRepository,
+                filterAdapter
+            )
             manager
         }
     }

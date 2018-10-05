@@ -37,19 +37,19 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import io.plaidapp.core.designernews.Injection;
 import io.plaidapp.core.designernews.data.login.LoginRepository;
-import io.plaidapp.core.util.ActivityHelper;
 import io.plaidapp.core.designernews.data.poststory.PostStoryService;
 import io.plaidapp.core.ui.transitions.FabTransform;
 import io.plaidapp.core.ui.transitions.MorphTransform;
 import io.plaidapp.core.ui.widget.BottomSheet;
 import io.plaidapp.core.ui.widget.ObservableScrollView;
 import io.plaidapp.core.util.Activities;
+import io.plaidapp.core.util.ActivityHelper;
 import io.plaidapp.core.util.AnimUtils;
 import io.plaidapp.core.util.ImeUtils;
 import io.plaidapp.core.util.ShortcutHelper;
+
+import javax.inject.Inject;
 
 public class PostNewDesignerNewsStory extends Activity {
 
@@ -64,6 +64,7 @@ public class PostNewDesignerNewsStory extends Activity {
     private EditText comment;
     private Button post;
     private float appBarElevation;
+    @Inject LoginRepository loginRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -254,8 +255,7 @@ public class PostNewDesignerNewsStory extends Activity {
     }
 
     protected void postNewStory() {
-        LoginRepository repository = Injection.provideLoginRepository(this);
-        if (repository.isLoggedIn()) {
+        if (loginRepository.isLoggedIn()) {
             ImeUtils.hideIme(title);
             Intent postIntent = new Intent(PostStoryService.ACTION_POST_NEW_STORY, null,
                     this, PostStoryService.class);

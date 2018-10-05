@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.dagger
+package io.plaidapp.designernews.dagger
 
-import `in`.uncod.android.bypass.Bypass
-import `in`.uncod.android.bypass.Markdown
-import android.util.DisplayMetrics
-import dagger.Module
-import dagger.Provides
-import javax.inject.Inject
+import dagger.Component
+import io.plaidapp.core.dagger.CoreDataModule
+import io.plaidapp.core.dagger.SharedPreferencesModule
+import io.plaidapp.designernews.ui.login.LoginActivity
 
 /**
- * Provide [Markdown] to this app's components.
+ * Dagger component for [LoginActivity].
  */
-@Module class MarkdownModule @Inject constructor(
-    private val displayMetrics: DisplayMetrics,
-    private val options: Bypass.Options = Bypass.Options()
-) {
+@Component(modules = [LoginModule::class])
+interface LoginComponent {
 
-    @Provides fun provideMarkdown(): Markdown = Bypass(displayMetrics, options)
+    fun inject(activity: LoginActivity)
+
+    interface Builder {
+        fun coreDataModule(module: CoreDataModule): Builder
+        fun sharedPreferencesModule(module: SharedPreferencesModule): Builder
+        fun build(): LoginComponent
+    }
 }
