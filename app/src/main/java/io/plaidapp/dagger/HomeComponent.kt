@@ -21,6 +21,7 @@ import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.DataManagerModule
 import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
+import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.ui.HomeActivity
 
 /**
@@ -39,6 +40,7 @@ interface HomeComponent {
         fun dataManagerModule(module: DataManagerModule): Builder
         fun dataLoadedModule(module: OnDataLoadedModule): Builder
         fun filterAdapterModule(module: FilterAdapterModule): Builder
+        fun sharedPreferencesModule(module: SharedPreferencesModule): Builder
         fun homeModule(module: HomeModule): Builder
     }
 }
