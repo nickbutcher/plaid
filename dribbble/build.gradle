@@ -60,8 +60,8 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
 
     // Work around issue with runtime classpath version conflict
-    androidTestImplementation "androidx.legacy:legacy-support-core-utils:${versions.legacyCoreUtils}"
-    androidTestImplementation "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
+    implementation "androidx.legacy:legacy-support-core-utils:${versions.legacyCoreUtils}"
+    implementation "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
 
     // Workaround for dependency conflict during assembleAndroidTest
     androidTestImplementation("androidx.arch.core:core-runtime:2.0.1-alpha01")
