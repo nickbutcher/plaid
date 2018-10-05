@@ -26,7 +26,8 @@ import javax.inject.Inject
 /**
  * Provide [Markdown] to this app's components.
  */
-@Module class MarkdownModule @Inject constructor(private val displayMetrics: DisplayMetrics) {
+@Module class MarkdownModule @Inject constructor(private val displayMetrics: DisplayMetrics,
+    private val options: Bypass.Options = Bypass.Options()) {
 
-    @Provides fun provideMarkdown(): Markdown = Bypass(displayMetrics, Bypass.Options())
+    @Provides fun provideMarkdown(): Markdown = Bypass(displayMetrics, options)
 }
