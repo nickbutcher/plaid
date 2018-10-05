@@ -17,11 +17,9 @@
 
 package io.plaidapp.core.data;
 
-import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import io.plaidapp.core.data.prefs.SourceManager;
-import io.plaidapp.core.designernews.Injection;
 import io.plaidapp.core.designernews.domain.LoadStoriesUseCase;
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase;
 import io.plaidapp.core.dribbble.data.ShotsRepository;
@@ -32,7 +30,6 @@ import io.plaidapp.core.ui.FilterAdapter;
 import kotlin.Unit;
 import retrofit2.Call;
 
-import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,13 +49,14 @@ public class DataManager extends BaseDataManager<List<? extends PlaidItem>>
     Map<String, Integer> pageIndexes;
     Map<String, Call> inflightCalls;
 
-    @Inject public DataManager(Context context,
-                       OnDataLoadedCallback<List<? extends PlaidItem>> onDataLoadedCallback,
+    public DataManager(OnDataLoadedCallback<List<? extends PlaidItem>> onDataLoadedCallback,
+                       LoadStoriesUseCase loadStoriesUseCase,
+                       SearchStoriesUseCase searchStoriesUseCase,
                        ShotsRepository shotsRepository,
                        FilterAdapter filterAdapter) {
         super();
-        loadStoriesUseCase = Injection.provideLoadStoriesUseCase(context);
-        searchStoriesUseCase = Injection.provideSearchStoriesUseCase(context);
+        this.loadStoriesUseCase = loadStoriesUseCase;
+        this.searchStoriesUseCase = searchStoriesUseCase;
         productHuntRepository = ProductHuntInjection.provideProductHuntRepository();
         this.shotsRepository = shotsRepository;
         this.filterAdapter = filterAdapter;

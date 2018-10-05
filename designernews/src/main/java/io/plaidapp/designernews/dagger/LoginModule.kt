@@ -14,29 +14,19 @@
  * limitations under the License.
  */
 
-package io.plaidapp.about.dagger
+package io.plaidapp.designernews.dagger
 
-import android.content.res.Resources
 import dagger.Module
-import dagger.Provides
-import io.plaidapp.about.ui.AboutActivity
-import io.plaidapp.about.ui.AboutStyler
-import io.plaidapp.core.dagger.scope.ModuleScope
+import io.plaidapp.core.dagger.CoreDataModule
+import io.plaidapp.core.dagger.SharedPreferencesModule
+import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
 
 /**
- * Dagger module providing stuff for [AboutActivity].
+ * Dagger module for [io.plaidapp.designernews.ui.login.LoginActivity].
  */
-@Module class AboutActivityModule(private val activity: AboutActivity) {
-
-    @Provides
-    @ModuleScope
-    fun provideContext(): AboutActivity = activity
-
-    @Provides
-    @ModuleScope
-    fun provideResources(): Resources = activity.resources
-
-    @Provides
-    @ModuleScope
-    fun provideAboutStyler(): AboutStyler = AboutStyler(activity)
-}
+@Module(
+    includes = [CoreDataModule::class,
+        DesignerNewsDataModule::class,
+        SharedPreferencesModule::class]
+)
+class LoginModule

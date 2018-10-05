@@ -28,13 +28,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * View Model for [LoginActivity]
  */
 private const val signupUrl = "https://www.designernews.co/users/new"
 
-class LoginViewModel(
+class LoginViewModel @Inject constructor(
     private val loginRepository: LoginRepository,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel() {
