@@ -27,8 +27,8 @@ import io.plaidapp.core.R
 import io.plaidapp.core.ui.widget.BadgedFourThreeImageView
 import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.core.util.ViewUtils
-import io.plaidapp.core.util.measured
 import io.plaidapp.core.util.isAnimated
+import io.plaidapp.core.util.measured
 
 /**
  * A Glide [com.bumptech.glide.request.target.ViewTarget] for [BadgedFourThreeImageView]s.
