@@ -17,6 +17,7 @@
 package io.plaidapp.core.dagger
 
 import dagger.Component
+import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 
 /**
@@ -26,6 +27,7 @@ import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 @Component(
     modules = [
         DribbbleDataModule::class,
+        DesignerNewsDataModule::class,
         MarkdownModule::class,
         SharedPreferencesModule::class
     ]

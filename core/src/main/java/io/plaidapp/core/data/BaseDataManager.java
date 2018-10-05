@@ -127,6 +127,7 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
         }
     }
 
+    @Deprecated // Use Dagger
     private void createDribbbleSearchApi() {
         final OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(getHttpLoggingInterceptor())

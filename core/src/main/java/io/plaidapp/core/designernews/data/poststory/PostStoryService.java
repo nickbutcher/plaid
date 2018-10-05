@@ -24,18 +24,17 @@ import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.widget.Toast;
-
-import java.util.List;
-
-import io.plaidapp.core.designernews.Injection;
 import io.plaidapp.core.designernews.data.api.DesignerNewsService;
 import io.plaidapp.core.designernews.data.login.LoginRepository;
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser;
 import io.plaidapp.core.designernews.data.poststory.model.NewStoryRequest;
 import io.plaidapp.core.designernews.data.stories.model.Story;
-import io.plaidapp.core.designernews.data.login.model.LoggedInUser;
 import io.plaidapp.core.designernews.data.stories.model.StoryKt;
 import retrofit2.Call;
 import retrofit2.Response;
+
+import javax.inject.Inject;
+import java.util.List;
 
 /**
  * An intent service which posts a new story to Designer News. Invokers can listen for results by
@@ -60,14 +59,14 @@ public class PostStoryService extends IntentService {
         super("PostStoryService");
     }
 
+    @Inject DesignerNewsService service;
+    @Inject LoginRepository repository;
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent == null) return;
         if (ACTION_POST_NEW_STORY.equals(intent.getAction())) {
             final boolean broadcastResult = intent.getBooleanExtra(EXTRA_BROADCAST_RESULT, false);
-
-            final DesignerNewsService service = Injection.provideDesignerNewsService(this);
-            final LoginRepository repository = Injection.provideLoginRepository(this);
 
             if (!repository.isLoggedIn()) return; // shouldn't happen...
 
