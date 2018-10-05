@@ -19,8 +19,10 @@ package io.plaidapp.dagger
 import io.plaidapp.core.dagger.DataManagerModule
 import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
+import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.data.BaseDataManager
 import io.plaidapp.core.data.PlaidItem
+import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.ui.HomeActivity
 import io.plaidapp.ui.PlaidApplication
 
@@ -42,6 +44,9 @@ object Injector {
             .dataLoadedModule(OnDataLoadedModule(dataLoadedCallback))
             .filterAdapterModule(FilterAdapterModule(activity))
             .homeModule(HomeModule(activity))
+            .sharedPreferencesModule(
+                SharedPreferencesModule(activity, LoginLocalDataSource.DESIGNER_NEWS_PREF)
+            )
             .build()
             .inject(activity)
     }
