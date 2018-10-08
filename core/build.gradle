@@ -75,6 +75,11 @@ dependencies {
     api "androidx.palette:palette:${versions.androidx}"
     api "androidx.recyclerview:recyclerview:${versions.androidx}"
     api "androidx.dynamicanimation:dynamicanimation:${versions.androidx}"
+    api "com.android.support:customtabs:${versions.supportLibrary}"
+    api "com.android.support:design:${versions.supportLibrary}"
+    api "com.android.support:palette-v7:${versions.supportLibrary}"
+    api "com.android.support:support-v4:${versions.supportLibrary}" // Required for version pinning.
+    api "com.android.support:support-dynamic-animation:${versions.supportLibrary}"
     api "com.github.bumptech.glide:glide:${versions.glide}"
     api "com.github.bumptech.glide:okhttp3-integration:${versions.glide}"
     api "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
