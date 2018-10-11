@@ -16,11 +16,11 @@
 
 package io.plaidapp.core.designernews.data.login
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull

@@ -16,15 +16,15 @@
 
 package io.plaidapp.designernews.data.users
 
-import com.nhaarman.mockito_kotlin.doAnswer
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.doAnswer
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.users.model.User
-import kotlinx.coroutines.experimental.CompletableDeferred
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import org.junit.Assert.assertEquals

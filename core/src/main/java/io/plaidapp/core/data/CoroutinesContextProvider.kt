@@ -16,7 +16,7 @@
 
 package io.plaidapp.core.data
 
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Provide coroutines context.

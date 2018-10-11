@@ -16,14 +16,14 @@
 
 package io.plaidapp.core.dribbble.data
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
 import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
