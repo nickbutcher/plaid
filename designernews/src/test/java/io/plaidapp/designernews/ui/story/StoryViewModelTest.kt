@@ -17,8 +17,8 @@
 package io.plaidapp.designernews.ui.story
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryLinks
@@ -33,7 +33,7 @@ import io.plaidapp.designernews.flattendCommentsWithReplies
 import io.plaidapp.designernews.reply1
 import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue

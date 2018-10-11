@@ -16,9 +16,9 @@
 
 package io.plaidapp.core.designernews.data.comments
 
-import com.nhaarman.mockito_kotlin.doAnswer
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.doAnswer
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.comments.model.CommentResponse
@@ -27,8 +27,8 @@ import io.plaidapp.core.designernews.data.comments.model.PostCommentResponse
 import io.plaidapp.core.designernews.errorResponseBody
 import io.plaidapp.core.designernews.repliesResponses
 import io.plaidapp.core.designernews.replyResponse1
-import kotlinx.coroutines.experimental.CompletableDeferred
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue

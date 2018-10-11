@@ -17,9 +17,9 @@
 package io.plaidapp.dribbble.ui.shot
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.api.model.Shot
@@ -29,7 +29,7 @@ import io.plaidapp.dribbble.domain.ShareShotInfo
 import io.plaidapp.dribbble.testShot
 import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Rule

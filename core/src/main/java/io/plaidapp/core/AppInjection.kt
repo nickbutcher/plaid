@@ -21,8 +21,8 @@ package io.plaidapp.core
 import android.content.Context
 import android.content.SharedPreferences
 import io.plaidapp.core.data.CoroutinesContextProvider
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.CommonPool
+import kotlinx.coroutines.android.UI
 import okhttp3.logging.HttpLoggingInterceptor
 
 /**

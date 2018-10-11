@@ -16,8 +16,8 @@
 
 package io.plaidapp.core.designernews.domain
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.LoadSourceCallback
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
@@ -27,7 +27,7 @@ import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.storyLinks
 import io.plaidapp.core.designernews.userId
 import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
