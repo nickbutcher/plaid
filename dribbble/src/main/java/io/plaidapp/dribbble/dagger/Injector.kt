@@ -24,7 +24,6 @@ import io.plaidapp.ui.PlaidApplication
  */
 fun ShotActivity.inject(shotId: Long) {
     DaggerDribbbleComponent.builder()
-        .activity(this)
         .coreComponent(PlaidApplication.coreComponent(this))
         .dribbbleModule(DribbbleModule(this, shotId))
         .build()
