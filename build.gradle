@@ -22,7 +22,7 @@ buildscript {
             'targetSdk'         : 28,
             'constraintLayout'  : '1.1.3',
             'coreKtx'           : '0.3',
-            'coroutines'        : '0.22.5',
+            'coroutines'        : '0.26.1-eap13',
             'crashlytics'       : '2.9.4',
             'dagger'            : '2.16',
             'espresso'          : '3.0.2',
@@ -33,14 +33,14 @@ buildscript {
             'gson'              : '2.8.5',
             'jsoup'             : '1.11.3',
             'junit'             : '4.12',
-            'kotlin'            : '1.2.61',
+            'kotlin'            : '1.3.0-rc-116',
             'ktlint'            : '0.24.0',
             'lifecycle'         : '1.1.1',
-            'mockito'           : '2.19.0',
-            'mockito_kotlin'    : '1.6.0',
+            'mockito'           : '2.23.0',
+            'mockito_kotlin'    : '2.0.0-RC3',
             'okhttp'            : '3.10.0',
             'retrofit'          : '2.4.0',
-            'retrofitCoroutines': '1.0.0',
+            'retrofitCoroutines': '0.9.2',
             'room'              : '1.1.1',
             'supportLibrary'    : '27.1.1',
             'test_rules'        : '1.0.2',
@@ -56,6 +56,7 @@ buildscript {
         mavenCentral()
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
+        maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
     }
 
     dependencies {

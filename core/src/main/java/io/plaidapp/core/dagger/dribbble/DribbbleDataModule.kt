@@ -16,7 +16,7 @@
 
 package io.plaidapp.core.dagger.dribbble
 
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.BuildConfig
