@@ -25,11 +25,9 @@ import android.content.res.Resources
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
-import android.text.Layout
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
-import android.text.style.AlignmentSpan
 import androidx.core.text.toSpannable
 import io.plaidapp.about.R
 import io.plaidapp.about.domain.model.Library
