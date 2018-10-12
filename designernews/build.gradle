@@ -36,6 +36,10 @@ android {
         enabled true
     }
 
+    dependencies {
+        implementation("androidx.arch.core:core-runtime:2.0.1-alpha01")
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -52,6 +56,7 @@ dependencies {
     implementation project(':app')
 
     testImplementation project(':test_shared')
+
     testImplementation 'androidx.arch.core:core-testing:2.0.0'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockito_kotlin}"
     testImplementation "junit:junit:${versions.junit}"
