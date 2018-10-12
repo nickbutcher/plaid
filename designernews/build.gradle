@@ -57,14 +57,14 @@ dependencies {
 
     testImplementation project(':test_shared')
 
-    testImplementation 'androidx.arch.core:core-testing:2.0.0'
+    testImplementation "androidx.arch.core:core-testing:${versions.lifecycle}"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockito_kotlin}"
     testImplementation "junit:junit:${versions.junit}"
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
 
     // Work around issue with runtime classpath version conflict
-    androidTestImplementation 'androidx.legacy:legacy-support-core-utils:1.0.0'
-    androidTestImplementation 'androidx.lifecycle:lifecycle-runtime:2.0.0'
+    androidTestImplementation "androidx.legacy:legacy-support-core-utils:${versions.legacy_support}"
+    androidTestImplementation "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
 }
 
 kotlin {
