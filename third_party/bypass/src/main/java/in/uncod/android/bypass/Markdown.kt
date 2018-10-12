@@ -17,7 +17,7 @@
 package `in`.uncod.android.bypass
 
 import android.content.res.ColorStateList
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 
 /**
  *  Interface for Markdown capabilities.

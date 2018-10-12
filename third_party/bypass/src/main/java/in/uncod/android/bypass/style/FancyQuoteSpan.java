@@ -18,7 +18,7 @@ package in.uncod.android.bypass.style;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 import android.text.Layout;
 import android.text.style.LeadingMarginSpan;
 

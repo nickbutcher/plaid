@@ -16,8 +16,8 @@
 
 package io.plaidapp.designernews.ui.story
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.designernews.domain.GetCommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase

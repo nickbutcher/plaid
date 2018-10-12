@@ -24,8 +24,8 @@ import android.graphics.Canvas
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
-import android.support.annotation.DrawableRes
-import android.support.v4.content.ContextCompat
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
 
 fun Drawable.toBitmap(): Bitmap {
     val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)

@@ -17,7 +17,7 @@
 
 package io.plaidapp.core.data;
 
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 
 import java.util.Comparator;
 

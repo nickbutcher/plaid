@@ -70,7 +70,7 @@
                     android:text="@string/new_story_instructions"
                     android:textAppearance="@style/TextAppearance.Subhead" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/new_story_title_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -79,14 +79,14 @@
                     android:layout_marginEnd="@dimen/padding_normal"
                     app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/new_story_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/new_story_post_title"
                         android:inputType="textCapWords" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <io.plaidapp.core.ui.widget.BaselineGridTextView
                     android:layout_width="match_parent"
@@ -97,7 +97,7 @@
                     android:text="@string/new_story_link_or_comment"
                     android:textAppearance="@style/TextAppearance.Subhead" />
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/new_story_url_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
                     android:stateListAnimator="@animator/disable_text_entry"
                     app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/new_story_url"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -115,9 +115,9 @@
                         android:inputType="textUri"
                         android:imeOptions="actionSend" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/new_story_comment_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
                     android:stateListAnimator="@animator/disable_text_entry"
                     app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/new_story_comment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -136,7 +136,7 @@
                         android:inputType="textMultiLine|textCapSentences"
                         android:imeOptions="actionSend" />
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
                     android:id="@+id/new_story_post"

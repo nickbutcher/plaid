@@ -25,11 +25,11 @@ import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.support.customtabs.CustomTabsIntent
-import android.support.v4.app.ShareCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.graphics.Palette
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.app.ShareCompat
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
+import androidx.palette.graphics.Palette
 import android.text.format.DateUtils
 import android.util.TypedValue
 import android.view.View.GONE

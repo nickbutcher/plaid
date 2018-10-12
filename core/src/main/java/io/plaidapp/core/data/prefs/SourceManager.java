@@ -19,7 +19,7 @@ package io.plaidapp.core.data.prefs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import io.plaidapp.core.R;
 import io.plaidapp.core.data.Source;
 

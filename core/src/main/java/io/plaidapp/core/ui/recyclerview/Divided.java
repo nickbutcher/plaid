@@ -17,8 +17,10 @@
 
 package io.plaidapp.core.ui.recyclerview;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 /**
- * A marker interface used by {@link android.support.v7.widget.RecyclerView.ItemDecoration}s to
- * denote {@link android.support.v7.widget.RecyclerView.ViewHolder}s that should have dividers.
+ * A marker interface used by {@link RecyclerView.ItemDecoration}s to
+ * denote {@link RecyclerView.ViewHolder}s that should have dividers.
  */
 public interface Divided { }

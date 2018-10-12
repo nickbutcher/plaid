@@ -23,8 +23,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.support.annotation.ColorInt;
-import android.support.annotation.FloatRange;
+import androidx.annotation.ColorInt;
+import androidx.annotation.FloatRange;
 import android.util.AttributeSet;
 import android.util.Property;
 
