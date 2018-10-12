@@ -16,9 +16,9 @@
 
 package io.plaidapp.designernews.ui.login
 
-import android.databinding.BindingAdapter
-import android.support.annotation.ColorRes
-import android.support.v4.content.ContextCompat
+import androidx.databinding.BindingAdapter
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import android.view.Gravity
 import android.view.View
 import io.plaidapp.core.util.ScrimUtil

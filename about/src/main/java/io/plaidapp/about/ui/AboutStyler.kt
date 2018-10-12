@@ -17,8 +17,8 @@
 package io.plaidapp.about.ui
 
 import android.content.res.ColorStateList
-import android.support.annotation.ColorInt
-import android.support.v7.content.res.AppCompatResources
+import androidx.annotation.ColorInt
+import androidx.appcompat.content.res.AppCompatResources
 import io.plaidapp.core.util.ColorUtils
 import javax.inject.Inject
 import io.plaidapp.core.R as coreR

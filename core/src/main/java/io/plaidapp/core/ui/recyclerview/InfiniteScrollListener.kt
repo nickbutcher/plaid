@@ -16,8 +16,8 @@
 
 package io.plaidapp.core.ui.recyclerview
 
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 import io.plaidapp.core.data.DataLoadingSubject
 

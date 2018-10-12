@@ -27,7 +27,7 @@ android {
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
 
-        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         buildConfigField 'String', 'DESIGNER_NEWS_CLIENT_ID', "\"${designer_news_client_id}\""
         buildConfigField 'String',
@@ -68,14 +68,14 @@ repositories {
 dependencies {
     api project(':bypass')
 
-    api "android.arch.persistence.room:runtime:${versions.room}"
+    api 'androidx.room:room-runtime:2.1.0-alpha01'
     api "androidx.core:core-ktx:${versions.coreKtx}"
-    api "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
-    api "com.android.support:customtabs:${versions.supportLibrary}"
-    api "com.android.support:design:${versions.supportLibrary}"
-    api "com.android.support:palette-v7:${versions.supportLibrary}"
-    api "com.android.support:recyclerview-v7:${versions.supportLibrary}"
-    api "com.android.support:support-dynamic-animation:${versions.supportLibrary}"
+    api 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+    api 'androidx.browser:browser:1.0.0'
+    api 'com.google.android.material:material:1.0.0'
+    api 'androidx.palette:palette:1.0.0'
+    api 'androidx.recyclerview:recyclerview:1.0.0'
+    api 'androidx.dynamicanimation:dynamicanimation:1.0.0'
     api "com.github.bumptech.glide:glide:${versions.glide}"
     api "com.github.bumptech.glide:okhttp3-integration:${versions.glide}"
     api "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
@@ -91,9 +91,9 @@ dependencies {
     api "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:" +
             "${versions.retrofitCoroutines}"
     api "org.jsoup:jsoup:${versions.jsoup}"
-    api "android.arch.lifecycle:viewmodel:${versions.lifecycle}"
-    api "android.arch.lifecycle:extensions:${versions.lifecycle}"
-    kapt "android.arch.persistence.room:compiler:${versions.room}"
+    api 'androidx.lifecycle:lifecycle-viewmodel:2.0.0'
+    api 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    kapt 'androidx.room:room-compiler:2.1.0-alpha01'
     kapt "com.github.bumptech.glide:compiler:${versions.glide}"
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 
@@ -104,16 +104,16 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
 
     androidTestImplementation project(':test_shared')
-    androidTestImplementation "com.android.support.test:runner:${versions.test_runner}"
-    androidTestImplementation "com.android.support.test:rules:${versions.test_rules}"
-    androidTestImplementation "com.android.support.test.espresso:espresso-core:${versions.espresso}"
+    androidTestImplementation 'androidx.test:runner:1.1.0-beta02'
+    androidTestImplementation 'androidx.test:rules:1.1.0-beta02'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-beta02'
     androidTestImplementation "org.mockito:mockito-core:${versions.mockito}"
     androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
     androidTestImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
 
     // Work around issue with runtime classpath version conflict
-    androidTestImplementation "com.android.support:support-core-utils:${versions.supportLibrary}"
-    androidTestImplementation "android.arch.lifecycle:runtime:${versions.lifecycle}"
+    androidTestImplementation 'androidx.legacy:legacy-support-core-utils:1.0.0'
+    androidTestImplementation 'androidx.lifecycle:lifecycle-runtime:2.0.0'
 }
 
 kotlin {

@@ -16,8 +16,8 @@
 
 package io.plaidapp.core.designernews.data.database
 
-import android.arch.persistence.room.Room
-import android.support.test.InstrumentationRegistry
+import androidx.room.Room
+import androidx.test.InstrumentationRegistry
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 import io.plaidapp.test.shared.LiveDataTestUtil
 import org.junit.After

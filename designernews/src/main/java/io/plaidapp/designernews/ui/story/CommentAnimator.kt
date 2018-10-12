@@ -16,7 +16,7 @@
 
 package io.plaidapp.designernews.ui.story
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import io.plaidapp.core.ui.recyclerview.SlideInItemAnimator
 
 /**

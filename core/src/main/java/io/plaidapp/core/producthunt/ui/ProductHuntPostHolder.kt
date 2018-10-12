@@ -16,7 +16,7 @@
 
 package io.plaidapp.core.producthunt.ui
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 

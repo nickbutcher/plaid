@@ -60,7 +60,7 @@
                     app:visibleUnless="@{viewModel.uiState.showProgress}"
                     android:textAppearance="@style/TextAppearance.DialogTitle"/>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/username_float_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -77,9 +77,9 @@
                         android:textColorHighlight="@color/designer_news_link_highlight"
                         android:selectAllOnFocus="true"/>
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/password_float_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
                         android:inputType="textPassword"
                         android:selectAllOnFocus="true"/>
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <FrameLayout
                     android:id="@+id/actions_container"

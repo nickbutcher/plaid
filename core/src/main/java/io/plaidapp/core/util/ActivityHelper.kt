@@ -21,9 +21,9 @@ package io.plaidapp.core.util
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.support.customtabs.CustomTabsIntent
-import android.support.customtabs.CustomTabsSession
-import android.support.v4.content.ContextCompat
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.browser.customtabs.CustomTabsSession
+import androidx.core.content.ContextCompat
 import io.plaidapp.core.R
 import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
 

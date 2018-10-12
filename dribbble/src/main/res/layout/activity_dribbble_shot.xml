@@ -91,7 +91,7 @@
 
         </FrameLayout>
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/body_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -101,7 +101,7 @@
             android:scrollbars="vertical"
             android:scrollbarStyle="insideOverlay">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:transitionGroup="false"
@@ -229,9 +229,9 @@
                     android:src="@drawable/avatar_placeholder"
                     android:foreground="@drawable/avatar_ripple" />
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout>
 

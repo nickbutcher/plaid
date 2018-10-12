@@ -17,7 +17,7 @@
 
 package io.plaidapp.core.data;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import io.plaidapp.core.BuildConfig;
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchConverter;
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchService;

@@ -18,8 +18,8 @@
 package io.plaidapp.core.data;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import io.plaidapp.core.data.prefs.SourceManager;
 import io.plaidapp.core.designernews.Injection;
 import io.plaidapp.core.designernews.domain.LoadStoriesUseCase;

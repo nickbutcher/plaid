@@ -31,7 +31,7 @@ android {
         versionName = '1.0.5'
         archivesBaseName = 'plaid'
 
-        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         resConfig 'en'
         buildConfigField 'String', 'GIT_SHA', "\"${gitSha}\""
@@ -79,9 +79,9 @@ dependencies {
     implementation "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
     implementation "com.google.firebase:firebase-core:${versions.firebase}"
 
-    androidTestImplementation "com.android.support.test:rules:${versions.test_rules}"
-    androidTestImplementation "com.android.support.test.espresso:espresso-contrib:${versions.espresso}"
-    androidTestImplementation "com.android.support.test.uiautomator:uiautomator-v18:${versions.ui_automator}"
+    androidTestImplementation 'androidx.test:rules:1.1.0-beta02'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.0-beta02'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0-beta02'
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }
 

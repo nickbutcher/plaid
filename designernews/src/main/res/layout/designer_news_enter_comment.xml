@@ -30,13 +30,13 @@
     android:orientation="horizontal"
     android:baselineAligned="false">
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/comment"
             android:hint="@string/comment"
             android:layout_width="match_parent"
@@ -47,7 +47,7 @@
             android:textSize="16sp"
             android:textColor="@color/text_primary_dark" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <ImageButton
         android:id="@+id/post_comment"

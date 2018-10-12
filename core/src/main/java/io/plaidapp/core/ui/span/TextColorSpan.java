@@ -1,7 +1,7 @@
 package io.plaidapp.core.ui.span;
 
-import android.support.annotation.ColorInt;
-import android.support.annotation.FloatRange;
+import androidx.annotation.ColorInt;
+import androidx.annotation.FloatRange;
 import android.text.TextPaint;
 import android.text.style.ForegroundColorSpan;
 

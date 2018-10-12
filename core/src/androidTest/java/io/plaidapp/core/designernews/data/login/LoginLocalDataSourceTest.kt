@@ -17,7 +17,7 @@
 package io.plaidapp.core.designernews.data.login
 
 import android.content.Context
-import android.support.test.InstrumentationRegistry.getInstrumentation
+import androidx.test.InstrumentationRegistry.getInstrumentation
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 import org.junit.After
 import org.junit.Assert.assertEquals

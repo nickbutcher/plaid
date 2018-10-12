@@ -17,7 +17,7 @@
 package io.plaidapp.about.ui.model
 
 import `in`.uncod.android.bypass.Markdown
-import android.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import com.nhaarman.mockitokotlin2.any

@@ -16,7 +16,7 @@
 
 package io.plaidapp.core.data.database
 
-import android.arch.persistence.room.TypeConverter
+import androidx.room.TypeConverter
 
 /**
  * Type converters to allow Room to reference complex data types.
