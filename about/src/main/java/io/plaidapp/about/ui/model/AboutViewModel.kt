@@ -17,14 +17,14 @@
 package io.plaidapp.about.ui.model
 
 import `in`.uncod.android.bypass.Markdown
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import android.content.res.ColorStateList
 import android.content.res.Resources
-import android.support.annotation.ColorInt
-import android.support.annotation.StringRes
-import android.support.annotation.VisibleForTesting
+import androidx.annotation.ColorInt
+import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import android.text.Layout
 import android.text.Spannable
 import android.text.SpannableString

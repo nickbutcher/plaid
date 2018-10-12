@@ -27,7 +27,7 @@
     app:dragDismissScale="0.95"
     tools:context=".ui.AboutActivity">
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -18,7 +18,7 @@ package io.plaidapp.dribbble.domain
 
 import android.content.Context
 import android.net.Uri
-import android.support.v4.content.FileProvider
+import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import io.plaidapp.core.dribbble.data.api.model.Images
 import io.plaidapp.dribbble.BuildConfig

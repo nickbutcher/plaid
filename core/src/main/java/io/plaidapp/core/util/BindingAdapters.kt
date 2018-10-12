@@ -16,7 +16,7 @@
 
 package io.plaidapp.core.util
 
-import android.databinding.BindingAdapter
+import androidx.databinding.BindingAdapter
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE

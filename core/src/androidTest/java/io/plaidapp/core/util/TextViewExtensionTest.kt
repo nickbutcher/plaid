@@ -16,7 +16,7 @@
 
 package io.plaidapp.core.util
 
-import android.support.test.InstrumentationRegistry
+import androidx.test.InstrumentationRegistry
 import android.widget.TextView
 import org.junit.Assert.assertTrue
 import org.junit.Test

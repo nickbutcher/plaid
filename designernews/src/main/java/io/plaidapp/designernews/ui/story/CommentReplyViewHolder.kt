@@ -16,8 +16,8 @@
 
 package io.plaidapp.designernews.ui.story
 
-import android.support.design.widget.TextInputLayout
-import android.support.v7.widget.RecyclerView
+import com.google.android.material.textfield.TextInputLayout
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.Button
 import android.widget.EditText

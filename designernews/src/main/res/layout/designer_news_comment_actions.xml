@@ -39,7 +39,7 @@
         tools:text="33 likes"
         style="?android:borderlessButtonStyle" />
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/comment_reply_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
             android:textSize="16sp"
             android:textColor="@color/text_primary_dark" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <ImageButton
         android:id="@+id/post_reply"

@@ -16,8 +16,8 @@
 
 package io.plaidapp.designernews.ui
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.designernews.ui.login.LoginViewModel

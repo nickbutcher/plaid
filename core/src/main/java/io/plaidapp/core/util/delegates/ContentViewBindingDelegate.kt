@@ -17,9 +17,9 @@
 package io.plaidapp.core.util.delegates
 
 import android.app.Activity
-import android.databinding.DataBindingUtil
-import android.databinding.ViewDataBinding
-import android.support.annotation.LayoutRes
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
+import androidx.annotation.LayoutRes
 import kotlin.reflect.KProperty
 
 /**

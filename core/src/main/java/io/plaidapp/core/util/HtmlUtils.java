@@ -19,7 +19,7 @@ package io.plaidapp.core.util;
 
 import android.content.res.ColorStateList;
 import android.os.Build;
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;

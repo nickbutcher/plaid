@@ -17,7 +17,7 @@
 package io.plaidapp.core.dribbble.data.prefs
 
 import android.content.Context
-import android.support.test.InstrumentationRegistry
+import androidx.test.InstrumentationRegistry
 import androidx.core.content.edit
 import io.plaidapp.core.data.prefs.checkAndRemove
 import org.junit.After
