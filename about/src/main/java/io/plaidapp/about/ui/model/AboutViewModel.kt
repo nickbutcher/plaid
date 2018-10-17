@@ -22,17 +22,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.content.res.ColorStateList
 import android.content.res.Resources
+import android.text.Layout
 import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
+import android.text.style.AlignmentSpan
 import androidx.core.text.toSpannable
 import io.plaidapp.about.R
 import io.plaidapp.about.domain.model.Library
 import io.plaidapp.about.ui.AboutStyler
 import io.plaidapp.core.util.event.Event
+import io.plaidapp.core.util.plusAssign
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -59,20 +62,20 @@ internal class AboutViewModel @Inject constructor(
             )
 
             val about1 = SpannableString(resources.getString(R.string.about_plaid_1))
-//            about1 += AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER)
+            about1 += AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER)
 
             val about2 = getSpannableFromMarkdown(
                 R.string.about_plaid_2,
                 linksColor,
                 highlightColor
             )
-//            about2 += AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER)
+            about2 += AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER)
 
             val about3 = getSpannableFromMarkdown(
                 R.string.about_plaid_3,
                 linksColor, highlightColor
             )
-//            about3 += AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER)
+            about3 += AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER)
             spannableFrom(about0, "\n\n", about1, "\n", about2, "\n\n", about3)
         }
     }
