@@ -86,7 +86,7 @@ class ShotActivity : AppCompatActivity() {
             Palette.from(bitmap)
                 .clearFilters() /* by default palette ignore certain hues
                         (e.g. pure black/white) but we don't want this. */
-                .generate { palette -> applyFullImagePalette(palette!!) }
+                .generate { palette -> applyFullImagePalette(palette) }
 
             val twentyFourDip = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
@@ -98,7 +98,7 @@ class ShotActivity : AppCompatActivity() {
                 .clearFilters()
                 .setRegion(0, 0, bitmap.width - 1, twentyFourDip) /* - 1 to work around
                         https://code.google.com/p/android/issues/detail?id=191013 */
-                .generate { palette -> applyTopPalette(bitmap, palette!!) }
+                .generate { palette -> applyTopPalette(bitmap, palette) }
 
             // TODO should keep the background if the image contains transparency?!
             binding.shot.background = null
@@ -252,7 +252,7 @@ class ShotActivity : AppCompatActivity() {
         }
     }
 
-    internal fun applyFullImagePalette(palette: Palette) {
+    internal fun applyFullImagePalette(palette: Palette?) {
         // color the ripple on the image spacer (default is grey)
         binding.shotSpacer.background = ViewUtils.createRipple(
             palette, 0.25f, 0.5f,
@@ -265,7 +265,7 @@ class ShotActivity : AppCompatActivity() {
         )
     }
 
-    internal fun applyTopPalette(bitmap: Bitmap, palette: Palette) {
+    internal fun applyTopPalette(bitmap: Bitmap, palette: Palette?) {
         val lightness = ColorUtils.isDark(palette)
         val isDark = if (lightness == ColorUtils.LIGHTNESS_UNKNOWN) {
             ColorUtils.isDark(bitmap, bitmap.width / 2, 0)
