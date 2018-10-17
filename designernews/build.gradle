@@ -50,7 +50,6 @@ repositories {
 
 dependencies {
     implementation project(':app')
-    implementation("androidx.arch.core:core-runtime:2.0.1-alpha01")
 
     testImplementation project(':test_shared')
 
@@ -62,6 +61,9 @@ dependencies {
     // Work around issue with runtime classpath version conflict
     androidTestImplementation "androidx.legacy:legacy-support-core-utils:${versions.legacyCoreUtils}"
     androidTestImplementation "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
+
+    // Workaround for dependency conflict during assembleAndroidTest
+    androidTestImplementation("androidx.arch.core:core-runtime:2.0.1-alpha01")
 }
 
 kotlin {
