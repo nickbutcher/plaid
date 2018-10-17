@@ -43,7 +43,6 @@ buildscript {
             'retrofit'          : '2.4.0',
             'retrofitCoroutines': '0.9.2',
             'room'              : '2.1.0-alpha01',
-            'supportLibrary'    : '27.1.1',
             'test_rules'        : '1.1.0-beta02',
             'test_runner'       : '1.1.0-beta02',
             'ui_automator'      : '2.2.0-beta02'

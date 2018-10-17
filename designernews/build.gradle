@@ -36,10 +36,6 @@ android {
         enabled true
     }
 
-    dependencies {
-        implementation("androidx.arch.core:core-runtime:2.0.1-alpha01")
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -54,6 +50,7 @@ repositories {
 
 dependencies {
     implementation project(':app')
+    implementation("androidx.arch.core:core-runtime:2.0.1-alpha01")
 
     testImplementation project(':test_shared')
 
