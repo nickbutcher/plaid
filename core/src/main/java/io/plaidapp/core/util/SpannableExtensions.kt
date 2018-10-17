@@ -21,7 +21,6 @@ package io.plaidapp.core.util
 import android.text.Spannable
 import android.text.Spanned.SPAN_INCLUSIVE_EXCLUSIVE
 
-
 /**
  * Adds [span] to the entire text.
  *

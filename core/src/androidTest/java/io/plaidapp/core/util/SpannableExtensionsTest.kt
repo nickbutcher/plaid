@@ -37,5 +37,4 @@ class SpannableExtensionsTest {
         assertEquals(0, s.getSpanStart(bold))
         assertEquals(s.length, s.getSpanEnd(bold))
     }
-
 }
