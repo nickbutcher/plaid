@@ -37,7 +37,7 @@ fun inject(
 ) {
     DaggerHomeComponent.builder()
         .coreComponent(PlaidApplication.coreComponent(activity))
-        .dataManagerModule(DataManagerModule(activity))
+        .dataManagerModule(DataManagerModule())
         .dataLoadedModule(OnDataLoadedModule(dataLoadedCallback))
         .filterAdapterModule(FilterAdapterModule(activity))
         .homeModule(HomeModule(activity))

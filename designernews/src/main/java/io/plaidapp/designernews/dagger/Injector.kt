@@ -24,9 +24,7 @@ import android.util.TypedValue
 import io.plaidapp.core.dagger.CoreDataModule
 import io.plaidapp.core.dagger.CoroutinesContextProviderModule
 import io.plaidapp.core.dagger.MarkdownModule
-import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.designernews.ui.login.LoginActivity
 import io.plaidapp.designernews.ui.story.StoryActivity
 import io.plaidapp.ui.PlaidApplication
@@ -61,7 +59,7 @@ fun inject(storyId: Long, activity: StoryActivity) {
         .designerNewsModule(StoryModule(storyId, activity))
         .markdownModule(MarkdownModule(activity.resources.displayMetrics, bypassOptions))
         .sharedPreferencesModule(
-            SharedPreferencesModule(activity, LoginLocalDataSource.DESIGNER_NEWS_PREF)
+            DesignerNewsPreferencesModule(activity)
         )
         .build()
         .inject(activity)
@@ -72,7 +70,7 @@ fun inject(activity: LoginActivity) {
     DaggerLoginComponent.builder()
         .coreDataModule(coreDataModule)
         .sharedPreferencesModule(
-            SharedPreferencesModule(activity, LoginLocalDataSource.DESIGNER_NEWS_PREF)
+            DesignerNewsPreferencesModule(activity)
         )
         .build()
         .inject(activity)

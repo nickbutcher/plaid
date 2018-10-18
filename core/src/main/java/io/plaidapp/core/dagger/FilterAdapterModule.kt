@@ -28,7 +28,5 @@ import io.plaidapp.core.ui.FilterAdapter
  */
 @Module class FilterAdapterModule(val context: Context) {
 
-    @Provides fun provideFilterAdapter() = FilterAdapter(context, provideSources())
-
     @Provides fun provideSources(): MutableList<Source> = SourceManager.getSources(context)
 }

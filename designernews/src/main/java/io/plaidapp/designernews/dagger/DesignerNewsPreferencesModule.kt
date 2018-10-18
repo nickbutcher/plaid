@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.dagger
+package io.plaidapp.designernews.dagger
 
 import android.content.Context
-import android.content.SharedPreferences
 import dagger.Module
-import dagger.Provides
+import io.plaidapp.core.dagger.SharedPreferencesModule
+import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 
-/**
- * Provide [SharedPreferences] to this app's components.
- */
-@Module open class SharedPreferencesModule(val context: Context, val name: String) {
-
-    @Provides fun provideSharedPreferences(): SharedPreferences {
-        return context.applicationContext.getSharedPreferences(name, Context.MODE_PRIVATE)
-    }
-}
+@Module
+class DesignerNewsPreferencesModule(
+    context: Context
+) : SharedPreferencesModule(context, LoginLocalDataSource.DESIGNER_NEWS_PREF)

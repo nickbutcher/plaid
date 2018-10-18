@@ -16,7 +16,6 @@
 
 package io.plaidapp.core.dagger
 
-import android.content.Context
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
@@ -33,7 +32,7 @@ import io.plaidapp.core.ui.FilterAdapter
  * Module to provide [DataManager].
  */
 @Module(includes = [DribbbleDataModule::class])
-class DataManagerModule(val context: Context) {
+class DataManagerModule {
 
     private lateinit var manager: DataManager
 
