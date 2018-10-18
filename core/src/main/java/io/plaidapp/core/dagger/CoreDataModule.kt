@@ -48,8 +48,6 @@ class CoreDataModule(private val baseUrl: String, private val factory: Converter
 
     @Provides
     fun provideRetrofit(
-        baseUrl: String,
-        factory: Converter.Factory,
         okHttpClient: OkHttpClient
     ): Retrofit {
         return Retrofit.Builder()
