@@ -18,7 +18,7 @@ package io.plaidapp.designernews.ui.story
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import io.plaidapp.core.data.CoroutinesContextProvider
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.designernews.domain.GetCommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.PostReplyUseCase
@@ -37,7 +37,7 @@ class StoryViewModelFactory(
     private val getCommentsWithRepliesAndUsersUseCase: GetCommentsWithRepliesAndUsersUseCase,
     private val upvoteStoryUseCase: UpvoteStoryUseCase,
     private val upvoteCommentUseCase: UpvoteCommentUseCase,
-    private val contextProvider: CoroutinesContextProvider
+    private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -53,7 +53,7 @@ class StoryViewModelFactory(
             getCommentsWithRepliesAndUsersUseCase,
             upvoteStoryUseCase,
             upvoteCommentUseCase,
-            contextProvider
+            dispatcherProvider
         ) as T
     }
 }

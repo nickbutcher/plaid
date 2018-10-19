@@ -19,7 +19,7 @@ package io.plaidapp.designernews.ui.story
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import io.plaidapp.core.data.CoroutinesContextProvider
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.domain.model.Comment
@@ -46,7 +46,7 @@ class StoryViewModel(
     private val getCommentsWithRepliesAndUsers: GetCommentsWithRepliesAndUsersUseCase,
     private val upvoteStory: UpvoteStoryUseCase,
     private val upvoteComment: UpvoteCommentUseCase,
-    private val contextProvider: CoroutinesContextProvider
+    private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel() {
 
     private val _uiModel = MutableLiveData<StoryUiModel>()
@@ -69,36 +69,36 @@ class StoryViewModel(
     private val parentJob = Job()
 
     fun storyUpvoteRequested(storyId: Long, onResult: (result: Result<Unit>) -> Unit) = launch(
-        context = contextProvider.io,
+        context = dispatcherProvider.io,
         parent = parentJob
     ) {
         val result = upvoteStory(storyId)
-        withContext(contextProvider.io) { onResult(result) }
+        withContext(dispatcherProvider.io) { onResult(result) }
     }
 
     fun commentUpvoteRequested(commentId: Long, onResult: (result: Result<Unit>) -> Unit) = launch(
-        context = contextProvider.io,
+        context = dispatcherProvider.io,
         parent = parentJob
     ) {
         val result = upvoteComment(commentId)
-        withContext(contextProvider.io) { onResult(result) }
+        withContext(dispatcherProvider.io) { onResult(result) }
     }
 
     fun commentReplyRequested(
         text: CharSequence,
         commentId: Long,
         onResult: (result: Result<Comment>) -> Unit
-    ) = launch(contextProvider.io, parent = parentJob) {
+    ) = launch(dispatcherProvider.io, parent = parentJob) {
         val result = postReply(text.toString(), commentId)
-        withContext(contextProvider.main) { onResult(result) }
+        withContext(dispatcherProvider.main) { onResult(result) }
     }
 
     fun storyReplyRequested(
         text: CharSequence,
         onResult: (result: Result<Comment>) -> Unit
-    ) = launch(contextProvider.io, parent = parentJob) {
+    ) = launch(dispatcherProvider.io, parent = parentJob) {
         val result = postStoryComment(text.toString(), story.id)
-        withContext(contextProvider.main) { onResult(result) }
+        withContext(dispatcherProvider.main) { onResult(result) }
     }
 
     override fun onCleared() {
@@ -106,7 +106,7 @@ class StoryViewModel(
         super.onCleared()
     }
 
-    private fun getComments() = launch(contextProvider.io, parent = parentJob) {
+    private fun getComments() = launch(dispatcherProvider.io, parent = parentJob) {
         val result = getCommentsWithRepliesAndUsers(story.links.comments)
         if (result is Result.Success) {
             emitUiModel(result.data)
@@ -114,7 +114,7 @@ class StoryViewModel(
     }
 
     private fun emitUiModel(comments: List<Comment>) =
-        launch(contextProvider.main, parent = parentJob) {
+        launch(dispatcherProvider.main, parent = parentJob) {
             _uiModel.value = StoryUiModel(comments)
         }
 }

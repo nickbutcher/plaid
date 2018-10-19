@@ -27,7 +27,7 @@ import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.storyLinks
 import io.plaidapp.core.designernews.userId
-import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
+import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -74,7 +74,7 @@ class LoadStoriesUseCaseTest {
     private val storiesRepository: StoriesRepository = mock()
     private val loadStoriesUseCase = LoadStoriesUseCase(
         storiesRepository,
-        provideFakeCoroutinesContextProvider()
+        provideFakeCoroutinesDispatcherProvider()
     )
 
     @Test

@@ -20,7 +20,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.plaidapp.R
-import io.plaidapp.core.data.CoroutinesContextProvider
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.util.event.Event
@@ -34,7 +34,7 @@ private const val signupUrl = "https://www.designernews.co/users/new"
 
 class LoginViewModel(
     private val loginRepository: LoginRepository,
-    private val contextProvider: CoroutinesContextProvider
+    private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel() {
 
     private var currentJob: Job? = null
@@ -60,7 +60,7 @@ class LoginViewModel(
         currentJob = launchLogin(username, password)
     }
 
-    private fun launchLogin(username: String, password: String) = launch(contextProvider.io) {
+    private fun launchLogin(username: String, password: String) = launch(dispatcherProvider.io) {
         if (!isLoginValid(username, password)) {
             return@launch
         }
@@ -116,7 +116,7 @@ class LoginViewModel(
         showError: Event<Int>? = null,
         showSuccess: Event<LoginResultUiModel>? = null,
         enableLoginButton: Boolean = false
-    ) = launch(contextProvider.main, parent = currentJob) {
+    ) = launch(dispatcherProvider.main, parent = currentJob) {
         val uiModel = LoginUiModel(showProgress, showError, showSuccess, enableLoginButton)
         _uiState.value = uiModel
     }

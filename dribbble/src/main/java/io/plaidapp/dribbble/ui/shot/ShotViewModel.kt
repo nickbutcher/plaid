@@ -19,7 +19,7 @@ package io.plaidapp.dribbble.ui.shot
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import io.plaidapp.core.data.CoroutinesContextProvider
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.api.model.Shot
@@ -37,7 +37,7 @@ class ShotViewModel @Inject constructor(
     shotId: Long,
     shotsRepository: ShotsRepository,
     private val getShareShotInfoUseCase: GetShareShotInfoUseCase,
-    private val contextProvider: CoroutinesContextProvider
+    private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel() {
 
     val shot: Shot
@@ -75,7 +75,7 @@ class ShotViewModel @Inject constructor(
         shareShotJob?.cancel()
     }
 
-    private fun launchShare() = launch(contextProvider.io) {
+    private fun launchShare() = launch(dispatcherProvider.io) {
         val shareInfo = getShareShotInfoUseCase(shot)
         _shareShot.postValue(Event(shareInfo))
     }

@@ -16,7 +16,7 @@
 
 package io.plaidapp.core.dribbble.data
 
-import io.plaidapp.core.data.CoroutinesContextProvider
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
@@ -29,7 +29,7 @@ import kotlinx.coroutines.withContext
  */
 class ShotsRepository constructor(
     private val remoteDataSource: SearchRemoteDataSource,
-    private val contextProvider: CoroutinesContextProvider
+    private val dispatcherProvider: CoroutinesDispatcherProvider
 ) {
 
     private val inflight = mutableMapOf<String, Job>()
@@ -63,13 +63,13 @@ class ShotsRepository constructor(
         page: Int,
         id: String,
         onResult: (Result<List<Shot>>) -> Unit
-    ) = launch(contextProvider.io) {
+    ) = launch(dispatcherProvider.io) {
         val result = remoteDataSource.search(query, page)
         inflight.remove(id)
         if (result is Result.Success) {
             cache(result.data)
         }
-        withContext(contextProvider.main) { onResult(result) }
+        withContext(dispatcherProvider.main) { onResult(result) }
     }
 
     private fun cache(shots: List<Shot>) {
@@ -81,10 +81,10 @@ class ShotsRepository constructor(
 
         fun getInstance(
             remoteDataSource: SearchRemoteDataSource,
-            contextProvider: CoroutinesContextProvider
+            dispatcherProvider: CoroutinesDispatcherProvider
         ): ShotsRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: ShotsRepository(remoteDataSource, contextProvider)
+                INSTANCE ?: ShotsRepository(remoteDataSource, dispatcherProvider)
                     .also { INSTANCE = it }
             }
         }

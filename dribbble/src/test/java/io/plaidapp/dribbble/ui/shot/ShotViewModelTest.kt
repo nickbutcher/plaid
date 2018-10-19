@@ -28,7 +28,7 @@ import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
 import io.plaidapp.dribbble.domain.ShareShotInfo
 import io.plaidapp.dribbble.testShot
 import io.plaidapp.test.shared.LiveDataTestUtil
-import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
+import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -68,7 +68,7 @@ class ShotViewModelTest {
             shotId,
             repo,
             getShareShotInfoUseCase,
-            provideFakeCoroutinesContextProvider()
+            provideFakeCoroutinesDispatcherProvider()
         )
         // Then it throws
     }
@@ -117,7 +117,7 @@ class ShotViewModelTest {
             shotId,
             repo,
             getShareShotInfoUseCase,
-            provideFakeCoroutinesContextProvider()
+            provideFakeCoroutinesDispatcherProvider()
         )
     }
 }
