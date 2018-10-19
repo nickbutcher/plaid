@@ -16,7 +16,7 @@
 
 package io.plaidapp.core.designernews.domain
 
-import io.plaidapp.core.data.CoroutinesContextProvider
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.LoadSourceCallback
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.data.prefs.SourceManager
@@ -31,7 +31,7 @@ import kotlinx.coroutines.withContext
  */
 class LoadStoriesUseCase(
     private val storiesRepository: StoriesRepository,
-    private val contextProvider: CoroutinesContextProvider
+    private val dispatcherProvider: CoroutinesDispatcherProvider
 ) {
     private val parentJobs = mutableMapOf<String, Job>()
 
@@ -44,16 +44,16 @@ class LoadStoriesUseCase(
         page: Int,
         callback: LoadSourceCallback,
         jobId: String
-    ) = launch(contextProvider.io) {
+    ) = launch(dispatcherProvider.io) {
         val result = storiesRepository.loadStories(page)
         parentJobs.remove(jobId)
         if (result is Result.Success) {
             val stories = result.data.map { it.toStory() }
-            withContext(contextProvider.main) {
+            withContext(dispatcherProvider.main) {
                 callback.sourceLoaded(stories, page, SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
             }
         } else {
-            withContext(contextProvider.main) {
+            withContext(dispatcherProvider.main) {
                 callback.loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
             }
         }

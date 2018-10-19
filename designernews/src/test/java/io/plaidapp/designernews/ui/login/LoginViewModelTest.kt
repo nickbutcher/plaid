@@ -27,7 +27,7 @@ import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 import io.plaidapp.core.util.event.Event
 import io.plaidapp.test.shared.LiveDataTestUtil
-import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
+import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -58,7 +58,7 @@ class LoginViewModelTest {
     @Test
     fun login_whenUserLoggedInSuccessfully() = runBlocking {
         // Given a view model
-        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesContextProvider())
+        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesDispatcherProvider())
         // Given that the repository returns a user
         val user = LoggedInUser(
             id = 3,
@@ -88,7 +88,7 @@ class LoginViewModelTest {
     @Test
     fun login_whenUserLogInFailed() = runBlocking {
         // Given a view model
-        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesContextProvider())
+        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesDispatcherProvider())
         // Given that the repository returns with error
         whenever(loginRepo.login(username, password))
             .thenReturn(Result.Error(IOException("Login error")))
@@ -110,7 +110,7 @@ class LoginViewModelTest {
     @Test
     fun init_disablesLogin() = runBlocking {
         // When the view model is created
-        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesContextProvider())
+        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesDispatcherProvider())
 
         // Then the login is disabled
         val uiState = LiveDataTestUtil.getValue(viewModel.uiState)
@@ -120,7 +120,7 @@ class LoginViewModelTest {
     @Test
     fun loginDataChanged_withValidLogin() = runBlocking {
         // Given a view model
-        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesContextProvider())
+        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesDispatcherProvider())
 
         // When login data changed with valid login data
         viewModel.loginDataChanged(username, password)
@@ -144,7 +144,7 @@ class LoginViewModelTest {
     @Test
     fun loginDataChanged_withEmptyUsername() = runBlocking {
         // Given a view model
-        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesContextProvider())
+        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesDispatcherProvider())
 
         // When login data changed with invalid login data
         viewModel.loginDataChanged("", password)
@@ -163,7 +163,7 @@ class LoginViewModelTest {
     @Test
     fun loginDataChanged_withEmptyPassword() = runBlocking {
         // Given a view model
-        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesContextProvider())
+        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesDispatcherProvider())
 
         // When login data changed with invalid login data
         viewModel.loginDataChanged(username, "")
@@ -182,7 +182,7 @@ class LoginViewModelTest {
     @Test
     fun login_withEmptyUsername() = runBlocking {
         // Given a view model
-        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesContextProvider())
+        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesDispatcherProvider())
 
         // When logging in with invalid login data
         viewModel.login("", password)
@@ -197,7 +197,7 @@ class LoginViewModelTest {
     @Test
     fun login_withEmptyPassword() = runBlocking {
         // Given a view model
-        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesContextProvider())
+        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesDispatcherProvider())
 
         // When logging in with invalid login data
         viewModel.loginDataChanged(username, "")
@@ -212,7 +212,7 @@ class LoginViewModelTest {
     @Test
     fun signup() = runBlocking {
         // Given a view model
-        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesContextProvider())
+        val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesDispatcherProvider())
 
         // When signing up
         viewModel.signup()

@@ -21,7 +21,7 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
-import io.plaidapp.core.data.CoroutinesContextProvider
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
 import io.plaidapp.core.util.FileAuthority
@@ -58,13 +58,13 @@ class DribbbleModule(private val activity: ShotActivity, private val shotId: Lon
     fun shotViewModelFactory(
         shotsRepository: ShotsRepository,
         shareShotInfoUseCase: GetShareShotInfoUseCase,
-        coroutinesContextProvider: CoroutinesContextProvider
+        coroutinesDispatcherProvider: CoroutinesDispatcherProvider
     ): ShotViewModelFactory {
         return ShotViewModelFactory(
             shotId,
             shotsRepository,
             shareShotInfoUseCase,
-            coroutinesContextProvider
+            coroutinesDispatcherProvider
         )
     }
 

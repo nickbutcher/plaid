@@ -20,9 +20,10 @@ package io.plaidapp.core
 
 import android.content.Context
 import android.content.SharedPreferences
-import io.plaidapp.core.data.CoroutinesContextProvider
-import kotlinx.coroutines.CommonPool
-import kotlinx.coroutines.android.UI
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.android.Main
 import okhttp3.logging.HttpLoggingInterceptor
 
 /**
@@ -46,5 +47,9 @@ fun provideSharedPreferences(context: Context, name: String): SharedPreferences 
             .getSharedPreferences(name, Context.MODE_PRIVATE)
 }
 
-@Deprecated("Use Dagger CoroutinesContextProviderModule instead")
-fun provideCoroutinesContextProvider() = CoroutinesContextProvider(UI, CommonPool)
+@Deprecated("Use Dagger CoroutinesDispatcherProviderModule instead")
+fun provideCoroutinesContextProvider() = CoroutinesDispatcherProvider(
+    Dispatchers.Main,
+    Dispatchers.Default,
+    Dispatchers.IO
+)

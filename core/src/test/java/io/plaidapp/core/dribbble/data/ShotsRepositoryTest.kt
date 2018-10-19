@@ -22,7 +22,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
-import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
+import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -38,7 +38,7 @@ class ShotsRepositoryTest {
     private val dataSource: SearchRemoteDataSource = mock()
     private val repository = ShotsRepository(
         dataSource,
-        provideFakeCoroutinesContextProvider()
+        provideFakeCoroutinesDispatcherProvider()
     )
     private val query = "Plaid shirts"
     private val page = 0

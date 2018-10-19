@@ -32,7 +32,7 @@ import io.plaidapp.designernews.domain.UpvoteStoryUseCase
 import io.plaidapp.designernews.flattendCommentsWithReplies
 import io.plaidapp.designernews.reply1
 import io.plaidapp.test.shared.LiveDataTestUtil
-import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
+import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -102,7 +102,7 @@ class StoryViewModelTest {
             getCommentsWithRepliesAndUsers,
             upvoteStory,
             upvoteComment,
-            provideFakeCoroutinesContextProvider()
+            provideFakeCoroutinesDispatcherProvider()
         )
         // Then it throws
     }
@@ -267,7 +267,7 @@ class StoryViewModelTest {
             getCommentsWithRepliesAndUsers,
             upvoteStory,
             upvoteComment,
-            provideFakeCoroutinesContextProvider()
+            provideFakeCoroutinesDispatcherProvider()
         )
     }
 }
