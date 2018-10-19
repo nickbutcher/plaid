@@ -67,3 +67,4 @@ dependencies {
     // Workaround for dependency conflict during assembleAndroidTest
     androidTestImplementation("androidx.arch.core:core-runtime:2.0.1-alpha01")
 }
+
