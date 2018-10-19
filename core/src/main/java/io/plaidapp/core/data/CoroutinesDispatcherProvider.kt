@@ -16,9 +16,13 @@
 
 package io.plaidapp.core.data
 
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * Provide coroutines context.
  */
-data class CoroutinesContextProvider(val main: CoroutineContext, val io: CoroutineContext)
+data class CoroutinesDispatcherProvider(
+    val main: CoroutineDispatcher,
+    val computation: CoroutineDispatcher,
+    val io: CoroutineDispatcher
+)

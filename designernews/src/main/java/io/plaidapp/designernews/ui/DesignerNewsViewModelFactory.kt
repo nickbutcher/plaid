@@ -18,7 +18,7 @@ package io.plaidapp.designernews.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import io.plaidapp.core.data.CoroutinesContextProvider
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.designernews.ui.login.LoginViewModel
 
@@ -27,13 +27,13 @@ import io.plaidapp.designernews.ui.login.LoginViewModel
  */
 class DesignerNewsViewModelFactory(
     private val loginRepository: LoginRepository,
-    private val contextProvider: CoroutinesContextProvider
+    private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
-            return LoginViewModel(loginRepository, contextProvider) as T
+            return LoginViewModel(loginRepository, dispatcherProvider) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
