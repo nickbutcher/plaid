@@ -22,6 +22,7 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.data.prefs.SourceManager
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.toStory
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -44,7 +45,7 @@ class LoadStoriesUseCase(
         page: Int,
         callback: LoadSourceCallback,
         jobId: String
-    ) = launch(dispatcherProvider.io) {
+    ) = GlobalScope.launch(dispatcherProvider.computation) {
         val result = storiesRepository.loadStories(page)
         parentJobs.remove(jobId)
         if (result is Result.Success) {
