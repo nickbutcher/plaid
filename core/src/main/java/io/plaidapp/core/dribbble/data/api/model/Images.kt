@@ -30,11 +30,11 @@ data class Images(
 ) {
 
     fun best(): String {
-        return if (!hidpi.isNullOrEmpty()) hidpi else normal!!
+        return hidpi ?: normal!!
     }
 
     fun bestSize(): ImageSize {
-        return if (!hidpi.isNullOrEmpty()) TWO_X_IMAGE_SIZE else NORMAL_IMAGE_SIZE
+        return if (hidpi != null) TWO_X_IMAGE_SIZE else NORMAL_IMAGE_SIZE
     }
 
     enum class ImageSize(val width: Int, val height: Int) {

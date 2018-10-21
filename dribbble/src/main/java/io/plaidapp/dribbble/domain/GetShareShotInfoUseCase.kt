@@ -18,6 +18,7 @@ package io.plaidapp.dribbble.domain
 
 import android.net.Uri
 import io.plaidapp.core.dribbble.data.api.model.Shot
+import io.plaidapp.core.util.ImageUriProvider
 import javax.inject.Inject
 
 /**
