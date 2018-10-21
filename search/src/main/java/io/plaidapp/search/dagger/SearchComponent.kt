@@ -21,7 +21,7 @@ import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.DataManagerModule
 import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
-import io.plaidapp.ui.search.SearchActivity
+import io.plaidapp.search.ui.SearchActivity
 
 /**
  * Dagger component for the [SearchActivity].

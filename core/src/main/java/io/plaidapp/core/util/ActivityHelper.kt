@@ -140,7 +140,7 @@ object Activities {
      * SearchActivity
      */
     object Search : AddressableActivity {
-        override val className = "$PACKAGE_NAME.ui.search.SearchActivity"
+        override val className = "$PACKAGE_NAME.search.ui.SearchActivity"
 
         const val EXTRA_QUERY = "EXTRA_QUERY"
         const val EXTRA_SAVE_DRIBBBLE = "EXTRA_SAVE_DRIBBBLE"

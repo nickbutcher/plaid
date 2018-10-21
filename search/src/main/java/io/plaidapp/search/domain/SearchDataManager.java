@@ -15,7 +15,7 @@
  *
  */
 
-package io.plaidapp.search;
+package io.plaidapp.search.domain;
 
 import android.content.Context;
 import io.plaidapp.core.data.BaseDataManager;
@@ -42,7 +42,7 @@ public class SearchDataManager extends BaseDataManager<List<? extends PlaidItem>
         implements LoadSourceCallback {
 
     private final SearchStoriesUseCase searchStoriesUseCase;
-    private ShotsRepository shotsRepository;
+    private final ShotsRepository shotsRepository;
 
     // state
     private String query = "";
