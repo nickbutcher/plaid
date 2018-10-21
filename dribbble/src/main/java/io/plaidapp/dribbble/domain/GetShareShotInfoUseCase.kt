@@ -26,7 +26,7 @@ import javax.inject.Inject
 class GetShareShotInfoUseCase @Inject constructor(private val imageUriProvider: ImageUriProvider) {
 
     suspend operator fun invoke(shot: Shot): ShareShotInfo {
-        val url = shot.images.best() ?: throw IllegalArgumentException()
+        val url = shot.images.best()
         val uri = imageUriProvider(url, shot.images.bestSize())
         val text = "“${shot.title}” by ${shot.user.name}\n${shot.url}"
         val mime = getImageMimeType(url)

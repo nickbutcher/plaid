@@ -95,17 +95,6 @@ class GetShareShotInfoUseCaseTest {
         assertTrue(shareInfo.mimeType.contains("jpeg"))
     }
 
-    @Test(expected = IllegalArgumentException::class)
-    fun getShareInfo_withoutUrlThrows() = runBlocking {
-        // Given a shot without a valid image URL
-        val shot = withUrl(null)
-
-        // When invoking the use case
-        getShareShotInfoUseCase(shot)
-        // Then it should throw
-        Unit
-    }
-
     private fun withUrl(url: String?): Shot {
         val shot = testShot.copy(images = Images(hidpi = url))
         runBlocking { whenever(imageUriProvider(any(), any())).thenReturn(uri) }
