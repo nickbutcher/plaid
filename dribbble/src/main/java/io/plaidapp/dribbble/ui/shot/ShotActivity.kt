@@ -192,7 +192,7 @@ class ShotActivity : AppCompatActivity() {
         }
         val nf = NumberFormat.getInstance()
         binding.shotLikeCount.text = res.getQuantityString(
-            io.plaidapp.R.plurals.likes,
+            R.plurals.likes,
             shot.likesCount.toInt(),
             nf.format(shot.likesCount)
         )
@@ -200,7 +200,7 @@ class ShotActivity : AppCompatActivity() {
             (binding.shotLikeCount.compoundDrawables[1] as AnimatedVectorDrawable).start()
         }
         binding.shotViewCount.text = res.getQuantityString(
-            io.plaidapp.R.plurals.views,
+            R.plurals.views,
             shot.viewsCount.toInt(),
             nf.format(shot.viewsCount)
         )
