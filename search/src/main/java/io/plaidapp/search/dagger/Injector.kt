@@ -22,7 +22,7 @@ import io.plaidapp.core.dagger.OnDataLoadedModule
 import io.plaidapp.core.data.BaseDataManager
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.ui.PlaidApplication
-import io.plaidapp.ui.search.SearchActivity
+import io.plaidapp.search.ui.SearchActivity
 
 /**
  * Injector for SearchActivity.

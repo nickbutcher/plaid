@@ -31,7 +31,7 @@ import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.pocket.PocketUtils
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.api.model.Shot
-import io.plaidapp.search.SearchDataManager
+import io.plaidapp.search.domain.SearchDataManager
 
 @Module(
     includes = [
@@ -61,5 +61,9 @@ class SearchModule(private val activity: Activity) {
     fun provideSearchDataManager(
         onDataLoadedCallback: BaseDataManager.OnDataLoadedCallback<List<PlaidItem>>,
         shotsRepository: ShotsRepository
-    ): SearchDataManager = SearchDataManager(context(), onDataLoadedCallback, shotsRepository)
+    ): SearchDataManager = SearchDataManager(
+        context(),
+        onDataLoadedCallback,
+        shotsRepository
+    )
 }

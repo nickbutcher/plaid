@@ -15,7 +15,7 @@
  *
  */
 
-package io.plaidapp.ui.search;
+package io.plaidapp.search.ui;
 
 import android.app.Activity;
 import android.app.SearchManager;
@@ -50,7 +50,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
-import io.plaidapp.search.SearchDataManager;
+import io.plaidapp.search.domain.SearchDataManager;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.ui.FeedAdapter;
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener;
@@ -61,7 +61,7 @@ import io.plaidapp.core.util.ShortcutHelper;
 import io.plaidapp.core.util.TransitionUtils;
 import io.plaidapp.search.R;
 import io.plaidapp.search.dagger.Injector;
-import io.plaidapp.ui.search.transitions.CircularReveal;
+import io.plaidapp.search.ui.transitions.CircularReveal;
 
 import javax.inject.Inject;
 import java.util.List;

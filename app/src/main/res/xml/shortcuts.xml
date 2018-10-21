@@ -25,7 +25,7 @@
         android:shortcutDisabledMessage="@string/shortcut_search_disabled">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="io.plaidapp.ui.search.SearchActivity"
+            android:targetClass="io.plaidapp.search.ui.SearchActivity"
             android:targetPackage="io.plaidapp" />
     </shortcut>
 
