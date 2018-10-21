@@ -16,6 +16,7 @@
 
 package io.plaidapp.core.designernews.data.database
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.InstrumentationRegistry
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
@@ -24,6 +25,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -33,6 +35,9 @@ class LoggedInUserDaoTest {
     private lateinit var database: DesignerNewsDatabase
     private lateinit var loggedInUser: LoggedInUser
     private lateinit var loggedInUserDao: LoggedInUserDao
+
+    @get:Rule
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before fun setup() {
         val context = InstrumentationRegistry.getInstrumentation().context
