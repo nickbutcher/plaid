@@ -20,7 +20,6 @@ import android.content.Context
 import android.net.Uri
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
-import io.plaidapp.core.dribbble.data.api.model.Images
 import io.plaidapp.dribbble.BuildConfig
 import java.io.File
 import javax.inject.Inject
@@ -40,12 +39,12 @@ class ImageUriProvider @Inject constructor(context: Context) {
      * extension-less name, and then get the Uri.
      */
     @Suppress("RedundantSuspendModifier")
-    suspend operator fun invoke(url: String, size: Images.ImageSize): Uri {
+    suspend operator fun invoke(url: String, width: Int, height: Int): Uri {
         // Retrieve the image from Glide (hopefully cached) as a File
         val file = Glide.with(appContext)
             .asFile()
             .load(url)
-            .submit(size.width, size.height)
+            .submit(width, height)
             .get()
         // Glide cache uses an unfriendly & extension-less name. Massage it based on the original.
         val fileName = url.substring(url.lastIndexOf('/') + 1)
