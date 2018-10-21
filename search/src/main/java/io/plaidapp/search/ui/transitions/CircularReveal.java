@@ -15,7 +15,7 @@
  *
  */
 
-package io.plaidapp.ui.search.transitions;
+package io.plaidapp.search.ui.transitions;
 
 import android.animation.Animator;
 import android.content.Context;
