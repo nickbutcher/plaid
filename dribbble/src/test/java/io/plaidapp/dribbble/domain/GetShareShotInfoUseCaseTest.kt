@@ -97,7 +97,7 @@ class GetShareShotInfoUseCaseTest {
 
     private fun withUrl(url: String?): Shot {
         val shot = testShot.copy(images = Images(hidpi = url))
-        runBlocking { whenever(imageUriProvider(any(), any())).thenReturn(uri) }
+        runBlocking { whenever(imageUriProvider(any(), any(), any())).thenReturn(uri) }
         return shot
     }
 }
