@@ -76,8 +76,8 @@ object DribbbleSearchConverter : Converter<ResponseBody, List<Shot>> {
         } catch (e: ParseException) {
             null
         }
-        val likesCount = element.select("li.fav").first().child(0).text().replace(",", "").toLong()
-        val viewsCount = element.select("li.views").first().child(0).text().replace(",", "").toLong()
+        val likesCount = element.select("li.fav").first().child(0).text().replace(",", "").toInt()
+        val viewsCount = element.select("li.views").first().child(0).text().replace(",", "").toInt()
         val player = parsePlayer(element.select("h2").first())
 
         return Shot(
@@ -103,7 +103,7 @@ object DribbbleSearchConverter : Converter<ResponseBody, List<Shot>> {
         val matchId = PATTERN_PLAYER_ID.matcher(avatarUrl)
         var id: Long = -1L
         if (matchId.find() && matchId.groupCount() == 1) {
-            id = java.lang.Long.parseLong(matchId.group(1))
+            id = matchId.group(1).toLong()
         }
         val slashUsername = userBlock.attr("href")
         val username = slashUsername.substring(1)
