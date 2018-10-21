@@ -111,6 +111,7 @@ dependencies {
     androidTestImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
 
     // Work around issue with runtime classpath version conflict
+    androidTestImplementation "androidx.arch.core:core-testing:${versions.lifecycle}"
     androidTestImplementation "androidx.legacy:legacy-support-core-utils:${versions.legacyCoreUtils}"
     androidTestImplementation "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
 }
