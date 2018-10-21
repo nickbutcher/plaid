@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package io.plaidapp.dribbble.domain
+package io.plaidapp.core.util
 
 import android.content.Context
 import android.net.Uri
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
-import io.plaidapp.dribbble.BuildConfig
 import java.io.File
 import javax.inject.Inject
 
 /**
  * A class responsible for resolving an image as identified by Url into a sharable [Uri].
  */
-class ImageUriProvider @Inject constructor(context: Context) {
+class ImageUriProvider @Inject constructor(
+    context: Context,
+    private val fileAuthority: String
+) {
 
     // Only hold the app context to avoid leaks
     private val appContext = context.applicationContext
@@ -50,6 +52,6 @@ class ImageUriProvider @Inject constructor(context: Context) {
         val fileName = url.substring(url.lastIndexOf('/') + 1)
         val renamed = File(file.parent, fileName)
         file.renameTo(renamed)
-        return FileProvider.getUriForFile(appContext, BuildConfig.FILES_AUTHORITY, renamed)
+        return FileProvider.getUriForFile(appContext, fileAuthority, renamed)
     }
 }
