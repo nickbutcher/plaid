@@ -25,9 +25,6 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import androidx.annotation.TransitionRes;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.InputType;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -42,11 +39,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.inputmethod.EditorInfo;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.CheckedTextView;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.SearchView;
+import android.widget.TextView;
+import androidx.annotation.TransitionRes;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
-import io.plaidapp.core.data.SearchDataManager;
-import io.plaidapp.core.data.pocket.PocketUtils;
+import io.plaidapp.search.SearchDataManager;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.ui.FeedAdapter;
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener;
@@ -56,8 +60,10 @@ import io.plaidapp.core.util.ImeUtils;
 import io.plaidapp.core.util.ShortcutHelper;
 import io.plaidapp.core.util.TransitionUtils;
 import io.plaidapp.search.R;
+import io.plaidapp.search.dagger.Injector;
 import io.plaidapp.ui.search.transitions.CircularReveal;
 
+import javax.inject.Inject;
 import java.util.List;
 
 public class SearchActivity extends Activity {
@@ -80,11 +86,15 @@ public class SearchActivity extends Activity {
     private View resultsScrim;
     private int columns;
     private float appBarElevation;
-    SearchDataManager dataManager;
-    FeedAdapter adapter;
     private TextView noResults;
     private SparseArray<Transition> transitions = new SparseArray<>();
     private boolean focusQuery = true;
+
+    @Inject
+    SearchDataManager dataManager;
+
+    @Inject
+    FeedAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +103,7 @@ public class SearchActivity extends Activity {
         bindResources();
         setupSearchView();
 
-        dataManager = new SearchDataManager(this, data -> {
+        Injector.inject(this, data -> {
             if (data != null && data.size() > 0) {
                 if (results.getVisibility() != View.VISIBLE) {
                     TransitionManager.beginDelayedTransition(container,
@@ -110,9 +120,9 @@ public class SearchActivity extends Activity {
                 setNoResultsVisibility(View.VISIBLE);
             }
         });
+
         ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider = new ViewPreloadSizeProvider<>();
-        adapter = new FeedAdapter(this, dataManager, columns, PocketUtils.isPocketInstalled(this),
-                shotPreloadSizeProvider);
+
         setExitSharedElementCallback(FeedAdapter.createSharedElementReenterCallback(this));
         results.setAdapter(adapter);
         results.setItemAnimator(new SlideInItemAnimator());

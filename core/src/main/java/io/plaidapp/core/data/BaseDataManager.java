@@ -50,11 +50,11 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
         void onDataLoaded(T data);
     }
 
-    void setOnDataLoadedCallback(OnDataLoadedCallback<T> onDataLoadedCallback) {
+   public void setOnDataLoadedCallback(OnDataLoadedCallback<T> onDataLoadedCallback) {
         this.onDataLoadedCallback = onDataLoadedCallback;
     }
 
-    final void onDataLoaded(T data) {
+    public final void onDataLoaded(T data) {
         onDataLoadedCallback.onDataLoaded(data);
     }
 
