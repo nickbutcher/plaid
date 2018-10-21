@@ -22,6 +22,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.dribbble.data.api.model.Images
 import io.plaidapp.core.dribbble.data.api.model.Shot
+import io.plaidapp.core.util.ImageUriProvider
 import io.plaidapp.dribbble.testShot
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
