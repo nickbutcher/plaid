@@ -25,15 +25,15 @@ import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.app.ShareCompat
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AppCompatActivity
-import androidx.palette.graphics.Palette
 import android.text.format.DateUtils
 import android.util.TypedValue
 import android.view.View.GONE
+import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.app.ShareCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
+import androidx.palette.graphics.Palette
 import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -45,6 +45,7 @@ import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
 import io.plaidapp.core.util.Activities
 import io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator
 import io.plaidapp.core.util.ColorUtils
+import io.plaidapp.core.util.HtmlParser
 import io.plaidapp.core.util.HtmlUtils
 import io.plaidapp.core.util.ViewUtils
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
@@ -181,9 +182,10 @@ class ShotActivity : AppCompatActivity() {
         }
 
         if (shot.description.isNotEmpty()) {
-            val descText = HtmlUtils.parseHtml(
+            // TODO move this to a use case
+            val descText = HtmlParser().parse(
                 shot.description,
-                ContextCompat.getColorStateList(this, R.color.dribbble_links),
+                ContextCompat.getColorStateList(this, R.color.dribbble_links)!!,
                 ContextCompat.getColor(this, io.plaidapp.R.color.dribbble_link_highlight)
             )
             HtmlUtils.setTextWithNiceLinks(binding.shotDescription, descText)
