@@ -27,7 +27,8 @@ import io.plaidapp.core.dribbble.data.api.model.User
 val player = User(
     id = 1L,
     name = "Nick Butcher",
-    username = "nickbutcher"
+    username = "nickbutcher",
+    avatarUrl = "www.prettyplaid.nb"
 )
 
 val testShot = Shot(
