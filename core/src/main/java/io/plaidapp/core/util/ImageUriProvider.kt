@@ -28,7 +28,7 @@ import javax.inject.Inject
  */
 class ImageUriProvider @Inject constructor(
     context: Context,
-    private val fileAuthority: String
+    private val fileAuthority: FileAuthority
 ) {
 
     // Only hold the app context to avoid leaks
@@ -52,6 +52,6 @@ class ImageUriProvider @Inject constructor(
         val fileName = url.substring(url.lastIndexOf('/') + 1)
         val renamed = File(file.parent, fileName)
         file.renameTo(renamed)
-        return FileProvider.getUriForFile(appContext, fileAuthority, renamed)
+        return FileProvider.getUriForFile(appContext, fileAuthority.authority, renamed)
     }
 }
