@@ -24,6 +24,7 @@ import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
+import io.plaidapp.core.util.FileAuthority
 import io.plaidapp.dribbble.BuildConfig
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
 import io.plaidapp.dribbble.ui.shot.ShotActivity
@@ -68,5 +69,5 @@ class DribbbleModule(private val activity: ShotActivity, private val shotId: Lon
     }
 
     @Provides
-    fun fileAuthority() = BuildConfig.FILES_AUTHORITY
+    fun fileAuthority() = FileAuthority(BuildConfig.FILES_AUTHORITY)
 }
