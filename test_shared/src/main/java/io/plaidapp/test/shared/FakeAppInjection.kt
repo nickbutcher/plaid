@@ -17,7 +17,7 @@
 package io.plaidapp.test.shared
 
 import io.plaidapp.core.data.CoroutinesContextProvider
-import kotlinx.coroutines.Unconfined
+import kotlinx.coroutines.Dispatchers.Unconfined
 
 fun provideFakeCoroutinesContextProvider(): CoroutinesContextProvider =
         CoroutinesContextProvider(Unconfined, Unconfined)
