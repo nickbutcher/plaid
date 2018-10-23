@@ -16,15 +16,15 @@
 
 package io.plaidapp.core.util
 
-import androidx.test.InstrumentationRegistry
 import android.widget.TextView
+import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean
 
 class TextViewExtensionTest {
 
-    private val context = InstrumentationRegistry.getContext()
+    private val context = InstrumentationRegistry.getInstrumentation().context
     private val view = TextView(context)
 
     @Test
