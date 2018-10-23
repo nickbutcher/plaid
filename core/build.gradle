@@ -116,12 +116,6 @@ dependencies {
     androidTestImplementation "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
 }
 
-kotlin {
-    experimental {
-        coroutines 'enable'
-    }
-}
-
 androidExtensions {
     experimental = true
 }
