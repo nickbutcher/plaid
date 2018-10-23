@@ -17,7 +17,7 @@
 package io.plaidapp.core.designernews.data.login
 
 import android.content.Context
-import androidx.test.InstrumentationRegistry.getInstrumentation
+import androidx.test.platform.app.InstrumentationRegistry
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -30,7 +30,7 @@ import org.junit.Test
  */
 class LoginLocalDataSourceTest {
 
-    private var sharedPreferences = getInstrumentation().context
+    private var sharedPreferences = InstrumentationRegistry.getInstrumentation().context
         .getSharedPreferences("test", Context.MODE_PRIVATE)
 
     private var dataSource = LoginLocalDataSource(sharedPreferences)
