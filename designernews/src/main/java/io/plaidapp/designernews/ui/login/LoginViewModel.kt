@@ -64,8 +64,8 @@ class LoginViewModel(
         loginJob = launchLogin(username, password)
     }
 
-    private fun launchLogin(username: String, password: String) =
-        scope.launch(dispatcherProvider.computation) {
+    private fun launchLogin(username: String, password: String): Job {
+        return scope.launch(dispatcherProvider.computation) {
             if (!isLoginValid(username, password)) {
                 return@launch
             }
@@ -91,6 +91,7 @@ class LoginViewModel(
                 }
             }
         }
+    }
 
     private fun showLoading() {
         emitUiState(showProgress = true)

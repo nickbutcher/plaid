@@ -22,7 +22,7 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.data.prefs.SourceManager
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.toStory
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -34,6 +34,9 @@ class LoadStoriesUseCase(
     private val storiesRepository: StoriesRepository,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) {
+    private var parentJob = Job()
+    private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
+
     private val parentJobs = mutableMapOf<String, Job>()
 
     operator fun invoke(page: Int, callback: LoadSourceCallback) {
@@ -45,7 +48,7 @@ class LoadStoriesUseCase(
         page: Int,
         callback: LoadSourceCallback,
         jobId: String
-    ) = GlobalScope.launch(dispatcherProvider.computation) {
+    ) = scope.launch(dispatcherProvider.computation) {
         val result = storiesRepository.loadStories(page)
         parentJobs.remove(jobId)
         if (result is Result.Success) {
@@ -61,7 +64,7 @@ class LoadStoriesUseCase(
     }
 
     fun cancelAllRequests() {
-        parentJobs.values.forEach { it.cancel() }
+        parentJob.cancel()
     }
 
     fun cancelRequestOfSource(source: String) {
