@@ -21,6 +21,7 @@ import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.DataManagerModule
 import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
+import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.search.ui.SearchActivity
 
 /**
@@ -39,6 +40,7 @@ interface SearchComponent {
         fun dataManagerModule(module: DataManagerModule): Builder
         fun dataLoadedModule(module: OnDataLoadedModule): Builder
         fun filterAdapterModule(module: FilterAdapterModule): Builder
+        fun sharedPreferencesModule(module: SharedPreferencesModule): Builder
         fun searchModule(module: SearchModule): Builder
     }
 }
