@@ -16,7 +16,7 @@
 
 package io.plaidapp.designernews.dagger
 
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.dagger.CoreDataModule

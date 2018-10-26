@@ -62,6 +62,7 @@ dependencies {
     // Work around issue with runtime classpath version conflict
     implementation "androidx.legacy:legacy-support-core-utils:${versions.legacyCoreUtils}"
     implementation "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
+    implementation "androidx.arch.core:core-runtime:${versions.androidxCoreRuntime}"
 
     // Workaround for dependency conflict during assembleAndroidTest
     androidTestImplementation("androidx.arch.core:core-runtime:2.0.1-alpha01")
