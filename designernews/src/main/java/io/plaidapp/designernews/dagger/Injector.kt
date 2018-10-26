@@ -19,8 +19,8 @@
 package io.plaidapp.designernews.dagger
 
 import `in`.uncod.android.bypass.Bypass
-import android.support.v4.content.ContextCompat
 import android.util.TypedValue
+import androidx.core.content.ContextCompat
 import io.plaidapp.core.dagger.CoreDataModule
 import io.plaidapp.core.dagger.CoroutinesContextProviderModule
 import io.plaidapp.core.dagger.MarkdownModule
