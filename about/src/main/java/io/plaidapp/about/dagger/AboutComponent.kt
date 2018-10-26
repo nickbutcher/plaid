@@ -19,6 +19,7 @@ package io.plaidapp.about.dagger
 import dagger.BindsInstance
 import dagger.Component
 import io.plaidapp.about.ui.AboutActivity
+import io.plaidapp.core.dagger.BaseComponent
 import io.plaidapp.core.dagger.MarkdownModule
 import io.plaidapp.core.dagger.scope.ModuleScope
 
@@ -27,9 +28,7 @@ import io.plaidapp.core.dagger.scope.ModuleScope
  */
 @ModuleScope
 @Component(modules = [AboutActivityModule::class, MarkdownModule::class])
-interface AboutComponent {
-
-    fun inject(activity: AboutActivity)
+interface AboutComponent : BaseComponent<AboutActivity> {
 
     @Component.Builder
     interface Builder {

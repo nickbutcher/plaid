@@ -17,6 +17,7 @@
 package io.plaidapp.designernews.dagger
 
 import dagger.Component
+import io.plaidapp.core.dagger.BaseComponent
 import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.CoreDataModule
 import io.plaidapp.core.dagger.CoroutinesContextProviderModule
@@ -28,9 +29,7 @@ import io.plaidapp.designernews.ui.story.StoryActivity
  * Dagger component for [StoryActivity].
  */
 @Component(modules = [StoryModule::class], dependencies = [CoreComponent::class])
-interface StoryComponent {
-
-    fun inject(activity: StoryActivity)
+interface StoryComponent : BaseComponent<StoryActivity> {
 
     @Component.Builder
     interface Builder {
