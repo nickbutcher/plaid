@@ -50,6 +50,8 @@ repositories {
 
 dependencies {
     implementation project(':app')
+    implementation "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
+    implementation "androidx.collection:collection:${versions.androidxCollection}"
 
     testImplementation project(':test_shared')
 
