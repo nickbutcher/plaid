@@ -16,6 +16,8 @@
 
 package io.plaidapp.search.dagger
 
+import android.app.Activity
+import dagger.BindsInstance
 import dagger.Component
 import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.DataManagerModule
@@ -36,6 +38,7 @@ interface SearchComponent {
     interface Builder {
 
         fun build(): SearchComponent
+        @BindsInstance fun activity(activity: Activity): Builder
         fun coreComponent(module: CoreComponent): Builder
         fun dataManagerModule(module: DataManagerModule): Builder
         fun dataLoadedModule(module: OnDataLoadedModule): Builder
