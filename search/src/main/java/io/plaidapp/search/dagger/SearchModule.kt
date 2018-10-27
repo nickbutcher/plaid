@@ -41,28 +41,31 @@ import io.plaidapp.search.domain.SearchDataManager
         OnDataLoadedModule::class
     ]
 )
-class SearchModule(private val activity: Activity) {
+object SearchModule {
+    @JvmStatic
     @Provides
-    fun context(): Context = activity
+    fun context(activity: Activity): Context = activity
 
+    @JvmStatic
     @Provides
-    fun activity(): Activity = activity
+    fun columns(activity: Activity): Int = activity.resources.getInteger(R.integer.num_columns)
 
-    @Provides
-    fun columns(): Int = activity.resources.getInteger(R.integer.num_columns)
-
+    @JvmStatic
     @Provides
     fun viewPreloadSizeProvider() = ViewPreloadSizeProvider<Shot>()
 
+    @JvmStatic
     @Provides
-    fun isPocketInstalled() = PocketUtils.isPocketInstalled(activity)
+    fun isPocketInstalled(activity: Activity) = PocketUtils.isPocketInstalled(activity)
 
+    @JvmStatic
     @Provides
     fun provideSearchDataManager(
+        context: Context,
         onDataLoadedCallback: BaseDataManager.OnDataLoadedCallback<List<PlaidItem>>,
         shotsRepository: ShotsRepository
     ): SearchDataManager = SearchDataManager(
-        context(),
+        context,
         onDataLoadedCallback,
         shotsRepository
     )

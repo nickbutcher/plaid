@@ -25,6 +25,7 @@ import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.ui.PlaidApplication
 import io.plaidapp.search.ui.SearchActivity
+import io.plaidapp.ui.PlaidApplication
 
 /**
  * Injector for SearchActivity.
@@ -39,6 +40,7 @@ object Injector {
         dataLoadedCallback: BaseDataManager.OnDataLoadedCallback<List<PlaidItem>>
     ) {
         DaggerSearchComponent.builder()
+            .activity(activity)
             .coreComponent(PlaidApplication.coreComponent(activity))
             .dataManagerModule(DataManagerModule())
             .dataLoadedModule(OnDataLoadedModule(dataLoadedCallback))
