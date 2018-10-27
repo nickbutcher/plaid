@@ -1,18 +1,17 @@
 /*
- *   Copyright 2018 Google LLC
+ * Copyright 2018 Google, Inc.
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package io.plaidapp.search.domain
@@ -34,9 +33,9 @@ import javax.inject.Inject
  * responsible for providing the [onDataLoaded] method to do something with the data.
  */
 class SearchDataManager @Inject constructor(
-        context: Context,
-        onDataLoadedCallback: BaseDataManager.OnDataLoadedCallback<List<PlaidItem>>,
-        private val shotsRepository: ShotsRepository
+    context: Context,
+    onDataLoadedCallback: BaseDataManager.OnDataLoadedCallback<List<PlaidItem>>,
+    private val shotsRepository: ShotsRepository
 ) : BaseDataManager<List<PlaidItem>>(), LoadSourceCallback {
 
     private val searchStoriesUseCase: SearchStoriesUseCase
@@ -95,7 +94,6 @@ class SearchDataManager @Inject constructor(
             }
             Unit
         }
-
     }
 
     override fun sourceLoaded(result: List<PlaidItem>?, page: Int, source: String) {
@@ -109,5 +107,4 @@ class SearchDataManager @Inject constructor(
     }
 
     override fun loadFailed(source: String) = loadFinished()
-
 }
