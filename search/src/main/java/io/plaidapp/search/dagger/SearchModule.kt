@@ -26,12 +26,8 @@ import io.plaidapp.core.dagger.DataManagerModule
 import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
-import io.plaidapp.core.data.BaseDataManager
-import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.pocket.PocketUtils
-import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.api.model.Shot
-import io.plaidapp.search.domain.SearchDataManager
 
 @Module(
     includes = [
@@ -57,16 +53,4 @@ object SearchModule {
     @JvmStatic
     @Provides
     fun isPocketInstalled(activity: Activity) = PocketUtils.isPocketInstalled(activity)
-
-    @JvmStatic
-    @Provides
-    fun provideSearchDataManager(
-        context: Context,
-        onDataLoadedCallback: BaseDataManager.OnDataLoadedCallback<List<PlaidItem>>,
-        shotsRepository: ShotsRepository
-    ): SearchDataManager = SearchDataManager(
-        context,
-        onDataLoadedCallback,
-        shotsRepository
-    )
 }
