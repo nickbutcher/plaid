@@ -23,6 +23,7 @@ buildscript {
             'androidx'          : '1.0.0',
             'constraintLayout'  : '2.0.0-alpha2',
             'coreKtx'           : '1.0.0',
+            'androidxCollection': '1.0.0',
             'coroutines'        : '0.26.1-eap13',
             'crashlytics'       : '2.9.4',
             'dagger'            : '2.16',
@@ -62,7 +63,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0-alpha08'
+        classpath 'com.android.tools.build:gradle:3.3.0-beta01'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         classpath "com.google.gms:google-services:${versions.googleServices}"
         classpath "io.fabric.tools:gradle:${versions.fabric}"
