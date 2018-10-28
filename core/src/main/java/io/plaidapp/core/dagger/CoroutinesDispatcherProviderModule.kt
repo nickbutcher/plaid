@@ -20,15 +20,15 @@ import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.android.Main
 
 /**
  * Provide [CoroutinesDispatcherProvider] to this app's components.
  */
-@Module class CoroutinesDispatcherProviderModule {
+@Module
+class CoroutinesDispatcherProviderModule {
 
-    @Provides fun provideCoroutinesDispatcherProvider() = CoroutinesDispatcherProvider(
+    @Provides
+    fun provideCoroutinesDispatcherProvider() = CoroutinesDispatcherProvider(
         Dispatchers.Main,
         Dispatchers.Default,
         Dispatchers.IO

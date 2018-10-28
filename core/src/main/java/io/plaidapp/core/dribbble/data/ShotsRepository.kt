@@ -20,7 +20,7 @@ import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,6 +32,9 @@ class ShotsRepository constructor(
     private val remoteDataSource: SearchRemoteDataSource,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) {
+
+    private var parentJob = Job()
+    private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
 
     private val inflight = mutableMapOf<String, Job>()
     private val shotCache = mutableMapOf<Long, Shot>()
@@ -55,7 +58,7 @@ class ShotsRepository constructor(
     }
 
     fun cancelAllSearches() {
-        inflight.values.forEach { it.cancel() }
+        parentJob.cancel()
         inflight.clear()
     }
 
@@ -64,7 +67,7 @@ class ShotsRepository constructor(
         page: Int,
         id: String,
         onResult: (Result<List<Shot>>) -> Unit
-    ) = GlobalScope.launch(dispatcherProvider.io) {
+    ) = scope.launch(dispatcherProvider.io) {
         val result = remoteDataSource.search(query, page)
         inflight.remove(id)
         if (result is Result.Success) {
@@ -78,7 +81,8 @@ class ShotsRepository constructor(
     }
 
     companion object {
-        @Volatile private var INSTANCE: ShotsRepository? = null
+        @Volatile
+        private var INSTANCE: ShotsRepository? = null
 
         fun getInstance(
             remoteDataSource: SearchRemoteDataSource,
