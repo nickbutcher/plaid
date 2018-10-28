@@ -24,7 +24,7 @@ buildscript {
             'constraintLayout'  : '2.0.0-alpha2',
             'coreKtx'           : '1.0.0',
             'androidxCollection': '1.0.0',
-            'coroutines'        : '0.30.0-eap13',
+            'coroutines'        : '1.0.0-RC1',
             'crashlytics'       : '2.9.4',
             'dagger'            : '2.16',
             'espresso'          : '3.1.0-beta02',

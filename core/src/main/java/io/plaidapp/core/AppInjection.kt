@@ -22,8 +22,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.android.Main
 import okhttp3.logging.HttpLoggingInterceptor
 
 /**
