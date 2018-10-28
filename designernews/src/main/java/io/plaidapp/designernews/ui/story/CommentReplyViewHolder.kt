@@ -16,15 +16,21 @@
 
 package io.plaidapp.designernews.ui.story
 
-import com.google.android.material.textfield.TextInputLayout
-import androidx.recyclerview.widget.RecyclerView
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-
-import io.plaidapp.designernews.R
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputLayout
 import io.plaidapp.core.designernews.domain.model.Comment
+import io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator
+import io.plaidapp.designernews.R
 
 /**
  * View holder for a Designer News comment reply.
@@ -33,12 +39,88 @@ import io.plaidapp.core.designernews.domain.model.Comment
 internal class CommentReplyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     val commentVotes: Button = itemView.findViewById(R.id.comment_votes)
-    val replyLabel: TextInputLayout = itemView.findViewById(R.id.comment_reply_label)
+    private val replyLabel: TextInputLayout = itemView.findViewById(R.id.comment_reply_label)
     val commentReply: EditText = itemView.findViewById(R.id.comment_reply)
     val postReply: ImageButton = itemView.findViewById(R.id.post_reply)
 
     fun bindCommentReply(comment: Comment) {
         commentVotes.text = comment.upvotesCount.toString()
-        commentVotes.isActivated = comment.upvoted != null && comment.upvoted
+        commentVotes.isActivated = comment.upvoted
+    }
+
+    fun createCommentReplyFocusAnimator(): Animator {
+        val interpolator = getFastOutSlowInInterpolator(itemView.context)
+
+        val commentVotesAnimator = ObjectAnimator.ofPropertyValuesHolder(
+                commentVotes,
+                PropertyValuesHolder.ofFloat(View.TRANSLATION_X, -commentVotes.width.toFloat()),
+                PropertyValuesHolder.ofFloat(View.ALPHA, 0f))
+        commentVotesAnimator.duration = 200L
+        commentVotesAnimator.interpolator = interpolator
+
+        val replyLabelAnimator = ObjectAnimator.ofPropertyValuesHolder(
+                replyLabel,
+                PropertyValuesHolder.ofFloat(View.TRANSLATION_X, -commentVotes.width.toFloat()))
+        replyLabelAnimator.duration = 200L
+        replyLabelAnimator.interpolator = interpolator
+
+        postReply.visibility = View.VISIBLE
+        postReply.alpha = 0f
+
+        val postReplyAnimator = ObjectAnimator.ofPropertyValuesHolder(
+                postReply,
+                PropertyValuesHolder.ofFloat(View.ALPHA, 1f))
+        postReplyAnimator.duration = 200L
+        postReplyAnimator.interpolator = interpolator
+
+        val animator = AnimatorSet()
+        animator.playTogether(commentVotesAnimator, replyLabelAnimator, postReplyAnimator)
+        animator.apply {
+            doOnStart {
+                itemView.setHasTransientState(true)
+            }
+            doOnEnd {
+                itemView.setHasTransientState(false)
+            }
+        }
+
+        return animator
+    }
+
+    fun createCommentReplyFocusLossAnimator(): Animator {
+        val interpolator = getFastOutSlowInInterpolator(itemView.context)
+
+        val commentVotesAnimator = ObjectAnimator.ofPropertyValuesHolder(
+                commentVotes,
+                PropertyValuesHolder.ofFloat(View.TRANSLATION_X, 0f),
+                PropertyValuesHolder.ofFloat(View.ALPHA, 1f))
+        commentVotesAnimator.duration = 200L
+        commentVotesAnimator.interpolator = interpolator
+
+        val replyLabelAnimator = ObjectAnimator.ofPropertyValuesHolder(
+                replyLabel,
+                PropertyValuesHolder.ofFloat(View.TRANSLATION_X, 0f))
+        replyLabelAnimator.duration = 200L
+        replyLabelAnimator.interpolator = interpolator
+
+        val postReplyAnimator = ObjectAnimator.ofPropertyValuesHolder(
+                postReply,
+                PropertyValuesHolder.ofFloat(View.ALPHA, 0f))
+        postReplyAnimator.duration = 200L
+        postReplyAnimator.interpolator = interpolator
+
+        val animator = AnimatorSet()
+        animator.playTogether(commentVotesAnimator, replyLabelAnimator, postReplyAnimator)
+        animator.apply {
+            doOnStart {
+                itemView.setHasTransientState(true)
+            }
+            doOnEnd {
+                postReply.visibility = View.INVISIBLE
+                itemView.setHasTransientState(true)
+            }
+        }
+
+        return animator
     }
 }
