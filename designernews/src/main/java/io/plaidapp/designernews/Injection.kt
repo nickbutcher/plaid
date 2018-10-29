@@ -24,7 +24,7 @@ import io.plaidapp.core.designernews.provideCommentsRepository
 import io.plaidapp.core.designernews.provideDesignerNewsService
 import io.plaidapp.core.designernews.provideLoginRepository
 import io.plaidapp.core.designernews.provideStoriesRepository
-import io.plaidapp.core.provideCoroutinesContextProvider
+import io.plaidapp.core.provideCoroutinesDispatcherProvider
 import io.plaidapp.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.designernews.data.users.UserRepository
 import io.plaidapp.designernews.data.votes.VotesRemoteDataSource
@@ -48,7 +48,7 @@ import io.plaidapp.designernews.ui.story.StoryViewModelFactory
 fun provideViewModelFactory(context: Context): DesignerNewsViewModelFactory {
     return DesignerNewsViewModelFactory(
         provideLoginRepository(context),
-        provideCoroutinesContextProvider()
+        provideCoroutinesDispatcherProvider()
     )
 }
 
@@ -61,7 +61,7 @@ fun provideStoryViewModelFactory(storyId: Long, context: Context): StoryViewMode
         provideCommentsWithRepliesAndUsersUseCase(context),
         provideUpvoteStoryUseCase(context),
         provideUpvoteCommentUseCase(context),
-        provideCoroutinesContextProvider()
+        provideCoroutinesDispatcherProvider()
     )
 }
 

@@ -23,7 +23,7 @@ import io.plaidapp.core.dagger.CoreDataModule
 import io.plaidapp.core.dagger.MarkdownModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
-import io.plaidapp.core.data.CoroutinesContextProvider
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.comments.CommentsRemoteDataSource
 import io.plaidapp.core.designernews.data.comments.CommentsRepository
@@ -72,9 +72,9 @@ class StoryModule(private val storyId: Long, private val activity: StoryActivity
     @Provides
     fun provideViewModelFactory(
         loginRepository: LoginRepository,
-        coroutinesContextProvider: CoroutinesContextProvider
+        coroutinesDispatcherProvider: CoroutinesDispatcherProvider
     ): DesignerNewsViewModelFactory =
-        DesignerNewsViewModelFactory(loginRepository, coroutinesContextProvider)
+        DesignerNewsViewModelFactory(loginRepository, coroutinesDispatcherProvider)
 
     @Provides
     fun provideStoryViewModelFactory(
@@ -84,17 +84,17 @@ class StoryModule(private val storyId: Long, private val activity: StoryActivity
         commentsWithRepliesAndUsersUseCase: GetCommentsWithRepliesAndUsersUseCase,
         upvoteStoryUseCase: UpvoteStoryUseCase,
         upvoteCommentUseCase: UpvoteCommentUseCase,
-        coroutinesContextProvider: CoroutinesContextProvider
+        coroutinesDispatcherProvider: CoroutinesDispatcherProvider
     ): StoryViewModelFactory =
         StoryViewModelFactory(
-            storyId,
-            getStoryUseCase,
-            postStoryCommentUseCase,
-            postReplyUseCase,
-            commentsWithRepliesAndUsersUseCase,
-            upvoteStoryUseCase,
-            upvoteCommentUseCase,
-            coroutinesContextProvider
+                storyId,
+                getStoryUseCase,
+                postStoryCommentUseCase,
+                postReplyUseCase,
+                commentsWithRepliesAndUsersUseCase,
+                upvoteStoryUseCase,
+                upvoteCommentUseCase,
+                coroutinesDispatcherProvider
         )
 
     @Provides
