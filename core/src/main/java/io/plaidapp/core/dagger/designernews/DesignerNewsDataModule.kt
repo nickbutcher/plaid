@@ -23,9 +23,9 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.BuildConfig
-import io.plaidapp.core.dagger.CoroutinesContextProviderModule
+import io.plaidapp.core.dagger.CoroutinesDispatcherProviderModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
-import io.plaidapp.core.data.CoroutinesContextProvider
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.api.DenvelopingConverter
 import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
@@ -49,7 +49,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 /**
  * Dagger module to provide data functionality for DesignerNews.
  */
-@Module(includes = [SharedPreferencesModule::class, CoroutinesContextProviderModule::class])
+@Module(includes = [SharedPreferencesModule::class, CoroutinesDispatcherProviderModule::class])
 class DesignerNewsDataModule {
 
     @Provides
@@ -116,16 +116,16 @@ class DesignerNewsDataModule {
     @Provides
     fun provideLoadStoriesUseCase(
         storiesRepository: StoriesRepository,
-        coroutinesContextProvider: CoroutinesContextProvider
+        coroutinesDispatcherProvider: CoroutinesDispatcherProvider
     ): LoadStoriesUseCase =
-        LoadStoriesUseCase(storiesRepository, coroutinesContextProvider)
+        LoadStoriesUseCase(storiesRepository, coroutinesDispatcherProvider)
 
     @Provides
     fun provideSearchStoriesUseCase(
         storiesRepository: StoriesRepository,
-        coroutinesContextProvider: CoroutinesContextProvider
+        coroutinesDispatcherProvider: CoroutinesDispatcherProvider
     ): SearchStoriesUseCase =
-        SearchStoriesUseCase(storiesRepository, coroutinesContextProvider)
+        SearchStoriesUseCase(storiesRepository, coroutinesDispatcherProvider)
 
     @Provides
     fun provideCommentsRepository(dataSource: CommentsRemoteDataSource): CommentsRepository =
