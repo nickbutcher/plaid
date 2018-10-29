@@ -38,7 +38,7 @@ import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.domain.LoadStoriesUseCase
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
 import io.plaidapp.core.loggingInterceptor
-import io.plaidapp.core.provideCoroutinesContextProvider
+import io.plaidapp.core.provideCoroutinesDispatcherProvider
 import io.plaidapp.core.provideSharedPreferences
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -132,14 +132,14 @@ private fun provideStoriesRemoteDataSource(service: DesignerNewsService): Storie
 
 @Deprecated("Use dagger")
 fun provideLoadStoriesUseCase(context: Context): LoadStoriesUseCase {
-    return LoadStoriesUseCase(provideStoriesRepository(context), provideCoroutinesContextProvider())
+    return LoadStoriesUseCase(provideStoriesRepository(context), provideCoroutinesDispatcherProvider())
 }
 
 @Deprecated("Use dagger")
 fun provideSearchStoriesUseCase(context: Context): SearchStoriesUseCase {
     return SearchStoriesUseCase(
         provideStoriesRepository(context),
-        provideCoroutinesContextProvider()
+        provideCoroutinesDispatcherProvider()
     )
 }
 

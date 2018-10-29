@@ -22,7 +22,7 @@ import `in`.uncod.android.bypass.Bypass
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
 import io.plaidapp.core.dagger.CoreDataModule
-import io.plaidapp.core.dagger.CoroutinesContextProviderModule
+import io.plaidapp.core.dagger.CoroutinesDispatcherProviderModule
 import io.plaidapp.core.dagger.MarkdownModule
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.designernews.ui.login.LoginActivity
@@ -54,7 +54,7 @@ fun inject(storyId: Long, activity: StoryActivity) {
 
     DaggerStoryComponent.builder()
         .coreComponent(coreComponent)
-        .coroutinesContextProviderModule(CoroutinesContextProviderModule())
+        .coroutinesDispatcherProviderModule(CoroutinesDispatcherProviderModule())
         .coreDataModule(coreDataModule)
         .designerNewsModule(StoryModule(storyId, activity))
         .markdownModule(MarkdownModule(activity.resources.displayMetrics, bypassOptions))

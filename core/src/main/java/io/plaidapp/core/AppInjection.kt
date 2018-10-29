@@ -46,7 +46,7 @@ fun provideSharedPreferences(context: Context, name: String): SharedPreferences 
 }
 
 @Deprecated("Use Dagger CoroutinesDispatcherProviderModule instead")
-fun provideCoroutinesContextProvider() = CoroutinesDispatcherProvider(
+fun provideCoroutinesDispatcherProvider() = CoroutinesDispatcherProvider(
     Dispatchers.Main,
     Dispatchers.Default,
     Dispatchers.IO
