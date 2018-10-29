@@ -17,15 +17,6 @@
 
 package io.plaidapp.core.data;
 
-import androidx.annotation.NonNull;
-import io.plaidapp.core.BuildConfig;
-import io.plaidapp.core.dribbble.data.search.DribbbleSearchConverter;
-import io.plaidapp.core.dribbble.data.search.DribbbleSearchService;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import okhttp3.logging.HttpLoggingInterceptor.Level;
-import retrofit2.Retrofit;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,7 +29,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public abstract class BaseDataManager<T> implements DataLoadingSubject {
 
     private final AtomicInteger loadingCount;
-    private DribbbleSearchService dribbbleSearchApi;
     private List<DataLoadingCallbacks> loadingCallbacks;
     private OnDataLoadedCallback<T> onDataLoadedCallback;
 
@@ -50,7 +40,7 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
         void onDataLoaded(T data);
     }
 
-   public void setOnDataLoadedCallback(OnDataLoadedCallback<T> onDataLoadedCallback) {
+    public void setOnDataLoadedCallback(OnDataLoadedCallback<T> onDataLoadedCallback) {
         this.onDataLoadedCallback = onDataLoadedCallback;
     }
 
@@ -65,24 +55,12 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
         return loadingCount.get() > 0;
     }
 
-    public DribbbleSearchService getDribbbleSearchApi() {
-        if (dribbbleSearchApi == null) createDribbbleSearchApi();
-        return dribbbleSearchApi;
-    }
-
     @Override
     public void registerCallback(DataLoadingSubject.DataLoadingCallbacks callback) {
         if (loadingCallbacks == null) {
             loadingCallbacks = new ArrayList<>(1);
         }
         loadingCallbacks.add(callback);
-    }
-
-    @Override
-    public void unregisterCallback(DataLoadingSubject.DataLoadingCallbacks callback) {
-        if (loadingCallbacks != null && loadingCallbacks.contains(callback)) {
-            loadingCallbacks.remove(callback);
-        }
     }
 
     protected void loadStarted() {
@@ -113,40 +91,17 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
         }
     }
 
-    protected void dispatchLoadingStartedCallbacks() {
+    private void dispatchLoadingStartedCallbacks() {
         if (loadingCallbacks == null || loadingCallbacks.isEmpty()) return;
         for (DataLoadingCallbacks loadingCallback : loadingCallbacks) {
             loadingCallback.dataStartedLoading();
         }
     }
 
-    protected void dispatchLoadingFinishedCallbacks() {
+    private void dispatchLoadingFinishedCallbacks() {
         if (loadingCallbacks == null || loadingCallbacks.isEmpty()) return;
         for (DataLoadingCallbacks loadingCallback : loadingCallbacks) {
             loadingCallback.dataFinishedLoading();
         }
     }
-
-    @Deprecated // Use Dagger
-    private void createDribbbleSearchApi() {
-        final OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(getHttpLoggingInterceptor())
-                .build();
-
-        dribbbleSearchApi = new Retrofit.Builder()
-                .baseUrl(DribbbleSearchService.ENDPOINT)
-                .addConverterFactory(new DribbbleSearchConverter.Factory())
-                .client(client)
-                .build()
-                .create((DribbbleSearchService.class));
-    }
-
-    @NonNull
-    private HttpLoggingInterceptor getHttpLoggingInterceptor() {
-        Level debugLevel = BuildConfig.DEBUG ? Level.BASIC : Level.NONE;
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(debugLevel);
-        return loggingInterceptor;
-    }
-
 }
