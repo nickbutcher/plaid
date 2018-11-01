@@ -48,8 +48,6 @@ repositories {
 
 dependencies {
     implementation project(':app')
-    implementation "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
-    implementation "androidx.collection:collection:${versions.androidxCollection}"
 
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 
@@ -60,9 +58,10 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
 
     // Work around issue with runtime classpath version conflict
+    implementation "androidx.arch.core:core-runtime:${versions.androidxCoreRuntime}"
+    implementation "androidx.collection:collection:${versions.androidxCollection}"
     implementation "androidx.legacy:legacy-support-core-utils:${versions.legacyCoreUtils}"
     implementation "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
-    implementation "androidx.arch.core:core-runtime:${versions.androidxCoreRuntime}"
 
     // Workaround for dependency conflict during assembleAndroidTest
     androidTestImplementation("androidx.arch.core:core-runtime:2.0.1-alpha01")
