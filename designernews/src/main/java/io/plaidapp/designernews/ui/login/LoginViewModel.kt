@@ -70,7 +70,7 @@ class LoginViewModel @Inject constructor(
             if (!isLoginValid(username, password)) {
                 return@launch
             }
-            showLoading()
+            withContext(dispatcherProvider.main) { showLoading() }
             val result = loginRepository.login(username, password)
 
             withContext(dispatcherProvider.main) {
