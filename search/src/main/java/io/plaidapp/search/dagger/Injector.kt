@@ -23,7 +23,6 @@ import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.data.BaseDataManager
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
-import io.plaidapp.ui.PlaidApplication
 import io.plaidapp.search.ui.SearchActivity
 import io.plaidapp.ui.PlaidApplication
 
@@ -49,7 +48,6 @@ object Injector {
                     activity,
                     LoginLocalDataSource.DESIGNER_NEWS_PREF
             ))
-            .searchModule(SearchModule(activity))
             .build()
             .inject(activity)
     }
