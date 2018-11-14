@@ -21,6 +21,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import androidx.annotation.NonNull;
+import io.plaidapp.core.dagger.designernews.Injector;
 import io.plaidapp.core.designernews.data.api.DesignerNewsService;
 import io.plaidapp.core.designernews.data.login.LoginRepository;
 import io.plaidapp.core.designernews.data.stories.model.Story;
@@ -36,6 +37,7 @@ public class UpvoteStoryService extends IntentService {
 
     public UpvoteStoryService() {
         super("UpvoteStoryService");
+        Injector.inject(this);
     }
 
     @Inject DesignerNewsService service;
