@@ -22,6 +22,7 @@ import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -33,7 +34,7 @@ class ShotsRepository constructor(
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) {
 
-    private var parentJob = Job()
+    private val parentJob = Job()
     private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
 
     private val inflight = mutableMapOf<String, Job>()
@@ -58,7 +59,7 @@ class ShotsRepository constructor(
     }
 
     fun cancelAllSearches() {
-        parentJob.cancel()
+        parentJob.cancelChildren()
         inflight.clear()
     }
 
