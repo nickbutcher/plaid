@@ -17,6 +17,8 @@
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply from: '../core_dependencies.gradle'
+apply from: '../test_dependencies.gradle'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -28,6 +30,9 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    packagingOptions {
+        exclude 'META-INF/test_shared_debug.kotlin_module'
     }
 }
 

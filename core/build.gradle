@@ -20,6 +20,9 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+apply from: '../core_dependencies.gradle'
+apply from: '../test_dependencies.gradle'
+
 android {
     compileSdkVersion versions.compileSdk
 
@@ -66,59 +69,9 @@ repositories {
 }
 
 dependencies {
-    api project(':bypass')
-
-    api "androidx.room:room-runtime:${versions.room}"
-    api "androidx.core:core-ktx:${versions.coreKtx}"
-    api "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"
-    api "androidx.browser:browser:${versions.androidx}"
-    api "androidx.palette:palette:${versions.androidx}"
-    api "androidx.recyclerview:recyclerview:${versions.androidx}"
-    api "androidx.dynamicanimation:dynamicanimation:${versions.androidx}"
-    api "com.android.support:customtabs:${versions.supportLibrary}"
-    api "com.android.support:design:${versions.supportLibrary}"
-    api "com.android.support:palette-v7:${versions.supportLibrary}"
-    api "com.android.support:support-v4:${versions.supportLibrary}" // Required for version pinning.
-    api "com.android.support:support-dynamic-animation:${versions.supportLibrary}"
-    api "com.github.bumptech.glide:glide:${versions.glide}"
-    api "com.github.bumptech.glide:okhttp3-integration:${versions.glide}"
-    api "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
-    api "com.google.android.material:material:${versions.material}"
-    api "com.google.code.gson:gson:${versions.gson}"
-    api "com.google.dagger:dagger:${versions.dagger}"
-    api "com.squareup.retrofit2:retrofit:${versions.retrofit}"
-    api "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
-    api "com.squareup.okhttp3:okhttp:${versions.okhttp}"
-    api "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
-    api "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:${versions.retrofitCoroutines}"
-    api "org.jsoup:jsoup:${versions.jsoup}"
-    api "androidx.lifecycle:lifecycle-viewmodel:${versions.lifecycle}"
-    api "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
     kapt "androidx.room:room-compiler:${versions.room}"
     kapt "com.github.bumptech.glide:compiler:${versions.glide}"
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
-
-    testImplementation project(':test_shared')
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockito_kotlin}"
-    testImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
-    testImplementation "junit:junit:${versions.junit}"
-    testImplementation "org.mockito:mockito-core:${versions.mockito}"
-
-    androidTestImplementation project(':test_shared')
-    androidTestImplementation "androidx.test:runner:${versions.test_runner}"
-    androidTestImplementation "androidx.test:rules:${versions.test_rules}"
-    androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
-    androidTestImplementation "org.mockito:mockito-core:${versions.mockito}"
-    androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
-    androidTestImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
-
-    // Work around issue with runtime classpath version conflict
-    androidTestImplementation "androidx.arch.core:core-testing:${versions.lifecycle}"
-    androidTestImplementation "androidx.legacy:legacy-support-core-utils:${versions.legacyCoreUtils}"
-    androidTestImplementation "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
 }
 
 androidExtensions {
