@@ -19,6 +19,9 @@ apply plugin: 'com.android.dynamic-feature'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
+apply from: '../core_dependencies.gradle'
+apply from: '../test_dependencies.gradle'
+
 android {
     compileSdkVersion versions.compileSdk
 
@@ -45,19 +48,7 @@ repositories {
 
 dependencies {
     implementation project(':app')
+    implementation project(':core')
+
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
-
-    testImplementation project(':test_shared')
-    testImplementation "androidx.arch.core:core-testing:${versions.lifecycle}"
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockito_kotlin}"
-    testImplementation "junit:junit:${versions.junit}"
-
-    androidTestImplementation project(':test_shared')
-    androidTestImplementation "androidx.arch.core:core-testing:${versions.lifecycle}"
-    androidTestImplementation "androidx.test:runner:${versions.test_runner}"
-    androidTestImplementation "androidx.test:rules:${versions.test_rules}"
-    androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
-    androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockito_kotlin}"
-    androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
-    androidTestImplementation "org.mockito:mockito-core:${versions.mockito}"
 }

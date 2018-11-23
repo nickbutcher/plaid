@@ -1,0 +1,49 @@
+/*
+ * Copyright 2018 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+dependencies {
+    testImplementation project(':test_shared')
+    testImplementation "androidx.arch.core:core-testing:${versions.lifecycle}"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockito_kotlin}"
+    testImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
+    testImplementation "junit:junit:${versions.junit}"
+    testImplementation "org.mockito:mockito-core:${versions.mockito}"
+
+    // Work around issue with runtime classpath version conflict
+    implementation "androidx.arch.core:core-runtime:${versions.androidxCoreRuntime}"
+    implementation "androidx.collection:collection:${versions.androidxCollection}"
+    implementation "androidx.legacy:legacy-support-core-utils:${versions.legacyCoreUtils}"
+    implementation "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
+
+    // Workaround for dependency conflict during assembleAndroidTest
+    androidTestImplementation("androidx.arch.core:core-runtime:2.0.1-alpha01")
+
+    // Work around issue with runtime classpath version conflict
+    androidTestImplementation "androidx.arch.core:core-testing:${versions.lifecycle}"
+    androidTestImplementation "androidx.legacy:legacy-support-core-utils:${versions.legacyCoreUtils}"
+    androidTestImplementation "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
+
+    androidTestImplementation project(':test_shared')
+    androidTestImplementation "androidx.arch.core:core-testing:${versions.lifecycle}"
+    androidTestImplementation "androidx.test:runner:${versions.test_runner}"
+    androidTestImplementation "androidx.test:rules:${versions.test_rules}"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:${versions.espresso}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
+    androidTestImplementation "androidx.test.uiautomator:uiautomator:${versions.ui_automator}"
+    androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockito_kotlin}"
+    androidTestImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
+    androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
+    androidTestImplementation "org.mockito:mockito-core:${versions.mockito}"
+}
