@@ -19,6 +19,9 @@ apply plugin: 'com.android.dynamic-feature'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
+apply from: '../core_dependencies.gradle'
+apply from: '../test_dependencies.gradle'
+
 android {
     compileSdkVersion versions.compileSdk
 
@@ -48,21 +51,7 @@ repositories {
 
 dependencies {
     implementation project(':app')
+    implementation project(':core')
 
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
-
-    testImplementation project(':test_shared')
-    testImplementation "androidx.arch.core:core-testing:${versions.lifecycle}"
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockito_kotlin}"
-    testImplementation "junit:junit:${versions.junit}"
-    testImplementation "org.mockito:mockito-core:${versions.mockito}"
-
-    // Work around issue with runtime classpath version conflict
-    implementation "androidx.arch.core:core-runtime:${versions.androidxCoreRuntime}"
-    implementation "androidx.collection:collection:${versions.androidxCollection}"
-    implementation "androidx.legacy:legacy-support-core-utils:${versions.legacyCoreUtils}"
-    implementation "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
-
-    // Workaround for dependency conflict during assembleAndroidTest
-    androidTestImplementation("androidx.arch.core:core-runtime:2.0.1-alpha01")
 }

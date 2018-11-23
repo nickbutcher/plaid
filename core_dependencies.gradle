@@ -1,0 +1,48 @@
+/*
+ * Copyright 2018 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+dependencies {
+    implementation project(':bypass')
+
+    implementation "androidx.room:room-runtime:${versions.room}"
+    implementation "androidx.core:core-ktx:${versions.coreKtx}"
+    implementation "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"
+    implementation "androidx.browser:browser:${versions.androidx}"
+    implementation "androidx.palette:palette:${versions.androidx}"
+    implementation "androidx.recyclerview:recyclerview:${versions.androidx}"
+    implementation "androidx.dynamicanimation:dynamicanimation:${versions.androidx}"
+    implementation "com.android.support:customtabs:${versions.supportLibrary}"
+    implementation "com.android.support:design:${versions.supportLibrary}"
+    implementation "com.android.support:palette-v7:${versions.supportLibrary}"
+    implementation "com.android.support:support-v4:${versions.supportLibrary}" // Required for version pinning.
+    implementation "com.android.support:support-dynamic-animation:${versions.supportLibrary}"
+    implementation "com.github.bumptech.glide:glide:${versions.glide}"
+    implementation "com.github.bumptech.glide:okhttp3-integration:${versions.glide}"
+    implementation "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
+    implementation "com.google.android.material:material:${versions.material}"
+    implementation "com.google.code.gson:gson:${versions.gson}"
+    implementation "com.google.dagger:dagger:${versions.dagger}"
+    implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
+    implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
+    implementation "com.squareup.okhttp3:okhttp:${versions.okhttp}"
+    implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
+    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:${versions.retrofitCoroutines}"
+    implementation "org.jsoup:jsoup:${versions.jsoup}"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:${versions.lifecycle}"
+    implementation "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
+}
