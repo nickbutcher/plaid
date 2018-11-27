@@ -76,7 +76,12 @@ object DribbbleSearchConverter : Converter<ResponseBody, List<Shot>> {
         } catch (e: ParseException) {
             null
         }
-        val likesCount = element.select("li.fav").first().child(0).text().replace(",", "").toInt()
+        // in case the shot doesn't have any likes, the tag is missing completely
+        val likesCount = if (element.select("li.fav").size != 0) {
+            element.select("li.fav").first().child(0).text().toInt()
+        } else {
+            0
+        }
         val viewsCount = element.select("li.views").first().child(0).text().replace(",", "").toInt()
         val player = parsePlayer(element.select("h2").first())
 
