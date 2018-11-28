@@ -64,7 +64,7 @@ import io.plaidapp.search.domain.SearchDataManager
 import io.plaidapp.search.ui.transitions.CircularReveal
 import javax.inject.Inject
 
-open class SearchActivity : Activity() {
+class SearchActivity : Activity() {
 
     private lateinit var searchBack: ImageButton
     private lateinit var searchView: SearchView
@@ -88,7 +88,7 @@ open class SearchActivity : Activity() {
     lateinit var dataManager: SearchDataManager
 
     @Inject
-    lateinit var adapter: FeedAdapter
+    lateinit var feedAdapter: FeedAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,7 +107,7 @@ open class SearchActivity : Activity() {
                     results.visibility = View.VISIBLE
                     fab.visibility = View.VISIBLE
                 }
-                adapter.addAndResort(data)
+                feedAdapter.addAndResort(data)
             } else {
                 TransitionManager.beginDelayedTransition(
                     container, getTransition(io.plaidapp.core.R.transition.auto)
@@ -123,13 +123,13 @@ open class SearchActivity : Activity() {
         val layoutManager = GridLayoutManager(this, columns)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return adapter.getItemColumnSpan(position)
+                return feedAdapter.getItemColumnSpan(position)
             }
         }
-        val shotPreloader = RecyclerViewPreloader(this, adapter, shotPreloadSizeProvider, 4)
+        val shotPreloader = RecyclerViewPreloader(this, feedAdapter, shotPreloadSizeProvider, 4)
 
         results.apply {
-            adapter = adapter
+            this.adapter = feedAdapter
             itemAnimator = SlideInItemAnimator()
             this.layoutManager = layoutManager
             addOnScrollListener(object :
@@ -265,7 +265,7 @@ open class SearchActivity : Activity() {
             container,
             getTransition(io.plaidapp.core.R.transition.auto)
         )
-        adapter.clear()
+        feedAdapter.clear()
         dataManager.clear()
         results.visibility = View.GONE
         progress.visibility = View.GONE
