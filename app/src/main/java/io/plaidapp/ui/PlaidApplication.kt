@@ -27,7 +27,7 @@ import io.plaidapp.core.dagger.MarkdownModule
  */
 class PlaidApplication : Application() {
 
-    val coreComponent: CoreComponent by lazy {
+    private val coreComponent: CoreComponent by lazy {
         DaggerCoreComponent
             .builder()
             .markdownModule(MarkdownModule(resources.displayMetrics))
