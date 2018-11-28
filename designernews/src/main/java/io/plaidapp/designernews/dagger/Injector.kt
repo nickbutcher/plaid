@@ -38,7 +38,7 @@ private val coreDataModule =
  */
 fun inject(storyId: Long, activity: StoryActivity) {
 
-    val coreComponent = (activity.application as PlaidApplication).coreComponent
+    val coreComponent = PlaidApplication.coreComponent(activity)
 
     val bypassOptions = Bypass.Options()
         .setBlockQuoteLineColor(
