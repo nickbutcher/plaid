@@ -9,7 +9,7 @@ references:
       - image: circleci/android:api-28-alpha
     working_directory: ~/plaid
     environment:
-      JVM_OPTS: "-Xmx1536m"
+      JAVA_TOOL_OPTIONS: "-Xmx1024m"
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
       TERM: dumb
 
