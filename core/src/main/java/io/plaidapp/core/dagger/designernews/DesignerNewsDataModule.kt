@@ -23,6 +23,7 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.BuildConfig
+import io.plaidapp.core.dagger.CoreDataModule
 import io.plaidapp.core.dagger.CoroutinesDispatcherProviderModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
@@ -49,7 +50,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 /**
  * Dagger module to provide data functionality for DesignerNews.
  */
-@Module(includes = [SharedPreferencesModule::class, CoroutinesDispatcherProviderModule::class])
+@Module(
+    includes = [
+        SharedPreferencesModule::class,
+        CoreDataModule::class,
+        CoroutinesDispatcherProviderModule::class
+    ]
+)
 class DesignerNewsDataModule {
 
     @Provides
@@ -130,7 +137,4 @@ class DesignerNewsDataModule {
     @Provides
     fun provideCommentsRepository(dataSource: CommentsRemoteDataSource): CommentsRepository =
         CommentsRepository.getInstance(dataSource)
-
-    @Provides
-    fun provideGson(): Gson = Gson()
 }

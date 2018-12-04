@@ -19,6 +19,7 @@ package io.plaidapp.dribbble.dagger
 import dagger.Component
 import io.plaidapp.core.dagger.BaseComponent
 import io.plaidapp.core.dagger.CoreComponent
+import io.plaidapp.core.dagger.CoreDataModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.dribbble.ui.shot.ShotActivity
 
@@ -36,6 +37,7 @@ interface DribbbleComponent : BaseComponent<ShotActivity> {
 
         fun build(): DribbbleComponent
         fun coreComponent(component: CoreComponent): Builder
+        fun coreDataModule(module: CoreDataModule): Builder
         fun dribbbleModule(module: DribbbleModule): Builder
     }
 }
