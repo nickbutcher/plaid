@@ -24,7 +24,6 @@ import io.plaidapp.core.designernews.domain.LoadStoriesUseCase;
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase;
 import io.plaidapp.core.dribbble.data.ShotsRepository;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
-import io.plaidapp.core.producthunt.data.api.ProductHuntInjection;
 import io.plaidapp.core.producthunt.data.api.ProductHuntRepository;
 import io.plaidapp.core.ui.FilterAdapter;
 import kotlin.Unit;
@@ -50,18 +49,19 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
     private final FilterAdapter filterAdapter;
     private final LoadStoriesUseCase loadStoriesUseCase;
     private final SearchStoriesUseCase searchStoriesUseCase;
-    private final ProductHuntRepository productHuntRepository =
-            ProductHuntInjection.provideProductHuntRepository();
+    private final ProductHuntRepository productHuntRepository;
     private Map<String, Integer> pageIndexes;
     private Map<String, Call> inflightCalls = new HashMap<>();
 
     public DataManager(OnDataLoadedCallback<List<? extends PlaidItem>> onDataLoadedCallback,
                        LoadStoriesUseCase loadStoriesUseCase,
+                       ProductHuntRepository productHuntRepository,
                        SearchStoriesUseCase searchStoriesUseCase,
                        ShotsRepository shotsRepository,
                        FilterAdapter filterAdapter) {
         super();
         this.loadStoriesUseCase = loadStoriesUseCase;
+        this.productHuntRepository = productHuntRepository;
         this.searchStoriesUseCase = searchStoriesUseCase;
         this.shotsRepository = shotsRepository;
         this.filterAdapter = filterAdapter;

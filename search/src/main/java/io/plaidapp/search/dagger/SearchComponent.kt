@@ -20,6 +20,7 @@ import android.app.Activity
 import dagger.BindsInstance
 import dagger.Component
 import io.plaidapp.core.dagger.CoreComponent
+import io.plaidapp.core.dagger.CoreDataModule
 import io.plaidapp.core.dagger.DataManagerModule
 import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
@@ -39,7 +40,8 @@ interface SearchComponent {
 
         fun build(): SearchComponent
         @BindsInstance fun activity(activity: Activity): Builder
-        fun coreComponent(module: CoreComponent): Builder
+        fun coreComponent(component: CoreComponent): Builder
+        fun coreDataModule(module: CoreDataModule): Builder
         fun dataManagerModule(module: DataManagerModule): Builder
         fun dataLoadedModule(module: OnDataLoadedModule): Builder
         fun filterAdapterModule(module: FilterAdapterModule): Builder

@@ -26,6 +26,7 @@ import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
  */
 @Component(
     modules = [
+        CoreDataModule::class,
         DribbbleDataModule::class,
         DesignerNewsDataModule::class,
         MarkdownModule::class,
@@ -36,6 +37,7 @@ interface CoreComponent {
 
     @Component.Builder interface Builder {
         fun build(): CoreComponent
+        fun coreDataModule(module: CoreDataModule): Builder
         fun markdownModule(module: MarkdownModule): Builder
         fun sharedPreferencesModuleModule(module: SharedPreferencesModule): Builder
     }
