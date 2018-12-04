@@ -25,8 +25,13 @@ import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
 /**
  * Dagger component for the [UpvoteStoryServiceModule].
  */
-@Component(modules = [UpvoteStoryServiceModule::class, CoreDataModule::class,
-    DesignerNewsDataModule::class])
+@Component(
+    modules = [
+        UpvoteStoryServiceModule::class,
+        CoreDataModule::class,
+        DesignerNewsDataModule::class
+    ]
+)
 interface UpvoteStoryServiceComponent {
 
     fun inject(service: UpvoteStoryService)

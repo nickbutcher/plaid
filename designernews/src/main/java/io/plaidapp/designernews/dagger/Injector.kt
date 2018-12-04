@@ -28,17 +28,13 @@ import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.designernews.ui.login.LoginActivity
 import io.plaidapp.designernews.ui.story.StoryActivity
 import io.plaidapp.ui.PlaidApplication
-import retrofit2.converter.gson.GsonConverterFactory
 
-private val coreDataModule =
-    CoreDataModule(DesignerNewsService.ENDPOINT, GsonConverterFactory.create())
+private val coreDataModule = CoreDataModule(DesignerNewsService.ENDPOINT)
 
 /**
  * Inject [StoryActivity].
  */
 fun inject(storyId: Long, activity: StoryActivity) {
-
-    val coreComponent = PlaidApplication.coreComponent(activity)
 
     val bypassOptions = Bypass.Options()
         .setBlockQuoteLineColor(
@@ -53,7 +49,7 @@ fun inject(storyId: Long, activity: StoryActivity) {
         )
 
     DaggerStoryComponent.builder()
-        .coreComponent(coreComponent)
+        .coreComponent(PlaidApplication.coreComponent(activity))
         .coroutinesDispatcherProviderModule(CoroutinesDispatcherProviderModule())
         .coreDataModule(coreDataModule)
         .designerNewsModule(StoryModule(storyId, activity))

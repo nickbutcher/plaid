@@ -16,33 +16,15 @@
 
 package io.plaidapp.core.dagger
 
-import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
-import io.plaidapp.core.data.ManualInjection
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
-/**
- * Dagger module to provide core data functionality.
- */
 @Module
-class CoreDataModule(private val baseUrl: String) {
+class OkHttpClientModule {
 
     @Provides
-    fun provideLoggingInterceptor(): HttpLoggingInterceptor = ManualInjection.httpLoggingInterceptor
-
-    @Provides
-    fun provideOkHttpClient(): OkHttpClient = ManualInjection.okHttpClient
-
-    @Provides
-    fun provideRetrofit(): Retrofit = ManualInjection.retrofit(baseUrl)
-
-    @Provides
-    fun provideGson(): Gson = ManualInjection.gson
-
-    @Provides
-    fun provideGsonConverterFactory(): GsonConverterFactory = ManualInjection.gsonConverterFactory
+    fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+        OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()
 }

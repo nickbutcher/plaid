@@ -27,12 +27,19 @@ import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.designernews.domain.LoadStoriesUseCase
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
 import io.plaidapp.core.dribbble.data.ShotsRepository
+import io.plaidapp.core.producthunt.data.api.ProductHuntRepository
 import io.plaidapp.core.ui.FilterAdapter
 
 /**
  * Module to provide [DataManager].
  */
-@Module(includes = [DribbbleDataModule::class, DesignerNewsDataModule::class])
+@Module(
+    includes = [
+        DribbbleDataModule::class,
+        DesignerNewsDataModule::class,
+        ProductHuntModule::class
+    ]
+)
 class DataManagerModule {
 
     private lateinit var manager: DataManager
@@ -42,11 +49,13 @@ class DataManagerModule {
         onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>,
         loadStoriesUseCase: LoadStoriesUseCase,
         searchStoriesUseCase: SearchStoriesUseCase,
+        productHuntRepository: ProductHuntRepository,
         shotsRepository: ShotsRepository,
         filterAdapter: FilterAdapter
     ): DataManager = getDataManager(
         onDataLoadedCallback,
         loadStoriesUseCase,
+        productHuntRepository,
         searchStoriesUseCase,
         shotsRepository,
         filterAdapter
@@ -56,12 +65,14 @@ class DataManagerModule {
     fun provideDataLoadingSubject(
         onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>,
         loadStoriesUseCase: LoadStoriesUseCase,
+        productHuntRepository: ProductHuntRepository,
         searchStoriesUseCase: SearchStoriesUseCase,
         shotsRepository: ShotsRepository,
         filterAdapter: FilterAdapter
     ): DataLoadingSubject = getDataManager(
         onDataLoadedCallback,
         loadStoriesUseCase,
+        productHuntRepository,
         searchStoriesUseCase,
         shotsRepository,
         filterAdapter
@@ -70,6 +81,7 @@ class DataManagerModule {
     private fun getDataManager(
         onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>,
         loadStoriesUseCase: LoadStoriesUseCase,
+        productHuntRepository: ProductHuntRepository,
         searchStoriesUseCase: SearchStoriesUseCase,
         shotsRepository: ShotsRepository,
         filterAdapter: FilterAdapter
@@ -80,6 +92,7 @@ class DataManagerModule {
             manager = DataManager(
                 onDataLoadedCallback,
                 loadStoriesUseCase,
+                productHuntRepository,
                 searchStoriesUseCase,
                 shotsRepository,
                 filterAdapter

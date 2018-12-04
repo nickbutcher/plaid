@@ -24,7 +24,6 @@ import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
-import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * Injector for [UpvoteStoryService].
@@ -32,7 +31,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 fun inject(service: UpvoteStoryService) {
     val coreDataModule =
-            CoreDataModule(DesignerNewsService.ENDPOINT, GsonConverterFactory.create())
+            CoreDataModule(DesignerNewsService.ENDPOINT)
 
     DaggerUpvoteStoryServiceComponent.builder()
             .coroutinesDispatcherProviderModule(CoroutinesDispatcherProviderModule())

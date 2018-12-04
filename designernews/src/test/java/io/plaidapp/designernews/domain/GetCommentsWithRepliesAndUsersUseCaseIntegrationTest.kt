@@ -31,8 +31,6 @@ import io.plaidapp.designernews.errorResponseBody
 import io.plaidapp.designernews.flattendCommentsWithReplies
 import io.plaidapp.designernews.flattenedCommentsWithoutReplies
 import io.plaidapp.designernews.parentCommentResponse
-import io.plaidapp.designernews.provideCommentsWithRepliesAndUsersUseCase
-import io.plaidapp.designernews.provideCommentsWithRepliesUseCase
 import io.plaidapp.designernews.repliesResponses
 import io.plaidapp.designernews.reply1
 import io.plaidapp.designernews.reply1NoUser
@@ -56,8 +54,8 @@ class GetCommentsWithRepliesAndUsersUseCaseIntegrationTest {
     private val dataSource = CommentsRemoteDataSource(service)
     private val commentsRepository = CommentsRepository(dataSource)
     private val userRepository = UserRepository(UserRemoteDataSource(service))
-    private val repository = provideCommentsWithRepliesAndUsersUseCase(
-        provideCommentsWithRepliesUseCase(commentsRepository),
+    private val repository: GetCommentsWithRepliesAndUsersUseCase = GetCommentsWithRepliesAndUsersUseCase(
+        GetCommentsWithRepliesUseCase(commentsRepository),
         userRepository
     )
 
