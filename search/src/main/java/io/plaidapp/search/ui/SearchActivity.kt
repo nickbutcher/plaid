@@ -64,6 +64,10 @@ import io.plaidapp.search.domain.SearchDataManager
 import io.plaidapp.search.ui.transitions.CircularReveal
 import javax.inject.Inject
 
+/**
+ * Allows the user to input a search term and searches in Dribbbble and Designer News for posts
+ * matching it.
+ */
 class SearchActivity : Activity() {
 
     private lateinit var searchBack: ImageButton
@@ -168,9 +172,8 @@ class SearchActivity : Activity() {
         scrim = findViewById(R.id.scrim)
         scrim.setOnClickListener { dismiss() }
         resultsScrim = findViewById(R.id.results_scrim)
-        resultsScrim.setOnClickListener { view -> hideSaveConfirmation() }
-        val res = resources
-        columns = res.getInteger(io.plaidapp.core.R.integer.num_columns)
+        resultsScrim.setOnClickListener { hideSaveConfirmation() }
+        columns = resources.getInteger(io.plaidapp.core.R.integer.num_columns)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -213,7 +216,7 @@ class SearchActivity : Activity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         when (requestCode) {
             FeedAdapter.REQUEST_CODE_VIEW_SHOT ->
-                // by default we focus the search filed when entering this screen. Don't do that
+                // by default we focus the search field when entering this screen. Don't do that
                 // when returning from viewing a search result.
                 focusQuery = false
         }
@@ -256,9 +259,7 @@ class SearchActivity : Activity() {
         }
     }
 
-    private fun toggleSaveCheck(ctv: CheckedTextView) {
-        ctv.toggle()
-    }
+    private fun toggleSaveCheck(ctv: CheckedTextView) = ctv.toggle()
 
     internal fun clearResults() {
         TransitionManager.beginDelayedTransition(

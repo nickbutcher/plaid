@@ -38,7 +38,7 @@ class SearchDataManager @Inject constructor(
     private val shotsRepository: ShotsRepository
 ) : BaseDataManager<List<PlaidItem>>(), LoadSourceCallback {
 
-    private val searchStoriesUseCase: SearchStoriesUseCase
+    private val searchStories: SearchStoriesUseCase
 
     // state
     var query = ""
@@ -47,7 +47,7 @@ class SearchDataManager @Inject constructor(
 
     init {
         setOnDataLoadedCallback(onDataLoadedCallback)
-        searchStoriesUseCase = provideSearchStoriesUseCase(context)
+        searchStories = provideSearchStoriesUseCase(context)
     }
 
     fun searchFor(newQuery: String) {
@@ -71,14 +71,14 @@ class SearchDataManager @Inject constructor(
     }
 
     override fun cancelLoading() {
-        searchStoriesUseCase.cancelAllRequests()
+        searchStories.cancelAllRequests()
         shotsRepository.cancelAllSearches()
     }
 
     private fun searchDesignerNews(query: String, resultsPage: Int) {
         loadStarted()
         val source = Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query
-        searchStoriesUseCase.invoke(source, resultsPage, this)
+        searchStories(source, resultsPage, this)
     }
 
     private fun searchDribbble(query: String, resultsPage: Int) {
@@ -92,7 +92,7 @@ class SearchDataManager @Inject constructor(
                         Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX + query)
                 onDataLoaded(shots)
             }
-            Unit
+            return@search
         }
     }
 
