@@ -23,7 +23,7 @@ import io.plaidapp.core.data.OnDataLoadedCallback
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.search.ui.SearchActivity
-import io.plaidapp.ui.PlaidApplication
+import io.plaidapp.ui.coreComponent
 
 /**
  * Injector for SearchActivity.
@@ -39,7 +39,7 @@ object Injector {
     ) {
         DaggerSearchComponent.builder()
             .activity(activity)
-            .coreComponent(PlaidApplication.coreComponent(activity))
+            .coreComponent(activity.coreComponent())
             .dataLoadedModule(OnDataLoadedModule(dataLoadedCallback))
             .filterAdapterModule(FilterAdapterModule(activity))
             .sharedPreferencesModule(SharedPreferencesModule(
