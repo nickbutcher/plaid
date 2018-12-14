@@ -85,11 +85,12 @@ class DesignerNewsDataModule {
 
     @Provides
     fun provideDesignerNewsService(
+        okHttpClientBuilder: OkHttpClient.Builder,
         tokenHolder: AuthTokenLocalDataSource,
         loggingInterceptor: HttpLoggingInterceptor,
         gson: Gson
     ): DesignerNewsService {
-        val client = OkHttpClient.Builder()
+        val client = okHttpClientBuilder
             .addInterceptor(
                 ClientAuthInterceptor(tokenHolder, BuildConfig.DESIGNER_NEWS_CLIENT_ID)
             )

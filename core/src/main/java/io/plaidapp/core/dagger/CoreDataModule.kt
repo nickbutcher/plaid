@@ -36,9 +36,6 @@ class CoreDataModule {
         OkHttpClient.Builder().addInterceptor(interceptor)
 
     @Provides
-    fun provideOkHttpClient(builder: OkHttpClient.Builder): OkHttpClient = builder.build()
-
-    @Provides
     fun provideLoggingInterceptor(): HttpLoggingInterceptor =
         HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) {
