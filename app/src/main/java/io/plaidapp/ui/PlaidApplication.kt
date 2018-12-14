@@ -19,10 +19,8 @@ package io.plaidapp.ui
 import android.app.Application
 import android.content.Context
 import io.plaidapp.core.dagger.CoreComponent
-import io.plaidapp.core.dagger.CoreDataModule
 import io.plaidapp.core.dagger.DaggerCoreComponent
 import io.plaidapp.core.dagger.MarkdownModule
-import io.plaidapp.core.designernews.data.api.DesignerNewsService
 
 /**
  * Io and Behold
@@ -32,7 +30,6 @@ class PlaidApplication : Application() {
     private val coreComponent: CoreComponent by lazy {
         DaggerCoreComponent
             .builder()
-            .coreDataModule(CoreDataModule(DesignerNewsService.ENDPOINT))
             .markdownModule(MarkdownModule(resources.displayMetrics))
             .build()
     }

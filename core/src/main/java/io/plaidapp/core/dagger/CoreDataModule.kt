@@ -17,32 +17,44 @@
 package io.plaidapp.core.dagger
 
 import com.google.gson.Gson
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
-import io.plaidapp.core.data.ManualInjection
+import io.plaidapp.core.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * Dagger module to provide core data functionality.
  */
 @Module
-class CoreDataModule(private val baseUrl: String) {
+class CoreDataModule {
 
     @Provides
-    fun provideLoggingInterceptor(): HttpLoggingInterceptor = ManualInjection.httpLoggingInterceptor
+    fun provideOkHttpClientBuilder(interceptor: HttpLoggingInterceptor): OkHttpClient.Builder =
+        OkHttpClient.Builder().addInterceptor(interceptor)
 
     @Provides
-    fun provideOkHttpClient(): OkHttpClient = ManualInjection.okHttpClient
+    fun provideOkHttpClient(builder: OkHttpClient.Builder): OkHttpClient = builder.build()
 
     @Provides
-    fun provideRetrofit(): Retrofit = ManualInjection.retrofit(baseUrl)
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor().apply {
+            level = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
+        }
 
     @Provides
-    fun provideGson(): Gson = ManualInjection.gson
+    fun provideCallAdapterFactory(): CoroutineCallAdapterFactory = CoroutineCallAdapterFactory()
 
     @Provides
-    fun provideGsonConverterFactory(): GsonConverterFactory = ManualInjection.gsonConverterFactory
+    fun provideGson(): Gson = Gson()
+
+    @Provides
+    fun provideGsonConverterFactory(gson: Gson): GsonConverterFactory =
+        GsonConverterFactory.create(gson)
 }

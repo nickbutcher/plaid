@@ -25,8 +25,10 @@ import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
  * Dagger module for [io.plaidapp.designernews.ui.login.LoginActivity].
  */
 @Module(
-    includes = [CoreDataModule::class,
+    includes = [
+        CoreDataModule::class,
         DesignerNewsDataModule::class,
-        SharedPreferencesModule::class]
+        SharedPreferencesModule::class
+    ]
 )
 class LoginModule

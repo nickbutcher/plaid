@@ -16,16 +16,17 @@
 
 package io.plaidapp.core.dagger.dribbble
 
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.dagger.CoreDataModule
 import io.plaidapp.core.dagger.CoroutinesDispatcherProviderModule
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
-import io.plaidapp.core.data.ManualInjection
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchConverter
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchService
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
+import retrofit2.Retrofit
 
 /**
  * Dagger module providing classes required to dribbble with data.
@@ -40,9 +41,22 @@ class DribbbleDataModule {
     ) = ShotsRepository.getInstance(remoteDataSource, dispatcherProvider)
 
     @Provides
-    fun provideDribbbleSearchService(): DribbbleSearchService =
-        ManualInjection.retrofit(
-            DribbbleSearchService.ENDPOINT,
-            DribbbleSearchConverter.Factory()
-        ).create(DribbbleSearchService::class.java)
+    fun provideConverterFactory(): DribbbleSearchConverter.Factory =
+        DribbbleSearchConverter.Factory()
+
+    @Provides
+    fun provideBaseUrl(): String = DribbbleSearchService.ENDPOINT
+
+    @Provides
+    fun provideDribbbleSearchService(
+        baseUrl: String,
+        converterFactory: DribbbleSearchConverter.Factory,
+        callAdapterFactory: CoroutineCallAdapterFactory
+    ): DribbbleSearchService =
+        Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(converterFactory)
+            .addCallAdapterFactory(callAdapterFactory)
+            .build()
+            .create(DribbbleSearchService::class.java)
 }

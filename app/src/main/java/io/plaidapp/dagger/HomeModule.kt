@@ -25,7 +25,6 @@ import io.plaidapp.R
 import io.plaidapp.core.dagger.DataManagerModule
 import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
-import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.data.pocket.PocketUtils
 import io.plaidapp.core.dribbble.data.api.model.Shot
@@ -36,7 +35,6 @@ import io.plaidapp.core.dribbble.data.api.model.Shot
 @Module(
     includes = [
         DataManagerModule::class,
-        DesignerNewsDataModule::class,
         DribbbleDataModule::class,
         FilterAdapterModule::class,
         OnDataLoadedModule::class
