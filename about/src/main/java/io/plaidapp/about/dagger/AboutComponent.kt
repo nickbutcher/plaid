@@ -19,16 +19,16 @@ package io.plaidapp.about.dagger
 import dagger.BindsInstance
 import dagger.Component
 import io.plaidapp.about.ui.AboutActivity
-import io.plaidapp.core.dagger.BaseComponent
+import io.plaidapp.core.dagger.BaseActivityComponent
 import io.plaidapp.core.dagger.MarkdownModule
 import io.plaidapp.core.dagger.scope.ModuleScope
 
 /**
  * Dagger component for `about` feature module.
  */
-@ModuleScope
 @Component(modules = [AboutActivityModule::class, MarkdownModule::class])
-interface AboutComponent : BaseComponent<AboutActivity> {
+@ModuleScope
+interface AboutComponent : BaseActivityComponent<AboutActivity> {
 
     @Component.Builder
     interface Builder {
