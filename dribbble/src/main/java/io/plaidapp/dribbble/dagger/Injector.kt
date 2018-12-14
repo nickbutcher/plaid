@@ -17,14 +17,14 @@
 package io.plaidapp.dribbble.dagger
 
 import io.plaidapp.dribbble.ui.shot.ShotActivity
-import io.plaidapp.ui.PlaidApplication
+import io.plaidapp.ui.coreComponent
 
 /**
  * Inject dependencies into [ShotActivity]
  */
 fun ShotActivity.inject(shotId: Long) {
     DaggerDribbbleComponent.builder()
-        .coreComponent(PlaidApplication.coreComponent(this))
+        .coreComponent(coreComponent())
         .dribbbleModule(DribbbleModule(this, shotId))
         .build()
         .inject(this)

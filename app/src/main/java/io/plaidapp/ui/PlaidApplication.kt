@@ -16,6 +16,7 @@
 
 package io.plaidapp.ui
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import io.plaidapp.core.dagger.CoreComponent
@@ -40,3 +41,5 @@ class PlaidApplication : Application() {
             (context.applicationContext as PlaidApplication).coreComponent
     }
 }
+
+fun Activity.coreComponent() = PlaidApplication.coreComponent(this)

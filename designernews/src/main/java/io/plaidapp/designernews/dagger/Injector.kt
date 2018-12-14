@@ -24,7 +24,7 @@ import androidx.core.content.ContextCompat
 import io.plaidapp.core.dagger.MarkdownModule
 import io.plaidapp.designernews.ui.login.LoginActivity
 import io.plaidapp.designernews.ui.story.StoryActivity
-import io.plaidapp.ui.PlaidApplication
+import io.plaidapp.ui.coreComponent
 
 /**
  * Inject [StoryActivity].
@@ -44,7 +44,7 @@ fun inject(storyId: Long, activity: StoryActivity) {
         )
 
     DaggerStoryComponent.builder()
-        .coreComponent(PlaidApplication.coreComponent(activity))
+        .coreComponent(activity.coreComponent())
         .designerNewsModule(StoryModule(storyId, activity))
         .markdownModule(MarkdownModule(activity.resources.displayMetrics, bypassOptions))
         .sharedPreferencesModule(
