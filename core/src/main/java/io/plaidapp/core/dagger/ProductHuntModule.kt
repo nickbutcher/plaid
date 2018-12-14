@@ -48,13 +48,13 @@ class ProductHuntModule {
 
     @Provides
     fun provideProductHuntService(
-        builder: OkHttpClient.Builder,
+        okHttpClientBuilder: OkHttpClient.Builder,
         converterFactory: GsonConverterFactory,
         denvelopingConverter: DenvelopingConverter,
         callAdapterFactory: CoroutineCallAdapterFactory
     ): ProductHuntService {
         return createRetrofit(
-            builder,
+            okHttpClientBuilder,
             converterFactory,
             denvelopingConverter,
             callAdapterFactory
@@ -67,12 +67,12 @@ class ProductHuntModule {
     }
 
     private fun createRetrofit(
-        builder: OkHttpClient.Builder,
+        okHttpClientBuilder: OkHttpClient.Builder,
         converterFactory: GsonConverterFactory,
         denvelopingConverter: DenvelopingConverter,
         callAdapterFactory: CoroutineCallAdapterFactory
     ): Retrofit {
-        val client = builder
+        val client = okHttpClientBuilder
             .addInterceptor(AuthInterceptor(BuildConfig.PRODUCT_HUNT_DEVELOPER_TOKEN))
             .build()
         return Retrofit.Builder()
