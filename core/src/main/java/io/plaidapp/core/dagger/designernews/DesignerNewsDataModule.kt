@@ -43,7 +43,6 @@ import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.domain.LoadStoriesUseCase
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -87,14 +86,12 @@ class DesignerNewsDataModule {
     fun provideDesignerNewsService(
         okHttpClientBuilder: OkHttpClient.Builder,
         tokenHolder: AuthTokenLocalDataSource,
-        loggingInterceptor: HttpLoggingInterceptor,
         gson: Gson
     ): DesignerNewsService {
         val client = okHttpClientBuilder
             .addInterceptor(
                 ClientAuthInterceptor(tokenHolder, BuildConfig.DESIGNER_NEWS_CLIENT_ID)
             )
-            .addInterceptor(loggingInterceptor)
             .build()
         return Retrofit.Builder()
             .baseUrl(DesignerNewsService.ENDPOINT)
