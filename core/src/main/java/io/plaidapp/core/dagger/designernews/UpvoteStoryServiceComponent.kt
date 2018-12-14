@@ -18,7 +18,6 @@ package io.plaidapp.core.dagger.designernews
 
 import dagger.Component
 import io.plaidapp.core.dagger.CoreDataModule
-import io.plaidapp.core.dagger.CoroutinesDispatcherProviderModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
 
@@ -40,8 +39,6 @@ interface UpvoteStoryServiceComponent {
     interface Builder {
 
         fun build(): UpvoteStoryServiceComponent
-        fun coroutinesDispatcherProviderModule(module: CoroutinesDispatcherProviderModule): Builder
-        fun coreDataModule(module: CoreDataModule): Builder
         fun sharedPreferencesModule(module: SharedPreferencesModule): Builder
         fun upvoteServiceModule(module: UpvoteStoryServiceModule): Builder
     }

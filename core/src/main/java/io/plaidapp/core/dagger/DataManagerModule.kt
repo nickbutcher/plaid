@@ -19,7 +19,6 @@ package io.plaidapp.core.dagger
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
-import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.DataManager
 import io.plaidapp.core.data.OnDataLoadedCallback
@@ -33,13 +32,7 @@ import io.plaidapp.core.ui.FilterAdapter
 /**
  * Module to provide [DataManager].
  */
-@Module(
-    includes = [
-        DribbbleDataModule::class,
-        DesignerNewsDataModule::class,
-        ProductHuntModule::class
-    ]
-)
+@Module(includes = [DesignerNewsDataModule::class, ProductHuntModule::class])
 class DataManagerModule {
 
     private lateinit var manager: DataManager

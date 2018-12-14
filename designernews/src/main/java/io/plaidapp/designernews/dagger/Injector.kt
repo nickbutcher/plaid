@@ -21,15 +21,10 @@ package io.plaidapp.designernews.dagger
 import `in`.uncod.android.bypass.Bypass
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
-import io.plaidapp.core.dagger.CoreDataModule
-import io.plaidapp.core.dagger.CoroutinesDispatcherProviderModule
 import io.plaidapp.core.dagger.MarkdownModule
-import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.designernews.ui.login.LoginActivity
 import io.plaidapp.designernews.ui.story.StoryActivity
 import io.plaidapp.ui.PlaidApplication
-
-private val coreDataModule = CoreDataModule(DesignerNewsService.ENDPOINT)
 
 /**
  * Inject [StoryActivity].
@@ -50,8 +45,6 @@ fun inject(storyId: Long, activity: StoryActivity) {
 
     DaggerStoryComponent.builder()
         .coreComponent(PlaidApplication.coreComponent(activity))
-        .coroutinesDispatcherProviderModule(CoroutinesDispatcherProviderModule())
-        .coreDataModule(coreDataModule)
         .designerNewsModule(StoryModule(storyId, activity))
         .markdownModule(MarkdownModule(activity.resources.displayMetrics, bypassOptions))
         .sharedPreferencesModule(
@@ -64,10 +57,7 @@ fun inject(storyId: Long, activity: StoryActivity) {
 fun inject(activity: LoginActivity) {
 
     DaggerLoginComponent.builder()
-        .coreDataModule(coreDataModule)
-        .sharedPreferencesModule(
-            DesignerNewsPreferencesModule(activity)
-        )
+        .sharedPreferencesModule(DesignerNewsPreferencesModule(activity))
         .build()
         .inject(activity)
 }

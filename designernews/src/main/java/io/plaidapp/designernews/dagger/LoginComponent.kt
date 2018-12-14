@@ -18,7 +18,6 @@ package io.plaidapp.designernews.dagger
 
 import dagger.Component
 import io.plaidapp.core.dagger.BaseComponent
-import io.plaidapp.core.dagger.CoreDataModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.designernews.ui.login.LoginActivity
 
@@ -29,7 +28,6 @@ import io.plaidapp.designernews.ui.login.LoginActivity
 interface LoginComponent : BaseComponent<LoginActivity> {
 
     interface Builder {
-        fun coreDataModule(module: CoreDataModule): Builder
         fun sharedPreferencesModule(module: SharedPreferencesModule): Builder
         fun build(): LoginComponent
     }
