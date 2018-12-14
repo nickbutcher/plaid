@@ -17,7 +17,7 @@
 package io.plaidapp.designernews.dagger
 
 import dagger.Component
-import io.plaidapp.core.dagger.BaseComponent
+import io.plaidapp.core.dagger.BaseActivityComponent
 import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.MarkdownModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
@@ -27,7 +27,7 @@ import io.plaidapp.designernews.ui.story.StoryActivity
  * Dagger component for [StoryActivity].
  */
 @Component(modules = [StoryModule::class], dependencies = [CoreComponent::class])
-interface StoryComponent : BaseComponent<StoryActivity> {
+interface StoryComponent : BaseActivityComponent<StoryActivity> {
 
     @Component.Builder
     interface Builder {

@@ -19,7 +19,7 @@ package io.plaidapp.search.dagger
 import android.app.Activity
 import dagger.BindsInstance
 import dagger.Component
-import io.plaidapp.core.dagger.BaseComponent
+import io.plaidapp.core.dagger.BaseActivityComponent
 import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
@@ -30,7 +30,7 @@ import io.plaidapp.search.ui.SearchActivity
  * Dagger component for the [SearchActivity].
  */
 @Component(modules = [SearchModule::class], dependencies = [CoreComponent::class])
-interface SearchComponent : BaseComponent<SearchActivity> {
+interface SearchComponent : BaseActivityComponent<SearchActivity> {
 
     @Component.Builder
     interface Builder {

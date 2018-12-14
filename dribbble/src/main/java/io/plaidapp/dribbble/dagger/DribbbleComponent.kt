@@ -17,7 +17,7 @@
 package io.plaidapp.dribbble.dagger
 
 import dagger.Component
-import io.plaidapp.core.dagger.BaseComponent
+import io.plaidapp.core.dagger.BaseActivityComponent
 import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.CoreDataModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
@@ -30,7 +30,7 @@ import io.plaidapp.dribbble.ui.shot.ShotActivity
     modules = [DribbbleModule::class, DribbbleDataModule::class],
     dependencies = [CoreComponent::class]
 )
-interface DribbbleComponent : BaseComponent<ShotActivity> {
+interface DribbbleComponent : BaseActivityComponent<ShotActivity> {
 
     @Component.Builder
     interface Builder {

@@ -17,6 +17,7 @@
 package io.plaidapp.core.dagger.designernews
 
 import dagger.Component
+import io.plaidapp.core.dagger.BaseServiceComponent
 import io.plaidapp.core.dagger.CoreDataModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
@@ -31,9 +32,7 @@ import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
         DesignerNewsDataModule::class
     ]
 )
-interface UpvoteStoryServiceComponent {
-
-    fun inject(service: UpvoteStoryService)
+interface UpvoteStoryServiceComponent : BaseServiceComponent<UpvoteStoryService> {
 
     @Component.Builder
     interface Builder {
