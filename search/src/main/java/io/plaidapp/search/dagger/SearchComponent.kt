@@ -19,9 +19,8 @@ package io.plaidapp.search.dagger
 import android.app.Activity
 import dagger.BindsInstance
 import dagger.Component
+import io.plaidapp.core.dagger.BaseComponent
 import io.plaidapp.core.dagger.CoreComponent
-import io.plaidapp.core.dagger.CoreDataModule
-import io.plaidapp.core.dagger.DataManagerModule
 import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
@@ -31,9 +30,7 @@ import io.plaidapp.search.ui.SearchActivity
  * Dagger component for the [SearchActivity].
  */
 @Component(modules = [SearchModule::class], dependencies = [CoreComponent::class])
-interface SearchComponent {
-
-    fun inject(activity: SearchActivity)
+interface SearchComponent : BaseComponent<SearchActivity> {
 
     @Component.Builder
     interface Builder {
@@ -41,8 +38,6 @@ interface SearchComponent {
         fun build(): SearchComponent
         @BindsInstance fun activity(activity: Activity): Builder
         fun coreComponent(component: CoreComponent): Builder
-        fun coreDataModule(module: CoreDataModule): Builder
-        fun dataManagerModule(module: DataManagerModule): Builder
         fun dataLoadedModule(module: OnDataLoadedModule): Builder
         fun filterAdapterModule(module: FilterAdapterModule): Builder
         fun sharedPreferencesModule(module: SharedPreferencesModule): Builder

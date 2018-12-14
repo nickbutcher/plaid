@@ -18,10 +18,7 @@
 
 package io.plaidapp.core.dagger.designernews
 
-import io.plaidapp.core.dagger.CoreDataModule
-import io.plaidapp.core.dagger.CoroutinesDispatcherProviderModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
-import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
 
@@ -30,12 +27,8 @@ import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
  */
 
 fun inject(service: UpvoteStoryService) {
-    val coreDataModule =
-            CoreDataModule(DesignerNewsService.ENDPOINT)
 
     DaggerUpvoteStoryServiceComponent.builder()
-            .coroutinesDispatcherProviderModule(CoroutinesDispatcherProviderModule())
-            .coreDataModule(coreDataModule)
             .sharedPreferencesModule(
                     SharedPreferencesModule(service, LoginLocalDataSource.DESIGNER_NEWS_PREF)
             )

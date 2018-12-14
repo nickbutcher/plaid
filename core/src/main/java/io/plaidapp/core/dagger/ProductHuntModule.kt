@@ -16,11 +16,20 @@
 
 package io.plaidapp.core.dagger
 
+import com.google.gson.Gson
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
-import io.plaidapp.core.data.ManualInjection
+import io.plaidapp.core.BuildConfig
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
+import io.plaidapp.core.data.api.DenvelopingConverter
 import io.plaidapp.core.producthunt.data.ProductHuntRemoteDataSource
+import io.plaidapp.core.producthunt.data.api.AuthInterceptor
+import io.plaidapp.core.producthunt.data.api.ProductHuntRepository
 import io.plaidapp.core.producthunt.data.api.ProductHuntService
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * Dagger module to provide injections for Product Hunt.
@@ -29,10 +38,49 @@ import io.plaidapp.core.producthunt.data.api.ProductHuntService
 class ProductHuntModule {
 
     @Provides
-    fun provideRemoteDataSource(): ProductHuntRemoteDataSource {
-        return ProductHuntRemoteDataSource(
-            ManualInjection.retrofit(ProductHuntService.ENDPOINT)
-                .create(ProductHuntService::class.java)
-        )
+    fun provideProductHuntRepository(
+        remoteDataSource: ProductHuntRemoteDataSource,
+        dispatcherProvider: CoroutinesDispatcherProvider
+    ) = ProductHuntRepository.getInstance(remoteDataSource, dispatcherProvider)
+
+    @Provides
+    fun provideRemoteDataSource(service: ProductHuntService) = ProductHuntRemoteDataSource(service)
+
+    @Provides
+    fun provideProductHuntService(
+        builder: OkHttpClient.Builder,
+        converterFactory: GsonConverterFactory,
+        denvelopingConverter: DenvelopingConverter,
+        callAdapterFactory: CoroutineCallAdapterFactory
+    ): ProductHuntService {
+        return createRetrofit(
+            builder,
+            converterFactory,
+            denvelopingConverter,
+            callAdapterFactory
+        ).create(ProductHuntService::class.java)
+    }
+
+    @Provides
+    fun provideDenvelopingConverter(gson: Gson): DenvelopingConverter {
+        return DenvelopingConverter(gson)
+    }
+
+    private fun createRetrofit(
+        builder: OkHttpClient.Builder,
+        converterFactory: GsonConverterFactory,
+        denvelopingConverter: DenvelopingConverter,
+        callAdapterFactory: CoroutineCallAdapterFactory
+    ): Retrofit {
+        val client = builder
+            .addInterceptor(AuthInterceptor(BuildConfig.PRODUCT_HUNT_DEVELOPER_TOKEN))
+            .build()
+        return Retrofit.Builder()
+            .baseUrl(ProductHuntService.ENDPOINT)
+            .client(client)
+            .addConverterFactory(denvelopingConverter)
+            .addConverterFactory(converterFactory)
+            .addCallAdapterFactory(callAdapterFactory)
+            .build()
     }
 }
