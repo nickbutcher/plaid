@@ -45,16 +45,12 @@ class DribbbleDataModule {
         DribbbleSearchConverter.Factory()
 
     @Provides
-    fun provideBaseUrl(): String = DribbbleSearchService.ENDPOINT
-
-    @Provides
     fun provideDribbbleSearchService(
-        baseUrl: String,
         converterFactory: DribbbleSearchConverter.Factory,
         callAdapterFactory: CoroutineCallAdapterFactory
     ): DribbbleSearchService =
         Retrofit.Builder()
-            .baseUrl(baseUrl)
+            .baseUrl(DribbbleSearchService.ENDPOINT)
             .addConverterFactory(converterFactory)
             .addCallAdapterFactory(callAdapterFactory)
             .build()
