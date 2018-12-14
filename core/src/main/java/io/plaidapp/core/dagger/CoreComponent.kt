@@ -22,7 +22,8 @@ import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 
 /**
  * Component providing application wide singletons.
- * To call this make use of PlaidApplication.coreComponent.
+ * To call this make use of PlaidApplication.coreComponent or the
+ * Activity.coreComponent extension function.
  */
 @Component(
     modules = [

@@ -25,7 +25,7 @@ import io.plaidapp.core.data.OnDataLoadedCallback
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.ui.HomeActivity
-import io.plaidapp.ui.PlaidApplication
+import io.plaidapp.ui.coreComponent
 
 /**
  * Injector for HomeActivity.
@@ -35,7 +35,7 @@ fun inject(
     dataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>
 ) {
     DaggerHomeComponent.builder()
-        .coreComponent(PlaidApplication.coreComponent(activity))
+        .coreComponent(activity.coreComponent())
         .dataLoadedModule(OnDataLoadedModule(dataLoadedCallback))
         .filterAdapterModule(FilterAdapterModule(activity))
         .homeModule(HomeModule(activity))
