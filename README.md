@@ -37,13 +37,11 @@ Here's how to configure it for use with Android Studio (instructions adapted
 from the ktlint [README](https://github.com/shyiko/ktlint/blob/master/README.md)):
 
 - Close Android Studio if it's open
-- Download ktlint:
-
-  `curl -sSLO https://github.com/shyiko/ktlint/releases/download/0.27.0/ktlint && chmod a+x ktlint`
+- Download ktlint using these [installation instructions](https://github.com/shyiko/ktlint/blob/master/README.md#installation)
 
 - Inside the project root directory run:
 
-  `ktlint --apply-to-idea-project --android`
+  `./ktlint --apply-to-idea-project --android`
 
 - Remove ktlint if desired:
 
