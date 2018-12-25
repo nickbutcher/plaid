@@ -16,53 +16,68 @@
 
 package io.plaidapp.core.producthunt.data.api
 
-import io.plaidapp.core.data.prefs.SourceManager
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
+import io.plaidapp.core.data.Result
+import io.plaidapp.core.producthunt.data.ProductHuntRemoteDataSource
 import io.plaidapp.core.producthunt.data.api.model.Post
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import io.plaidapp.core.util.exhaustive
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class ProductHuntRepository(private val service: ProductHuntService) {
-    private val inflight: MutableMap<String, Call<*>> = HashMap()
+/**
+ * Class that knows how to get Product Hunt posts
+ */
+class ProductHuntRepository(
+    private val remoteDataSource: ProductHuntRemoteDataSource,
+    private val dispatcherProvider: CoroutinesDispatcherProvider
+) {
+    private val parentJob = Job()
+    private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
 
+    /**
+     * Load Product Hunt data for a specific page and return the result either in onSuccess or in
+     * onError
+     */
     fun loadProductHuntData(
         page: Int,
         onSuccess: (List<Post>) -> Unit,
         onError: (String) -> Unit
     ) {
-        val postsCall = service.getPosts(page)
-        postsCall.enqueue(object : Callback<List<Post>> {
-            override fun onResponse(call: Call<List<Post>>, response: Response<List<Post>>) {
-                val result = response.body()
-                if (response.isSuccessful && result != null) {
-                    onSuccess(result)
-                } else {
-                    onError("Unable to load Product Hunt data")
-                }
+        launchLoad(page, onSuccess, onError)
+    }
 
-                inflight.remove(SourceManager.SOURCE_PRODUCT_HUNT)
-            }
-
-            override fun onFailure(call: Call<List<Post>>, t: Throwable) {
-                onError("Unable to load Product Hunt data ${t.message}")
-                inflight.remove(SourceManager.SOURCE_PRODUCT_HUNT)
-            }
-        })
-        inflight[SourceManager.SOURCE_PRODUCT_HUNT] = postsCall
+    private fun launchLoad(
+        page: Int,
+        onSuccess: (List<Post>) -> Unit,
+        onError: (String) -> Unit
+    ) = scope.launch(dispatcherProvider.io) {
+        val result = remoteDataSource.loadData(page)
+        withContext(dispatcherProvider.main) {
+            when (result) {
+                is Result.Success -> onSuccess(result.data)
+                is Result.Error -> onError(result.exception.toString())
+            }.exhaustive
+        }
     }
 
     fun cancelAllRequests() {
-        for (request in inflight.values) request.cancel()
+        parentJob.cancelChildren()
     }
 
     companion object {
         @Volatile
         private var INSTANCE: ProductHuntRepository? = null
 
-        fun getInstance(service: ProductHuntService): ProductHuntRepository {
+        fun getInstance(
+            remoteDataSource: ProductHuntRemoteDataSource,
+            dispatcherProvider: CoroutinesDispatcherProvider
+        ): ProductHuntRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE
-                        ?: ProductHuntRepository(service).also { INSTANCE = it }
+                INSTANCE ?: ProductHuntRepository(remoteDataSource, dispatcherProvider)
+                                .also { INSTANCE = it }
             }
         }
     }

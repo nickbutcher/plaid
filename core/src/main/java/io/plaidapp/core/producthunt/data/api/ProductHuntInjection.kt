@@ -19,9 +19,12 @@
 package io.plaidapp.core.producthunt.data.api
 
 import com.google.gson.Gson
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.data.api.DenvelopingConverter
 import io.plaidapp.core.loggingInterceptor
+import io.plaidapp.core.producthunt.data.ProductHuntRemoteDataSource
+import io.plaidapp.core.provideCoroutinesDispatcherProvider
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -32,7 +35,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Once we have a dependency injection framework or a service locator, this should be removed.
  */
 
-fun provideProductHuntService(): ProductHuntService {
+private fun provideProductHuntService(): ProductHuntService {
     val client = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(BuildConfig.PRODUCT_HUNT_DEVELOPER_TOKEN))
             .addInterceptor(loggingInterceptor)
@@ -43,8 +46,13 @@ fun provideProductHuntService(): ProductHuntService {
             .client(client)
             .addConverterFactory(DenvelopingConverter(gson))
             .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
             .create(ProductHuntService::class.java)
 }
 
-fun provideProductHuntRepository() = ProductHuntRepository.getInstance(provideProductHuntService())
+private fun provideRemoteDataSource() = ProductHuntRemoteDataSource(provideProductHuntService())
+fun provideProductHuntRepository() = ProductHuntRepository.getInstance(
+        provideRemoteDataSource(),
+        provideCoroutinesDispatcherProvider()
+)
