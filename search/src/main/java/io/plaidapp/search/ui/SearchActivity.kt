@@ -49,7 +49,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.util.ViewPreloadSizeProvider
-import io.plaidapp.core.data.BaseDataManager
+import io.plaidapp.core.data.OnDataLoadedCallback
+import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.ui.FeedAdapter
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener
@@ -100,24 +101,26 @@ class SearchActivity : Activity() {
         bindResources()
         setupSearchView()
 
-        Injector.inject(this, BaseDataManager.OnDataLoadedCallback { data ->
-            if (data != null && data.isNotEmpty()) {
-                if (results.visibility != View.VISIBLE) {
+        Injector.inject(this, object : OnDataLoadedCallback<List<PlaidItem>> {
+            override fun onDataLoaded(data: List<PlaidItem>) {
+                return if (data.isNotEmpty()) {
+                    if (results.visibility != View.VISIBLE) {
+                        TransitionManager.beginDelayedTransition(
+                            container,
+                            getTransition(R.transition.search_show_results)
+                        )
+                        progress.visibility = View.GONE
+                        results.visibility = View.VISIBLE
+                        fab.visibility = View.VISIBLE
+                    }
+                    feedAdapter.addAndResort(data)
+                } else {
                     TransitionManager.beginDelayedTransition(
-                        container,
-                        getTransition(R.transition.search_show_results)
+                        container, getTransition(io.plaidapp.core.R.transition.auto)
                     )
                     progress.visibility = View.GONE
-                    results.visibility = View.VISIBLE
-                    fab.visibility = View.VISIBLE
+                    setNoResultsVisibility(View.VISIBLE)
                 }
-                feedAdapter.addAndResort(data)
-            } else {
-                TransitionManager.beginDelayedTransition(
-                    container, getTransition(io.plaidapp.core.R.transition.auto)
-                )
-                progress.visibility = View.GONE
-                setNoResultsVisibility(View.VISIBLE)
             }
         })
 
