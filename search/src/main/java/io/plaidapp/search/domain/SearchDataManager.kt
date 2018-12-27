@@ -33,10 +33,11 @@ import javax.inject.Inject
  * responsible for providing the [onDataLoaded] method to do something with the data.
  */
 class SearchDataManager @Inject constructor(
-    private val onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>,
     private val shotsRepository: ShotsRepository,
     private val searchStories: SearchStoriesUseCase
 ) : DataLoadingSubject, LoadSourceCallback {
+
+    var onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>? = null
 
     private val loadingCount: AtomicInteger = AtomicInteger(0)
     private val loadingCallbacks = mutableListOf<DataLoadingSubject.DataLoadingCallbacks>()
@@ -45,8 +46,6 @@ class SearchDataManager @Inject constructor(
     var query = ""
         private set
     private var page = 1
-
-    private fun onDataLoaded(data: List<PlaidItem>) = onDataLoadedCallback.onDataLoaded(data)
 
     fun searchFor(newQuery: String) {
         if (query != newQuery) {
@@ -90,7 +89,7 @@ class SearchDataManager @Inject constructor(
                     shots,
                     Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX + query
                 )
-                onDataLoaded(shots)
+                onDataLoadedCallback?.onDataLoaded(shots)
             }
             return@search
         }
@@ -104,7 +103,7 @@ class SearchDataManager @Inject constructor(
                 result,
                 Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query
             )
-            onDataLoaded(result)
+            onDataLoadedCallback?.onDataLoaded(result)
         }
     }
 
