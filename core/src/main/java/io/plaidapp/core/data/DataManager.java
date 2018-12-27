@@ -30,24 +30,30 @@ import io.plaidapp.core.ui.FilterAdapter;
 import kotlin.Unit;
 import retrofit2.Call;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Responsible for loading data from the various sources. Instantiating classes are responsible for
  * providing the {code onDataLoaded} method to do something with the data.
  */
-public class DataManager extends BaseDataManager<List<? extends PlaidItem>>
-        implements LoadSourceCallback {
+public class DataManager implements LoadSourceCallback, DataLoadingSubject {
+
+    private final AtomicInteger loadingCount = new AtomicInteger(0);
+    private List<DataLoadingCallbacks> loadingCallbacks;
+    private OnDataLoadedCallback<List<? extends PlaidItem>> onDataLoadedCallback;
 
     private final ShotsRepository shotsRepository;
     private final FilterAdapter filterAdapter;
     private final LoadStoriesUseCase loadStoriesUseCase;
     private final SearchStoriesUseCase searchStoriesUseCase;
-    private final ProductHuntRepository productHuntRepository;
-    Map<String, Integer> pageIndexes;
-    Map<String, Call> inflightCalls;
+    private final ProductHuntRepository productHuntRepository =
+            ProductHuntInjection.provideProductHuntRepository();
+    private Map<String, Integer> pageIndexes;
+    private Map<String, Call> inflightCalls = new HashMap<>();
 
     public DataManager(OnDataLoadedCallback<List<? extends PlaidItem>> onDataLoadedCallback,
                        LoadStoriesUseCase loadStoriesUseCase,
@@ -57,14 +63,20 @@ public class DataManager extends BaseDataManager<List<? extends PlaidItem>>
         super();
         this.loadStoriesUseCase = loadStoriesUseCase;
         this.searchStoriesUseCase = searchStoriesUseCase;
-        productHuntRepository = ProductHuntInjection.provideProductHuntRepository();
         this.shotsRepository = shotsRepository;
         this.filterAdapter = filterAdapter;
         setOnDataLoadedCallback(onDataLoadedCallback);
 
         filterAdapter.registerFilterChangedCallback(filterListener);
         setupPageIndexes();
-        inflightCalls = new HashMap<>();
+    }
+
+    public void setOnDataLoadedCallback(OnDataLoadedCallback<List<? extends PlaidItem>> onDataLoadedCallback) {
+        this.onDataLoadedCallback = onDataLoadedCallback;
+    }
+
+    private final void onDataLoaded(List<? extends PlaidItem> data) {
+        onDataLoadedCallback.onDataLoaded(data);
     }
 
     public void loadAllDataSources() {
@@ -73,7 +85,6 @@ public class DataManager extends BaseDataManager<List<? extends PlaidItem>>
         }
     }
 
-    @Override
     public void cancelLoading() {
         if (inflightCalls.size() > 0) {
             for (Call call : inflightCalls.values()) {
@@ -202,5 +213,56 @@ public class DataManager extends BaseDataManager<List<? extends PlaidItem>>
                     loadFailed(SourceManager.SOURCE_PRODUCT_HUNT);
                     return Unit.INSTANCE;
                 });
+    }
+
+    @Override
+    public boolean isDataLoading() {
+        return loadingCount.get() > 0;
+    }
+
+    @Override
+    public void registerCallback(DataLoadingSubject.DataLoadingCallbacks callback) {
+        if (loadingCallbacks == null) {
+            loadingCallbacks = new ArrayList<>(1);
+        }
+        loadingCallbacks.add(callback);
+    }
+
+    private void loadStarted() {
+        if (0 == loadingCount.getAndIncrement()) {
+            dispatchLoadingStartedCallbacks();
+        }
+    }
+
+    private void loadFinished() {
+        if (0 == loadingCount.decrementAndGet()) {
+            dispatchLoadingFinishedCallbacks();
+        }
+    }
+
+    private static void setPage(List<? extends PlaidItem> items, int page) {
+        for (PlaidItem item : items) {
+            item.setPage(page);
+        }
+    }
+
+    private static void setDataSource(List<? extends PlaidItem> items, String dataSource) {
+        for (PlaidItem item : items) {
+            item.setDataSource(dataSource);
+        }
+    }
+
+    private void dispatchLoadingStartedCallbacks() {
+        if (loadingCallbacks == null || loadingCallbacks.isEmpty()) return;
+        for (DataLoadingCallbacks loadingCallback : loadingCallbacks) {
+            loadingCallback.dataStartedLoading();
+        }
+    }
+
+    private void dispatchLoadingFinishedCallbacks() {
+        if (loadingCallbacks == null || loadingCallbacks.isEmpty()) return;
+        for (DataLoadingCallbacks loadingCallback : loadingCallbacks) {
+            loadingCallback.dataFinishedLoading();
+        }
     }
 }
