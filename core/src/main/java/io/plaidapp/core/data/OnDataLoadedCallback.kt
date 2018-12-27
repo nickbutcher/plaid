@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.dagger
-
-import dagger.Module
-import dagger.Provides
-import io.plaidapp.core.data.OnDataLoadedCallback
-import io.plaidapp.core.data.PlaidItem
+package io.plaidapp.core.data
 
 /**
- * Module to provide [OnDataLoadedCallback].
+ * Callback to be triggered when data was loaded.
  */
-@Module class OnDataLoadedModule(
-    private val callback: OnDataLoadedCallback<List<PlaidItem>>
-) {
-
-    @Provides
-    fun provideOnDataLoadedCallback() = callback
+interface OnDataLoadedCallback<T> {
+    fun onDataLoaded(data: T)
 }

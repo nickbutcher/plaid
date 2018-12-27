@@ -22,7 +22,7 @@ import io.plaidapp.core.dagger.DataManagerModule
 import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
-import io.plaidapp.core.data.BaseDataManager
+import io.plaidapp.core.data.OnDataLoadedCallback
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.ui.HomeActivity
@@ -33,7 +33,7 @@ import io.plaidapp.ui.PlaidApplication
  */
 fun inject(
     activity: HomeActivity,
-    dataLoadedCallback: BaseDataManager.OnDataLoadedCallback<List<PlaidItem>>
+    dataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>
 ) {
     DaggerHomeComponent.builder()
         .coreComponent(PlaidApplication.coreComponent(activity))
