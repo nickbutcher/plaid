@@ -18,6 +18,7 @@ package io.plaidapp.search.dagger
 
 import android.app.Activity
 import android.content.Context
+import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.util.ViewPreloadSizeProvider
 import dagger.Module
 import dagger.Provides
@@ -25,32 +26,45 @@ import io.plaidapp.R
 import io.plaidapp.core.dagger.DataManagerModule
 import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
+import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.data.pocket.PocketUtils
 import io.plaidapp.core.dribbble.data.api.model.Shot
+import io.plaidapp.search.domain.SearchDataManager
+import io.plaidapp.search.ui.SearchActivity
+import io.plaidapp.search.ui.SearchViewModel
+import io.plaidapp.search.ui.SearchViewModelFactory
 
 @Module(
     includes = [
         DataManagerModule::class,
         DribbbleDataModule::class,
         FilterAdapterModule::class,
-        OnDataLoadedModule::class
+        OnDataLoadedModule::class,
+        SharedPreferencesModule::class
     ]
 )
-object SearchModule {
-    @JvmStatic
+class SearchModule(private val activity: SearchActivity) {
+
     @Provides
     fun context(activity: Activity): Context = activity
 
-    @JvmStatic
     @Provides
     fun columns(activity: Activity): Int = activity.resources.getInteger(R.integer.num_columns)
 
-    @JvmStatic
     @Provides
     fun viewPreloadSizeProvider() = ViewPreloadSizeProvider<Shot>()
 
-    @JvmStatic
     @Provides
     fun isPocketInstalled(activity: Activity) = PocketUtils.isPocketInstalled(activity)
+
+    @Provides
+    fun searchViewModel(factory: SearchViewModelFactory): SearchViewModel {
+        return ViewModelProviders.of(activity, factory).get(SearchViewModel::class.java)
+    }
+
+    @Provides
+    fun searchViewModelFactory(dataManager: SearchDataManager): SearchViewModelFactory {
+        return SearchViewModelFactory(dataManager)
+    }
 }
