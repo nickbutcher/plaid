@@ -16,7 +16,6 @@
 
 package io.plaidapp.search.ui
 
-import android.app.Activity
 import android.app.SearchManager
 import android.app.SharedElementCallback
 import android.content.Context
@@ -43,14 +42,13 @@ import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.annotation.TransitionRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.set
 import androidx.core.text.toSpannable
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.util.ViewPreloadSizeProvider
-import io.plaidapp.core.data.OnDataLoadedCallback
-import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.ui.FeedAdapter
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener
@@ -59,9 +57,9 @@ import io.plaidapp.core.util.Activities
 import io.plaidapp.core.util.ImeUtils
 import io.plaidapp.core.util.ShortcutHelper
 import io.plaidapp.core.util.TransitionUtils
+import io.plaidapp.core.util.event.EventObserver
 import io.plaidapp.search.R
 import io.plaidapp.search.dagger.Injector
-import io.plaidapp.search.domain.SearchDataManager
 import io.plaidapp.search.ui.transitions.CircularReveal
 import javax.inject.Inject
 
@@ -69,7 +67,7 @@ import javax.inject.Inject
  * Allows the user to input a search term and searches in Dribbbble and Designer News for posts
  * matching it.
  */
-class SearchActivity : Activity() {
+class SearchActivity : AppCompatActivity() {
 
     private lateinit var searchBack: ImageButton
     private lateinit var searchView: SearchView
@@ -90,7 +88,7 @@ class SearchActivity : Activity() {
     private var focusQuery = true
 
     @Inject
-    lateinit var dataManager: SearchDataManager
+    lateinit var viewModel: SearchViewModel
 
     @Inject
     lateinit var feedAdapter: FeedAdapter
@@ -101,29 +99,28 @@ class SearchActivity : Activity() {
         bindResources()
         setupSearchView()
 
-        Injector.inject(this, object : OnDataLoadedCallback<List<PlaidItem>> {
-            override fun onDataLoaded(data: List<PlaidItem>) {
-                return if (data.isNotEmpty()) {
-                    if (results.visibility != View.VISIBLE) {
-                        TransitionManager.beginDelayedTransition(
-                            container,
-                            getTransition(R.transition.search_show_results)
-                        )
-                        progress.visibility = View.GONE
-                        results.visibility = View.VISIBLE
-                        fab.visibility = View.VISIBLE
-                    }
-                    feedAdapter.addAndResort(data)
-                } else {
+        Injector.inject(this)
+
+        viewModel.searchResults.observe(this, EventObserver { data ->
+            if (data.isNotEmpty()) {
+                if (results.visibility != View.VISIBLE) {
                     TransitionManager.beginDelayedTransition(
-                        container, getTransition(io.plaidapp.core.R.transition.auto)
+                        container,
+                        getTransition(R.transition.search_show_results)
                     )
                     progress.visibility = View.GONE
-                    setNoResultsVisibility(View.VISIBLE)
+                    results.visibility = View.VISIBLE
+                    fab.visibility = View.VISIBLE
                 }
+                feedAdapter.addAndResort(data)
+            } else {
+                TransitionManager.beginDelayedTransition(
+                    container, getTransition(io.plaidapp.core.R.transition.auto)
+                )
+                progress.visibility = View.GONE
+                setNoResultsVisibility(View.VISIBLE)
             }
         })
-
         val shotPreloadSizeProvider = ViewPreloadSizeProvider<Shot>()
 
         setExitSharedElementCallback(FeedAdapter.createSharedElementReenterCallback(this))
@@ -140,9 +137,9 @@ class SearchActivity : Activity() {
             itemAnimator = SlideInItemAnimator()
             this.layoutManager = layoutManager
             addOnScrollListener(object :
-                InfiniteScrollListener(layoutManager, dataManager) {
+                InfiniteScrollListener(layoutManager, viewModel.getDataLoadingSubject()) {
                 override fun onLoadMore() {
-                    dataManager.loadMore()
+                    viewModel.loadMore()
                 }
             })
             setHasFixedSize(true)
@@ -203,11 +200,6 @@ class SearchActivity : Activity() {
         super.onPause()
     }
 
-    override fun onDestroy() {
-        dataManager.cancelLoading()
-        super.onDestroy()
-    }
-
     override fun onEnterAnimationComplete() {
         if (focusQuery) {
             // focus the search view once the enter transition finishes
@@ -216,7 +208,8 @@ class SearchActivity : Activity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             FeedAdapter.REQUEST_CODE_VIEW_SHOT ->
                 // by default we focus the search field when entering this screen. Don't do that
@@ -244,7 +237,7 @@ class SearchActivity : Activity() {
     private fun doSave() {
         val saveData = Intent()
 
-        saveData.putExtra(Activities.Search.EXTRA_QUERY, dataManager.query)
+        saveData.putExtra(Activities.Search.EXTRA_QUERY, viewModel.getQuery())
         saveData.putExtra(Activities.Search.EXTRA_SAVE_DRIBBBLE, saveDribbble.isChecked)
         saveData.putExtra(Activities.Search.EXTRA_SAVE_DESIGNER_NEWS, saveDesignerNews.isChecked)
         setResult(Activities.Search.RESULT_CODE_SAVE, saveData)
@@ -270,7 +263,7 @@ class SearchActivity : Activity() {
             getTransition(io.plaidapp.core.R.transition.auto)
         )
         feedAdapter.clear()
-        dataManager.clear()
+        viewModel.clearResults()
         results.visibility = View.GONE
         progress.visibility = View.GONE
         fab.visibility = View.GONE
@@ -307,7 +300,7 @@ class SearchActivity : Activity() {
         progress.visibility = View.VISIBLE
         ImeUtils.hideIme(searchView)
         searchView.clearFocus()
-        dataManager.searchFor(query)
+        viewModel.searchFor(query)
     }
 
     private fun getTransition(@TransitionRes transitionId: Int): Transition? {
