@@ -17,7 +17,7 @@
 package io.plaidapp.search.domain
 
 import android.content.Context
-import io.plaidapp.core.data.BaseDataManager
+import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.LoadSourceCallback
 import io.plaidapp.core.data.OnDataLoadedCallback
 import io.plaidapp.core.data.PlaidItem
@@ -27,6 +27,7 @@ import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
 import io.plaidapp.core.designernews.provideSearchStoriesUseCase
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.api.model.Shot
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
 /**
@@ -35,21 +36,21 @@ import javax.inject.Inject
  */
 class SearchDataManager @Inject constructor(
     context: Context,
-    onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>,
+    private val onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>,
     private val shotsRepository: ShotsRepository
-) : BaseDataManager<List<PlaidItem>>(), LoadSourceCallback {
+) : DataLoadingSubject, LoadSourceCallback {
 
-    private val searchStories: SearchStoriesUseCase
+    private val loadingCount: AtomicInteger = AtomicInteger(0)
+    private val loadingCallbacks = mutableListOf<DataLoadingSubject.DataLoadingCallbacks>()
+
+    private val searchStories: SearchStoriesUseCase = provideSearchStoriesUseCase(context)
 
     // state
     var query = ""
         private set
     private var page = 1
 
-    init {
-        setOnDataLoadedCallback(onDataLoadedCallback)
-        searchStories = provideSearchStoriesUseCase(context)
-    }
+    private fun onDataLoaded(data: List<PlaidItem>) = onDataLoadedCallback.onDataLoaded(data)
 
     fun searchFor(newQuery: String) {
         if (query != newQuery) {
@@ -71,7 +72,7 @@ class SearchDataManager @Inject constructor(
         resetLoadingCount()
     }
 
-    override fun cancelLoading() {
+    fun cancelLoading() {
         searchStories.cancelAllRequests()
         shotsRepository.cancelAllSearches()
     }
@@ -88,9 +89,11 @@ class SearchDataManager @Inject constructor(
             loadFinished()
             if (result is Result.Success<*>) {
                 val shots = (result as Result.Success<List<Shot>>).data
-                BaseDataManager.setPage(shots, resultsPage)
-                BaseDataManager.setDataSource(shots,
-                        Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX + query)
+                setPage(shots, resultsPage)
+                setDataSource(
+                    shots,
+                    Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX + query
+                )
                 onDataLoaded(shots)
             }
             return@search
@@ -100,12 +103,60 @@ class SearchDataManager @Inject constructor(
     override fun sourceLoaded(result: List<PlaidItem>?, page: Int, source: String) {
         loadFinished()
         if (result != null) {
-            BaseDataManager.setPage(result, page)
-            BaseDataManager.setDataSource(result,
-                    Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query)
+            setPage(result, page)
+            setDataSource(
+                result,
+                Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query
+            )
             onDataLoaded(result)
         }
     }
 
     override fun loadFailed(source: String) = loadFinished()
+
+    override fun isDataLoading() = loadingCount.get() > 0
+
+    override fun registerCallback(callback: DataLoadingSubject.DataLoadingCallbacks) {
+        loadingCallbacks.add(callback)
+    }
+
+    private fun loadStarted() {
+        if (0 == loadingCount.getAndIncrement()) {
+            dispatchLoadingStartedCallbacks()
+        }
+    }
+
+    private fun loadFinished() {
+        if (0 == loadingCount.decrementAndGet()) {
+            dispatchLoadingFinishedCallbacks()
+        }
+    }
+
+    private fun resetLoadingCount() {
+        loadingCount.set(0)
+    }
+
+    private fun setPage(items: List<PlaidItem>, page: Int) {
+        for (item in items) {
+            item.page = page
+        }
+    }
+
+    private fun setDataSource(items: List<PlaidItem>, dataSource: String) {
+        for (item in items) {
+            item.dataSource = dataSource
+        }
+    }
+
+    private fun dispatchLoadingStartedCallbacks() {
+        loadingCallbacks.forEach {
+            it.dataStartedLoading()
+        }
+    }
+
+    private fun dispatchLoadingFinishedCallbacks() {
+        loadingCallbacks.forEach {
+            it.dataFinishedLoading()
+        }
+    }
 }
