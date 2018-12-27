@@ -20,7 +20,7 @@ import io.plaidapp.core.dagger.DataManagerModule
 import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
-import io.plaidapp.core.data.BaseDataManager
+import io.plaidapp.core.data.OnDataLoadedCallback
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.search.ui.SearchActivity
@@ -36,7 +36,7 @@ object Injector {
     @JvmStatic
     fun inject(
         activity: SearchActivity,
-        dataLoadedCallback: BaseDataManager.OnDataLoadedCallback<List<PlaidItem>>
+        dataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>
     ) {
         DaggerSearchComponent.builder()
             .activity(activity)

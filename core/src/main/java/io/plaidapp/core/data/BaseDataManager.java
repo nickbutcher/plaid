@@ -36,10 +36,6 @@ public abstract class BaseDataManager<T> implements DataLoadingSubject {
         loadingCount = new AtomicInteger(0);
     }
 
-    public interface OnDataLoadedCallback<T> {
-        void onDataLoaded(T data);
-    }
-
     public void setOnDataLoadedCallback(OnDataLoadedCallback<T> onDataLoadedCallback) {
         this.onDataLoadedCallback = onDataLoadedCallback;
     }

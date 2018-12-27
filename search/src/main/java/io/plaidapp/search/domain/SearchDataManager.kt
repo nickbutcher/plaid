@@ -19,6 +19,7 @@ package io.plaidapp.search.domain
 import android.content.Context
 import io.plaidapp.core.data.BaseDataManager
 import io.plaidapp.core.data.LoadSourceCallback
+import io.plaidapp.core.data.OnDataLoadedCallback
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.data.Source
@@ -34,7 +35,7 @@ import javax.inject.Inject
  */
 class SearchDataManager @Inject constructor(
     context: Context,
-    onDataLoadedCallback: BaseDataManager.OnDataLoadedCallback<List<PlaidItem>>,
+    onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>,
     private val shotsRepository: ShotsRepository
 ) : BaseDataManager<List<PlaidItem>>(), LoadSourceCallback {
 
