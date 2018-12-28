@@ -23,11 +23,10 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.R
-import io.plaidapp.core.dagger.DataManagerModule
 import io.plaidapp.core.dagger.FilterAdapterModule
-import io.plaidapp.core.dagger.OnDataLoadedModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
+import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.pocket.PocketUtils
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.search.domain.SearchDataManager
@@ -37,10 +36,8 @@ import io.plaidapp.search.ui.SearchViewModelFactory
 
 @Module(
     includes = [
-        DataManagerModule::class,
         DribbbleDataModule::class,
         FilterAdapterModule::class,
-        OnDataLoadedModule::class,
         SharedPreferencesModule::class
     ]
 )
@@ -66,5 +63,10 @@ class SearchModule(private val activity: SearchActivity) {
     @Provides
     fun searchViewModelFactory(dataManager: SearchDataManager): SearchViewModelFactory {
         return SearchViewModelFactory(dataManager)
+    }
+
+    @Provides
+    fun dataLoadingSubject(searchDataManager: SearchDataManager): DataLoadingSubject {
+        return searchDataManager
     }
 }
