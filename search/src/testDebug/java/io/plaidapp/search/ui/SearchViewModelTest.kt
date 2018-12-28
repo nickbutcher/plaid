@@ -42,17 +42,6 @@ class SearchViewModelTest {
     private val viewModel = SearchViewModel(dataManager)
 
     @Test
-    fun searchResults_emits_dataLoaded() {
-        // Given that the data was loaded in the data manager
-        dataManager.onDataLoaded(shots)
-
-        // Then an event is emitted with the shots
-        val event: Event<List<PlaidItem>>? = LiveDataTestUtil.getValue(viewModel.searchResults)
-        assertNotNull(event)
-        assertEquals(Event(shots), event)
-    }
-
-    @Test
     fun searchFor_searchesInDataManager() {
         // Given a query
         val query = "Plaid"

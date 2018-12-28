@@ -23,6 +23,7 @@ import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.toStory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -62,7 +63,7 @@ class SearchStoriesUseCase(
     }
 
     fun cancelAllRequests() {
-        parentJob.cancel()
+        parentJob.cancelChildren()
     }
 
     fun cancelRequestOfSource(source: String) {
