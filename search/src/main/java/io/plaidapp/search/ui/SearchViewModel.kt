@@ -26,6 +26,10 @@ import io.plaidapp.core.util.event.Event
 import io.plaidapp.search.domain.SearchDataManager
 import javax.inject.Inject
 
+/**
+ * [ViewModel] for the [SearchActivity]. Works with the data manager to load data and prepares it
+ * for display in the [SearchActivity].
+ */
 class SearchViewModel @Inject constructor(
     private val dataManager: SearchDataManager
 ) : ViewModel() {
