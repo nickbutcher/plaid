@@ -19,13 +19,7 @@ package io.plaidapp.search.ui
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
-import io.plaidapp.core.data.PlaidItem
-import io.plaidapp.core.util.event.Event
 import io.plaidapp.search.domain.SearchDataManager
-import io.plaidapp.search.shots
-import io.plaidapp.test.shared.LiveDataTestUtil
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Rule
 import org.junit.Test
 
