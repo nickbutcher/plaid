@@ -24,7 +24,6 @@ import javax.inject.Inject
 /**
  * Factory to create [SearchViewModel]
  */
-
 class SearchViewModelFactory @Inject constructor(
     private val dataManager: SearchDataManager
 ) : ViewModelProvider.Factory {
