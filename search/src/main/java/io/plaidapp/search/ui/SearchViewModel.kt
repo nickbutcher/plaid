@@ -62,8 +62,6 @@ class SearchViewModel @Inject constructor(
         dataManager.cancelLoading()
     }
 
-    fun getQuery() = dataManager.query
-
     fun clearResults() {
         dataManager.clear()
     }
