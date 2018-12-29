@@ -237,7 +237,7 @@ class SearchActivity : AppCompatActivity() {
     private fun doSave() {
         val saveData = Intent()
 
-        saveData.putExtra(Activities.Search.EXTRA_QUERY, viewModel.getQuery())
+        saveData.putExtra(Activities.Search.EXTRA_QUERY, searchView.query)
         saveData.putExtra(Activities.Search.EXTRA_SAVE_DRIBBBLE, saveDribbble.isChecked)
         saveData.putExtra(Activities.Search.EXTRA_SAVE_DESIGNER_NEWS, saveDesignerNews.isChecked)
         setResult(Activities.Search.RESULT_CODE_SAVE, saveData)
