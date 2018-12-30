@@ -32,7 +32,6 @@ object Injector {
     @JvmStatic
     fun inject(activity: SearchActivity) {
         DaggerSearchComponent.builder()
-            .activity(activity)
             .coreComponent(activity.coreComponent())
             .filterAdapterModule(FilterAdapterModule(activity))
             .sharedPreferencesModule(
