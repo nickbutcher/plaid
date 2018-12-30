@@ -16,21 +16,15 @@
 
 package io.plaidapp.search.ui
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import io.plaidapp.search.domain.SearchDataManager
-import org.junit.Rule
 import org.junit.Test
 
 /**
  * Tests for [SearchViewModel] that mocks the dependencies
  */
 class SearchViewModelTest {
-
-    // Executes tasks in the Architecture Components in the same thread
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val dataManager: SearchDataManager = mock()
     private val viewModel = SearchViewModel(dataManager)
