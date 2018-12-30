@@ -27,6 +27,7 @@ import dagger.Provides
 import io.plaidapp.R
 import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
+import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.pocket.PocketUtils
@@ -39,6 +40,7 @@ import io.plaidapp.search.ui.SearchViewModelFactory
 @Module(
     includes = [
         DribbbleDataModule::class,
+        DesignerNewsDataModule::class,
         FilterAdapterModule::class,
         SharedPreferencesModule::class
     ]
