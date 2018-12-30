@@ -18,8 +18,10 @@ package io.plaidapp.search.dagger
 
 import android.app.Activity
 import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.util.ViewPreloadSizeProvider
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.R
@@ -41,32 +43,42 @@ import io.plaidapp.search.ui.SearchViewModelFactory
         SharedPreferencesModule::class
     ]
 )
-class SearchModule(private val activity: SearchActivity) {
+abstract class SearchModule {
 
-    @Provides
-    fun context(activity: Activity): Context = activity
+    @Binds
+    abstract fun searchActivityAsAppCompatActivity(activity: SearchActivity): AppCompatActivity
 
-    @Provides
-    fun columns(activity: Activity): Int = activity.resources.getInteger(R.integer.num_columns)
+    @Binds
+    abstract fun searchActivityAsActivity(activity: SearchActivity): Activity
 
-    @Provides
-    fun viewPreloadSizeProvider() = ViewPreloadSizeProvider<Shot>()
+    @Binds
+    abstract fun context(activity: Activity): Context
 
-    @Provides
-    fun isPocketInstalled(activity: Activity) = PocketUtils.isPocketInstalled(activity)
+    @Binds
+    abstract fun dataLoadingSubject(searchDataManager: SearchDataManager): DataLoadingSubject
 
-    @Provides
-    fun searchViewModel(factory: SearchViewModelFactory): SearchViewModel {
-        return ViewModelProviders.of(activity, factory).get(SearchViewModel::class.java)
-    }
+    @Module
+    companion object {
 
-    @Provides
-    fun searchViewModelFactory(dataManager: SearchDataManager): SearchViewModelFactory {
-        return SearchViewModelFactory(dataManager)
-    }
+        @JvmStatic
+        @Provides
+        fun columns(activity: Activity): Int = activity.resources.getInteger(R.integer.num_columns)
 
-    @Provides
-    fun dataLoadingSubject(searchDataManager: SearchDataManager): DataLoadingSubject {
-        return searchDataManager
+        @JvmStatic
+        @Provides
+        fun viewPreloadSizeProvider() = ViewPreloadSizeProvider<Shot>()
+
+        @JvmStatic
+        @Provides
+        fun isPocketInstalled(activity: Activity) = PocketUtils.isPocketInstalled(activity)
+
+        @JvmStatic
+        @Provides
+        fun searchViewModel(
+            factory: SearchViewModelFactory,
+            activity: AppCompatActivity
+        ): SearchViewModel {
+            return ViewModelProviders.of(activity, factory).get(SearchViewModel::class.java)
+        }
     }
 }

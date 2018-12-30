@@ -41,7 +41,7 @@ object Injector {
                     LoginLocalDataSource.DESIGNER_NEWS_PREF
                 )
             )
-            .searchModule(SearchModule(activity))
+            .searchActivity(activity)
             .build()
             .inject(activity)
     }
