@@ -24,15 +24,12 @@ import io.plaidapp.core.data.OnDataLoadedCallback
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.util.event.Event
 import io.plaidapp.search.domain.SearchDataManager
-import javax.inject.Inject
 
 /**
  * [ViewModel] for the [SearchActivity]. Works with the data manager to load data and prepares it
  * for display in the [SearchActivity].
  */
-class SearchViewModel @Inject constructor(
-    private val dataManager: SearchDataManager
-) : ViewModel() {
+class SearchViewModel(private val dataManager: SearchDataManager) : ViewModel() {
 
     private val _searchResults = MutableLiveData<Event<List<PlaidItem>>>()
     val searchResults: LiveData<Event<List<PlaidItem>>>
@@ -58,8 +55,8 @@ class SearchViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        super.onCleared()
         dataManager.cancelLoading()
+        super.onCleared()
     }
 
     fun clearResults() {

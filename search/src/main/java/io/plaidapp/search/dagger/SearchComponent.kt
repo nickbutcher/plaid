@@ -16,7 +16,6 @@
 
 package io.plaidapp.search.dagger
 
-import android.app.Activity
 import dagger.BindsInstance
 import dagger.Component
 import io.plaidapp.core.dagger.BaseActivityComponent
@@ -35,10 +34,9 @@ interface SearchComponent : BaseActivityComponent<SearchActivity> {
     interface Builder {
 
         fun build(): SearchComponent
-        @BindsInstance fun activity(activity: Activity): Builder
+        @BindsInstance fun searchActivity(activity: SearchActivity): Builder
         fun coreComponent(component: CoreComponent): Builder
         fun filterAdapterModule(module: FilterAdapterModule): Builder
         fun sharedPreferencesModule(module: SharedPreferencesModule): Builder
-        fun searchModule(module: SearchModule): Builder
     }
 }
