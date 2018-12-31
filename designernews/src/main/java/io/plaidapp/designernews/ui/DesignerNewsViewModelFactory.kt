@@ -21,11 +21,12 @@ import androidx.lifecycle.ViewModelProvider
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.designernews.ui.login.LoginViewModel
+import javax.inject.Inject
 
 /**
  * Factory for Designer News [ViewModel]s
  */
-class DesignerNewsViewModelFactory(
+class DesignerNewsViewModelFactory @Inject constructor(
     private val loginRepository: LoginRepository,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModelProvider.Factory {

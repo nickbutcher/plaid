@@ -22,11 +22,12 @@ import io.plaidapp.core.designernews.data.comments.model.toCommentWithNoReplies
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.util.exhaustive
+import javax.inject.Inject
 
 /**
  * Post a comment to a story on behalf of the logged in user.
  */
-class PostStoryCommentUseCase(
+class PostStoryCommentUseCase @Inject constructor(
     private val commentsRepository: CommentsRepository,
     private val loginRepository: LoginRepository
 ) {

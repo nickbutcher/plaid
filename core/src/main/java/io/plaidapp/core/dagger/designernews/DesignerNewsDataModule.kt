@@ -26,7 +26,6 @@ import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.dagger.CoreDataModule
 import io.plaidapp.core.dagger.CoroutinesDispatcherProviderModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
-import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.api.DenvelopingConverter
 import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
@@ -40,8 +39,6 @@ import io.plaidapp.core.designernews.data.login.LoginRemoteDataSource
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.designernews.data.stories.StoriesRemoteDataSource
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
-import io.plaidapp.core.designernews.domain.LoadStoriesUseCase
-import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -64,17 +61,6 @@ class DesignerNewsDataModule {
         remoteSource: LoginRemoteDataSource
     ): LoginRepository =
         LoginRepository.getInstance(localSource, remoteSource)
-
-    @Provides
-    fun provideLoginLocalDataSource(preferences: SharedPreferences): LoginLocalDataSource =
-        LoginLocalDataSource(preferences)
-
-    @Provides
-    fun provideLoginRemoteDataSource(
-        service: DesignerNewsService,
-        tokenHolder: AuthTokenLocalDataSource
-    ): LoginRemoteDataSource =
-        LoginRemoteDataSource(tokenHolder, service)
 
     @Provides
     fun provideAuthTokenLocalDataSource(
@@ -117,20 +103,6 @@ class DesignerNewsDataModule {
     @Provides
     fun provideStoriesRemoteDataSource(service: DesignerNewsService): StoriesRemoteDataSource =
         StoriesRemoteDataSource.getInstance(service)
-
-    @Provides
-    fun provideLoadStoriesUseCase(
-        storiesRepository: StoriesRepository,
-        coroutinesDispatcherProvider: CoroutinesDispatcherProvider
-    ): LoadStoriesUseCase =
-        LoadStoriesUseCase(storiesRepository, coroutinesDispatcherProvider)
-
-    @Provides
-    fun provideSearchStoriesUseCase(
-        storiesRepository: StoriesRepository,
-        coroutinesDispatcherProvider: CoroutinesDispatcherProvider
-    ): SearchStoriesUseCase =
-        SearchStoriesUseCase(storiesRepository, coroutinesDispatcherProvider)
 
     @Provides
     fun provideCommentsRepository(dataSource: CommentsRemoteDataSource): CommentsRepository =

@@ -22,11 +22,12 @@ import io.plaidapp.core.designernews.data.comments.model.toCommentWithNoReplies
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.util.exhaustive
+import javax.inject.Inject
 
 /**
  * Use case that posts a reply from the logged in user to a comment.
  */
-class PostReplyUseCase(
+class PostReplyUseCase @Inject constructor(
     private val commentsRepository: CommentsRepository,
     private val loginRepository: LoginRepository
 ) {

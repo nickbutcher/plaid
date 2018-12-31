@@ -26,15 +26,11 @@ import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.comments.CommentsRemoteDataSource
-import io.plaidapp.core.designernews.data.comments.CommentsRepository
-import io.plaidapp.core.designernews.data.login.LoginRepository
-import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.designernews.data.users.UserRepository
 import io.plaidapp.designernews.data.votes.VotesRemoteDataSource
 import io.plaidapp.designernews.data.votes.VotesRepository
 import io.plaidapp.designernews.domain.GetCommentsWithRepliesAndUsersUseCase
-import io.plaidapp.designernews.domain.GetCommentsWithRepliesUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.PostReplyUseCase
 import io.plaidapp.designernews.domain.PostStoryCommentUseCase
@@ -70,13 +66,6 @@ class StoryModule(private val storyId: Long, private val activity: StoryActivity
         ViewModelProviders.of(activity, factory).get(StoryViewModel::class.java)
 
     @Provides
-    fun provideViewModelFactory(
-        loginRepository: LoginRepository,
-        coroutinesDispatcherProvider: CoroutinesDispatcherProvider
-    ): DesignerNewsViewModelFactory =
-        DesignerNewsViewModelFactory(loginRepository, coroutinesDispatcherProvider)
-
-    @Provides
     fun provideStoryViewModelFactory(
         getStoryUseCase: GetStoryUseCase,
         postStoryCommentUseCase: PostStoryCommentUseCase,
@@ -87,50 +76,15 @@ class StoryModule(private val storyId: Long, private val activity: StoryActivity
         coroutinesDispatcherProvider: CoroutinesDispatcherProvider
     ): StoryViewModelFactory =
         StoryViewModelFactory(
-                storyId,
-                getStoryUseCase,
-                postStoryCommentUseCase,
-                postReplyUseCase,
-                commentsWithRepliesAndUsersUseCase,
-                upvoteStoryUseCase,
-                upvoteCommentUseCase,
-                coroutinesDispatcherProvider
+            storyId,
+            getStoryUseCase,
+            postStoryCommentUseCase,
+            postReplyUseCase,
+            commentsWithRepliesAndUsersUseCase,
+            upvoteStoryUseCase,
+            upvoteCommentUseCase,
+            coroutinesDispatcherProvider
         )
-
-    @Provides
-    fun provideGetStoryUseCase(repository: StoriesRepository): GetStoryUseCase =
-        GetStoryUseCase(repository)
-
-    @Provides
-    fun provideUpvoteStoryUseCase(
-        loginRepository: LoginRepository,
-        votesRepository: VotesRepository
-    ): UpvoteStoryUseCase =
-        UpvoteStoryUseCase(loginRepository, votesRepository)
-
-    @Provides
-    fun provideUpvoteCommentUseCase(
-        loginRepository: LoginRepository,
-        votesRepository: VotesRepository
-    ): UpvoteCommentUseCase =
-        UpvoteCommentUseCase(loginRepository, votesRepository)
-
-    @Provides
-    fun provideCommentsWithRepliesUseCase(
-        commentsRepository: CommentsRepository
-    ): GetCommentsWithRepliesUseCase =
-        GetCommentsWithRepliesUseCase(commentsRepository)
-
-    @Provides
-    fun provideCommentsWithRepliesAndUsersUseCase(
-        useCase: GetCommentsWithRepliesUseCase,
-        userRepository: UserRepository
-    ): GetCommentsWithRepliesAndUsersUseCase =
-        GetCommentsWithRepliesAndUsersUseCase(useCase, userRepository)
-
-    @Provides
-    fun provideUserRemoteDataSource(service: DesignerNewsService): UserRemoteDataSource =
-        UserRemoteDataSource(service)
 
     @Provides
     fun provideUserRepository(dataSource: UserRemoteDataSource): UserRepository =
@@ -139,24 +93,6 @@ class StoryModule(private val storyId: Long, private val activity: StoryActivity
     @Provides
     fun provideCommentsRemoteDataSource(service: DesignerNewsService): CommentsRemoteDataSource =
         CommentsRemoteDataSource.getInstance(service)
-
-    @Provides
-    fun providePostReplyUseCase(
-        commentsRepository: CommentsRepository,
-        loginRepository: LoginRepository
-    ): PostReplyUseCase =
-        PostReplyUseCase(commentsRepository, loginRepository)
-
-    @Provides
-    fun providePostStoryCommentUseCase(
-        commentsRepository: CommentsRepository,
-        loginRepository: LoginRepository
-    ): PostStoryCommentUseCase =
-        PostStoryCommentUseCase(commentsRepository, loginRepository)
-
-    @Provides
-    fun provideVotesRemoteDataSource(service: DesignerNewsService): VotesRemoteDataSource =
-        VotesRemoteDataSource(service)
 
     @Provides
     fun provideVotesRepository(remoteDataSource: VotesRemoteDataSource): VotesRepository =

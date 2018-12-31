@@ -21,11 +21,12 @@ import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.data.stories.model.toStory
+import javax.inject.Inject
 
 /**
  * Use case that gets a [StoryResponse]s from [StoriesRepository] and transforms it to [Story]
  */
-class GetStoryUseCase(private val storiesRepository: StoriesRepository) {
+class GetStoryUseCase @Inject constructor(private val storiesRepository: StoriesRepository) {
 
     operator fun invoke(id: Long): Result<Story> {
         val result = storiesRepository.getStory(id)
