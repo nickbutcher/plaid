@@ -17,9 +17,6 @@
 
 package io.plaidapp.core.ui;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
@@ -27,7 +24,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -40,12 +36,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.browser.customtabs.CustomTabsIntent;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.DataSource;
@@ -56,6 +47,20 @@ import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import io.plaidapp.core.R;
 import io.plaidapp.core.data.DataLoadingSubject;
 import io.plaidapp.core.data.PlaidItem;
@@ -72,24 +77,14 @@ import io.plaidapp.core.producthunt.data.api.PostWeigher;
 import io.plaidapp.core.producthunt.data.api.model.Post;
 import io.plaidapp.core.producthunt.ui.ProductHuntPostHolder;
 import io.plaidapp.core.ui.transitions.ReflowText;
-import io.plaidapp.core.ui.widget.BadgedFourThreeImageView;
 import io.plaidapp.core.util.Activities;
 import io.plaidapp.core.util.ActivityHelper;
-import io.plaidapp.core.util.ObservableColorMatrix;
 import io.plaidapp.core.util.TransitionUtils;
 import io.plaidapp.core.util.ViewUtils;
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.core.util.glide.DribbbleTarget;
 import io.plaidapp.core.util.glide.GlideApp;
 import kotlin.Unit;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
 
 /**
  * Adapter for displaying a grid of {@link PlaidItem}s.
@@ -202,11 +197,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onViewRecycled(RecyclerView.ViewHolder holder) {
         if (holder instanceof DribbbleShotHolder) {
             // reset the badge & ripple which are dynamically determined
-            DribbbleShotHolder shotHolder = (DribbbleShotHolder) holder;
-            shotHolder.image.setBadgeColor(initialGifBadgeColor);
-            shotHolder.image.setDrawBadge(false);
-            shotHolder.image.setForeground(
-                    ContextCompat.getDrawable(host, R.drawable.mid_grey_ripple));
+            ((DribbbleShotHolder) holder).reset();
         }
     }
 
@@ -269,65 +260,67 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @NonNull
     private DribbbleShotHolder createDribbbleShotHolder(ViewGroup parent) {
         final DribbbleShotHolder holder = new DribbbleShotHolder(
-                layoutInflater.inflate(R.layout.dribbble_shot_item, parent, false));
-        holder.image.setBadgeColor(initialGifBadgeColor);
-        holder.image.setOnClickListener(view -> {
-            Intent intent = ActivityHelper.intentTo(Activities.Dribbble.Shot.INSTANCE);
-            intent.putExtra(Activities.Dribbble.Shot.EXTRA_SHOT_ID,
-                    getItem(holder.getAdapterPosition()).getId());
-            setGridItemContentTransitions(holder.image);
-            ActivityOptions options =
-                    ActivityOptions.makeSceneTransitionAnimation(host,
-                            Pair.create(view, host.getString(R.string.transition_shot)),
-                            Pair.create(view, host.getString(R.string
-                                    .transition_shot_background)));
-            host.startActivityForResult(intent, REQUEST_CODE_VIEW_SHOT, options.toBundle());
-        });
-        // play animated GIFs whilst touched
-        holder.image.setOnTouchListener((v, event) -> {
-            // check if it's an event we care about, else bail fast
-            final int action = event.getAction();
-            if (!(action == MotionEvent.ACTION_DOWN
-                    || action == MotionEvent.ACTION_UP
-                    || action == MotionEvent.ACTION_CANCEL)) {
-                return false;
-            }
-
-            // get the image and check if it's an animated GIF
-            final Drawable drawable = holder.image.getDrawable();
-            if (drawable == null) return false;
-            GifDrawable gif = null;
-            if (drawable instanceof GifDrawable) {
-                gif = (GifDrawable) drawable;
-            } else if (drawable instanceof TransitionDrawable) {
-                // we fade in images on load which uses a TransitionDrawable; check its layers
-                TransitionDrawable fadingIn = (TransitionDrawable) drawable;
-                for (int i = 0; i < fadingIn.getNumberOfLayers(); i++) {
-                    if (fadingIn.getDrawable(i) instanceof GifDrawable) {
-                        gif = (GifDrawable) fadingIn.getDrawable(i);
-                        break;
+                layoutInflater.inflate(R.layout.dribbble_shot_item, parent, false),
+                initialGifBadgeColor,
+                (view, position) -> {
+                    Intent intent = ActivityHelper.intentTo(Activities.Dribbble.Shot.INSTANCE);
+                    intent.putExtra(Activities.Dribbble.Shot.EXTRA_SHOT_ID,
+                            getItem(position).getId());
+                    setGridItemContentTransitions(view);
+                    ActivityOptions options =
+                            ActivityOptions.makeSceneTransitionAnimation(host,
+                                    Pair.create(view, host.getString(R.string.transition_shot)),
+                                    Pair.create(view, host.getString(R.string
+                                            .transition_shot_background)));
+                    host.startActivityForResult(intent, REQUEST_CODE_VIEW_SHOT, options.toBundle());
+                    return Unit.INSTANCE;
+                },
+                (imageView, event) -> {
+                    // play animated GIFs whilst touched
+                    // check if it's an event we care about, else bail fast
+                    final int action = event.getAction();
+                    if (!(action == MotionEvent.ACTION_DOWN
+                            || action == MotionEvent.ACTION_UP
+                            || action == MotionEvent.ACTION_CANCEL)) {
+                        return Unit.INSTANCE;
                     }
-                }
-            }
-            if (gif == null) return false;
-            // GIF found, start/stop it on press/lift
-            switch (action) {
-                case MotionEvent.ACTION_DOWN:
-                    gif.start();
-                    break;
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    gif.stop();
-                    break;
-            }
-            return false;
-        });
+
+                    // get the image and check if it's an animated GIF
+                    final Drawable drawable = imageView.getDrawable();
+                    if (drawable == null) return Unit.INSTANCE;
+                    GifDrawable gif = null;
+                    if (drawable instanceof GifDrawable) {
+                        gif = (GifDrawable) drawable;
+                    } else if (drawable instanceof TransitionDrawable) {
+                        // we fade in images on load which uses a TransitionDrawable; check its
+                        // layers
+                        TransitionDrawable fadingIn = (TransitionDrawable) drawable;
+                        for (int i = 0; i < fadingIn.getNumberOfLayers(); i++) {
+                            if (fadingIn.getDrawable(i) instanceof GifDrawable) {
+                                gif = (GifDrawable) fadingIn.getDrawable(i);
+                                break;
+                            }
+                        }
+                    }
+                    if (gif == null) return Unit.INSTANCE;
+                    // GIF found, start/stop it on press/lift
+                    switch (action) {
+                        case MotionEvent.ACTION_DOWN:
+                            gif.start();
+                            break;
+                        case MotionEvent.ACTION_UP:
+                        case MotionEvent.ACTION_CANCEL:
+                            gif.stop();
+                            break;
+                    }
+                    return Unit.INSTANCE;
+                });
         return holder;
     }
 
     private void bindDribbbleShotHolder(final Shot shot,
-                                        final DribbbleShotHolder holder,
-                                        int position) {
+            final DribbbleShotHolder holder,
+            int position) {
         final Images.ImageSize imageSize = shot.getImages().bestSize();
         GlideApp.with(host)
                 .load(shot.getImages().best())
@@ -335,29 +328,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model,
-                                                   Target<Drawable> target, DataSource dataSource,
-                                                   boolean isFirstResource) {
+                            Target<Drawable> target, DataSource dataSource,
+                            boolean isFirstResource) {
                         if (!shot.getHasFadedIn()) {
-                            holder.image.setHasTransientState(true);
-                            final ObservableColorMatrix cm = new ObservableColorMatrix();
-                            final ObjectAnimator saturation = ObjectAnimator.ofFloat(
-                                    cm, ObservableColorMatrix.SATURATION, 0f, 1f);
-                            saturation.addUpdateListener(valueAnimator -> {
-                                // just animating the color matrix does not invalidate the
-                                // drawable so need this update listener.  Also have to create a
-                                // new CMCF as the matrix is immutable :(
-                                holder.image.setColorFilter(new ColorMatrixColorFilter(cm));
-                            });
-                            saturation.setDuration(2000L);
-                            saturation.setInterpolator(getFastOutSlowInInterpolator(host));
-                            saturation.addListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    holder.image.clearColorFilter();
-                                    holder.image.setHasTransientState(false);
-                                }
-                            });
-                            saturation.start();
+                            holder.fade();
                             shot.setHasFadedIn(true);
                         }
                         return false;
@@ -365,7 +339,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model,
-                                                Target<Drawable> target, boolean isFirstResource) {
+                            Target<Drawable> target, boolean isFirstResource) {
                         return false;
                     }
                 })
@@ -374,14 +348,14 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 .fitCenter()
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .override(imageSize.getWidth(), imageSize.getHeight())
-                .into(new DribbbleTarget(holder.image, false));
+                .into(new DribbbleTarget(holder.getImage(), false));
         // need both placeholder & background to prevent seeing through shot as it fades in
-        holder.image.setBackground(
-                shotLoadingPlaceholders[position % shotLoadingPlaceholders.length]);
-        holder.image.setDrawBadge(shot.getAnimated());
-        // need a unique transition name per shot, let's use it's url
-        holder.image.setTransitionName(shot.getHtmlUrl());
-        shotPreloadSizeProvider.setView(holder.image);
+        holder.prepareForFade(
+                shotLoadingPlaceholders[position % shotLoadingPlaceholders.length],
+                shot.getAnimated(),
+                // need a unique transition name per shot, let's use it's url
+                shot.getHtmlUrl());
+        shotPreloadSizeProvider.setView(holder.getImage());
     }
 
     @NonNull
@@ -681,17 +655,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public RequestBuilder<Drawable> getPreloadRequestBuilder(Shot item) {
         return GlideApp.with(host).load(item.getImages().best());
-    }
-
-    static class DribbbleShotHolder extends RecyclerView.ViewHolder {
-
-        BadgedFourThreeImageView image;
-
-        DribbbleShotHolder(View itemView) {
-            super(itemView);
-            image = (BadgedFourThreeImageView) itemView;
-        }
-
     }
 
     static class LoadingMoreHolder extends RecyclerView.ViewHolder {
