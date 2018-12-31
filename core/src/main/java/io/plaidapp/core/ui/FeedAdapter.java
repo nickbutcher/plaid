@@ -101,18 +101,18 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static final int TYPE_LOADING_MORE = -1;
 
     // we need to hold on to an activity ref for the shared element transitions :/
-    final Activity host;
+    private final Activity host;
     private final LayoutInflater layoutInflater;
     private final PlaidItemSorting.PlaidItemComparator comparator;
     private final boolean pocketIsInstalled;
-    private final @Nullable
-    DataLoadingSubject dataLoading;
+    @Nullable
+    private final DataLoadingSubject dataLoading;
     private final int columns;
     private final ColorDrawable[] shotLoadingPlaceholders;
     private final ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider;
 
-    private final @ColorInt
-    int initialGifBadgeColor;
+    @ColorInt
+    private final int initialGifBadgeColor;
     private List<PlaidItem> items;
     private boolean showLoadingMore = false;
     private PlaidItemSorting.NaturalOrderWeigher naturalOrderWeigher;
@@ -386,7 +386,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void bindLoadingViewHolder(LoadingMoreHolder holder, int position) {
         // only show the infinite load progress spinner if there are already items in the
         // grid i.e. it's not the first item & data is being loaded
-        holder.progress.setVisibility((position > 0
+        holder.setVisibility((position > 0
                 && dataLoading != null
                 && dataLoading.isDataLoading())
                 ? View.VISIBLE : View.INVISIBLE);
@@ -414,12 +414,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public int getItemColumnSpan(int position) {
-        switch (getItemViewType(position)) {
-            case TYPE_LOADING_MORE:
-                return columns;
-            default:
-                return getItem(position).getColspan();
+        if (getItemViewType(position) == TYPE_LOADING_MORE) {
+            return columns;
         }
+        return getItem(position).getColspan();
     }
 
     public void clear() {
@@ -450,28 +448,25 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (items == null || items.isEmpty()) return;
 
         PlaidItemSorting.PlaidItemGroupWeigher weigher = null;
-        switch (items.get(0).getDataSource()) {
-            // some sources should just use the natural order i.e. as returned by the API as users
-            // have an expectation about the order they appear in
-            case SourceManager.SOURCE_PRODUCT_HUNT:
-                if (naturalOrderWeigher == null) {
-                    naturalOrderWeigher = new PlaidItemSorting.NaturalOrderWeigher();
-                }
-                weigher = naturalOrderWeigher;
-                break;
-            default:
-                // otherwise use our own weight calculation. We prefer this as it leads to a less
-                // regular pattern of items in the grid
-                if (items.get(0) instanceof Shot) {
-                    if (shotWeigher == null) shotWeigher = new ShotWeigher();
-                    weigher = shotWeigher;
-                } else if (items.get(0) instanceof Story) {
-                    if (storyWeigher == null) storyWeigher = new StoryWeigher();
-                    weigher = storyWeigher;
-                } else if (items.get(0) instanceof Post) {
-                    if (postWeigher == null) postWeigher = new PostWeigher();
-                    weigher = postWeigher;
-                }
+        // some sources should just use the natural order i.e. as returned by the API as users
+        // have an expectation about the order they appear in
+        if (SourceManager.SOURCE_PRODUCT_HUNT.equals(items.get(0).getDataSource())) {
+            if (naturalOrderWeigher == null) {
+                naturalOrderWeigher = new PlaidItemSorting.NaturalOrderWeigher();
+            }
+            weigher = naturalOrderWeigher;
+        } else {// otherwise use our own weight calculation. We prefer this as it leads to a less
+            // regular pattern of items in the grid
+            if (items.get(0) instanceof Shot) {
+                if (shotWeigher == null) shotWeigher = new ShotWeigher();
+                weigher = shotWeigher;
+            } else if (items.get(0) instanceof Story) {
+                if (storyWeigher == null) storyWeigher = new StoryWeigher();
+                weigher = storyWeigher;
+            } else if (items.get(0) instanceof Post) {
+                if (postWeigher == null) postWeigher = new PostWeigher();
+                weigher = postWeigher;
+            }
         }
         weigher.weigh(items);
     }
@@ -485,7 +480,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             boolean add = true;
             for (int i = 0; i < count; i++) {
                 PlaidItem existingItem = getItem(i);
-                if (existingItem.equals(newItem)) {
+                if (existingItem != null && existingItem.equals(newItem)) {
                     add = false;
                     break;
                 }
@@ -659,13 +654,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     static class LoadingMoreHolder extends RecyclerView.ViewHolder {
 
-        ProgressBar progress;
+        private ProgressBar progress;
 
         LoadingMoreHolder(View itemView) {
             super(itemView);
             progress = (ProgressBar) itemView;
         }
 
+        public void setVisibility(int visibility) {
+            progress.setVisibility(visibility);
+        }
     }
 
 }
