@@ -26,11 +26,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * Use case that searches for stories based on a query and a page in [StoriesRepository]
  */
-class SearchStoriesUseCase(
+class SearchStoriesUseCase @Inject constructor(
     private val storiesRepository: StoriesRepository,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) {

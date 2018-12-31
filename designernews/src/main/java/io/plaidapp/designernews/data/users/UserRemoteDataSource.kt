@@ -21,11 +21,12 @@ import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.core.util.safeApiCall
 import java.io.IOException
+import javax.inject.Inject
 
 /**
  * Class that requests users from the service.
  */
-class UserRemoteDataSource(private val service: DesignerNewsService) {
+class UserRemoteDataSource @Inject constructor(private val service: DesignerNewsService) {
 
     suspend fun getUsers(userIds: List<Long>) = safeApiCall(
         call = { requestGetUsers(userIds) },

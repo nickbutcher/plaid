@@ -22,11 +22,12 @@ import io.plaidapp.core.designernews.data.votes.model.UpvoteCommentRequest
 import io.plaidapp.core.designernews.data.votes.model.UpvoteStoryRequest
 import io.plaidapp.core.util.safeApiCall
 import java.io.IOException
+import javax.inject.Inject
 
 /**
  * Class that works with the Designer News API to up/down vote comments and stories
  */
-class VotesRemoteDataSource(private val service: DesignerNewsService) {
+class VotesRemoteDataSource @Inject constructor(private val service: DesignerNewsService) {
 
     suspend fun upvoteStory(storyId: Long, userId: Long) = safeApiCall(
         call = { requestUpvoteStory(storyId, userId) },

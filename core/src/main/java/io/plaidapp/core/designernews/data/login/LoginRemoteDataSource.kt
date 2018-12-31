@@ -23,12 +23,13 @@ import io.plaidapp.core.designernews.data.login.model.toLoggedInUser
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 import io.plaidapp.core.util.safeApiCall
 import java.io.IOException
+import javax.inject.Inject
 
 /**
  * Remote data source for Designer News login data. Knows which API calls need to be triggered
  * for login (auth and /me) and updates the auth token after authorizing.
  */
-class LoginRemoteDataSource(
+class LoginRemoteDataSource @Inject constructor(
     private val tokenLocalDataSource: AuthTokenLocalDataSource,
     val service: DesignerNewsService
 ) {

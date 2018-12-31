@@ -22,11 +22,12 @@ import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.designernews.domain.model.CommentWithReplies
 import io.plaidapp.core.designernews.domain.model.toComment
 import io.plaidapp.designernews.data.users.UserRepository
+import javax.inject.Inject
 
 /**
  * Use case that builds [Comment]s based on comments with replies and users
  */
-class GetCommentsWithRepliesAndUsersUseCase(
+class GetCommentsWithRepliesAndUsersUseCase @Inject constructor(
     private val getCommentsWithReplies: GetCommentsWithRepliesUseCase,
     private val userRepository: UserRepository
 ) {
