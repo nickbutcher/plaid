@@ -31,7 +31,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.START
 import io.plaidapp.R
-import io.plaidapp.core.ui.FilterViewHolder
+import io.plaidapp.core.ui.filter.FilterViewHolder
 import io.plaidapp.core.ui.recyclerview.FilterSwipeDismissListener
 import io.plaidapp.util.setTranslation
 
