@@ -27,7 +27,7 @@ import io.plaidapp.core.designernews.domain.LoadStoriesUseCase
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.producthunt.data.api.ProductHuntRepository
-import io.plaidapp.core.ui.FilterAdapter
+import io.plaidapp.core.ui.filter.FilterAdapter
 
 /**
  * Module to provide [DataManager].

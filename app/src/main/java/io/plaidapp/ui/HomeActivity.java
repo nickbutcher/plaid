@@ -75,8 +75,9 @@ import io.plaidapp.core.designernews.data.poststory.PostStoryService;
 import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.ui.FeedAdapter;
-import io.plaidapp.core.ui.FilterAdapter;
-import io.plaidapp.core.ui.FilterAnimator;
+import io.plaidapp.core.ui.filter.FilterAdapter;
+import io.plaidapp.core.ui.filter.FilterAnimator;
+import io.plaidapp.core.ui.filter.FiltersChangedCallback;
 import io.plaidapp.core.ui.HomeGridItemAnimator;
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.core.ui.transitions.FabTransform;
@@ -414,8 +415,8 @@ public class HomeActivity extends Activity {
     }
 
     // listener for notifying adapter when data sources are deactivated
-    private FilterAdapter.FiltersChangedCallbacks filtersChangedCallbacks =
-            new FilterAdapter.FiltersChangedCallbacks() {
+    private FiltersChangedCallback filtersChangedCallbacks =
+            new FiltersChangedCallback() {
         @Override
         public void onFiltersChanged(Source changedFilter) {
             if (!changedFilter.active) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2019 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.dagger
+package io.plaidapp.core.ui.filter
 
-import android.content.Context
-import dagger.Module
-import dagger.Provides
 import io.plaidapp.core.data.Source
-import io.plaidapp.core.data.prefs.SourceManager
-import io.plaidapp.core.ui.filter.FilterAdapter
 
 /**
- * Module to provide [FilterAdapter].
+ * Callback called when a filter was changed or when a filter was removed
  */
-@Module class FilterAdapterModule(val context: Context) {
+abstract class FiltersChangedCallback {
 
-    @Provides fun provideSources(): MutableList<Source> = SourceManager.getSources(context)
+    open fun onFiltersChanged(changedFilter: Source) {}
 
-    @Provides
-    fun provideFilterAdapter(
-        context: Context,
-        filters: MutableList<Source>
-    ) = FilterAdapter.getInstance(context, filters)
+    open fun onFilterRemoved(removed: Source) {}
 }
