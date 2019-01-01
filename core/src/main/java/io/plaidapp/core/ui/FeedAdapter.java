@@ -79,6 +79,7 @@ import io.plaidapp.core.producthunt.ui.ProductHuntPostHolder;
 import io.plaidapp.core.ui.transitions.ReflowText;
 import io.plaidapp.core.util.Activities;
 import io.plaidapp.core.util.ActivityHelper;
+import io.plaidapp.core.util.DrawableUtils;
 import io.plaidapp.core.util.TransitionUtils;
 import io.plaidapp.core.util.ViewUtils;
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper;
@@ -288,20 +289,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     // get the image and check if it's an animated GIF
                     final Drawable drawable = imageView.getDrawable();
                     if (drawable == null) return Unit.INSTANCE;
-                    GifDrawable gif = null;
-                    if (drawable instanceof GifDrawable) {
-                        gif = (GifDrawable) drawable;
-                    } else if (drawable instanceof TransitionDrawable) {
-                        // we fade in images on load which uses a TransitionDrawable; check its
-                        // layers
-                        TransitionDrawable fadingIn = (TransitionDrawable) drawable;
-                        for (int i = 0; i < fadingIn.getNumberOfLayers(); i++) {
-                            if (fadingIn.getDrawable(i) instanceof GifDrawable) {
-                                gif = (GifDrawable) fadingIn.getDrawable(i);
-                                break;
-                            }
-                        }
-                    }
+                    GifDrawable gif = DrawableUtils.asGif(drawable);
                     if (gif == null) return Unit.INSTANCE;
                     // GIF found, start/stop it on press/lift
                     switch (action) {

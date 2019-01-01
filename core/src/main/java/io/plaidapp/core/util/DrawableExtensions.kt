@@ -24,8 +24,10 @@ import android.graphics.Canvas
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.TransitionDrawable
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.load.resource.gif.GifDrawable
 
 fun Drawable.toBitmap(): Bitmap {
     val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
@@ -42,3 +44,24 @@ fun Drawable.isAnimated() = this is Animatable
 
 val LayerDrawable.layers: List<Drawable>
     get() = (0 until numberOfLayers).map { getDrawable(it) }
+
+/**
+ * If the [Drawable] is a gif, it returns it as [GifDrawable]. Returns null otherwise.
+ */
+fun Drawable.asGif(): GifDrawable? {
+    var gif: GifDrawable? = null
+    if (this is GifDrawable) {
+        return this
+    } else if (this is TransitionDrawable) {
+        // we fade in images on load which uses a TransitionDrawable; check its
+        // layers
+        val fadingIn = this
+        for (i in 0 until this.numberOfLayers) {
+            if (fadingIn.getDrawable(i) is GifDrawable) {
+                gif = fadingIn.getDrawable(i) as GifDrawable
+                break
+            }
+        }
+    }
+    return gif
+}
