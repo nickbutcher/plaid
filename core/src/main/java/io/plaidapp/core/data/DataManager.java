@@ -25,7 +25,8 @@ import io.plaidapp.core.designernews.domain.SearchStoriesUseCase;
 import io.plaidapp.core.dribbble.data.ShotsRepository;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.producthunt.data.api.ProductHuntRepository;
-import io.plaidapp.core.ui.FilterAdapter;
+import io.plaidapp.core.ui.filter.FilterAdapter;
+import io.plaidapp.core.ui.filter.FiltersChangedCallback;
 import kotlin.Unit;
 import retrofit2.Call;
 
@@ -98,8 +99,8 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
         productHuntRepository.cancelAllRequests();
     }
 
-    private final FilterAdapter.FiltersChangedCallbacks filterListener =
-            new FilterAdapter.FiltersChangedCallbacks() {
+    private final FiltersChangedCallback filterListener =
+            new FiltersChangedCallback() {
                 @Override
                 public void onFiltersChanged(Source changedFilter) {
                     if (changedFilter.active) {
