@@ -37,12 +37,11 @@ import io.plaidapp.core.util.AnimUtils
 import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.core.util.ViewUtils
 import java.util.Collections
-import javax.inject.Inject
 
 /**
  * Adapter for showing the list of data sources used as filters for the home grid.
  */
-class FilterAdapter @Inject constructor(
+class FilterAdapter(
     context: Context,
     val filters: MutableList<Source>
 ) : RecyclerView.Adapter<FilterViewHolder>(), FilterSwipeDismissListener {
@@ -227,6 +226,15 @@ class FilterAdapter @Inject constructor(
 
         internal const val FILTER_ICON_ENABLED_ALPHA = 179 // 70%
         internal const val FILTER_ICON_DISABLED_ALPHA = 51 // 20%
+
+        @Volatile
+        private var INSTANCE: FilterAdapter? = null
+
+        fun getInstance(context: Context, filters: MutableList<Source>): FilterAdapter {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: FilterAdapter(context, filters).also { INSTANCE = it }
+            }
+        }
     }
 }
 
