@@ -18,12 +18,11 @@ package io.plaidapp.core.data.prefs
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import javax.inject.Inject
 
 /**
  * Class that knows how to store locally sources, together with their active state
  */
-class SourcesLocalDataSource @Inject constructor(private val prefs: SharedPreferences) {
+class SourcesLocalDataSource(private val prefs: SharedPreferences) {
 
     /**
      * Get all sources
