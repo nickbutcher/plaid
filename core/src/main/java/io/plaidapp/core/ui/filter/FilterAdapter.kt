@@ -33,8 +33,8 @@ import java.util.Collections
  * Adapter for showing the list of data sources used as filters for the home grid.
  */
 class FilterAdapter(
-    context: Context,
-    val filters: MutableList<Source>
+        context: Context,
+        private val sourceManager: SourceManager
 ) : RecyclerView.Adapter<FilterViewHolder>(), FilterSwipeDismissListener {
 
     private val context: Context = context.applicationContext
@@ -43,8 +43,13 @@ class FilterAdapter(
     val enabledSourcesCount: Int
         get() = filters.count(Source::active)
 
+    private val _filters: MutableList<Source>
+    val filters: List<Source>
+        get() = _filters
+
     init {
         setHasStableIds(true)
+        _filters = sourceManager.getSources().toMutableList()
     }
 
     /**
@@ -66,26 +71,26 @@ class FilterAdapter(
                     existing.active = true
                     dispatchFiltersChanged(existing)
                     notifyItemChanged(i, FILTER_ENABLED)
-                    SourceManager.updateSource(existing, context)
+                    sourceManager.updateSource(existing)
                 }
                 return false
             }
         }
         // didn't already exist, so add it
-        filters.add(toAdd)
+        _filters.add(toAdd)
         Collections.sort(filters, Source.SourceComparator())
         dispatchFiltersChanged(toAdd)
         notifyDataSetChanged()
-        SourceManager.addSource(toAdd, context)
+        sourceManager.addSource(toAdd)
         return true
     }
 
     private fun removeFilter(removing: Source) {
         val position = getFilterPosition(removing)
-        filters.removeAt(position)
+        _filters.removeAt(position)
         notifyItemRemoved(position)
         dispatchFilterRemoved(removing)
-        SourceManager.removeSource(removing, context)
+        sourceManager.removeSource(removing)
     }
 
     fun getFilterPosition(filter: Source) = filters.indexOf(filter)
@@ -112,7 +117,7 @@ class FilterAdapter(
                 FILTER_DISABLED
             }
             )
-            SourceManager.updateSource(filter, holder.itemView.context)
+            sourceManager.updateSource(filter)
             dispatchFiltersChanged(filter)
         }
         return holder
@@ -124,9 +129,9 @@ class FilterAdapter(
     }
 
     override fun onBindViewHolder(
-        holder: FilterViewHolder,
-        position: Int,
-        partialChangePayloads: List<Any>
+            holder: FilterViewHolder,
+            position: Int,
+            partialChangePayloads: List<Any>
     ) {
         if (!partialChangePayloads.isEmpty()) {
             // if we're doing a partial re-bind i.e. an item is enabling/disabling or being
@@ -180,9 +185,9 @@ class FilterAdapter(
         @Volatile
         private var INSTANCE: FilterAdapter? = null
 
-        fun getInstance(context: Context, filters: MutableList<Source>): FilterAdapter {
+        fun getInstance(context: Context, sourceManager: SourceManager): FilterAdapter {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: FilterAdapter(context, filters).also { INSTANCE = it }
+                INSTANCE ?: FilterAdapter(context, sourceManager).also { INSTANCE = it }
             }
         }
     }
