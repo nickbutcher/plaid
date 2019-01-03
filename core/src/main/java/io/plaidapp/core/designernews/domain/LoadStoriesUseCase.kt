@@ -19,7 +19,7 @@ package io.plaidapp.core.designernews.domain
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.LoadSourceCallback
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.data.prefs.SourceManager
+import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.toStory
 import kotlinx.coroutines.CoroutineScope
@@ -42,7 +42,7 @@ class LoadStoriesUseCase @Inject constructor(
     private val parentJobs = mutableMapOf<String, Job>()
 
     operator fun invoke(page: Int, callback: LoadSourceCallback) {
-        val jobId = "${SourceManager.SOURCE_DESIGNER_NEWS_POPULAR}::$page"
+        val jobId = "${SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR}::$page"
         parentJobs[jobId] = launchLoad(page, callback, jobId)
     }
 
@@ -56,11 +56,11 @@ class LoadStoriesUseCase @Inject constructor(
         if (result is Result.Success) {
             val stories = result.data.map { it.toStory() }
             withContext(dispatcherProvider.main) {
-                callback.sourceLoaded(stories, page, SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
+                callback.sourceLoaded(stories, page, SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR)
             }
         } else {
             withContext(dispatcherProvider.main) {
-                callback.loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
+                callback.loadFailed(SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR)
             }
         }
     }

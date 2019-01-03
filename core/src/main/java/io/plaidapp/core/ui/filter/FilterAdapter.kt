@@ -22,7 +22,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.plaidapp.core.R
 import io.plaidapp.core.data.Source
-import io.plaidapp.core.data.prefs.SourceManager
+import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.ui.filter.FilterHolderInfo.Companion.FILTER_DISABLED
 import io.plaidapp.core.ui.filter.FilterHolderInfo.Companion.FILTER_ENABLED
 import io.plaidapp.core.ui.filter.FilterHolderInfo.Companion.HIGHLIGHT
@@ -33,8 +33,8 @@ import java.util.Collections
  * Adapter for showing the list of data sources used as filters for the home grid.
  */
 class FilterAdapter(
-        context: Context,
-        private val sourceManager: SourceManager
+    context: Context,
+    private val sourcesRepository: SourcesRepository
 ) : RecyclerView.Adapter<FilterViewHolder>(), FilterSwipeDismissListener {
 
     private val context: Context = context.applicationContext
@@ -49,7 +49,7 @@ class FilterAdapter(
 
     init {
         setHasStableIds(true)
-        _filters = sourceManager.getSources().toMutableList()
+        _filters = sourcesRepository.getSources().toMutableList()
     }
 
     /**
@@ -71,7 +71,7 @@ class FilterAdapter(
                     existing.active = true
                     dispatchFiltersChanged(existing)
                     notifyItemChanged(i, FILTER_ENABLED)
-                    sourceManager.updateSource(existing)
+                    sourcesRepository.updateSource(existing)
                 }
                 return false
             }
@@ -81,7 +81,7 @@ class FilterAdapter(
         Collections.sort(filters, Source.SourceComparator())
         dispatchFiltersChanged(toAdd)
         notifyDataSetChanged()
-        sourceManager.addSource(toAdd)
+        sourcesRepository.addSource(toAdd)
         return true
     }
 
@@ -90,7 +90,7 @@ class FilterAdapter(
         _filters.removeAt(position)
         notifyItemRemoved(position)
         dispatchFilterRemoved(removing)
-        sourceManager.removeSource(removing)
+        sourcesRepository.removeSource(removing)
     }
 
     fun getFilterPosition(filter: Source) = filters.indexOf(filter)
@@ -117,7 +117,7 @@ class FilterAdapter(
                 FILTER_DISABLED
             }
             )
-            sourceManager.updateSource(filter)
+            sourcesRepository.updateSource(filter)
             dispatchFiltersChanged(filter)
         }
         return holder
@@ -129,9 +129,9 @@ class FilterAdapter(
     }
 
     override fun onBindViewHolder(
-            holder: FilterViewHolder,
-            position: Int,
-            partialChangePayloads: List<Any>
+        holder: FilterViewHolder,
+        position: Int,
+        partialChangePayloads: List<Any>
     ) {
         if (!partialChangePayloads.isEmpty()) {
             // if we're doing a partial re-bind i.e. an item is enabling/disabling or being
@@ -185,9 +185,9 @@ class FilterAdapter(
         @Volatile
         private var INSTANCE: FilterAdapter? = null
 
-        fun getInstance(context: Context, sourceManager: SourceManager): FilterAdapter {
+        fun getInstance(context: Context, sourcesRepository: SourcesRepository): FilterAdapter {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: FilterAdapter(context, sourceManager).also { INSTANCE = it }
+                INSTANCE ?: FilterAdapter(context, sourcesRepository).also { INSTANCE = it }
             }
         }
     }
