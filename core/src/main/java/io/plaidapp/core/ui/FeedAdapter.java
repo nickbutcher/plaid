@@ -63,7 +63,7 @@ import io.plaidapp.core.data.DataLoadingSubject;
 import io.plaidapp.core.data.PlaidItem;
 import io.plaidapp.core.data.PlaidItemSorting;
 import io.plaidapp.core.data.pocket.PocketUtils;
-import io.plaidapp.core.data.prefs.SourceManager;
+import io.plaidapp.core.data.prefs.SourcesRepository;
 import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.designernews.domain.StoryWeigher;
 import io.plaidapp.core.designernews.ui.stories.StoryViewHolder;
@@ -407,7 +407,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         PlaidItemSorting.PlaidItemGroupWeigher weigher = null;
         // some sources should just use the natural order i.e. as returned by the API as users
         // have an expectation about the order they appear in
-        if (SourceManager.SOURCE_PRODUCT_HUNT.equals(items.get(0).getDataSource())) {
+        if (SourcesRepository.SOURCE_PRODUCT_HUNT.equals(items.get(0).getDataSource())) {
             if (naturalOrderWeigher == null) {
                 naturalOrderWeigher = new PlaidItemSorting.NaturalOrderWeigher();
             }

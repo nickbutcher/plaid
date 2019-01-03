@@ -21,7 +21,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.LoadSourceCallback
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.data.prefs.SourceManager
+import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
@@ -90,7 +90,7 @@ class LoadStoriesUseCaseTest {
                 sourceLoaded = true
                 assertEquals(stories, result)
                 assertEquals(1, page)
-                assertEquals(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR, source)
+                assertEquals(SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR, source)
             }
 
             override fun loadFailed(source: String) {
@@ -120,7 +120,7 @@ class LoadStoriesUseCaseTest {
             override fun loadFailed(source: String) {
                 // Then the fail callback gets called for the correct source
                 sourceLoadingFailed = true
-                assertEquals(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR, source)
+                assertEquals(SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR, source)
             }
         }
 

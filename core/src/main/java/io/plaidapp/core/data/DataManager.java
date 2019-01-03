@@ -19,7 +19,7 @@ package io.plaidapp.core.data;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import io.plaidapp.core.data.prefs.SourceManager;
+import io.plaidapp.core.data.prefs.SourcesRepository;
 import io.plaidapp.core.designernews.domain.LoadStoriesUseCase;
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase;
 import io.plaidapp.core.dribbble.data.ShotsRepository;
@@ -125,10 +125,10 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
             loadStarted();
             final int page = getNextPageIndex(source.key);
             switch (source.key) {
-                case SourceManager.SOURCE_DESIGNER_NEWS_POPULAR:
+                case SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR:
                     loadDesignerNewsStories(page);
                     break;
-                case SourceManager.SOURCE_PRODUCT_HUNT:
+                case SourcesRepository.SOURCE_PRODUCT_HUNT:
                     loadProductHunt(page);
                     break;
                 default:
@@ -207,11 +207,11 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
         productHuntRepository.loadProductHuntData(
                 page - 1,
                 it -> {
-                    sourceLoaded(it, page, SourceManager.SOURCE_PRODUCT_HUNT);
+                    sourceLoaded(it, page, SourcesRepository.SOURCE_PRODUCT_HUNT);
                     return Unit.INSTANCE;
                 },
                 error -> {
-                    loadFailed(SourceManager.SOURCE_PRODUCT_HUNT);
+                    loadFailed(SourcesRepository.SOURCE_PRODUCT_HUNT);
                     return Unit.INSTANCE;
                 });
     }

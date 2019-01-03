@@ -1,18 +1,17 @@
 /*
- *   Copyright 2018 Google LLC
+ * Copyright 2019 Google, Inc.
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package io.plaidapp.core.data.prefs
@@ -23,20 +22,18 @@ import io.plaidapp.core.data.Source
 import java.util.Collections
 import javax.inject.Inject
 
-
 /**
  * Manage saving and retrieving data sources from disk.
  */
-class SourceManager @Inject constructor(
-        context: Context,
-        private val dataSource: SourcesLocalDataSource
+class SourcesRepository @Inject constructor(
+    context: Context,
+    private val dataSource: SourcesLocalDataSource
 ) {
 
     private val defaultDesignerNewsSourceName = context.getString(R.string.source_designer_news_popular)
     private val defaultDribbbleSourceName = context.getString(R.string
             .source_dribbble_search_material_design)
     private val defaultProductHuntSourceName = context.getString(R.string.source_product_hunt)
-
 
     fun getSources(): List<Source> {
         val sourceKeys = dataSource.getSources()
@@ -114,7 +111,6 @@ class SourceManager @Inject constructor(
         }
         return null
     }
-
 
     companion object {
 
