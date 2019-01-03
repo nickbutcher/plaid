@@ -16,35 +16,26 @@
 
 package io.plaidapp.core.data.prefs
 
-import android.content.Context
-import io.plaidapp.core.R
 import io.plaidapp.core.data.Source
 import java.util.Collections
-import javax.inject.Inject
 
 /**
  * Manage saving and retrieving data sources from disk.
  */
-class SourcesRepository @Inject constructor(
-    context: Context,
+class SourcesRepository(
+    private val defaultSources: List<Source>,
     private val dataSource: SourcesLocalDataSource
 ) {
-
-    private val defaultDesignerNewsSourceName = context.getString(R.string.source_designer_news_popular)
-    private val defaultDribbbleSourceName = context.getString(R.string
-            .source_dribbble_search_material_design)
-    private val defaultProductHuntSourceName = context.getString(R.string.source_product_hunt)
 
     fun getSources(): List<Source> {
         val sourceKeys = dataSource.getSources()
         if (sourceKeys == null) {
-            val sources = getDefaultSources()
-            addSources(sources)
-            return sources.toList()
+            addSources(defaultSources)
+            return defaultSources
         }
 
         val sources = mutableSetOf<Source>()
-        for (sourceKey in sourceKeys) {
+        sourceKeys.forEach { sourceKey ->
             val activeState = dataSource.getSourceActiveState(sourceKey)
             when {
                 sourceKey.startsWith(
@@ -73,21 +64,9 @@ class SourcesRepository @Inject constructor(
         return sourcesList
     }
 
-    private fun addSources(sources: Set<Source>) {
+    private fun addSources(sources: List<Source>) {
         val sourceKeys = sources.map { it.key }.toSet()
         dataSource.addSources(sourceKeys, true)
-    }
-
-    private fun getDefaultSources(): Set<Source> {
-        val defaultSources = mutableSetOf<Source>()
-        defaultSources.add(Source.DesignerNewsSource(SOURCE_DESIGNER_NEWS_POPULAR, 100,
-                defaultDesignerNewsSourceName, true))
-        // 200 sort order range left for DN searches
-        defaultSources.add(Source.DribbbleSearchSource(defaultDribbbleSourceName, true))
-        // 400 sort order range left for dribbble searches
-        defaultSources.add(Source(SOURCE_PRODUCT_HUNT, 500,
-                defaultProductHuntSourceName, R.drawable.ic_product_hunt, false))
-        return defaultSources
     }
 
     fun addSource(toAdd: Source) {
@@ -103,13 +82,8 @@ class SourcesRepository @Inject constructor(
     }
 
     private fun getSourceFromDefaults(key: String, active: Boolean): Source? {
-        for (source in getDefaultSources()) {
-            if (source.key == key) {
-                source.active = active
-                return source
-            }
-        }
-        return null
+        return defaultSources.firstOrNull { source -> source.key == key }
+                .also { it?.active = active }
     }
 
     companion object {
