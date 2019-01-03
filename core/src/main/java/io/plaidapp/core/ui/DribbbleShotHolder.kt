@@ -23,19 +23,18 @@ import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.Drawable
 import android.view.MotionEvent
 import android.view.View
-import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import io.plaidapp.core.R
 import io.plaidapp.core.ui.widget.BadgedFourThreeImageView
 import io.plaidapp.core.util.AnimUtils
 import io.plaidapp.core.util.ObservableColorMatrix
+import io.plaidapp.core.util.asGif
 
 class DribbbleShotHolder constructor(
     itemView: View,
     private val initialGifBadgeColor: Int,
-    private val onItemClicked: (image: View, position: Int) -> Unit,
-    private val onItemTouched: (view: ImageView, event: MotionEvent) -> Unit
+    private val onItemClicked: (image: View, position: Int) -> Unit
 ) : RecyclerView.ViewHolder(itemView) {
 
     val image: BadgedFourThreeImageView = itemView as BadgedFourThreeImageView
@@ -46,7 +45,23 @@ class DribbbleShotHolder constructor(
             onItemClicked(image, adapterPosition)
         }
         image.setOnTouchListener { _, event ->
-            onItemTouched(image, event)
+            // play animated GIFs whilst touched
+            // check if it's an event we care about, else bail fast
+            val action = event.action
+            if (!(action == MotionEvent.ACTION_DOWN ||
+                            action == MotionEvent.ACTION_UP ||
+                            action == MotionEvent.ACTION_CANCEL)) {
+                return@setOnTouchListener false
+            }
+
+            // get the image and check if it's an animated GIF
+            val drawable = image.getDrawable() ?: return@setOnTouchListener false
+            val gif = drawable.asGif() ?: return@setOnTouchListener false
+            // GIF found, start/stop it on press/lift
+            when (action) {
+                MotionEvent.ACTION_DOWN -> gif!!.start()
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> gif!!.stop()
+            }
             return@setOnTouchListener false
         }
     }

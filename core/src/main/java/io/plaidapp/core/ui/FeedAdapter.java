@@ -26,13 +26,11 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.util.Pair;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -43,7 +41,6 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
@@ -79,7 +76,6 @@ import io.plaidapp.core.producthunt.ui.ProductHuntPostHolder;
 import io.plaidapp.core.ui.transitions.ReflowText;
 import io.plaidapp.core.util.Activities;
 import io.plaidapp.core.util.ActivityHelper;
-import io.plaidapp.core.util.DrawableUtils;
 import io.plaidapp.core.util.TransitionUtils;
 import io.plaidapp.core.util.ViewUtils;
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper;
@@ -275,33 +271,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                             .transition_shot_background)));
                     host.startActivityForResult(intent, REQUEST_CODE_VIEW_SHOT, options.toBundle());
                     return Unit.INSTANCE;
-                },
-                (imageView, event) -> {
-                    // play animated GIFs whilst touched
-                    // check if it's an event we care about, else bail fast
-                    final int action = event.getAction();
-                    if (!(action == MotionEvent.ACTION_DOWN
-                            || action == MotionEvent.ACTION_UP
-                            || action == MotionEvent.ACTION_CANCEL)) {
-                        return Unit.INSTANCE;
-                    }
-
-                    // get the image and check if it's an animated GIF
-                    final Drawable drawable = imageView.getDrawable();
-                    if (drawable == null) return Unit.INSTANCE;
-                    GifDrawable gif = DrawableUtils.asGif(drawable);
-                    if (gif == null) return Unit.INSTANCE;
-                    // GIF found, start/stop it on press/lift
-                    switch (action) {
-                        case MotionEvent.ACTION_DOWN:
-                            gif.start();
-                            break;
-                        case MotionEvent.ACTION_UP:
-                        case MotionEvent.ACTION_CANCEL:
-                            gif.stop();
-                            break;
-                    }
-                    return Unit.INSTANCE;
                 });
         return holder;
     }
@@ -341,7 +310,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.prepareForFade(
                 shotLoadingPlaceholders[position % shotLoadingPlaceholders.length],
                 shot.getAnimated(),
-                // need a unique transition name per shot, let's use it's url
+                // need a unique transition name per shot, let's use its url
                 shot.getHtmlUrl());
         shotPreloadSizeProvider.setView(holder.getImage());
     }
@@ -443,7 +412,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 naturalOrderWeigher = new PlaidItemSorting.NaturalOrderWeigher();
             }
             weigher = naturalOrderWeigher;
-        } else {// otherwise use our own weight calculation. We prefer this as it leads to a less
+        } else {
+            // otherwise use our own weight calculation. We prefer this as it leads to a less
             // regular pattern of items in the grid
             if (items.get(0) instanceof Shot) {
                 if (shotWeigher == null) shotWeigher = new ShotWeigher();
@@ -454,6 +424,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             } else if (items.get(0) instanceof Post) {
                 if (postWeigher == null) postWeigher = new PostWeigher();
                 weigher = postWeigher;
+            } else {
+                throw new RuntimeException("unknown item type");
             }
         }
         weigher.weigh(items);
@@ -468,7 +440,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             boolean add = true;
             for (int i = 0; i < count; i++) {
                 PlaidItem existingItem = getItem(i);
-                if (existingItem != null && existingItem.equals(newItem)) {
+                if (newItem.equals(existingItem)) {
                     add = false;
                     break;
                 }
@@ -640,7 +612,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return GlideApp.with(host).load(item.getImages().best());
     }
 
-    static class LoadingMoreHolder extends RecyclerView.ViewHolder {
+    private static class LoadingMoreHolder extends RecyclerView.ViewHolder {
 
         private ProgressBar progress;
 
