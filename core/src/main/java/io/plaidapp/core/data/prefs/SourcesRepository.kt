@@ -34,34 +34,29 @@ class SourcesRepository(
             return defaultSources
         }
 
-        val sources = mutableSetOf<Source>()
+        val sources = mutableListOf<Source>()
         sourceKeys.forEach { sourceKey ->
             val activeState = dataSource.getSourceActiveState(sourceKey)
             when {
-                sourceKey.startsWith(
-                        Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX) -> sources.add(
-                        Source.DribbbleSearchSource(
-                                sourceKey.replace(Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX, ""),
-                                activeState
-                        )
-                )
+                // add Dribbble source
+                sourceKey.startsWith(Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX) -> {
+                    val query = sourceKey.replace(Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX, "")
+                    sources.add(Source.DribbbleSearchSource(query, activeState))
+                }
+                // add Designer News source
+                sourceKey.startsWith(Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX) -> {
+                    val query = sourceKey.replace(Source.DesignerNewsSearchSource
+                            .DESIGNER_NEWS_QUERY_PREFIX, "")
+                    sources.add(Source.DesignerNewsSearchSource(query, activeState))
+                }
+                // remove deprecated sources
                 isDeprecatedDesignerNewsSource(sourceKey) -> dataSource.removeSource(sourceKey)
-                sourceKey.startsWith(Source.DesignerNewsSearchSource
-                        .DESIGNER_NEWS_QUERY_PREFIX) -> sources.add(
-                        Source.DesignerNewsSearchSource(
-                                sourceKey.replace(Source.DesignerNewsSearchSource
-                                        .DESIGNER_NEWS_QUERY_PREFIX, ""),
-                                activeState
-                        )
-                )
                 isDeprecatedDribbbleV1Source(sourceKey) -> dataSource.removeSource(sourceKey)
-                else -> // TODO improve this O(n2) search
-                    getSourceFromDefaults(sourceKey, activeState)?.let { sources.add(it) }
+                else -> getSourceFromDefaults(sourceKey, activeState)?.let { sources.add(it) }
             }
         }
-        val sourcesList = sources.toList()
-        Collections.sort(sourcesList, Source.SourceComparator())
-        return sourcesList
+        Collections.sort(sources, Source.SourceComparator())
+        return sources
     }
 
     private fun addSources(sources: List<Source>) {
@@ -87,10 +82,7 @@ class SourcesRepository(
     }
 
     companion object {
-
         const val SOURCE_DESIGNER_NEWS_POPULAR = "SOURCE_DESIGNER_NEWS_POPULAR"
         const val SOURCE_PRODUCT_HUNT = "SOURCE_PRODUCT_HUNT"
-        private val SOURCES_PREF = "SOURCES_PREF"
-        private val KEY_SOURCES = "KEY_SOURCES"
     }
 }

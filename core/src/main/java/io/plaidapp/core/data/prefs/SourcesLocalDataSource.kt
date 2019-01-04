@@ -83,7 +83,6 @@ class SourcesLocalDataSource(private val prefs: SharedPreferences) {
     }
 
     companion object {
-        val SOURCES_PREF = "SOURCES_PREF"
-        private val KEY_SOURCES = "KEY_SOURCES"
+        private const val KEY_SOURCES = "KEY_SOURCES"
     }
 }
