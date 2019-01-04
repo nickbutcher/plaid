@@ -34,7 +34,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.DataSource;
@@ -44,33 +49,14 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.browser.customtabs.CustomTabsIntent;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import io.plaidapp.core.R;
 import io.plaidapp.core.data.DataLoadingSubject;
 import io.plaidapp.core.data.PlaidItem;
-import io.plaidapp.core.data.PlaidItemSorting;
 import io.plaidapp.core.data.pocket.PocketUtils;
-import io.plaidapp.core.data.prefs.SourcesRepository;
 import io.plaidapp.core.designernews.data.stories.model.Story;
-import io.plaidapp.core.designernews.domain.StoryWeigher;
 import io.plaidapp.core.designernews.ui.stories.StoryViewHolder;
-import io.plaidapp.core.dribbble.data.api.ShotWeigher;
 import io.plaidapp.core.dribbble.data.api.model.Images;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
-import io.plaidapp.core.producthunt.data.api.PostWeigher;
 import io.plaidapp.core.producthunt.data.api.model.Post;
 import io.plaidapp.core.producthunt.ui.ProductHuntPostHolder;
 import io.plaidapp.core.ui.transitions.ReflowText;
@@ -82,6 +68,12 @@ import io.plaidapp.core.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.core.util.glide.DribbbleTarget;
 import io.plaidapp.core.util.glide.GlideApp;
 import kotlin.Unit;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Adapter for displaying a grid of {@link PlaidItem}s.
@@ -100,7 +92,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     // we need to hold on to an activity ref for the shared element transitions :/
     private final Activity host;
     private final LayoutInflater layoutInflater;
-    private final PlaidItemSorting.PlaidItemComparator comparator;
     private final boolean pocketIsInstalled;
     @Nullable
     private final DataLoadingSubject dataLoading;
@@ -112,16 +103,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final int initialGifBadgeColor;
     private List<PlaidItem> items;
     private boolean showLoadingMore = false;
-    private PlaidItemSorting.NaturalOrderWeigher naturalOrderWeigher;
-    private ShotWeigher shotWeigher;
-    private StoryWeigher storyWeigher;
-    private PostWeigher postWeigher;
 
     @Inject
     public FeedAdapter(Activity hostActivity,
-            @Nullable DataLoadingSubject dataLoading,
-            int columns,
-            boolean pocketInstalled, ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider) {
+                       @Nullable DataLoadingSubject dataLoading,
+                       int columns,
+                       boolean pocketInstalled, ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider) {
         this.host = hostActivity;
         this.dataLoading = dataLoading;
         if (dataLoading != null) {
@@ -131,7 +118,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.pocketIsInstalled = pocketInstalled;
         this.shotPreloadSizeProvider = shotPreloadSizeProvider;
         layoutInflater = LayoutInflater.from(host);
-        comparator = new PlaidItemSorting.PlaidItemComparator();
         items = new ArrayList<>();
         setHasStableIds(true);
 
@@ -383,80 +369,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     /**
-     * Main entry point for adding items to this adapter. Takes care of de-duplicating items and
-     * sorting them (depending on the data source). Will also expand some items to span multiple
+     * Main entry point for setting items to this adapter. Will also expand some items to span multiple
      * grid columns.
      */
-    public void addAndResort(List<? extends PlaidItem> newItems) {
-        weighItems(newItems);
-        deduplicateAndAdd(newItems);
-        sort();
+    public void setItems(List<PlaidItem> newItems) {
+        items = newItems;
         expandPopularItems();
         notifyDataSetChanged();
-    }
-
-    /**
-     * Calculate a 'weight' [0, 1] for each data type for sorting. Each data type/source has a
-     * different metric for weighing it e.g. Dribbble uses likes etc. but some sources should keep
-     * the order returned by the API. Weights are 'scoped' to the page they belong to and lower
-     * weights are sorted earlier in the grid (i.e. in ascending weight).
-     */
-    private void weighItems(List<? extends PlaidItem> items) {
-        if (items == null || items.isEmpty()) return;
-
-        PlaidItemSorting.PlaidItemGroupWeigher weigher = null;
-        // some sources should just use the natural order i.e. as returned by the API as users
-        // have an expectation about the order they appear in
-        if (SourcesRepository.SOURCE_PRODUCT_HUNT.equals(items.get(0).getDataSource())) {
-            if (naturalOrderWeigher == null) {
-                naturalOrderWeigher = new PlaidItemSorting.NaturalOrderWeigher();
-            }
-            weigher = naturalOrderWeigher;
-        } else {
-            // otherwise use our own weight calculation. We prefer this as it leads to a less
-            // regular pattern of items in the grid
-            if (items.get(0) instanceof Shot) {
-                if (shotWeigher == null) shotWeigher = new ShotWeigher();
-                weigher = shotWeigher;
-            } else if (items.get(0) instanceof Story) {
-                if (storyWeigher == null) storyWeigher = new StoryWeigher();
-                weigher = storyWeigher;
-            } else if (items.get(0) instanceof Post) {
-                if (postWeigher == null) postWeigher = new PostWeigher();
-                weigher = postWeigher;
-            } else {
-                throw new RuntimeException("unknown item type");
-            }
-        }
-        weigher.weigh(items);
-    }
-
-    /**
-     * De-dupe as the same item can be returned by multiple feeds
-     */
-    private void deduplicateAndAdd(List<? extends PlaidItem> newItems) {
-        final int count = getDataItemCount();
-        for (PlaidItem newItem : newItems) {
-            boolean add = true;
-            for (int i = 0; i < count; i++) {
-                PlaidItem existingItem = getItem(i);
-                if (newItem.equals(existingItem)) {
-                    add = false;
-                    break;
-                }
-            }
-            if (add) {
-                add(newItem);
-            }
-        }
-    }
-
-    private void add(PlaidItem item) {
-        items.add(item);
-    }
-
-    private void sort() {
-        Collections.sort(items, comparator); // sort by weight
     }
 
     private void expandPopularItems() {
@@ -498,7 +417,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 items.remove(i);
             }
         }
-        sort();
         expandPopularItems();
         notifyDataSetChanged();
     }
@@ -521,6 +439,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public int getItemCount() {
         return getDataItemCount() + (showLoadingMore ? 1 : 0);
+    }
+
+    // temporary method until we're able to move the item setting only to Activity and ViewModels
+    public List<PlaidItem> getItems() {
+        return items;
     }
 
     /**
