@@ -16,7 +16,6 @@
 
 package io.plaidapp.core.ui.filter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -33,11 +32,9 @@ import java.util.Collections
  * Adapter for showing the list of data sources used as filters for the home grid.
  */
 class FilterAdapter(
-    context: Context,
     private val sourcesRepository: SourcesRepository
 ) : RecyclerView.Adapter<FilterViewHolder>(), FilterSwipeDismissListener {
 
-    private val context: Context = context.applicationContext
     private var callbacks: MutableList<FiltersChangedCallback> = ArrayList()
 
     val enabledSourcesCount: Int
@@ -64,7 +61,7 @@ class FilterAdapter(
         for (i in 0 until filters.size) {
             val existing = filters[i]
             if (existing.javaClass == toAdd.javaClass &&
-                    existing.key.equals(toAdd.key, ignoreCase = true)
+                existing.key.equals(toAdd.key, ignoreCase = true)
             ) {
                 // already exists, just ensure it's active
                 if (!existing.active) {
@@ -101,8 +98,8 @@ class FilterAdapter(
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): FilterViewHolder {
         val holder = FilterViewHolder(
-                LayoutInflater.from(viewGroup.context)
-                        .inflate(R.layout.filter_item, viewGroup, false)
+            LayoutInflater.from(viewGroup.context)
+                .inflate(R.layout.filter_item, viewGroup, false)
         )
         holder.itemView.setOnClickListener {
             val position = holder.adapterPosition
@@ -111,11 +108,11 @@ class FilterAdapter(
             filter.active = !filter.active
             holder.enableFilter(filter.active)
             notifyItemChanged(
-                    position, if (filter.active) {
-                FILTER_ENABLED
-            } else {
-                FILTER_DISABLED
-            }
+                position, if (filter.active) {
+                    FILTER_ENABLED
+                } else {
+                    FILTER_DISABLED
+                }
             )
             sourcesRepository.updateSource(filter)
             dispatchFiltersChanged(filter)
@@ -185,9 +182,9 @@ class FilterAdapter(
         @Volatile
         private var INSTANCE: FilterAdapter? = null
 
-        fun getInstance(context: Context, sourcesRepository: SourcesRepository): FilterAdapter {
+        fun getInstance(sourcesRepository: SourcesRepository): FilterAdapter {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: FilterAdapter(context, sourcesRepository).also { INSTANCE = it }
+                INSTANCE ?: FilterAdapter(sourcesRepository).also { INSTANCE = it }
             }
         }
     }

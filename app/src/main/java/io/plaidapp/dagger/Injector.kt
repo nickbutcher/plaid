@@ -37,7 +37,7 @@ fun inject(
     DaggerHomeComponent.builder()
         .coreComponent(activity.coreComponent())
         .dataLoadedModule(OnDataLoadedModule(dataLoadedCallback))
-        .filterAdapterModule(FilterAdapterModule(activity))
+        .filterAdapterModule(FilterAdapterModule())
         .homeModule(HomeModule(activity))
         .sharedPreferencesModule(
             SharedPreferencesModule(activity, LoginLocalDataSource.DESIGNER_NEWS_PREF)

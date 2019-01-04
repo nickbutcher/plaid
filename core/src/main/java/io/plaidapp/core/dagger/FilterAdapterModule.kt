@@ -16,7 +16,6 @@
 
 package io.plaidapp.core.dagger
 
-import android.content.Context
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.data.prefs.SourcesRepository
@@ -25,11 +24,10 @@ import io.plaidapp.core.ui.filter.FilterAdapter
 /**
  * Module to provide [FilterAdapter].
  */
-@Module class FilterAdapterModule(val context: Context) {
+@Module
+class FilterAdapterModule {
 
     @Provides
-    fun provideFilterAdapter(
-        context: Context,
-        sourcesRepository: SourcesRepository
-    ) = FilterAdapter.getInstance(context, sourcesRepository)
+    fun provideFilterAdapter(sourcesRepository: SourcesRepository) =
+        FilterAdapter.getInstance(sourcesRepository)
 }
