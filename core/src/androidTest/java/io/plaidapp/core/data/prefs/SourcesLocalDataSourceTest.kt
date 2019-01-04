@@ -45,13 +45,13 @@ class SourcesLocalDataSourceTest {
     }
 
     @Test
-    fun getSources_returnsNullIfNothingWasAdded() {
+    fun getKeys_returnsNullIfNothingWasAdded() {
         // Given that we haven't saved any source
 
-        // When getting the sources
-        val sources = dataSource.getSources()
+        // When getting the keys
+        val sources = dataSource.getKeys()
 
-        // The set of sources is null
+        // The set of keys is null
         assertNull(sources)
     }
 
@@ -61,9 +61,9 @@ class SourcesLocalDataSourceTest {
         // When adding a source
         dataSource.addSource(dnSource, false)
 
-        // The source can be retrieved
-        val sources = dataSource.getSources()
-        assertEquals(setOf(dnSource), sources)
+        // The key can be retrieved
+        val key = dataSource.getKeys()
+        assertEquals(setOf(dnSource), key)
         // And the active state is the correct one
         val active = dataSource.getSourceActiveState(dnSource)
         assertFalse(active)
@@ -71,7 +71,7 @@ class SourcesLocalDataSourceTest {
 
     @Test
     fun addedSources_canBeRetrieved() {
-        // Given a set of sources
+        // Given a set of keys
         val source1 = "DN"
         val source2 = "PH"
         val sources = setOf(source1, source2)
@@ -79,8 +79,8 @@ class SourcesLocalDataSourceTest {
         // When adding sources
         dataSource.addSources(sources, false)
 
-        // Then the sources can be retrieved
-        val sourcesSaved = dataSource.getSources()
+        // Then the keys can be retrieved
+        val sourcesSaved = dataSource.getKeys()
         assertEquals(sources, sourcesSaved)
         // And the active state is the correct one
         val activeSource1 = dataSource.getSourceActiveState(source1)
@@ -110,8 +110,8 @@ class SourcesLocalDataSourceTest {
         // When removing a source
         dataSource.removeSource(dnSource)
 
-        // Then the source can't be retrieved
-        val sources = dataSource.getSources()
+        // Then the key can't be retrieved
+        val sources = dataSource.getKeys()
         assertNotNull(sources)
         assertTrue(sources!!.isEmpty())
         // Then the active state is false

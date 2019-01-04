@@ -31,18 +31,10 @@ import io.plaidapp.core.data.prefs.SourcesRepository
 class SourcesRepositoryModule {
 
     @Provides
-    fun provideSourcesLocalDataSource(context: Context): SourcesLocalDataSource {
-        val sharedPrefs = context.applicationContext
-                .getSharedPreferences(SOURCES_PREF, Context.MODE_PRIVATE)
-        return SourcesLocalDataSource(sharedPrefs)
-    }
-
-    @Provides
-    fun provideSourceRepository(
-        context: Context,
-        localDataSource: SourcesLocalDataSource
-    ): SourcesRepository {
+    fun provideSourceRepository(context: Context): SourcesRepository {
         val defaultSources = provideDefaultSources(context)
+        val sharedPrefs = context.getSharedPreferences(SOURCES_PREF, Context.MODE_PRIVATE)
+        val localDataSource = SourcesLocalDataSource(sharedPrefs)
         return SourcesRepository(defaultSources, localDataSource)
     }
 
