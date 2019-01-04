@@ -34,14 +34,6 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import android.text.Annotation;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -65,20 +57,30 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import io.plaidapp.R;
 import io.plaidapp.core.data.DataManager;
+import io.plaidapp.core.data.PlaidItem;
 import io.plaidapp.core.data.Source;
 import io.plaidapp.core.designernews.data.login.LoginRepository;
 import io.plaidapp.core.designernews.data.poststory.PostStoryService;
 import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.ui.FeedAdapter;
+import io.plaidapp.core.ui.HomeGridItemAnimator;
+import io.plaidapp.core.ui.PlaidItemsList;
 import io.plaidapp.core.ui.filter.FilterAdapter;
 import io.plaidapp.core.ui.filter.FilterAnimator;
 import io.plaidapp.core.ui.filter.FiltersChangedCallback;
-import io.plaidapp.core.ui.HomeGridItemAnimator;
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.core.ui.transitions.FabTransform;
 import io.plaidapp.core.util.Activities;
@@ -134,7 +136,8 @@ public class HomeActivity extends Activity {
         setContentView(R.layout.activity_home);
         bindResources();
         inject(this, data -> {
-            adapter.addAndResort(data);
+            List<PlaidItem> items = PlaidItemsList.getPlaidItemsForDisplay(adapter.getItems(), data);
+            adapter.setItems(items);
             checkEmptyState();
         });
 
@@ -490,7 +493,10 @@ public class HomeActivity extends Activity {
 
                     // actually add the story to the grid
                     Story newStory = intent.getParcelableExtra(PostStoryService.EXTRA_NEW_STORY);
-                    adapter.addAndResort(Collections.singletonList(newStory));
+
+                    List<PlaidItem> items = PlaidItemsList.getPlaidItemsForDisplay(
+                            adapter.getItems(), Collections.singletonList(newStory));
+                    adapter.setItems(items);
                     break;
                 case PostStoryService.BROADCAST_ACTION_FAILURE:
                     // failure animation
