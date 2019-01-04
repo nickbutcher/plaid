@@ -55,7 +55,7 @@ class SourcesRepositoryTest {
     @Test
     fun getSources_whenNoOtherSourceWasAdded() {
         // Given that no other source was added
-        whenever(localDataSource.getSources()).thenReturn(null)
+        whenever(localDataSource.getKeys()).thenReturn(null)
 
         // When getting the sources
         val sources = repository.getSources()
@@ -67,7 +67,7 @@ class SourcesRepositoryTest {
     @Test
     fun getSources_whenOtherSourcesWereAdded() {
         // Given that other sources were added
-        whenever(localDataSource.getSources()).thenReturn(defaultSourcesKeys)
+        whenever(localDataSource.getKeys()).thenReturn(defaultSourcesKeys)
         whenever(localDataSource.getSourceActiveState(eq(dribbbleSource.key)))
                 .thenReturn(dribbbleSource.active)
 
@@ -89,7 +89,7 @@ class SourcesRepositoryTest {
                 "SOURCE_DESIGNER_NEWS_RECENT",
                 "SOURCE_DRIBBBLE_query"
         ).toSet()
-        whenever(localDataSource.getSources()).thenReturn(oldSources)
+        whenever(localDataSource.getKeys()).thenReturn(oldSources)
 
         // When getting the sources
         val sources = repository.getSources()

@@ -28,7 +28,7 @@ class SourcesRepository(
 ) {
 
     fun getSources(): List<Source> {
-        val sourceKeys = dataSource.getSources()
+        val sourceKeys = dataSource.getKeys()
         if (sourceKeys == null) {
             addSources(defaultSources)
             return defaultSources
