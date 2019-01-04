@@ -39,8 +39,8 @@ class SourcesRepositoryModule {
 
     @Provides
     fun provideSourceRepository(
-            context: Context,
-            localDataSource: SourcesLocalDataSource
+        context: Context,
+        localDataSource: SourcesLocalDataSource
     ): SourcesRepository {
         val defaultSources = provideDefaultSources(context)
         return SourcesRepository(defaultSources, localDataSource)
@@ -71,6 +71,6 @@ class SourcesRepositoryModule {
     }
 
     companion object {
-        private val SOURCES_PREF = "SOURCES_PREF"
+        private const val SOURCES_PREF = "SOURCES_PREF"
     }
 }
