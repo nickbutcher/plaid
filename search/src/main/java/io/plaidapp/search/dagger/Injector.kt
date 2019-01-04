@@ -33,7 +33,7 @@ object Injector {
     fun inject(activity: SearchActivity) {
         DaggerSearchComponent.builder()
             .coreComponent(activity.coreComponent())
-            .filterAdapterModule(FilterAdapterModule(activity))
+            .filterAdapterModule(FilterAdapterModule())
             .sharedPreferencesModule(
                 SharedPreferencesModule(
                     activity,
