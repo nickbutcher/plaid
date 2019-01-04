@@ -26,6 +26,7 @@ import android.content.SharedPreferences
 private const val DEPRECATED_SOURCE_DESIGNER_NEWS_RECENT = "SOURCE_DESIGNER_NEWS_RECENT"
 
 fun isDeprecatedDesignerNewsSource(key: String) = key == DEPRECATED_SOURCE_DESIGNER_NEWS_RECENT
+
 /**
  * When Dribbble updated from v1 to v2 of their API, they removed a number of data sources. This
  * file checks/removes data source keys from [SharedPreferences] referring to any of the removed
