@@ -20,20 +20,20 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 
 /**
- * Class that knows how to store locally sources, together with their active state
+ * Class that knows how to store locally sources keys, together with their active state
  */
 class SourcesLocalDataSource(private val prefs: SharedPreferences) {
 
     /**
      * Get all sources
      */
-    fun getSources(): Set<String>? = getMutableSources()
+    fun getKeys(): Set<String>? = getMutableKeys()
 
     /**
      * Add a source and set the active state for the source
      */
     fun addSource(source: String, isActive: Boolean) {
-        val sources = getMutableSources(mutableSetOf())
+        val sources = getMutableKeys(mutableSetOf())
         sources?.add(source)
         prefs.edit {
             putStringSet(KEY_SOURCES, sources)
@@ -64,7 +64,7 @@ class SourcesLocalDataSource(private val prefs: SharedPreferences) {
      */
     fun removeSource(source: String): Boolean {
         var removed = false
-        val sources = getMutableSources(mutableSetOf())
+        val sources = getMutableKeys(mutableSetOf())
         sources?.remove(source)
         prefs.edit {
             putStringSet(KEY_SOURCES, sources)
@@ -78,7 +78,7 @@ class SourcesLocalDataSource(private val prefs: SharedPreferences) {
         return prefs.getBoolean(source, false)
     }
 
-    private fun getMutableSources(default: Set<String>? = null): MutableSet<String>? {
+    private fun getMutableKeys(default: Set<String>? = null): MutableSet<String>? {
         return prefs.getStringSet(KEY_SOURCES, default)
     }
 
