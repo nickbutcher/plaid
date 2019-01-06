@@ -87,7 +87,7 @@ class SourcesRepository(
     }
 
     fun getActiveSourcesCount(): Int {
-        return getSources().filter { it.active }.count()
+        return getSources().count { it.active }
     }
 
     private fun getSourceFromDefaults(key: String, active: Boolean): Source? {
