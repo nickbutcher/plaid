@@ -18,7 +18,6 @@
 
 package io.plaidapp.dagger
 
-import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.data.OnDataLoadedCallback
@@ -37,7 +36,6 @@ fun inject(
     DaggerHomeComponent.builder()
         .coreComponent(activity.coreComponent())
         .dataLoadedModule(OnDataLoadedModule(dataLoadedCallback))
-        .filterAdapterModule(FilterAdapterModule())
         .homeModule(HomeModule(activity))
         .sharedPreferencesModule(
             SharedPreferencesModule(activity, LoginLocalDataSource.DESIGNER_NEWS_PREF)

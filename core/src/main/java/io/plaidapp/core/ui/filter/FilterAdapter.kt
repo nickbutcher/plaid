@@ -155,14 +155,5 @@ class FilterAdapter(
 
         internal const val FILTER_ICON_ENABLED_ALPHA = 179 // 70%
         internal const val FILTER_ICON_DISABLED_ALPHA = 51 // 20%
-
-        @Volatile
-        private var INSTANCE: FilterAdapter? = null
-
-        fun getInstance(sourcesRepository: SourcesRepository): FilterAdapter {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: FilterAdapter(sourcesRepository).also { INSTANCE = it }
-            }
-        }
     }
 }
