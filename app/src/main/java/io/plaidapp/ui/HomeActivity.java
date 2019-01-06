@@ -570,7 +570,7 @@ public class HomeActivity extends Activity {
     void checkEmptyState() {
         if (adapter.getDataItemCount() == 0) {
             // if grid is empty check whether we're loading or if no filters are selected
-            if (filtersAdapter.getEnabledSourcesCount() > 0) {
+            if (sourcesRepository.getActiveSourcesCount() > 0) {
                 if (connected) {
                     loading.setVisibility(View.VISIBLE);
                     setNoFiltersEmptyTextVisibility(View.GONE);

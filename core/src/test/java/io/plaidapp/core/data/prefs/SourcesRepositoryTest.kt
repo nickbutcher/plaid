@@ -181,4 +181,20 @@ class SourcesRepositoryTest {
         // Then the callback was triggered
         assertEquals(sourceRemoved, designerNewsSource)
     }
+
+    @Test
+    fun getActiveSourceCount() {
+        // Given an active and an inactive source added
+        repository.addSource(designerNewsSource) // active source
+        repository.addSource(productHuntSource) // inactive source
+        val keys = setOf(dnSourceKey, phSourceKey)
+        whenever(localDataSource.getKeys()).thenReturn(keys)
+        whenever(localDataSource.getSourceActiveState(dnSourceKey)).thenReturn(true)
+
+        // When getting the number of active sources
+        val activeSources = repository.getActiveSourcesCount()
+
+        // Then the correct number is returned
+        assertEquals(1, activeSources)
+    }
 }
