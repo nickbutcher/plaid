@@ -28,6 +28,7 @@ class SourcesRepository(
     private val dataSource: SourcesLocalDataSource
 ) {
 
+    private val cache = mutableListOf<Source>()
     private val callbacks = mutableListOf<FiltersChangedCallback>()
 
     fun registerFilterChangedCallback(callback: FiltersChangedCallback) {
@@ -35,6 +36,10 @@ class SourcesRepository(
     }
 
     fun getSources(): List<Source> {
+        if (cache.isNotEmpty()) {
+            return cache
+        }
+        // cache is empty
         val sourceKeys = dataSource.getKeys()
         if (sourceKeys == null) {
             addSources(defaultSources)
@@ -63,7 +68,8 @@ class SourcesRepository(
             }
         }
         Collections.sort(sources, Source.SourceComparator())
-        return sources
+        cache.addAll(sources)
+        return cache
     }
 
     private fun addSources(sources: List<Source>) {
@@ -73,16 +79,22 @@ class SourcesRepository(
 
     fun addSource(source: Source) {
         dataSource.addSource(source.key, source.active)
+        cache.add(source)
         dispatchSourceChanged(source)
     }
 
     fun updateSource(source: Source) {
         dataSource.updateSource(source.key, source.active)
+        cache.find { it.key == source.key }?.apply { active = source.active }
         dispatchSourceChanged(source)
     }
 
     fun removeSource(source: Source) {
         dataSource.removeSource(source.key)
+        val index = cache.indexOf(source)
+        if (index >= 0) {
+            cache.removeAt(index)
+        }
         dispatchSourceRemoved(source)
     }
 
