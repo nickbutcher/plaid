@@ -23,7 +23,6 @@ import dagger.Module
 import dagger.Provides
 import io.plaidapp.R
 import io.plaidapp.core.dagger.DataManagerModule
-import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
 import io.plaidapp.core.dagger.SourcesRepositoryModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
@@ -38,7 +37,6 @@ import io.plaidapp.core.dribbble.data.api.model.Shot
         DataManagerModule::class,
         SourcesRepositoryModule::class,
         DribbbleDataModule::class,
-        FilterAdapterModule::class,
         OnDataLoadedModule::class
     ]
 )
