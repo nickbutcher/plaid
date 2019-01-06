@@ -127,6 +127,49 @@ class SourcesRepositoryTest {
     }
 
     @Test
+    fun addSource_addsSourceCache() {
+        // When adding a source
+        repository.addSource(designerNewsSource)
+
+        // Then the source is returned
+        val sources = repository.getSources()
+        assertEquals(listOf(designerNewsSource), sources)
+    }
+
+    @Test
+    fun updateSource_updatesInCache() {
+        // Given an added source
+        repository.addSource(designerNewsSource)
+
+        // When updating a source
+        val designerNewsInactive = Source.DesignerNewsSearchSource(
+                "query",
+                false
+        )
+        repository.updateSource(designerNewsInactive)
+
+        // Then the updated source is returned
+        val sources = repository.getSources()
+        assertEquals(1, sources.size)
+        val updatedSource = sources[0]
+        assertEquals(designerNewsInactive.key, updatedSource.key)
+        assertEquals(designerNewsInactive.active, updatedSource.active)
+    }
+
+    @Test
+    fun removeSource_removesFromCache() {
+        // Given an added source
+        repository.addSource(designerNewsSource)
+
+        // When removing a source
+        repository.removeSource(designerNewsSource)
+
+        // Then the source was removed from cache
+        val sources = repository.getSources()
+        assertTrue(sources.isEmpty())
+    }
+
+    @Test
     fun listenerNotified_whenSourceAdded() {
         // Given a callback registered
         var sourceAdded: Source? = null
