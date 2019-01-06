@@ -17,6 +17,7 @@
 package io.plaidapp.core.data.prefs
 
 import io.plaidapp.core.data.Source
+import io.plaidapp.core.ui.filter.FiltersChangedCallback
 import java.util.Collections
 
 /**
@@ -26,6 +27,12 @@ class SourcesRepository(
     private val defaultSources: List<Source>,
     private val dataSource: SourcesLocalDataSource
 ) {
+
+    private val callbacks = mutableListOf<FiltersChangedCallback>()
+
+    fun registerFilterChangedCallback(callback: FiltersChangedCallback) {
+        callbacks.add(callback)
+    }
 
     fun getSources(): List<Source> {
         val sourceKeys = dataSource.getKeys()
@@ -64,16 +71,19 @@ class SourcesRepository(
         dataSource.addSources(sourceKeys, true)
     }
 
-    fun addSource(toAdd: Source) {
-        dataSource.addSource(toAdd.key, toAdd.active)
+    fun addSource(source: Source) {
+        dataSource.addSource(source.key, source.active)
+        dispatchSourceChanged(source)
     }
 
     fun updateSource(source: Source) {
         dataSource.updateSource(source.key, source.active)
+        dispatchSourceChanged(source)
     }
 
     fun removeSource(source: Source) {
         dataSource.removeSource(source.key)
+        dispatchSourceRemoved(source)
     }
 
     private fun getSourceFromDefaults(key: String, active: Boolean): Source? {
@@ -81,8 +91,28 @@ class SourcesRepository(
                 .also { it?.active = active }
     }
 
+    private fun dispatchSourceChanged(source: Source) {
+        callbacks.forEach { it.onFiltersChanged(source) }
+    }
+
+    private fun dispatchSourceRemoved(source: Source) {
+        callbacks.forEach { it.onFilterRemoved(source) }
+    }
+
     companion object {
         const val SOURCE_DESIGNER_NEWS_POPULAR = "SOURCE_DESIGNER_NEWS_POPULAR"
         const val SOURCE_PRODUCT_HUNT = "SOURCE_PRODUCT_HUNT"
+
+        @Volatile
+        private var INSTANCE: SourcesRepository? = null
+
+        fun getInstance(
+            defaultSources: List<Source>,
+            dataSource: SourcesLocalDataSource
+        ): SourcesRepository {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: SourcesRepository(defaultSources, dataSource).also { INSTANCE = it }
+            }
+        }
     }
 }

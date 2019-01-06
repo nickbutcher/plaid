@@ -25,7 +25,6 @@ import io.plaidapp.core.designernews.domain.SearchStoriesUseCase;
 import io.plaidapp.core.dribbble.data.ShotsRepository;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.producthunt.data.api.ProductHuntRepository;
-import io.plaidapp.core.ui.filter.FilterAdapter;
 import io.plaidapp.core.ui.filter.FiltersChangedCallback;
 import kotlin.Unit;
 import retrofit2.Call;
@@ -47,10 +46,10 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
     private OnDataLoadedCallback<List<? extends PlaidItem>> onDataLoadedCallback;
 
     private final ShotsRepository shotsRepository;
-    private final FilterAdapter filterAdapter;
     private final LoadStoriesUseCase loadStoriesUseCase;
     private final SearchStoriesUseCase searchStoriesUseCase;
     private final ProductHuntRepository productHuntRepository;
+    private final SourcesRepository sourcesRepository;
     private Map<String, Integer> pageIndexes;
     private Map<String, Call> inflightCalls = new HashMap<>();
 
@@ -59,29 +58,30 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
                        ProductHuntRepository productHuntRepository,
                        SearchStoriesUseCase searchStoriesUseCase,
                        ShotsRepository shotsRepository,
-                       FilterAdapter filterAdapter) {
+                       SourcesRepository sourcesRepository) {
         super();
         this.loadStoriesUseCase = loadStoriesUseCase;
         this.productHuntRepository = productHuntRepository;
         this.searchStoriesUseCase = searchStoriesUseCase;
         this.shotsRepository = shotsRepository;
-        this.filterAdapter = filterAdapter;
+        this.sourcesRepository = sourcesRepository;
         setOnDataLoadedCallback(onDataLoadedCallback);
 
-        filterAdapter.registerFilterChangedCallback(filterListener);
+        this.sourcesRepository.registerFilterChangedCallback(filterListener);
         setupPageIndexes();
     }
 
-    public void setOnDataLoadedCallback(OnDataLoadedCallback<List<? extends PlaidItem>> onDataLoadedCallback) {
+    private void setOnDataLoadedCallback(
+            OnDataLoadedCallback<List<? extends PlaidItem>> onDataLoadedCallback) {
         this.onDataLoadedCallback = onDataLoadedCallback;
     }
 
-    private final void onDataLoaded(List<? extends PlaidItem> data) {
+    private void onDataLoaded(List<? extends PlaidItem> data) {
         onDataLoadedCallback.onDataLoaded(data);
     }
 
     public void loadAllDataSources() {
-        for (Source filter : filterAdapter.getFilters()) {
+        for (Source filter : sourcesRepository.getSources()) {
             loadSource(filter);
         }
     }
@@ -99,8 +99,7 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
         productHuntRepository.cancelAllRequests();
     }
 
-    private final FiltersChangedCallback filterListener =
-            new FiltersChangedCallback() {
+    private final FiltersChangedCallback filterListener = new FiltersChangedCallback() {
                 @Override
                 public void onFiltersChanged(Source changedFilter) {
                     if (changedFilter.active) {
@@ -120,7 +119,7 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
                 }
             };
 
-    void loadSource(Source source) {
+    private void loadSource(Source source) {
         if (source.active) {
             loadStarted();
             final int page = getNextPageIndex(source.key);
@@ -143,7 +142,7 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
     }
 
     private void setupPageIndexes() {
-        final List<Source> dateSources = filterAdapter.getFilters();
+        final List<Source> dateSources = sourcesRepository.getSources();
         pageIndexes = new HashMap<>(dateSources.size());
         for (Source source : dateSources) {
             pageIndexes.put(source.key, 0);

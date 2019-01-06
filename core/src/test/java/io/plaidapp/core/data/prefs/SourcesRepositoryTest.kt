@@ -23,6 +23,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.R
 import io.plaidapp.core.data.Source
 import io.plaidapp.core.data.Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX
+import io.plaidapp.core.ui.filter.FiltersChangedCallback
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -123,5 +124,61 @@ class SourcesRepositoryTest {
 
         // Then the source was removed from the data source
         verify(localDataSource).removeSource(designerNewsSource.key)
+    }
+
+    @Test
+    fun listenerNotified_whenSourceAdded() {
+        // Given a callback registered
+        var sourceAdded: Source? = null
+        val callback = object : FiltersChangedCallback() {
+            override fun onFiltersChanged(changedFilter: Source) {
+                super.onFiltersChanged(changedFilter)
+                sourceAdded = changedFilter
+            }
+        }
+        repository.registerFilterChangedCallback(callback)
+
+        // When adding a source
+        repository.addSource(designerNewsSource)
+
+        // Then the callback was triggered
+        assertEquals(sourceAdded, designerNewsSource)
+    }
+
+    @Test
+    fun listenerNotified_whenSourceUpdated() {
+        // Given a callback registered
+        var sourceUpdated: Source? = null
+        val callback = object : FiltersChangedCallback() {
+            override fun onFiltersChanged(changedFilter: Source) {
+                super.onFiltersChanged(changedFilter)
+                sourceUpdated = changedFilter
+            }
+        }
+        repository.registerFilterChangedCallback(callback)
+
+        // When updating a source
+        repository.updateSource(designerNewsSource)
+
+        // Then the callback was triggered
+        assertEquals(sourceUpdated, designerNewsSource)
+    }
+
+    @Test
+    fun listenerNotified_whenSourceRemoved() {
+        // Given a callback registered
+        var sourceRemoved: Source? = null
+        val callback = object : FiltersChangedCallback() {
+            override fun onFilterRemoved(removed: Source) {
+                sourceRemoved = removed
+            }
+        }
+        repository.registerFilterChangedCallback(callback)
+
+        // When removing a source
+        repository.removeSource(designerNewsSource)
+
+        // Then the callback was triggered
+        assertEquals(sourceRemoved, designerNewsSource)
     }
 }
