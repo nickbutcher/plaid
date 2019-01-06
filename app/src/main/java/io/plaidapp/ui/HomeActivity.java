@@ -120,14 +120,13 @@ public class HomeActivity extends Activity {
     boolean connected = true;
     private TextView noFiltersEmptyText;
     private boolean monitoringConnectivity = false;
+    private FilterAdapter filtersAdapter;
 
     // data
     @Inject
     DataManager dataManager;
     @Inject
     FeedAdapter adapter;
-    @Inject
-    FilterAdapter filtersAdapter;
     @Inject
     LoginRepository loginRepository;
     @Inject
@@ -143,6 +142,8 @@ public class HomeActivity extends Activity {
             adapter.setItems(items);
             checkEmptyState();
         });
+
+        filtersAdapter = new FilterAdapter(sourcesRepository);
 
         drawer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -239,7 +240,7 @@ public class HomeActivity extends Activity {
 
         filtersList.setAdapter(filtersAdapter);
         filtersList.setItemAnimator(new FilterAnimator());
-        
+
         sourcesRepository.registerFilterChangedCallback(filtersChangedCallbacks);
         dataManager.loadAllDataSources();
         ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter, this);

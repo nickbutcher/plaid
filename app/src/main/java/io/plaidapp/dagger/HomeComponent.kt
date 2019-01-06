@@ -19,7 +19,6 @@ package io.plaidapp.dagger
 import dagger.Component
 import io.plaidapp.core.dagger.BaseActivityComponent
 import io.plaidapp.core.dagger.CoreComponent
-import io.plaidapp.core.dagger.FilterAdapterModule
 import io.plaidapp.core.dagger.OnDataLoadedModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.ui.HomeActivity
@@ -36,7 +35,6 @@ interface HomeComponent : BaseActivityComponent<HomeActivity> {
         fun build(): HomeComponent
         fun coreComponent(module: CoreComponent): Builder
         fun dataLoadedModule(module: OnDataLoadedModule): Builder
-        fun filterAdapterModule(module: FilterAdapterModule): Builder
         fun sharedPreferencesModule(module: SharedPreferencesModule): Builder
         fun homeModule(module: HomeModule): Builder
     }
