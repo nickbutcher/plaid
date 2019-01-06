@@ -58,6 +58,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -132,6 +133,9 @@ public class HomeActivity extends FragmentActivity {
     LoginRepository loginRepository;
     @Inject
     SourcesRepository sourcesRepository;
+
+    @Inject
+    HomeViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
