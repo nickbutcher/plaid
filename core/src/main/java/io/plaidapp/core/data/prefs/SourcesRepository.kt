@@ -86,6 +86,10 @@ class SourcesRepository(
         dispatchSourceRemoved(source)
     }
 
+    fun getActiveSourcesCount(): Int {
+        return getSources().filter { it.active }.count()
+    }
+
     private fun getSourceFromDefaults(key: String, active: Boolean): Source? {
         return defaultSources.firstOrNull { source -> source.key == key }
                 .also { it?.active = active }
