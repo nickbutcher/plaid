@@ -19,6 +19,7 @@ package io.plaidapp.dagger
 import android.app.Activity
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.util.ViewPreloadSizeProvider
 import dagger.Binds
 import dagger.Module
@@ -31,19 +32,21 @@ import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.data.pocket.PocketUtils
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.ui.HomeActivity
+import io.plaidapp.ui.HomeViewModel
+import io.plaidapp.ui.HomeViewModelFactory
 
 /**
  * Dagger module for [io.plaidapp.ui.HomeActivity].
  */
 @Module(
-    includes = [
-        DataManagerModule::class,
-        SourcesRepositoryModule::class,
-        DribbbleDataModule::class,
-        OnDataLoadedModule::class
-    ]
+        includes = [
+            DataManagerModule::class,
+            SourcesRepositoryModule::class,
+            DribbbleDataModule::class,
+            OnDataLoadedModule::class
+        ]
 )
-abstract class HomeModule(private val activity: Activity) {
+abstract class HomeModule {
 
     @Binds
     abstract fun homeActivityAsFragmentActivity(activity: HomeActivity): FragmentActivity
@@ -68,5 +71,14 @@ abstract class HomeModule(private val activity: Activity) {
         @JvmStatic
         @Provides
         fun isPocketInstalled(activity: Activity): Boolean = PocketUtils.isPocketInstalled(activity)
+
+        @JvmStatic
+        @Provides
+        fun homeViewModel(
+            factory: HomeViewModelFactory,
+            fragmentActivity: FragmentActivity
+        ): HomeViewModel {
+            return ViewModelProviders.of(fragmentActivity, factory).get(HomeViewModel::class.java)
+        }
     }
 }
