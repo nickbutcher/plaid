@@ -35,9 +35,6 @@ class FilterAdapter(
     private val sourcesRepository: SourcesRepository
 ) : RecyclerView.Adapter<FilterViewHolder>(), FilterSwipeDismissListener {
 
-    val enabledSourcesCount: Int
-        get() = filters.count(Source::active)
-
     private val filters: MutableList<Source>
 
     init {
