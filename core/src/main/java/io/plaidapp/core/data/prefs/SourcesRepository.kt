@@ -91,10 +91,7 @@ class SourcesRepository(
 
     fun removeSource(source: Source) {
         dataSource.removeSource(source.key)
-        val index = cache.indexOf(source)
-        if (index >= 0) {
-            cache.removeAt(index)
-        }
+        cache.remove(source)
         dispatchSourceRemoved(source)
     }
 
