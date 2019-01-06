@@ -26,7 +26,6 @@ import io.plaidapp.core.ui.filter.FilterHolderInfo.Companion.FILTER_DISABLED
 import io.plaidapp.core.ui.filter.FilterHolderInfo.Companion.FILTER_ENABLED
 import io.plaidapp.core.ui.filter.FilterHolderInfo.Companion.HIGHLIGHT
 import io.plaidapp.core.ui.recyclerview.FilterSwipeDismissListener
-import java.util.Collections
 
 /**
  * Adapter for showing the list of data sources used as filters for the home grid.
@@ -38,59 +37,39 @@ class FilterAdapter(
     private var callbacks: MutableList<FiltersChangedCallback> = ArrayList()
 
     val enabledSourcesCount: Int
-        get() = filters.count(Source::active)
+        get() = sources.count(Source::active)
 
-    private val _filters: MutableList<Source>
-    val filters: List<Source>
-        get() = _filters
+    private var _sources: MutableList<Source>
+    val sources: List<Source>
+        get() = _sources
 
     init {
         setHasStableIds(true)
-        _filters = sourcesRepository.getSources().toMutableList()
+        _sources = sourcesRepository.getSources().toMutableList()
     }
 
-    /**
-     * Adds a new data source to the list of filters. If the source already exists then it is simply
-     * activated.
-     *
-     * @param toAdd the source to add
-     * @return whether the filter was added (i.e. if it did not already exist)
-     */
-    fun addFilter(toAdd: Source): Boolean {
-        // first check if it already exists
-        for (i in 0 until filters.size) {
-            val existing = filters[i]
-            if (existing.javaClass == toAdd.javaClass &&
-                existing.key.equals(toAdd.key, ignoreCase = true)
-            ) {
-                // already exists, just ensure it's active
-                if (!existing.active) {
-                    existing.active = true
-                    dispatchFiltersChanged(existing)
-                    notifyItemChanged(i, FILTER_ENABLED)
-                    sourcesRepository.updateSource(existing)
-                }
-                return false
-            }
-        }
-        // didn't already exist, so add it
-        _filters.add(toAdd)
-        Collections.sort(filters, Source.SourceComparator())
-        dispatchFiltersChanged(toAdd)
+    fun updateSources(newSources: List<Source>) {
+        _sources = newSources.toMutableList()
         notifyDataSetChanged()
-        sourcesRepository.addSource(toAdd)
-        return true
+    }
+
+    fun activateSource(source: Source) {
+        sources.withIndex().find { it.value == source }?.apply {
+            value.active = true
+            dispatchFiltersChanged(source)
+            notifyItemChanged(index, FILTER_ENABLED)
+        }
     }
 
     private fun removeFilter(removing: Source) {
         val position = getFilterPosition(removing)
-        _filters.removeAt(position)
+        _sources.removeAt(position)
         notifyItemRemoved(position)
         dispatchFilterRemoved(removing)
         sourcesRepository.removeSource(removing)
     }
 
-    fun getFilterPosition(filter: Source) = filters.indexOf(filter)
+    fun getFilterPosition(filter: Source) = sources.indexOf(filter)
 
     fun highlightFilter(adapterPosition: Int) {
         notifyItemChanged(adapterPosition, HIGHLIGHT)
@@ -98,21 +77,21 @@ class FilterAdapter(
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): FilterViewHolder {
         val holder = FilterViewHolder(
-            LayoutInflater.from(viewGroup.context)
-                .inflate(R.layout.filter_item, viewGroup, false)
+                LayoutInflater.from(viewGroup.context)
+                        .inflate(R.layout.filter_item, viewGroup, false)
         )
         holder.itemView.setOnClickListener {
             val position = holder.adapterPosition
             if (position == RecyclerView.NO_POSITION) return@setOnClickListener
-            val filter = filters[position]
+            val filter = sources[position]
             filter.active = !filter.active
             holder.enableFilter(filter.active)
             notifyItemChanged(
-                position, if (filter.active) {
-                    FILTER_ENABLED
-                } else {
-                    FILTER_DISABLED
-                }
+                    position, if (filter.active) {
+                FILTER_ENABLED
+            } else {
+                FILTER_DISABLED
+            }
             )
             sourcesRepository.updateSource(filter)
             dispatchFiltersChanged(filter)
@@ -121,7 +100,7 @@ class FilterAdapter(
     }
 
     override fun onBindViewHolder(holder: FilterViewHolder, position: Int) {
-        val filter = filters[position]
+        val filter = sources[position]
         holder.bind(filter)
     }
 
@@ -145,14 +124,14 @@ class FilterAdapter(
         }
     }
 
-    override fun getItemCount() = filters.size
+    override fun getItemCount() = sources.size
 
     override fun getItemId(position: Int): Long {
-        return filters[position].key.hashCode().toLong()
+        return sources[position].key.hashCode().toLong()
     }
 
     override fun onItemDismiss(position: Int) {
-        val removing = filters[position]
+        val removing = sources[position]
         if (removing.isSwipeDismissable) {
             removeFilter(removing)
         }
@@ -162,7 +141,7 @@ class FilterAdapter(
         callbacks.add(callback)
     }
 
-    private fun dispatchFiltersChanged(filter: Source) {
+    fun dispatchFiltersChanged(filter: Source) {
         for (callback in callbacks) {
             callback.onFiltersChanged(filter)
         }

@@ -17,6 +17,8 @@
 
 package io.plaidapp.ui;
 
+import static io.plaidapp.dagger.Injector.inject;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
@@ -57,6 +59,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
+
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
+import com.bumptech.glide.util.ViewPreloadSizeProvider;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -65,12 +77,11 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
-import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import io.plaidapp.R;
 import io.plaidapp.core.data.DataManager;
 import io.plaidapp.core.data.PlaidItem;
 import io.plaidapp.core.data.Source;
+import io.plaidapp.core.data.prefs.SourcesRepository;
 import io.plaidapp.core.designernews.data.login.LoginRepository;
 import io.plaidapp.core.designernews.data.poststory.PostStoryService;
 import io.plaidapp.core.designernews.data.stories.model.Story;
@@ -91,13 +102,6 @@ import io.plaidapp.core.util.ShortcutHelper;
 import io.plaidapp.core.util.ViewUtils;
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static io.plaidapp.dagger.Injector.inject;
 
 public class HomeActivity extends Activity {
 
@@ -130,13 +134,17 @@ public class HomeActivity extends Activity {
     @Inject
     LoginRepository loginRepository;
 
+    @Inject
+    SourcesRepository sourcesRepository;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         bindResources();
         inject(this, data -> {
-            List<PlaidItem> items = PlaidItemsList.getPlaidItemsForDisplay(adapter.getItems(), data);
+            List<PlaidItem> items = PlaidItemsList.getPlaidItemsForDisplay(adapter.getItems(),
+                    data);
             adapter.setItems(items);
             checkEmptyState();
         });
@@ -249,7 +257,9 @@ public class HomeActivity extends Activity {
         toolbar = findViewById(R.id.toolbar);
         grid = findViewById(R.id.grid);
         fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> { fabClick(); });
+        fab.setOnClickListener(view -> {
+            fabClick();
+        });
         filtersList = findViewById(R.id.filters);
         loading = findViewById(android.R.id.empty);
         noConnection = findViewById(R.id.no_connection);
@@ -277,7 +287,9 @@ public class HomeActivity extends Activity {
     @Override
     public void onActivityReenter(int resultCode, Intent data) {
         if (data == null || resultCode != RESULT_OK
-                || !data.hasExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID)) return;
+                || !data.hasExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID)) {
+            return;
+        }
 
         // When reentering, if the shared element is no longer on screen (e.g. after an
         // orientation change) then scroll it into view.
@@ -294,7 +306,7 @@ public class HomeActivity extends Activity {
             grid.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
                 @Override
                 public void onLayoutChange(View v, int l, int t, int r, int b,
-                                           int oL, int oT, int oR, int oB) {
+                        int oL, int oT, int oR, int oB) {
                     grid.removeOnLayoutChangeListener(this);
                     startPostponedEnterTransition();
                 }
@@ -330,7 +342,8 @@ public class HomeActivity extends Activity {
                 View searchMenuView = toolbar.findViewById(R.id.menu_search);
                 Bundle options = ActivityOptions.makeSceneTransitionAnimation(this, searchMenuView,
                         getString(R.string.transition_search_back)).toBundle();
-                startActivityForResult(ActivityHelper.intentTo(Activities.Search.INSTANCE), RC_SEARCH, options);
+                startActivityForResult(ActivityHelper.intentTo(Activities.Search.INSTANCE),
+                        RC_SEARCH, options);
                 return true;
             case R.id.menu_designer_news_login:
                 if (!loginRepository.isLoggedIn()) {
@@ -370,22 +383,7 @@ public class HomeActivity extends Activity {
                     searchMenuView.setAlpha(1f);
                 }
                 if (resultCode == Activities.Search.RESULT_CODE_SAVE) {
-                    String query = data.getStringExtra(Activities.Search.EXTRA_QUERY);
-                    if (TextUtils.isEmpty(query)) return;
-                    Source dribbbleSearch = null;
-                    Source designerNewsSearch = null;
-                    boolean newSource = false;
-                    if (data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DRIBBBLE, false)) {
-                        dribbbleSearch = new Source.DribbbleSearchSource(query, true);
-                        newSource = filtersAdapter.addFilter(dribbbleSearch);
-                    }
-                    if (data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DESIGNER_NEWS, false)) {
-                        designerNewsSearch = new Source.DesignerNewsSearchSource(query, true);
-                        newSource |= filtersAdapter.addFilter(designerNewsSearch);
-                    }
-                    if (newSource) {
-                        highlightNewSources(dribbbleSearch, designerNewsSearch);
-                    }
+                    saveNewSource(data);
                 }
                 break;
             case RC_NEW_DESIGNER_NEWS_STORY:
@@ -411,6 +409,64 @@ public class HomeActivity extends Activity {
         }
     }
 
+    private void saveNewSource(Intent data) {
+        String query = data.getStringExtra(Activities.Search.EXTRA_QUERY);
+        if (TextUtils.isEmpty(query)) return;
+        Source dribbbleSearch = null;
+        Source designerNewsSearch = null;
+        boolean existingSource = true;
+        if (data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DRIBBBLE, false)) {
+            dribbbleSearch = new Source.DribbbleSearchSource(query, true);
+            existingSource = addOrActivateSource(dribbbleSearch);
+        }
+        if (data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DESIGNER_NEWS, false)) {
+            designerNewsSearch = new Source.DesignerNewsSearchSource(query, true);
+            existingSource |= addOrActivateSource(designerNewsSearch);
+        }
+        if (existingSource) {
+            highlightNewSources(dribbbleSearch, designerNewsSearch);
+        }
+    }
+
+    /**
+     * @return true if the source existed already in the filter
+     */
+    private boolean addOrActivateSource(Source newSource) {
+        boolean existing = checkSourceExistsAndActivateIfNeeded(newSource);
+        if (existing) {
+            return true;
+        }
+        // didn't already exist, so add it
+        List<Source> sources = filtersAdapter.getSources();
+        sources.add(newSource);
+        Collections.sort(sources, new Source.SourceComparator());
+        filtersAdapter.updateSources(sources);
+        sourcesRepository.addSource(newSource);
+        filtersAdapter.dispatchFiltersChanged(newSource);
+        return false;
+    }
+
+    /**
+     * @return true if the source existed and had to be activated
+     */
+    private boolean checkSourceExistsAndActivateIfNeeded(Source newSource) {
+        List<Source> filters = filtersAdapter.getSources();
+        for (int i = 0; i < filters.size(); i++) {
+            Source existing = filters.get(i);
+            if (existing.getClass() == newSource.getClass() &&
+                    existing.key.equalsIgnoreCase(newSource.key)) {
+                // already exists, just ensure it's active
+                if (!existing.active) {
+                    filtersAdapter.activateSource(existing);
+                    sourcesRepository.updateSource(newSource);
+                    filtersAdapter.dispatchFiltersChanged(newSource);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     @Override
     protected void onDestroy() {
         dataManager.cancelLoading();
@@ -420,20 +476,20 @@ public class HomeActivity extends Activity {
     // listener for notifying adapter when data sources are deactivated
     private FiltersChangedCallback filtersChangedCallbacks =
             new FiltersChangedCallback() {
-        @Override
-        public void onFiltersChanged(Source changedFilter) {
-            if (!changedFilter.active) {
-                adapter.removeDataSource(changedFilter.key);
-            }
-            checkEmptyState();
-        }
+                @Override
+                public void onFiltersChanged(Source changedFilter) {
+                    if (!changedFilter.active) {
+                        adapter.removeDataSource(changedFilter.key);
+                    }
+                    checkEmptyState();
+                }
 
-        @Override
-        public void onFilterRemoved(Source removed) {
-            adapter.removeDataSource(removed.key);
-            checkEmptyState();
-        }
-    };
+                @Override
+                public void onFilterRemoved(Source removed) {
+                    adapter.removeDataSource(removed.key);
+                    checkEmptyState();
+                }
+            };
 
     private RecyclerView.OnScrollListener toolbarElevation = new RecyclerView.OnScrollListener() {
         @Override
@@ -488,7 +544,8 @@ public class HomeActivity extends Activity {
                     if (complete != null) {
                         fabPosting.setImageDrawable(complete);
                         complete.start();
-                        fabPosting.postDelayed(() -> fabPosting.setVisibility(View.GONE), 2100); // length of R.drawable.avd_upload_complete
+                        fabPosting.postDelayed(() -> fabPosting.setVisibility(View.GONE),
+                                2100); // length of R.drawable.avd_upload_complete
                     }
 
                     // actually add the story to the grid
@@ -591,7 +648,7 @@ public class HomeActivity extends Activity {
             fabPosting.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
                 @Override
                 public void onLayoutChange(View v, int l, int t, int r, int b,
-                                           int oldL, int oldT, int oldR, int oldB) {
+                        int oldL, int oldT, int oldR, int oldB) {
                     fabPosting.removeOnLayoutChangeListener(this);
                     revealPostingProgress();
                 }
@@ -689,10 +746,10 @@ public class HomeActivity extends Activity {
 
     /**
      * Highlight the new source(s) by:
-     *      1. opening the drawer
-     *      2. scrolling new source(s) into view
-     *      3. flashing new source(s) background
-     *      4. closing the drawer (if user hasn't interacted with it)
+     * 1. opening the drawer
+     * 2. scrolling new source(s) into view
+     * 3. flashing new source(s) background
+     * 4. closing the drawer (if user hasn't interacted with it)
      */
     private void highlightNewSources(final Source... sources) {
         final Runnable closeDrawerRunnable = () -> drawer.closeDrawer(GravityCompat.END);
@@ -763,7 +820,7 @@ public class HomeActivity extends Activity {
 
             connectivityManager.registerNetworkCallback(
                     new NetworkRequest.Builder()
-                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build(),
+                            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build(),
                     connectivityCallback);
             monitoringConnectivity = true;
         }
