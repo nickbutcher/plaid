@@ -22,7 +22,23 @@ import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.data.login.LoginRepository
 
 class HomeViewModel(
-    private val dataManager: DataManager,
+    val dataManager: DataManager,
     private val loginRepository: LoginRepository,
-    private val sourcesRepository: SourcesRepository
-) : ViewModel()
+    val sourcesRepository: SourcesRepository
+) : ViewModel() {
+
+    fun isDesignerNewsUserLoggedIn() = loginRepository.isLoggedIn
+
+    fun logoutFromDesignerNews() {
+        loginRepository.logout()
+    }
+
+    fun loadData() {
+        dataManager.loadAllDataSources()
+    }
+
+    override fun onCleared() {
+        dataManager.cancelLoading()
+        super.onCleared()
+    }
+}

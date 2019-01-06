@@ -19,7 +19,6 @@ package io.plaidapp.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.content.BroadcastReceiver;
@@ -58,7 +57,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -70,11 +68,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import io.plaidapp.R;
-import io.plaidapp.core.data.DataManager;
 import io.plaidapp.core.data.PlaidItem;
 import io.plaidapp.core.data.Source;
 import io.plaidapp.core.data.prefs.SourcesRepository;
-import io.plaidapp.core.designernews.data.login.LoginRepository;
 import io.plaidapp.core.designernews.data.poststory.PostStoryService;
 import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
@@ -126,11 +122,7 @@ public class HomeActivity extends FragmentActivity {
 
     // data
     @Inject
-    DataManager dataManager;
-    @Inject
     FeedAdapter adapter;
-    @Inject
-    LoginRepository loginRepository;
     @Inject
     SourcesRepository sourcesRepository;
 
@@ -172,10 +164,10 @@ public class HomeActivity extends FragmentActivity {
         });
         grid.setLayoutManager(layoutManager);
         grid.addOnScrollListener(toolbarElevation);
-        grid.addOnScrollListener(new InfiniteScrollListener(layoutManager, dataManager) {
+        grid.addOnScrollListener(new InfiniteScrollListener(layoutManager, viewModel.getDataManager()) {
             @Override
             public void onLoadMore() {
-                dataManager.loadAllDataSources();
+                viewModel.loadData();
             }
         });
         grid.setHasFixedSize(true);
@@ -247,7 +239,7 @@ public class HomeActivity extends FragmentActivity {
         filtersList.setItemAnimator(new FilterAnimator());
 
         sourcesRepository.registerFilterChangedCallback(filtersChangedCallbacks);
-        dataManager.loadAllDataSources();
+        viewModel.loadData();
         ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter, this);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(filtersList);
@@ -324,7 +316,7 @@ public class HomeActivity extends FragmentActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         final MenuItem designerNewsLogin = menu.findItem(R.id.menu_designer_news_login);
         if (designerNewsLogin != null) {
-            designerNewsLogin.setTitle(loginRepository.isLoggedIn() ?
+            designerNewsLogin.setTitle(viewModel.isDesignerNewsUserLoggedIn() ?
                     R.string.designer_news_log_out : R.string.designer_news_login);
         }
         return true;
@@ -343,10 +335,10 @@ public class HomeActivity extends FragmentActivity {
                 startActivityForResult(ActivityHelper.intentTo(Activities.Search.INSTANCE), RC_SEARCH, options);
                 return true;
             case R.id.menu_designer_news_login:
-                if (!loginRepository.isLoggedIn()) {
+                if (!viewModel.isDesignerNewsUserLoggedIn()) {
                     startActivity(ActivityHelper.intentTo(Activities.DesignerNews.Login.INSTANCE));
                 } else {
-                    loginRepository.logout();
+                    viewModel.logoutFromDesignerNews();
                     ShortcutHelper.disablePostShortcut(this);
                     // TODO something better than a toast!!
                     Toast.makeText(getApplicationContext(), R.string.designer_news_logged_out,
@@ -421,12 +413,6 @@ public class HomeActivity extends FragmentActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        dataManager.cancelLoading();
-        super.onDestroy();
-    }
-
     // listener for notifying adapter when data sources are deactivated
     private FiltersChangedCallback filtersChangedCallbacks =
             new FiltersChangedCallback() {
@@ -479,7 +465,7 @@ public class HomeActivity extends FragmentActivity {
     }
 
     protected void fabClick() {
-        if (loginRepository.isLoggedIn()) {
+        if (viewModel.isDesignerNewsUserLoggedIn()) {
             Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.PostStory.INSTANCE);
             FabTransform.addExtras(intent,
                     ContextCompat.getColor(this, R.color.accent), R.drawable.ic_add_dark);
@@ -801,7 +787,7 @@ public class HomeActivity extends FragmentActivity {
                 TransitionManager.beginDelayedTransition(drawer);
                 noConnection.setVisibility(View.GONE);
                 loading.setVisibility(View.VISIBLE);
-                dataManager.loadAllDataSources();
+                viewModel.loadData();
             });
         }
 
