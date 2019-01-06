@@ -71,6 +71,7 @@ import io.plaidapp.R;
 import io.plaidapp.core.data.DataManager;
 import io.plaidapp.core.data.PlaidItem;
 import io.plaidapp.core.data.Source;
+import io.plaidapp.core.data.prefs.SourcesRepository;
 import io.plaidapp.core.designernews.data.login.LoginRepository;
 import io.plaidapp.core.designernews.data.poststory.PostStoryService;
 import io.plaidapp.core.designernews.data.stories.model.Story;
@@ -129,6 +130,8 @@ public class HomeActivity extends Activity {
     FilterAdapter filtersAdapter;
     @Inject
     LoginRepository loginRepository;
+    @Inject
+    SourcesRepository sourcesRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -236,7 +239,8 @@ public class HomeActivity extends Activity {
 
         filtersList.setAdapter(filtersAdapter);
         filtersList.setItemAnimator(new FilterAnimator());
-        filtersAdapter.registerFilterChangedCallback(filtersChangedCallbacks);
+        
+        sourcesRepository.registerFilterChangedCallback(filtersChangedCallbacks);
         dataManager.loadAllDataSources();
         ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter, this);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);

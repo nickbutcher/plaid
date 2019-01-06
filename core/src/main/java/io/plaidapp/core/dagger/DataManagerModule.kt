@@ -23,11 +23,11 @@ import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.DataManager
 import io.plaidapp.core.data.OnDataLoadedCallback
 import io.plaidapp.core.data.PlaidItem
+import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.domain.LoadStoriesUseCase
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.producthunt.data.api.ProductHuntRepository
-import io.plaidapp.core.ui.filter.FilterAdapter
 
 /**
  * Module to provide [DataManager].
@@ -44,14 +44,14 @@ class DataManagerModule {
         searchStoriesUseCase: SearchStoriesUseCase,
         productHuntRepository: ProductHuntRepository,
         shotsRepository: ShotsRepository,
-        filterAdapter: FilterAdapter
+        sourcesRepository: SourcesRepository
     ): DataManager = getDataManager(
         onDataLoadedCallback,
         loadStoriesUseCase,
         productHuntRepository,
         searchStoriesUseCase,
         shotsRepository,
-        filterAdapter
+        sourcesRepository
     )
 
     @Provides
@@ -61,14 +61,14 @@ class DataManagerModule {
         productHuntRepository: ProductHuntRepository,
         searchStoriesUseCase: SearchStoriesUseCase,
         shotsRepository: ShotsRepository,
-        filterAdapter: FilterAdapter
+        sourcesRepository: SourcesRepository
     ): DataLoadingSubject = getDataManager(
         onDataLoadedCallback,
         loadStoriesUseCase,
         productHuntRepository,
         searchStoriesUseCase,
         shotsRepository,
-        filterAdapter
+        sourcesRepository
     )
 
     private fun getDataManager(
@@ -77,7 +77,7 @@ class DataManagerModule {
         productHuntRepository: ProductHuntRepository,
         searchStoriesUseCase: SearchStoriesUseCase,
         shotsRepository: ShotsRepository,
-        filterAdapter: FilterAdapter
+        sourcesRepository: SourcesRepository
     ): DataManager {
         return if (::manager.isInitialized) {
             manager
@@ -88,7 +88,7 @@ class DataManagerModule {
                 productHuntRepository,
                 searchStoriesUseCase,
                 shotsRepository,
-                filterAdapter
+                sourcesRepository
             )
             manager
         }

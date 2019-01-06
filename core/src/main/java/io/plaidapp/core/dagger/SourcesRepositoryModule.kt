@@ -35,7 +35,7 @@ class SourcesRepositoryModule {
         val defaultSources = provideDefaultSources(context)
         val sharedPrefs = context.getSharedPreferences(SOURCES_PREF, Context.MODE_PRIVATE)
         val localDataSource = SourcesLocalDataSource(sharedPrefs)
-        return SourcesRepository(defaultSources, localDataSource)
+        return SourcesRepository.getInstance(defaultSources, localDataSource)
     }
 
     private fun provideDefaultSources(context: Context): List<Source> {
