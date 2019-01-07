@@ -79,7 +79,7 @@ import io.plaidapp.core.ui.HomeGridItemAnimator;
 import io.plaidapp.core.ui.PlaidItemsList;
 import io.plaidapp.core.ui.filter.FilterAdapter;
 import io.plaidapp.core.ui.filter.FilterAnimator;
-import io.plaidapp.core.ui.filter.FiltersChangedCallback;
+import io.plaidapp.core.ui.filter.SourceUiModel;
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.core.ui.transitions.FabTransform;
 import io.plaidapp.core.util.Activities;
@@ -140,7 +140,13 @@ public class HomeActivity extends FragmentActivity {
             checkEmptyState();
         });
 
-        filtersAdapter = new FilterAdapter(sourcesRepository);
+        filtersAdapter = new FilterAdapter();
+
+        viewModel.getSources().observe(this, sources -> filtersAdapter.submitList(sources));
+        viewModel.getSourceRemoved().observe(this, source -> {
+                    handleDataSourceRemoved(source.key);
+                    checkEmptyState();
+                });
 
         drawer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -238,7 +244,6 @@ public class HomeActivity extends FragmentActivity {
         filtersList.setAdapter(filtersAdapter);
         filtersList.setItemAnimator(new FilterAnimator());
 
-        sourcesRepository.registerFilterChangedCallback(filtersChangedCallbacks);
         viewModel.loadData();
         ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter, this);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
@@ -379,11 +384,11 @@ public class HomeActivity extends FragmentActivity {
                     boolean newSource = false;
                     if (data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DRIBBBLE, false)) {
                         dribbbleSearch = new Source.DribbbleSearchSource(query, true);
-                        newSource = filtersAdapter.addFilter(dribbbleSearch);
+                        newSource = viewModel.addSource(dribbbleSearch);
                     }
                     if (data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DESIGNER_NEWS, false)) {
                         designerNewsSearch = new Source.DesignerNewsSearchSource(query, true);
-                        newSource |= filtersAdapter.addFilter(designerNewsSearch);
+                        newSource |= viewModel.addSource(designerNewsSearch);
                     }
                     if (newSource) {
                         highlightNewSources(dribbbleSearch, designerNewsSearch);
@@ -412,24 +417,6 @@ public class HomeActivity extends FragmentActivity {
                 break;
         }
     }
-
-    // listener for notifying adapter when data sources are deactivated
-    private FiltersChangedCallback filtersChangedCallbacks =
-            new FiltersChangedCallback() {
-        @Override
-        public void onFiltersChanged(Source changedFilter) {
-            if (!changedFilter.active) {
-               handleDataSourceRemoved(changedFilter.key);
-            }
-            checkEmptyState();
-        }
-
-        @Override
-        public void onFilterRemoved(Source removed) {
-            handleDataSourceRemoved(removed.key);
-            checkEmptyState();
-        }
-    };
 
     private RecyclerView.OnScrollListener toolbarElevation = new RecyclerView.OnScrollListener() {
         @Override
@@ -721,7 +708,13 @@ public class HomeActivity extends FragmentActivity {
                 List<Integer> filterPositions = new ArrayList<>(sources.length);
                 for (Source source : sources) {
                     if (source != null) {
-                        filterPositions.add(filtersAdapter.getFilterPosition(source));
+                        List<SourceUiModel> sourcesUiModels = viewModel.getSources().getValue();
+                        for(int i = 0; i< sourcesUiModels.size(); i++){
+                            if(sourcesUiModels.get(i).getSource().equals(source)){
+                                filterPositions.add(i);
+                            }
+                        }
+
                     }
                 }
                 int scrollTo = Collections.max(filterPositions);
