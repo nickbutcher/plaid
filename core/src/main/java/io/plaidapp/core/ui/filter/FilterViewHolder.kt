@@ -58,9 +58,9 @@ class FilterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             )
         }
         filterIcon.imageAlpha = if (filter.active)
-            FilterAdapter.FILTER_ICON_ENABLED_ALPHA
+            FILTER_ICON_ENABLED_ALPHA
         else
-            FilterAdapter.FILTER_ICON_DISABLED_ALPHA
+            FILTER_ICON_DISABLED_ALPHA
     }
 
     fun createEnableDisableAnimator(preInfo: FilterHolderInfo): Animator {
@@ -68,9 +68,9 @@ class FilterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 filterIcon,
                 ViewUtils.IMAGE_ALPHA,
                 if (preInfo.doEnable) {
-                    FilterAdapter.FILTER_ICON_ENABLED_ALPHA
+                    FILTER_ICON_ENABLED_ALPHA
                 } else {
-                    FilterAdapter.FILTER_ICON_DISABLED_ALPHA
+                    FILTER_ICON_DISABLED_ALPHA
                 }
         )
         iconAlpha.apply {
@@ -103,5 +103,10 @@ class FilterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 itemView.setHasTransientState(false)
             }
         }
+    }
+
+    companion object {
+        private const val FILTER_ICON_ENABLED_ALPHA = 179 // 70%
+        private const val FILTER_ICON_DISABLED_ALPHA = 51 // 20%
     }
 }

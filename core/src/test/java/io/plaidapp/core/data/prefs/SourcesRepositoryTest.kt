@@ -109,12 +109,12 @@ class SourcesRepositoryTest {
     }
 
     @Test
-    fun updateSource() {
-        // When updating a source
-        repository.updateSource(designerNewsSource)
+    fun changeSourceActiveState() {
+        // When changing the active state of a source
+        repository.changeSourceActiveState(designerNewsSource)
 
         // Then the source was updated in the data source
-        verify(localDataSource).updateSource(designerNewsSource.key, designerNewsSource.active)
+        verify(localDataSource).updateSource(designerNewsSource.key, !designerNewsSource.active)
     }
 
     @Test
@@ -137,23 +137,23 @@ class SourcesRepositoryTest {
     }
 
     @Test
-    fun updateSource_updatesInCache() {
+    fun changeSourceActiveState_updatesInCache() {
         // Given an added source
         repository.addSource(designerNewsSource)
 
-        // When updating a source
+        // When changing the active state of a source
         val designerNewsInactive = Source.DesignerNewsSearchSource(
                 "query",
                 false
         )
-        repository.updateSource(designerNewsInactive)
+        repository.changeSourceActiveState(designerNewsInactive)
 
         // Then the updated source is returned
         val sources = repository.getSources()
         assertEquals(1, sources.size)
         val updatedSource = sources[0]
         assertEquals(designerNewsInactive.key, updatedSource.key)
-        assertEquals(designerNewsInactive.active, updatedSource.active)
+        assertEquals(!designerNewsInactive.active, updatedSource.active)
     }
 
     @Test
@@ -189,7 +189,7 @@ class SourcesRepositoryTest {
     }
 
     @Test
-    fun listenerNotified_whenSourceUpdated() {
+    fun listenerNotified_whenSourceActiveStateChanged() {
         // Given a callback registered
         var sourceUpdated: Source? = null
         val callback = object : FiltersChangedCallback() {
@@ -200,8 +200,8 @@ class SourcesRepositoryTest {
         }
         repository.registerFilterChangedCallback(callback)
 
-        // When updating a source
-        repository.updateSource(designerNewsSource)
+        // When changing the active state of a source
+        repository.changeSourceActiveState(designerNewsSource)
 
         // Then the callback was triggered
         assertEquals(sourceUpdated, designerNewsSource)
