@@ -37,7 +37,7 @@ buildscript {
             'jsoup'              : '1.11.3',
             'junit'              : '4.12',
             'kotlin'             : '1.3.10',
-            'ktlint'             : '0.24.0',
+            'ktlint'             : '0.29.0',
             'legacyCoreUtils'    : '1.0.0',
             'lifecycle'          : '2.0.0',
             'material'           : '1.0.0',
