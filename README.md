@@ -2,7 +2,9 @@
 
 Rewriting Plaid using [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/), in Kotlin. 
 
-🛑 During the initial development stage, we're not accepting external PRs. 🛑
+🛑 During the initial development stage, we're not accepting external PRs that touch on the app's architecture. 🛑
+
+✋ From time to time we'll open issues as "Up for grabs". We'll be happy to get your contributions on those!  
 
 👍 Comments and new issues created are welcomed. 
 
