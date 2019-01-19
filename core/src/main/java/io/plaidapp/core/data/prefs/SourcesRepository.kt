@@ -69,18 +69,22 @@ class SourcesRepository(
         }
         Collections.sort(sources, Source.SourceComparator())
         cache.addAll(sources)
+        dispatchSourcesUpdated()
         return cache
     }
 
     private fun addSources(sources: List<Source>) {
         val sourceKeys = sources.map { it.key }.toSet()
         dataSource.addSources(sourceKeys, true)
+        cache.addAll(sources)
+        dispatchSourcesUpdated()
     }
 
     fun addSource(source: Source) {
         dataSource.addSource(source.key, source.active)
         cache.add(source)
         dispatchSourceChanged(source)
+        dispatchSourcesUpdated()
     }
 
     fun changeSourceActiveState(source: Source) {
@@ -88,12 +92,14 @@ class SourcesRepository(
         dataSource.updateSource(source.key, newActiveState)
         cache.find { it.key == source.key }?.apply { active = newActiveState }
         dispatchSourceChanged(source)
+        dispatchSourcesUpdated()
     }
 
     fun removeSource(source: Source) {
         dataSource.removeSource(source.key)
         cache.remove(source)
         dispatchSourceRemoved(source)
+        dispatchSourcesUpdated()
     }
 
     fun getActiveSourcesCount(): Int {
@@ -103,6 +109,10 @@ class SourcesRepository(
     private fun getSourceFromDefaults(key: String, active: Boolean): Source? {
         return defaultSources.firstOrNull { source -> source.key == key }
                 .also { it?.active = active }
+    }
+
+    private fun dispatchSourcesUpdated() {
+        callbacks.forEach { it.onFiltersUpdated(cache) }
     }
 
     private fun dispatchSourceChanged(source: Source) {
