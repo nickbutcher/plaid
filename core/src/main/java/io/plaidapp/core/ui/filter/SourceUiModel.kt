@@ -17,9 +17,21 @@
 package io.plaidapp.core.ui.filter
 
 import io.plaidapp.core.data.Source
+import io.plaidapp.core.util.event.Event
 
+/**
+ * UI model for a source
+ */
 data class SourceUiModel(
     val source: Source,
     val onSourceClicked: (source: Source) -> Unit,
     val onSourceRemoved: (source: Source) -> Unit
+)
+
+/**
+ * UI model for the list of sources
+ */
+data class SourcesUiModel(
+    val sourcesList: List<SourceUiModel>,
+    val openSource: Event<Unit>
 )

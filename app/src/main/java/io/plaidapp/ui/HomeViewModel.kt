@@ -23,8 +23,8 @@ import io.plaidapp.core.data.DataManager
 import io.plaidapp.core.data.Source
 import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.data.login.LoginRepository
-import io.plaidapp.core.ui.filter.SourceUiModel
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
+import io.plaidapp.core.ui.filter.SourceUiModel
 import java.util.Collections
 
 class HomeViewModel(
@@ -45,21 +45,24 @@ class HomeViewModel(
     // listener for notifying adapter when data sources are deactivated
     private val filtersChangedCallbacks = object : FiltersChangedCallback() {
         override fun onFiltersChanged(changedFilter: Source) {
-            updateSources()
             if (!changedFilter.active) {
                 _sourceRemoved.value = changedFilter
             }
         }
 
         override fun onFilterRemoved(removed: Source) {
-            updateSources()
             _sourceRemoved.value = removed
+        }
+
+        override fun onFiltersUpdated(sources: List<Source>) {
+            super.onFiltersUpdated(sources)
+            updateSources(sources)
         }
     }
 
     init {
-        updateSources()
         sourcesRepository.registerFilterChangedCallback(filtersChangedCallbacks)
+        getSources()
     }
 
     fun isDesignerNewsUserLoggedIn() = loginRepository.isLoggedIn
@@ -98,12 +101,15 @@ class HomeViewModel(
         }
         // didn't already exist, so add it
         sourcesRepository.addSource(toAdd)
-        updateSources()
         return true
     }
 
-    private fun updateSources() {
-        val mutableSources = sourcesRepository.getSources()
+    private fun getSources() {
+        updateSources(sourcesRepository.getSources())
+    }
+
+    private fun updateSources(sources: List<Source>) {
+        val mutableSources = sources.toMutableList()
         Collections.sort(mutableSources, Source.SourceComparator())
         _sources.value = mutableSources.map {
             SourceUiModel(
