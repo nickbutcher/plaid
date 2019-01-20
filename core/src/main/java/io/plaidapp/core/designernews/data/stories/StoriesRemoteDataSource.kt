@@ -17,8 +17,10 @@
 package io.plaidapp.core.designernews.data.stories
 
 import io.plaidapp.core.data.Result
+import io.plaidapp.core.data.Source
 import io.plaidapp.core.designernews.data.api.DesignerNewsSearchService
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
+import io.plaidapp.core.designernews.data.api.StoryIds
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import retrofit2.Response
 import java.io.IOException
@@ -45,16 +47,31 @@ class StoriesRemoteDataSource(
     }
 
     suspend fun search(query: String, page: Int): Result<List<StoryResponse>> {
-        // TODO: replace with DesignerNewsSearchService
+        // TODO: what is the prefix / Source thing used for?
+        val queryWithoutPrefix = query.replace(Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX, "")
         return try {
-            val response = service.search(query, page).await()
+            val searchResults = searchService.search(queryWithoutPrefix, page).await()
+            val ids = searchResults.body()
+            if (searchResults.isSuccessful && !ids.isNullOrEmpty()) {
+                loadStories(StoryIds(ids))
+            } else {
+                Result.Error(IOException("Error searching $queryWithoutPrefix"))
+            }
+        } catch (e: Exception) {
+            Result.Error(IOException("Error searching $queryWithoutPrefix", e))
+        }
+    }
+
+    private suspend fun loadStories(ids: StoryIds): Result<List<StoryResponse>> {
+        return try {
+            val response = service.getStories(ids).await()
             getResult(response = response, onError = {
                 Result.Error(
-                    IOException("Error searching $query ${response.code()} ${response.message()}")
+                    IOException("Error getting stories ${response.code()} ${response.message()}")
                 )
             })
         } catch (e: Exception) {
-            Result.Error(IOException("Error searching $query", e))
+            Result.Error(IOException("Error getting stories", e))
         }
     }
 
