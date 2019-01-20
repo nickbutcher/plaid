@@ -21,6 +21,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
+import io.plaidapp.core.designernews.data.api.DesignerNewsSearchService
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.errorResponseBody
@@ -57,7 +58,8 @@ class StoriesRemoteDataSourceTest {
     private val query = "Plaid 2.0"
 
     private val service: DesignerNewsService = mock()
-    private val dataSource = StoriesRemoteDataSource(service)
+    private val searchService: DesignerNewsSearchService = mock()
+    private val dataSource = StoriesRemoteDataSource(service, searchService)
 
     @Test
     fun loadStories_withSuccess() = runBlocking {

@@ -17,6 +17,7 @@
 package io.plaidapp.core.designernews.data.stories
 
 import io.plaidapp.core.data.Result
+import io.plaidapp.core.designernews.data.api.DesignerNewsSearchService
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import retrofit2.Response
@@ -25,7 +26,10 @@ import java.io.IOException
 /**
  * Data source class that handles work with Designer News API.
  */
-class StoriesRemoteDataSource(private val service: DesignerNewsService) {
+class StoriesRemoteDataSource(
+    private val service: DesignerNewsService,
+    private val searchService: DesignerNewsSearchService
+) {
 
     suspend fun loadStories(page: Int): Result<List<StoryResponse>> {
         return try {
@@ -41,6 +45,7 @@ class StoriesRemoteDataSource(private val service: DesignerNewsService) {
     }
 
     suspend fun search(query: String, page: Int): Result<List<StoryResponse>> {
+        // TODO: replace with DesignerNewsSearchService
         return try {
             val response = service.search(query, page).await()
             getResult(response = response, onError = {
@@ -70,9 +75,12 @@ class StoriesRemoteDataSource(private val service: DesignerNewsService) {
         @Volatile
         private var INSTANCE: StoriesRemoteDataSource? = null
 
-        fun getInstance(service: DesignerNewsService): StoriesRemoteDataSource {
+        fun getInstance(
+            service: DesignerNewsService,
+            searchService: DesignerNewsSearchService
+        ): StoriesRemoteDataSource {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: StoriesRemoteDataSource(service).also { INSTANCE = it }
+                INSTANCE ?: StoriesRemoteDataSource(service, searchService).also { INSTANCE = it }
             }
         }
     }
