@@ -54,6 +54,10 @@ interface DesignerNewsService {
     @GET("api/v2/stories")
     fun getStories(@Query("page") page: Int?): Deferred<Response<List<StoryResponse>>>
 
+    @EnvelopePayload("stories/{ids}")
+    @GET("api/v2/stories")
+    fun getStories(@Path("ids") ids: StoryIds): Deferred<Response<List<StoryResponse>>>
+
     @EnvelopePayload("stories")
     @GET("api/v1/stories/search")
     fun search(
