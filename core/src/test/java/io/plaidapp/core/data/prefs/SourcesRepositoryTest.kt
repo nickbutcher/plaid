@@ -100,9 +100,9 @@ class SourcesRepositoryTest {
     }
 
     @Test
-    fun addSource_addsSourceToDataSource() {
-        // When adding a source
-        repository.addSource(designerNewsSource)
+    fun addSources_addsSourcesToDataSource() {
+        // When adding a list of sources
+        repository.addSources(listOf(designerNewsSource))
 
         // Then the source was added to the data source
         verify(localDataSource).addSource(designerNewsSource.key, designerNewsSource.active)
@@ -127,9 +127,9 @@ class SourcesRepositoryTest {
     }
 
     @Test
-    fun addSource_addsSourceCache() {
+    fun addSources_addsSourceCache() {
         // When adding a source
-        repository.addSource(designerNewsSource)
+        repository.addSources(listOf(designerNewsSource))
 
         // Then the source is returned
         val sources = repository.getSources()
@@ -139,7 +139,7 @@ class SourcesRepositoryTest {
     @Test
     fun changeSourceActiveState_updatesInCache() {
         // Given an added source
-        repository.addSource(designerNewsSource)
+        repository.addSources(listOf(designerNewsSource))
 
         // When changing the active state of a source
         val designerNewsInactive = Source.DesignerNewsSearchSource(
@@ -159,7 +159,7 @@ class SourcesRepositoryTest {
     @Test
     fun removeSource_removesFromCache() {
         // Given an added source
-        repository.addSource(designerNewsSource)
+        repository.addSources(listOf(designerNewsSource))
 
         // When removing a source
         repository.removeSource(designerNewsSource)
@@ -172,20 +172,20 @@ class SourcesRepositoryTest {
     @Test
     fun listenerNotified_whenSourceAdded() {
         // Given a callback registered
-        var sourceAdded: Source? = null
+        var sourceAdded: List<Source>? = null
         val callback = object : FiltersChangedCallback() {
-            override fun onFiltersChanged(changedFilter: Source) {
-                super.onFiltersChanged(changedFilter)
-                sourceAdded = changedFilter
+            override fun onFiltersUpdated(sources: List<Source>) {
+                super.onFiltersUpdated(sources)
+                sourceAdded = sources
             }
         }
         repository.registerFilterChangedCallback(callback)
 
-        // When adding a source
-        repository.addSource(designerNewsSource)
+        // When adding a list of sources
+        repository.addSources(listOf(designerNewsSource))
 
         // Then the callback was triggered
-        assertEquals(sourceAdded, designerNewsSource)
+        assertEquals(sourceAdded, listOf(designerNewsSource))
     }
 
     @Test
@@ -228,8 +228,7 @@ class SourcesRepositoryTest {
     @Test
     fun getActiveSourceCount() {
         // Given an active and an inactive source added
-        repository.addSource(designerNewsSource) // active source
-        repository.addSource(productHuntSource) // inactive source
+        repository.addSources(listOf(designerNewsSource, productHuntSource))
         val keys = setOf(dnSourceKey, phSourceKey)
         whenever(localDataSource.getKeys()).thenReturn(keys)
         whenever(localDataSource.getSourceActiveState(dnSourceKey)).thenReturn(true)

@@ -55,7 +55,6 @@ class HomeViewModel(
         }
 
         override fun onFiltersUpdated(sources: List<Source>) {
-            super.onFiltersUpdated(sources)
             updateSources(sources)
         }
     }
@@ -80,28 +79,15 @@ class HomeViewModel(
         super.onCleared()
     }
 
-    /**
-     * Adds the source and returns true if it's a new source
-     */
-    fun addSource(toAdd: Source): Boolean {
-        val filters = sources.value ?: return false
-
-        // first check if it already exists
-        for (i in 0 until filters.size) {
-            val existing = filters[i]
-            if (existing.source.javaClass == toAdd.javaClass &&
-                    existing.source.key.equals(toAdd.key, ignoreCase = true)
-            ) {
-                // already exists, just ensure it's active
-                if (!existing.source.active) {
-                    sourcesRepository.changeSourceActiveState(existing.source)
-                }
-                return false
-            }
+    fun addSources(query: String, isDribbble: Boolean, isDesignerNews: Boolean) {
+        val sources = mutableListOf<Source>()
+        if (isDribbble) {
+            sources.add(Source.DribbbleSearchSource(query, true))
         }
-        // didn't already exist, so add it
-        sourcesRepository.addSource(toAdd)
-        return true
+        if (isDesignerNews) {
+            sources.add(Source.DesignerNewsSearchSource(query, true))
+        }
+        sourcesRepository.addOrMarkActiveSources(sources)
     }
 
     private fun getSources() {
@@ -113,11 +99,15 @@ class HomeViewModel(
         Collections.sort(mutableSources, Source.SourceComparator())
         _sources.value = mutableSources.map {
             SourceUiModel(
-                    it,
-                    { source -> sourcesRepository.changeSourceActiveState(source) },
+                    it.key,
+                    it.name,
+                    it.active,
+                    it.iconRes,
+                    it.isSwipeDismissable,
+                    { source -> sourcesRepository.changeSourceActiveState(source.key, !source.active) },
                     { source ->
                         if (source.isSwipeDismissable) {
-                            sourcesRepository.removeSource(source)
+                            sourcesRepository.removeSource(source.key)
                         }
                     }
             )

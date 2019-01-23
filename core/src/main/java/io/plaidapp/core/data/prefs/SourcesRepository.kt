@@ -73,32 +73,53 @@ class SourcesRepository(
         return cache
     }
 
-    private fun addSources(sources: List<Source>) {
-        val sourceKeys = sources.map { it.key }.toSet()
-        dataSource.addSources(sourceKeys, true)
+    fun addSources(sources: List<Source>) {
+        sources.forEach { dataSource.addSource(it.key, it.active) }
         cache.addAll(sources)
         dispatchSourcesUpdated()
     }
 
-    fun addSource(source: Source) {
-        dataSource.addSource(source.key, source.active)
-        cache.add(source)
-        dispatchSourceChanged(source)
+    fun addOrMarkActiveSources(sources: List<Source>) {
+        val sourcesToAdd = mutableListOf<Source>()
+        sources.forEach { toAdd ->
+            // first check if it already exists
+            var sourcePresent = false
+            for (i in 0 until cache.size) {
+                val existing = cache[i]
+                if (existing.javaClass == toAdd.javaClass &&
+                        existing.key.equals(toAdd.key, ignoreCase = true)
+                ) {
+                    sourcePresent = true
+                    // already exists, just ensure it's active
+                    if (!existing.active) {
+                        changeSourceActiveState(existing.key, true)
+                    }
+                }
+            }
+            if(!sourcePresent){
+                // doesn't exist so needs to be added
+                sourcesToAdd.add(toAdd)
+            }
+        }
+        // they didn't already exist, so add them
+        addSources(sourcesToAdd)
+    }
+
+    fun changeSourceActiveState(sourceKey: String, newActiveState: Boolean) {
+        dataSource.updateSource(sourceKey, newActiveState)
+        cache.find { it.key == sourceKey }?.apply {
+            active = newActiveState
+            dispatchSourceChanged(this)
+        }
         dispatchSourcesUpdated()
     }
 
-    fun changeSourceActiveState(source: Source) {
-        val newActiveState = !source.active
-        dataSource.updateSource(source.key, newActiveState)
-        cache.find { it.key == source.key }?.apply { active = newActiveState }
-        dispatchSourceChanged(source)
-        dispatchSourcesUpdated()
-    }
-
-    fun removeSource(source: Source) {
-        dataSource.removeSource(source.key)
-        cache.remove(source)
-        dispatchSourceRemoved(source)
+    fun removeSource(sourceKey: String) {
+        dataSource.removeSource(sourceKey)
+        cache.find { it.key == sourceKey }?.let {
+            cache.remove(it)
+            dispatchSourceRemoved(it)
+        }
         dispatchSourcesUpdated()
     }
 
@@ -131,8 +152,8 @@ class SourcesRepository(
         private var INSTANCE: SourcesRepository? = null
 
         fun getInstance(
-            defaultSources: List<Source>,
-            dataSource: SourcesLocalDataSource
+                defaultSources: List<Source>,
+                dataSource: SourcesLocalDataSource
         ): SourcesRepository {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: SourcesRepository(defaultSources, dataSource).also { INSTANCE = it }

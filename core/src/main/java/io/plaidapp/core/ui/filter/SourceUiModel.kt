@@ -16,22 +16,17 @@
 
 package io.plaidapp.core.ui.filter
 
-import io.plaidapp.core.data.Source
-import io.plaidapp.core.util.event.Event
+import androidx.annotation.DrawableRes
 
 /**
  * UI model for a source
  */
 data class SourceUiModel(
-    val source: Source,
-    val onSourceClicked: (source: Source) -> Unit,
-    val onSourceRemoved: (source: Source) -> Unit
-)
-
-/**
- * UI model for the list of sources
- */
-data class SourcesUiModel(
-    val sourcesList: List<SourceUiModel>,
-    val openSource: Event<Unit>
+    val key: String,
+    val name: String,
+    val active: Boolean,
+    @DrawableRes val iconRes: Int,
+    val isSwipeDismissable: Boolean,
+    val onSourceClicked: (source: SourceUiModel) -> Unit,
+    val onSourceRemoved: (source: SourceUiModel) -> Unit
 )

@@ -48,7 +48,7 @@ class FilterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         filterName.isEnabled = enable
     }
 
-    fun bind(filter: Source) {
+    fun bind(filter: SourceUiModel) {
         isSwipeable = filter.isSwipeDismissable
         filterName.text = filter.name
         filterName.isEnabled = filter.active
