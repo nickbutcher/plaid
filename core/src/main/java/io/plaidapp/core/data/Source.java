@@ -20,6 +20,7 @@ package io.plaidapp.core.data;
 import androidx.annotation.DrawableRes;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 import io.plaidapp.core.R;
 
@@ -32,7 +33,7 @@ public class Source {
     public final int sortOrder;
     public final String name;
     public final @DrawableRes int iconRes;
-    public boolean active;
+    private boolean active;
 
     public Source(String key,
                   int sortOrder,
@@ -44,6 +45,40 @@ public class Source {
         this.name = name;
         this.iconRes = iconResId;
         this.active = active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean getActive() {
+        return active;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Source)) return false;
+        Source source = (Source) o;
+        return sortOrder == source.sortOrder &&
+                iconRes == source.iconRes &&
+                active == source.active &&
+                key.equals(source.key) &&
+                name.equals(source.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(key, sortOrder, name, iconRes, active);
+    }
+
+    @Override
+    public String toString() {
+        return "Source{" +
+                "key='" + key + '\'' +
+                ", name='" + name + '\'' +
+                ", active=" + active +
+                '}';
     }
 
     public boolean isSwipeDismissable() {

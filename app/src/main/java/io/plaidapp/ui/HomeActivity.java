@@ -17,6 +17,8 @@
 
 package io.plaidapp.ui;
 
+import static io.plaidapp.dagger.Injector.inject;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.ActivityManager;
@@ -56,6 +58,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
+
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
+import com.bumptech.glide.util.ViewPreloadSizeProvider;
+
+import java.util.Collections;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -65,11 +76,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
-import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import io.plaidapp.R;
 import io.plaidapp.core.data.PlaidItem;
-import io.plaidapp.core.data.Source;
 import io.plaidapp.core.data.prefs.SourcesRepository;
 import io.plaidapp.core.designernews.data.poststory.PostStoryService;
 import io.plaidapp.core.designernews.data.stories.model.Story;
@@ -79,7 +87,6 @@ import io.plaidapp.core.ui.HomeGridItemAnimator;
 import io.plaidapp.core.ui.PlaidItemsList;
 import io.plaidapp.core.ui.filter.FilterAdapter;
 import io.plaidapp.core.ui.filter.FilterAnimator;
-import io.plaidapp.core.ui.filter.SourceUiModel;
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.core.ui.transitions.FabTransform;
 import io.plaidapp.core.util.Activities;
@@ -90,13 +97,6 @@ import io.plaidapp.core.util.ShortcutHelper;
 import io.plaidapp.core.util.ViewUtils;
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static io.plaidapp.dagger.Injector.inject;
 
 public class HomeActivity extends FragmentActivity {
 
@@ -141,6 +141,13 @@ public class HomeActivity extends FragmentActivity {
         });
 
         filtersAdapter = new FilterAdapter();
+        filtersAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                highlightPosition(positionStart + itemCount);
+                super.onItemRangeInserted(positionStart, itemCount);
+            }
+        });
 
         viewModel.getSources().observe(this, sources -> filtersAdapter.submitList(sources));
         viewModel.getSourceRemoved().observe(this, source -> {
@@ -170,12 +177,13 @@ public class HomeActivity extends FragmentActivity {
         });
         grid.setLayoutManager(layoutManager);
         grid.addOnScrollListener(toolbarElevation);
-        grid.addOnScrollListener(new InfiniteScrollListener(layoutManager, viewModel.getDataManager()) {
-            @Override
-            public void onLoadMore() {
-                viewModel.loadData();
-            }
-        });
+        grid.addOnScrollListener(
+                new InfiniteScrollListener(layoutManager, viewModel.getDataManager()) {
+                    @Override
+                    public void onLoadMore() {
+                        viewModel.loadData();
+                    }
+                });
         grid.setHasFixedSize(true);
         grid.addItemDecoration(new GridItemDividerDecoration(this, R.dimen.divider_height,
                 R.color.divider));
@@ -256,7 +264,9 @@ public class HomeActivity extends FragmentActivity {
         toolbar = findViewById(R.id.toolbar);
         grid = findViewById(R.id.grid);
         fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> { fabClick(); });
+        fab.setOnClickListener(view -> {
+            fabClick();
+        });
         filtersList = findViewById(R.id.filters);
         loading = findViewById(android.R.id.empty);
         noConnection = findViewById(R.id.no_connection);
@@ -284,7 +294,9 @@ public class HomeActivity extends FragmentActivity {
     @Override
     public void onActivityReenter(int resultCode, Intent data) {
         if (data == null || resultCode != RESULT_OK
-                || !data.hasExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID)) return;
+                || !data.hasExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID)) {
+            return;
+        }
 
         // When reentering, if the shared element is no longer on screen (e.g. after an
         // orientation change) then scroll it into view.
@@ -379,20 +391,11 @@ public class HomeActivity extends FragmentActivity {
                 if (resultCode == Activities.Search.RESULT_CODE_SAVE) {
                     String query = data.getStringExtra(Activities.Search.EXTRA_QUERY);
                     if (TextUtils.isEmpty(query)) return;
-                    Source dribbbleSearch = null;
-                    Source designerNewsSearch = null;
-                    boolean newSource = false;
-                    if (data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DRIBBBLE, false)) {
-                        dribbbleSearch = new Source.DribbbleSearchSource(query, true);
-                        newSource = viewModel.addSource(dribbbleSearch);
-                    }
-                    if (data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DESIGNER_NEWS, false)) {
-                        designerNewsSearch = new Source.DesignerNewsSearchSource(query, true);
-                        newSource |= viewModel.addSource(designerNewsSearch);
-                    }
-                    if (newSource) {
-                        highlightNewSources(dribbbleSearch, designerNewsSearch);
-                    }
+                    boolean isDribbble =
+                            data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DRIBBBLE, false);
+                    boolean isDesignerNews =
+                            data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DESIGNER_NEWS, false);
+                    viewModel.addSources(query, isDribbble, isDesignerNews);
                 }
                 break;
             case RC_NEW_DESIGNER_NEWS_STORY:
@@ -689,7 +692,7 @@ public class HomeActivity extends FragmentActivity {
      *      3. flashing new source(s) background
      *      4. closing the drawer (if user hasn't interacted with it)
      */
-    private void highlightNewSources(final Source... sources) {
+    private void highlightPosition(int lastPosition) {
         final Runnable closeDrawerRunnable = () -> drawer.closeDrawer(GravityCompat.END);
         drawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
 
@@ -704,24 +707,8 @@ public class HomeActivity extends FragmentActivity {
 
             @Override
             public void onDrawerOpened(View drawerView) {
-                // scroll to the new item(s) and highlight them
-                List<Integer> filterPositions = new ArrayList<>(sources.length);
-                for (Source source : sources) {
-                    if (source != null) {
-                        List<SourceUiModel> sourcesUiModels = viewModel.getSources().getValue();
-                        for(int i = 0; i< sourcesUiModels.size(); i++){
-                            if(sourcesUiModels.get(i).getSource().equals(source)){
-                                filterPositions.add(i);
-                            }
-                        }
-
-                    }
-                }
-                int scrollTo = Collections.max(filterPositions);
-                filtersList.smoothScrollToPosition(scrollTo);
-                for (int position : filterPositions) {
-                    filtersAdapter.highlightFilter(position);
-                }
+                // scroll to the new item(s)
+                filtersList.smoothScrollToPosition(lastPosition);
                 filtersList.setOnTouchListener(filtersTouch);
             }
 

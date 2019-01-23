@@ -42,16 +42,6 @@ class SourcesLocalDataSource(private val prefs: SharedPreferences) {
     }
 
     /**
-     * Add a set of sources and a common active state
-     */
-    fun addSources(sources: Set<String>, isActive: Boolean) {
-        prefs.edit {
-            putStringSet(KEY_SOURCES, sources)
-            sources.forEach { putBoolean(it, isActive) }
-        }
-    }
-
-    /**
      * Update the active state of a source
      */
     fun updateSource(source: String, isActive: Boolean) {
