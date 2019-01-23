@@ -21,6 +21,7 @@ import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 import io.plaidapp.test.shared.LiveDataTestUtil
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -57,7 +58,7 @@ class LoggedInUserDaoTest {
         database.close()
     }
 
-    @Test fun insertAndGetLoggedInUser() {
+    @Test fun insertAndGetLoggedInUser() = runBlocking {
         // Given a LoggedInUser that has been inserted into the DB
         loggedInUserDao.setLoggedInUser(loggedInUser)
 
@@ -68,7 +69,7 @@ class LoggedInUserDaoTest {
         assertEquals(loggedInUser, userFromDb)
     }
 
-    @Test fun replaceLoggedInUser() {
+    @Test fun replaceLoggedInUser() = runBlocking {
         // Given a LoggedInUser that has been inserted into the DB
         loggedInUserDao.setLoggedInUser(loggedInUser)
 
@@ -88,7 +89,7 @@ class LoggedInUserDaoTest {
         assertEquals(updatedUser, userFromDb)
     }
 
-    @Test fun uniqueLoggedInUser() {
+    @Test fun uniqueLoggedInUser() = runBlocking {
         // Given a LoggedInUser that has been inserted into the DB
         loggedInUserDao.setLoggedInUser(loggedInUser)
 
@@ -108,7 +109,7 @@ class LoggedInUserDaoTest {
         assertEquals(newUser, userFromDb)
     }
 
-    @Test fun deleteLoggedInUser() {
+    @Test fun deleteLoggedInUser() = runBlocking {
         // Given a LoggedInUser that has been inserted into the DB
         loggedInUserDao.setLoggedInUser(loggedInUser)
 
