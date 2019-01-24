@@ -20,7 +20,6 @@
 
     <!-- app palette -->
     <color name="primary">#69F0AE</color>
-    <color name="accent">@color/primary</color> <!-- mono-color -->
     <color name="primary_dark">#4aa87a</color>
 
     <!-- common colours -->

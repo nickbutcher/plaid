@@ -18,10 +18,19 @@
 
 <resources>
 
-    <style name="Plaid" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:colorPrimary">@color/primary</item>
+    <style name="Plaid" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">#69f0ae</item>
+        <item name="colorPrimaryVariant">#2bbd7e</item>
+        <item name="colorOnPrimary">#000000</item>
+        <item name="colorSecondary">#69f0ae</item>
+        <item name="colorSecondaryVariant">#2bbd7e</item>
+        <item name="colorOnSecondary">#000000</item>
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">#ffffff</item>
+        <item name="colorSurface">@color/background_light</item>
+        <item name="colorOnSurface">#212121</item>
         <item name="android:colorBackground">@color/background_light</item>
-        <item name="android:colorAccent">@color/accent</item>
+        <item name="colorOnBackground">#212121</item>
         <item name="android:navigationBarColor">@color/background_super_dark</item>
         <item name="android:statusBarColor">@color/background_super_dark</item>
         <item name="android:textColorHint">@color/hint_disabled_dark</item>
