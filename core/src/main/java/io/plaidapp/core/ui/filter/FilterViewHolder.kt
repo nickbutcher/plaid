@@ -24,7 +24,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import io.plaidapp.core.R
 import io.plaidapp.core.util.AnimUtils
@@ -86,7 +85,7 @@ class FilterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     fun createHighlightAnimator(): Animator {
-        val highlightColor = ContextCompat.getColor(itemView.context, R.color.accent)
+        val highlightColor = ColorUtils.getThemeColor(itemView.context, R.attr.colorPrimary, -1)
         val fadeFromTo = ColorUtils.modifyAlpha(highlightColor, 0)
 
         return ObjectAnimator.ofArgb(
