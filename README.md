@@ -4,7 +4,7 @@ Rewriting Plaid using [Android Architecture Components](https://developer.androi
 
 🛑 During the initial development stage, we're not accepting external PRs that touch on the app's architecture. 🛑
 
-✋ From time to time we'll open issues as "[Up for grabs](https://github.com/nickbutcher/plaid/issues?q=is%3Aissue+is%3Aopen+label%3A%22Up+for+grabs+%F0%9F%A4%9A%22)". We'll be happy to get your contributions on those!  
+✋ From time to time we'll open issues as "[Up for grabs](https://github.com/nickbutcher/plaid/issues?q=is%3Aissue+is%3Aopen+label%3A%22Up+for+grabs+%F0%9F%A4%9A%22)". We'll be happy to [get your contributions](https://github.com/nickbutcher/plaid/blob/master/CONTRIBUTING.md#contributing-a-patch) on those!  
 
 👍 Comments and new issues created are welcomed. 
 
