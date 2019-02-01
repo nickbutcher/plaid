@@ -54,28 +54,32 @@ internal class CommentReplyViewHolder(itemView: View) : RecyclerView.ViewHolder(
         val commentVotesAnimator = ObjectAnimator.ofPropertyValuesHolder(
                 commentVotes,
                 PropertyValuesHolder.ofFloat(View.TRANSLATION_X, -commentVotes.width.toFloat()),
-                PropertyValuesHolder.ofFloat(View.ALPHA, 0f))
-        commentVotesAnimator.duration = 200L
-        commentVotesAnimator.interpolator = interpolator
-
+                PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
+        ).apply {
+            duration = 200L
+            this.interpolator = interpolator
+        }
         val replyLabelAnimator = ObjectAnimator.ofPropertyValuesHolder(
                 replyLabel,
-                PropertyValuesHolder.ofFloat(View.TRANSLATION_X, -commentVotes.width.toFloat()))
-        replyLabelAnimator.duration = 200L
-        replyLabelAnimator.interpolator = interpolator
+                PropertyValuesHolder.ofFloat(View.TRANSLATION_X, -commentVotes.width.toFloat())
+        ).apply {
+            duration = 200L
+            this.interpolator = interpolator
+        }
 
         postReply.visibility = View.VISIBLE
         postReply.alpha = 0f
 
         val postReplyAnimator = ObjectAnimator.ofPropertyValuesHolder(
                 postReply,
-                PropertyValuesHolder.ofFloat(View.ALPHA, 1f))
-        postReplyAnimator.duration = 200L
-        postReplyAnimator.interpolator = interpolator
+                PropertyValuesHolder.ofFloat(View.ALPHA, 1f)
+        ).apply {
+            duration = 200L
+            this.interpolator = interpolator
+        }
 
-        val animator = AnimatorSet()
-        animator.playTogether(commentVotesAnimator, replyLabelAnimator, postReplyAnimator)
-        animator.apply {
+        return AnimatorSet().apply {
+            playTogether(commentVotesAnimator, replyLabelAnimator, postReplyAnimator)
             doOnStart {
                 itemView.setHasTransientState(true)
             }
@@ -83,8 +87,6 @@ internal class CommentReplyViewHolder(itemView: View) : RecyclerView.ViewHolder(
                 itemView.setHasTransientState(false)
             }
         }
-
-        return animator
     }
 
     fun createCommentReplyFocusLossAnimator(): Animator {
@@ -93,25 +95,29 @@ internal class CommentReplyViewHolder(itemView: View) : RecyclerView.ViewHolder(
         val commentVotesAnimator = ObjectAnimator.ofPropertyValuesHolder(
                 commentVotes,
                 PropertyValuesHolder.ofFloat(View.TRANSLATION_X, 0f),
-                PropertyValuesHolder.ofFloat(View.ALPHA, 1f))
-        commentVotesAnimator.duration = 200L
-        commentVotesAnimator.interpolator = interpolator
-
+                PropertyValuesHolder.ofFloat(View.ALPHA, 1f)
+        ).apply {
+            duration = 200L
+            this.interpolator = interpolator
+        }
         val replyLabelAnimator = ObjectAnimator.ofPropertyValuesHolder(
                 replyLabel,
-                PropertyValuesHolder.ofFloat(View.TRANSLATION_X, 0f))
-        replyLabelAnimator.duration = 200L
-        replyLabelAnimator.interpolator = interpolator
+                PropertyValuesHolder.ofFloat(View.TRANSLATION_X, 0f)
+        ).apply {
+            duration = 200L
+            this.interpolator = interpolator
+        }
 
         val postReplyAnimator = ObjectAnimator.ofPropertyValuesHolder(
                 postReply,
-                PropertyValuesHolder.ofFloat(View.ALPHA, 0f))
-        postReplyAnimator.duration = 200L
-        postReplyAnimator.interpolator = interpolator
+                PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
+        ).apply {
+            duration = 200L
+            this.interpolator = interpolator
+        }
 
-        val animator = AnimatorSet()
-        animator.playTogether(commentVotesAnimator, replyLabelAnimator, postReplyAnimator)
-        animator.apply {
+        return AnimatorSet().apply {
+            playTogether(commentVotesAnimator, replyLabelAnimator, postReplyAnimator)
             doOnStart {
                 itemView.setHasTransientState(true)
             }
@@ -120,7 +126,5 @@ internal class CommentReplyViewHolder(itemView: View) : RecyclerView.ViewHolder(
                 itemView.setHasTransientState(true)
             }
         }
-
-        return animator
     }
 }
