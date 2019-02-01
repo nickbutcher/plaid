@@ -20,7 +20,6 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.data.Source
 import io.plaidapp.core.designernews.data.api.DesignerNewsSearchService
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.api.StoryIds
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import retrofit2.Response
 import java.io.IOException
@@ -52,7 +51,8 @@ class StoriesRemoteDataSource(
             val searchResults = searchService.search(queryWithoutPrefix, page).await()
             val ids = searchResults.body()
             if (searchResults.isSuccessful && !ids.isNullOrEmpty()) {
-                loadStories(StoryIds(ids))
+                val commaSeparatedIds = ids.joinToString(",")
+                loadStories(commaSeparatedIds)
             } else {
                 Result.Error(IOException("Error searching $queryWithoutPrefix"))
             }
@@ -61,9 +61,9 @@ class StoriesRemoteDataSource(
         }
     }
 
-    private suspend fun loadStories(ids: StoryIds): Result<List<StoryResponse>> {
+    private suspend fun loadStories(commaSeparatedIds: String): Result<List<StoryResponse>> {
         return try {
-            val response = service.getStories(ids).await()
+            val response = service.getStories(commaSeparatedIds).await()
             getResult(response = response, onError = {
                 Result.Error(
                     IOException("Error getting stories ${response.code()} ${response.message()}")
