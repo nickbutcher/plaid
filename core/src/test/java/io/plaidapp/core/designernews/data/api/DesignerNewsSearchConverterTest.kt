@@ -17,7 +17,6 @@
 package io.plaidapp.core.designernews.data.api
 
 import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertNotNull
 import okhttp3.ResponseBody
 import org.junit.Test
 
@@ -35,7 +34,6 @@ class DesignerNewsSearchConverterTest {
         val searchResults = DesignerNewsSearchConverter.convert(response)
 
         // Then the html is parsed into a list of search results
-        assertNotNull(searchResults)
         assertEquals(6, searchResults.size)
 
         // Then the ID is extracted correctly
