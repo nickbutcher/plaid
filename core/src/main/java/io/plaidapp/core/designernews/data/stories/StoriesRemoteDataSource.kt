@@ -47,7 +47,6 @@ class StoriesRemoteDataSource(
     }
 
     suspend fun search(query: String, page: Int): Result<List<StoryResponse>> {
-        // TODO: what is the prefix / Source thing used for?
         val queryWithoutPrefix = query.replace(Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX, "")
         return try {
             val searchResults = searchService.search(queryWithoutPrefix, page).await()
