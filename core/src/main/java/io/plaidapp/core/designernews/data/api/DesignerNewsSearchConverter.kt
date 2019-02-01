@@ -27,7 +27,10 @@ import java.util.regex.Pattern
 private val PATTERN_STORY_ID = Pattern.compile("https:\\/\\/www\\.designernews\\.co\\/stories\\/([0-9]*)")
 
 /**
- * Designer News API doesn't have a search endpoint, so we have to scrape the HTML ourselves
+ * Designer News API doesn't have a search endpoint, so we have to scrape the HTML ourselves.
+ *
+ * This extracts the IDs from the HTML and returns them as a list. We can use these IDs with the API to get the rest of
+ * the information that we need.
  */
 object DesignerNewsSearchConverter : Converter<ResponseBody, List<String>> {
 
