@@ -35,8 +35,10 @@ class FilterAdapter : ListAdapter<SourceUiModel, FilterViewHolder>(sourceUiModel
         setHasStableIds(true)
     }
 
-    fun highlightFilter(adapterPosition: Int) {
-        notifyItemChanged(adapterPosition, HIGHLIGHT)
+    fun highlightPositions(positions: List<Int>) {
+        positions.forEach {
+            notifyItemChanged(it, HIGHLIGHT)
+        }
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): FilterViewHolder {
