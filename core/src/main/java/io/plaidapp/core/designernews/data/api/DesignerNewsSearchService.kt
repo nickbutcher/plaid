@@ -29,11 +29,10 @@ interface DesignerNewsSearchService {
     /**
      * Returns a list of story IDs
      */
-    @GET("search")
+    @GET("search?t=story")
     fun search(
         @Query("q") query: String,
-        @Query("p") page: Int?,
-        @Query("t") type: String = "story"
+        @Query("p") page: Int?
     ): Deferred<Response<List<String>>>
 
     companion object {
