@@ -56,7 +56,7 @@ interface DesignerNewsService {
 
     @EnvelopePayload("stories")
     @GET("api/v2/stories/{ids}")
-    fun getStories(@Path("ids") ids: StoryIds): Deferred<Response<List<StoryResponse>>>
+    fun getStories(@Path("ids") commaSeparatedIds: String): Deferred<Response<List<StoryResponse>>>
 
     @EnvelopePayload("users")
     @GET("api/v2/users/{ids}")
