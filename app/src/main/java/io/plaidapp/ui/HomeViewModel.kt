@@ -25,6 +25,9 @@ import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
 import io.plaidapp.core.ui.filter.SourceUiModel
+import io.plaidapp.core.ui.filter.SourcesHighlightUiModel
+import io.plaidapp.core.ui.filter.SourcesUiModel
+import io.plaidapp.core.util.event.Event
 import java.util.Collections
 
 class HomeViewModel(
@@ -38,8 +41,8 @@ class HomeViewModel(
     val sourceRemoved: LiveData<Source>
         get() = _sourceRemoved
 
-    private val _sources = MutableLiveData<List<SourceUiModel>>()
-    val sources: LiveData<List<SourceUiModel>>
+    private val _sources = MutableLiveData<SourcesUiModel>()
+    val sources: LiveData<SourcesUiModel>
         get() = _sources
 
     // listener for notifying adapter when data sources are deactivated
@@ -55,7 +58,7 @@ class HomeViewModel(
         }
 
         override fun onFiltersUpdated(sources: List<Source>) {
-            updateSources(sources)
+            updateSourcesUiModel(sources)
         }
     }
 
@@ -91,13 +94,65 @@ class HomeViewModel(
     }
 
     private fun getSources() {
-        updateSources(sourcesRepository.getSources())
+        updateSourcesUiModel(sourcesRepository.getSources())
     }
 
-    private fun updateSources(sources: List<Source>) {
+    private fun updateSourcesUiModel(sources: List<Source>) {
+        val newSourcesUiModel = createNewSourceUiModels(sources)
+        val oldSourceUiModel = _sources.value
+        if (oldSourceUiModel == null) {
+            _sources.value = SourcesUiModel(newSourcesUiModel)
+        } else {
+            val highlightUiModel = createSourcesHighlightUiModel(
+                    oldSourceUiModel.sourceUiModels,
+                    newSourcesUiModel
+            )
+            val event = if (highlightUiModel != null) {
+                Event(highlightUiModel)
+            } else {
+                null
+            }
+            _sources.value = SourcesUiModel(newSourcesUiModel, event)
+        }
+    }
+
+    private fun createSourcesHighlightUiModel(
+            oldSources: List<SourceUiModel>,
+            newSources: List<SourceUiModel>
+    ): SourcesHighlightUiModel? {
+        // if something was just updated or removed but not added, there's nothing to highlight
+        if (oldSources.size >= newSources.count()) {
+            return null
+        }
+        // something was added. Find out what
+        val positions = mutableListOf<Int>()
+        var itemsAdded = 0
+
+        for (i in 0 until oldSources.count()) {
+            val item = oldSources[i]
+            if (item.key != newSources[i + itemsAdded].key) {
+                // we have a new item
+                positions.add(i + itemsAdded)
+                itemsAdded++
+            }
+        }
+        val lastItems = (oldSources.count() + itemsAdded)
+        for (i in lastItems until newSources.size) {
+            positions.add(i)
+        }
+
+        val scrollToPosition = positions.max()
+        return if (scrollToPosition == null) {
+            null
+        } else {
+            SourcesHighlightUiModel(positions, scrollToPosition)
+        }
+    }
+
+    private fun createNewSourceUiModels(sources: List<Source>): List<SourceUiModel> {
         val mutableSources = sources.toMutableList()
         Collections.sort(mutableSources, Source.SourceComparator())
-        _sources.value = mutableSources.map {
+        return mutableSources.map {
             SourceUiModel(
                     it.key,
                     it.name,

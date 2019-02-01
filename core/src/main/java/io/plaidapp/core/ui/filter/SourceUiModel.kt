@@ -17,6 +17,7 @@
 package io.plaidapp.core.ui.filter
 
 import androidx.annotation.DrawableRes
+import io.plaidapp.core.util.event.Event
 
 /**
  * UI model for a source
@@ -29,4 +30,22 @@ data class SourceUiModel(
     val isSwipeDismissable: Boolean,
     val onSourceClicked: (source: SourceUiModel) -> Unit,
     val onSourceRemoved: (source: SourceUiModel) -> Unit
+)
+
+/**
+ * UI model for the entire list of sources. Contains the data to be displayed and an event that
+ * tells whether some sources need to be highlighted or not
+ */
+data class SourcesUiModel(
+    val sourceUiModels: List<SourceUiModel>,
+    val highlightSources: Event<SourcesHighlightUiModel>? = null
+)
+
+/**
+ * UI model for the sources that need to be highlighted. Contains a list of positions that need
+ * to be highlighted and the position to which we need to scroll to.
+ */
+data class SourcesHighlightUiModel(
+    val highlightPositions: List<Int>,
+    val scrollToPosition: Int
 )
