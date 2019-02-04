@@ -70,6 +70,16 @@ interface DesignerNewsService {
     @POST("oauth/token")
     fun login(@FieldMap loginParams: Map<String, String>): Deferred<Response<AccessToken>>
 
+    /**
+     * Fake-API for searching Designer News.
+     * Returns a list of story IDs
+     */
+    @GET("search?t=story")
+    fun search(
+        @Query("q") query: String,
+        @Query("p") page: Int?
+    ): Deferred<Response<List<String>>>
+
     @EnvelopePayload("story")
     @POST("api/v2/stories/{id}/upvote")
     fun upvoteStory(@Path("id") storyId: Long): Call<Story>
