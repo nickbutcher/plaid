@@ -26,7 +26,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 /**
- * Fake-API for searching dribbble
+ * Search Dribbble by scraping website
  */
 interface DribbbleSearchService {
 
