@@ -18,7 +18,6 @@ package io.plaidapp.core.designernews.data.stories
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.data.Source
-import io.plaidapp.core.designernews.data.api.DesignerNewsSearchService
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import retrofit2.Response
@@ -27,10 +26,7 @@ import java.io.IOException
 /**
  * Data source class that handles work with Designer News API.
  */
-class StoriesRemoteDataSource(
-    private val service: DesignerNewsService,
-    private val searchService: DesignerNewsSearchService
-) {
+class StoriesRemoteDataSource(private val service: DesignerNewsService) {
 
     suspend fun loadStories(page: Int): Result<List<StoryResponse>> {
         return try {
@@ -48,7 +44,7 @@ class StoriesRemoteDataSource(
     suspend fun search(query: String, page: Int): Result<List<StoryResponse>> {
         val queryWithoutPrefix = query.replace(Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX, "")
         return try {
-            val searchResults = searchService.search(queryWithoutPrefix, page).await()
+            val searchResults = service.search(queryWithoutPrefix, page).await()
             val ids = searchResults.body()
             if (searchResults.isSuccessful && !ids.isNullOrEmpty()) {
                 val commaSeparatedIds = ids.joinToString(",")
@@ -91,12 +87,9 @@ class StoriesRemoteDataSource(
         @Volatile
         private var INSTANCE: StoriesRemoteDataSource? = null
 
-        fun getInstance(
-            service: DesignerNewsService,
-            searchService: DesignerNewsSearchService
-        ): StoriesRemoteDataSource {
+        fun getInstance(service: DesignerNewsService): StoriesRemoteDataSource {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: StoriesRemoteDataSource(service, searchService).also { INSTANCE = it }
+                INSTANCE ?: StoriesRemoteDataSource(service).also { INSTANCE = it }
             }
         }
     }
