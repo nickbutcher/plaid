@@ -71,7 +71,7 @@ interface DesignerNewsService {
     fun login(@FieldMap loginParams: Map<String, String>): Deferred<Response<AccessToken>>
 
     /**
-     * Fake-API for searching Designer News.
+     * Search Designer News by scraping website.
      * Returns a list of story IDs
      */
     @GET("search?t=story")
