@@ -27,7 +27,6 @@ import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textfield.TextInputLayout
 import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator
 import io.plaidapp.designernews.R
@@ -52,16 +51,16 @@ internal class CommentReplyViewHolder(itemView: View) : RecyclerView.ViewHolder(
         val interpolator = getFastOutSlowInInterpolator(itemView.context)
 
         val commentVotesAnimator = ObjectAnimator.ofPropertyValuesHolder(
-                commentVotes,
-                PropertyValuesHolder.ofFloat(View.TRANSLATION_X, -commentVotes.width.toFloat()),
-                PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
+            commentVotes,
+            PropertyValuesHolder.ofFloat(View.TRANSLATION_X, -commentVotes.width.toFloat()),
+            PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
         ).apply {
             duration = 200L
             this.interpolator = interpolator
         }
         val replyLabelAnimator = ObjectAnimator.ofPropertyValuesHolder(
-                replyLabel,
-                PropertyValuesHolder.ofFloat(View.TRANSLATION_X, -commentVotes.width.toFloat())
+            replyLabel,
+            PropertyValuesHolder.ofFloat(View.TRANSLATION_X, -commentVotes.width.toFloat())
         ).apply {
             duration = 200L
             this.interpolator = interpolator
@@ -71,8 +70,8 @@ internal class CommentReplyViewHolder(itemView: View) : RecyclerView.ViewHolder(
         postReply.alpha = 0f
 
         val postReplyAnimator = ObjectAnimator.ofPropertyValuesHolder(
-                postReply,
-                PropertyValuesHolder.ofFloat(View.ALPHA, 1f)
+            postReply,
+            PropertyValuesHolder.ofFloat(View.ALPHA, 1f)
         ).apply {
             duration = 200L
             this.interpolator = interpolator
@@ -93,24 +92,26 @@ internal class CommentReplyViewHolder(itemView: View) : RecyclerView.ViewHolder(
         val interpolator = getFastOutSlowInInterpolator(itemView.context)
 
         val commentVotesAnimator = ObjectAnimator.ofPropertyValuesHolder(
-                commentVotes,
-                PropertyValuesHolder.ofFloat(View.TRANSLATION_X, 0f),
-                PropertyValuesHolder.ofFloat(View.ALPHA, 1f)
+            commentVotes,
+            PropertyValuesHolder.ofFloat(View.TRANSLATION_X, 0f),
+            PropertyValuesHolder.ofFloat(View.ALPHA, 1f)
         ).apply {
             duration = 200L
             this.interpolator = interpolator
         }
-        val replyLabelAnimator = ObjectAnimator.ofPropertyValuesHolder(
-                replyLabel,
-                PropertyValuesHolder.ofFloat(View.TRANSLATION_X, 0f)
+        val replyLabelAnimator = ObjectAnimator.ofFloat(
+            replyLabel,
+            View.TRANSLATION_X,
+            0f
         ).apply {
             duration = 200L
             this.interpolator = interpolator
         }
 
-        val postReplyAnimator = ObjectAnimator.ofPropertyValuesHolder(
-                postReply,
-                PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
+        val postReplyAnimator = ObjectAnimator.ofFloat(
+            postReply,
+            View.ALPHA,
+            0f
         ).apply {
             duration = 200L
             this.interpolator = interpolator
