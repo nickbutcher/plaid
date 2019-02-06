@@ -27,6 +27,7 @@ import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputLayout
 import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator
 import io.plaidapp.designernews.R
