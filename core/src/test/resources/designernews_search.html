@@ -1,0 +1,673 @@
+
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset=utf-8>
+    <script>window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","errorBeacon":"bam.nr-data.net","licenseKey":"e48264aa72","applicationID":"42804491","transactionName":"Jg1dQkFcXggEREkXXQQQUF4cQFoLFg==","queueTime":6,"applicationTime":589,"agent":""}</script>
+    <script>window.NREUM||(NREUM={}),__nr_require=function(e,n,t){function r(t){if(!n[t]){var o=n[t]={exports:{}};e[t][0].call(o.exports,function(n){var o=e[t][1][n];return r(o||n)},o,o.exports)}return n[t].exports}if("function"==typeof __nr_require)return __nr_require;for(var o=0;o
+				<t.length;o++)r(t[o]);return r}({1:[function(e,n,t){function r(){}function o(e,n,t){return function(){return i(e,[c.now()].concat(u(arguments)),n?null:this,t),n?void 0:this}}var i=e("handle"),a=e(3),u=e(4),f=e("ee").get("tracer"),c=e("loader"),s=NREUM;"undefined"==typeof window.newrelic&&(newrelic=s);var p=["setPageViewName","setCustomAttribute","setErrorHandler","finished","addToTrace","inlineHit","addRelease"],d="api-",l=d+"ixn-";a(p,function(e,n){s[n]=o(d+n,!0,"api")}),s.addPageAction=o(d+"addPageAction",!0),s.setCurrentRouteName=o(d+"routeName",!0),n.exports=newrelic,s.interaction=function(){return(new r).get()};var m=r.prototype={createTracer:function(e,n){var t={},r=this,o="function"==typeof n;return i(l+"tracer",[c.now(),e,t],r),function(){if(f.emit((o?"":"no-")+"fn-start",[c.now(),r,o],t),o)try{return n.apply(this,arguments)}catch(e){throw f.emit("fn-err",[arguments,this,e],t),e}finally{f.emit("fn-end",[c.now()],t)}}}};a("actionText,setName,setAttribute,save,ignore,onEnd,getContext,end,get".split(","),function(e,n){m[n]=o(l+n)}),newrelic.noticeError=function(e,n){"string"==typeof e&&(e=new Error(e)),i("err",[e,c.now(),!1,n])}},{}],2:[function(e,n,t){function r(e,n){if(!o)return!1;if(e!==o)return!1;if(!n)return!0;if(!i)return!1;for(var t=i.split("."),r=n.split("."),a=0;a
+					<r.length;a++)if(r[a]!==t[a])return!1;return!0}var o=null,i=null,a=/Version\/(\S+)\s+Safari/;if(navigator.userAgent){var u=navigator.userAgent,f=u.match(a);f&&u.indexOf("Chrome")===-1&&u.indexOf("Chromium")===-1&&(o="Safari",i=f[1])}n.exports={agent:o,version:i,match:r}},{}],3:[function(e,n,t){function r(e,n){var t=[],r="",i=0;for(r in e)o.call(e,r)&&(t[i]=n(r,e[r]),i+=1);return t}var o=Object.prototype.hasOwnProperty;n.exports=r},{}],4:[function(e,n,t){function r(e,n,t){n||(n=0),"undefined"==typeof t&&(t=e?e.length:0);for(var r=-1,o=t-n||0,i=Array(o
+						<0?0:o);++r
+							<o;)i[r]=e[n+r];return i}n.exports=r},{}],5:[function(e,n,t){n.exports={exists:"undefined"!=typeof window.performance&&window.performance.timing&&"undefined"!=typeof window.performance.timing.navigationStart}},{}],ee:[function(e,n,t){function r(){}function o(e){function n(e){return e&&e instanceof r?e:e?f(e,u,i):i()}function t(t,r,o,i){if(!d.aborted||i){e&&e(t,r,o);for(var a=n(o),u=v(t),f=u.length,c=0;c
+								<f;c++)u[c].apply(a,r);var p=s[y[t]];return p&&p.push([b,t,r,a]),a}}function l(e,n){h[e]=v(e).concat(n)}function m(e,n){var t=h[e];if(t)for(var r=0;r
+									<t.length;r++)t[r]===n&&t.splice(r,1)}function v(e){return h[e]||[]}function g(e){return p[e]=p[e]||o(t)}function w(e,n){c(e,function(e,t){n=n||"feature",y[t]=n,n in s||(s[n]=[])})}var h={},y={},b={on:l,addEventListener:l,removeEventListener:m,emit:t,get:g,listeners:v,context:n,buffer:w,abort:a,aborted:!1};return b}function i(){return new r}function a(){(s.api||s.feature)&&(d.aborted=!0,s=d.backlog={})}var u="nr@context",f=e("gos"),c=e(3),s={},p={},d=n.exports=o();d.backlog=s},{}],gos:[function(e,n,t){function r(e,n,t){if(o.call(e,n))return e[n];var r=t();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(e,n,{value:r,writable:!0,enumerable:!1}),r}catch(i){}return e[n]=r,r}var o=Object.prototype.hasOwnProperty;n.exports=r},{}],handle:[function(e,n,t){function r(e,n,t,r){o.buffer([e],r),o.emit(e,n,t)}var o=e("ee").get("handle");n.exports=r,r.ee=o},{}],id:[function(e,n,t){function r(e){var n=typeof e;return!e||"object"!==n&&"function"!==n?-1:e===window?0:a(e,i,function(){return o++})}var o=1,i="nr@id",a=e("gos");n.exports=r},{}],loader:[function(e,n,t){function r(){if(!E++){var e=x.info=NREUM.info,n=l.getElementsByTagName("script")[0];if(setTimeout(s.abort,3e4),!(e&&e.licenseKey&&e.applicationID&&n))return s.abort();c(y,function(n,t){e[n]||(e[n]=t)}),f("mark",["onload",a()+x.offset],null,"api");var t=l.createElement("script");t.src="https://"+e.agent,n.parentNode.insertBefore(t,n)}}function o(){"complete"===l.readyState&&i()}function i(){f("mark",["domContent",a()+x.offset],null,"api")}function a(){return O.exists&&performance.now?Math.round(performance.now()):(u=Math.max((new Date).getTime(),u))-x.offset}var u=(new Date).getTime(),f=e("handle"),c=e(3),s=e("ee"),p=e(2),d=window,l=d.document,m="addEventListener",v="attachEvent",g=d.XMLHttpRequest,w=g&&g.prototype;NREUM.o={ST:setTimeout,SI:d.setImmediate,CT:clearTimeout,XHR:g,REQ:d.Request,EV:d.Event,PR:d.Promise,MO:d.MutationObserver};var h=""+location,y={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",agent:"js-agent.newrelic.com/nr-1118.min.js"},b=g&&w&&w[m]&&!/CriOS/.test(navigator.userAgent),x=n.exports={offset:u,now:a,origin:h,features:{},xhrWrappable:b,userAgent:p};e(1),l[m]?(l[m]("DOMContentLoaded",i,!1),d[m]("load",r,!1)):(l[v]("onreadystatechange",o),d[v]("onload",r)),f("mark",["firstbyte",u],null,"api");var E=0,O=e(5)},{}]},{},["loader"]);
+									</script>
+    <meta name=referrer content=always>
+    <meta name=viewport content="width=device-width, user-scalable=no">
+    <meta name=theme-color content="#2D72D9">
+    <meta content="Designer News is a community where design and technology professionals share interesting links and timely events." name=description property=description />
+    <title>Search for &#x27;plaid&#x27; – Designer News</title>
+    <link rel=icon sizes=any mask href="https://d2si0b2wb4t75n.cloudfront.net/assets/safari-pin-icon-1d550476a108d421232f49039844e035.svg" color="#2D72D9">
+    <link rel=mask-icon href="https://d2si0b2wb4t75n.cloudfront.net/assets/safari-pin-icon-1d550476a108d421232f49039844e035.svg" color="#2D72D9">
+    <link rel="shortcut icon" type="image/png" href="https://d2si0b2wb4t75n.cloudfront.net/assets/favicon-a02887cb11cc394c76beef623eeb2e4c.png"/>
+    <link href="//cloud.typography.com/746852/739588/css/fonts.css" media=all rel=stylesheet />
+    <link href="https://d2si0b2wb4t75n.cloudfront.net/assets/application-93779c51135d8a7f1adf89ad6f8d6132.css" media=all rel=stylesheet />
+    <meta content=authenticity_token name=csrf-param />
+    <meta content="LvQQEvoH7pUATYns1OhHjQ+50KriPX9l5Re06byrNuQ=" name=csrf-token />
+    <meta class=swiftype content="Search for &amp;#x27;plaid&amp;#x27;" data-type=string name=title />
+    <meta class=swiftype content=page data-type=string name=content_type />
+    <meta content="Designer News" name="og:site_name"/>
+    <meta content="Search for &#x27;plaid&#x27; – Designer News" name="og:title"/>
+    <meta content="https://www.designernews.co/search" name="og:url"/>
+    <meta content="Designer News is a community where design and technology professionals share interesting links and timely events." name="og:description"/>
+    <meta content=website name="og:type"/>
+    <meta content="https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png" name="og:image"/>
+    <meta content=summary name="twitter:card"/>
+    <meta content="@designernewsbot" name="twitter:site"/>
+    <meta content="Search for &#x27;plaid&#x27; – Designer News" name="twitter:title"/>
+    <meta content="Designer News is a community where design and technology professionals share interesting links and timely events." name="twitter:description"/>
+    <meta content="https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png" name="twitter:image"/>
+    <link rel=apple-touch-icon-precomposed sizes=52x52 href="/apple-icon-52x52-precomposed.png"/>
+    <link rel=apple-touch-icon-precomposed sizes=72x72 href="/apple-icon-72x72-precomposed.png"/>
+    <link rel=apple-touch-icon-precomposed sizes=114x114 href="/apple-icon-114x114-precomposed.png"/>
+    <link rel=apple-touch-icon-precomposed sizes=144x144 href="/apple-icon-144x144-precomposed.png"/>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-24426626-5', 'auto');
+  ga('require', 'GTM-W37SR6V');
+  ga('send', 'pageview');
+</script>
+    <script>
+    adroll_adv_id = "FYZ6AVNB75DKJMIDTMETOQ";
+    adroll_pix_id = "P255P6Y5CBCHLAN5ISLPTB";
+    /* OPTIONAL: provide email to improve user identification */
+    /* adroll_email = "username@example.com"; */
+    (function () {
+        var _onload = function(){
+            if (document.readyState && !/loaded|complete/.test(document.readyState)){setTimeout(_onload, 10);return}
+            if (!window.__adroll_loaded){__adroll_loaded=true;setTimeout(_onload, 50);return}
+            var scr = document.createElement("script");
+            var host = (("https:" == document.location.protocol) ? "https://s.adroll.com" : "http://a.adroll.com");
+            scr.setAttribute('async', 'true');
+            scr.type = "text/javascript";
+            scr.src = host + "/j/roundtrip.js";
+            ((document.getElementsByTagName('head') || [null])[0] ||
+                document.getElementsByTagName('script')[0].parentNode).appendChild(scr);
+        };
+        if (window.addEventListener) {window.addEventListener('load', _onload, false);}
+        else {window.attachEvent('onload', _onload)}
+    }());
+</script>
+    <script>
+  (function(h,o,t,j,a,r){
+    h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+    h._hjSettings={hjid:308593,hjsv:5};
+    a=o.getElementsByTagName('head')[0];
+    r=o.createElement('script');r.async=1;
+    r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+    a.appendChild(r);
+  })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
+</script>
+    <script>
+    var config = {"imgix_domain":"designer-news-production.imgix.net","aws_domain":"designer-news-production.s3.amazonaws.com"}
+  </script>
+    <script src="https://d2si0b2wb4t75n.cloudfront.net/assets/libraries-16a74ad56deab9b544e7bd970b22b5de.js"></script>
+</head>
+<body class=search-show>
+<a id=skip-to-content-link href="#page-main-content">Skip to Content</a>
+<div id=header-container>
+    <header id=site-header>
+        <div id=header-bar>
+            <div class="wrap padded">
+                <div id=header-left-wrap>
+                    <button id=mobile-menu-toggle>
+                        <span id=mobile-menu-toggle-inner></span>
+                    </button>
+                    <a href="/" id=header-logo-link>
+                        <svg aria-label=header-logo-shadow height=43 id=svg-header-logo-shadow role=img version="1.1" viewBox="0 0 97 43" width=97>
+                            <path fill="#245bae" d="m27.17 42.801h69.61l-54.37-42.525-5.131-.075v7.272l-8.483-7.197h-5.405v8.439l-7.372-6.143h-15.91v20.444l27.06 19.785"/>
+                        </svg>
+                        <svg aria-label=header-logo-letters height=23 id=svg-header-logo-letters role=img version="1.1" viewBox="0 0 43 23" width=43>
+                            <path fill="#fff" d="m19.978 11.582c0-6.765-4.158-11.352-12.08-11.352h-7.821v22.77h7.986c7.689 0 11.913-4.653 11.913-11.418m-5.676.033c0 4.884-2.508 6.996-6.534 6.996h-2.046v-13.992h2.046c3.861 0 6.534 2.211 6.534 6.996m28.15 11.385v-22.77h-5.247v12.738l-8.382-12.738h-5.478v22.77h5.247v-13.629l8.976 13.629h4.884"/>
+                        </svg>
+                        <h1>Designer News</h1>
+                    </a>
+                    <nav id=header-main-navigation>
+                        <div id=header-menu-grouper>
+                            <a href="/">Stories</a>
+                            <a href="/jobs">Jobs</a>
+                            <a href="/podcast">Podcast</a>
+                            <div id=header-additional-menu-grouper class=header-drop-navigation-container data-active-size=768>
+                                <svg aria-label=more-navigation height=5 id=svg-more-navigation role=img version="1.1" viewBox="0 0 21 5" width=21>
+                                    <path d="m5 2.5c0-1.381-1.119-2.5-2.5-2.5-1.381 0-2.5 1.119-2.5 2.5 0 1.381 1.119 2.5 2.5 2.5 1.381 0 2.5-1.119 2.5-2.5m8 0c0-1.381-1.119-2.5-2.5-2.5-1.381 0-2.5 1.119-2.5 2.5 0 1.381 1.119 2.5 2.5 2.5 1.381 0 2.5-1.119 2.5-2.5m8 0c0-1.381-1.119-2.5-2.5-2.5-1.381 0-2.5 1.119-2.5 2.5 0 1.381 1.119 2.5 2.5 2.5 1.381 0 2.5-1.119 2.5-2.5"/>
+                                </svg>
+                                <ul id=header-additional-navigation class=header-drop-navigation>
+                                    <li>
+                                        <a href="/about" aria-label="About Designer News">About</a>
+                                    </li>
+                                    <li>
+                                        <a href="/things" aria-label="The various things built for Designer News">Things</a>
+                                    </li>
+                                    <li>
+                                        <a href="/gallery" aria-label="Gallery of Member Avatars">Gallery</a>
+                                    </li>
+                                    <li>
+                                        <a href="/hall_of_fame">Hall of Fame</a>
+                                    </li>
+                                    <li>
+                                        <a href="/advertise">Advertise</a>
+                                    </li>
+                                    <li>
+                                        <a href="/?format=rss">RSS Feed</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+                <div id=header-right-wrap>
+                    <a href="/login" class=toggle-login id=manage-account-button>
+                        <svg aria-label=account height=18 id=svg-account role=img version="1.1" viewBox="0 0 15 18" width=15>
+                            <path fill-rule=evenodd d="m13 5.5c0-3.038-2.462-5.5-5.5-5.5-3.038 0-5.5 2.462-5.5 5.5 0 1.75.818 3.31 2.092 4.317-2.429 1.241-4.092 3.768-4.092 6.683 0 .085-.056.678.258 1.341.759.172 1.406.145 1.817-.21-.177-1.711.007-3.195 1.258-4.667 1.472-1.731 2.955-1.912 4.167-1.912 0 0 1.015-.111 2.231.422 1.193.523 2.581 1.668 3.098 3.774.173.705.149 1.414.116 2.383 0 0 .432.694 1.933.382.268-.465.122-.98.122-1.513 0-2.915-1.663-5.442-4.092-6.683 1.274-1.01 2.092-2.567 2.092-4.317m-2 0c0-1.933-1.567-3.5-3.5-3.5-1.933 0-3.5 1.567-3.5 3.5 0 1.933 1.567 3.5 3.5 3.5 1.933 0 3.5-1.567 3.5-3.5"/>
+                        </svg>
+                        <span id=manage-account-label>Log in / Register</span>
+                    </a>
+                    <button id=search-toggle>
+                        <svg aria-label=search height=18 id=svg-search role=img version="1.1" viewBox="0 0 18 18" width=18>
+                            <path d="m0 6.5c0-3.59 2.91-6.5 6.5-6.5 3.59 0 6.5 2.91 6.5 6.5 0 1.465-.484 2.816-1.302 3.903.041.029.079.06.116.096l5.761 5.564c.395.382.408 1.01.021 1.411-.384.397-1.022.403-1.411.028l-5.761-5.564c-.051-.049-.095-.102-.133-.158-1.067.768-2.377 1.22-3.792 1.22-3.59 0-6.5-2.91-6.5-6.5m11 0c0-2.485-2.01-4.5-4.5-4.5-2.485 0-4.5 2.01-4.5 4.5 0 2.485 2.01 4.5 4.5 4.5 2.485 0 4.5-2.01 4.5-4.5"/>
+                        </svg>
+                    </button>
+                    <a href="/submit" class=toggle-login id=new-story-button>
+                        <span id=new-story-plus>+</span>
+                        <span id=new-story-text>New Story</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div id=header-search-container>
+            <div class="wrap padded">
+                <form id=header-search-form accept-charset=UTF-8 method=get action="/search" role=search>
+                    <input name=q id=header-search-field placeholder="Search for posts, comments, and users..." aria-label="Enter your query to search for posts, comments, and users">
+                    <input type=hidden name=t value=everything />
+                </form>
+            </div>
+        </div>
+    </header>
+    <div id=header-account-container>
+        <div class="wrap padded">
+            <form accept-charset=UTF-8 action="/user_sessions.json" class=new_user_session id=header-login-form method=post>
+                <div style="margin:0;padding:0;display:inline">
+                    <input name=utf8 type=hidden value="&#x2713;"/>
+                    <input name=authenticity_token type=hidden value="LvQQEvoH7pUATYns1OhHjQ+50KriPX9l5Re06byrNuQ="/>
+                </div>
+                <input class=standard-text-field id=user_session_login name="user_session[login]" placeholder="Email address" size=30 type=email />
+                <input class=standard-text-field id=user_session_password name="user_session[password]" placeholder=Password size=30 type=password />
+                <div class=submit-area>
+                    <a href="/account_help/new" id=account-help-link>I need help.</a>
+                    <button type=submit class="standard-button spin-button yellow" id=login-submit-button>
+                        <span class=spin-button-spinner></span>
+                        <span class=spin-button-text>Log in</span>
+                    </button>
+                </div>
+            </form>
+            <div id=header-register-container>
+                <h2>Join Us</h2>
+                <p>Designer News is where the design community meets.</p>
+                <a href="/signup" class="standard-button green">Register now</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id=page-container class="wrap padded has-sidebar">
+    <div id=page-main-content>
+        <div id=page-main-content-inner role=main>
+            <div class="standard-padding rte">
+                <h1>Designer News Search</h1>
+                <span class=powered-by>powered by
+																				<a class=swiftype-logo href="https://swiftype.com/">
+																					<img alt=Swiftype height=16 src="https://d2si0b2wb4t75n.cloudfront.net/assets/swiftype-logo-5eb369dda43ba7ab26d4521e41ee9496.png"/>
+																				</a>
+																			</span>
+                <form class=search-container action="/search" method=get>
+                    <input autofocus=autofocus class=standard-text-field id=page-search-field name=q placeholder=Apple value=plaid />
+                    <div id=search-options-container>
+                        <div class=select-wrapper>
+                            <select id=t name=t>
+                                <option value=everything selected>Search everything</option>
+                                <option value=story>Stories</option>
+                                <option value=comment>Comments</option>
+                                <option value=user>Users</option>
+                                <option value=page>Everything else</option>
+                            </select>
+                            <span class=select-label>Choose one...</span>
+                        </div>
+                        <input class="standard-button green" type=submit value=Search />
+                    </div>
+                </form>
+                <ul id=search-page-results-containers>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/company/plaid">
+                            <span class=search-result-content-type>page</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> All Plaid jobs. Jobs for Designers and Developers </h3>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/stories/68181-site-design-plaid-">
+                            <span class=search-result-content-type>story</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> Site Design: Plaid
+                                    <span class=search-result-timestamp>over 2 years ago</span>
+                                </h3>
+                                <p class=search-result-body>Site Design: Plaid </p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/stories/20284-responsive-prototyping-with-plaid">
+                            <span class=search-result-content-type>story</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> Responsive Prototyping with Plaid
+                                    <span class=search-result-timestamp>almost 5 years ago</span>
+                                </h3>
+                                <p class=search-result-body>Responsive Prototyping with Plaid</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/stories/89414-inside-the-design-of-plaid-link">
+                            <span class=search-result-content-type>story</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> Inside the design of Plaid Link
+                                    <span class=search-result-timestamp>about 1 year ago</span>
+                                </h3>
+                                <p class=search-result-body>Inside the design of Plaid Link</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/comments/299984">
+                            <span class=search-result-content-type>comment</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> i expected at least some plaid. – Plaid&amp;#x27;s new marketing site
+                                    <span class=search-result-timestamp>4 months ago</span>
+                                </h3>
+                                <p class=search-result-body>i expected at least some plaid.</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/comments/214545">
+                            <span class=search-result-content-type>comment</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> Admittedly, I was really hoping ... – Site Design: Plaid
+                                    <span class=search-result-timestamp>over 2 years ago</span>
+                                </h3>
+                                <p class=search-result-body>Admittedly, I was really hoping for a design heavily inspired by actual plaid fabric.</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/stories/97376-refreshing-plaids-brand">
+                            <span class=search-result-content-type>story</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> Refreshing Plaid&amp;#x27;s brand
+                                    <span class=search-result-timestamp>4 months ago</span>
+                                </h3>
+                                <p class=search-result-body>Refreshing Plaid&amp;#x27;s brand</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/stories/97273-plaids-new-marketing-site">
+                            <span class=search-result-content-type>story</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> Plaid&amp;#x27;s new marketing site
+                                    <span class=search-result-timestamp>4 months ago</span>
+                                </h3>
+                                <p class=search-result-body>Plaid&amp;#x27;s new marketing site</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/comments/214520">
+                            <span class=search-result-content-type>comment</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> Nicely done. – Site Design: Plaid
+                                    <span class=search-result-timestamp>over 2 years ago</span>
+                                </h3>
+                                <p class=search-result-body>Nicely done.</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/comments/214539">
+                            <span class=search-result-content-type>comment</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> Clever use of gradients. – Site Design: Plaid
+                                    <span class=search-result-timestamp>over 2 years ago</span>
+                                </h3>
+                                <p class=search-result-body>Clever use of gradients.</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/stories/21004-tether--a-new-noise-maker-to-promote-the-new-plaid-lp">
+                            <span class=search-result-content-type>story</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> Tether - a new noise maker to promote the new Plaid LP
+                                    <span class=search-result-timestamp>over 4 years ago</span>
+                                </h3>
+                                <p class=search-result-body>Tether - a new noise maker to promote the new Plaid LP</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/comments/214534">
+                            <span class=search-result-content-type>comment</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> might want to add some prominenc... – Site Design: Plaid
+                                    <span class=search-result-timestamp>over 2 years ago</span>
+                                </h3>
+                                <p class=search-result-body>might want to add some prominence to the CTA, the screenshot is overpowering it.</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/comments/214508">
+                            <span class=search-result-content-type>comment</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> Thats neat! :D But a bit sloppy.... – Site Design: Plaid
+                                    <span class=search-result-timestamp>over 2 years ago</span>
+                                </h3>
+                                <p class=search-result-body>Thats neat! :D But a bit sloppy. But thats not the design fault :)</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/comments/214531">
+                            <span class=search-result-content-type>comment</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> It&amp;#x27;s a nice design, but very, ve... – Site Design: Plaid
+                                    <span class=search-result-timestamp>over 2 years ago</span>
+                                </h3>
+                                <p class=search-result-body>It&amp;#x27;s a nice design, but very, very similar to what they had in place previously and does not really make sense for an update in 2016. There are a l...</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/comments/214454">
+                            <span class=search-result-content-type>comment</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> I like it a lot, it is very easy... – Site Design: Plaid
+                                    <span class=search-result-timestamp>over 2 years ago</span>
+                                </h3>
+                                <p class=search-result-body>I like it a lot, it is very easy to browse. It&amp;#x27;s quite subtle but elegant in aesthetic.Would be nice to see more company highlights, like the Robi...</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/comments/299800">
+                            <span class=search-result-content-type>comment</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> The animations on the Use Cases ... – Plaid&amp;#x27;s new marketing site
+                                    <span class=search-result-timestamp>4 months ago</span>
+                                </h3>
+                                <p class=search-result-body>The animations on the Use Cases pages are a really nice touch too. Great work</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/comments/299858">
+                            <span class=search-result-content-type>comment</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> It looks very &amp;quot;Stripe-ish&amp;quot;. Nice... – Plaid&amp;#x27;s new marketing site
+                                    <span class=search-result-timestamp>4 months ago</span>
+                                </h3>
+                                <p class=search-result-body>It looks very &amp;quot;Stripe-ish&amp;quot;. Nicely done but if it&amp;#x27;s not a Stripe product it looks like it might be.</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/comments/299781">
+                            <span class=search-result-content-type>comment</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> I really like the brushes of pai... – Plaid&amp;#x27;s new marketing site
+                                    <span class=search-result-timestamp>4 months ago</span>
+                                </h3>
+                                <p class=search-result-body>I really like the brushes of paint behind some of the callout elements. Really nice touch there. The illustrations of the people are better that th...</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/comments/299802">
+                            <span class=search-result-content-type>comment</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> I really like the paint brush st... – Plaid&amp;#x27;s new marketing site
+                                    <span class=search-result-timestamp>4 months ago</span>
+                                </h3>
+                                <p class=search-result-body>I really like the paint brush strokes as well.Interesting tidbit: When you hover on the buttons that say &amp;quot;Get API keys&amp;quot;, the background color is r...</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="search-page-result has-image">
+                        <a href="https://www.designernews.co/comments/299810">
+                            <span class=search-result-content-type>comment</span>
+                            <div class=search-result-image style="background-image:url(https://d2si0b2wb4t75n.cloudfront.net/assets/square-logo-f43f0632619701daec20134483f2241e.png)"></div>
+                            <div class=search-result-content>
+                                <h3> https://twitter.com/lorenbaxter/... – Plaid&amp;#x27;s new marketing site
+                                    <span class=search-result-timestamp>4 months ago</span>
+                                </h3>
+                                <p class=search-result-body>https://twitter.com/lorenbaxter/status/1040677926553870336</p>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+                <div id=search-pagination-buttons>
+                    <a href="/search?p=2&amp;q=plaid&amp;t=everything" class="button outline" id=next-search-page-button>Next page</a>
+                </div>
+            </div>
+            <div id=mobile-sidebar-listings-feed-container>
+                <div class="mobile-sidebar-block sidebar-job-listings-outer" data-mobile-sidebar-collapsable=true data-mobile-sidebar-collapsed=true data-mobile-sidebar=job_listings>
+                    <div class=mobile-sidebar-block-toggle-bar>
+                        <span>Latest Design Jobs</span>
+                    </div>
+                    <div class="mobile-sidebar-block-inner sidebar-job-listings"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <aside id=page-sidebar-content>
+        <div id=page-sidebar-inner>
+            <div class="sidebar-block sidebar-job-listings" data-sidebar-block=job_listings>
+                <h3 class=mobile-sidebar-hidden>On the Job Board</h3>
+                <ul id=sidebar-job-listings>
+                    <li class=sidebar-job-listing>
+                        <a href="/jobs/product-designer-okta" class=sidebar-job-listing-link>
+                            <p class=sidebar-job-listing-superline>Okta</p>
+                            <h4 class=sidebar-job-listing-title>Product Designer</h4>
+                        </a>
+                    </li>
+                    <li class=sidebar-job-listing>
+                        <a href="/jobs/lead-product-designer-precious" class=sidebar-job-listing-link>
+                            <p class=sidebar-job-listing-superline>Precious</p>
+                            <h4 class=sidebar-job-listing-title>Lead Product Designer</h4>
+                        </a>
+                    </li>
+                    <li class=sidebar-job-listing>
+                        <a href="/jobs/product-design-lead-wetransfer" class=sidebar-job-listing-link>
+                            <p class=sidebar-job-listing-superline>WeTransfer</p>
+                            <h4 class=sidebar-job-listing-title>Product Design Lead</h4>
+                        </a>
+                    </li>
+                    <li class=sidebar-job-listing>
+                        <a href="/jobs/assistant-professor-tenure-track-miami-university-interactive-media-studies" class=sidebar-job-listing-link>
+                            <p class=sidebar-job-listing-superline>Miami University - Interactive Media Studies</p>
+                            <h4 class=sidebar-job-listing-title>Assistant Professor (tenure-track)</h4>
+                        </a>
+                    </li>
+                    <li class=sidebar-job-listing>
+                        <a href="/jobs/senior-product-designer-webflow" class=sidebar-job-listing-link>
+                            <p class=sidebar-job-listing-superline>Webflow</p>
+                            <h4 class=sidebar-job-listing-title>Senior Product Designer</h4>
+                        </a>
+                    </li>
+                </ul>
+                <a href="/jobs" class=sidebar-job-listings-more>View more...</a>
+                <br/>
+                <div class=montana-hero-prompt-container>
+                    <a href="/jobs/new" class="standard-button green montana-hero-prompt-button"> Post a Job </a>
+                </div>
+            </div>
+        </div>
+    </aside>
+</div>
+<div id=site-podcast-player class=loading>
+    <audio id=player-audio-container>
+        <source type="audio/mpeg"/>
+    </audio>
+    <div id=player-play-thumbnail-container>
+        <button id=player-playback-button>
+            <svg aria-label=play class=player-playback-play height=35 id=svg-play role=img version="1.1" viewBox="0 0 24 35" width=24>
+                <path d="m1.315 35.01c3.879-2.909 15.397-11.548 21.716-16.287.323-.242.334-1.203.017-1.442-6.282-4.712-17.702-13.276-21.656-16.242-.881-.661-1.392-.341-1.392.01v33.971c0 .325.481.615 1.315-.011"/>
+            </svg>
+            <svg aria-label=pause class=player-playback-pause height=32 id=svg-pause role=img version="1.1" viewBox="0 0 27 32" width=27>
+                <path d="m8 31.5c.551 0 .998-.445.998-.995v-29.51c0-.549-.446-.995-.998-.995h-7c-.551 0-.998.445-.998.995v29.51c0 .549.446.995.998.995h7m9.998-.995c0 .549.446.995.998.995h7c.551 0 .998-.445.998-.995v-29.51c0-.549-.446-.995-.998-.995h-8v30.505"/>
+            </svg>
+        </button>
+        <div id=player-episode-thumbnail></div>
+        <span id=episode-load-spinner></span>
+    </div>
+    <div id=player-titles-container>
+        <a href="#" id=player-episode-link>
+            <p id=player-titles-episode-playing>Now playing</p>
+            <p id=player-titles-episode-title></p>
+        </a>
+        <button id=player-close-button>&#215;</button>
+    </div>
+    <div id=player-scrubber-container>
+        <div id=player-scrubber-bar>
+            <div id=player-scrubber-position></div>
+        </div>
+        <span id=player-current-time></span>
+    </div>
+</div>
+<div id=main-footer>
+    <div class=wrap>
+        <div id=company-container>
+            <div id=footer-logo-container>
+                <div id=footer-logo-emblem-container>
+                    <svg aria-label=footer-logo height=27 id=svg-footer-logo role=img version="1.1" viewBox="0 0 34 27" width=34>
+                        <path id=footer-logo-shadow fill="#666c76" d="m16.504 26.836c9.182-1.159 13.09-7.533 13.218-7.437 0 0 4.065-4.535 4.295-11.964-3.079-2.806-7.415-7.01-7.415-7.01h-3.219v4.574l-5.273-4.574h-3.39v5.325l-4.555-3.834h-10.04v12.705"/>
+                        <path fill="#fff" d="m12.568 7.494c0-4.239-2.606-7.114-7.569-7.114h-4.901v14.269h5c4.818 0 7.465-2.916 7.465-7.155m-3.557.021c0 3.061-1.572 4.384-4.095 4.384h-1.282v-8.768h1.282c2.419 0 4.095 1.386 4.095 4.384m17.64 7.134v-14.269h-3.288v7.982l-5.253-7.982h-3.433v14.269h3.288v-8.541l5.625 8.541h3.061"/>
+                    </svg>
+                </div>
+                <div class=text>
+                    <p class=name>Designer News</p>
+                    <p>Where the design community meets.</p>
+                </div>
+            </div>
+            <p class=footer-info>Designer News is a large, global community of people working or interested in design and technology.</p>
+            <p class=footer-info> We're
+                <a href="http://tinyboards.co/?utm_content=footer-network&utm_source=designernews&utm_campaign=footer-network&utm_medium=footer-network" target=_blank>Tiny Boards</a> along with
+                <a href="https://weworkremotely.com/?utm_content=footer-network&utm_source=designernews&utm_campaign=footer-network&utm_medium=footer-network" target=_blank>We Work Remotely</a>,
+                <a href="https://unicornhunt.io/?utm_content=footer-network&utm_source=designernews&utm_campaign=footer-network&utm_medium=footer-network" target=_blank>Unicorn Hunt</a>,
+                <a href="https://www.freshgigs.ca/?utm_content=footer-network&utm_source=designernews&utm_campaign=footer-network&utm_medium=footer-network" target=_blank>Fresh Gigs</a>,
+                <a href="https://www.futurejobs.io/?utm_content=footer-network&utm_source=designernews&utm_campaign=footer-network&utm_medium=footer-network" target=_blank>Future Jobs</a> and more.
+                <br/>
+                <a href="mailto:hello@tinyboards.co">Get in touch.</a>
+            </p>
+        </div>
+        <div id=footer-column-container>
+            <ul class=footer-column-navigation id=footer-column-news>
+                <li>
+                    <p class=footer-column-title>News</p>
+                </li>
+                <li>
+                    <a href="/">Top Stories</a>
+                </li>
+                <li>
+                    <a href="/new">Recent Stories</a>
+                </li>
+                <li>
+                    <a href="/badges">Badges</a>
+                </li>
+                <li>
+                    <a href="/submit">Post a Story</a>
+                </li>
+            </ul>
+            <ul class=footer-column-navigation id=footer-column-jobs>
+                <li>
+                    <p class=footer-column-title>Jobs</p>
+                </li>
+                <li>
+                    <a href="/jobs">Find a Job</a>
+                </li>
+                <li>
+                    <a href="/jobs?type=design">Design</a> /
+                    <a href="/jobs?type=development">Dev</a>
+                </li>
+                <li>
+                    <a href="/jobs/new">Post a Job</a>
+                </li>
+                <li>
+                    <a href="/top-design-companies">Top Companies</a>
+                </li>
+            </ul>
+            <ul class=footer-column-navigation id=footer-column-company>
+                <li>
+                    <p class=footer-column-title>DN</p>
+                </li>
+                <li>
+                    <a href="/podcast">Podcast</a>
+                </li>
+                <li>
+                    <a href="/about">About</a>
+                </li>
+                <li>
+                    <a href="/about#guidelines">Guidelines</a>
+                </li>
+                <li>
+                    <a href="/advertise">Advertise</a>
+                </li>
+                <li>
+                    <a href="/terms">Terms</a> /
+                    <a href="/privacy">Privacy</a>
+                </li>
+            </ul>
+        </div>
+        <div id=footer-bottom-container>
+            <ul id=footer-more-navigation>
+                <li>
+                    <p class=footer-column-title id=footer-more-title>More</p>
+                </li>
+                <li>
+                    <a href="/search">Search</a>
+                </li>
+                <li>
+                    <a href="/shop">Shop</a>
+                </li>
+                <li>
+                    <a href="/things">Things</a>
+                </li>
+                <li>
+                    <a href="/gallery">Gallery</a>
+                </li>
+                <li>
+                    <a href="/hall_of_fame">Hall of Fame</a>
+                </li>
+                <li>
+                    <a href="/?format=rss">RSS Feed</a>
+                </li>
+            </ul>
+            <p id=silly-copyright-stuff>&copy; 2019 Designer News Ltd.</p>
+        </div>
+        <a id=sticky-feedback-bubble href="mailto:hello@designernews.co?subject=Designer News Feedback">
+            <svg aria-label=feedback-bubble-body height=27 id=svg-feedback-bubble-body role=img version="1.1" viewBox="0 0 31 27" width=31>
+                <path d="m3.311 23.587v-20.927c0-1.469 1.19-2.66 2.655-2.66h22.379c1.466 0 2.655 1.195 2.655 2.66v21.317c0 1.449-1.174 2.623-2.622 2.623h-28.29c0-3.669 3.22-3.01 3.22-3.01"/>
+            </svg>
+            <svg aria-label=feedback-bubble-parts height=21 id=svg-feedback-bubble-parts role=img version="1.1" viewBox="0 0 28 21" width=28>
+                <path d="m15.04 4.64c1.083 0 1.962-.893 1.962-1.995 0-1.102-.878-1.995-1.962-1.995-1.083 0-1.962.893-1.962 1.995 0 1.102.878 1.995 1.962 1.995m5.231 9.975c3.25 0 5.885-2.68 5.885-5.985h-11.769c0 3.306 2.635 5.985 5.885 5.985m5.231-9.975c1.083 0 1.962-.893 1.962-1.995 0-1.102-.878-1.995-1.962-1.995-1.083 0-1.962.893-1.962 1.995 0 1.102.878 1.995 1.962 1.995m-25.5 2.335c0-.725.582-1.313 1.308-1.313h5v11.789c0 1.74-1.416 3.15-3.155 3.15-1.743 0-3.155-1.405-3.155-3.15v-10.476"/>
+            </svg>
+            <span id=feedback-mouth-clip></span>
+            <p id=feedback-tooltip>Have feedback?</p>
+        </a>
+    </div>
+</div>
+<script src="https://d2si0b2wb4t75n.cloudfront.net/assets/application-7dfa349f0d52a226aa7537e4849adbd9.js"></script>
+</body>
+</html>

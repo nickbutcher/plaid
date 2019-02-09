@@ -19,12 +19,12 @@ package io.plaidapp.designernews.ui.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import io.plaidapp.R
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.util.event.Event
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -40,8 +40,6 @@ class LoginViewModel @Inject constructor(
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel() {
 
-    private val parentJob = Job()
-    private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
     private var loginJob: Job? = null
 
     private val _uiState = MutableLiveData<LoginUiModel>()
@@ -66,7 +64,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun launchLogin(username: String, password: String): Job {
-        return scope.launch(dispatcherProvider.computation) {
+        return viewModelScope.launch(dispatcherProvider.computation) {
             if (!isLoginValid(username, password)) {
                 return@launch
             }
@@ -96,12 +94,6 @@ class LoginViewModel @Inject constructor(
 
     private fun showLoading() {
         emitUiState(showProgress = true)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        // when the VM is destroyed, cancel the running job.
-        parentJob.cancel()
     }
 
     fun signup() {

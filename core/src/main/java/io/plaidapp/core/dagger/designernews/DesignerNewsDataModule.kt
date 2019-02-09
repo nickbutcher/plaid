@@ -28,6 +28,7 @@ import io.plaidapp.core.dagger.CoroutinesDispatcherProviderModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.data.api.DenvelopingConverter
 import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
+import io.plaidapp.core.designernews.data.api.DesignerNewsSearchConverter
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.comments.CommentsRemoteDataSource
 import io.plaidapp.core.designernews.data.comments.CommentsRepository
@@ -75,14 +76,14 @@ class DesignerNewsDataModule {
         gson: Gson
     ): DesignerNewsService {
         val client = okHttpClientBuilder
-            .addInterceptor(
-                ClientAuthInterceptor(tokenHolder, BuildConfig.DESIGNER_NEWS_CLIENT_ID)
-            )
+            .addInterceptor(ClientAuthInterceptor(tokenHolder, BuildConfig.DESIGNER_NEWS_CLIENT_ID))
             .build()
+
         return Retrofit.Builder()
             .baseUrl(DesignerNewsService.ENDPOINT)
             .client(client)
             .addConverterFactory(DenvelopingConverter(gson))
+            .addConverterFactory(DesignerNewsSearchConverter.Factory())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
@@ -101,8 +102,9 @@ class DesignerNewsDataModule {
         StoriesRepository.getInstance(storiesRemoteDataSource)
 
     @Provides
-    fun provideStoriesRemoteDataSource(service: DesignerNewsService): StoriesRemoteDataSource =
-        StoriesRemoteDataSource.getInstance(service)
+    fun provideStoriesRemoteDataSource(service: DesignerNewsService): StoriesRemoteDataSource {
+        return StoriesRemoteDataSource.getInstance(service)
+    }
 
     @Provides
     fun provideCommentsRepository(dataSource: CommentsRemoteDataSource): CommentsRepository =

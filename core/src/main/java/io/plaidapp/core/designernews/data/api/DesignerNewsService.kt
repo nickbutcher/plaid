@@ -55,11 +55,8 @@ interface DesignerNewsService {
     fun getStories(@Query("page") page: Int?): Deferred<Response<List<StoryResponse>>>
 
     @EnvelopePayload("stories")
-    @GET("api/v1/stories/search")
-    fun search(
-        @Query("query") query: String,
-        @Query("page") page: Int?
-    ): Deferred<Response<List<StoryResponse>>>
+    @GET("api/v2/stories/{ids}")
+    fun getStories(@Path("ids") commaSeparatedIds: String): Deferred<Response<List<StoryResponse>>>
 
     @EnvelopePayload("users")
     @GET("api/v2/users/{ids}")
@@ -72,6 +69,16 @@ interface DesignerNewsService {
     @FormUrlEncoded
     @POST("oauth/token")
     fun login(@FieldMap loginParams: Map<String, String>): Deferred<Response<AccessToken>>
+
+    /**
+     * Search Designer News by scraping website.
+     * Returns a list of story IDs
+     */
+    @GET("search?t=story")
+    fun search(
+        @Query("q") query: String,
+        @Query("p") page: Int?
+    ): Deferred<Response<List<String>>>
 
     @EnvelopePayload("story")
     @POST("api/v2/stories/{id}/upvote")

@@ -15,7 +15,7 @@
  */
 dependencies {
     testImplementation project(':test_shared')
-    testImplementation "androidx.arch.core:core-testing:${versions.lifecycle}"
+    testImplementation "androidx.arch.core:core-testing:${versions.androidxArch}"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockito_kotlin}"
     testImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
     testImplementation "junit:junit:${versions.junit}"
@@ -31,12 +31,12 @@ dependencies {
     androidTestImplementation("androidx.arch.core:core-runtime:2.0.1-alpha01")
 
     // Work around issue with runtime classpath version conflict
-    androidTestImplementation "androidx.arch.core:core-testing:${versions.lifecycle}"
+    androidTestImplementation "androidx.arch.core:core-testing:${versions.androidxArch}"
     androidTestImplementation "androidx.legacy:legacy-support-core-utils:${versions.legacyCoreUtils}"
     androidTestImplementation "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
 
     androidTestImplementation project(':test_shared')
-    androidTestImplementation "androidx.arch.core:core-testing:${versions.lifecycle}"
+    androidTestImplementation "androidx.arch.core:core-testing:${versions.androidxArch}"
     androidTestImplementation "androidx.test:runner:${versions.test_runner}"
     androidTestImplementation "androidx.test:rules:${versions.test_rules}"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:${versions.espresso}"

@@ -19,6 +19,7 @@ package io.plaidapp.dribbble.ui.shot
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.ShotsRepository
@@ -26,7 +27,6 @@ import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.util.event.Event
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
 import io.plaidapp.dribbble.domain.ShareShotInfo
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -42,8 +42,6 @@ class ShotViewModel @Inject constructor(
 ) : ViewModel() {
 
     val shot: Shot
-    private var parentJob = Job()
-    private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
     private var shareShotJob = Job()
 
     init {
@@ -74,11 +72,11 @@ class ShotViewModel @Inject constructor(
     }
 
     override fun onCleared() {
+        super.onCleared()
         shareShotJob.cancel()
-        parentJob.cancel()
     }
 
-    private fun launchShare() = scope.launch(dispatcherProvider.computation) {
+    private fun launchShare() = viewModelScope.launch(dispatcherProvider.computation) {
         val shareInfo = getShareShotInfoUseCase(shot)
         _shareShot.postValue(Event(shareInfo))
     }
