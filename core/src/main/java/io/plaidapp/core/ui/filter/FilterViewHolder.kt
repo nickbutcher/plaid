@@ -27,7 +27,6 @@ import androidx.core.animation.doOnStart
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import io.plaidapp.core.R
-import io.plaidapp.core.data.Source
 import io.plaidapp.core.util.AnimUtils
 import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.core.util.ViewUtils
