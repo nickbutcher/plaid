@@ -111,19 +111,19 @@ class SourcesRepositoryTest {
     @Test
     fun changeSourceActiveState() {
         // When changing the active state of a source
-        repository.changeSourceActiveState(designerNewsSource)
+        repository.changeSourceActiveState("key", false)
 
         // Then the source was updated in the data source
-        verify(localDataSource).updateSource(designerNewsSource.key, !designerNewsSource.active)
+        verify(localDataSource).updateSource("key", false)
     }
 
     @Test
     fun removeSource() {
         // When removing a source
-        repository.removeSource(designerNewsSource)
+        repository.removeSource("key")
 
         // Then the source was removed from the data source
-        verify(localDataSource).removeSource(designerNewsSource.key)
+        verify(localDataSource).removeSource("key")
     }
 
     @Test
@@ -142,18 +142,14 @@ class SourcesRepositoryTest {
         repository.addSources(listOf(designerNewsSource))
 
         // When changing the active state of a source
-        val designerNewsInactive = Source.DesignerNewsSearchSource(
-                "query",
-                false
-        )
-        repository.changeSourceActiveState(designerNewsInactive)
+        repository.changeSourceActiveState(designerNewsSource.key, true)
 
         // Then the updated source is returned
         val sources = repository.getSources()
         assertEquals(1, sources.size)
         val updatedSource = sources[0]
-        assertEquals(designerNewsInactive.key, updatedSource.key)
-        assertEquals(!designerNewsInactive.active, updatedSource.active)
+        assertEquals(designerNewsSource.key, updatedSource.key)
+        assertEquals(true, updatedSource.active)
     }
 
     @Test
@@ -162,7 +158,7 @@ class SourcesRepositoryTest {
         repository.addSources(listOf(designerNewsSource))
 
         // When removing a source
-        repository.removeSource(designerNewsSource)
+        repository.removeSource(designerNewsSource.key)
 
         // Then the source was removed from cache
         val sources = repository.getSources()
@@ -190,6 +186,8 @@ class SourcesRepositoryTest {
 
     @Test
     fun listenerNotified_whenSourceActiveStateChanged() {
+        // Given a source added
+        repository.addSources(listOf(designerNewsSource))
         // Given a callback registered
         var sourceUpdated: Source? = null
         val callback = object : FiltersChangedCallback() {
@@ -201,7 +199,7 @@ class SourcesRepositoryTest {
         repository.registerFilterChangedCallback(callback)
 
         // When changing the active state of a source
-        repository.changeSourceActiveState(designerNewsSource)
+        repository.changeSourceActiveState(designerNewsSource.key, false)
 
         // Then the callback was triggered
         assertEquals(sourceUpdated, designerNewsSource)
@@ -209,6 +207,8 @@ class SourcesRepositoryTest {
 
     @Test
     fun listenerNotified_whenSourceRemoved() {
+        // Given a source added
+        repository.addSources(listOf(designerNewsSource))
         // Given a callback registered
         var sourceRemoved: Source? = null
         val callback = object : FiltersChangedCallback() {
@@ -219,7 +219,7 @@ class SourcesRepositoryTest {
         repository.registerFilterChangedCallback(callback)
 
         // When removing a source
-        repository.removeSource(designerNewsSource)
+        repository.removeSource(designerNewsSource.key)
 
         // Then the callback was triggered
         assertEquals(sourceRemoved, designerNewsSource)

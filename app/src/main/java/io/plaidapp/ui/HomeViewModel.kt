@@ -117,8 +117,8 @@ class HomeViewModel(
     }
 
     private fun createSourcesHighlightUiModel(
-            oldSources: List<SourceUiModel>,
-            newSources: List<SourceUiModel>
+        oldSources: List<SourceUiModel>,
+        newSources: List<SourceUiModel>
     ): SourcesHighlightUiModel? {
         // if something was just updated or removed but not added, there's nothing to highlight
         if (oldSources.size >= newSources.count()) {
