@@ -96,7 +96,7 @@ class SourcesRepository(
                     }
                 }
             }
-            if(!sourcePresent){
+            if (!sourcePresent) {
                 // doesn't exist so needs to be added
                 sourcesToAdd.add(toAdd)
             }
@@ -152,8 +152,8 @@ class SourcesRepository(
         private var INSTANCE: SourcesRepository? = null
 
         fun getInstance(
-                defaultSources: List<Source>,
-                dataSource: SourcesLocalDataSource
+            defaultSources: List<Source>,
+            dataSource: SourcesLocalDataSource
         ): SourcesRepository {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: SourcesRepository(defaultSources, dataSource).also { INSTANCE = it }

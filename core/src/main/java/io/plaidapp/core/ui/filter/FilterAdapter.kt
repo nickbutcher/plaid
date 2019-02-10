@@ -100,11 +100,11 @@ class FilterAdapter : ListAdapter<SourceUiModel, FilterViewHolder>(sourceUiModel
             }
 
             override fun getChangePayload(oldItem: SourceUiModel, newItem: SourceUiModel): Any? {
-                if(!oldItem.active && newItem.active){
+                if (!oldItem.active && newItem.active) {
                     // filter enabled
                     return FILTER_ENABLED
                 }
-                if(oldItem.active && !newItem.active){
+                if (oldItem.active && !newItem.active) {
                     // filter disabled
                     return FILTER_DISABLED
                 }
@@ -112,5 +112,4 @@ class FilterAdapter : ListAdapter<SourceUiModel, FilterViewHolder>(sourceUiModel
             }
         }
     }
-
 }
