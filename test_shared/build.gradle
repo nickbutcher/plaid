@@ -73,6 +73,12 @@ repositories {
             includeGroupByRegex "io\\.fabric.*"
         }
     }
+    maven {
+        url 'http://dl.bintray.com/kotlin/kotlin-eap'
+        content {
+            includeGroupByRegex "org\\.jetbrains.*"
+        }
+    }
 }
 dependencies {
     implementation project(':core')
