@@ -81,7 +81,6 @@ buildscript {
                 includeGroupByRegex "io\\.fabric.*"
             }
         }
-        google()
     }
 
     dependencies {
