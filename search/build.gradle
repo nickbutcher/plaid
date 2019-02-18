@@ -37,9 +37,47 @@ android {
 }
 
 repositories {
-    google()
-    jcenter()
-    maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
+    maven {
+        url "http://maven.google.com"
+        content {
+            includeGroupByRegex "com\\.android.*"
+            includeGroupByRegex "androidx.*"
+            includeGroup "android.arch.lifecycle"
+            includeGroup "android.arch.core"
+            includeGroup "com.google.android.material"
+        }
+    }
+    maven {
+        url "https://repo.maven.apache.org/maven2/"
+        content {
+            includeGroupByRegex "org\\.jetbrains.*"
+            includeGroupByRegex "com\\.squareup.*"
+            includeGroupByRegex "com\\.jakewharton.*"
+            includeGroup "com.google.code.findbugs"
+            includeGroup "com.github.bumptech.glide"
+            includeGroup "com.google.code.gson"
+            includeGroup "com.google.dagger"
+            includeGroup "org.jsoup"
+            includeGroup "org.mockito"
+            includeGroup "junit"
+            includeGroup "org.hamcrest"
+            includeGroup "com.nhaarman.mockitokotlin2"
+            includeGroup "com.google.android.apps.common.testing.accessibility.framework"
+            includeGroup "net.bytebuddy"
+            includeGroup "org.objenesis"
+            includeGroup "com.google.googlejavaformat"
+            includeGroup "com.google.guava"
+            includeGroup "javax.annotation"
+            includeGroup "org.checkerframework"
+            includeGroup "com.google.errorprone"
+        }
+    }
+    maven {
+        url 'https://maven.fabric.io/public'
+        content {
+            includeGroupByRegex "io\\.fabric.*"
+        }
+    }
 }
 
 dependencies {

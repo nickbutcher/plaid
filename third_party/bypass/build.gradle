@@ -18,9 +18,29 @@ android {
 }
 
 repositories {
-    google()
-    jcenter()
-    maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
+    maven {
+        url "http://maven.google.com"
+        content {
+            includeGroupByRegex "com\\.android.*"
+            includeGroupByRegex "androidx.*"
+            includeGroup "android.arch.lifecycle"
+            includeGroup "android.arch.core"
+        }
+    }
+    maven {
+        url "https://repo.maven.apache.org/maven2/"
+        content {
+            includeGroupByRegex "org\\.jetbrains.*"
+            includeGroupByRegex "com\\.squareup.*"
+            includeGroupByRegex "com\\.jakewharton.*"
+        }
+    }
+    maven {
+        url 'https://maven.fabric.io/public'
+        content {
+            includeGroupByRegex "io\\.fabric.*"
+        }
+    }
 }
 
 dependencies {
