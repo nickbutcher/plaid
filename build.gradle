@@ -59,7 +59,7 @@ buildscript {
     ]
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0-beta04'
+        classpath 'com.android.tools.build:gradle:3.4.0-beta02'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         classpath "com.google.gms:google-services:${versions.googleServices}"
         classpath "io.fabric.tools:gradle:${versions.fabric}"
@@ -74,7 +74,8 @@ plugins {
 ext {
     // query git for the SHA, Tag and commit count. Use these to automate versioning.
     gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
-    gitCommitCount = 100
+    gitCommitCount = 100 +
+            Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
 }
 
 subprojects {
