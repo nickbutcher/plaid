@@ -19,6 +19,8 @@ package io.plaidapp.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.DataManager
 import io.plaidapp.core.data.Source
 import io.plaidapp.core.data.prefs.SourcesRepository
@@ -28,12 +30,15 @@ import io.plaidapp.core.ui.filter.SourceUiModel
 import io.plaidapp.core.ui.filter.SourcesHighlightUiModel
 import io.plaidapp.core.ui.filter.SourcesUiModel
 import io.plaidapp.core.util.event.Event
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Collections
 
 class HomeViewModel(
     val dataManager: DataManager,
     private val loginRepository: LoginRepository,
-    private val sourcesRepository: SourcesRepository
+    private val sourcesRepository: SourcesRepository,
+    private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel() {
 
     // TODO keeping this one temporarily, until we deal with [FeedAdapter]
@@ -90,11 +95,18 @@ class HomeViewModel(
         if (isDesignerNews) {
             sources.add(Source.DesignerNewsSearchSource(query, true))
         }
-        sourcesRepository.addOrMarkActiveSources(sources)
+        viewModelScope.launch {
+            sourcesRepository.addOrMarkActiveSources(sources)
+        }
     }
 
     private fun getSources() {
-        updateSourcesUiModel(sourcesRepository.getSources())
+        viewModelScope.launch(dispatcherProvider.io) {
+            val sources = sourcesRepository.getSources()
+            withContext(dispatcherProvider.main) {
+                updateSourcesUiModel(sources)
+            }
+        }
     }
 
     private fun updateSourcesUiModel(sources: List<Source>) {

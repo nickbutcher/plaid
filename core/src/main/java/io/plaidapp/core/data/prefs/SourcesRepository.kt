@@ -16,8 +16,10 @@
 
 package io.plaidapp.core.data.prefs
 
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Source
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
+import kotlinx.coroutines.withContext
 import java.util.Collections
 
 /**
@@ -25,7 +27,8 @@ import java.util.Collections
  */
 class SourcesRepository(
     private val defaultSources: List<Source>,
-    private val dataSource: SourcesLocalDataSource
+    private val dataSource: SourcesLocalDataSource,
+    private val dispatcherProvider: CoroutinesDispatcherProvider
 ) {
 
     private val cache = mutableListOf<Source>()
@@ -35,7 +38,12 @@ class SourcesRepository(
         callbacks.add(callback)
     }
 
-    fun getSources(): List<Source> {
+    suspend fun getSources() = withContext(dispatcherProvider.io) {
+        getSourcesSync()
+    }
+
+    @Deprecated("Use the suspending getSourcesSync")
+    fun getSourcesSync(): List<Source> {
         if (cache.isNotEmpty()) {
             return cache
         }
@@ -124,7 +132,7 @@ class SourcesRepository(
     }
 
     fun getActiveSourcesCount(): Int {
-        return getSources().count { it.active }
+        return getSourcesSync().count { it.active }
     }
 
     private fun getSourceFromDefaults(key: String, active: Boolean): Source? {
@@ -153,10 +161,13 @@ class SourcesRepository(
 
         fun getInstance(
             defaultSources: List<Source>,
-            dataSource: SourcesLocalDataSource
+            dataSource: SourcesLocalDataSource,
+            dispatcherProvider: CoroutinesDispatcherProvider
         ): SourcesRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: SourcesRepository(defaultSources, dataSource).also { INSTANCE = it }
+                INSTANCE ?: SourcesRepository(defaultSources, dataSource, dispatcherProvider).also {
+                    INSTANCE = it
+                }
             }
         }
     }

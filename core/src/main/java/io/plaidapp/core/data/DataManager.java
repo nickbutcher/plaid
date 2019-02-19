@@ -81,7 +81,7 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
     }
 
     public void loadAllDataSources() {
-        for (Source filter : sourcesRepository.getSources()) {
+        for (Source filter : sourcesRepository.getSourcesSync()) {
             loadSource(filter);
         }
     }
@@ -142,7 +142,7 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
     }
 
     private void setupPageIndexes() {
-        final List<Source> dateSources = sourcesRepository.getSources();
+        final List<Source> dateSources = sourcesRepository.getSourcesSync();
         pageIndexes = new HashMap<>(dateSources.size());
         for (Source source : dateSources) {
             pageIndexes.put(source.key, 0);
