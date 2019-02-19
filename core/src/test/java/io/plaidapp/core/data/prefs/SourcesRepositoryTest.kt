@@ -59,7 +59,7 @@ class SourcesRepositoryTest {
         whenever(localDataSource.getKeys()).thenReturn(null)
 
         // When getting the sources
-        val sources = repository.getSources()
+        val sources = repository.getSourcesSync()
 
         // Then the default sources are returned
         assertEquals(defaultSources, sources)
@@ -73,7 +73,7 @@ class SourcesRepositoryTest {
                 .thenReturn(dribbbleSource.active)
 
         // When getting the sources
-        val sources = repository.getSources()
+        val sources = repository.getSourcesSync()
 
         // Then the default sources are returned
         assertEquals(defaultSources.size, sources.size)
@@ -93,7 +93,7 @@ class SourcesRepositoryTest {
         whenever(localDataSource.getKeys()).thenReturn(oldSources)
 
         // When getting the sources
-        val sources = repository.getSources()
+        val sources = repository.getSourcesSync()
 
         // Then the list of sources is empty
         assertTrue(sources.isEmpty())
@@ -132,7 +132,7 @@ class SourcesRepositoryTest {
         repository.addSources(listOf(designerNewsSource))
 
         // Then the source is returned
-        val sources = repository.getSources()
+        val sources = repository.getSourcesSync()
         assertEquals(listOf(designerNewsSource), sources)
     }
 
@@ -145,7 +145,7 @@ class SourcesRepositoryTest {
         repository.changeSourceActiveState(designerNewsSource.key, true)
 
         // Then the updated source is returned
-        val sources = repository.getSources()
+        val sources = repository.getSourcesSync()
         assertEquals(1, sources.size)
         val updatedSource = sources[0]
         assertEquals(designerNewsSource.key, updatedSource.key)
@@ -161,7 +161,7 @@ class SourcesRepositoryTest {
         repository.removeSource(designerNewsSource.key)
 
         // Then the source was removed from cache
-        val sources = repository.getSources()
+        val sources = repository.getSourcesSync()
         assertTrue(sources.isEmpty())
     }
 

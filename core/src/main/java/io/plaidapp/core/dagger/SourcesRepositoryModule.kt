@@ -20,6 +20,7 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.R
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Source
 import io.plaidapp.core.data.prefs.SourcesLocalDataSource
 import io.plaidapp.core.data.prefs.SourcesRepository
@@ -27,15 +28,18 @@ import io.plaidapp.core.data.prefs.SourcesRepository
 /**
  * Module to provide [SourcesRepository].
  */
-@Module
+@Module(includes = [CoroutinesDispatcherProviderModule::class])
 class SourcesRepositoryModule {
 
     @Provides
-    fun provideSourceRepository(context: Context): SourcesRepository {
+    fun provideSourceRepository(
+        context: Context,
+        dispatcherProvider: CoroutinesDispatcherProvider
+    ): SourcesRepository {
         val defaultSources = provideDefaultSources(context)
         val sharedPrefs = context.getSharedPreferences(SOURCES_PREF, Context.MODE_PRIVATE)
         val localDataSource = SourcesLocalDataSource(sharedPrefs)
-        return SourcesRepository.getInstance(defaultSources, localDataSource)
+        return SourcesRepository.getInstance(defaultSources, localDataSource, dispatcherProvider)
     }
 
     private fun provideDefaultSources(context: Context): List<Source> {

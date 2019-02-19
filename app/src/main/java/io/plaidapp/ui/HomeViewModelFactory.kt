@@ -18,6 +18,7 @@ package io.plaidapp.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.DataManager
 import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.data.login.LoginRepository
@@ -29,7 +30,8 @@ import javax.inject.Inject
 class HomeViewModelFactory @Inject constructor(
     private val dataManager: DataManager,
     private val loginRepository: LoginRepository,
-    private val sourcesRepository: SourcesRepository
+    private val sourcesRepository: SourcesRepository,
+    private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -37,6 +39,7 @@ class HomeViewModelFactory @Inject constructor(
         if (modelClass != HomeViewModel::class.java) {
             throw IllegalArgumentException("Unknown ViewModel class")
         }
-        return HomeViewModel(dataManager, loginRepository, sourcesRepository) as T
+        return HomeViewModel(dataManager, loginRepository, sourcesRepository, dispatcherProvider)
+                as T
     }
 }
