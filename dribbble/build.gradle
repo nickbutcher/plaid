@@ -55,28 +55,38 @@ repositories {
         }
     }
     maven {
-        url "https://repo.maven.apache.org/maven2/"
+        url 'https://jcenter.bintray.com'
         content {
-            includeGroupByRegex "org\\.jetbrains.*"
+            includeGroupByRegex "com\\.google.*"
+            includeGroupByRegex "com\\.sun.*"
             includeGroupByRegex "com\\.squareup.*"
             includeGroupByRegex "com\\.jakewharton.*"
-            includeGroup "com.google.code.findbugs"
+            includeGroupByRegex "com\\.googlecode.*"
+            includeGroupByRegex "org\\.jetbrains.*"
+            includeGroupByRegex "org\\.codehaus.*"
+            includeGroupByRegex "org\\.apache.*"
+            includeGroupByRegex "net\\.sf.*"
+            includeGroupByRegex "javax.*"
             includeGroup "com.github.bumptech.glide"
-            includeGroup "com.google.code.gson"
-            includeGroup "com.google.dagger"
-            includeGroup "org.jsoup"
-            includeGroup "org.mockito"
-            includeGroup "junit"
-            includeGroup "org.hamcrest"
             includeGroup "com.nhaarman.mockitokotlin2"
-            includeGroup "com.google.android.apps.common.testing.accessibility.framework"
+            includeGroup "commons-io"
+            includeGroup "commons-codec"
+            includeGroup "commons-logging"
+            includeGroup "it.unimi.dsi"
+            includeGroup "junit"
             includeGroup "net.bytebuddy"
-            includeGroup "org.objenesis"
-            includeGroup "com.google.googlejavaformat"
-            includeGroup "com.google.guava"
-            includeGroup "javax.annotation"
+            includeGroup "org.antlr"
+            includeGroup "org.bouncycastle"
             includeGroup "org.checkerframework"
-            includeGroup "com.google.errorprone"
+            includeGroup "org.glassfish.jaxb"
+            includeGroup "org.hamcrest"
+            includeGroup "org.jsoup"
+            includeGroup "org.jvnet.staxex"
+            includeGroup "org.mockito"
+            includeGroup "org.objenesis"
+            includeGroup "org.ow2.asm"
+
+            excludeGroup "com.google.android.material"
         }
     }
     maven {
