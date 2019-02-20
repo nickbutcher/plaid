@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-buildscript { scriptHandler ->
-    apply from: 'repositories.gradle',
-            to: scriptHandler
+buildscript {
+    scriptHandler -> apply from: 'repositories.gradle', to: scriptHandler
 
-    ext.versions = [
+        ext.versions = [
             'compileSdk'         : 28,
             'minSdk'             : 23,
             'targetSdk'          : 28,
