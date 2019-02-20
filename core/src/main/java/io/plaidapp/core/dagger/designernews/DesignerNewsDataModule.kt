@@ -45,9 +45,9 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Qualifier
-import kotlin.annotation.AnnotationRetention.SOURCE
+import kotlin.annotation.AnnotationRetention.BINARY
 
-@Retention(SOURCE)
+@Retention(BINARY)
 @Qualifier
 private annotation class LocalApi
 
@@ -78,8 +78,10 @@ class DesignerNewsDataModule {
 
     @LocalApi
     @Provides
-    fun providePrivateOkHttpClient(upstream: OkHttpClient,
-        tokenHolder: AuthTokenLocalDataSource): OkHttpClient {
+    fun providePrivateOkHttpClient(
+        upstream: OkHttpClient,
+        tokenHolder: AuthTokenLocalDataSource
+    ): OkHttpClient {
         return upstream.newBuilder()
             .addInterceptor(ClientAuthInterceptor(tokenHolder, BuildConfig.DESIGNER_NEWS_CLIENT_ID))
             .build()

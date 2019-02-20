@@ -32,9 +32,9 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Qualifier
-import kotlin.annotation.AnnotationRetention.SOURCE
+import kotlin.annotation.AnnotationRetention.BINARY
 
-@Retention(SOURCE)
+@Retention(BINARY)
 @Qualifier
 private annotation class LocalApi
 
