@@ -18,6 +18,7 @@ package io.plaidapp.core.dagger
 
 import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.BuildConfig
@@ -30,6 +31,12 @@ import io.plaidapp.core.producthunt.data.api.ProductHuntService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Qualifier
+import kotlin.annotation.AnnotationRetention.BINARY
+
+@Retention(BINARY)
+@Qualifier
+private annotation class LocalApi
 
 /**
  * Dagger module to provide injections for Product Hunt.
@@ -46,15 +53,23 @@ class ProductHuntModule {
     @Provides
     fun provideRemoteDataSource(service: ProductHuntService) = ProductHuntRemoteDataSource(service)
 
+    @LocalApi
+    @Provides
+    fun providePrivateOkHttpClient(upstreamClient: OkHttpClient): OkHttpClient {
+        return upstreamClient.newBuilder()
+            .addInterceptor(AuthInterceptor(BuildConfig.PRODUCT_HUNT_DEVELOPER_TOKEN))
+            .build()
+    }
+
     @Provides
     fun provideProductHuntService(
-        okHttpClientBuilder: OkHttpClient.Builder,
+        @LocalApi okhttpClient: Lazy<OkHttpClient>,
         converterFactory: GsonConverterFactory,
         denvelopingConverter: DenvelopingConverter,
         callAdapterFactory: CoroutineCallAdapterFactory
     ): ProductHuntService {
         return createRetrofit(
-            okHttpClientBuilder,
+            okhttpClient,
             converterFactory,
             denvelopingConverter,
             callAdapterFactory
@@ -67,17 +82,14 @@ class ProductHuntModule {
     }
 
     private fun createRetrofit(
-        okHttpClientBuilder: OkHttpClient.Builder,
+        okhttpClient: Lazy<OkHttpClient>,
         converterFactory: GsonConverterFactory,
         denvelopingConverter: DenvelopingConverter,
         callAdapterFactory: CoroutineCallAdapterFactory
     ): Retrofit {
-        val client = okHttpClientBuilder
-            .addInterceptor(AuthInterceptor(BuildConfig.PRODUCT_HUNT_DEVELOPER_TOKEN))
-            .build()
         return Retrofit.Builder()
             .baseUrl(ProductHuntService.ENDPOINT)
-            .client(client)
+            .callFactory { okhttpClient.get().newCall(it) }
             .addConverterFactory(denvelopingConverter)
             .addConverterFactory(converterFactory)
             .addCallAdapterFactory(callAdapterFactory)
