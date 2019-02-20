@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-buildscript {
-    scriptHandler -> apply from: 'repositories.gradle', to: scriptHandler
-
-        ext.versions = [
+buildscript { scriptHandler ->
+    apply from: 'repositories.gradle',
+            to: scriptHandler
+    ext.versions = [
             'compileSdk'         : 28,
             'minSdk'             : 23,
             'targetSdk'          : 28,
@@ -74,8 +74,7 @@ plugins {
 ext {
     // query git for the SHA, Tag and commit count. Use these to automate versioning.
     gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
-    gitCommitCount = 100 +
-            Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
+    gitCommitCount = 100
 }
 
 subprojects {
