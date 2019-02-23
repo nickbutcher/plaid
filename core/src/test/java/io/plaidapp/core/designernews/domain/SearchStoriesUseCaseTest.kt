@@ -27,6 +27,7 @@ import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.storyLinks
 import io.plaidapp.core.designernews.userId
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -39,6 +40,7 @@ import java.util.GregorianCalendar
 /**
  * Tests for [SearchStoriesUseCase] mocking the dependencies.
  */
+@InternalCoroutinesApi
 class SearchStoriesUseCaseTest {
     private val createdDate: Date = GregorianCalendar(2018, 1, 13).time
     private val storyResponse = StoryResponse(
@@ -99,7 +101,8 @@ class SearchStoriesUseCaseTest {
         }
 
         // When searching for stories
-        searchStoriesUseCase(query, 1, callback)
+        val job = searchStoriesUseCase(query, 1, callback)
+        job?.also { j -> if (j.isCancelled) throw j.getCancellationException() }
 
         // The correct callback was called
         assertTrue(sourceLoaded)
@@ -125,7 +128,8 @@ class SearchStoriesUseCaseTest {
         }
 
         // When searching for stories
-        searchStoriesUseCase(query, 2, callback)
+        val job = searchStoriesUseCase(query, 2, callback)
+        job?.also { j -> if (j.isCancelled) throw j.getCancellationException() }
 
         // The correct callback was called
         assertTrue(sourceLoadingFailed)

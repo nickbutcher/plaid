@@ -22,6 +22,7 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.toStory
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
@@ -37,12 +38,16 @@ class SearchStoriesUseCase @Inject constructor(
 ) {
     private var parentJob = Job()
     private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
+    private val exceptionHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, e ->
+        println("SearchStoriesUseCase:Exception - $e")
+    }
 
     private val parentJobs = mutableMapOf<String, Job>()
 
-    operator fun invoke(query: String, page: Int, callback: LoadSourceCallback) {
+    operator fun invoke(query: String, page: Int, callback: LoadSourceCallback): Job? {
         val jobId = "$query::$page"
         parentJobs[jobId] = launchRequest(query, page, callback, jobId)
+        return parentJobs[jobId]
     }
 
     private fun launchRequest(
@@ -50,16 +55,16 @@ class SearchStoriesUseCase @Inject constructor(
         page: Int,
         callback: LoadSourceCallback,
         jobId: String
-    ) = scope.launch(dispatcherProvider.computation) {
+    ) = scope.launch(dispatcherProvider.computation + exceptionHandler) {
         val result = storiesRepository.search(query, page)
         parentJobs.remove(jobId)
         if (result is Result.Success) {
             val stories = result.data.map { it.toStory() }
-            withContext(dispatcherProvider.main) {
+            withContext(dispatcherProvider.main + exceptionHandler) {
                 callback.sourceLoaded(stories, page, query)
             }
         } else {
-            withContext(dispatcherProvider.main) { callback.loadFailed(query) }
+            withContext(dispatcherProvider.main + exceptionHandler) { callback.loadFailed(query) }
         }
     }
 
