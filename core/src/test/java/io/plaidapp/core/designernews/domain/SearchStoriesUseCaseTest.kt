@@ -18,8 +18,6 @@ package io.plaidapp.core.designernews.domain
 
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import io.plaidapp.core.data.LoadSourceCallback
-import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
@@ -30,8 +28,6 @@ import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Assert.fail
 import org.junit.Test
 import java.io.IOException
 import java.util.Date
@@ -84,28 +80,19 @@ class SearchStoriesUseCaseTest {
         // Given a list of stories returned for a specific query and page
         val result = Result.Success(storiesResponses)
         whenever(storiesRepository.search(query, 1)).thenReturn(result)
-        var sourceLoaded = false
-        // Given a callback where we check the validity of the data received
-        val callback = object : LoadSourceCallback {
-            override fun sourceLoaded(result: List<PlaidItem>?, page: Int, source: String) {
-                // Then the correct data is received
-                sourceLoaded = true
-                assertEquals(stories, result)
-                assertEquals(1, page)
-                assertEquals(query, source)
-            }
 
-            override fun loadFailed(source: String) {
-                fail("Search shouldn't have failed")
-            }
-        }
+        // Given a callback where we check the validity of the data received
+        val callback = AwesomeTestLoadSourceCallback()
 
         // When searching for stories
         val job = searchStoriesUseCase(query, 1, callback)
         job?.also { j -> if (j.isCancelled) throw j.getCancellationException() }
 
-        // The correct callback was called
-        assertTrue(sourceLoaded)
+        // Then the correct data is received
+        val (plaidItems, page, source) = callback.capturedValues()
+        assertEquals(stories, plaidItems)
+        assertEquals(1, page)
+        assertEquals(query, source)
     }
 
     @Test
@@ -113,25 +100,15 @@ class SearchStoriesUseCaseTest {
         // Given that an error is returned for a specific query and page search
         val result = Result.Error(IOException("error"))
         whenever(storiesRepository.search(query, 2)).thenReturn(result)
-        var sourceLoadingFailed = false
-        // Given a callback where we check the validity of the data received
-        val callback = object : LoadSourceCallback {
-            override fun sourceLoaded(result: List<PlaidItem>?, page: Int, source: String) {
-                fail("Search shouldn't have succeeded")
-            }
 
-            override fun loadFailed(source: String) {
-                // Then the fail callback gets called for the correct source
-                sourceLoadingFailed = true
-                assertEquals(query, source)
-            }
-        }
+        // Given a callback where we check the validity of the data received
+        val callback = AwesomeTestLoadSourceCallback()
 
         // When searching for stories
         val job = searchStoriesUseCase(query, 2, callback)
         job?.also { j -> if (j.isCancelled) throw j.getCancellationException() }
 
         // The correct callback was called
-        assertTrue(sourceLoadingFailed)
+        assertEquals(query, callback.failedValue())
     }
 }
