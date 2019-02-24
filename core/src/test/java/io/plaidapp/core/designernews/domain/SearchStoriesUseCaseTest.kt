@@ -18,16 +18,16 @@ package io.plaidapp.core.designernews.domain
 
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
+import io.plaidapp.core.data.LoadFailedCallback
 import io.plaidapp.core.data.Result
+import io.plaidapp.core.data.SourceLoadedCallback
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.storyLinks
 import io.plaidapp.core.designernews.userId
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.IOException
 import java.util.Date
@@ -36,7 +36,6 @@ import java.util.GregorianCalendar
 /**
  * Tests for [SearchStoriesUseCase] mocking the dependencies.
  */
-@InternalCoroutinesApi
 class SearchStoriesUseCaseTest {
     private val createdDate: Date = GregorianCalendar(2018, 1, 13).time
     private val storyResponse = StoryResponse(
@@ -82,17 +81,13 @@ class SearchStoriesUseCaseTest {
         whenever(storiesRepository.search(query, 1)).thenReturn(result)
 
         // Given a callback where we check the validity of the data received
-        val callback = AwesomeTestLoadSourceCallback()
+        val callback = SourceLoadedCallback()
 
         // When searching for stories
-        val job = searchStoriesUseCase(query, 1, callback)
-        job?.also { j -> if (j.isCancelled) throw j.getCancellationException() }
+        searchStoriesUseCase(query, 1, callback)
 
         // Then the correct data is received
-        val (plaidItems, page, source) = callback.capturedValues()
-        assertEquals(stories, plaidItems)
-        assertEquals(1, page)
-        assertEquals(query, source)
+        callback.assertSourceLoaded(stories, 1, query)
     }
 
     @Test
@@ -102,13 +97,12 @@ class SearchStoriesUseCaseTest {
         whenever(storiesRepository.search(query, 2)).thenReturn(result)
 
         // Given a callback where we check the validity of the data received
-        val callback = AwesomeTestLoadSourceCallback()
+        val callback = LoadFailedCallback()
 
         // When searching for stories
-        val job = searchStoriesUseCase(query, 2, callback)
-        job?.also { j -> if (j.isCancelled) throw j.getCancellationException() }
+        searchStoriesUseCase(query, 2, callback)
 
         // The correct callback was called
-        assertEquals(query, callback.failedValue())
+        callback.assertLoadFailed(query)
     }
 }
