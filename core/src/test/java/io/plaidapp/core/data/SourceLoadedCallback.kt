@@ -14,30 +14,24 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.domain
+package io.plaidapp.core.data
 
-import io.plaidapp.core.data.LoadSourceCallback
-import io.plaidapp.core.data.PlaidItem
+import org.junit.Assert.assertEquals
 
-data class CapturedValues(
-    val result: List<PlaidItem>? = null,
-    val page: Int? = null,
-    val source: String? = null,
-    val error: String? = null
-)
-
-class AwesomeTestLoadSourceCallback : LoadSourceCallback {
-    private var capturedValues: CapturedValues = CapturedValues()
+class SourceLoadedCallback : LoadSourceCallback {
+    var params: Triple<List<PlaidItem>?, Int, String>? = null
 
     override fun sourceLoaded(result: List<PlaidItem>?, page: Int, source: String) {
-        capturedValues = CapturedValues(result, page, source, null)
+        params = Triple(result, page, source)
     }
 
     override fun loadFailed(source: String) {
-        capturedValues = CapturedValues(null, null, null, source)
     }
 
-    fun capturedValues() = capturedValues
-
-    fun failedValue() = capturedValues.error
+    fun assertSourceLoaded(result: List<PlaidItem>?, page: Int, source: String) {
+        val (capturedResult, capturedPage, capturedSource) = params!!
+        assertEquals(result, capturedResult)
+        assertEquals(page, capturedPage)
+        assertEquals(source, capturedSource)
+    }
 }
