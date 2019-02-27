@@ -49,8 +49,7 @@ internal class AboutPagerAdapter(private val uiModel: AboutUiModel) :
         return when (viewType) {
             0 -> AboutViewHolder(getAboutAppPage(parent))
             1 -> AboutViewHolder(getAboutIconPage(parent))
-            2 -> AboutViewHolder(getAboutLibsPage(parent))
-            else -> throw InvalidParameterException()
+            else -> AboutViewHolder(getAboutLibsPage(parent))
         }
     }
 

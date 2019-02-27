@@ -26,23 +26,22 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import androidx.viewpager2.widget.ViewPager2;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Interpolator;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
-import io.plaidapp.about.R;
-import io.plaidapp.core.util.AnimUtils;
 
 import java.util.Arrays;
 
+import io.plaidapp.about.R;
+import io.plaidapp.core.util.AnimUtils;
+
 /**
- * An ink inspired widget for indicating pages in a {@link ViewPager}.
+ * An ink inspired widget for indicating pages in a {@link ViewPager2}.
  */
-public class InkPageIndicator extends View implements ViewPager.OnPageChangeListener,
-                                                      View.OnAttachStateChangeListener {
+public class InkPageIndicator extends View implements View.OnAttachStateChangeListener {
 
     // defaults
     private static final int DEFAULT_DOT_SIZE = 8;                      // dp
@@ -222,43 +221,6 @@ public class InkPageIndicator extends View implements ViewPager.OnPageChangeList
         this.selectedColour = selectedColour;
         selectedPaint.setColor(selectedColour);
         invalidate();
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        if (isAttachedToWindow) {
-            float fraction = positionOffset;
-            int currentPosition = pageChanging ? previousPage : currentPage;
-            int leftDotPosition = position;
-            // when swiping from #2 to #1 ViewPager reports position as 1 and a descending offset
-            // need to convert this into our left-dot-based 'coordinate space'
-            if (currentPosition != position) {
-                fraction = 1f - positionOffset;
-
-                // if user scrolls completely to next page then the position param updates to that
-                // new page but we're not ready to switch our 'current' page yet so adjust for that
-                if (fraction == 1f) {
-                    leftDotPosition = Math.min(currentPosition, position);
-                }
-            }
-            setJoiningFraction(leftDotPosition, fraction);
-        }
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        if (isAttachedToWindow) {
-            // this is the main event we're interested in!
-            setSelectedPage(position);
-        } else {
-            // when not attached, don't animate the move, just store immediately
-            setCurrentPageImmediate();
-        }
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        // nothing to do
     }
 
     private void setPageCount(int pages) {
