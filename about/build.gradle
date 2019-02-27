@@ -51,4 +51,5 @@ dependencies {
     implementation project(':core')
 
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
+    implementation 'androidx.viewpager2:viewpager2:1.0.0-alpha01'
 }
