@@ -26,17 +26,16 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
-import androidx.viewpager2.widget.ViewPager2;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Interpolator;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.Arrays;
-
+import androidx.viewpager2.widget.ViewPager2;
 import io.plaidapp.about.R;
 import io.plaidapp.core.util.AnimUtils;
+
+import java.util.Arrays;
 
 /**
  * An ink inspired widget for indicating pages in a {@link ViewPager2}.
