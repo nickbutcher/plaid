@@ -95,7 +95,7 @@ class HomeViewModel(
         if (isDesignerNews) {
             sources.add(Source.DesignerNewsSearchSource(query, true))
         }
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcherProvider.io) {
             sourcesRepository.addOrMarkActiveSources(sources)
         }
     }

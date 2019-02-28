@@ -24,6 +24,8 @@ import io.plaidapp.core.R
 import io.plaidapp.core.data.Source
 import io.plaidapp.core.data.Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
+import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -51,29 +53,33 @@ class SourcesRepositoryTest {
     private val defaultSourcesKeys = setOf(dnSourceKey, dribbbleSourceKey, phSourceKey)
 
     private val localDataSource: SourcesLocalDataSource = mock()
-    private val repository = SourcesRepository(defaultSources, localDataSource)
+    private val repository = SourcesRepository(
+            defaultSources,
+            localDataSource,
+            provideFakeCoroutinesDispatcherProvider()
+    )
 
     @Test
-    fun getSources_whenNoOtherSourceWasAdded() {
+    fun getSources_whenNoOtherSourceWasAdded() = runBlocking {
         // Given that no other source was added
         whenever(localDataSource.getKeys()).thenReturn(null)
 
         // When getting the sources
-        val sources = repository.getSourcesSync()
+        val sources = repository.getSources()
 
         // Then the default sources are returned
         assertEquals(defaultSources, sources)
     }
 
     @Test
-    fun getSources_whenOtherSourcesWereAdded() {
+    fun getSources_whenOtherSourcesWereAdded() = runBlocking {
         // Given that other sources were added
         whenever(localDataSource.getKeys()).thenReturn(defaultSourcesKeys)
         whenever(localDataSource.getSourceActiveState(eq(dribbbleSource.key)))
                 .thenReturn(dribbbleSource.active)
 
         // When getting the sources
-        val sources = repository.getSourcesSync()
+        val sources = repository.getSources()
 
         // Then the default sources are returned
         assertEquals(defaultSources.size, sources.size)
@@ -84,7 +90,7 @@ class SourcesRepositoryTest {
     }
 
     @Test
-    fun getSources_whenDeprecatedSourcesWereAdded() {
+    fun getSources_whenDeprecatedSourcesWereAdded() = runBlocking {
         // Given that other deprecated sources were added
         val oldSources = mutableSetOf(
                 "SOURCE_DESIGNER_NEWS_RECENT",
@@ -93,7 +99,7 @@ class SourcesRepositoryTest {
         whenever(localDataSource.getKeys()).thenReturn(oldSources)
 
         // When getting the sources
-        val sources = repository.getSourcesSync()
+        val sources = repository.getSources()
 
         // Then the list of sources is empty
         assertTrue(sources.isEmpty())
@@ -127,17 +133,17 @@ class SourcesRepositoryTest {
     }
 
     @Test
-    fun addSources_addsSourceCache() {
+    fun addSources_addsSourceCache() = runBlocking {
         // When adding a source
         repository.addSources(listOf(designerNewsSource))
 
         // Then the source is returned
-        val sources = repository.getSourcesSync()
+        val sources = repository.getSources()
         assertEquals(listOf(designerNewsSource), sources)
     }
 
     @Test
-    fun changeSourceActiveState_updatesInCache() {
+    fun changeSourceActiveState_updatesInCache() = runBlocking {
         // Given an added source
         repository.addSources(listOf(designerNewsSource))
 
@@ -145,7 +151,7 @@ class SourcesRepositoryTest {
         repository.changeSourceActiveState(designerNewsSource.key, true)
 
         // Then the updated source is returned
-        val sources = repository.getSourcesSync()
+        val sources = repository.getSources()
         assertEquals(1, sources.size)
         val updatedSource = sources[0]
         assertEquals(designerNewsSource.key, updatedSource.key)
@@ -153,7 +159,7 @@ class SourcesRepositoryTest {
     }
 
     @Test
-    fun removeSource_removesFromCache() {
+    fun removeSource_removesFromCache() = runBlocking {
         // Given an added source
         repository.addSources(listOf(designerNewsSource))
 
@@ -161,7 +167,7 @@ class SourcesRepositoryTest {
         repository.removeSource(designerNewsSource.key)
 
         // Then the source was removed from cache
-        val sources = repository.getSourcesSync()
+        val sources = repository.getSources()
         assertTrue(sources.isEmpty())
     }
 
