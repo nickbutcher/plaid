@@ -29,7 +29,7 @@ data class SourceUiModel(
     @DrawableRes val iconRes: Int,
     val isSwipeDismissable: Boolean,
     val onSourceClicked: (source: SourceUiModel) -> Unit,
-    val onSourceRemoved: (source: SourceUiModel) -> Unit
+    val onSourceDismissed: (source: SourceUiModel) -> Unit
 )
 
 /**
