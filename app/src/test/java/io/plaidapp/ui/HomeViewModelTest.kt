@@ -167,6 +167,28 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun filtersUpdated_oneNewSource() {
+        // Given a view model
+        val sources = mutableListOf<Source>(designerNewsSource)
+        val homeViewModel = createViewModelWithDefaultSources(sources)
+        Mockito.verify(sourcesRepository).registerFilterChangedCallback(
+            capture(filtersChangedCallback)
+        )
+
+        // When updating the filters
+        sources.add(dribbbleSource)
+        filtersChangedCallback.value.onFiltersUpdated(sources)
+
+        // Then ui model sources are emitted
+        val sourcesUiModel = LiveDataTestUtil.getValue(homeViewModel.sources)
+        // Then all sources are highlighted
+        val sourcesHighlightUiModel = SourcesHighlightUiModel(listOf(1), 1)
+        assertEquals(Event(sourcesHighlightUiModel), sourcesUiModel?.highlightSources)
+        // The expected sources are retrieved
+        assertEquals(2, sourcesUiModel?.sourceUiModels?.size)
+    }
+
+    @Test
     fun sourceClicked_changesSourceActiveState() {
         // Given a view model
         val homeViewModel = createViewModelWithDefaultSources(emptyList())
@@ -203,7 +225,7 @@ class HomeViewModelTest {
         val uiSource = sources!!.sourceUiModels[0]
 
         // When calling onSourceRemoved
-        uiSource.onSourceRemoved(designerNewsSourceUiModel.copy(isSwipeDismissable = true))
+        uiSource.onSourceDismissed(designerNewsSourceUiModel.copy(isSwipeDismissable = true))
 
         // Then the source is removed
         verify(sourcesRepository).removeSource(designerNewsSource.key)
@@ -223,7 +245,7 @@ class HomeViewModelTest {
         val uiSource = sources!!.sourceUiModels[0]
 
         // When calling onSourceRemoved
-        uiSource.onSourceRemoved(designerNewsSourceUiModel.copy(isSwipeDismissable = false))
+        uiSource.onSourceDismissed(designerNewsSourceUiModel.copy(isSwipeDismissable = false))
 
         // Then the source is not removed
         verify(sourcesRepository, never()).removeSource(designerNewsSource.key)

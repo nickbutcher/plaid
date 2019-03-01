@@ -34,6 +34,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Collections
 
+/**
+ * ViewModel for [HomeActivity].
+ * Handles user login status and sources display for the drawer.
+ *
+ * TODO: handling of the feed list
+ */
 class HomeViewModel(
     val dataManager: DataManager,
     private val loginRepository: LoginRepository,

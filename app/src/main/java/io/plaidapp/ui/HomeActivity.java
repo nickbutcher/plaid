@@ -51,6 +51,7 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.view.WindowInsets;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -111,10 +112,9 @@ public class HomeActivity extends FragmentActivity {
     private ImageButton fab;
     private RecyclerView filtersList;
     private ProgressBar loading;
-    private @Nullable
-    ImageView noConnection;
-    ImageButton fabPosting;
-    GridLayoutManager layoutManager;
+    @Nullable private ImageView noConnection;
+    private ImageButton fabPosting;
+    private GridLayoutManager layoutManager;
     private int columns;
     boolean connected = true;
     private TextView noFiltersEmptyText;
@@ -168,8 +168,43 @@ public class HomeActivity extends FragmentActivity {
         }
         setExitSharedElementCallback(FeedAdapter.createSharedElementReenterCallback(this));
 
-        ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider = new ViewPreloadSizeProvider<>();
+        setupGrid();
 
+        // drawer layout treats fitsSystemWindows specially so we have to handle insets ourselves
+        drawer.setOnApplyWindowInsetsListener((__, insets) -> {
+            handleDrawerInsets(insets);
+            return insets.consumeSystemWindowInsets();
+        });
+
+        setupTaskDescription();
+
+        filtersList.setAdapter(filtersAdapter);
+        filtersList.setItemAnimator(new FilterAnimator());
+
+        viewModel.loadData();
+
+        ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter, this);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(filtersList);
+        checkEmptyState();
+    }
+
+    private void bindResources() {
+        drawer = findViewById(R.id.drawer);
+        toolbar = findViewById(R.id.toolbar);
+        grid = findViewById(R.id.grid);
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(view -> {
+            fabClick();
+        });
+        filtersList = findViewById(R.id.filters);
+        loading = findViewById(android.R.id.empty);
+        noConnection = findViewById(R.id.no_connection);
+
+        columns = getResources().getInteger(R.integer.num_columns);
+    }
+
+    private void setupGrid(){
         grid.setAdapter(adapter);
         layoutManager = new GridLayoutManager(this, columns);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -192,89 +227,62 @@ public class HomeActivity extends FragmentActivity {
                 R.color.divider));
         grid.setItemAnimator(new HomeGridItemAnimator());
 
+        ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider = new ViewPreloadSizeProvider<>();
         RecyclerViewPreloader<Shot> shotPreloader =
                 new RecyclerViewPreloader<>(this, adapter, shotPreloadSizeProvider, 4);
         grid.addOnScrollListener(shotPreloader);
-
-        // drawer layout treats fitsSystemWindows specially so we have to handle insets ourselves
-        drawer.setOnApplyWindowInsetsListener((v, insets) -> {
-            // inset the toolbar down by the status bar height
-            ViewGroup.MarginLayoutParams lpToolbar = (ViewGroup.MarginLayoutParams) toolbar
-                    .getLayoutParams();
-            lpToolbar.topMargin += insets.getSystemWindowInsetTop();
-            lpToolbar.leftMargin += insets.getSystemWindowInsetLeft();
-            lpToolbar.rightMargin += insets.getSystemWindowInsetRight();
-            toolbar.setLayoutParams(lpToolbar);
-
-            // inset the grid top by statusbar+toolbar & the bottom by the navbar (don't clip)
-            grid.setPadding(
-                    grid.getPaddingLeft() + insets.getSystemWindowInsetLeft(), // landscape
-                    insets.getSystemWindowInsetTop()
-                            + ViewUtils.getActionBarSize(HomeActivity.this),
-                    grid.getPaddingRight() + insets.getSystemWindowInsetRight(), // landscape
-                    grid.getPaddingBottom() + insets.getSystemWindowInsetBottom());
-
-            // inset the fab for the navbar
-            ViewGroup.MarginLayoutParams lpFab = (ViewGroup.MarginLayoutParams) fab
-                    .getLayoutParams();
-            lpFab.bottomMargin += insets.getSystemWindowInsetBottom(); // portrait
-            lpFab.rightMargin += insets.getSystemWindowInsetRight(); // landscape
-            fab.setLayoutParams(lpFab);
-
-            View postingStub = findViewById(R.id.stub_posting_progress);
-            ViewGroup.MarginLayoutParams lpPosting =
-                    (ViewGroup.MarginLayoutParams) postingStub.getLayoutParams();
-            lpPosting.bottomMargin += insets.getSystemWindowInsetBottom(); // portrait
-            lpPosting.rightMargin += insets.getSystemWindowInsetRight(); // landscape
-            postingStub.setLayoutParams(lpPosting);
-
-            // we place a background behind the status bar to combine with it's semi-transparent
-            // color to get the desired appearance.  Set it's height to the status bar height
-            View statusBarBackground = findViewById(R.id.status_bar_background);
-            FrameLayout.LayoutParams lpStatus = (FrameLayout.LayoutParams)
-                    statusBarBackground.getLayoutParams();
-            lpStatus.height = insets.getSystemWindowInsetTop();
-            statusBarBackground.setLayoutParams(lpStatus);
-
-            // inset the filters list for the status bar / navbar
-            // need to set the padding end for landscape case
-            final boolean ltr = filtersList.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR;
-            filtersList.setPaddingRelative(filtersList.getPaddingStart(),
-                    filtersList.getPaddingTop() + insets.getSystemWindowInsetTop(),
-                    filtersList.getPaddingEnd() + (ltr ? insets.getSystemWindowInsetRight() :
-                            0),
-                    filtersList.getPaddingBottom() + insets.getSystemWindowInsetBottom());
-
-            // clear this listener so insets aren't re-applied
-            drawer.setOnApplyWindowInsetsListener(null);
-
-            return insets.consumeSystemWindowInsets();
-        });
-        setupTaskDescription();
-
-        filtersList.setAdapter(filtersAdapter);
-        filtersList.setItemAnimator(new FilterAnimator());
-
-        viewModel.loadData();
-        ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter, this);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(filtersList);
-        checkEmptyState();
     }
 
-    private void bindResources() {
-        drawer = findViewById(R.id.drawer);
-        toolbar = findViewById(R.id.toolbar);
-        grid = findViewById(R.id.grid);
-        fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> {
-            fabClick();
-        });
-        filtersList = findViewById(R.id.filters);
-        loading = findViewById(android.R.id.empty);
-        noConnection = findViewById(R.id.no_connection);
+    private void handleDrawerInsets(WindowInsets insets){
+        // inset the toolbar down by the status bar height
+        ViewGroup.MarginLayoutParams lpToolbar = (ViewGroup.MarginLayoutParams) toolbar
+                .getLayoutParams();
+        lpToolbar.topMargin += insets.getSystemWindowInsetTop();
+        lpToolbar.leftMargin += insets.getSystemWindowInsetLeft();
+        lpToolbar.rightMargin += insets.getSystemWindowInsetRight();
+        toolbar.setLayoutParams(lpToolbar);
 
-        columns = getResources().getInteger(R.integer.num_columns);
+        // inset the grid top by statusbar+toolbar & the bottom by the navbar (don't clip)
+        grid.setPadding(
+                grid.getPaddingLeft() + insets.getSystemWindowInsetLeft(), // landscape
+                insets.getSystemWindowInsetTop()
+                        + ViewUtils.getActionBarSize(HomeActivity.this),
+                grid.getPaddingRight() + insets.getSystemWindowInsetRight(), // landscape
+                grid.getPaddingBottom() + insets.getSystemWindowInsetBottom());
+
+        // inset the fab for the navbar
+        ViewGroup.MarginLayoutParams lpFab = (ViewGroup.MarginLayoutParams) fab
+                .getLayoutParams();
+        lpFab.bottomMargin += insets.getSystemWindowInsetBottom(); // portrait
+        lpFab.rightMargin += insets.getSystemWindowInsetRight(); // landscape
+        fab.setLayoutParams(lpFab);
+
+        View postingStub = findViewById(R.id.stub_posting_progress);
+        ViewGroup.MarginLayoutParams lpPosting =
+                (ViewGroup.MarginLayoutParams) postingStub.getLayoutParams();
+        lpPosting.bottomMargin += insets.getSystemWindowInsetBottom(); // portrait
+        lpPosting.rightMargin += insets.getSystemWindowInsetRight(); // landscape
+        postingStub.setLayoutParams(lpPosting);
+
+        // we place a background behind the status bar to combine with it's semi-transparent
+        // color to get the desired appearance.  Set it's height to the status bar height
+        View statusBarBackground = findViewById(R.id.status_bar_background);
+        FrameLayout.LayoutParams lpStatus = (FrameLayout.LayoutParams)
+                statusBarBackground.getLayoutParams();
+        lpStatus.height = insets.getSystemWindowInsetTop();
+        statusBarBackground.setLayoutParams(lpStatus);
+
+        // inset the filters list for the status bar / navbar
+        // need to set the padding end for landscape case
+        final boolean ltr = filtersList.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR;
+        filtersList.setPaddingRelative(filtersList.getPaddingStart(),
+                filtersList.getPaddingTop() + insets.getSystemWindowInsetTop(),
+                filtersList.getPaddingEnd() + (ltr ? insets.getSystemWindowInsetRight() :
+                        0),
+                filtersList.getPaddingBottom() + insets.getSystemWindowInsetBottom());
+
+        // clear this listener so insets aren't re-applied
+        drawer.setOnApplyWindowInsetsListener(null);
     }
 
     @Override

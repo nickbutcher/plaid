@@ -85,7 +85,7 @@ class FilterAdapter : ListAdapter<SourceUiModel, FilterViewHolder>(sourceUiModel
 
     override fun onItemDismiss(position: Int) {
         val uiModel = getItem(position)
-        uiModel.onSourceRemoved(uiModel)
+        uiModel.onSourceDismissed(uiModel)
     }
 
     companion object {
