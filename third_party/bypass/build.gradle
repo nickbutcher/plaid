@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+apply from: '../../repositories.gradle'
+
 android {
     compileSdkVersion versions.compileSdk
 
@@ -15,12 +17,6 @@ android {
             minifyEnabled false
         }
     }
-}
-
-repositories {
-    google()
-    jcenter()
-    maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
 }
 
 dependencies {

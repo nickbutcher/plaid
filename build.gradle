@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-buildscript {
-
+buildscript { scriptHandler ->
+    apply from: 'repositories.gradle',
+            to: scriptHandler
     ext.versions = [
             'compileSdk'         : 28,
             'minSdk'             : 23,
@@ -57,16 +58,8 @@ buildscript {
             'applicationId': 'io.plaidapp'
     ]
 
-    repositories {
-        google()
-        mavenCentral()
-        jcenter()
-        maven { url 'https://maven.fabric.io/public' }
-        maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
-    }
-
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0-beta02'
+        classpath 'com.android.tools.build:gradle:3.4.0-beta04'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         classpath "com.google.gms:google-services:${versions.googleServices}"
         classpath "io.fabric.tools:gradle:${versions.fabric}"

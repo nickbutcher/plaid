@@ -22,6 +22,8 @@ apply plugin: 'kotlin-kapt'
 apply from: '../core_dependencies.gradle'
 apply from: '../test_dependencies.gradle'
 
+apply from: '../repositories.gradle'
+
 android {
     compileSdkVersion versions.compileSdk
 
@@ -41,12 +43,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-}
-
-repositories {
-    google()
-    jcenter()
-    maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
 }
 
 dependencies {

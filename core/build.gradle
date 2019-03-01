@@ -23,6 +23,8 @@ apply plugin: 'kotlin-kapt'
 apply from: '../core_dependencies.gradle'
 apply from: '../test_dependencies.gradle'
 
+apply from: '../repositories.gradle'
+
 android {
     compileSdkVersion versions.compileSdk
 
@@ -60,12 +62,6 @@ android {
         exclude 'META-INF/core_debug.kotlin_module'
     }
 
-}
-
-repositories {
-    google()
-    jcenter()
-    maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
 }
 
 dependencies {

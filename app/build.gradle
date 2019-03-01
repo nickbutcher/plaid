@@ -23,6 +23,8 @@ apply plugin: 'kotlin-kapt'
 apply from: '../core_dependencies.gradle'
 apply from: '../test_dependencies.gradle'
 
+apply from: '../repositories.gradle'
+
 android {
     compileSdkVersion versions.compileSdk
 
@@ -67,13 +69,6 @@ android {
     }
 
     dynamicFeatures = [':about', ':designernews', ':dribbble', ':search']
-}
-
-repositories {
-    google()
-    maven { url 'https://maven.fabric.io/public' }
-    jcenter()
-    maven { url 'http://dl.bintray.com/kotlin/kotlin-eap' }
 }
 
 dependencies {
