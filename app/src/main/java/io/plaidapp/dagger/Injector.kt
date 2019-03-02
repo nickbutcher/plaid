@@ -36,10 +36,10 @@ fun inject(
     DaggerHomeComponent.builder()
         .coreComponent(activity.coreComponent())
         .dataLoadedModule(OnDataLoadedModule(dataLoadedCallback))
-        .homeModule(HomeModule(activity))
         .sharedPreferencesModule(
             SharedPreferencesModule(activity, LoginLocalDataSource.DESIGNER_NEWS_PREF)
         )
+        .homeActivity(activity)
         .build()
         .inject(activity)
 }
