@@ -61,6 +61,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -100,7 +101,7 @@ import java.util.List;
 
 import static io.plaidapp.dagger.Injector.inject;
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends FragmentActivity {
 
     private static final int RC_SEARCH = 0;
     private static final int RC_NEW_DESIGNER_NEWS_STORY = 4;

@@ -18,7 +18,9 @@ package io.plaidapp.dagger
 
 import android.app.Activity
 import android.content.Context
+import androidx.fragment.app.FragmentActivity
 import com.bumptech.glide.util.ViewPreloadSizeProvider
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.R
@@ -28,6 +30,7 @@ import io.plaidapp.core.dagger.SourcesRepositoryModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.data.pocket.PocketUtils
 import io.plaidapp.core.dribbble.data.api.model.Shot
+import io.plaidapp.ui.HomeActivity
 
 /**
  * Dagger module for [io.plaidapp.ui.HomeActivity].
@@ -40,20 +43,30 @@ import io.plaidapp.core.dribbble.data.api.model.Shot
         OnDataLoadedModule::class
     ]
 )
-class HomeModule(private val activity: Activity) {
+abstract class HomeModule(private val activity: Activity) {
 
-    @Provides
-    fun context(): Context = activity
+    @Binds
+    abstract fun homeActivityAsFragmentActivity(activity: HomeActivity): FragmentActivity
 
-    @Provides
-    fun activity(): Activity = activity
+    @Binds
+    abstract fun homeActivityAsActivity(activity: HomeActivity): Activity
 
-    @Provides
-    fun columns(): Int = activity.resources.getInteger(R.integer.num_columns)
+    @Binds
+    abstract fun context(activity: Activity): Context
 
-    @Provides
-    fun viewPreloadSizeProvider(): ViewPreloadSizeProvider<Shot> = ViewPreloadSizeProvider()
+    @Module
+    companion object {
 
-    @Provides
-    fun isPocketInstalled(): Boolean = PocketUtils.isPocketInstalled(activity)
+        @JvmStatic
+        @Provides
+        fun columns(activity: Activity): Int = activity.resources.getInteger(R.integer.num_columns)
+
+        @JvmStatic
+        @Provides
+        fun viewPreloadSizeProvider(): ViewPreloadSizeProvider<Shot> = ViewPreloadSizeProvider()
+
+        @JvmStatic
+        @Provides
+        fun isPocketInstalled(activity: Activity): Boolean = PocketUtils.isPocketInstalled(activity)
+    }
 }
