@@ -31,8 +31,6 @@ import io.plaidapp.core.data.api.DenvelopingConverter
 import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.core.designernews.data.api.DesignerNewsSearchConverter
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.comments.CommentsRemoteDataSource
-import io.plaidapp.core.designernews.data.comments.CommentsRepository
 import io.plaidapp.core.designernews.data.database.DesignerNewsDatabase
 import io.plaidapp.core.designernews.data.database.LoggedInUserDao
 import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
@@ -118,8 +116,4 @@ class DesignerNewsDataModule {
     fun provideStoriesRemoteDataSource(service: DesignerNewsService): StoriesRemoteDataSource {
         return StoriesRemoteDataSource.getInstance(service)
     }
-
-    @Provides
-    fun provideCommentsRepository(dataSource: CommentsRemoteDataSource): CommentsRepository =
-        CommentsRepository.getInstance(dataSource)
 }

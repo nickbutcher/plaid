@@ -25,7 +25,8 @@ import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.comments.CommentsRemoteDataSource
+import io.plaidapp.designernews.data.comments.CommentsRemoteDataSource
+import io.plaidapp.designernews.data.comments.CommentsRepository
 import io.plaidapp.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.designernews.data.users.UserRepository
 import io.plaidapp.designernews.data.votes.VotesRemoteDataSource
@@ -97,4 +98,8 @@ class StoryModule(private val storyId: Long, private val activity: StoryActivity
     @Provides
     fun provideVotesRepository(remoteDataSource: VotesRemoteDataSource): VotesRepository =
         VotesRepository.getInstance(remoteDataSource)
+
+    @Provides
+    fun provideCommentsRepository(dataSource: CommentsRemoteDataSource): CommentsRepository =
+        CommentsRepository.getInstance(dataSource)
 }

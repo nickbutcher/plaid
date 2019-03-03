@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.comments
+package io.plaidapp.designernews.data.comments
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.comments.model.CommentResponse
@@ -71,7 +71,8 @@ class CommentsRepository(private val remoteDataSource: CommentsRemoteDataSource)
             remoteDataSource: CommentsRemoteDataSource
         ): CommentsRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: CommentsRepository(remoteDataSource).also { INSTANCE = it }
+                INSTANCE
+                    ?: CommentsRepository(remoteDataSource).also { INSTANCE = it }
             }
         }
     }

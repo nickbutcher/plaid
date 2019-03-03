@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.comments
+package io.plaidapp.designernews.data.comments
 
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.repliesResponses
-import io.plaidapp.core.designernews.replyResponse1
+import io.plaidapp.designernews.repliesResponses
+import io.plaidapp.designernews.replyResponse1
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
