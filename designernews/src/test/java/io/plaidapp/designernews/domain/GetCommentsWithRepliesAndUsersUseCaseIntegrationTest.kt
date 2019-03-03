@@ -21,8 +21,8 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.comments.CommentsRemoteDataSource
-import io.plaidapp.core.designernews.data.comments.CommentsRepository
+import io.plaidapp.designernews.data.comments.CommentsRemoteDataSource
+import io.plaidapp.designernews.data.comments.CommentsRepository
 import io.plaidapp.core.designernews.data.comments.model.CommentResponse
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.designernews.data.users.UserRemoteDataSource
@@ -51,8 +51,10 @@ import retrofit2.Response
  */
 class GetCommentsWithRepliesAndUsersUseCaseIntegrationTest {
     private val service: DesignerNewsService = mock()
-    private val dataSource = CommentsRemoteDataSource(service)
-    private val commentsRepository = CommentsRepository(dataSource)
+    private val dataSource =
+        CommentsRemoteDataSource(service)
+    private val commentsRepository =
+        CommentsRepository(dataSource)
     private val userRepository = UserRepository(UserRemoteDataSource(service))
     private val repository: GetCommentsWithRepliesAndUsersUseCase = GetCommentsWithRepliesAndUsersUseCase(
         GetCommentsWithRepliesUseCase(commentsRepository),

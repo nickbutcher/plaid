@@ -20,7 +20,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.comments.CommentsRepository
+import io.plaidapp.designernews.data.comments.CommentsRepository
 import io.plaidapp.designernews.parentCommentResponse
 import io.plaidapp.designernews.parentCommentWithReplies
 import io.plaidapp.designernews.parentCommentWithRepliesWithoutReplies

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.comments
+package io.plaidapp.designernews.data.comments
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
@@ -96,8 +96,10 @@ class CommentsRemoteDataSource(private val service: DesignerNewsService) {
         @Volatile private var INSTANCE: CommentsRemoteDataSource? = null
 
         fun getInstance(service: DesignerNewsService): CommentsRemoteDataSource {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: CommentsRemoteDataSource(service).also { INSTANCE = it }
+            return INSTANCE
+                ?: synchronized(this) {
+                INSTANCE
+                    ?: CommentsRemoteDataSource(service).also { INSTANCE = it }
             }
         }
     }
