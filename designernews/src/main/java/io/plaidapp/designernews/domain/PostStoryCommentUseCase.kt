@@ -18,7 +18,7 @@ package io.plaidapp.designernews.domain
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.designernews.data.comments.CommentsRepository
-import io.plaidapp.core.designernews.data.comments.model.toCommentWithNoReplies
+import io.plaidapp.designernews.data.comments.model.toCommentWithNoReplies
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.util.exhaustive

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.comments.model
+package io.plaidapp.designernews.data.comments.model
 
 import com.google.gson.annotations.SerializedName
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser

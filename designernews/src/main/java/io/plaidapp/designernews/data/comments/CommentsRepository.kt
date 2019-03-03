@@ -17,7 +17,7 @@
 package io.plaidapp.designernews.data.comments
 
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.comments.model.CommentResponse
+import io.plaidapp.designernews.data.comments.model.CommentResponse
 
 /**
  * Class that knows how to get and store Designer News comments.

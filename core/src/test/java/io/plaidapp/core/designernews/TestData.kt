@@ -16,19 +16,14 @@
 
 package io.plaidapp.core.designernews
 
-import io.plaidapp.core.designernews.data.comments.model.CommentLinksResponse
-import io.plaidapp.core.designernews.data.comments.model.CommentResponse
 import io.plaidapp.core.designernews.data.stories.model.StoryLinks
 import io.plaidapp.core.designernews.data.users.model.User
 import okhttp3.MediaType
 import okhttp3.ResponseBody
-import java.util.GregorianCalendar
 
 /**
  * Test data
  */
-
-const val parentId = 1L
 
 val user = User(
     id = 111L,
@@ -38,34 +33,9 @@ val user = User(
     portraitUrl = "www"
 )
 
-val links = CommentLinksResponse(
-    userId = user.id,
-    story = 999L,
-    parentComment = parentId
-)
+val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")!!
 
-val replyResponse1 = CommentResponse(
-    id = 11L,
-    body = "commenty comment",
-    created_at = GregorianCalendar(1988, 1, 1).time,
-    links = links
-)
-
-val replyResponse2 = CommentResponse(
-    id = 12L,
-    body = "commenty comment",
-    created_at = GregorianCalendar(1908, 2, 8).time,
-    links = links
-)
-
-val repliesResponses = listOf(
-    replyResponse1,
-    replyResponse2
-)
-
-val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")
-
-val userId = 123L
+const val userId = 123L
 
 val storyLinks = StoryLinks(
     user = userId,
