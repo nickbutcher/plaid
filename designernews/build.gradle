@@ -54,3 +54,6 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }
 
+androidExtensions {
+    experimental = true
+}

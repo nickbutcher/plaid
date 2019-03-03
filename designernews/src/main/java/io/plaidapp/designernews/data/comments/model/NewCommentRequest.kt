@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.comments.model
+package io.plaidapp.designernews.data.comments.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -24,7 +24,12 @@ class NewCommentRequest(
     story: String?,
     user: String,
     @SerializedName("comments") val comment: PostCommentRequest =
-        PostCommentRequest(CommentData(body), CommentLinks(parent_comment, story, user))
+        PostCommentRequest(
+            CommentData(
+                body
+            ),
+            CommentLinks(parent_comment, story, user)
+        )
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -20,10 +20,10 @@ import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.comments.model.CommentResponse
-import io.plaidapp.core.designernews.data.comments.model.NewCommentRequest
-import io.plaidapp.core.designernews.data.comments.model.PostCommentResponse
+import io.plaidapp.designernews.data.api.DNService
+import io.plaidapp.designernews.data.comments.model.CommentResponse
+import io.plaidapp.designernews.data.comments.model.NewCommentRequest
+import io.plaidapp.designernews.data.comments.model.PostCommentResponse
 import io.plaidapp.designernews.errorResponseBody
 import io.plaidapp.designernews.repliesResponses
 import io.plaidapp.designernews.replyResponse1
@@ -43,7 +43,7 @@ class CommentsRemoteDataSourceTest {
 
     private val body = "Plaid is awesome"
 
-    private val service: DesignerNewsService = mock()
+    private val service: DNService = mock()
     private val dataSource =
         io.plaidapp.designernews.data.comments.CommentsRemoteDataSource(service)
 
@@ -128,7 +128,8 @@ class CommentsRemoteDataSourceTest {
     @Test
     fun comment_whenException() = runBlocking {
         // Given that the service throws an exception
-        val request = NewCommentRequest(body, "11", null, "111")
+        val request =
+            NewCommentRequest(body, "11", null, "111")
         doAnswer { throw UnknownHostException() }
             .whenever(service).comment(request)
 
@@ -142,8 +143,13 @@ class CommentsRemoteDataSourceTest {
     @Test
     fun comment_withNoComments() = runBlocking {
         // Given a response returned for a request
-        val response = Response.success(PostCommentResponse(emptyList()))
-        val request = NewCommentRequest(body, "11", null, "111")
+        val response = Response.success(
+            PostCommentResponse(
+                emptyList()
+            )
+        )
+        val request =
+            NewCommentRequest(body, "11", null, "111")
         whenever(service.comment(request)).thenReturn(CompletableDeferred(response))
 
         // When adding a comment
@@ -159,7 +165,8 @@ class CommentsRemoteDataSourceTest {
         val response = Response.success(
             PostCommentResponse(listOf(replyResponse1))
         )
-        val request = NewCommentRequest(body, "11", null, "111")
+        val request =
+            NewCommentRequest(body, "11", null, "111")
         whenever(service.comment(request)).thenReturn(CompletableDeferred(response))
 
         // When adding a comment
