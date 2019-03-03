@@ -369,55 +369,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     /**
-     * Main entry point for setting items to this adapter. Will also expand some items to span multiple
-     * grid columns.
+     * Main entry point for setting items to this adapter.
      */
     public void setItems(List<PlaidItem> newItems) {
         items = newItems;
-        expandPopularItems();
-        notifyDataSetChanged();
-    }
-
-    private void expandPopularItems() {
-        // for now just expand the first dribbble image per page which should be
-        // the most popular according to our weighing & sorting
-        List<Integer> expandedPositions = new ArrayList<>();
-        int page = -1;
-        final int count = items.size();
-        for (int i = 0; i < count; i++) {
-            PlaidItem item = getItem(i);
-            if (item instanceof Shot && item.getPage() > page) {
-                item.setColspan(columns);
-                page = item.getPage();
-                expandedPositions.add(i);
-            } else {
-                item.setColspan(1);
-            }
-        }
-
-        // make sure that any expanded items are at the start of a row
-        // so that we don't leave any gaps in the grid
-        for (int expandedPos = 0; expandedPos < expandedPositions.size(); expandedPos++) {
-            int pos = expandedPositions.get(expandedPos);
-            int extraSpannedSpaces = expandedPos * (columns - 1);
-            int rowPosition = (pos + extraSpannedSpaces) % columns;
-            if (rowPosition != 0) {
-                int swapWith = pos + (columns - rowPosition);
-                if (swapWith < items.size()) {
-                    Collections.swap(items, pos, swapWith);
-                }
-            }
-        }
-    }
-
-    public void removeDataSource(String dataSource) {
-        for (int i = items.size() - 1; i >= 0; i--) {
-            PlaidItem item = items.get(i);
-            if (dataSource.equals(item.getDataSource())) {
-                items.remove(i);
-            }
-        }
-        expandPopularItems();
         notifyDataSetChanged();
     }
 
