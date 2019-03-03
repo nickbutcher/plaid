@@ -56,6 +56,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.LiveData;
 import androidx.fragment.app.FragmentActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -113,7 +114,7 @@ public class HomeActivity extends FragmentActivity {
     private TextView noFiltersEmptyText;
     private FilterAdapter filtersAdapter;
 
-    private boolean connected;
+    private LiveData<Boolean> connectedStatus;
 
     // data
     @Inject
@@ -123,6 +124,8 @@ public class HomeActivity extends FragmentActivity {
     FeedAdapter adapter;
     @Inject
     SourcesRepository sourcesRepository;
+    @Inject
+    ConnectivityChecker connectivityChecker;
 
     @Inject
     HomeViewModel viewModel;
@@ -139,10 +142,9 @@ public class HomeActivity extends FragmentActivity {
             checkEmptyState();
         });
 
-        ConnectivityChecker connectivityChecker = new ConnectivityChecker(this.getApplicationContext());
         getLifecycle().addObserver(connectivityChecker);
-        connectivityChecker.getConnectedStatus().observe(this, connected -> {
-            this.connected = connected;
+        connectedStatus = connectivityChecker.getConnectedStatus();
+        connectedStatus.observe(this, connected -> {
             if(connected) {
                 handleNetworkConnected();
             } else {
@@ -567,7 +569,8 @@ public class HomeActivity extends FragmentActivity {
         if (adapter.getDataItemCount() == 0) {
             // if grid is empty check whether we're loading or if no filters are selected
             if (sourcesRepository.getActiveSourcesCount() > 0) {
-                if (connected) {
+                Boolean connected = connectedStatus.getValue();
+                if (connected != null && connected) {
                     loading.setVisibility(View.VISIBLE);
                     setNoFiltersEmptyTextVisibility(View.GONE);
                 }

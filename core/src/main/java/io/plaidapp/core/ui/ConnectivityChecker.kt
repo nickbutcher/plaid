@@ -16,7 +16,6 @@
 
 package io.plaidapp.core.ui
 
-import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -28,10 +27,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.OnLifecycleEvent
 
 /**
- * Lifecycle aware connectivity checker. It checks for connectivity in onResume
+ * Lifecycle aware connectivity checker that exposes the network connected status via a LiveData.
  */
-class ConnectivityChecker(private val appContext: Context) : LifecycleObserver {
-    private var connected = true
+class ConnectivityChecker(
+    private val connectivityManager: ConnectivityManager
+) : LifecycleObserver {
+
     private var monitoringConnectivity = false
 
     private val _connectedStatus = MutableLiveData<Boolean>()
@@ -40,21 +41,17 @@ class ConnectivityChecker(private val appContext: Context) : LifecycleObserver {
 
     private val connectivityCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
-            connected = true
-            _connectedStatus.postValue(connected)
+            _connectedStatus.postValue(true)
         }
 
         override fun onLost(network: Network) {
-            connected = false
-            _connectedStatus.postValue(connected)
+            _connectedStatus.postValue(false)
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun stopMonitoringConnectivity() {
         if (monitoringConnectivity) {
-            val connectivityManager =
-                appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             connectivityManager.unregisterNetworkCallback(connectivityCallback)
             monitoringConnectivity = false
         }
@@ -62,10 +59,8 @@ class ConnectivityChecker(private val appContext: Context) : LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun startMonitoringConnectivity() {
-        val connectivityManager =
-            appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo = connectivityManager.activeNetworkInfo
-        connected = activeNetworkInfo != null && activeNetworkInfo.isConnected
+        val connected = activeNetworkInfo != null && activeNetworkInfo.isConnected
         _connectedStatus.postValue(connected)
         if (!connected) {
             connectivityManager.registerNetworkCallback(
