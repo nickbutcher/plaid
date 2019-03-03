@@ -139,7 +139,7 @@ public class HomeActivity extends FragmentActivity {
         setContentView(R.layout.activity_home);
         bindResources();
         inject(this, data -> {
-            List<PlaidItem> items = PlaidItemsList.getPlaidItemsForDisplay(adapter.getItems(), data);
+            List<PlaidItem> items = PlaidItemsList.getPlaidItemsForDisplay(adapter.getItems(), data, columns);
             adapter.setItems(items);
             checkEmptyState();
         });
@@ -429,14 +429,14 @@ public class HomeActivity extends FragmentActivity {
         @Override
         public void onFiltersChanged(Source changedFilter) {
             if (!changedFilter.active) {
-                adapter.removeDataSource(changedFilter.key);
+               handleDataSourceRemoved(changedFilter.key);
             }
             checkEmptyState();
         }
 
         @Override
         public void onFilterRemoved(Source removed) {
-            adapter.removeDataSource(removed.key);
+            handleDataSourceRemoved(removed.key);
             checkEmptyState();
         }
     };
@@ -461,6 +461,18 @@ public class HomeActivity extends FragmentActivity {
             }
         }
     };
+
+    private void handleDataSourceRemoved(String dataSourceKey){
+        List<PlaidItem> items = adapter.getItems();
+        for (int i = items.size() - 1; i >= 0; i--) {
+            PlaidItem item = items.get(i);
+            if (dataSourceKey.equals(item.getDataSource())) {
+                items.remove(i);
+            }
+        }
+        PlaidItemsList.expandPopularItems(items, columns);
+        adapter.setItems(items);
+    }
 
     protected void fabClick() {
         if (loginRepository.isLoggedIn()) {
@@ -501,7 +513,7 @@ public class HomeActivity extends FragmentActivity {
                     Story newStory = intent.getParcelableExtra(PostStoryService.EXTRA_NEW_STORY);
 
                     List<PlaidItem> items = PlaidItemsList.getPlaidItemsForDisplay(
-                            adapter.getItems(), Collections.singletonList(newStory));
+                            adapter.getItems(), Collections.singletonList(newStory), columns);
                     adapter.setItems(items);
                     break;
                 case PostStoryService.BROADCAST_ACTION_FAILURE:

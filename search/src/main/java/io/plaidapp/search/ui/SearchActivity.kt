@@ -114,7 +114,7 @@ class SearchActivity : AppCompatActivity() {
                     fab.visibility = View.VISIBLE
                 }
                 val feedItems = feedAdapter.items
-                val items = getPlaidItemsForDisplay(feedItems, data)
+                val items = getPlaidItemsForDisplay(feedItems, data, columns)
                 feedAdapter.items = items
             } else {
                 TransitionManager.beginDelayedTransition(

@@ -33,14 +33,48 @@ import java.util.Collections
  * Prepares items for display of de-duplicating items and sorting them (depending on the data
  * source).
  */
-fun getPlaidItemsForDisplay(oldItems: List<PlaidItem>, newItems: List<PlaidItem>): List<PlaidItem> {
+fun getPlaidItemsForDisplay(
+    oldItems: List<PlaidItem>,
+    newItems: List<PlaidItem>,
+    columns: Int
+): List<PlaidItem> {
     val itemsToBeDisplayed = oldItems.toMutableList()
     weighItems(newItems.toMutableList())
     deduplicateAndAdd(itemsToBeDisplayed, newItems)
     sort(itemsToBeDisplayed)
+    expandPopularItems(itemsToBeDisplayed, columns)
     return itemsToBeDisplayed
 }
 
+fun expandPopularItems(items: List<PlaidItem>, columns: Int) {
+    // for now just expand the first dribbble image per page which should be
+    // the most popular according to our weighing & sorting
+    val expandedPositions = mutableListOf<Int>()
+    var page = -1
+    items.forEachIndexed { index, item ->
+        if (item is Shot && item.page > page) {
+            item.colspan = columns
+            page = item.page
+            expandedPositions.add(index)
+        } else {
+            item.colspan = 1
+        }
+    }
+
+    // make sure that any expanded items are at the start of a row
+    // so that we don't leave any gaps in the grid
+    expandedPositions.indices.forEach { expandedPos ->
+        val pos = expandedPositions[expandedPos]
+        val extraSpannedSpaces = expandedPos * (columns - 1)
+        val rowPosition = (pos + extraSpannedSpaces) % columns
+        if (rowPosition != 0) {
+            val swapWith = pos + (columns - rowPosition)
+            if (swapWith < items.size) {
+                Collections.swap(items, pos, swapWith)
+            }
+        }
+    }
+}
 /**
  * Calculate a 'weight' [0, 1] for each data type for sorting. Each data type/source has a
  * different metric for weighing it e.g. Dribbble uses likes etc. but some sources should keep
