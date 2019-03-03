@@ -27,7 +27,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
 import android.text.Spannable
-import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.AlignmentSpan
 import androidx.core.text.toSpannable
@@ -61,22 +60,19 @@ internal class AboutViewModel @Inject constructor(
                 highlightColor
             )
 
-            val about1 = SpannableString(resources.getString(R.string.about_plaid_1))
+            val about1 = getSpannableFromMarkdown(
+                R.string.about_plaid_1,
+                linksColor,
+                highlightColor
+            )
             about1 += AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER)
 
             val about2 = getSpannableFromMarkdown(
                 R.string.about_plaid_2,
-                linksColor,
-                highlightColor
-            )
-            about2 += AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER)
-
-            val about3 = getSpannableFromMarkdown(
-                R.string.about_plaid_3,
                 linksColor, highlightColor
             )
-            about3 += AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER)
-            spannableFrom(about0, "\n\n", about1, "\n", about2, "\n\n", about3)
+            about2 += AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER)
+            spannableFrom(about0, "\n\n", about1, "\n\n", about2)
         }
     }
 

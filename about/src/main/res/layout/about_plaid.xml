@@ -43,6 +43,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@color/background_light"
+            android:breakStrategy="simple"
             android:paddingStart="@dimen/padding_normal"
             android:paddingTop="@dimen/padding_normal"
             android:paddingEnd="@dimen/padding_normal"
