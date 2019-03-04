@@ -55,7 +55,7 @@ buildscript { scriptHandler ->
             'test_runner'        : '1.1.0-beta02',
             'ui_automator'       : '2.2.0-beta02',
             'viewPager2'         : '1.0.0-alpha02'
-            'workmanager'        : '1.0.0-beta05'
+            'workmanager'        : '1.0.0'
     ]
     ext.names = [
             'applicationId': 'io.plaidapp'
@@ -66,6 +66,7 @@ buildscript { scriptHandler ->
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         classpath "com.google.gms:google-services:${versions.googleServices}"
         classpath "io.fabric.tools:gradle:${versions.fabric}"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 
 }
