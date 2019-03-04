@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.votes.model
+package io.plaidapp.designernews.data.votes.model
 
 import com.google.gson.annotations.SerializedName
 
 class UpvoteCommentRequest(
     commentId: Long,
     userId: Long,
-    @SerializedName("comment_upvotes") val upvote: UpvoteComment = UpvoteComment(CommentVoteLinks(commentId, userId))
+    @SerializedName("comment_upvotes") val upvote: UpvoteComment = UpvoteComment(
+        CommentVoteLinks(commentId, userId)
+    )
 )
 
 data class UpvoteComment(@SerializedName("links") val voteLinks: CommentVoteLinks)
