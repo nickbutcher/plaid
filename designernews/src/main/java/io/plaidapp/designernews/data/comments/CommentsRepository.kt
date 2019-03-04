@@ -71,8 +71,7 @@ class CommentsRepository(private val remoteDataSource: CommentsRemoteDataSource)
             remoteDataSource: CommentsRemoteDataSource
         ): CommentsRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE
-                    ?: CommentsRepository(remoteDataSource).also { INSTANCE = it }
+                INSTANCE ?: CommentsRepository(remoteDataSource).also { INSTANCE = it }
             }
         }
     }

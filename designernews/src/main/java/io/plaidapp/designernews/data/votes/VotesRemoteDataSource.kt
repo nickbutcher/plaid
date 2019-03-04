@@ -54,8 +54,7 @@ class VotesRemoteDataSource @Inject constructor(private val service: DesignerNew
     )
 
     private suspend fun requestUpvoteComment(commentId: Long, userId: Long): Result<Unit> {
-        val request =
-            UpvoteCommentRequest(commentId, userId)
+        val request = UpvoteCommentRequest(commentId, userId)
         val response = service.upvoteComment(request).await()
         return if (response.isSuccessful) {
             Result.Success(Unit)
