@@ -24,7 +24,7 @@ import io.plaidapp.core.dagger.MarkdownModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
-import io.plaidapp.designernews.data.api.DNService
+import io.plaidapp.designernews.data.api.DesignerNewsService
 import io.plaidapp.designernews.data.comments.CommentsRemoteDataSource
 import io.plaidapp.designernews.data.comments.CommentsRepository
 import io.plaidapp.designernews.data.users.UserRemoteDataSource
@@ -93,7 +93,7 @@ class StoryModule(private val storyId: Long, private val activity: StoryActivity
         UserRepository.getInstance(dataSource)
 
     @Provides
-    fun provideCommentsRemoteDataSource(service: DNService): CommentsRemoteDataSource =
+    fun provideCommentsRemoteDataSource(service: DesignerNewsService): CommentsRemoteDataSource =
         CommentsRemoteDataSource.getInstance(service)
 
     @Provides

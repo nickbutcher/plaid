@@ -39,7 +39,7 @@ import retrofit2.http.Path
  * v1 docs: https://github.com/layervault/dn_api
  * v2 docs: https://github.com/DesignerNews/dn_api_v2
  */
-interface DNService {
+interface DesignerNewsService {
 
     @EnvelopePayload("users")
     @GET("api/v2/users/{ids}")

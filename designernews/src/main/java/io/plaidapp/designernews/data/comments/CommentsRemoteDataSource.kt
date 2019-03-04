@@ -20,13 +20,13 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.designernews.data.comments.model.CommentResponse
 import io.plaidapp.designernews.data.comments.model.NewCommentRequest
 import io.plaidapp.core.util.safeApiCall
-import io.plaidapp.designernews.data.api.DNService
+import io.plaidapp.designernews.data.api.DesignerNewsService
 import java.io.IOException
 
 /**
  * Work with the Designer News API to get comments. The class knows how to construct the requests.
  */
-class CommentsRemoteDataSource(private val service: DNService) {
+class CommentsRemoteDataSource(private val service: DesignerNewsService) {
 
     /**
      * Get a list of comments based on ids from Designer News API.
@@ -95,7 +95,7 @@ class CommentsRemoteDataSource(private val service: DNService) {
     companion object {
         @Volatile private var INSTANCE: CommentsRemoteDataSource? = null
 
-        fun getInstance(service: DNService): CommentsRemoteDataSource {
+        fun getInstance(service: DesignerNewsService): CommentsRemoteDataSource {
             return INSTANCE
                 ?: synchronized(this) {
                 INSTANCE

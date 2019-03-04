@@ -28,7 +28,7 @@ import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.data.api.DenvelopingConverter
 import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
 import io.plaidapp.designernews.data.api.ClientAuthInterceptor
-import io.plaidapp.designernews.data.api.DNService
+import io.plaidapp.designernews.data.api.DesignerNewsService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -63,17 +63,17 @@ class DataModule {
     }
 
     @Provides
-    fun provideDNService(
+    fun provideDesignerNewsService(
         @LocalApi client: Lazy<OkHttpClient>,
         gson: Gson
-    ): DNService {
+    ): DesignerNewsService {
         return Retrofit.Builder()
-            .baseUrl(DNService.ENDPOINT)
+            .baseUrl(DesignerNewsService.ENDPOINT)
             .callFactory { client.get().newCall(it) }
             .addConverterFactory(DenvelopingConverter(gson))
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
-            .create(DNService::class.java)
+            .create(DesignerNewsService::class.java)
     }
 }

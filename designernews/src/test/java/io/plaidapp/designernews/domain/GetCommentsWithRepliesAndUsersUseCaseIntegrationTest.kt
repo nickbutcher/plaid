@@ -20,12 +20,11 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.designernews.data.comments.CommentsRemoteDataSource
 import io.plaidapp.designernews.data.comments.CommentsRepository
 import io.plaidapp.designernews.data.comments.model.CommentResponse
 import io.plaidapp.core.designernews.data.users.model.User
-import io.plaidapp.designernews.data.api.DNService
+import io.plaidapp.designernews.data.api.DesignerNewsService
 import io.plaidapp.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.designernews.data.users.UserRepository
 import io.plaidapp.designernews.errorResponseBody
@@ -51,7 +50,7 @@ import retrofit2.Response
  * are mocked. Everything else uses real implementation.
  */
 class GetCommentsWithRepliesAndUsersUseCaseIntegrationTest {
-    private val service: DNService = mock()
+    private val service: DesignerNewsService = mock()
     private val dataSource = CommentsRemoteDataSource(service)
     private val commentsRepository = CommentsRepository(dataSource)
     private val userRepository = UserRepository(UserRemoteDataSource(service))
