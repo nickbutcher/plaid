@@ -68,7 +68,6 @@ class AboutActivity : AppCompatActivity() {
 
         binding.pager.apply {
             adapter = AboutPagerAdapter(viewModel.uiModel)
-            pageMargin = resources.getDimensionPixelSize(appR.dimen.spacing_normal)
         }
 
         binding.indicator.setViewPager(binding.pager)
