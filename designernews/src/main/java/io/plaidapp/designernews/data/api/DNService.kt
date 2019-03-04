@@ -23,8 +23,8 @@ import io.plaidapp.core.designernews.data.poststory.model.NewStoryRequest
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.data.users.model.User
-import io.plaidapp.core.designernews.data.votes.model.UpvoteCommentRequest
-import io.plaidapp.core.designernews.data.votes.model.UpvoteStoryRequest
+import io.plaidapp.designernews.data.votes.model.UpvoteCommentRequest
+import io.plaidapp.designernews.data.votes.model.UpvoteStoryRequest
 import io.plaidapp.designernews.data.comments.model.CommentResponse
 import io.plaidapp.designernews.data.comments.model.NewCommentRequest
 import io.plaidapp.designernews.data.comments.model.PostCommentResponse

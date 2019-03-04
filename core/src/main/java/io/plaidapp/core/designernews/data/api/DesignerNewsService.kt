@@ -23,8 +23,6 @@ import io.plaidapp.core.designernews.data.poststory.model.NewStoryRequest
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.data.users.model.User
-import io.plaidapp.core.designernews.data.votes.model.UpvoteCommentRequest
-import io.plaidapp.core.designernews.data.votes.model.UpvoteStoryRequest
 import kotlinx.coroutines.Deferred
 import retrofit2.Call
 import retrofit2.Response
@@ -79,18 +77,10 @@ interface DesignerNewsService {
     @POST("api/v2/stories/{id}/upvote")
     fun upvoteStory(@Path("id") storyId: Long): Call<Story>
 
-    @Headers("Content-Type: application/vnd.api+json")
-    @POST("api/v2/upvotes")
-    fun upvoteStoryV2(@Body request: UpvoteStoryRequest): Deferred<Response<Unit>>
-
     @EnvelopePayload("stories")
     @Headers("Content-Type: application/vnd.api+json")
     @POST("api/v2/stories")
     fun postStory(@Body story: NewStoryRequest): Call<List<Story>>
-
-    @Headers("Content-Type: application/vnd.api+json")
-    @POST("api/v2/comment_upvotes")
-    fun upvoteComment(@Body request: UpvoteCommentRequest): Deferred<Response<Unit>>
 
     companion object {
         const val ENDPOINT = "https://www.designernews.co/"

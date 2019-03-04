@@ -17,17 +17,17 @@
 package io.plaidapp.designernews.data.votes
 
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.votes.model.UpvoteCommentRequest
-import io.plaidapp.core.designernews.data.votes.model.UpvoteStoryRequest
+import io.plaidapp.designernews.data.votes.model.UpvoteCommentRequest
+import io.plaidapp.designernews.data.votes.model.UpvoteStoryRequest
 import io.plaidapp.core.util.safeApiCall
+import io.plaidapp.designernews.data.api.DNService
 import java.io.IOException
 import javax.inject.Inject
 
 /**
  * Class that works with the Designer News API to up/down vote comments and stories
  */
-class VotesRemoteDataSource @Inject constructor(private val service: DesignerNewsService) {
+class VotesRemoteDataSource @Inject constructor(private val service: DNService) {
 
     suspend fun upvoteStory(storyId: Long, userId: Long) = safeApiCall(
         call = { requestUpvoteStory(storyId, userId) },
@@ -54,7 +54,8 @@ class VotesRemoteDataSource @Inject constructor(private val service: DesignerNew
     )
 
     private suspend fun requestUpvoteComment(commentId: Long, userId: Long): Result<Unit> {
-        val request = UpvoteCommentRequest(commentId, userId)
+        val request =
+            UpvoteCommentRequest(commentId, userId)
         val response = service.upvoteComment(request).await()
         return if (response.isSuccessful) {
             Result.Success(Unit)
