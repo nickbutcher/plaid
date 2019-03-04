@@ -20,7 +20,7 @@ import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
-import io.plaidapp.designernews.data.api.DNService
+import io.plaidapp.designernews.data.api.DesignerNewsService
 import io.plaidapp.designernews.data.comments.model.CommentResponse
 import io.plaidapp.designernews.data.comments.model.NewCommentRequest
 import io.plaidapp.designernews.data.comments.model.PostCommentResponse
@@ -43,7 +43,7 @@ class CommentsRemoteDataSourceTest {
 
     private val body = "Plaid is awesome"
 
-    private val service: DNService = mock()
+    private val service: DesignerNewsService = mock()
     private val dataSource =
         io.plaidapp.designernews.data.comments.CommentsRemoteDataSource(service)
 

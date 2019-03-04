@@ -21,7 +21,7 @@ import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
-import io.plaidapp.designernews.data.api.DNService
+import io.plaidapp.designernews.data.api.DesignerNewsService
 import io.plaidapp.designernews.errorResponseBody
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
@@ -40,7 +40,7 @@ class VotesRemoteDataSourceTest {
     private val storyId = 1345L
     private val commentId = 435L
 
-    private val service: DNService = mock()
+    private val service: DesignerNewsService = mock()
     private val dataSource = VotesRemoteDataSource(service)
 
     @Test
