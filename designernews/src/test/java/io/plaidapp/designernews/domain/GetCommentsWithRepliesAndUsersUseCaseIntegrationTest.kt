@@ -52,12 +52,9 @@ import retrofit2.Response
  */
 class GetCommentsWithRepliesAndUsersUseCaseIntegrationTest {
     private val service: DNService = mock()
-    private val designerNewsService: DesignerNewsService = mock()
-    private val dataSource =
-        CommentsRemoteDataSource(service)
-    private val commentsRepository =
-        CommentsRepository(dataSource)
-    private val userRepository = UserRepository(UserRemoteDataSource(designerNewsService))
+    private val dataSource = CommentsRemoteDataSource(service)
+    private val commentsRepository = CommentsRepository(dataSource)
+    private val userRepository = UserRepository(UserRemoteDataSource(service))
     private val repository: GetCommentsWithRepliesAndUsersUseCase = GetCommentsWithRepliesAndUsersUseCase(
         GetCommentsWithRepliesUseCase(commentsRepository),
         userRepository

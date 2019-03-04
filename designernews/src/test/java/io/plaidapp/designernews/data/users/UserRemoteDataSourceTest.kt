@@ -21,8 +21,8 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.designernews.data.api.DNService
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType
@@ -54,7 +54,7 @@ class UserRemoteDataSourceTest {
     private val users = listOf(user1, user2)
     private val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")
 
-    private val service: DesignerNewsService = mock()
+    private val service: DNService = mock()
     private val dataSource = UserRemoteDataSource(service)
 
     @Test
