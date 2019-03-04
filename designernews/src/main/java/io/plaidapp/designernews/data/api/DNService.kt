@@ -17,11 +17,7 @@
 package io.plaidapp.designernews.data.api
 
 import io.plaidapp.core.data.api.EnvelopePayload
-import io.plaidapp.core.designernews.data.login.model.AccessToken
-import io.plaidapp.core.designernews.data.login.model.LoggedInUserResponse
-import io.plaidapp.core.designernews.data.poststory.model.NewStoryRequest
 import io.plaidapp.core.designernews.data.stories.model.Story
-import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.designernews.data.votes.model.UpvoteCommentRequest
 import io.plaidapp.designernews.data.votes.model.UpvoteStoryRequest
@@ -32,13 +28,10 @@ import kotlinx.coroutines.Deferred
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.FieldMap
-import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 /**
  * Models the Designer News API.
@@ -48,35 +41,9 @@ import retrofit2.http.Query
  */
 interface DNService {
 
-    @EnvelopePayload("stories")
-    @GET("api/v2/stories")
-    fun getStories(@Query("page") page: Int?): Deferred<Response<List<StoryResponse>>>
-
-    @EnvelopePayload("stories")
-    @GET("api/v2/stories/{ids}")
-    fun getStories(@Path("ids") commaSeparatedIds: String): Deferred<Response<List<StoryResponse>>>
-
     @EnvelopePayload("users")
     @GET("api/v2/users/{ids}")
     fun getUsers(@Path("ids") userids: String): Deferred<Response<List<User>>>
-
-    @EnvelopePayload("users")
-    @GET("api/v2/me")
-    fun getAuthedUser(): Deferred<Response<List<LoggedInUserResponse>>>
-
-    @FormUrlEncoded
-    @POST("oauth/token")
-    fun login(@FieldMap loginParams: Map<String, String>): Deferred<Response<AccessToken>>
-
-    /**
-     * Search Designer News by scraping website.
-     * Returns a list of story IDs
-     */
-    @GET("search?t=story")
-    fun search(
-        @Query("q") query: String,
-        @Query("p") page: Int?
-    ): Deferred<Response<List<String>>>
 
     @EnvelopePayload("story")
     @POST("api/v2/stories/{id}/upvote")
@@ -85,11 +52,6 @@ interface DNService {
     @Headers("Content-Type: application/vnd.api+json")
     @POST("api/v2/upvotes")
     fun upvoteStoryV2(@Body request: UpvoteStoryRequest): Deferred<Response<Unit>>
-
-    @EnvelopePayload("stories")
-    @Headers("Content-Type: application/vnd.api+json")
-    @POST("api/v2/stories")
-    fun postStory(@Body story: NewStoryRequest): Call<List<Story>>
 
     @EnvelopePayload("comments")
     @GET("api/v2/comments/{ids}")

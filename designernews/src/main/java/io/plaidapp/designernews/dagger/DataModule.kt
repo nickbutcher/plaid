@@ -26,7 +26,6 @@ import io.plaidapp.core.dagger.CoreDataModule
 import io.plaidapp.core.dagger.CoroutinesDispatcherProviderModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.data.api.DenvelopingConverter
-import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
 import io.plaidapp.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.designernews.data.api.DNService
@@ -69,7 +68,7 @@ class DataModule {
         gson: Gson
     ): DNService {
         return Retrofit.Builder()
-            .baseUrl(DesignerNewsService.ENDPOINT)
+            .baseUrl(DNService.ENDPOINT)
             .callFactory { client.get().newCall(it) }
             .addConverterFactory(DenvelopingConverter(gson))
             .addConverterFactory(GsonConverterFactory.create(gson))
