@@ -44,8 +44,7 @@ class CommentsRemoteDataSourceTest {
     private val body = "Plaid is awesome"
 
     private val service: DesignerNewsService = mock()
-    private val dataSource =
-        io.plaidapp.designernews.data.comments.CommentsRemoteDataSource(service)
+    private val dataSource = CommentsRemoteDataSource(service)
 
     @Test
     fun getComments_whenRequestSuccessful() = runBlocking {
@@ -128,8 +127,7 @@ class CommentsRemoteDataSourceTest {
     @Test
     fun comment_whenException() = runBlocking {
         // Given that the service throws an exception
-        val request =
-            NewCommentRequest(body, "11", null, "111")
+        val request = NewCommentRequest(body, "11", null, "111")
         doAnswer { throw UnknownHostException() }
             .whenever(service).comment(request)
 
@@ -148,8 +146,7 @@ class CommentsRemoteDataSourceTest {
                 emptyList()
             )
         )
-        val request =
-            NewCommentRequest(body, "11", null, "111")
+        val request = NewCommentRequest(body, "11", null, "111")
         whenever(service.comment(request)).thenReturn(CompletableDeferred(response))
 
         // When adding a comment
@@ -165,8 +162,7 @@ class CommentsRemoteDataSourceTest {
         val response = Response.success(
             PostCommentResponse(listOf(replyResponse1))
         )
-        val request =
-            NewCommentRequest(body, "11", null, "111")
+        val request = NewCommentRequest(body, "11", null, "111")
         whenever(service.comment(request)).thenReturn(CompletableDeferred(response))
 
         // When adding a comment
