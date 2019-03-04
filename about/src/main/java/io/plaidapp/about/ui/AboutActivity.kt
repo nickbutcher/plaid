@@ -20,7 +20,7 @@ import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import androidx.appcompat.app.AppCompatActivity
 import android.transition.TransitionInflater
 import androidx.core.net.toUri
@@ -37,7 +37,7 @@ import javax.inject.Inject
 import io.plaidapp.R as appR
 
 /**
- * About screen. This displays 3 pages in a ViewPager:
+ * About screen. This displays 3 pages in a ViewPager2:
  * – About Plaid
  * – Credit Roman for the awesome icon
  * – Credit libraries
@@ -51,7 +51,7 @@ class AboutActivity : AppCompatActivity() {
         setContentView(R.layout.activity_about)
 
         val draggableFrame = findViewById<ElasticDragDismissFrameLayout>(R.id.draggable_frame)
-        val pager = findViewById<ViewPager>(R.id.pager)
+        val pager = findViewById<ViewPager2>(R.id.pager)
         val pageIndicator = findViewById<InkPageIndicator>(R.id.indicator)
 
         inject()
@@ -67,7 +67,6 @@ class AboutActivity : AppCompatActivity() {
 
         pager.apply {
             adapter = AboutPagerAdapter(viewModel.uiModel)
-            pageMargin = resources.getDimensionPixelSize(appR.dimen.spacing_normal)
         }
 
         pageIndicator?.setViewPager(pager)

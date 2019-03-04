@@ -22,6 +22,7 @@ dependencies {
     implementation "androidx.browser:browser:${versions.androidx}"
     implementation "androidx.palette:palette:${versions.androidx}"
     implementation "androidx.recyclerview:recyclerview:${versions.androidx}"
+    implementation "androidx.viewpager2:viewpager2:${versions.viewPager2}"
     implementation "androidx.dynamicanimation:dynamicanimation:${versions.androidx}"
     implementation "com.android.support:customtabs:${versions.supportLibrary}"
     implementation "com.android.support:design:${versions.supportLibrary}"
@@ -46,4 +47,5 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel:${versions.lifecycle}"
     implementation "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}"
+
 }

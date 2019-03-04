@@ -51,7 +51,8 @@ buildscript {
             'supportLibrary'     : '28.0.0',
             'test_rules'         : '1.1.0-beta02',
             'test_runner'        : '1.1.0-beta02',
-            'ui_automator'       : '2.2.0-beta02'
+            'ui_automator'       : '2.2.0-beta02',
+            'viewPager2'         : '1.0.0-alpha01'
     ]
     ext.names = [
             'applicationId': 'io.plaidapp'
@@ -66,7 +67,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0-beta02'
+        classpath 'com.android.tools.build:gradle:3.4.0-beta05'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         classpath "com.google.gms:google-services:${versions.googleServices}"
         classpath "io.fabric.tools:gradle:${versions.fabric}"
