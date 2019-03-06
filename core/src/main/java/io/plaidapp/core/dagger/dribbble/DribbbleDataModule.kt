@@ -21,7 +21,6 @@ import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.dagger.CoreDataModule
-import io.plaidapp.core.dagger.CoroutinesDispatcherProviderModule
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchConverter
@@ -33,7 +32,7 @@ import retrofit2.Retrofit
 /**
  * Dagger module providing classes required to dribbble with data.
  */
-@Module(includes = [CoreDataModule::class, CoroutinesDispatcherProviderModule::class])
+@Module(includes = [CoreDataModule::class])
 class DribbbleDataModule {
 
     @Provides

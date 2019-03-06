@@ -23,7 +23,6 @@ import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.dagger.CoreDataModule
-import io.plaidapp.core.dagger.CoroutinesDispatcherProviderModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.data.api.DeEnvelopingConverter
 import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
@@ -45,8 +44,7 @@ private annotation class LocalApi
 @Module(
     includes = [
         SharedPreferencesModule::class,
-        CoreDataModule::class,
-        CoroutinesDispatcherProviderModule::class
+        CoreDataModule::class
     ]
 )
 class DataModule {
