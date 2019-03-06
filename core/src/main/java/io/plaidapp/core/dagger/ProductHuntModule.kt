@@ -16,14 +16,13 @@
 
 package io.plaidapp.core.dagger
 
-import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
-import io.plaidapp.core.data.api.DenvelopingConverter
+import io.plaidapp.core.data.api.DeEnvelopingConverter
 import io.plaidapp.core.producthunt.data.ProductHuntRemoteDataSource
 import io.plaidapp.core.producthunt.data.api.AuthInterceptor
 import io.plaidapp.core.producthunt.data.api.ProductHuntRepository
@@ -50,9 +49,6 @@ class ProductHuntModule {
         dispatcherProvider: CoroutinesDispatcherProvider
     ) = ProductHuntRepository.getInstance(remoteDataSource, dispatcherProvider)
 
-    @Provides
-    fun provideRemoteDataSource(service: ProductHuntService) = ProductHuntRemoteDataSource(service)
-
     @LocalApi
     @Provides
     fun providePrivateOkHttpClient(upstreamClient: OkHttpClient): OkHttpClient {
@@ -65,32 +61,27 @@ class ProductHuntModule {
     fun provideProductHuntService(
         @LocalApi okhttpClient: Lazy<OkHttpClient>,
         converterFactory: GsonConverterFactory,
-        denvelopingConverter: DenvelopingConverter,
+        deEnvelopingConverter: DeEnvelopingConverter,
         callAdapterFactory: CoroutineCallAdapterFactory
     ): ProductHuntService {
         return createRetrofit(
             okhttpClient,
             converterFactory,
-            denvelopingConverter,
+            deEnvelopingConverter,
             callAdapterFactory
         ).create(ProductHuntService::class.java)
-    }
-
-    @Provides
-    fun provideDenvelopingConverter(gson: Gson): DenvelopingConverter {
-        return DenvelopingConverter(gson)
     }
 
     private fun createRetrofit(
         okhttpClient: Lazy<OkHttpClient>,
         converterFactory: GsonConverterFactory,
-        denvelopingConverter: DenvelopingConverter,
+        deEnvelopingConverter: DeEnvelopingConverter,
         callAdapterFactory: CoroutineCallAdapterFactory
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(ProductHuntService.ENDPOINT)
             .callFactory { okhttpClient.get().newCall(it) }
-            .addConverterFactory(denvelopingConverter)
+            .addConverterFactory(deEnvelopingConverter)
             .addConverterFactory(converterFactory)
             .addCallAdapterFactory(callAdapterFactory)
             .build()
