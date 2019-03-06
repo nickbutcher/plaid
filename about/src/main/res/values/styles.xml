@@ -27,4 +27,10 @@
         <item name="android:textColor">@color/text_secondary_dark</item>
         <item name="lineHeightHint">24sp</item>
     </style>
+
+    <style name="Widget.Button.About.Library" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="rippleColor">?attr/colorControlHighlight</item>
+    </style>
+
 </resources>
