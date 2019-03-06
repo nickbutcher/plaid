@@ -18,7 +18,7 @@
 
 <resources>
 
-    <style name="Plaid" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Plaid" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">#69f0ae</item>
         <item name="colorPrimaryVariant">#2bbd7e</item>
         <item name="colorOnPrimary">#000000</item>
@@ -42,7 +42,7 @@
         <item name="android:colorEdgeEffect">@color/mid_grey</item>
     </style>
 
-    <style name="PlaidDarkOverlay" parent="@android:style/ThemeOverlay.Material.Dark.ActionBar">
+    <style name="PlaidDarkOverlay" parent="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
         <!-- Used to theme dark elements in light themed screens.
              Extend the material dark Action Bar overlay as this contains text styling. -->
     </style>
