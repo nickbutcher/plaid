@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2019 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+  in compliance with the License. You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software distributed under the License
+  is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+  or implied. See the License for the specific language governing permissions and limitations under
+  the License.
+  -->
+
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <group android:name="g_mask">
+                <clip-path
+                    android:name="mask"
+                    android:pathData="M 12 20 C 16.418 20 20 16.418 20 12 C 20 7.582 16.418 4 12 4 C 7.582 4 4 7.582 4 12 C 4 16.418 7.582 20 12 20 Z"/>
+                <group
+                    android:name="g_center"
+                    android:translateX="-6">
+                    <path
+                        android:name="center"
+                        android:pathData="M 12 5 C 10.144 5 8.363 5.738 7.05 7.05 C 5.738 8.363 5 10.144 5 12 C 5 13.856 5.738 15.637 7.05 16.95 C 8.363 18.262 10.144 19 12 19 C 13.856 19 15.637 18.262 16.95 16.95 C 18.262 15.637 19 13.856 19 12 C 19 10.144 18.262 8.363 16.95 7.05 C 15.637 5.738 13.856 5 12 5 Z"
+                        android:fillColor="#aaaaaa"
+                        android:strokeWidth="1"/>
+                </group>
+            </group>
+            <group
+                android:name="g_sun"
+                android:pivotX="12"
+                android:pivotY="12">
+                <path
+                    android:name="sun"
+                    android:pathData="M 8.686 4 L 12 0.686 L 15.314 4 L 20 4 L 20 8.686 L 23.314 12 L 20 15.314 L 20 20 L 15.314 20 L 12 23.314 L 8.686 20 L 4 20 L 4 15.314 L 0.686 12 L 4 8.686 L 4 4 L 8.686 4 Z M 12 19 C 15.866 19 19 15.866 19 12 C 19 8.134 15.866 5 12 5 C 8.134 5 5 8.134 5 12 C 5 15.866 8.134 19 12 19 Z"
+                    android:fillColor="#ffffff"
+                    android:strokeWidth="1"/>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="g_center">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="translateX"
+                android:startOffset="100"
+                android:duration="700"
+                android:valueFrom="-6"
+                android:valueTo="0"
+                android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        </aapt:attr>
+    </target>
+    <target android:name="g_sun">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="rotation"
+                    android:startOffset="120"
+                    android:duration="680"
+                    android:valueFrom="-5"
+                    android:valueTo="45"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/accelerate_decelerate_interpolator"/>
+                <objectAnimator
+                    android:propertyName="rotation"
+                    android:duration="100"
+                    android:valueFrom="0"
+                    android:valueTo="-5"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="center">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="fillColor"
+                android:startOffset="100"
+                android:duration="700"
+                android:valueFrom="#ffffff"
+                android:valueTo="#aaaaaa"
+                android:valueType="colorType"
+                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        </aapt:attr>
+    </target>
+</animated-vector>
