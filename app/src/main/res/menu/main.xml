@@ -32,7 +32,7 @@
     <item
         android:id="@+id/menu_theme"
         android:title="@string/theme"
-        android:actionLayout="@layout/theme_toggle"
+        android:actionViewClass="android.widget.CheckBox"
         android:showAsAction="always"
         tools:ignore="AppCompatResource" />
 
