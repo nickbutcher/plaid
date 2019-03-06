@@ -30,6 +30,13 @@
         tools:ignore="AppCompatResource" />
 
     <item
+        android:id="@+id/menu_theme"
+        android:title="@string/theme"
+        android:actionLayout="@layout/theme_toggle"
+        android:showAsAction="always"
+        tools:ignore="AppCompatResource" />
+
+    <item
         android:id="@+id/menu_filter"
         android:title="@string/filter"
         android:icon="@drawable/ic_filter"
