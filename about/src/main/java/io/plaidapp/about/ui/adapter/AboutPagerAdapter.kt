@@ -16,13 +16,13 @@
 
 package io.plaidapp.about.ui.adapter
 
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import io.plaidapp.about.R
-import io.plaidapp.about.ui.model.AboutUiModel
 import io.plaidapp.core.util.HtmlUtils
+import io.plaidapp.about.ui.model.AboutUiModel
 import io.plaidapp.core.util.inflateView
 import java.security.InvalidParameterException
 
