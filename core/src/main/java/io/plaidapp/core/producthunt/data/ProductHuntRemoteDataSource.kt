@@ -21,11 +21,12 @@ import io.plaidapp.core.producthunt.data.api.ProductHuntService
 import io.plaidapp.core.producthunt.data.api.model.Post
 import io.plaidapp.core.util.safeApiCall
 import java.io.IOException
+import javax.inject.Inject
 
 /**
  * Works with the Product Hunt API to get data.
  */
-class ProductHuntRemoteDataSource(private val service: ProductHuntService) {
+class ProductHuntRemoteDataSource @Inject constructor(private val service: ProductHuntService) {
 
     /**
      * Load Product Hunt data for a specific page.

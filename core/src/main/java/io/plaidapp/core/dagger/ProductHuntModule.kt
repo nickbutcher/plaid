@@ -49,9 +49,6 @@ class ProductHuntModule {
         dispatcherProvider: CoroutinesDispatcherProvider
     ) = ProductHuntRepository.getInstance(remoteDataSource, dispatcherProvider)
 
-    @Provides
-    fun provideRemoteDataSource(service: ProductHuntService) = ProductHuntRemoteDataSource(service)
-
     @LocalApi
     @Provides
     fun providePrivateOkHttpClient(upstreamClient: OkHttpClient): OkHttpClient {
