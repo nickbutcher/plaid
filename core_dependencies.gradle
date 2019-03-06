@@ -23,7 +23,6 @@ dependencies {
     implementation "androidx.palette:palette:${versions.androidx}"
     implementation "androidx.recyclerview:recyclerview:${versions.androidx}"
     implementation "androidx.dynamicanimation:dynamicanimation:${versions.androidx}"
-    implementation "androidx.viewpager2:viewpager2:${versions.viewPager2}"
     implementation "com.android.support:customtabs:${versions.supportLibrary}"
     implementation "com.android.support:design:${versions.supportLibrary}"
     implementation "com.android.support:palette-v7:${versions.supportLibrary}"
@@ -46,4 +45,5 @@ dependencies {
     implementation "org.jsoup:jsoup:${versions.jsoup}"
     implementation "androidx.lifecycle:lifecycle-viewmodel:${versions.lifecycle}"
     implementation "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}"
 }

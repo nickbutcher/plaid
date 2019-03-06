@@ -17,6 +17,9 @@
 buildscript { scriptHandler ->
     apply from: 'repositories.gradle',
             to: scriptHandler
+    repositories {
+        google()
+    }
     ext.versions = [
             'compileSdk'         : 28,
             'minSdk'             : 23,
