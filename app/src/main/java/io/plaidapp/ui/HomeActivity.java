@@ -17,8 +17,6 @@
 
 package io.plaidapp.ui;
 
-import static io.plaidapp.dagger.Injector.inject;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.ActivityManager;
@@ -59,15 +57,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
-
-import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
-import com.bumptech.glide.util.ViewPreloadSizeProvider;
-
-import java.util.Collections;
-import java.util.List;
-
-import javax.inject.Inject;
-
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -77,6 +66,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
+import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import io.plaidapp.R;
 import io.plaidapp.core.data.PlaidItem;
 import io.plaidapp.core.data.prefs.SourcesRepository;
@@ -99,6 +90,12 @@ import io.plaidapp.core.util.ShortcutHelper;
 import io.plaidapp.core.util.ViewUtils;
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
+
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.List;
+
+import static io.plaidapp.dagger.Injector.inject;
 
 public class HomeActivity extends FragmentActivity {
 
@@ -145,16 +142,16 @@ public class HomeActivity extends FragmentActivity {
 
         viewModel.getSources().observe(this, sourcesUiModel -> {
             filtersAdapter.submitList(sourcesUiModel.getSourceUiModels());
-            if (sourcesUiModel.getHighlightSources() != null){
+            if (sourcesUiModel.getHighlightSources() != null) {
                 SourcesHighlightUiModel highlightUiModel =
                         sourcesUiModel.getHighlightSources().consume();
-                if(highlightUiModel != null) {
+                if (highlightUiModel != null) {
                     highlightPosition(highlightUiModel);
                 }
             }
         });
         viewModel.getSourceRemoved().observe(this, source -> {
-                    handleDataSourceRemoved(source.key);
+                    handleDataSourceRemoved(source);
                     checkEmptyState();
                 });
 

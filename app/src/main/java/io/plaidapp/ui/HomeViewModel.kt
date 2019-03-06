@@ -31,7 +31,6 @@ import io.plaidapp.core.ui.filter.SourcesHighlightUiModel
 import io.plaidapp.core.ui.filter.SourcesUiModel
 import io.plaidapp.core.util.event.Event
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.Collections
 
 /**
@@ -48,8 +47,8 @@ class HomeViewModel(
 ) : ViewModel() {
 
     // TODO keeping this one temporarily, until we deal with [FeedAdapter]
-    private val _sourceRemoved = MutableLiveData<Source>()
-    val sourceRemoved: LiveData<Source>
+    private val _sourceRemoved = MutableLiveData<String>()
+    val sourceRemoved: LiveData<String>
         get() = _sourceRemoved
 
     private val _sources = MutableLiveData<SourcesUiModel>()
@@ -60,12 +59,12 @@ class HomeViewModel(
     private val filtersChangedCallbacks = object : FiltersChangedCallback() {
         override fun onFiltersChanged(changedFilter: Source) {
             if (!changedFilter.active) {
-                _sourceRemoved.value = changedFilter
+                _sourceRemoved.value = changedFilter.key
             }
         }
 
-        override fun onFilterRemoved(removed: Source) {
-            _sourceRemoved.value = removed
+        override fun onFilterRemoved(sourceKey: String) {
+            _sourceRemoved.value = sourceKey
         }
 
         override fun onFiltersUpdated(sources: List<Source>) {
@@ -109,9 +108,7 @@ class HomeViewModel(
     private fun getSources() {
         viewModelScope.launch(dispatcherProvider.io) {
             val sources = sourcesRepository.getSources()
-            withContext(dispatcherProvider.main) {
-                updateSourcesUiModel(sources)
-            }
+            updateSourcesUiModel(sources)
         }
     }
 
@@ -119,7 +116,7 @@ class HomeViewModel(
         val newSourcesUiModel = createNewSourceUiModels(sources)
         val oldSourceUiModel = _sources.value
         if (oldSourceUiModel == null) {
-            _sources.value = SourcesUiModel(newSourcesUiModel)
+            _sources.postValue(SourcesUiModel(newSourcesUiModel))
         } else {
             val highlightUiModel = createSourcesHighlightUiModel(
                     oldSourceUiModel.sourceUiModels,
@@ -130,7 +127,7 @@ class HomeViewModel(
             } else {
                 null
             }
-            _sources.value = SourcesUiModel(newSourcesUiModel, event)
+            _sources.postValue(SourcesUiModel(newSourcesUiModel, event))
         }
     }
 
@@ -139,7 +136,7 @@ class HomeViewModel(
         newSources: List<SourceUiModel>
     ): SourcesHighlightUiModel? {
         // if something was just updated or removed but not added, there's nothing to highlight
-        if (oldSources.size >= newSources.count()) {
+        if (oldSources.size >= newSources.size) {
             return null
         }
         // something was added. Find out what
@@ -177,10 +174,10 @@ class HomeViewModel(
                     it.active,
                     it.iconRes,
                     it.isSwipeDismissable,
-                    { source -> sourcesRepository.changeSourceActiveState(source.key, !source.active) },
-                    { source ->
-                        if (source.isSwipeDismissable) {
-                            sourcesRepository.removeSource(source.key)
+                    { sourceUiModel -> sourcesRepository.changeSourceActiveState(sourceUiModel.key) },
+                    { sourceUiModel ->
+                        if (sourceUiModel.isSwipeDismissable) {
+                            sourcesRepository.removeSource(sourceUiModel.key)
                         }
                     }
             )

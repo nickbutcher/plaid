@@ -116,11 +116,14 @@ class SourcesRepositoryTest {
 
     @Test
     fun changeSourceActiveState() {
+        // Given that an active source is added
+        repository.addSources(listOf(designerNewsSource))
+
         // When changing the active state of a source
-        repository.changeSourceActiveState("key", false)
+        repository.changeSourceActiveState(designerNewsSource.key)
 
         // Then the source was updated in the data source
-        verify(localDataSource).updateSource("key", false)
+        verify(localDataSource).updateSource(designerNewsSource.key, false)
     }
 
     @Test
@@ -148,14 +151,14 @@ class SourcesRepositoryTest {
         repository.addSources(listOf(designerNewsSource))
 
         // When changing the active state of a source
-        repository.changeSourceActiveState(designerNewsSource.key, true)
+        repository.changeSourceActiveState(designerNewsSource.key)
 
         // Then the updated source is returned
         val sources = repository.getSources()
         assertEquals(1, sources.size)
         val updatedSource = sources[0]
         assertEquals(designerNewsSource.key, updatedSource.key)
-        assertEquals(true, updatedSource.active)
+        assertEquals(false, updatedSource.active)
     }
 
     @Test
@@ -205,7 +208,7 @@ class SourcesRepositoryTest {
         repository.registerFilterChangedCallback(callback)
 
         // When changing the active state of a source
-        repository.changeSourceActiveState(designerNewsSource.key, false)
+        repository.changeSourceActiveState(designerNewsSource.key)
 
         // Then the callback was triggered
         assertEquals(sourceUpdated, designerNewsSource)
@@ -216,10 +219,10 @@ class SourcesRepositoryTest {
         // Given a source added
         repository.addSources(listOf(designerNewsSource))
         // Given a callback registered
-        var sourceRemoved: Source? = null
+        var sourceRemoved: String? = null
         val callback = object : FiltersChangedCallback() {
-            override fun onFilterRemoved(removed: Source) {
-                sourceRemoved = removed
+            override fun onFilterRemoved(sourceKey: String) {
+                sourceRemoved = sourceKey
             }
         }
         repository.registerFilterChangedCallback(callback)
@@ -228,7 +231,7 @@ class SourcesRepositoryTest {
         repository.removeSource(designerNewsSource.key)
 
         // Then the callback was triggered
-        assertEquals(sourceRemoved, designerNewsSource)
+        assertEquals(sourceRemoved, designerNewsSource.key)
     }
 
     @Test

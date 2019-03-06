@@ -25,7 +25,7 @@ abstract class FiltersChangedCallback {
 
     open fun onFiltersChanged(changedFilter: Source) {}
 
-    open fun onFilterRemoved(removed: Source) {}
+    open fun onFilterRemoved(sourceKey: String) {}
 
     open fun onFiltersUpdated(sources: List<Source>) {}
 }

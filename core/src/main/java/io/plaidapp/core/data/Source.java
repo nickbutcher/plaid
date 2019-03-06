@@ -18,11 +18,10 @@
 package io.plaidapp.core.data;
 
 import androidx.annotation.DrawableRes;
+import io.plaidapp.core.R;
 
 import java.util.Comparator;
 import java.util.Objects;
-
-import io.plaidapp.core.R;
 
 /**
  * Representation of a data source
