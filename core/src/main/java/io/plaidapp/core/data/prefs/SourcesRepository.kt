@@ -125,7 +125,7 @@ class SourcesRepository(
 
     fun removeSource(sourceKey: String) {
         dataSource.removeSource(sourceKey)
-        cache.removeIf { it.key == sourceKey }
+        cache.removeAll { it.key == sourceKey }
         dispatchSourceRemoved(sourceKey)
         dispatchSourcesUpdated()
     }
