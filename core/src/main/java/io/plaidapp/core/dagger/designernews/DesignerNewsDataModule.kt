@@ -92,7 +92,7 @@ class DesignerNewsDataModule {
             .baseUrl(DesignerNewsService.ENDPOINT)
             .callFactory { client.get().newCall(it) }
             .addConverterFactory(DeEnvelopingConverter(gson))
-            .addConverterFactory(DesignerNewsSearchConverter.Factory())
+//            .addConverterFactory(DesignerNewsSearchConverter.Factory())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
