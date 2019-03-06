@@ -45,5 +45,6 @@ dependencies {
     implementation project(':app')
     implementation project(':core')
 
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}"
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }
