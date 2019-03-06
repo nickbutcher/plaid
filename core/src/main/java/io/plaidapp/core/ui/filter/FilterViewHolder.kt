@@ -31,6 +31,9 @@ import io.plaidapp.core.util.AnimUtils
 import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.core.util.ViewUtils
 
+private const val FILTER_ICON_ENABLED_ALPHA = 179 // 70%
+private const val FILTER_ICON_DISABLED_ALPHA = 51 // 20%
+
 /**
  * ViewHolder for filters.
  */
@@ -102,10 +105,5 @@ class FilterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 itemView.setHasTransientState(false)
             }
         }
-    }
-
-    companion object {
-        private const val FILTER_ICON_ENABLED_ALPHA = 179 // 70%
-        private const val FILTER_ICON_DISABLED_ALPHA = 51 // 20%
     }
 }

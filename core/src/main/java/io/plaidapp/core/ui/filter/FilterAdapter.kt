@@ -26,6 +26,28 @@ import io.plaidapp.core.ui.filter.FilterHolderInfo.Companion.FILTER_ENABLED
 import io.plaidapp.core.ui.filter.FilterHolderInfo.Companion.HIGHLIGHT
 import io.plaidapp.core.ui.recyclerview.FilterSwipeDismissListener
 
+private val sourceUiModelDiff = object : DiffUtil.ItemCallback<SourceUiModel>() {
+    override fun areItemsTheSame(oldItem: SourceUiModel, newItem: SourceUiModel): Boolean {
+        return oldItem.key == newItem.key
+    }
+
+    override fun areContentsTheSame(oldItem: SourceUiModel, newItem: SourceUiModel): Boolean {
+        return oldItem == newItem
+    }
+
+    override fun getChangePayload(oldItem: SourceUiModel, newItem: SourceUiModel): Any? {
+        if (!oldItem.active && newItem.active) {
+            // filter enabled
+            return FILTER_ENABLED
+        }
+        if (oldItem.active && !newItem.active) {
+            // filter disabled
+            return FILTER_DISABLED
+        }
+        return null
+    }
+}
+
 /**
  * Adapter for showing the list of data sources used as filters for the home grid.
  */
@@ -86,30 +108,5 @@ class FilterAdapter : ListAdapter<SourceUiModel, FilterViewHolder>(sourceUiModel
     override fun onItemDismiss(position: Int) {
         val uiModel = getItem(position)
         uiModel.onSourceDismissed(uiModel)
-    }
-
-    companion object {
-
-        private val sourceUiModelDiff = object : DiffUtil.ItemCallback<SourceUiModel>() {
-            override fun areItemsTheSame(oldItem: SourceUiModel, newItem: SourceUiModel): Boolean {
-                return oldItem.key == newItem.key
-            }
-
-            override fun areContentsTheSame(oldItem: SourceUiModel, newItem: SourceUiModel): Boolean {
-                return oldItem == newItem
-            }
-
-            override fun getChangePayload(oldItem: SourceUiModel, newItem: SourceUiModel): Any? {
-                if (!oldItem.active && newItem.active) {
-                    // filter enabled
-                    return FILTER_ENABLED
-                }
-                if (oldItem.active && !newItem.active) {
-                    // filter disabled
-                    return FILTER_DISABLED
-                }
-                return null
-            }
-        }
     }
 }

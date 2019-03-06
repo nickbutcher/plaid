@@ -42,7 +42,7 @@ class SourcesRepository(
         getSourcesSync()
     }
 
-    @Deprecated("Use the suspending getSourcesSync")
+    @Deprecated("Use the suspending getSources")
     fun getSourcesSync(): List<Source> {
         if (cache.isNotEmpty()) {
             return cache
@@ -100,23 +100,24 @@ class SourcesRepository(
                     sourcePresent = true
                     // already exists, just ensure it's active
                     if (!existing.active) {
-                        changeSourceActiveState(existing.key, true)
+                        changeSourceActiveState(existing.key)
                     }
                 }
             }
             if (!sourcePresent) {
                 // doesn't exist so needs to be added
-                sourcesToAdd.add(toAdd)
+                sourcesToAdd += toAdd
             }
         }
         // they didn't already exist, so add them
         addSources(sourcesToAdd)
     }
 
-    fun changeSourceActiveState(sourceKey: String, newActiveState: Boolean) {
-        dataSource.updateSource(sourceKey, newActiveState)
+    fun changeSourceActiveState(sourceKey: String) {
         cache.find { it.key == sourceKey }?.apply {
+            val newActiveState = !active
             active = newActiveState
+            dataSource.updateSource(sourceKey, newActiveState)
             dispatchSourceChanged(this)
         }
         dispatchSourcesUpdated()
@@ -124,10 +125,8 @@ class SourcesRepository(
 
     fun removeSource(sourceKey: String) {
         dataSource.removeSource(sourceKey)
-        cache.find { it.key == sourceKey }?.let {
-            cache.remove(it)
-            dispatchSourceRemoved(it)
-        }
+        cache.removeIf { it.key == sourceKey }
+        dispatchSourceRemoved(sourceKey)
         dispatchSourcesUpdated()
     }
 
@@ -148,8 +147,8 @@ class SourcesRepository(
         callbacks.forEach { it.onFiltersChanged(source) }
     }
 
-    private fun dispatchSourceRemoved(source: Source) {
-        callbacks.forEach { it.onFilterRemoved(source) }
+    private fun dispatchSourceRemoved(sourceKey: String) {
+        callbacks.forEach { it.onFilterRemoved(sourceKey) }
     }
 
     companion object {

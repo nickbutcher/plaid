@@ -34,7 +34,6 @@ import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
@@ -82,7 +81,7 @@ class HomeViewModelTest {
     @Test
     fun logoutFromDesignerNews() {
         // Given a viewmodel with empty sources
-        val homeViewModel = createViewModelWithDefaultSources(emptyList())
+        val homeViewModel = createViewModel(emptyList())
         // When logging out from designer news
         homeViewModel.logoutFromDesignerNews()
 
@@ -93,47 +92,48 @@ class HomeViewModelTest {
     @Test
     fun isDesignerNewsLoggedIn() {
         // Given a view model
-        val homeViewModel = createViewModelWithDefaultSources(emptyList())
+        val homeViewModel = createViewModel(emptyList())
         // Given a login status
-        whenever(loginRepository.isLoggedIn).thenReturn(false)
+        val loginStatus = false
+        whenever(loginRepository.isLoggedIn).thenReturn(loginStatus)
 
         // When getting the login status
         val isLoggedIn = homeViewModel.isDesignerNewsUserLoggedIn()
 
         // The login status is the expected one
-        assertFalse(isLoggedIn)
+        assertEquals(loginStatus, isLoggedIn)
     }
 
     @Test
     fun addSources_Dribbble() = runBlocking {
         // Given a view model
-        val homeViewModel = createViewModelWithDefaultSources(emptyList())
+        val homeViewModel = createViewModel(emptyList())
 
         // When adding a dribbble source
-        homeViewModel.addSources("query", isDribbble = true, isDesignerNews = false)
+        homeViewModel.addSources(dribbbleSource.query, isDribbble = true, isDesignerNews = false)
 
         // Then a Dribbble source is added to the repository
-        val expected = listOf(Source.DribbbleSearchSource("query", true))
+        val expected = listOf(dribbbleSource)
         verify(sourcesRepository).addOrMarkActiveSources(expected)
     }
 
     @Test
     fun addSources_DesignerNews() = runBlocking {
         // Given a view model
-        val homeViewModel = createViewModelWithDefaultSources(emptyList())
+        val homeViewModel = createViewModel()
 
         // When adding a Designer News source
-        homeViewModel.addSources("query", isDribbble = false, isDesignerNews = true)
+        homeViewModel.addSources(designerNewsSource.query, isDribbble = false, isDesignerNews = true)
 
         // Then a Designer News source is added to the repository
-        val expected = listOf(Source.DesignerNewsSearchSource("query", true))
+        val expected = listOf(designerNewsSource)
         verify(sourcesRepository).addOrMarkActiveSources(expected)
     }
 
     @Test
     fun addSources_DribbbleDesignerNews() = runBlocking {
         // Given a view model
-        val homeViewModel = createViewModelWithDefaultSources(emptyList())
+        val homeViewModel = createViewModel()
 
         // When adding a dribbble and a designer news source
         homeViewModel.addSources("query", isDribbble = true, isDesignerNews = true)
@@ -149,7 +149,7 @@ class HomeViewModelTest {
     @Test
     fun filtersUpdated_newSources() {
         // Given a view model
-        val homeViewModel = createViewModelWithDefaultSources(emptyList())
+        val homeViewModel = createViewModel()
         Mockito.verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
@@ -160,7 +160,10 @@ class HomeViewModelTest {
         // Then ui model sources are emitted
         val sources = LiveDataTestUtil.getValue(homeViewModel.sources)
         // Then all sources are highlighted
-        val sourcesHighlightUiModel = SourcesHighlightUiModel(listOf(0, 1), 1)
+        val sourcesHighlightUiModel = SourcesHighlightUiModel(
+            highlightPositions = listOf(0, 1),
+            scrollToPosition = 1
+        )
         assertEquals(Event(sourcesHighlightUiModel), sources?.highlightSources)
         // The expected sources are retrieved
         assertEquals(2, sources?.sourceUiModels?.size)
@@ -170,7 +173,7 @@ class HomeViewModelTest {
     fun filtersUpdated_oneNewSource() {
         // Given a view model
         val sources = mutableListOf<Source>(designerNewsSource)
-        val homeViewModel = createViewModelWithDefaultSources(sources)
+        val homeViewModel = createViewModel(sources)
         Mockito.verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
@@ -182,7 +185,10 @@ class HomeViewModelTest {
         // Then ui model sources are emitted
         val sourcesUiModel = LiveDataTestUtil.getValue(homeViewModel.sources)
         // Then all sources are highlighted
-        val sourcesHighlightUiModel = SourcesHighlightUiModel(listOf(1), 1)
+        val sourcesHighlightUiModel = SourcesHighlightUiModel(
+            highlightPositions = listOf(1),
+            scrollToPosition = 1
+        )
         assertEquals(Event(sourcesHighlightUiModel), sourcesUiModel?.highlightSources)
         // The expected sources are retrieved
         assertEquals(2, sourcesUiModel?.sourceUiModels?.size)
@@ -191,30 +197,27 @@ class HomeViewModelTest {
     @Test
     fun sourceClicked_changesSourceActiveState() {
         // Given a view model
-        val homeViewModel = createViewModelWithDefaultSources(emptyList())
+        val homeViewModel = createViewModel()
         Mockito.verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
         // Given that filters were updated
         filtersChangedCallback.value.onFiltersUpdated(listOf(designerNewsSource))
         // Given that ui model sources are emitted
-        val sources = LiveDataTestUtil.getValue(homeViewModel.sources)
-        val uiSource = sources!!.sourceUiModels[0]
+        val sources = LiveDataTestUtil.getValue(homeViewModel.sources)!!
+        val uiSource = sources.sourceUiModels[0]
 
         // When calling sourceClicked
         uiSource.onSourceClicked(designerNewsSourceUiModel)
 
         // Then the source repository is called
-        verify(sourcesRepository).changeSourceActiveState(
-            designerNewsSource.key,
-            !designerNewsSource.active
-        )
+        verify(sourcesRepository).changeSourceActiveState(designerNewsSource.key)
     }
 
     @Test
     fun sourceRemoved_swipeDismissable() {
         // Given a view model
-        val homeViewModel = createViewModelWithDefaultSources(emptyList())
+        val homeViewModel = createViewModel()
         Mockito.verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
@@ -224,7 +227,7 @@ class HomeViewModelTest {
         val sources = LiveDataTestUtil.getValue(homeViewModel.sources)
         val uiSource = sources!!.sourceUiModels[0]
 
-        // When calling onSourceRemoved
+        // When calling onSourceDismissed
         uiSource.onSourceDismissed(designerNewsSourceUiModel.copy(isSwipeDismissable = true))
 
         // Then the source is removed
@@ -234,7 +237,7 @@ class HomeViewModelTest {
     @Test
     fun sourceRemoved_notSwipeDismissable() {
         // Given a view model
-        val homeViewModel = createViewModelWithDefaultSources(emptyList())
+        val homeViewModel = createViewModel()
         Mockito.verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
@@ -244,7 +247,7 @@ class HomeViewModelTest {
         val sources = LiveDataTestUtil.getValue(homeViewModel.sources)
         val uiSource = sources!!.sourceUiModels[0]
 
-        // When calling onSourceRemoved
+        // When calling onSourceDismissed
         uiSource.onSourceDismissed(designerNewsSourceUiModel.copy(isSwipeDismissable = false))
 
         // Then the source is not removed
@@ -254,28 +257,28 @@ class HomeViewModelTest {
     @Test
     fun filtersRemoved() {
         // Given a view model
-        val homeViewModel = createViewModelWithDefaultSources(emptyList())
+        val homeViewModel = createViewModel()
         Mockito.verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
 
         // When a source was removed
-        filtersChangedCallback.value.onFilterRemoved(designerNewsSource)
+        filtersChangedCallback.value.onFilterRemoved(designerNewsSource.key)
 
         // Then source removed value is the expected one
         val source = LiveDataTestUtil.getValue(homeViewModel.sourceRemoved)
-        assertEquals(designerNewsSource, source)
+        assertEquals(designerNewsSource.key, source)
     }
 
     @Test
     fun filtersChanged_activeSource() {
         // Given a view model
-        val homeViewModel = createViewModelWithDefaultSources(emptyList())
+        val homeViewModel = createViewModel()
         Mockito.verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
 
-        // When an inactive source was changed
+        // When an active source was changed
         val activeSource = Source.DribbbleSearchSource("dribbble", true)
         filtersChangedCallback.value.onFiltersChanged(activeSource)
 
@@ -287,7 +290,7 @@ class HomeViewModelTest {
     @Test
     fun filtersChanged_inactiveSource() {
         // Given a view model
-        val homeViewModel = createViewModelWithDefaultSources(emptyList())
+        val homeViewModel = createViewModel()
         Mockito.verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
@@ -298,13 +301,17 @@ class HomeViewModelTest {
 
         // Then the source removed contains the inactive source
         val source = LiveDataTestUtil.getValue(homeViewModel.sourceRemoved)
-        assertEquals(inactiveSource, source)
+        assertEquals(inactiveSource.key, source)
     }
 
-    private fun createViewModelWithDefaultSources(list: List<Source>): HomeViewModel = runBlocking {
+    private fun createViewModel(
+        list: List<Source> = emptyList()
+    ): HomeViewModel = runBlocking {
         whenever(sourcesRepository.getSources()).thenReturn(list)
         return@runBlocking HomeViewModel(
-            dataModel, loginRepository, sourcesRepository,
+            dataModel,
+            loginRepository,
+            sourcesRepository,
             provideFakeCoroutinesDispatcherProvider()
         )
     }
