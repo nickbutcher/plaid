@@ -162,19 +162,21 @@ public class InkPageIndicator extends View implements View.OnAttachStateChangeLi
         this.viewPager = viewPager;
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            public void onPageScrolled(int position, float positionOffset,
+                                       int positionOffsetPixels) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels);
                 if (isAttachedToWindow) {
                     float fraction = positionOffset;
                     int currentPosition = pageChanging ? previousPage : currentPage;
                     int leftDotPosition = position;
-                    // when swiping from #2 to #1 ViewPager reports position as 1 and a descending offset
-                    // need to convert this into our left-dot-based 'coordinate space'
+                    // when swiping from #2 to #1 ViewPager reports position as 1 and a descending
+                    // offset need to convert this into our left-dot-based 'coordinate space'
                     if (currentPosition != position) {
                         fraction = 1f - positionOffset;
 
-                        // if user scrolls completely to next page then the position param updates to that
-                        // new page but we're not ready to switch our 'current' page yet so adjust for that
+                        // if user scrolls completely to next page then the position param updates
+                        // to that new page but we're not ready to switch our 'current' page yet so
+                        // adjust for that
                         if (fraction == 1f) {
                             leftDotPosition = Math.min(currentPosition, position);
                         }
