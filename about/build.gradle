@@ -49,7 +49,6 @@ dependencies {
     implementation project(':app')
     implementation project(':core')
 
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}"
     implementation "androidx.viewpager2:viewpager2:${versions.viewPager2}"
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }
