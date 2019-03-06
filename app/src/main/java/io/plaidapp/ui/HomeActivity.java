@@ -44,6 +44,7 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.WindowInsets;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -52,6 +53,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -347,6 +349,15 @@ public class HomeActivity extends FragmentActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        final MenuItem toggleTheme = menu.findItem(R.id.menu_theme);
+        final View actionView = toggleTheme.getActionView();
+        if (actionView instanceof CheckBox) {
+            final CheckBox toggle = (CheckBox) actionView;
+            toggle.setButtonDrawable(R.drawable.asl_theme);
+            toggle.setOnCheckedChangeListener((buttonView, isChecked) ->
+                    AppCompatDelegate.setDefaultNightMode(isChecked ?
+                            AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO));
+        }
         return true;
     }
 
@@ -371,9 +382,6 @@ public class HomeActivity extends FragmentActivity {
                 Bundle options = ActivityOptions.makeSceneTransitionAnimation(this, searchMenuView,
                         getString(R.string.transition_search_back)).toBundle();
                 startActivityForResult(ActivityHelper.intentTo(Activities.Search.INSTANCE), RC_SEARCH, options);
-                return true;
-            case R.id.menu_theme:
-
                 return true;
             case R.id.menu_designer_news_login:
                 if (!viewModel.isDesignerNewsUserLoggedIn()) {
