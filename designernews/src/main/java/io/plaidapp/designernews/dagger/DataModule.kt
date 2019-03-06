@@ -25,7 +25,7 @@ import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.dagger.CoreDataModule
 import io.plaidapp.core.dagger.CoroutinesDispatcherProviderModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
-import io.plaidapp.core.data.api.DenvelopingConverter
+import io.plaidapp.core.data.api.DeEnvelopingConverter
 import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
 import io.plaidapp.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.designernews.data.api.DesignerNewsService
@@ -70,7 +70,7 @@ class DataModule {
         return Retrofit.Builder()
             .baseUrl(DesignerNewsService.ENDPOINT)
             .callFactory { client.get().newCall(it) }
-            .addConverterFactory(DenvelopingConverter(gson))
+            .addConverterFactory(DeEnvelopingConverter(gson))
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()

@@ -19,28 +19,28 @@ package io.plaidapp.core.data.api;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
+
+import javax.inject.Inject;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 
 /**
  * A {@link retrofit2.Converter.Factory} which removes unwanted wrapping envelopes from API
  * responses.
  */
-public class DenvelopingConverter extends Converter.Factory {
+public class DeEnvelopingConverter extends Converter.Factory {
 
     final Gson gson;
 
-    public DenvelopingConverter(@NonNull Gson gson) {
+    @Inject
+    public DeEnvelopingConverter(@NonNull Gson gson) {
         this.gson = gson;
     }
 
