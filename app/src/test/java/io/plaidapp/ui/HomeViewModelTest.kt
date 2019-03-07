@@ -29,7 +29,6 @@ import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
 import io.plaidapp.core.ui.filter.SourceUiModel
 import io.plaidapp.core.ui.filter.SourcesHighlightUiModel
-import io.plaidapp.core.util.event.Event
 import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
@@ -81,7 +80,7 @@ class HomeViewModelTest {
     @Test
     fun logoutFromDesignerNews() {
         // Given a viewmodel with empty sources
-        val homeViewModel = createViewModel(emptyList())
+        val homeViewModel = createViewModel()
         // When logging out from designer news
         homeViewModel.logoutFromDesignerNews()
 
@@ -92,7 +91,7 @@ class HomeViewModelTest {
     @Test
     fun isDesignerNewsLoggedIn() {
         // Given a view model
-        val homeViewModel = createViewModel(emptyList())
+        val homeViewModel = createViewModel()
         // Given a login status
         val loginStatus = false
         whenever(loginRepository.isLoggedIn).thenReturn(loginStatus)
@@ -107,7 +106,7 @@ class HomeViewModelTest {
     @Test
     fun addSources_Dribbble() = runBlocking {
         // Given a view model
-        val homeViewModel = createViewModel(emptyList())
+        val homeViewModel = createViewModel()
 
         // When adding a dribbble source
         homeViewModel.addSources(dribbbleSource.query, isDribbble = true, isDesignerNews = false)
@@ -164,9 +163,9 @@ class HomeViewModelTest {
             highlightPositions = listOf(0, 1),
             scrollToPosition = 1
         )
-        assertEquals(Event(sourcesHighlightUiModel), sources?.highlightSources)
+        assertEquals(sourcesHighlightUiModel, sources?.highlightSources!!.peek())
         // The expected sources are retrieved
-        assertEquals(2, sources?.sourceUiModels?.size)
+        assertEquals(2, sources.sourceUiModels.size)
     }
 
     @Test
@@ -189,9 +188,9 @@ class HomeViewModelTest {
             highlightPositions = listOf(1),
             scrollToPosition = 1
         )
-        assertEquals(Event(sourcesHighlightUiModel), sourcesUiModel?.highlightSources)
+        assertEquals(sourcesHighlightUiModel, sourcesUiModel?.highlightSources!!.peek())
         // The expected sources are retrieved
-        assertEquals(2, sourcesUiModel?.sourceUiModels?.size)
+        assertEquals(2, sourcesUiModel.sourceUiModels.size)
     }
 
     @Test
