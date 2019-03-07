@@ -41,7 +41,7 @@ import java.util.Collections
  */
 class HomeViewModel(
     val dataManager: DataManager,
-    private val loginRepository: LoginRepository,
+    private val designerNewsLoginRepository: LoginRepository,
     private val sourcesRepository: SourcesRepository,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel() {
@@ -77,10 +77,10 @@ class HomeViewModel(
         getSources()
     }
 
-    fun isDesignerNewsUserLoggedIn() = loginRepository.isLoggedIn
+    fun isDesignerNewsUserLoggedIn() = designerNewsLoginRepository.isLoggedIn
 
     fun logoutFromDesignerNews() {
-        loginRepository.logout()
+        designerNewsLoginRepository.logout()
     }
 
     fun loadData() {
