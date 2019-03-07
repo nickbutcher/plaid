@@ -18,9 +18,10 @@ package io.plaidapp.dagger
 
 import android.app.Activity
 import android.content.Context
+import android.net.ConnectivityManager
+import androidx.core.content.getSystemService
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
-import android.net.ConnectivityManager
 import com.bumptech.glide.util.ViewPreloadSizeProvider
 import dagger.Binds
 import dagger.Module
@@ -85,10 +86,13 @@ abstract class HomeModule {
 
         @JvmStatic
         @Provides
-        fun connectivityChecker(activity: Activity): ConnectivityChecker {
-            val connectivityManager =
-                activity.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            return ConnectivityChecker(connectivityManager)
+        fun connectivityChecker(activity: Activity): ConnectivityChecker? {
+            val connectivityManager = activity.getSystemService<ConnectivityManager>()
+            return if (connectivityManager != null) {
+                ConnectivityChecker(connectivityManager)
+            } else {
+                null
+            }
         }
     }
 }
