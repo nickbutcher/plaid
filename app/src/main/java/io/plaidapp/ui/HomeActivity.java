@@ -56,7 +56,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.LiveData;
 import androidx.fragment.app.FragmentActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -114,8 +113,6 @@ public class HomeActivity extends FragmentActivity {
     private TextView noFiltersEmptyText;
     private FilterAdapter filtersAdapter;
 
-    private LiveData<Boolean> connectedStatus;
-
     // data
     @Inject
     DataManager dataManager;
@@ -125,6 +122,7 @@ public class HomeActivity extends FragmentActivity {
     @Inject
     SourcesRepository sourcesRepository;
     @Inject
+    @Nullable
     ConnectivityChecker connectivityChecker;
 
     @Inject
@@ -142,15 +140,18 @@ public class HomeActivity extends FragmentActivity {
             checkEmptyState();
         });
 
-        getLifecycle().addObserver(connectivityChecker);
-        connectedStatus = connectivityChecker.getConnectedStatus();
-        connectedStatus.observe(this, connected -> {
-            if(connected) {
-                handleNetworkConnected();
-            } else {
-                handleNoNetworkConnection();
-            }
-        });
+        if(connectivityChecker != null) {
+            getLifecycle().addObserver(connectivityChecker);
+            connectivityChecker.getConnectedStatus().observe(this, connected -> {
+                if (connected) {
+                    handleNetworkConnected();
+                } else {
+                    handleNoNetworkConnection();
+                }
+            });
+        } else {
+            handleNoNetworkConnection();
+        }
 
         filtersAdapter = new FilterAdapter();
 
@@ -568,8 +569,8 @@ public class HomeActivity extends FragmentActivity {
     void checkEmptyState() {
         if (adapter.getDataItemCount() == 0) {
             // if grid is empty check whether we're loading or if no filters are selected
-            if (sourcesRepository.getActiveSourcesCount() > 0) {
-                Boolean connected = connectedStatus.getValue();
+            if (sourcesRepository.getActiveSourcesCount() > 0 && connectivityChecker != null) {
+                Boolean connected = connectivityChecker.getConnectedStatus().getValue();
                 if (connected != null && connected) {
                     loading.setVisibility(View.VISIBLE);
                     setNoFiltersEmptyTextVisibility(View.GONE);
