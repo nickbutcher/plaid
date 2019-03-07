@@ -114,11 +114,11 @@ class SourcesRepository(
     }
 
     fun changeSourceActiveState(sourceKey: String) {
-        cache.find { it.key == sourceKey }?.apply {
-            val newActiveState = !active
-            active = newActiveState
+        cache.find { it.key == sourceKey }?.let {
+            val newActiveState = !it.active
+            it.active = newActiveState
             dataSource.updateSource(sourceKey, newActiveState)
-            dispatchSourceChanged(this)
+            dispatchSourceChanged(it)
         }
         dispatchSourcesUpdated()
     }

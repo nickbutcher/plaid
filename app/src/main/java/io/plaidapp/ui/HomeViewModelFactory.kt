@@ -29,7 +29,7 @@ import javax.inject.Inject
  */
 class HomeViewModelFactory @Inject constructor(
     private val dataManager: DataManager,
-    private val loginRepository: LoginRepository,
+    private val designerNewsLoginRepository: LoginRepository,
     private val sourcesRepository: SourcesRepository,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModelProvider.Factory {
@@ -39,7 +39,11 @@ class HomeViewModelFactory @Inject constructor(
         if (modelClass != HomeViewModel::class.java) {
             throw IllegalArgumentException("Unknown ViewModel class")
         }
-        return HomeViewModel(dataManager, loginRepository, sourcesRepository, dispatcherProvider)
-                as T
+        return HomeViewModel(
+            dataManager,
+            designerNewsLoginRepository,
+            sourcesRepository,
+            dispatcherProvider
+        ) as T
     }
 }
