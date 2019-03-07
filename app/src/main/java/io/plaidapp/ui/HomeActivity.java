@@ -69,6 +69,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import io.plaidapp.R;
+import io.plaidapp.core.data.DataManager;
 import io.plaidapp.core.data.PlaidItem;
 import io.plaidapp.core.data.prefs.SourcesRepository;
 import io.plaidapp.core.designernews.data.poststory.PostStoryService;
@@ -119,6 +120,9 @@ public class HomeActivity extends FragmentActivity {
     private FilterAdapter filtersAdapter;
 
     // data
+    @Inject
+    DataManager dataManager;
+
     @Inject
     FeedAdapter adapter;
     @Inject
@@ -178,7 +182,7 @@ public class HomeActivity extends FragmentActivity {
         filtersList.setAdapter(filtersAdapter);
         filtersList.setItemAnimator(new FilterAnimator());
 
-        viewModel.loadData();
+        dataManager.loadAllDataSources();
 
         ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter, this);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
@@ -213,10 +217,10 @@ public class HomeActivity extends FragmentActivity {
         grid.setLayoutManager(layoutManager);
         grid.addOnScrollListener(toolbarElevation);
         grid.addOnScrollListener(
-                new InfiniteScrollListener(layoutManager, viewModel.getDataManager()) {
+                new InfiniteScrollListener(layoutManager, dataManager) {
                     @Override
                     public void onLoadMore() {
-                        viewModel.loadData();
+                        dataManager.loadAllDataSources();
                     }
                 });
         grid.setHasFixedSize(true);
@@ -776,7 +780,7 @@ public class HomeActivity extends FragmentActivity {
                 TransitionManager.beginDelayedTransition(drawer);
                 noConnection.setVisibility(View.GONE);
                 loading.setVisibility(View.VISIBLE);
-                viewModel.loadData();
+                dataManager.loadAllDataSources();
             });
         }
 
