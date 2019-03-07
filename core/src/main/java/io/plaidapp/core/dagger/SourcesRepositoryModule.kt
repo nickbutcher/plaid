@@ -28,7 +28,7 @@ import io.plaidapp.core.data.prefs.SourcesRepository
 /**
  * Module to provide [SourcesRepository].
  */
-@Module(includes = [CoroutinesDispatcherProviderModule::class])
+@Module
 class SourcesRepositoryModule {
 
     @Provides
