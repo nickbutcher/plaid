@@ -108,13 +108,7 @@ class SearchActivity : AppCompatActivity() {
 
         val pocketInstalled = PocketUtils.isPocketInstalled(this)
 
-        feedAdapter = FeedAdapter(
-            this,
-            searchDataManager,
-            columns,
-            pocketInstalled,
-            ViewPreloadSizeProvider<Shot>()
-        )
+        feedAdapter = FeedAdapter(this, searchDataManager, columns, pocketInstalled)
 
         viewModel.searchResults.observe(this, EventObserver { data ->
             if (data.isNotEmpty()) {
