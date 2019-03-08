@@ -47,7 +47,7 @@ object DesignerNewsSearchConverter : Converter<ResponseBody, List<String>> {
     }
 
     override fun convert(body: ResponseBody): List<String> {
-        val searchResults = Jsoup.parse(body.string(), DesignerNewsSearchService.ENDPOINT)
+        val searchResults = Jsoup.parse(body.string(), DesignerNewsService.ENDPOINT)
             .select("li.search-page-result > a")
         return searchResults.mapNotNull { parseSearchResult(it) }
     }
