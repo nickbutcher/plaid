@@ -67,6 +67,7 @@ interface DesignerNewsService {
      * Search Designer News by scraping website.
      * Returns a list of story IDs
      */
+    @HtmlResponse
     @GET("search?t=story")
     fun search(
         @Query("q") query: String,

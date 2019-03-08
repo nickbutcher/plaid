@@ -42,7 +42,21 @@ object DesignerNewsSearchConverter : Converter<ResponseBody, List<String>> {
             annotations: Array<Annotation>?,
             retrofit: Retrofit?
         ): Converter<ResponseBody, *>? {
-            return DesignerNewsSearchConverter
+            if (annotations.anyMatch { it is HtmlResponse }) {
+                return DesignerNewsSearchConverter
+            }
+            return null
+        }
+
+        private fun Array<Annotation>?.anyMatch(condition: (Annotation) -> Boolean): Boolean {
+            this?.let {
+                for (annotation in this) {
+                    if (condition(annotation)) {
+                        return true
+                    }
+                }
+            }
+            return false
         }
     }
 
