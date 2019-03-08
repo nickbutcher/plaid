@@ -66,6 +66,7 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import io.plaidapp.R;
 import io.plaidapp.core.data.DataManager;
 import io.plaidapp.core.data.PlaidItem;
+import io.plaidapp.core.data.pocket.PocketUtils;
 import io.plaidapp.core.data.prefs.SourcesRepository;
 import io.plaidapp.core.designernews.data.poststory.PostStoryService;
 import io.plaidapp.core.designernews.data.stories.model.Story;
@@ -112,13 +113,12 @@ public class HomeActivity extends FragmentActivity {
     private int columns;
     private TextView noFiltersEmptyText;
     private FilterAdapter filtersAdapter;
+    private FeedAdapter adapter;
 
     // data
     @Inject
     DataManager dataManager;
 
-    @Inject
-    FeedAdapter adapter;
     @Inject
     SourcesRepository sourcesRepository;
     @Inject
@@ -139,6 +139,16 @@ public class HomeActivity extends FragmentActivity {
             adapter.setItems(items);
             checkEmptyState();
         });
+
+        boolean pocketInstalled = PocketUtils.isPocketInstalled(this);
+
+        adapter = new FeedAdapter(
+                this,
+                dataManager,
+                columns,
+                pocketInstalled,
+                new ViewPreloadSizeProvider<Shot>()
+        );
 
         if(connectivityChecker != null) {
             getLifecycle().addObserver(connectivityChecker);

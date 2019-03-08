@@ -69,7 +69,6 @@ import io.plaidapp.core.util.glide.DribbbleTarget;
 import io.plaidapp.core.util.glide.GlideApp;
 import kotlin.Unit;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -104,7 +103,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private List<PlaidItem> items;
     private boolean showLoadingMore = false;
 
-    @Inject
     public FeedAdapter(Activity hostActivity,
                        @Nullable DataLoadingSubject dataLoading,
                        int columns,

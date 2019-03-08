@@ -49,6 +49,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.util.ViewPreloadSizeProvider
+import io.plaidapp.core.data.pocket.PocketUtils
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.ui.FeedAdapter
 import io.plaidapp.core.ui.getPlaidItemsForDisplay
@@ -61,6 +62,7 @@ import io.plaidapp.core.util.TransitionUtils
 import io.plaidapp.core.util.event.EventObserver
 import io.plaidapp.search.R
 import io.plaidapp.search.dagger.Injector
+import io.plaidapp.search.domain.SearchDataManager
 import io.plaidapp.search.ui.transitions.CircularReveal
 import javax.inject.Inject
 
@@ -88,11 +90,13 @@ class SearchActivity : AppCompatActivity() {
     private val transitions = SparseArray<Transition>()
     private var focusQuery = true
 
+    private lateinit var feedAdapter: FeedAdapter
+
     @Inject
     lateinit var viewModel: SearchViewModel
 
     @Inject
-    lateinit var feedAdapter: FeedAdapter
+    lateinit var searchDataManager: SearchDataManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,6 +105,16 @@ class SearchActivity : AppCompatActivity() {
         setupSearchView()
 
         Injector.inject(this)
+
+        val pocketInstalled = PocketUtils.isPocketInstalled(this)
+
+        feedAdapter = FeedAdapter(
+            this,
+            searchDataManager,
+            columns,
+            pocketInstalled,
+            ViewPreloadSizeProvider<Shot>()
+        )
 
         viewModel.searchResults.observe(this, EventObserver { data ->
             if (data.isNotEmpty()) {

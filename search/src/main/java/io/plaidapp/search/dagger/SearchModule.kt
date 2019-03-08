@@ -20,7 +20,6 @@ import android.app.Activity
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
-import com.bumptech.glide.util.ViewPreloadSizeProvider
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -30,7 +29,6 @@ import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.pocket.PocketUtils
-import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.search.domain.SearchDataManager
 import io.plaidapp.search.ui.SearchActivity
 import io.plaidapp.search.ui.SearchViewModel
@@ -63,10 +61,6 @@ abstract class SearchModule {
         @JvmStatic
         @Provides
         fun columns(activity: Activity): Int = activity.resources.getInteger(R.integer.num_columns)
-
-        @JvmStatic
-        @Provides
-        fun viewPreloadSizeProvider() = ViewPreloadSizeProvider<Shot>()
 
         @JvmStatic
         @Provides
