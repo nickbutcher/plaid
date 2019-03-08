@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.database
+package io.plaidapp.designernews.data.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao

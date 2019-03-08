@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.data.database
+package io.plaidapp.designernews.data.database
 
 import androidx.room.TypeConverter
 
