@@ -142,13 +142,7 @@ public class HomeActivity extends FragmentActivity {
 
         boolean pocketInstalled = PocketUtils.isPocketInstalled(this);
 
-        adapter = new FeedAdapter(
-                this,
-                dataManager,
-                columns,
-                pocketInstalled,
-                new ViewPreloadSizeProvider<Shot>()
-        );
+        adapter = new FeedAdapter(this, dataManager, columns, pocketInstalled);
 
         if(connectivityChecker != null) {
             getLifecycle().addObserver(connectivityChecker);

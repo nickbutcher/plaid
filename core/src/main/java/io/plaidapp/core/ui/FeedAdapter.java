@@ -96,7 +96,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final DataLoadingSubject dataLoading;
     private final int columns;
     private final ColorDrawable[] shotLoadingPlaceholders;
-    private final ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider;
+    private final ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider = new ViewPreloadSizeProvider<>();
 
     @ColorInt
     private final int initialGifBadgeColor;
@@ -106,7 +106,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public FeedAdapter(Activity hostActivity,
                        @Nullable DataLoadingSubject dataLoading,
                        int columns,
-                       boolean pocketInstalled, ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider) {
+                       boolean pocketInstalled) {
         this.host = hostActivity;
         this.dataLoading = dataLoading;
         if (dataLoading != null) {
@@ -114,7 +114,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
         this.columns = columns;
         this.pocketIsInstalled = pocketInstalled;
-        this.shotPreloadSizeProvider = shotPreloadSizeProvider;
         layoutInflater = LayoutInflater.from(host);
         items = new ArrayList<>();
         setHasStableIds(true);
