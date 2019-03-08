@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.database
+package io.plaidapp.designernews.data.database
 
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import android.content.Context
-import io.plaidapp.core.data.database.Converters
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 
 /**

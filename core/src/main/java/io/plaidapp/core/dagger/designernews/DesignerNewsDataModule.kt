@@ -16,7 +16,6 @@
 
 package io.plaidapp.core.dagger.designernews
 
-import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
@@ -30,8 +29,6 @@ import io.plaidapp.core.data.api.DeEnvelopingConverter
 import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.core.designernews.data.api.DesignerNewsSearchConverter
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.database.DesignerNewsDatabase
-import io.plaidapp.core.designernews.data.database.LoggedInUserDao
 import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.core.designernews.data.login.LoginRemoteDataSource
@@ -97,11 +94,6 @@ class DesignerNewsDataModule {
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
             .create(DesignerNewsService::class.java)
-    }
-
-    @Provides
-    fun provideLoggedInUserDao(context: Context): LoggedInUserDao {
-        return DesignerNewsDatabase.getInstance(context).loggedInUserDao()
     }
 
     @Provides

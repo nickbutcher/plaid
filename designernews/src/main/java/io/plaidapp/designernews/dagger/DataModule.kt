@@ -16,6 +16,7 @@
 
 package io.plaidapp.designernews.dagger
 
+import android.content.Context
 import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Lazy
@@ -28,6 +29,8 @@ import io.plaidapp.core.data.api.DeEnvelopingConverter
 import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
 import io.plaidapp.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.designernews.data.api.DesignerNewsService
+import io.plaidapp.designernews.data.database.DesignerNewsDatabase
+import io.plaidapp.designernews.data.database.LoggedInUserDao
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -73,5 +76,10 @@ class DataModule {
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
             .create(DesignerNewsService::class.java)
+    }
+
+    @Provides
+    fun provideLoggedInUserDao(context: Context): LoggedInUserDao {
+        return DesignerNewsDatabase.getInstance(context).loggedInUserDao()
     }
 }

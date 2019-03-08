@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.data
+package io.plaidapp.designernews.data.database
 
-import io.plaidapp.core.data.database.Converters
 import org.junit.Test
 
 import org.junit.Assert.assertEquals
