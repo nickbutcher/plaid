@@ -22,6 +22,8 @@ import androidx.lifecycle.ViewModel
 import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.OnDataLoadedCallback
 import io.plaidapp.core.data.PlaidItem
+import io.plaidapp.core.feed.FeedProgressUiModel
+import io.plaidapp.core.feed.FeedUiModel
 import io.plaidapp.core.util.event.Event
 import io.plaidapp.search.domain.SearchDataManager
 
@@ -31,19 +33,34 @@ import io.plaidapp.search.domain.SearchDataManager
  */
 class SearchViewModel(private val dataManager: SearchDataManager) : ViewModel() {
 
-    private val _searchResults = MutableLiveData<Event<List<PlaidItem>>>()
-    val searchResults: LiveData<Event<List<PlaidItem>>>
+    private val _searchResults = MutableLiveData<Event<FeedUiModel>>()
+    val searchResults: LiveData<Event<FeedUiModel>>
         get() = _searchResults
+
+    private val _searchProgress = MutableLiveData<FeedProgressUiModel>()
+    val searchProgress: LiveData<FeedProgressUiModel>
+        get() = _searchProgress
 
     private val onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>> =
         object : OnDataLoadedCallback<List<PlaidItem>> {
             override fun onDataLoaded(data: List<PlaidItem>) {
-                _searchResults.value = Event(data)
+                _searchResults.value = Event(FeedUiModel(data))
             }
         }
 
+    private val dataLoadingCallbacks = object : DataLoadingSubject.DataLoadingCallbacks {
+        override fun dataStartedLoading() {
+            _searchProgress.value = FeedProgressUiModel(true)
+        }
+
+        override fun dataFinishedLoading() {
+            _searchProgress.value = FeedProgressUiModel(false)
+        }
+    }
+
     init {
         dataManager.onDataLoadedCallback = onDataLoadedCallback
+        dataManager.registerCallback(dataLoadingCallbacks)
     }
 
     fun searchFor(query: String) {

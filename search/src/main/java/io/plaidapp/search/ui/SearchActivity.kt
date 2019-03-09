@@ -45,13 +45,14 @@ import androidx.annotation.TransitionRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.set
 import androidx.core.text.toSpannable
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.util.ViewPreloadSizeProvider
 import io.plaidapp.core.data.pocket.PocketUtils
 import io.plaidapp.core.dribbble.data.api.model.Shot
-import io.plaidapp.core.ui.FeedAdapter
+import io.plaidapp.core.feed.FeedAdapter
 import io.plaidapp.core.ui.getPlaidItemsForDisplay
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener
 import io.plaidapp.core.ui.recyclerview.SlideInItemAnimator
@@ -62,7 +63,6 @@ import io.plaidapp.core.util.TransitionUtils
 import io.plaidapp.core.util.event.EventObserver
 import io.plaidapp.search.R
 import io.plaidapp.search.dagger.Injector
-import io.plaidapp.search.domain.SearchDataManager
 import io.plaidapp.search.ui.transitions.CircularReveal
 import javax.inject.Inject
 
@@ -95,9 +95,6 @@ class SearchActivity : AppCompatActivity() {
     @Inject
     lateinit var viewModel: SearchViewModel
 
-    @Inject
-    lateinit var searchDataManager: SearchDataManager
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -108,10 +105,10 @@ class SearchActivity : AppCompatActivity() {
 
         val pocketInstalled = PocketUtils.isPocketInstalled(this)
 
-        feedAdapter = FeedAdapter(this, searchDataManager, columns, pocketInstalled)
+        feedAdapter = FeedAdapter(this, columns, pocketInstalled)
 
-        viewModel.searchResults.observe(this, EventObserver { data ->
-            if (data.isNotEmpty()) {
+        viewModel.searchResults.observe(this, EventObserver { searchUiModel ->
+            if (searchUiModel.items.isNotEmpty()) {
                 if (results.visibility != View.VISIBLE) {
                     TransitionManager.beginDelayedTransition(
                         container,
@@ -122,7 +119,7 @@ class SearchActivity : AppCompatActivity() {
                     fab.visibility = View.VISIBLE
                 }
                 val feedItems = feedAdapter.items
-                val items = getPlaidItemsForDisplay(feedItems, data, columns)
+                val items = getPlaidItemsForDisplay(feedItems, searchUiModel.items, columns)
                 feedAdapter.items = items
             } else {
                 TransitionManager.beginDelayedTransition(
@@ -132,6 +129,15 @@ class SearchActivity : AppCompatActivity() {
                 setNoResultsVisibility(View.VISIBLE)
             }
         })
+
+        viewModel.searchProgress.observe(this, Observer { progress ->
+            if (progress.isLoading) {
+                feedAdapter.dataStartedLoading()
+            } else {
+                feedAdapter.dataFinishedLoading()
+            }
+        })
+
         val shotPreloadSizeProvider = ViewPreloadSizeProvider<Shot>()
 
         setExitSharedElementCallback(FeedAdapter.createSharedElementReenterCallback(this))
@@ -274,7 +280,7 @@ class SearchActivity : AppCompatActivity() {
             container,
             getTransition(io.plaidapp.core.R.transition.auto)
         )
-        feedAdapter.clear()
+        feedAdapter.items = emptyList()
         viewModel.clearResults()
         results.visibility = View.GONE
         progress.visibility = View.GONE
