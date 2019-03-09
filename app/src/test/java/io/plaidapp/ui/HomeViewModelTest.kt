@@ -41,7 +41,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
-import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
 /**
@@ -154,7 +153,7 @@ class HomeViewModelTest {
     fun filtersUpdated_newSources() {
         // Given a view model
         val homeViewModel = createViewModel()
-        Mockito.verify(sourcesRepository).registerFilterChangedCallback(
+        verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
 
@@ -178,7 +177,7 @@ class HomeViewModelTest {
         // Given a view model
         val sources = mutableListOf<Source>(designerNewsSource)
         val homeViewModel = createViewModel(sources)
-        Mockito.verify(sourcesRepository).registerFilterChangedCallback(
+        verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
 
@@ -202,7 +201,7 @@ class HomeViewModelTest {
     fun sourceClicked_changesSourceActiveState() {
         // Given a view model
         val homeViewModel = createViewModel()
-        Mockito.verify(sourcesRepository).registerFilterChangedCallback(
+        verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
         // Given that filters were updated
@@ -222,7 +221,7 @@ class HomeViewModelTest {
     fun sourceRemoved_swipeDismissable() {
         // Given a view model
         val homeViewModel = createViewModel()
-        Mockito.verify(sourcesRepository).registerFilterChangedCallback(
+        verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
         // Given that filters were updated
@@ -242,7 +241,7 @@ class HomeViewModelTest {
     fun sourceRemoved_notSwipeDismissable() {
         // Given a view model
         val homeViewModel = createViewModel()
-        Mockito.verify(sourcesRepository).registerFilterChangedCallback(
+        verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
         // Given that filters were updated
@@ -262,7 +261,7 @@ class HomeViewModelTest {
     fun filtersRemoved() {
         // Given a view model
         val homeViewModel = createViewModel()
-        Mockito.verify(sourcesRepository).registerFilterChangedCallback(
+        verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
 
@@ -278,7 +277,7 @@ class HomeViewModelTest {
     fun filtersChanged_activeSource() {
         // Given a view model
         val homeViewModel = createViewModel()
-        Mockito.verify(sourcesRepository).registerFilterChangedCallback(
+        verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
 
@@ -295,7 +294,7 @@ class HomeViewModelTest {
     fun filtersChanged_inactiveSource() {
         // Given a view model
         val homeViewModel = createViewModel()
-        Mockito.verify(sourcesRepository).registerFilterChangedCallback(
+        verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
 
@@ -312,7 +311,7 @@ class HomeViewModelTest {
     fun dataLoading() {
         // Given a view model
         val homeViewModel = createViewModel()
-        Mockito.verify(dataManager).registerCallback(capture(dataLoadingCallback))
+        verify(dataManager).registerCallback(capture(dataLoadingCallback))
 
         // When data started loading
         dataLoadingCallback.value.dataStartedLoading()
@@ -326,7 +325,7 @@ class HomeViewModelTest {
     fun dataFinishedLoading() {
         // Given a view model
         val homeViewModel = createViewModel()
-        Mockito.verify(dataManager).registerCallback(capture(dataLoadingCallback))
+        verify(dataManager).registerCallback(capture(dataLoadingCallback))
 
         // When data finished loading
         dataLoadingCallback.value.dataFinishedLoading()

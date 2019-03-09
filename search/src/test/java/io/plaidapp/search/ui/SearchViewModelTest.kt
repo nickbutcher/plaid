@@ -30,7 +30,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
-import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
 /**
@@ -86,7 +85,7 @@ class SearchViewModelTest {
     @Test
     fun dataLoading() {
         // Given a view model
-        Mockito.verify(dataManager).registerCallback(capture(dataLoadingCallback))
+        verify(dataManager).registerCallback(capture(dataLoadingCallback))
 
         // When data started loading
         dataLoadingCallback.value.dataStartedLoading()
@@ -99,7 +98,7 @@ class SearchViewModelTest {
     @Test
     fun dataFinishedLoading() {
         // Given a view model
-        Mockito.verify(dataManager).registerCallback(capture(dataLoadingCallback))
+        verify(dataManager).registerCallback(capture(dataLoadingCallback))
 
         // When data finished loading
         dataLoadingCallback.value.dataFinishedLoading()
