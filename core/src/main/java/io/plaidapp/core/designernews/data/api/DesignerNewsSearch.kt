@@ -21,4 +21,4 @@ package io.plaidapp.core.designernews.data.api
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-internal annotation class HtmlResponse
+internal annotation class DesignerNewsSearch
