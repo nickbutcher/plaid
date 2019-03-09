@@ -29,6 +29,7 @@ import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.data.api.DeEnvelopingConverter
 import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.core.designernews.data.api.DesignerNewsSearchConverter
+import io.plaidapp.core.designernews.data.api.DesignerNewsSearchService
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.database.DesignerNewsDatabase
 import io.plaidapp.core.designernews.data.database.LoggedInUserDao
@@ -92,7 +93,6 @@ class DesignerNewsDataModule {
             .baseUrl(DesignerNewsService.ENDPOINT)
             .callFactory { client.get().newCall(it) }
             .addConverterFactory(DeEnvelopingConverter(gson))
-            .addConverterFactory(DesignerNewsSearchConverter.Factory())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
@@ -112,6 +112,12 @@ class DesignerNewsDataModule {
 
     @Provides
     fun provideStoriesRemoteDataSource(service: DesignerNewsService): StoriesRemoteDataSource {
-        return StoriesRemoteDataSource.getInstance(service)
+        val searchService = Retrofit.Builder()
+            .baseUrl(DesignerNewsSearchService.ENDPOINT)
+            .addConverterFactory(DesignerNewsSearchConverter.Factory())
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            .build()
+            .create(DesignerNewsSearchService::class.java)
+        return StoriesRemoteDataSource.getInstance(service, searchService)
     }
 }

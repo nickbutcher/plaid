@@ -21,6 +21,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
+import io.plaidapp.core.designernews.data.api.DesignerNewsSearchService
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.errorResponseBody
@@ -57,7 +58,8 @@ class StoriesRemoteDataSourceTest {
     private val query = "Plaid 2.0"
 
     private val service: DesignerNewsService = mock()
-    private val dataSource = StoriesRemoteDataSource(service)
+    private val searchService: DesignerNewsSearchService = mock()
+    private val dataSource = StoriesRemoteDataSource(service, searchService)
 
     @Test
     fun loadStories_withSuccess() = runBlocking {
@@ -102,7 +104,7 @@ class StoriesRemoteDataSourceTest {
     fun search_withSuccess() = runBlocking {
         // Given that the service responds with success
         val storyIds = stories.map { it.id.toString() }
-        whenever(service.search(query, 2)).thenReturn(CompletableDeferred(Response.success(storyIds)))
+        whenever(searchService.search(query, 2)).thenReturn(CompletableDeferred(Response.success(storyIds)))
         val commaSeparatedIds = storyIds.joinToString(",")
         whenever(service.getStories(commaSeparatedIds)).thenReturn(CompletableDeferred(Response.success(stories)))
 
@@ -117,7 +119,7 @@ class StoriesRemoteDataSourceTest {
     fun search_withErrorScrapingResults() = runBlocking {
         // Given that the service responds with error
         val error = Response.error<List<String>>(400, errorResponseBody)
-        whenever(service.search(query, 1)).thenReturn(CompletableDeferred(error))
+        whenever(searchService.search(query, 1)).thenReturn(CompletableDeferred(error))
 
         // When searching for stories
         val result = dataSource.search(query, 1)
@@ -130,7 +132,7 @@ class StoriesRemoteDataSourceTest {
     fun search_withExceptionScrapingResults() = runBlocking {
         // Given that the service throws an exception
         doAnswer { throw UnknownHostException() }
-            .whenever(service).search(query, 1)
+            .whenever(searchService).search(query, 1)
 
         // When searching for stories
         val result = dataSource.search(query, 1)
