@@ -42,21 +42,11 @@ object DesignerNewsSearchConverter : Converter<ResponseBody, List<String>> {
             annotations: Array<Annotation>?,
             retrofit: Retrofit?
         ): Converter<ResponseBody, *>? {
-            if (annotations.anyMatch { it is DesignerNewsSearch }) {
-                return DesignerNewsSearchConverter
+            return if (annotations != null && annotations.any { it is DesignerNewsSearch }) {
+                DesignerNewsSearchConverter
+            } else {
+                null
             }
-            return null
-        }
-
-        private fun Array<Annotation>?.anyMatch(condition: (Annotation) -> Boolean): Boolean {
-            this?.let {
-                for (annotation in this) {
-                    if (condition(annotation)) {
-                        return true
-                    }
-                }
-            }
-            return false
         }
     }
 
