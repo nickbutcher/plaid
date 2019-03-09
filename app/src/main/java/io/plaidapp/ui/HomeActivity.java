@@ -72,7 +72,7 @@ import io.plaidapp.core.designernews.data.poststory.PostStoryService;
 import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.ui.ConnectivityChecker;
-import io.plaidapp.core.ui.FeedAdapter;
+import io.plaidapp.core.feed.FeedAdapter;
 import io.plaidapp.core.ui.HomeGridItemAnimator;
 import io.plaidapp.core.ui.PlaidItemsList;
 import io.plaidapp.core.ui.filter.FilterAdapter;
@@ -142,7 +142,7 @@ public class HomeActivity extends FragmentActivity {
 
         boolean pocketInstalled = PocketUtils.isPocketInstalled(this);
 
-        adapter = new FeedAdapter(this, dataManager, columns, pocketInstalled);
+        adapter = new FeedAdapter(this, columns, pocketInstalled);
 
         if(connectivityChecker != null) {
             getLifecycle().addObserver(connectivityChecker);
@@ -173,6 +173,14 @@ public class HomeActivity extends FragmentActivity {
                     handleDataSourceRemoved(source);
                     checkEmptyState();
                 });
+
+        viewModel.getFeedProgress().observe(this, feedProgressUiModel -> {
+            if(feedProgressUiModel.isLoading()){
+                adapter.dataStartedLoading();
+            } else {
+                adapter.dataFinishedLoading();
+            }
+        });
 
         drawer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN

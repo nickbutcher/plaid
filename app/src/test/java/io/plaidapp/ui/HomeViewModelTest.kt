@@ -22,10 +22,12 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.DataManager
 import io.plaidapp.core.data.Source
 import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.data.login.LoginRepository
+import io.plaidapp.core.feed.FeedProgressUiModel
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
 import io.plaidapp.core.ui.filter.SourceUiModel
 import io.plaidapp.core.ui.filter.SourcesHighlightUiModel
@@ -65,12 +67,15 @@ class HomeViewModelTest {
         {}
     )
     private val dribbbleSource = Source.DribbbleSearchSource("dribbble", true)
-    private val dataModel: DataManager = mock()
+    private val dataManager: DataManager = mock()
     private val loginRepository: LoginRepository = mock()
     private val sourcesRepository: SourcesRepository = mock()
 
     @Captor
     private lateinit var filtersChangedCallback: ArgumentCaptor<FiltersChangedCallback>
+
+    @Captor
+    private lateinit var dataLoadingCallback: ArgumentCaptor<DataLoadingSubject.DataLoadingCallbacks>
 
     @Before
     fun setup() {
@@ -303,12 +308,40 @@ class HomeViewModelTest {
         assertEquals(inactiveSource.key, source)
     }
 
+    @Test
+    fun dataLoading() {
+        // Given a view model
+        val homeViewModel = createViewModel()
+        Mockito.verify(dataManager).registerCallback(capture(dataLoadingCallback))
+
+        // When data started loading
+        dataLoadingCallback.value.dataStartedLoading()
+
+        // Then the feedProgress emits true
+        val progress = LiveDataTestUtil.getValue(homeViewModel.feedProgress)
+        assertEquals(FeedProgressUiModel(true), progress)
+    }
+
+    @Test
+    fun dataFinishedLoading() {
+        // Given a view model
+        val homeViewModel = createViewModel()
+        Mockito.verify(dataManager).registerCallback(capture(dataLoadingCallback))
+
+        // When data finished loading
+        dataLoadingCallback.value.dataFinishedLoading()
+
+        // Then the feedProgress emits false
+        val progress = LiveDataTestUtil.getValue(homeViewModel.feedProgress)
+        assertEquals(FeedProgressUiModel(false), progress)
+    }
+
     private fun createViewModel(
         list: List<Source> = emptyList()
     ): HomeViewModel = runBlocking {
         whenever(sourcesRepository.getSources()).thenReturn(list)
         return@runBlocking HomeViewModel(
-            dataModel,
+            dataManager,
             loginRepository,
             sourcesRepository,
             provideFakeCoroutinesDispatcherProvider()
