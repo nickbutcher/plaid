@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2019 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.producthunt.data.api.model
+package io.plaidapp.core.producthunt.data.api
 
-import android.os.Parcelable
-import io.plaidapp.core.data.PlaidItem
-import kotlinx.android.parcel.Parcelize
+import io.plaidapp.core.producthunt.data.api.model.GetPostsResponse
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
+import retrofit2.Response
 
 /**
- * Models a post on Product Hunt.
+ * Fake implementation of [ProductHuntService]
  */
-@Parcelize
-class Post(
-    override val id: Long,
-    override val title: String,
-    override var url: String? = null,
-    val tagline: String,
-    val discussionUrl: String,
-    val redirectUrl: String,
-    val commentsCount: Int,
-    val votesCount: Int
-) : PlaidItem(id, title, url), Parcelable
+abstract class FakeProductHuntService : ProductHuntService {
+
+    override fun getPostsAsync(page: Int): Deferred<Response<GetPostsResponse>> {
+        return CompletableDeferred(getPostsResponse())
+    }
+
+    abstract fun getPostsResponse(): Response<GetPostsResponse>
+}

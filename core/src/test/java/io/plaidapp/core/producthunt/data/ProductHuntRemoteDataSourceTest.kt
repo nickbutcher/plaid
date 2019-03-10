@@ -20,11 +20,9 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.producthunt.data.api.ProductHuntService
-import io.plaidapp.core.producthunt.data.api.model.Post
+import io.plaidapp.core.producthunt.data.api.model.GetPostsResponse
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
-import okhttp3.MediaType
-import okhttp3.ResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -36,58 +34,31 @@ import retrofit2.Response
  */
 class ProductHuntRemoteDataSourceTest {
 
-    private val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")
-
-    private val post1 = Post(
-            id = 345L,
-            title = "Plaid is plady amazing",
-            url = "www.plaid.amazing",
-            name = "Plaid",
-            tagline = "amazing",
-            discussionUrl = "www.disc.plaid",
-            redirectUrl = "www.d.plaid",
-            commentsCount = 5,
-            votesCount = 100
-    )
-    private val post2 = Post(
-            id = 947L,
-            title = "Plaid is team amazing",
-            url = "www.plaid.team",
-            name = "Plaid",
-            tagline = "team",
-            discussionUrl = "www.team.plaid",
-            redirectUrl = "www.t.plaid",
-            commentsCount = 2,
-            votesCount = 42
-    )
-
-    private val postsResult = listOf(post1, post2)
-
     private val service: ProductHuntService = mock()
     private val dataSource = ProductHuntRemoteDataSource(service)
 
     @Test
     fun loadData_whenResultSuccessful() = runBlocking {
         // Given that the service responds with success
-        val result = Response.success(postsResult)
-        whenever(service.getPosts(1)).thenReturn(CompletableDeferred(result))
+        val result = Response.success(responseDataSuccess)
+        whenever(service.getPostsAsync(1)).thenReturn(CompletableDeferred(result))
 
         // When loading the data
         val response = dataSource.loadData(1)
 
         // Then the response is the expected one
         assertNotNull(response)
-        assertEquals(Result.Success(postsResult), response)
+        assertEquals(Result.Success(responseDataSuccess), response)
     }
 
     @Test
     fun loadData_whenRequestFailed() = runBlocking {
         // Given that the service responds with failure
-        val result = Response.error<List<Post>>(
-                400,
-                errorResponseBody
+        val result = Response.error<GetPostsResponse>(
+            400,
+            errorResponseBody
         )
-        whenever(service.getPosts(1)).thenReturn(CompletableDeferred(result))
+        whenever(service.getPostsAsync(1)).thenReturn(CompletableDeferred(result))
 
         // When loading posts
         val response = dataSource.loadData(1)
