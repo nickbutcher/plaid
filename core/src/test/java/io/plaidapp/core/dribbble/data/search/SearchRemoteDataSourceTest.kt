@@ -44,7 +44,7 @@ class SearchRemoteDataSourceTest {
 
     private val query = "Plaid shirts"
     private val page = 0
-    private val defaultSortOrder = DribbbleSearchService.SORT_RECENT
+    private val defaultSortOrder = SortOrder.RECENT.sort
     private val defaultResultsPerPage = DribbbleSearchService.PER_PAGE_DEFAULT
 
     @Test
