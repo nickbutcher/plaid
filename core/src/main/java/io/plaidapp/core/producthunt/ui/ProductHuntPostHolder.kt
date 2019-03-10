@@ -45,7 +45,7 @@ class ProductHuntPostHolder(
 
     fun bind(item: Post) {
         post = item
-        title.text = item.name
+        title.text = item.title
         tagline.text = item.tagline
         comments.text = item.commentsCount.toString()
     }

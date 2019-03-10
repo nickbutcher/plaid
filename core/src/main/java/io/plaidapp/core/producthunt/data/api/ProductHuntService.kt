@@ -16,8 +16,7 @@
 
 package io.plaidapp.core.producthunt.data.api
 
-import io.plaidapp.core.data.api.EnvelopePayload
-import io.plaidapp.core.producthunt.data.api.model.Post
+import io.plaidapp.core.producthunt.data.api.model.GetPostsResponse
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.http.GET
@@ -28,9 +27,8 @@ import retrofit2.http.Query
  */
 interface ProductHuntService {
 
-    @EnvelopePayload("posts")
     @GET("v1/posts")
-    fun getPosts(@Query("days_ago") page: Int): Deferred<Response<List<Post>>>
+    fun getPostsAsync(@Query("days_ago") page: Int): Deferred<Response<GetPostsResponse>>
 
     companion object {
 
