@@ -30,10 +30,12 @@ import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.feed.FeedProgressUiModel
 import io.plaidapp.core.feed.FeedUiModel
+import io.plaidapp.core.ui.expandPopularItems
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
 import io.plaidapp.core.ui.filter.SourceUiModel
 import io.plaidapp.core.ui.filter.SourcesHighlightUiModel
 import io.plaidapp.core.ui.filter.SourcesUiModel
+import io.plaidapp.core.ui.getPlaidItemsForDisplay
 import io.plaidapp.core.util.event.Event
 import kotlinx.coroutines.launch
 import java.util.Collections
@@ -51,11 +53,6 @@ class HomeViewModel(
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel() {
 
-    // TODO keeping this one temporarily, until we deal with [FeedAdapter]
-    private val _sourceRemoved = MutableLiveData<String>()
-    val sourceRemoved: LiveData<String>
-        get() = _sourceRemoved
-
     private val _sources = MutableLiveData<SourcesUiModel>()
     val sources: LiveData<SourcesUiModel>
         get() = _sources
@@ -64,26 +61,27 @@ class HomeViewModel(
     val feedProgress: LiveData<FeedProgressUiModel>
         get() = _feedProgress
 
-    private val _feed = MutableLiveData<Event<FeedUiModel>>()
-    val feed: LiveData<Event<FeedUiModel>>
+    private val _feed = MutableLiveData<FeedUiModel>()
+    val feed: LiveData<FeedUiModel>
         get() = _feed
 
     private val onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>> =
         object : OnDataLoadedCallback<List<PlaidItem>> {
             override fun onDataLoaded(data: List<PlaidItem>) {
-                _feed.value = Event(FeedUiModel(data))
+                val oldItems = _feed.value?.items.orEmpty()
+                updateFeedData(oldItems, data)
             }
         }
     // listener for notifying adapter when data sources are deactivated
     private val filtersChangedCallbacks = object : FiltersChangedCallback() {
         override fun onFiltersChanged(changedFilter: Source) {
             if (!changedFilter.active) {
-                _sourceRemoved.value = changedFilter.key
+                handleDataSourceRemoved(changedFilter.key, _feed.value?.items.orEmpty())
             }
         }
 
         override fun onFilterRemoved(sourceKey: String) {
-            _sourceRemoved.value = sourceKey
+            handleDataSourceRemoved(sourceKey, _feed.value?.items.orEmpty())
         }
 
         override fun onFiltersUpdated(sources: List<Source>) {
@@ -106,6 +104,7 @@ class HomeViewModel(
         dataManager.setOnDataLoadedCallback(onDataLoadedCallback)
         dataManager.registerCallback(dataLoadingCallbacks)
         getSources()
+        loadData()
     }
 
     fun isDesignerNewsUserLoggedIn() = designerNewsLoginRepository.isLoggedIn
@@ -193,6 +192,20 @@ class HomeViewModel(
         } else {
             SourcesHighlightUiModel(positions, scrollToPosition)
         }
+    }
+
+    private fun updateFeedData(oldItems: List<PlaidItem>, newItems: List<PlaidItem>) {
+        val items = getPlaidItemsForDisplay(oldItems, newItems, 2)
+        _feed.value = FeedUiModel(items)
+    }
+
+    private fun handleDataSourceRemoved(dataSourceKey: String, oldItems: List<PlaidItem>) {
+        val items = oldItems.toMutableList()
+        items.removeAll {
+            dataSourceKey == it.dataSource
+        }
+        expandPopularItems(items, 2)
+        _feed.value = FeedUiModel(items)
     }
 
     private fun createNewSourceUiModels(sources: List<Source>): List<SourceUiModel> {
