@@ -399,7 +399,6 @@ public class HomeActivity extends FragmentActivity {
                 }
                 if (resultCode == Activities.Search.RESULT_CODE_SAVE) {
                     String query = data.getStringExtra(Activities.Search.EXTRA_QUERY);
-                    if (TextUtils.isEmpty(query)) return;
                     boolean isDribbble =
                             data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DRIBBBLE, false);
                     boolean isDesignerNews =
