@@ -66,6 +66,15 @@ class HomeViewModelTest {
         {}
     )
     private val dribbbleSource = Source.DribbbleSearchSource("dribbble", true)
+    private val dribbbleSourceUiModel = SourceUiModel(
+        dribbbleSource.key,
+        dribbbleSource.name,
+        dribbbleSource.active,
+        dribbbleSource.iconRes,
+        dribbbleSource.isSwipeDismissable,
+        {},
+        {}
+    )
     private val dataManager: DataManager = mock()
     private val loginRepository: LoginRepository = mock()
     private val sourcesRepository: SourcesRepository = mock()
@@ -260,23 +269,23 @@ class HomeViewModelTest {
     @Test
     fun filtersRemoved() {
         // Given a view model
-        val homeViewModel = createViewModel()
+        val homeViewModel = createViewModel(listOf(designerNewsSource, dribbbleSource))
         verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
 
         // When a source was removed
-        filtersChangedCallback.value.onFilterRemoved(designerNewsSource.key)
+        filtersChangedCallback.value.onFilterRemoved(dribbbleSource.key)
 
-        // Then source removed value is the expected one
-        val source = LiveDataTestUtil.getValue(homeViewModel.sourceRemoved)
-        assertEquals(designerNewsSource.key, source)
+        // Then feed emits with a new list, without the removed filter
+        val feed = LiveDataTestUtil.getValue(homeViewModel.feed)
+        assertEquals(listOf(designerNewsSourceUiModel), feed)
     }
 
     @Test
     fun filtersChanged_activeSource() {
         // Given a view model
-        val homeViewModel = createViewModel()
+        val homeViewModel = createViewModel(listOf(designerNewsSource, dribbbleSource))
         verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
@@ -285,15 +294,15 @@ class HomeViewModelTest {
         val activeSource = Source.DribbbleSearchSource("dribbble", true)
         filtersChangedCallback.value.onFiltersChanged(activeSource)
 
-        // Then source removed value is null
-        val source = LiveDataTestUtil.getValue(homeViewModel.sourceRemoved)
+        // Then feed didn't emit a new value
+        val source = LiveDataTestUtil.getValue(homeViewModel.feed)
         assertNull(source)
     }
 
     @Test
     fun filtersChanged_inactiveSource() {
         // Given a view model
-        val homeViewModel = createViewModel()
+        val homeViewModel = createViewModel(listOf(designerNewsSource, dribbbleSource))
         verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
@@ -302,9 +311,9 @@ class HomeViewModelTest {
         val inactiveSource = Source.DribbbleSearchSource("dribbble", false)
         filtersChangedCallback.value.onFiltersChanged(inactiveSource)
 
-        // Then the source removed contains the inactive source
-        val source = LiveDataTestUtil.getValue(homeViewModel.sourceRemoved)
-        assertEquals(inactiveSource.key, source)
+        // Then feed emits with a new list, without the removed filter
+        val feed = LiveDataTestUtil.getValue(homeViewModel.feed)
+        assertEquals(listOf(designerNewsSourceUiModel), feed)
     }
 
     @Test

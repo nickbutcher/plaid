@@ -70,8 +70,8 @@ import io.plaidapp.core.data.prefs.SourcesRepository;
 import io.plaidapp.core.designernews.data.poststory.PostStoryService;
 import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
-import io.plaidapp.core.ui.ConnectivityChecker;
 import io.plaidapp.core.feed.FeedAdapter;
+import io.plaidapp.core.ui.ConnectivityChecker;
 import io.plaidapp.core.ui.HomeGridItemAnimator;
 import io.plaidapp.core.ui.PlaidItemsList;
 import io.plaidapp.core.ui.filter.FilterAdapter;
@@ -85,10 +85,8 @@ import io.plaidapp.core.util.AnimUtils;
 import io.plaidapp.core.util.DrawableUtils;
 import io.plaidapp.core.util.ShortcutHelper;
 import io.plaidapp.core.util.ViewUtils;
-import io.plaidapp.core.util.event.EventObserver;
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
-import kotlin.Unit;
 
 import javax.inject.Inject;
 import java.util.Collections;
@@ -163,10 +161,6 @@ public class HomeActivity extends FragmentActivity {
                 }
             }
         });
-        viewModel.getSourceRemoved().observe(this, source -> {
-                    handleDataSourceRemoved(source);
-                    checkEmptyState();
-                });
 
         viewModel.getFeedProgress().observe(this, feedProgressUiModel -> {
             if(feedProgressUiModel.isLoading()){
@@ -176,13 +170,10 @@ public class HomeActivity extends FragmentActivity {
             }
         });
 
-        viewModel.getFeed().observe(this, new EventObserver<>(feedUiModel -> {
-            List<PlaidItem> items = PlaidItemsList.getPlaidItemsForDisplay(adapter.getItems(), feedUiModel.getItems(), columns);
-            adapter.setItems(items);
+        viewModel.getFeed().observe(this, feedUiModel -> {
+            adapter.setItems(feedUiModel.getItems());
             checkEmptyState();
-            return Unit.INSTANCE;
-        }));
-
+        });
 
         drawer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -206,8 +197,6 @@ public class HomeActivity extends FragmentActivity {
 
         filtersList.setAdapter(filtersAdapter);
         filtersList.setItemAnimator(new FilterAnimator());
-
-        viewModel.loadData();
 
         ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter, this);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
@@ -462,17 +451,7 @@ public class HomeActivity extends FragmentActivity {
         }
     };
 
-    private void handleDataSourceRemoved(String dataSourceKey){
-        List<PlaidItem> items = adapter.getItems();
-        for (int i = items.size() - 1; i >= 0; i--) {
-            PlaidItem item = items.get(i);
-            if (dataSourceKey.equals(item.getDataSource())) {
-                items.remove(i);
-            }
-        }
-        PlaidItemsList.expandPopularItems(items, columns);
-        adapter.setItems(items);
-    }
+
 
     protected void fabClick() {
         if (viewModel.isDesignerNewsUserLoggedIn()) {
