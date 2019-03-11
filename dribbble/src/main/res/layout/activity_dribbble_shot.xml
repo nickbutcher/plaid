@@ -23,13 +23,25 @@
 
     <data>
 
+        <import type="android.graphics.drawable.Drawable" />
+
+        <import type="com.bumptech.glide.request.RequestListener" />
+
+        <import type="io.plaidapp.dribbble.R" />
+
+        <import type="io.plaidapp.R" alias="appR" />
+
         <variable
             name="viewModel"
             type="io.plaidapp.dribbble.ui.shot.ShotViewModel" />
 
         <variable
-            name="shotUiModel"
-            type="io.plaidapp.core.dribbble.data.api.model.Shot" />
+            name="uiModel"
+            type="io.plaidapp.dribbble.ui.shot.ShotUiModel" />
+
+        <variable
+            name="shotLoadListener"
+            type="RequestListener&lt;Drawable&gt;" />
 
     </data>
 
@@ -63,6 +75,11 @@
             android:transitionName="@string/transition_shot"
             android:background="@color/light_grey"
             android:onClick="@{() -> viewModel.viewShotRequested()}"
+            app:imageUrl="@{uiModel.imageUrl}"
+            app:imageLoadListener="@{shotLoadListener}"
+            app:crossFadeImage="@{true}"
+            app:overrideImageWidth="@{uiModel.imageSize.width}"
+            app:overrideImageHeight="@{uiModel.imageSize.height}"
             app:scrimColor="@color/scrim"
             app:scrimAlpha="0"
             app:maxScrimAlpha="0.4"
@@ -133,7 +150,7 @@
                     android:paddingStart="@dimen/padding_normal"
                     android:paddingTop="@dimen/padding_normal"
                     android:textAppearance="@style/TextAppearance.DribbbleShotTitle"
-                    android:text="@{shotUiModel.title}" />
+                    android:text="@{uiModel.title}" />
 
                 <io.plaidapp.core.ui.widget.BaselineGridTextView
                     android:id="@+id/shot_description"
@@ -148,6 +165,8 @@
                     android:textAppearance="@style/TextAppearance.DribbbleShotDescription"
                     android:textColorHighlight="@color/dribbble_link_highlight"
                     android:textColorLink="@color/dribbble_links"
+                    app:htmlText="@{uiModel.formattedDescription}"
+                    app:goneUnless="@{uiModel.shouldHideDescription}"
                     tools:text="Check out this sweet eye candy!" />
 
                 <Button
@@ -161,6 +180,10 @@
                     android:layout_marginTop="@dimen/spacing_large"
                     android:drawableTop="@drawable/avd_likes"
                     android:background="@null"
+                    app:animatedOnClick="@{true}"
+                    app:pluralResource="@{R.plurals.likes}"
+                    app:pluralQuantity="@{uiModel.likesCount}"
+                    app:pluralValue="@{uiModel.formattedLikesCount}"
                     tools:text="33 likes"
                     style="@style/Widget.Plaid.InlineActionButton" />
 
@@ -174,6 +197,10 @@
                     app:layout_constraintHorizontal_weight="1"
                     android:drawableTop="@drawable/avd_views"
                     android:background="@null"
+                    app:animatedOnClick="@{true}"
+                    app:pluralResource="@{R.plurals.views}"
+                    app:pluralQuantity="@{uiModel.viewsCount}"
+                    app:pluralValue="@{uiModel.formattedViewsCount}"
                     tools:text="33 views"
                     style="@style/Widget.Plaid.InlineActionButton" />
 
@@ -187,6 +214,7 @@
                     app:layout_constraintHorizontal_weight="1"
                     android:drawableTop="@drawable/avd_share"
                     android:text="@string/share"
+                    app:animatedOnClick="@{() -> viewModel.shareShotRequested()}"
                     style="@style/Widget.Plaid.InlineActionButton" />
 
                 <io.plaidapp.core.ui.widget.BaselineGridTextView
@@ -203,6 +231,7 @@
                     android:paddingTop="@dimen/spacing_normal"
                     android:textAppearance="@style/TextAppearance.CommentAuthor"
                     android:clickable="false"
+                    android:text="@{uiModel.userName}"
                     tools:text="—Nick B" />
 
                 <io.plaidapp.core.ui.widget.BaselineGridTextView
@@ -215,6 +244,7 @@
                     android:paddingStart="@dimen/padding_normal"
                     android:gravity="end"
                     android:textAppearance="@style/TextAppearance.CommentTimestamp"
+                    app:relativeTime="@{uiModel.createdAt}"
                     tools:text="3 hours ago" />
 
                 <io.plaidapp.core.ui.widget.CircularImageView
@@ -227,7 +257,11 @@
                     app:layout_constraintBottom_toBottomOf="@id/player_name"
                     android:padding="@dimen/avatar_padding"
                     android:src="@drawable/avatar_placeholder"
-                    android:foreground="@drawable/avatar_ripple" />
+                    android:foreground="@drawable/avatar_ripple"
+                    app:imageUrl="@{uiModel.userAvatarUrl}"
+                    app:imagePlaceholder="@{appR.drawable.avatar_placeholder}"
+                    app:circleCropImage="@{true}"
+                    app:crossFadeImage="@{true}"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

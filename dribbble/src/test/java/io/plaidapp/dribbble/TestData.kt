@@ -19,6 +19,7 @@ package io.plaidapp.dribbble
 import io.plaidapp.core.dribbble.data.api.model.Images
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.api.model.User
+import io.plaidapp.dribbble.ui.shot.ShotUiModel
 
 /**
  * Dribbble test data
@@ -34,7 +35,25 @@ val player = User(
 val testShot = Shot(
     id = 1L,
     title = "Foo",
-    description = "",
-    images = Images(),
-    user = player
+    description = "Shot Description",
+    images = Images(hidpi = "hidpi"),
+    user = player,
+    viewsCount = 1234,
+    likesCount = 5678
+)
+
+val testShotUiModel = ShotUiModel(
+    id = 1L,
+    title = "Foo",
+    url = "url",
+    formattedDescription = "Description",
+    imageUrl = "imageUrl",
+    imageSize = Images.ImageSize.NORMAL_IMAGE_SIZE,
+    viewsCount = 1234,
+    formattedViewsCount = "1,234",
+    likesCount = 5678,
+    formattedLikesCount = "5,678",
+    createdAt = null,
+    userName = "username",
+    userAvatarUrl = "avatarUrl"
 )

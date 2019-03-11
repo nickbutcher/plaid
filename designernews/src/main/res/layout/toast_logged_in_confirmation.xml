@@ -55,9 +55,9 @@
                     android:layout_margin="@dimen/padding_normal"
                     android:layout_rowSpan="2"
                     app:imageUrl="@{uiModel.portraitUrl}"
-                    app:placeholder="@{appR.drawable.avatar_placeholder}"
-                    app:circleCrop="@{true}"
-                    app:crossFade="@{true}"/>
+                    app:imagePlaceholder="@{appR.drawable.avatar_placeholder}"
+                    app:circleCropImage="@{true}"
+                    app:crossFadeImage="@{true}"/>
 
             <io.plaidapp.core.ui.widget.BaselineGridTextView
                     android:layout_marginEnd="@dimen/padding_normal"
