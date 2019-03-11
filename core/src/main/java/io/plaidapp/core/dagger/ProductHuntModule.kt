@@ -30,6 +30,7 @@ import io.plaidapp.core.producthunt.data.api.ProductHuntService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Qualifier
 import kotlin.annotation.AnnotationRetention.BINARY
 
@@ -40,7 +41,7 @@ private annotation class LocalApi
 /**
  * Dagger module to provide injections for Product Hunt.
  */
-@Module(includes = [CoreDataModule::class])
+@Module
 class ProductHuntModule {
 
     @Provides
@@ -51,7 +52,9 @@ class ProductHuntModule {
 
     @LocalApi
     @Provides
-    fun providePrivateOkHttpClient(upstreamClient: OkHttpClient): OkHttpClient {
+    fun providePrivateOkHttpClient(
+        @Named("coreOkHttpClient") upstreamClient: OkHttpClient
+    ): OkHttpClient {
         return upstreamClient.newBuilder()
             .addInterceptor(AuthInterceptor(BuildConfig.PRODUCT_HUNT_DEVELOPER_TOKEN))
             .build()
