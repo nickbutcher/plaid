@@ -54,8 +54,7 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
     private Map<String, Integer> pageIndexes;
     private Map<String, Call> inflightCalls = new HashMap<>();
 
-    public DataManager(OnDataLoadedCallback<List<? extends PlaidItem>> onDataLoadedCallback,
-                       LoadStoriesUseCase loadStoriesUseCase,
+    public DataManager(LoadStoriesUseCase loadStoriesUseCase,
                        LoadPostsUseCase loadPosts,
                        SearchStoriesUseCase searchStoriesUseCase,
                        ShotsRepository shotsRepository,
@@ -72,13 +71,15 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
         setupPageIndexes();
     }
 
-    private void setOnDataLoadedCallback(
+    public void setOnDataLoadedCallback(
             OnDataLoadedCallback<List<? extends PlaidItem>> onDataLoadedCallback) {
         this.onDataLoadedCallback = onDataLoadedCallback;
     }
 
     private void onDataLoaded(List<? extends PlaidItem> data) {
-        onDataLoadedCallback.onDataLoaded(data);
+        if(onDataLoadedCallback != null) {
+            onDataLoadedCallback.onDataLoaded(data);
+        }
     }
 
     public void loadAllDataSources() {

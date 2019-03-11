@@ -20,7 +20,6 @@ import dagger.BindsInstance
 import dagger.Component
 import io.plaidapp.core.dagger.BaseActivityComponent
 import io.plaidapp.core.dagger.CoreComponent
-import io.plaidapp.core.dagger.OnDataLoadedModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.ui.HomeActivity
 
@@ -36,7 +35,6 @@ interface HomeComponent : BaseActivityComponent<HomeActivity> {
         fun build(): HomeComponent
         @BindsInstance fun homeActivity(activity: HomeActivity): Builder
         fun coreComponent(module: CoreComponent): Builder
-        fun dataLoadedModule(module: OnDataLoadedModule): Builder
         fun sharedPreferencesModule(module: SharedPreferencesModule): Builder
     }
 }

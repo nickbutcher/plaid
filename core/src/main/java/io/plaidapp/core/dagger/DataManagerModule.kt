@@ -21,8 +21,6 @@ import dagger.Provides
 import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
 import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.DataManager
-import io.plaidapp.core.data.OnDataLoadedCallback
-import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.domain.LoadStoriesUseCase
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
@@ -39,14 +37,12 @@ class DataManagerModule {
 
     @Provides
     fun provideDataManager(
-        onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>,
         loadStories: LoadStoriesUseCase,
         searchStories: SearchStoriesUseCase,
         loadPosts: LoadPostsUseCase,
         shotsRepository: ShotsRepository,
         sourcesRepository: SourcesRepository
     ): DataManager = getDataManager(
-        onDataLoadedCallback,
         loadStories,
         loadPosts,
         searchStories,
@@ -56,14 +52,12 @@ class DataManagerModule {
 
     @Provides
     fun provideDataLoadingSubject(
-        onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>,
         loadStories: LoadStoriesUseCase,
         loadPosts: LoadPostsUseCase,
         searchStories: SearchStoriesUseCase,
         shotsRepository: ShotsRepository,
         sourcesRepository: SourcesRepository
     ): DataLoadingSubject = getDataManager(
-        onDataLoadedCallback,
         loadStories,
         loadPosts,
         searchStories,
@@ -72,7 +66,6 @@ class DataManagerModule {
     )
 
     private fun getDataManager(
-        onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>,
         loadStories: LoadStoriesUseCase,
         loadPosts: LoadPostsUseCase,
         searchStories: SearchStoriesUseCase,
@@ -83,7 +76,6 @@ class DataManagerModule {
             manager
         } else {
             manager = DataManager(
-                onDataLoadedCallback,
                 loadStories,
                 loadPosts,
                 searchStories,
