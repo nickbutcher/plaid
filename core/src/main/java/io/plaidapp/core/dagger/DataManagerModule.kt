@@ -40,16 +40,16 @@ class DataManagerModule {
     @Provides
     fun provideDataManager(
         onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>,
-        loadStoriesUseCase: LoadStoriesUseCase,
-        searchStoriesUseCase: SearchStoriesUseCase,
-        loadPostsUseCase: LoadPostsUseCase,
+        loadStories: LoadStoriesUseCase,
+        searchStories: SearchStoriesUseCase,
+        loadPosts: LoadPostsUseCase,
         shotsRepository: ShotsRepository,
         sourcesRepository: SourcesRepository
     ): DataManager = getDataManager(
         onDataLoadedCallback,
-        loadStoriesUseCase,
-        loadPostsUseCase,
-        searchStoriesUseCase,
+        loadStories,
+        loadPosts,
+        searchStories,
         shotsRepository,
         sourcesRepository
     )
@@ -57,25 +57,25 @@ class DataManagerModule {
     @Provides
     fun provideDataLoadingSubject(
         onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>,
-        loadStoriesUseCase: LoadStoriesUseCase,
-        loadPostsUseCase: LoadPostsUseCase,
-        searchStoriesUseCase: SearchStoriesUseCase,
+        loadStories: LoadStoriesUseCase,
+        loadPosts: LoadPostsUseCase,
+        searchStories: SearchStoriesUseCase,
         shotsRepository: ShotsRepository,
         sourcesRepository: SourcesRepository
     ): DataLoadingSubject = getDataManager(
         onDataLoadedCallback,
-        loadStoriesUseCase,
-        loadPostsUseCase,
-        searchStoriesUseCase,
+        loadStories,
+        loadPosts,
+        searchStories,
         shotsRepository,
         sourcesRepository
     )
 
     private fun getDataManager(
         onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>,
-        loadStoriesUseCase: LoadStoriesUseCase,
-        loadPostsUseCase: LoadPostsUseCase,
-        searchStoriesUseCase: SearchStoriesUseCase,
+        loadStories: LoadStoriesUseCase,
+        loadPosts: LoadPostsUseCase,
+        searchStories: SearchStoriesUseCase,
         shotsRepository: ShotsRepository,
         sourcesRepository: SourcesRepository
     ): DataManager {
@@ -84,9 +84,9 @@ class DataManagerModule {
         } else {
             manager = DataManager(
                 onDataLoadedCallback,
-                loadStoriesUseCase,
-                loadPostsUseCase,
-                searchStoriesUseCase,
+                loadStories,
+                loadPosts,
+                searchStories,
                 shotsRepository,
                 sourcesRepository
             )
