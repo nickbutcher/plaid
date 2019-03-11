@@ -17,6 +17,7 @@
 package io.plaidapp.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.capture
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
@@ -114,6 +115,18 @@ class HomeViewModelTest {
 
         // The login status is the expected one
         assertEquals(loginStatus, isLoggedIn)
+    }
+
+    @Test
+    fun addSources_blankQuery() = runBlocking {
+        // Given a view model
+        val homeViewModel = createViewModel()
+
+        // When adding an empty query
+        homeViewModel.addSources("", isDribbble = true, isDesignerNews = false)
+
+        // Then nothing is added to the repository
+        verify(sourcesRepository, never()).addOrMarkActiveSources(any())
     }
 
     @Test

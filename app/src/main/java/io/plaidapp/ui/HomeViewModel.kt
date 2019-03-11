@@ -123,6 +123,9 @@ class HomeViewModel(
     }
 
     fun addSources(query: String, isDribbble: Boolean, isDesignerNews: Boolean) {
+        if(query.isBlank()){
+            return
+        }
         val sources = mutableListOf<Source>()
         if (isDribbble) {
             sources.add(Source.DribbbleSearchSource(query, true))
