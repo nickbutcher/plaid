@@ -16,18 +16,41 @@
 
 package io.plaidapp.search.ui
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.nhaarman.mockitokotlin2.capture
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import io.plaidapp.core.data.DataLoadingSubject
+import io.plaidapp.core.feed.FeedProgressUiModel
 import io.plaidapp.search.domain.SearchDataManager
+import io.plaidapp.test.shared.LiveDataTestUtil
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentCaptor
+import org.mockito.Captor
+import org.mockito.MockitoAnnotations
 
 /**
  * Tests for [SearchViewModel] that mocks the dependencies
  */
 class SearchViewModelTest {
 
+    // Executes tasks in the Architecture Components in the same thread
+    @get:Rule
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
+
     private val dataManager: SearchDataManager = mock()
     private val viewModel = SearchViewModel(dataManager)
+
+    @Captor
+    private lateinit var dataLoadingCallback: ArgumentCaptor<DataLoadingSubject.DataLoadingCallbacks>
+
+    @Before
+    fun setup() {
+        MockitoAnnotations.initMocks(this)
+    }
 
     @Test
     fun searchFor_searchesInDataManager() {
@@ -57,5 +80,31 @@ class SearchViewModelTest {
 
         // Then clear results is called in data manager
         verify(dataManager).clear()
+    }
+
+    @Test
+    fun dataLoading() {
+        // Given a view model
+        verify(dataManager).registerCallback(capture(dataLoadingCallback))
+
+        // When data started loading
+        dataLoadingCallback.value.dataStartedLoading()
+
+        // Then the feedProgress emits true
+        val progress = LiveDataTestUtil.getValue(viewModel.searchProgress)
+        Assert.assertEquals(FeedProgressUiModel(true), progress)
+    }
+
+    @Test
+    fun dataFinishedLoading() {
+        // Given a view model
+        verify(dataManager).registerCallback(capture(dataLoadingCallback))
+
+        // When data finished loading
+        dataLoadingCallback.value.dataFinishedLoading()
+
+        // Then the feedProgress emits false
+        val progress = LiveDataTestUtil.getValue(viewModel.searchProgress)
+        Assert.assertEquals(FeedProgressUiModel(false), progress)
     }
 }

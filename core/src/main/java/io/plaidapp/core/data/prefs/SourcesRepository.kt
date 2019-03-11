@@ -16,8 +16,10 @@
 
 package io.plaidapp.core.data.prefs
 
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Source
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
+import kotlinx.coroutines.withContext
 import java.util.Collections
 
 /**
@@ -25,7 +27,8 @@ import java.util.Collections
  */
 class SourcesRepository(
     private val defaultSources: List<Source>,
-    private val dataSource: SourcesLocalDataSource
+    private val dataSource: SourcesLocalDataSource,
+    private val dispatcherProvider: CoroutinesDispatcherProvider
 ) {
 
     private val cache = mutableListOf<Source>()
@@ -35,7 +38,12 @@ class SourcesRepository(
         callbacks.add(callback)
     }
 
-    fun getSources(): List<Source> {
+    suspend fun getSources() = withContext(dispatcherProvider.io) {
+        getSourcesSync()
+    }
+
+    @Deprecated("Use the suspending getSources")
+    fun getSourcesSync(): List<Source> {
         if (cache.isNotEmpty()) {
             return cache
         }
@@ -69,34 +77,61 @@ class SourcesRepository(
         }
         Collections.sort(sources, Source.SourceComparator())
         cache.addAll(sources)
+        dispatchSourcesUpdated()
         return cache
     }
 
-    private fun addSources(sources: List<Source>) {
-        val sourceKeys = sources.map { it.key }.toSet()
-        dataSource.addSources(sourceKeys, true)
+    fun addSources(sources: List<Source>) {
+        sources.forEach { dataSource.addSource(it.key, it.active) }
+        cache.addAll(sources)
+        dispatchSourcesUpdated()
     }
 
-    fun addSource(source: Source) {
-        dataSource.addSource(source.key, source.active)
-        cache.add(source)
-        dispatchSourceChanged(source)
+    fun addOrMarkActiveSources(sources: List<Source>) {
+        val sourcesToAdd = mutableListOf<Source>()
+        sources.forEach { toAdd ->
+            // first check if it already exists
+            var sourcePresent = false
+            for (i in 0 until cache.size) {
+                val existing = cache[i]
+                if (existing.javaClass == toAdd.javaClass &&
+                        existing.key.equals(toAdd.key, ignoreCase = true)
+                ) {
+                    sourcePresent = true
+                    // already exists, just ensure it's active
+                    if (!existing.active) {
+                        changeSourceActiveState(existing.key)
+                    }
+                }
+            }
+            if (!sourcePresent) {
+                // doesn't exist so needs to be added
+                sourcesToAdd += toAdd
+            }
+        }
+        // they didn't already exist, so add them
+        addSources(sourcesToAdd)
     }
 
-    fun updateSource(source: Source) {
-        dataSource.updateSource(source.key, source.active)
-        cache.find { it.key == source.key }?.apply { active = source.active }
-        dispatchSourceChanged(source)
+    fun changeSourceActiveState(sourceKey: String) {
+        cache.find { it.key == sourceKey }?.let {
+            val newActiveState = !it.active
+            it.active = newActiveState
+            dataSource.updateSource(sourceKey, newActiveState)
+            dispatchSourceChanged(it)
+        }
+        dispatchSourcesUpdated()
     }
 
-    fun removeSource(source: Source) {
-        dataSource.removeSource(source.key)
-        cache.remove(source)
-        dispatchSourceRemoved(source)
+    fun removeSource(sourceKey: String) {
+        dataSource.removeSource(sourceKey)
+        cache.removeAll { it.key == sourceKey }
+        dispatchSourceRemoved(sourceKey)
+        dispatchSourcesUpdated()
     }
 
     fun getActiveSourcesCount(): Int {
-        return getSources().count { it.active }
+        return getSourcesSync().count { it.active }
     }
 
     private fun getSourceFromDefaults(key: String, active: Boolean): Source? {
@@ -104,12 +139,16 @@ class SourcesRepository(
                 .also { it?.active = active }
     }
 
+    private fun dispatchSourcesUpdated() {
+        callbacks.forEach { it.onFiltersUpdated(cache) }
+    }
+
     private fun dispatchSourceChanged(source: Source) {
         callbacks.forEach { it.onFiltersChanged(source) }
     }
 
-    private fun dispatchSourceRemoved(source: Source) {
-        callbacks.forEach { it.onFilterRemoved(source) }
+    private fun dispatchSourceRemoved(sourceKey: String) {
+        callbacks.forEach { it.onFilterRemoved(sourceKey) }
     }
 
     companion object {
@@ -121,10 +160,13 @@ class SourcesRepository(
 
         fun getInstance(
             defaultSources: List<Source>,
-            dataSource: SourcesLocalDataSource
+            dataSource: SourcesLocalDataSource,
+            dispatcherProvider: CoroutinesDispatcherProvider
         ): SourcesRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: SourcesRepository(defaultSources, dataSource).also { INSTANCE = it }
+                INSTANCE ?: SourcesRepository(defaultSources, dataSource, dispatcherProvider).also {
+                    INSTANCE = it
+                }
             }
         }
     }

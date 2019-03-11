@@ -42,12 +42,16 @@ object DesignerNewsSearchConverter : Converter<ResponseBody, List<String>> {
             annotations: Array<Annotation>?,
             retrofit: Retrofit?
         ): Converter<ResponseBody, *>? {
-            return DesignerNewsSearchConverter
+            return if (annotations != null && annotations.any { it is DesignerNewsSearch }) {
+                DesignerNewsSearchConverter
+            } else {
+                null
+            }
         }
     }
 
     override fun convert(body: ResponseBody): List<String> {
-        val searchResults = Jsoup.parse(body.string(), DesignerNewsSearchService.ENDPOINT)
+        val searchResults = Jsoup.parse(body.string(), DesignerNewsService.ENDPOINT)
             .select("li.search-page-result > a")
         return searchResults.mapNotNull { parseSearchResult(it) }
     }

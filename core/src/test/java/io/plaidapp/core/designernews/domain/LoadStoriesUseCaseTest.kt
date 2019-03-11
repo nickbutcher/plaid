@@ -18,9 +18,9 @@ package io.plaidapp.core.designernews.domain
 
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import io.plaidapp.core.data.LoadSourceCallback
-import io.plaidapp.core.data.PlaidItem
+import io.plaidapp.core.data.LoadFailedCallback
 import io.plaidapp.core.data.Result
+import io.plaidapp.core.data.SourceLoadedCallback
 import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
@@ -29,9 +29,6 @@ import io.plaidapp.core.designernews.storyLinks
 import io.plaidapp.core.designernews.userId
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Assert.fail
 import org.junit.Test
 import java.io.IOException
 import java.util.Date
@@ -82,27 +79,15 @@ class LoadStoriesUseCaseTest {
         // Given a list of story responses returned for a specific page
         val result = Result.Success(storyResponses)
         whenever(storiesRepository.loadStories(1)).thenReturn(result)
-        var sourceLoaded = false
-        // Given a callback where we check the validity of the data received
-        val callback = object : LoadSourceCallback {
-            override fun sourceLoaded(result: List<PlaidItem>?, page: Int, source: String) {
-                // Then the correct data is received
-                sourceLoaded = true
-                assertEquals(stories, result)
-                assertEquals(1, page)
-                assertEquals(SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR, source)
-            }
 
-            override fun loadFailed(source: String) {
-                fail("Load shouldn't have failed")
-            }
-        }
+        // Given a callback where we check the validity of the data received
+        val callback = SourceLoadedCallback()
 
         // When loading stories
         loadStoriesUseCase(1, callback)
 
         // The correct callback was called
-        assertTrue(sourceLoaded)
+        callback.assertSourceLoaded(stories, 1, SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR)
     }
 
     @Test
@@ -110,24 +95,14 @@ class LoadStoriesUseCaseTest {
         // Given that an error is returned for a specific page
         val result = Result.Error(IOException("error"))
         whenever(storiesRepository.loadStories(2)).thenReturn(result)
-        var sourceLoadingFailed = false
-        // Given a callback where we check the validity of the data received
-        val callback = object : LoadSourceCallback {
-            override fun sourceLoaded(result: List<PlaidItem>?, page: Int, source: String) {
-                fail("Load shouldn't have succeeded")
-            }
 
-            override fun loadFailed(source: String) {
-                // Then the fail callback gets called for the correct source
-                sourceLoadingFailed = true
-                assertEquals(SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR, source)
-            }
-        }
+        // Given a callback where we check the validity of the data received
+        val callback = LoadFailedCallback()
 
         // When loading stories
         loadStoriesUseCase(2, callback)
 
         // The correct callback was called
-        assertTrue(sourceLoadingFailed)
+        callback.assertLoadFailed(SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR)
     }
 }

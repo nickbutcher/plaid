@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2018 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.ui.filter
+package io.plaidapp.core.data
 
-import io.plaidapp.core.data.Source
+import org.junit.Assert.assertEquals
 
-/**
- * Callbacks called when a filter was changed or when a filter was removed
- */
-abstract class FiltersChangedCallback {
+class LoadFailedCallback : LoadSourceCallback {
+    var source: String? = null
 
-    open fun onFiltersChanged(changedFilter: Source) {}
+    override fun sourceLoaded(result: List<PlaidItem>?, page: Int, source: String) {
+    }
 
-    open fun onFilterRemoved(sourceKey: String) {}
+    override fun loadFailed(source: String) {
+        this.source = source
+    }
 
-    open fun onFiltersUpdated(sources: List<Source>) {}
+    fun assertLoadFailed(expectedFailedSource: String) {
+        assertEquals(expectedFailedSource, source)
+    }
 }

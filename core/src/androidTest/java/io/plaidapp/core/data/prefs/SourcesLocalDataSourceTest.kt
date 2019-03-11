@@ -70,26 +70,6 @@ class SourcesLocalDataSourceTest {
     }
 
     @Test
-    fun addedSources_canBeRetrieved() {
-        // Given a set of keys
-        val source1 = "DN"
-        val source2 = "PH"
-        val sources = setOf(source1, source2)
-
-        // When adding sources
-        dataSource.addSources(sources, false)
-
-        // Then the keys can be retrieved
-        val sourcesSaved = dataSource.getKeys()
-        assertEquals(sources, sourcesSaved)
-        // And the active state is the correct one
-        val activeSource1 = dataSource.getSourceActiveState(source1)
-        assertFalse(activeSource1)
-        val activeSource2 = dataSource.getSourceActiveState(source1)
-        assertFalse(activeSource2)
-    }
-
-    @Test
     fun updateSource() {
         // Given a source saved
         dataSource.addSource(dnSource, true)

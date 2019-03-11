@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.ui.filter
+package io.plaidapp
 
-import io.plaidapp.core.data.Source
+import org.mockito.ArgumentCaptor
 
 /**
- * Callbacks called when a filter was changed or when a filter was removed
+ * Returns ArgumentCaptor.capture() as nullable type to avoid java.lang.IllegalStateException
+ * when null is returned.
  */
-abstract class FiltersChangedCallback {
+fun <T> capture(argumentCaptor: ArgumentCaptor<T>): T = argumentCaptor.capture()
 
-    open fun onFiltersChanged(changedFilter: Source) {}
-
-    open fun onFilterRemoved(sourceKey: String) {}
-
-    open fun onFiltersUpdated(sources: List<Source>) {}
-}
+/**
+ * Helper function for creating an argumentCaptor in kotlin.
+ */
+inline fun <reified T : Any> argumentCaptor(): ArgumentCaptor<T> =
+        ArgumentCaptor.forClass(T::class.java)

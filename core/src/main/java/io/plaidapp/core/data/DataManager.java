@@ -81,7 +81,7 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
     }
 
     public void loadAllDataSources() {
-        for (Source filter : sourcesRepository.getSources()) {
+        for (Source filter : sourcesRepository.getSourcesSync()) {
             loadSource(filter);
         }
     }
@@ -102,7 +102,7 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
     private final FiltersChangedCallback filterListener = new FiltersChangedCallback() {
                 @Override
                 public void onFiltersChanged(Source changedFilter) {
-                    if (changedFilter.active) {
+                    if (changedFilter.getActive()) {
                         loadSource(changedFilter);
                     } else { // filter deactivated
                         final String key = changedFilter.key;
@@ -120,7 +120,7 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
             };
 
     private void loadSource(Source source) {
-        if (source.active) {
+        if (source.getActive()) {
             loadStarted();
             final int page = getNextPageIndex(source.key);
             switch (source.key) {
@@ -142,7 +142,7 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
     }
 
     private void setupPageIndexes() {
-        final List<Source> dateSources = sourcesRepository.getSources();
+        final List<Source> dateSources = sourcesRepository.getSourcesSync();
         pageIndexes = new HashMap<>(dateSources.size());
         for (Source source : dateSources) {
             pageIndexes.put(source.key, 0);

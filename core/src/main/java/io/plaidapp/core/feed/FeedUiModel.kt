@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2019 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +14,17 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.api
+package io.plaidapp.core.feed
 
-import kotlinx.coroutines.Deferred
-import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Query
+import io.plaidapp.core.data.PlaidItem
 
 /**
- * Fake-API for searching Designer News
+ * UI model for feed data
  */
-interface DesignerNewsSearchService {
+data class FeedUiModel(
+    val items: List<PlaidItem>
+)
 
-    /**
-     * Returns a list of story IDs
-     */
-    @GET("search?t=story")
-    fun search(
-        @Query("q") query: String,
-        @Query("p") page: Int?
-    ): Deferred<Response<List<String>>>
-
-    companion object {
-        const val ENDPOINT = "https://www.designernews.co/"
-    }
-}
+data class FeedProgressUiModel(
+    val isLoading: Boolean
+)

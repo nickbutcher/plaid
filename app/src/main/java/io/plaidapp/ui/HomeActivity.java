@@ -19,7 +19,6 @@ package io.plaidapp.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.content.BroadcastReceiver;
@@ -28,11 +27,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimatedVectorDrawable;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
-import android.net.NetworkRequest;
 import android.os.Bundle;
 import android.text.Annotation;
 import android.text.Spannable;
@@ -50,6 +44,7 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.view.WindowInsets;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -71,18 +66,18 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import io.plaidapp.R;
 import io.plaidapp.core.data.DataManager;
 import io.plaidapp.core.data.PlaidItem;
-import io.plaidapp.core.data.Source;
+import io.plaidapp.core.data.pocket.PocketUtils;
 import io.plaidapp.core.data.prefs.SourcesRepository;
-import io.plaidapp.core.designernews.data.login.LoginRepository;
 import io.plaidapp.core.designernews.data.poststory.PostStoryService;
 import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
-import io.plaidapp.core.ui.FeedAdapter;
+import io.plaidapp.core.ui.ConnectivityChecker;
+import io.plaidapp.core.feed.FeedAdapter;
 import io.plaidapp.core.ui.HomeGridItemAnimator;
 import io.plaidapp.core.ui.PlaidItemsList;
 import io.plaidapp.core.ui.filter.FilterAdapter;
 import io.plaidapp.core.ui.filter.FilterAnimator;
-import io.plaidapp.core.ui.filter.FiltersChangedCallback;
+import io.plaidapp.core.ui.filter.SourcesHighlightUiModel;
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener;
 import io.plaidapp.core.ui.transitions.FabTransform;
 import io.plaidapp.core.util.Activities;
@@ -95,7 +90,6 @@ import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -113,38 +107,80 @@ public class HomeActivity extends FragmentActivity {
     private ImageButton fab;
     private RecyclerView filtersList;
     private ProgressBar loading;
-    private @Nullable
-    ImageView noConnection;
-    ImageButton fabPosting;
-    GridLayoutManager layoutManager;
+    @Nullable private ImageView noConnection;
+    private ImageButton fabPosting;
+    private GridLayoutManager layoutManager;
     private int columns;
-    boolean connected = true;
     private TextView noFiltersEmptyText;
-    private boolean monitoringConnectivity = false;
     private FilterAdapter filtersAdapter;
+    private FeedAdapter adapter;
 
     // data
     @Inject
     DataManager dataManager;
-    @Inject
-    FeedAdapter adapter;
-    @Inject
-    LoginRepository loginRepository;
+
     @Inject
     SourcesRepository sourcesRepository;
+    @Inject
+    @Nullable
+    ConnectivityChecker connectivityChecker;
+
+    @Inject
+    HomeViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         bindResources();
+
         inject(this, data -> {
             List<PlaidItem> items = PlaidItemsList.getPlaidItemsForDisplay(adapter.getItems(), data, columns);
             adapter.setItems(items);
             checkEmptyState();
         });
 
-        filtersAdapter = new FilterAdapter(sourcesRepository);
+        boolean pocketInstalled = PocketUtils.isPocketInstalled(this);
+
+        adapter = new FeedAdapter(this, columns, pocketInstalled);
+
+        if(connectivityChecker != null) {
+            getLifecycle().addObserver(connectivityChecker);
+            connectivityChecker.getConnectedStatus().observe(this, connected -> {
+                if (connected) {
+                    handleNetworkConnected();
+                } else {
+                    handleNoNetworkConnection();
+                }
+            });
+        } else {
+            handleNoNetworkConnection();
+        }
+
+        filtersAdapter = new FilterAdapter();
+
+        viewModel.getSources().observe(this, sourcesUiModel -> {
+            filtersAdapter.submitList(sourcesUiModel.getSourceUiModels());
+            if (sourcesUiModel.getHighlightSources() != null) {
+                SourcesHighlightUiModel highlightUiModel =
+                        sourcesUiModel.getHighlightSources().consume();
+                if (highlightUiModel != null) {
+                    highlightPosition(highlightUiModel);
+                }
+            }
+        });
+        viewModel.getSourceRemoved().observe(this, source -> {
+                    handleDataSourceRemoved(source);
+                    checkEmptyState();
+                });
+
+        viewModel.getFeedProgress().observe(this, feedProgressUiModel -> {
+            if(feedProgressUiModel.isLoading()){
+                adapter.dataStartedLoading();
+            } else {
+                adapter.dataFinishedLoading();
+            }
+        });
 
         drawer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -156,94 +192,21 @@ public class HomeActivity extends FragmentActivity {
         }
         setExitSharedElementCallback(FeedAdapter.createSharedElementReenterCallback(this));
 
-        ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider = new ViewPreloadSizeProvider<>();
-
-        grid.setAdapter(adapter);
-        layoutManager = new GridLayoutManager(this, columns);
-        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                return adapter.getItemColumnSpan(position);
-            }
-        });
-        grid.setLayoutManager(layoutManager);
-        grid.addOnScrollListener(toolbarElevation);
-        grid.addOnScrollListener(new InfiniteScrollListener(layoutManager, dataManager) {
-            @Override
-            public void onLoadMore() {
-                dataManager.loadAllDataSources();
-            }
-        });
-        grid.setHasFixedSize(true);
-        grid.addItemDecoration(new GridItemDividerDecoration(this, R.dimen.divider_height,
-                R.color.divider));
-        grid.setItemAnimator(new HomeGridItemAnimator());
-
-        RecyclerViewPreloader<Shot> shotPreloader =
-                new RecyclerViewPreloader<>(this, adapter, shotPreloadSizeProvider, 4);
-        grid.addOnScrollListener(shotPreloader);
+        setupGrid();
 
         // drawer layout treats fitsSystemWindows specially so we have to handle insets ourselves
-        drawer.setOnApplyWindowInsetsListener((v, insets) -> {
-            // inset the toolbar down by the status bar height
-            ViewGroup.MarginLayoutParams lpToolbar = (ViewGroup.MarginLayoutParams) toolbar
-                    .getLayoutParams();
-            lpToolbar.topMargin += insets.getSystemWindowInsetTop();
-            lpToolbar.leftMargin += insets.getSystemWindowInsetLeft();
-            lpToolbar.rightMargin += insets.getSystemWindowInsetRight();
-            toolbar.setLayoutParams(lpToolbar);
-
-            // inset the grid top by statusbar+toolbar & the bottom by the navbar (don't clip)
-            grid.setPadding(
-                    grid.getPaddingLeft() + insets.getSystemWindowInsetLeft(), // landscape
-                    insets.getSystemWindowInsetTop()
-                            + ViewUtils.getActionBarSize(HomeActivity.this),
-                    grid.getPaddingRight() + insets.getSystemWindowInsetRight(), // landscape
-                    grid.getPaddingBottom() + insets.getSystemWindowInsetBottom());
-
-            // inset the fab for the navbar
-            ViewGroup.MarginLayoutParams lpFab = (ViewGroup.MarginLayoutParams) fab
-                    .getLayoutParams();
-            lpFab.bottomMargin += insets.getSystemWindowInsetBottom(); // portrait
-            lpFab.rightMargin += insets.getSystemWindowInsetRight(); // landscape
-            fab.setLayoutParams(lpFab);
-
-            View postingStub = findViewById(R.id.stub_posting_progress);
-            ViewGroup.MarginLayoutParams lpPosting =
-                    (ViewGroup.MarginLayoutParams) postingStub.getLayoutParams();
-            lpPosting.bottomMargin += insets.getSystemWindowInsetBottom(); // portrait
-            lpPosting.rightMargin += insets.getSystemWindowInsetRight(); // landscape
-            postingStub.setLayoutParams(lpPosting);
-
-            // we place a background behind the status bar to combine with it's semi-transparent
-            // color to get the desired appearance.  Set it's height to the status bar height
-            View statusBarBackground = findViewById(R.id.status_bar_background);
-            FrameLayout.LayoutParams lpStatus = (FrameLayout.LayoutParams)
-                    statusBarBackground.getLayoutParams();
-            lpStatus.height = insets.getSystemWindowInsetTop();
-            statusBarBackground.setLayoutParams(lpStatus);
-
-            // inset the filters list for the status bar / navbar
-            // need to set the padding end for landscape case
-            final boolean ltr = filtersList.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR;
-            filtersList.setPaddingRelative(filtersList.getPaddingStart(),
-                    filtersList.getPaddingTop() + insets.getSystemWindowInsetTop(),
-                    filtersList.getPaddingEnd() + (ltr ? insets.getSystemWindowInsetRight() :
-                            0),
-                    filtersList.getPaddingBottom() + insets.getSystemWindowInsetBottom());
-
-            // clear this listener so insets aren't re-applied
-            drawer.setOnApplyWindowInsetsListener(null);
-
+        drawer.setOnApplyWindowInsetsListener((__, insets) -> {
+            handleDrawerInsets(insets);
             return insets.consumeSystemWindowInsets();
         });
+
         setupTaskDescription();
 
         filtersList.setAdapter(filtersAdapter);
         filtersList.setItemAnimator(new FilterAnimator());
 
-        sourcesRepository.registerFilterChangedCallback(filtersChangedCallbacks);
         dataManager.loadAllDataSources();
+
         ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter, this);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(filtersList);
@@ -255,7 +218,9 @@ public class HomeActivity extends FragmentActivity {
         toolbar = findViewById(R.id.toolbar);
         grid = findViewById(R.id.grid);
         fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> { fabClick(); });
+        fab.setOnClickListener(view -> {
+            fabClick();
+        });
         filtersList = findViewById(R.id.filters);
         loading = findViewById(android.R.id.empty);
         noConnection = findViewById(R.id.no_connection);
@@ -263,27 +228,93 @@ public class HomeActivity extends FragmentActivity {
         columns = getResources().getInteger(R.integer.num_columns);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        checkConnectivity();
+    private void setupGrid(){
+        grid.setAdapter(adapter);
+        layoutManager = new GridLayoutManager(this, columns);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return adapter.getItemColumnSpan(position);
+            }
+        });
+        grid.setLayoutManager(layoutManager);
+        grid.addOnScrollListener(toolbarElevation);
+        grid.addOnScrollListener(
+                new InfiniteScrollListener(layoutManager, dataManager) {
+                    @Override
+                    public void onLoadMore() {
+                        dataManager.loadAllDataSources();
+                    }
+                });
+        grid.setHasFixedSize(true);
+        grid.addItemDecoration(new GridItemDividerDecoration(this, R.dimen.divider_height,
+                R.color.divider));
+        grid.setItemAnimator(new HomeGridItemAnimator());
+
+        ViewPreloadSizeProvider<Shot> shotPreloadSizeProvider = new ViewPreloadSizeProvider<>();
+        RecyclerViewPreloader<Shot> shotPreloader =
+                new RecyclerViewPreloader<>(this, adapter, shotPreloadSizeProvider, 4);
+        grid.addOnScrollListener(shotPreloader);
     }
 
-    @Override
-    protected void onPause() {
-        if (monitoringConnectivity) {
-            final ConnectivityManager connectivityManager
-                    = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            connectivityManager.unregisterNetworkCallback(connectivityCallback);
-            monitoringConnectivity = false;
-        }
-        super.onPause();
+    private void handleDrawerInsets(WindowInsets insets){
+        // inset the toolbar down by the status bar height
+        ViewGroup.MarginLayoutParams lpToolbar = (ViewGroup.MarginLayoutParams) toolbar
+                .getLayoutParams();
+        lpToolbar.topMargin += insets.getSystemWindowInsetTop();
+        lpToolbar.leftMargin += insets.getSystemWindowInsetLeft();
+        lpToolbar.rightMargin += insets.getSystemWindowInsetRight();
+        toolbar.setLayoutParams(lpToolbar);
+
+        // inset the grid top by statusbar+toolbar & the bottom by the navbar (don't clip)
+        grid.setPadding(
+                grid.getPaddingLeft() + insets.getSystemWindowInsetLeft(), // landscape
+                insets.getSystemWindowInsetTop()
+                        + ViewUtils.getActionBarSize(HomeActivity.this),
+                grid.getPaddingRight() + insets.getSystemWindowInsetRight(), // landscape
+                grid.getPaddingBottom() + insets.getSystemWindowInsetBottom());
+
+        // inset the fab for the navbar
+        ViewGroup.MarginLayoutParams lpFab = (ViewGroup.MarginLayoutParams) fab
+                .getLayoutParams();
+        lpFab.bottomMargin += insets.getSystemWindowInsetBottom(); // portrait
+        lpFab.rightMargin += insets.getSystemWindowInsetRight(); // landscape
+        fab.setLayoutParams(lpFab);
+
+        View postingStub = findViewById(R.id.stub_posting_progress);
+        ViewGroup.MarginLayoutParams lpPosting =
+                (ViewGroup.MarginLayoutParams) postingStub.getLayoutParams();
+        lpPosting.bottomMargin += insets.getSystemWindowInsetBottom(); // portrait
+        lpPosting.rightMargin += insets.getSystemWindowInsetRight(); // landscape
+        postingStub.setLayoutParams(lpPosting);
+
+        // we place a background behind the status bar to combine with it's semi-transparent
+        // color to get the desired appearance.  Set it's height to the status bar height
+        View statusBarBackground = findViewById(R.id.status_bar_background);
+        FrameLayout.LayoutParams lpStatus = (FrameLayout.LayoutParams)
+                statusBarBackground.getLayoutParams();
+        lpStatus.height = insets.getSystemWindowInsetTop();
+        statusBarBackground.setLayoutParams(lpStatus);
+
+        // inset the filters list for the status bar / navbar
+        // need to set the padding end for landscape case
+        final boolean ltr = filtersList.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR;
+        filtersList.setPaddingRelative(filtersList.getPaddingStart(),
+                filtersList.getPaddingTop() + insets.getSystemWindowInsetTop(),
+                filtersList.getPaddingEnd() + (ltr ? insets.getSystemWindowInsetRight() :
+                        0),
+                filtersList.getPaddingBottom() + insets.getSystemWindowInsetBottom());
+
+        // clear this listener so insets aren't re-applied
+        drawer.setOnApplyWindowInsetsListener(null);
     }
 
     @Override
     public void onActivityReenter(int resultCode, Intent data) {
         if (data == null || resultCode != RESULT_OK
-                || !data.hasExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID)) return;
+                || !data.hasExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID)) {
+            return;
+        }
 
         // When reentering, if the shared element is no longer on screen (e.g. after an
         // orientation change) then scroll it into view.
@@ -320,7 +351,7 @@ public class HomeActivity extends FragmentActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         final MenuItem designerNewsLogin = menu.findItem(R.id.menu_designer_news_login);
         if (designerNewsLogin != null) {
-            designerNewsLogin.setTitle(loginRepository.isLoggedIn() ?
+            designerNewsLogin.setTitle(viewModel.isDesignerNewsUserLoggedIn() ?
                     R.string.designer_news_log_out : R.string.designer_news_login);
         }
         return true;
@@ -339,10 +370,10 @@ public class HomeActivity extends FragmentActivity {
                 startActivityForResult(ActivityHelper.intentTo(Activities.Search.INSTANCE), RC_SEARCH, options);
                 return true;
             case R.id.menu_designer_news_login:
-                if (!loginRepository.isLoggedIn()) {
+                if (!viewModel.isDesignerNewsUserLoggedIn()) {
                     startActivity(ActivityHelper.intentTo(Activities.DesignerNews.Login.INSTANCE));
                 } else {
-                    loginRepository.logout();
+                    viewModel.logoutFromDesignerNews();
                     ShortcutHelper.disablePostShortcut(this);
                     // TODO something better than a toast!!
                     Toast.makeText(getApplicationContext(), R.string.designer_news_logged_out,
@@ -378,20 +409,11 @@ public class HomeActivity extends FragmentActivity {
                 if (resultCode == Activities.Search.RESULT_CODE_SAVE) {
                     String query = data.getStringExtra(Activities.Search.EXTRA_QUERY);
                     if (TextUtils.isEmpty(query)) return;
-                    Source dribbbleSearch = null;
-                    Source designerNewsSearch = null;
-                    boolean newSource = false;
-                    if (data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DRIBBBLE, false)) {
-                        dribbbleSearch = new Source.DribbbleSearchSource(query, true);
-                        newSource = filtersAdapter.addFilter(dribbbleSearch);
-                    }
-                    if (data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DESIGNER_NEWS, false)) {
-                        designerNewsSearch = new Source.DesignerNewsSearchSource(query, true);
-                        newSource |= filtersAdapter.addFilter(designerNewsSearch);
-                    }
-                    if (newSource) {
-                        highlightNewSources(dribbbleSearch, designerNewsSearch);
-                    }
+                    boolean isDribbble =
+                            data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DRIBBBLE, false);
+                    boolean isDesignerNews =
+                            data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DESIGNER_NEWS, false);
+                    viewModel.addSources(query, isDribbble, isDesignerNews);
                 }
                 break;
             case RC_NEW_DESIGNER_NEWS_STORY:
@@ -416,30 +438,6 @@ public class HomeActivity extends FragmentActivity {
                 break;
         }
     }
-
-    @Override
-    protected void onDestroy() {
-        dataManager.cancelLoading();
-        super.onDestroy();
-    }
-
-    // listener for notifying adapter when data sources are deactivated
-    private FiltersChangedCallback filtersChangedCallbacks =
-            new FiltersChangedCallback() {
-        @Override
-        public void onFiltersChanged(Source changedFilter) {
-            if (!changedFilter.active) {
-               handleDataSourceRemoved(changedFilter.key);
-            }
-            checkEmptyState();
-        }
-
-        @Override
-        public void onFilterRemoved(Source removed) {
-            handleDataSourceRemoved(removed.key);
-            checkEmptyState();
-        }
-    };
 
     private RecyclerView.OnScrollListener toolbarElevation = new RecyclerView.OnScrollListener() {
         @Override
@@ -475,7 +473,7 @@ public class HomeActivity extends FragmentActivity {
     }
 
     protected void fabClick() {
-        if (loginRepository.isLoggedIn()) {
+        if (viewModel.isDesignerNewsUserLoggedIn()) {
             Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.PostStory.INSTANCE);
             FabTransform.addExtras(intent,
                     ContextCompat.getColor(this, R.color.accent), R.drawable.ic_add_dark);
@@ -583,8 +581,9 @@ public class HomeActivity extends FragmentActivity {
     void checkEmptyState() {
         if (adapter.getDataItemCount() == 0) {
             // if grid is empty check whether we're loading or if no filters are selected
-            if (sourcesRepository.getActiveSourcesCount() > 0) {
-                if (connected) {
+            if (sourcesRepository.getActiveSourcesCount() > 0 && connectivityChecker != null) {
+                Boolean connected = connectivityChecker.getConnectedStatus().getValue();
+                if (connected != null && connected) {
                     loading.setVisibility(View.VISIBLE);
                     setNoFiltersEmptyTextVisibility(View.GONE);
                 }
@@ -712,7 +711,7 @@ public class HomeActivity extends FragmentActivity {
      *      3. flashing new source(s) background
      *      4. closing the drawer (if user hasn't interacted with it)
      */
-    private void highlightNewSources(final Source... sources) {
+    private void highlightPosition(SourcesHighlightUiModel uiModel) {
         final Runnable closeDrawerRunnable = () -> drawer.closeDrawer(GravityCompat.END);
         drawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
 
@@ -727,19 +726,10 @@ public class HomeActivity extends FragmentActivity {
 
             @Override
             public void onDrawerOpened(View drawerView) {
-                // scroll to the new item(s) and highlight them
-                List<Integer> filterPositions = new ArrayList<>(sources.length);
-                for (Source source : sources) {
-                    if (source != null) {
-                        filterPositions.add(filtersAdapter.getFilterPosition(source));
-                    }
-                }
-                int scrollTo = Collections.max(filterPositions);
-                filtersList.smoothScrollToPosition(scrollTo);
-                for (int position : filterPositions) {
-                    filtersAdapter.highlightFilter(position);
-                }
+                // scroll to the new item(s)
+                filtersList.smoothScrollToPosition(uiModel.getScrollToPosition());
                 filtersList.setOnTouchListener(filtersTouch);
+                filtersAdapter.highlightPositions(uiModel.getHighlightPositions());
             }
 
             @Override
@@ -761,49 +751,29 @@ public class HomeActivity extends FragmentActivity {
         drawer.postDelayed(closeDrawerRunnable, 2000L);
     }
 
-    private void checkConnectivity() {
-        final ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        final NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        connected = activeNetworkInfo != null && activeNetworkInfo.isConnected();
-        if (!connected) {
-            loading.setVisibility(View.GONE);
-            if (noConnection == null) {
-                final ViewStub stub = findViewById(R.id.stub_no_connection);
-                noConnection = (ImageView) stub.inflate();
-            }
-            final AnimatedVectorDrawable avd =
-                    (AnimatedVectorDrawable) getDrawable(R.drawable.avd_no_connection);
-            if (noConnection != null && avd != null) {
-                noConnection.setImageDrawable(avd);
-                avd.start();
-            }
-
-            connectivityManager.registerNetworkCallback(
-                    new NetworkRequest.Builder()
-                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build(),
-                    connectivityCallback);
-            monitoringConnectivity = true;
+    private void handleNoNetworkConnection() {
+        loading.setVisibility(View.GONE);
+        if (noConnection == null) {
+            final ViewStub stub = findViewById(R.id.stub_no_connection);
+            noConnection = (ImageView) stub.inflate();
+        }
+        final AnimatedVectorDrawable avd =
+                (AnimatedVectorDrawable) getDrawable(R.drawable.avd_no_connection);
+        if (noConnection != null && avd != null) {
+            noConnection.setImageDrawable(avd);
+            avd.start();
         }
     }
 
-    private ConnectivityManager.NetworkCallback connectivityCallback
-            = new ConnectivityManager.NetworkCallback() {
-        @Override
-        public void onAvailable(Network network) {
-            connected = true;
-            if (adapter.getDataItemCount() != 0) return;
-            runOnUiThread(() -> {
-                TransitionManager.beginDelayedTransition(drawer);
-                noConnection.setVisibility(View.GONE);
-                loading.setVisibility(View.VISIBLE);
-                dataManager.loadAllDataSources();
-            });
-        }
+    private void handleNetworkConnected() {
+        if (adapter.getDataItemCount() != 0) return;
 
-        @Override
-        public void onLost(Network network) {
-            connected = false;
+        TransitionManager.beginDelayedTransition(drawer);
+        if(noConnection != null) {
+            noConnection.setVisibility(View.GONE);
         }
-    };
+        loading.setVisibility(View.VISIBLE);
+        dataManager.loadAllDataSources();
+    }
+
 }

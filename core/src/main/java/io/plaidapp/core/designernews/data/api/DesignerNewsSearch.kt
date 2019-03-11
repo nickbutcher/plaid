@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2018 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.ui.filter
-
-import io.plaidapp.core.data.Source
+package io.plaidapp.core.designernews.data.api
 
 /**
- * Callbacks called when a filter was changed or when a filter was removed
+ * Used to differentiate Designer News search response (HTML) from the JSON API responses.
  */
-abstract class FiltersChangedCallback {
-
-    open fun onFiltersChanged(changedFilter: Source) {}
-
-    open fun onFilterRemoved(sourceKey: String) {}
-
-    open fun onFiltersUpdated(sources: List<Source>) {}
-}
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+internal annotation class DesignerNewsSearch
