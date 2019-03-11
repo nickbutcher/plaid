@@ -33,10 +33,11 @@ class ProductHuntRepository(
     /**
      * Load Product Hunt data for a specific page.
      */
-    suspend fun loadPosts(page: Int): Result<GetPostsResponse> =
-        withContext(dispatcherProvider.io) {
+    suspend fun loadPosts(page: Int): Result<GetPostsResponse> {
+        return withContext(dispatcherProvider.io) {
             return@withContext remoteDataSource.loadData(page)
         }
+    }
 
     companion object {
         @Volatile

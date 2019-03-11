@@ -24,6 +24,7 @@ import io.plaidapp.core.producthunt.data.api.model.toPost
 import io.plaidapp.core.util.exhaustive
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,7 +37,7 @@ class LoadPostsUseCase @Inject constructor(
     private val productHuntRepository: ProductHuntRepository,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) {
-    private var parentJob = Job()
+    private var parentJob = SupervisorJob()
     private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
 
     private val parentJobs = mutableMapOf<String, Job>()
