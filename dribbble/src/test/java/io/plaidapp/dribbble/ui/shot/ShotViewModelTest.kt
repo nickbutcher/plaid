@@ -18,15 +18,18 @@ package io.plaidapp.dribbble.ui.shot
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.util.event.Event
+import io.plaidapp.dribbble.domain.CreateShotUiModelUseCase
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
 import io.plaidapp.dribbble.domain.ShareShotInfo
 import io.plaidapp.dribbble.testShot
+import io.plaidapp.dribbble.testShotUiModel
 import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
@@ -47,6 +50,9 @@ class ShotViewModelTest {
     private val shotId = 1337L
     private val repo: ShotsRepository = mock()
     private val getShareShotInfoUseCase: GetShareShotInfoUseCase = mock()
+    private val createShotUiModel: CreateShotUiModelUseCase = mock {
+        on { runBlocking { invoke(any()) } } doReturn testShotUiModel
+    }
 
     @Test
     fun loadShot_existsInRepo() {
@@ -54,8 +60,9 @@ class ShotViewModelTest {
         // When view model is constructed
         val viewModel = withViewModel()
 
-        // Then the shot is present
-        assertNotNull(viewModel.shot)
+        // Then a shotUiModel is present
+        val result: ShotUiModel? = LiveDataTestUtil.getValue(viewModel.shotUiModel)
+        assertNotNull(result)
     }
 
     @Test(expected = IllegalStateException::class)
@@ -67,6 +74,7 @@ class ShotViewModelTest {
         ShotViewModel(
             shotId,
             repo,
+            createShotUiModel,
             getShareShotInfoUseCase,
             provideFakeCoroutinesDispatcherProvider()
         )
@@ -74,9 +82,11 @@ class ShotViewModelTest {
     }
 
     @Test
-    fun shotClicked_sendsOpenLinkEvent() {
+    fun shotClicked_sendsOpenLinkEvent() = runBlocking {
         // Given a view model with a shot with a known URL
         val url = "https://dribbble.com/shots/2344334-Plaid-Product-Icon"
+        val mockShotUiModel = mock<ShotUiModel> { on { this.url } doReturn url }
+        runBlocking { whenever(createShotUiModel.invoke(any())).thenReturn(mockShotUiModel) }
         val viewModel = withViewModel(shot = testShot.copy(htmlUrl = url))
 
         // When there is a request to view the shot
@@ -103,6 +113,36 @@ class ShotViewModelTest {
         assertEquals(expected, shareInfoEvent!!.peek())
     }
 
+    @Test
+    fun getAssistWebUrl_returnsShotUrl() {
+        // Given a view model with a shot with a known URL
+        val url = "https://dribbble.com/shots/2344334-Plaid-Product-Icon"
+        val mockShotUiModel = mock<ShotUiModel> { on { this.url } doReturn url }
+        runBlocking { whenever(createShotUiModel.invoke(any())).thenReturn(mockShotUiModel) }
+        val viewModel = withViewModel(shot = testShot.copy(htmlUrl = url))
+
+        // When there is a request to share the shot
+        val assistWebUrl = viewModel.getAssistWebUrl()
+
+        // Then the expected URL is returned
+        assertEquals(url, assistWebUrl)
+    }
+
+    @Test
+    fun getShotId_returnsId() {
+        // Given a view model with a shot with a known ID
+        val id = 1234L
+        val mockShotUiModel = mock<ShotUiModel> { on { this.id } doReturn id }
+        runBlocking { whenever(createShotUiModel.invoke(any())).thenReturn(mockShotUiModel) }
+        val viewModel = withViewModel(shot = testShot.copy(id = id))
+
+        // When there is a request to share the shot
+        val shotId = viewModel.getShotId()
+
+        // Then the expected ID is returned
+        assertEquals(id, shotId)
+    }
+
     private fun withViewModel(
         shot: Shot = testShot,
         shareInfo: ShareShotInfo? = null
@@ -116,6 +156,7 @@ class ShotViewModelTest {
         return ShotViewModel(
             shotId,
             repo,
+            createShotUiModel,
             getShareShotInfoUseCase,
             provideFakeCoroutinesDispatcherProvider()
         )

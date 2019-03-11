@@ -21,43 +21,33 @@ import android.app.Activity
 import android.app.assist.AssistContent
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
-import android.text.format.DateUtils
 import android.util.TypedValue
-import android.view.View.GONE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.doOnPreDraw
+import androidx.core.net.toUri
+import androidx.lifecycle.Observer
 import androidx.palette.graphics.Palette
-import com.bumptech.glide.Priority
 import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
 import io.plaidapp.core.util.Activities
 import io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator
 import io.plaidapp.core.util.ColorUtils
-import io.plaidapp.core.util.HtmlParser
-import io.plaidapp.core.util.HtmlUtils
 import io.plaidapp.core.util.ViewUtils
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
 import io.plaidapp.core.util.delegates.contentView
 import io.plaidapp.core.util.event.EventObserver
-import io.plaidapp.core.util.glide.GlideApp
 import io.plaidapp.core.util.glide.getBitmap
 import io.plaidapp.dribbble.R
 import io.plaidapp.dribbble.dagger.inject
 import io.plaidapp.dribbble.databinding.ActivityDribbbleShotBinding
 import io.plaidapp.dribbble.domain.ShareShotInfo
-import java.text.NumberFormat
 import javax.inject.Inject
 
 /**
@@ -65,8 +55,10 @@ import javax.inject.Inject
  */
 class ShotActivity : AppCompatActivity() {
 
-    @Inject internal lateinit var viewModel: ShotViewModel
-    @Inject internal lateinit var chromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
+    @Inject
+    internal lateinit var viewModel: ShotViewModel
+    @Inject
+    internal lateinit var chromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
 
     private val binding by contentView<ShotActivity, ActivityDribbbleShotBinding>(
         R.layout.activity_dribbble_shot
@@ -126,16 +118,21 @@ class ShotActivity : AppCompatActivity() {
 
         largeAvatarSize = resources.getDimensionPixelSize(io.plaidapp.R.dimen.large_avatar_size)
 
-        viewModel.openLink.observe(this, EventObserver { openLink(it) })
-        viewModel.shareShot.observe(this, EventObserver { shareShot(it) })
-        binding.viewModel = viewModel
-        binding.shotUiModel = viewModel.shot // TODO this should be a Live Data of a UI Model
-
-        binding.bodyScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            binding.shot.offset = -scrollY
+        binding.viewModel = viewModel.also { vm ->
+            vm.openLink.observe(this, EventObserver { openLink(it) })
+            vm.shareShot.observe(this, EventObserver { shareShot(it) })
+            vm.shotUiModel.observe(this, Observer {
+                binding.uiModel = it
+            })
         }
-        binding.back.setOnClickListener { setResultAndFinish() }
-        bindShot()
+
+        binding.shotLoadListener = shotLoadListener
+        binding.apply {
+            bodyScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+                shot.offset = -scrollY
+            }
+            back.setOnClickListener { setResultAndFinish() }
+        }
     }
 
     override fun onResume() {
@@ -158,76 +155,7 @@ class ShotActivity : AppCompatActivity() {
     }
 
     override fun onProvideAssistContent(outContent: AssistContent) {
-        outContent.webUri = Uri.parse(viewModel.shot.url)
-    }
-
-    private fun bindShot() {
-        val shot = viewModel.shot
-        val res = resources
-
-        // load the main image
-        val (width, height) = shot.images.bestSize()
-        GlideApp.with(this)
-            .load(shot.images.best())
-            .listener(shotLoadListener)
-            .diskCacheStrategy(DiskCacheStrategy.DATA)
-            .priority(Priority.IMMEDIATE)
-            .override(width, height)
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(binding.shot)
-
-        postponeEnterTransition()
-        binding.shot.doOnPreDraw {
-            startPostponedEnterTransition()
-        }
-
-        if (shot.description.isNotEmpty()) {
-            // TODO move this to a use case
-            val descText = HtmlParser().parse(
-                shot.description,
-                ContextCompat.getColorStateList(this, R.color.dribbble_links)!!,
-                ContextCompat.getColor(this, io.plaidapp.R.color.dribbble_link_highlight)
-            )
-            HtmlUtils.setTextWithNiceLinks(binding.shotDescription, descText)
-        } else {
-            binding.shotDescription.visibility = GONE
-        }
-        val nf = NumberFormat.getInstance()
-        binding.shotLikeCount.text = res.getQuantityString(
-            R.plurals.likes,
-            shot.likesCount.toInt(),
-            nf.format(shot.likesCount)
-        )
-        binding.shotLikeCount.setOnClickListener {
-            (binding.shotLikeCount.compoundDrawables[1] as AnimatedVectorDrawable).start()
-        }
-        binding.shotViewCount.text = res.getQuantityString(
-            R.plurals.views,
-            shot.viewsCount.toInt(),
-            nf.format(shot.viewsCount)
-        )
-        binding.shotViewCount.setOnClickListener {
-            (binding.shotViewCount.compoundDrawables[1] as? AnimatedVectorDrawable)?.start()
-        }
-        binding.shotShareAction.setOnClickListener {
-            (binding.shotShareAction.compoundDrawables[1] as AnimatedVectorDrawable).start()
-            viewModel.shareShotRequested()
-        }
-        binding.playerName.text = shot.user.name.toLowerCase()
-        GlideApp.with(this)
-            .load(shot.user.highQualityAvatarUrl)
-            .circleCrop()
-            .placeholder(io.plaidapp.R.drawable.avatar_placeholder)
-            .override(largeAvatarSize, largeAvatarSize)
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(binding.playerAvatar)
-        if (shot.createdAt != null) {
-            binding.shotTimeAgo.text = DateUtils.getRelativeTimeSpanString(
-                shot.createdAt!!.time,
-                System.currentTimeMillis(),
-                DateUtils.SECOND_IN_MILLIS
-            ).toString().toLowerCase()
-        }
+        outContent.webUri = viewModel.getAssistWebUrl().toUri()
     }
 
     private fun openLink(url: String) {
@@ -305,7 +233,7 @@ class ShotActivity : AppCompatActivity() {
 
     internal fun setResultAndFinish() {
         val resultData = Intent().apply {
-            putExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID, viewModel.shot.id)
+            putExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID, viewModel.getShotId())
         }
         setResult(Activity.RESULT_OK, resultData)
         finishAfterTransition()
