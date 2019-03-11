@@ -23,10 +23,13 @@ import androidx.lifecycle.viewModelScope
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.DataManager
+import io.plaidapp.core.data.OnDataLoadedCallback
+import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Source
 import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.feed.FeedProgressUiModel
+import io.plaidapp.core.feed.FeedUiModel
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
 import io.plaidapp.core.ui.filter.SourceUiModel
 import io.plaidapp.core.ui.filter.SourcesHighlightUiModel
@@ -61,6 +64,16 @@ class HomeViewModel(
     val feedProgress: LiveData<FeedProgressUiModel>
         get() = _feedProgress
 
+    private val _feed = MutableLiveData<Event<FeedUiModel>>()
+    val feed: LiveData<Event<FeedUiModel>>
+        get() = _feed
+
+    private val onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>> =
+        object : OnDataLoadedCallback<List<PlaidItem>> {
+            override fun onDataLoaded(data: List<PlaidItem>) {
+                _feed.value = Event(FeedUiModel(data))
+            }
+        }
     // listener for notifying adapter when data sources are deactivated
     private val filtersChangedCallbacks = object : FiltersChangedCallback() {
         override fun onFiltersChanged(changedFilter: Source) {
@@ -90,6 +103,7 @@ class HomeViewModel(
 
     init {
         sourcesRepository.registerFilterChangedCallback(filtersChangedCallbacks)
+        dataManager.setOnDataLoadedCallback(onDataLoadedCallback)
         dataManager.registerCallback(dataLoadingCallbacks)
         getSources()
     }

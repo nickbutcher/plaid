@@ -27,7 +27,6 @@ import dagger.Module
 import dagger.Provides
 import io.plaidapp.R
 import io.plaidapp.core.dagger.DataManagerModule
-import io.plaidapp.core.dagger.OnDataLoadedModule
 import io.plaidapp.core.dagger.SourcesRepositoryModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.data.pocket.PocketUtils
@@ -43,8 +42,7 @@ import io.plaidapp.ui.HomeViewModelFactory
         includes = [
             DataManagerModule::class,
             SourcesRepositoryModule::class,
-            DribbbleDataModule::class,
-            OnDataLoadedModule::class
+            DribbbleDataModule::class
         ]
 )
 abstract class HomeModule {

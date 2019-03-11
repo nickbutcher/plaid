@@ -64,7 +64,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import io.plaidapp.R;
-import io.plaidapp.core.data.DataManager;
 import io.plaidapp.core.data.PlaidItem;
 import io.plaidapp.core.data.pocket.PocketUtils;
 import io.plaidapp.core.data.prefs.SourcesRepository;
@@ -86,8 +85,10 @@ import io.plaidapp.core.util.AnimUtils;
 import io.plaidapp.core.util.DrawableUtils;
 import io.plaidapp.core.util.ShortcutHelper;
 import io.plaidapp.core.util.ViewUtils;
+import io.plaidapp.core.util.event.EventObserver;
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback;
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration;
+import kotlin.Unit;
 
 import javax.inject.Inject;
 import java.util.Collections;
@@ -117,9 +118,6 @@ public class HomeActivity extends FragmentActivity {
 
     // data
     @Inject
-    DataManager dataManager;
-
-    @Inject
     SourcesRepository sourcesRepository;
     @Inject
     @Nullable
@@ -134,11 +132,7 @@ public class HomeActivity extends FragmentActivity {
         setContentView(R.layout.activity_home);
         bindResources();
 
-        inject(this, data -> {
-            List<PlaidItem> items = PlaidItemsList.getPlaidItemsForDisplay(adapter.getItems(), data, columns);
-            adapter.setItems(items);
-            checkEmptyState();
-        });
+        inject(this);
 
         boolean pocketInstalled = PocketUtils.isPocketInstalled(this);
 
@@ -182,6 +176,14 @@ public class HomeActivity extends FragmentActivity {
             }
         });
 
+        viewModel.getFeed().observe(this, new EventObserver<>(feedUiModel -> {
+            List<PlaidItem> items = PlaidItemsList.getPlaidItemsForDisplay(adapter.getItems(), feedUiModel.getItems(), columns);
+            adapter.setItems(items);
+            checkEmptyState();
+            return Unit.INSTANCE;
+        }));
+
+
         drawer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
@@ -205,7 +207,7 @@ public class HomeActivity extends FragmentActivity {
         filtersList.setAdapter(filtersAdapter);
         filtersList.setItemAnimator(new FilterAnimator());
 
-        dataManager.loadAllDataSources();
+        viewModel.loadData();
 
         ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter, this);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
@@ -240,10 +242,10 @@ public class HomeActivity extends FragmentActivity {
         grid.setLayoutManager(layoutManager);
         grid.addOnScrollListener(toolbarElevation);
         grid.addOnScrollListener(
-                new InfiniteScrollListener(layoutManager, dataManager) {
+                new InfiniteScrollListener(layoutManager, viewModel.getDataManager()) {
                     @Override
                     public void onLoadMore() {
-                        dataManager.loadAllDataSources();
+                        viewModel.loadData();
                     }
                 });
         grid.setHasFixedSize(true);
@@ -773,7 +775,7 @@ public class HomeActivity extends FragmentActivity {
             noConnection.setVisibility(View.GONE);
         }
         loading.setVisibility(View.VISIBLE);
-        dataManager.loadAllDataSources();
+        viewModel.loadData();
     }
 
 }
