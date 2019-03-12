@@ -99,6 +99,9 @@ class HomeViewModel(
         }
     }
 
+    // TODO - find a better solution
+    var columns = 2
+
     init {
         sourcesRepository.registerFilterChangedCallback(filtersChangedCallbacks)
         dataManager.setOnDataLoadedCallback(onDataLoadedCallback)
@@ -123,7 +126,7 @@ class HomeViewModel(
     }
 
     fun addSources(query: String, isDribbble: Boolean, isDesignerNews: Boolean) {
-        if(query.isBlank()){
+        if (query.isBlank()) {
             return
         }
         val sources = mutableListOf<Source>()
@@ -198,7 +201,7 @@ class HomeViewModel(
     }
 
     private fun updateFeedData(oldItems: List<PlaidItem>, newItems: List<PlaidItem>) {
-        val items = getPlaidItemsForDisplay(oldItems, newItems, 2)
+        val items = getPlaidItemsForDisplay(oldItems, newItems, columns)
         _feed.value = FeedUiModel(items)
     }
 
@@ -207,7 +210,7 @@ class HomeViewModel(
         items.removeAll {
             dataSourceKey == it.dataSource
         }
-        expandPopularItems(items, 2)
+        expandPopularItems(items, columns)
         _feed.value = FeedUiModel(items)
     }
 
