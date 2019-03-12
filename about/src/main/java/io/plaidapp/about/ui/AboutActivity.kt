@@ -68,7 +68,10 @@ class AboutActivity : AppCompatActivity() {
 
         binding.pager.apply {
             adapter = AboutPagerAdapter(viewModel.uiModel)
-            pageMargin = resources.getDimensionPixelSize(appR.dimen.spacing_normal)
+
+            // Set the margin between pages in the ViewPager2
+            val pageMargin = resources.getDimensionPixelSize(appR.dimen.spacing_normal)
+            setPageTransformer { page, position -> page.translationX = position * pageMargin }
         }
 
         binding.indicator.setViewPager(binding.pager)

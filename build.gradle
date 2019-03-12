@@ -52,7 +52,8 @@ buildscript { scriptHandler ->
             'supportLibrary'     : '28.0.0',
             'test_rules'         : '1.1.0-beta02',
             'test_runner'        : '1.1.0-beta02',
-            'ui_automator'       : '2.2.0-beta02'
+            'ui_automator'       : '2.2.0-beta02',
+            'viewPager2'         : '1.0.0-alpha01'
     ]
     ext.names = [
             'applicationId': 'io.plaidapp'
