@@ -32,13 +32,13 @@ val designerNewsSource = Source.DesignerNewsSearchSource(
     true
 )
 val designerNewsSourceUiModel = SourceUiModel(
-    designerNewsSource.key,
-    designerNewsSource.name,
-    designerNewsSource.active,
-    designerNewsSource.iconRes,
-    designerNewsSource.isSwipeDismissable,
-    {},
-    {}
+    key = designerNewsSource.key,
+    name = designerNewsSource.name,
+    active = designerNewsSource.active,
+    iconRes = designerNewsSource.iconRes,
+    isSwipeDismissable = designerNewsSource.isSwipeDismissable,
+    onSourceClicked = {},
+    onSourceDismissed = {}
 )
 val dribbbleSource = Source.DribbbleSearchSource("dribbble", true)
 
@@ -66,8 +66,8 @@ val shot = Shot(
     description = "",
     images = Images(),
     user = player
-).also {
-    it.dataSource = dribbbleSource.key
+).apply {
+    dataSource = dribbbleSource.key
 }
 
 const val userId = 5L
@@ -87,6 +87,6 @@ val story = Story(
     createdAt = createdDate,
     userId = userId,
     links = storyLinks
-).also {
-    it.dataSource = designerNewsSource.key
+).apply {
+    dataSource = designerNewsSource.key
 }

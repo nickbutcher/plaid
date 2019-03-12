@@ -65,8 +65,7 @@ class HomeViewModel(
     val feed: LiveData<FeedUiModel>
         get() = _feed
 
-    private val onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>> =
-        object : OnDataLoadedCallback<List<PlaidItem>> {
+    private val onDataLoadedCallback = object : OnDataLoadedCallback<List<PlaidItem>> {
             override fun onDataLoaded(data: List<PlaidItem>) {
                 val oldItems = _feed.value?.items.orEmpty()
                 updateFeedData(oldItems, data)
@@ -100,6 +99,7 @@ class HomeViewModel(
     }
 
     // TODO - find a better solution
+    // https://github.com/nickbutcher/plaid/issues/654
     var columns = 2
 
     init {
