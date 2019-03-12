@@ -50,7 +50,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.util.ViewPreloadSizeProvider
-import io.plaidapp.core.data.pocket.PocketUtils
+import io.plaidapp.core.dagger.qualifier.IsPocketInstalled
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.feed.FeedAdapter
 import io.plaidapp.core.ui.getPlaidItemsForDisplayExpanded
@@ -95,6 +95,10 @@ class SearchActivity : AppCompatActivity() {
     @Inject
     lateinit var viewModel: SearchViewModel
 
+    @JvmField
+    @field:[Inject IsPocketInstalled]
+    var pocketInstalled: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -102,8 +106,6 @@ class SearchActivity : AppCompatActivity() {
         setupSearchView()
 
         Injector.inject(this)
-
-        val pocketInstalled = PocketUtils.isPocketInstalled(this)
 
         feedAdapter = FeedAdapter(this, columns, pocketInstalled)
 
