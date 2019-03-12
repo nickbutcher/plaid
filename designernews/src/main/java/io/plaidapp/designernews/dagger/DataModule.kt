@@ -26,7 +26,6 @@ import io.plaidapp.designernews.data.api.DesignerNewsService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Named
 
 /**
  * Dagger module to provide data functionality for DesignerNews.
@@ -36,7 +35,7 @@ class DataModule {
 
     @Provides
     fun provideDesignerNewsService(
-        @Named("designerNewsOkHttpClient") client: Lazy<OkHttpClient>,
+        client: Lazy<OkHttpClient>,
         gson: Gson
     ): DesignerNewsService {
         return Retrofit.Builder()

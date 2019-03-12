@@ -21,7 +21,6 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import dagger.Component
 import okhttp3.OkHttpClient
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Named
 
 /**
  * Component providing application wide singletons.
@@ -35,7 +34,7 @@ interface CoreComponent {
         fun build(): CoreComponent
     }
 
-    @Named("coreOkHttpClient") fun provideOkHttpClient(): OkHttpClient
+    fun provideOkHttpClient(): OkHttpClient
     fun provideGson(): Gson
     fun provideGsonConverterFactory(): GsonConverterFactory
     fun provideCallAdapterFactory(): CoroutineCallAdapterFactory

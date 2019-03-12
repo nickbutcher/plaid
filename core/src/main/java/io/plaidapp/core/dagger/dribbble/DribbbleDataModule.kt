@@ -27,7 +27,6 @@ import io.plaidapp.core.dribbble.data.search.DribbbleSearchService
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import javax.inject.Named
 
 /**
  * Dagger module providing classes required to dribbble with data.
@@ -47,7 +46,7 @@ class DribbbleDataModule {
 
     @Provides
     fun provideDribbbleSearchService(
-        @Named("coreOkHttpClient") client: Lazy<OkHttpClient>,
+        client: Lazy<OkHttpClient>,
         converterFactory: DribbbleSearchConverter.Factory,
         callAdapterFactory: CoroutineCallAdapterFactory
     ): DribbbleSearchService =

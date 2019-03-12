@@ -24,7 +24,6 @@ import io.plaidapp.core.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Named
 
 /**
  * Dagger module to provide core data functionality.
@@ -33,7 +32,6 @@ import javax.inject.Named
 class CoreDataModule {
 
     @Provides
-    @Named("coreOkHttpClient")
     fun provideOkHttpClient(interceptor: HttpLoggingInterceptor): OkHttpClient =
         OkHttpClient.Builder().addInterceptor(interceptor).build()
 

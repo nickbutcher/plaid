@@ -24,6 +24,7 @@ import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.BuildConfig
+import io.plaidapp.core.dagger.DesignerNewsApi
 import io.plaidapp.core.data.api.DeEnvelopingConverter
 import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.core.designernews.data.api.DesignerNewsSearchConverter
@@ -39,7 +40,6 @@ import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Named
 
 /**
  * Dagger module to provide data functionality for DesignerNews.
@@ -61,9 +61,9 @@ class DesignerNewsDataModule {
         AuthTokenLocalDataSource.getInstance(sharedPreferences)
 
     @Provides
-    @Named("designerNewsOkHttpClient")
+    @DesignerNewsApi
     fun providePrivateOkHttpClient(
-        @Named("coreOkHttpClient") upstream: OkHttpClient,
+        upstream: OkHttpClient,
         tokenHolder: AuthTokenLocalDataSource
     ): OkHttpClient {
         return upstream.newBuilder()
@@ -73,7 +73,7 @@ class DesignerNewsDataModule {
 
     @Provides
     fun provideDesignerNewsService(
-        @Named("designerNewsOkHttpClient") client: Lazy<OkHttpClient>,
+        @DesignerNewsApi client: Lazy<OkHttpClient>,
         gson: Gson
     ): DesignerNewsService {
         return Retrofit.Builder()

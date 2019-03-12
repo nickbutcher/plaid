@@ -29,8 +29,7 @@ class PlaidApplication : Application() {
 
     private val coreComponent: CoreComponent by lazy {
         DaggerCoreComponent
-            .builder()
-            .build()
+            .create()
     }
 
     companion object {
