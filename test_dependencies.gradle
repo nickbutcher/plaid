@@ -37,10 +37,11 @@ dependencies {
 
     androidTestImplementation project(':test_shared')
     androidTestImplementation "androidx.arch.core:core-testing:${versions.androidxArch}"
-    androidTestImplementation "androidx.test:runner:${versions.test_runner}"
-    androidTestImplementation "androidx.test:rules:${versions.test_rules}"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:${versions.espresso}"
     androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
+    androidTestImplementation "androidx.test.ext:junit:${versions.extJunit}"
+    androidTestImplementation "androidx.test:rules:${versions.test_rules}"
+    androidTestImplementation "androidx.test:runner:${versions.test_runner}"
     androidTestImplementation "androidx.test.uiautomator:uiautomator:${versions.ui_automator}"
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockito_kotlin}"
     androidTestImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
