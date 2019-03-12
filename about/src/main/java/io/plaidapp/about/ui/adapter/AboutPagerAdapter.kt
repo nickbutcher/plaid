@@ -16,47 +16,50 @@
 
 package io.plaidapp.about.ui.adapter
 
-import androidx.viewpager.widget.PagerAdapter
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import io.plaidapp.about.R
-import io.plaidapp.core.util.HtmlUtils
 import io.plaidapp.about.ui.model.AboutUiModel
+import io.plaidapp.core.util.HtmlUtils
 import io.plaidapp.core.util.inflateView
 import java.security.InvalidParameterException
 
 /**
  * Adapter creating and holding on to pages displayed within [io.plaidapp.about.ui.AboutActivity].
  */
-internal class AboutPagerAdapter(private val uiModel: AboutUiModel) : PagerAdapter() {
+internal class AboutPagerAdapter(private val uiModel: AboutUiModel) :
+        RecyclerView.Adapter<AboutPagerAdapter.AboutViewHolder>() {
 
     private var aboutPlaid: View? = null
     private var aboutIcon: View? = null
     private var aboutLibs: View? = null
 
-    override fun instantiateItem(collection: ViewGroup, position: Int): Any {
-        return getPage(position, collection).also {
-            collection.addView(it)
-        }
-    }
-
-    override fun destroyItem(collection: ViewGroup, position: Int, view: Any) {
-        collection.removeView(view as View)
-    }
-
-    override fun getCount() = 3
-
-    override fun isViewFromObject(view: View, obj: Any) = view === obj
-
-    private fun getPage(position: Int, parent: ViewGroup): View {
+    override fun getItemViewType(position: Int): Int {
         return when (position) {
-            0 -> getAboutAppPage(parent)
-            1 -> getAboutIconPage(parent)
-            2 -> getAboutLibsPage(parent)
+            0 -> 0
+            1 -> 1
+            2 -> 2
             else -> throw InvalidParameterException()
         }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AboutViewHolder {
+        return when (viewType) {
+            0 -> AboutViewHolder(getAboutAppPage(parent))
+            1 -> AboutViewHolder(getAboutIconPage(parent))
+            2 -> AboutViewHolder(getAboutLibsPage(parent))
+            else -> throw InvalidParameterException()
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return 3
+    }
+
+    override fun onBindViewHolder(holder: AboutViewHolder, position: Int) {
+        // do nothing
     }
 
     private fun getAboutIconPage(parent: ViewGroup): View {
@@ -86,4 +89,6 @@ internal class AboutPagerAdapter(private val uiModel: AboutUiModel) : PagerAdapt
             aboutLibs = this
         }
     }
+
+    class AboutViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
