@@ -63,8 +63,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import io.plaidapp.R;
+import io.plaidapp.core.dagger.qualifier.IsPocketInstalled;
 import io.plaidapp.core.data.PlaidItem;
-import io.plaidapp.core.data.pocket.PocketUtils;
 import io.plaidapp.core.data.prefs.SourcesRepository;
 import io.plaidapp.core.designernews.data.poststory.PostStoryService;
 import io.plaidapp.core.designernews.data.stories.model.Story;
@@ -124,6 +124,10 @@ public class HomeActivity extends FragmentActivity {
     @Inject
     HomeViewModel viewModel;
 
+    @IsPocketInstalled
+    @Inject
+    boolean pocketInstalled;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,8 +135,6 @@ public class HomeActivity extends FragmentActivity {
         bindResources();
 
         inject(this);
-
-        boolean pocketInstalled = PocketUtils.isPocketInstalled(this);
 
         adapter = new FeedAdapter(this, columns, pocketInstalled);
 

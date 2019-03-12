@@ -27,6 +27,7 @@ import io.plaidapp.R
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
+import io.plaidapp.core.dagger.qualifier.IsPocketInstalled
 import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.pocket.PocketUtils
 import io.plaidapp.search.domain.SearchDataManager
@@ -62,9 +63,10 @@ abstract class SearchModule {
         @Provides
         fun columns(activity: Activity): Int = activity.resources.getInteger(R.integer.num_columns)
 
+        @IsPocketInstalled
         @JvmStatic
         @Provides
-        fun isPocketInstalled(activity: Activity) = PocketUtils.isPocketInstalled(activity)
+        fun isPocketInstalled(activity: Activity): Boolean = PocketUtils.isPocketInstalled(activity)
 
         @JvmStatic
         @Provides

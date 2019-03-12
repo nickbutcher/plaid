@@ -29,6 +29,7 @@ import io.plaidapp.R
 import io.plaidapp.core.dagger.DataManagerModule
 import io.plaidapp.core.dagger.SourcesRepositoryModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
+import io.plaidapp.core.dagger.qualifier.IsPocketInstalled
 import io.plaidapp.core.data.pocket.PocketUtils
 import io.plaidapp.core.ui.ConnectivityChecker
 import io.plaidapp.ui.HomeActivity
@@ -63,6 +64,7 @@ abstract class HomeModule {
         @Provides
         fun columns(activity: Activity): Int = activity.resources.getInteger(R.integer.num_columns)
 
+        @IsPocketInstalled
         @JvmStatic
         @Provides
         fun isPocketInstalled(activity: Activity): Boolean = PocketUtils.isPocketInstalled(activity)
