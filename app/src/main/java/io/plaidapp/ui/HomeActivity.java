@@ -132,6 +132,8 @@ public class HomeActivity extends FragmentActivity {
 
         inject(this);
 
+        viewModel.setColumns(columns);
+
         boolean pocketInstalled = PocketUtils.isPocketInstalled(this);
 
         adapter = new FeedAdapter(this, columns, pocketInstalled);
