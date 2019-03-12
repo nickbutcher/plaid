@@ -24,7 +24,6 @@ import io.plaidapp.core.designernews.domain.LoadStoriesUseCase;
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase;
 import io.plaidapp.core.dribbble.data.ShotsRepository;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
-import io.plaidapp.core.producthunt.data.api.ProductHuntRepository;
 import io.plaidapp.core.producthunt.domain.LoadPostsUseCase;
 import io.plaidapp.core.ui.filter.FiltersChangedCallback;
 import kotlin.Unit;
@@ -77,7 +76,7 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
     }
 
     private void onDataLoaded(List<? extends PlaidItem> data) {
-        if(onDataLoadedCallback != null) {
+        if (onDataLoadedCallback != null) {
             onDataLoadedCallback.onDataLoaded(data);
         }
     }

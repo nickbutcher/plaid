@@ -135,7 +135,7 @@ class HomeViewModelTest {
 
         // When adding a Designer News source
         homeViewModel.addSources(
-            designerNewsSource.query,
+            query = designerNewsSource.query,
             isDribbble = false,
             isDesignerNews = true
         )
