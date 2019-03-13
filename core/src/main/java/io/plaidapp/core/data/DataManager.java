@@ -217,11 +217,6 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
     }
 
     @Override
-    public boolean isDataLoading() {
-        return loadingCount.get() > 0;
-    }
-
-    @Override
     public void registerCallback(DataLoadingSubject.DataLoadingCallbacks callback) {
         if (loadingCallbacks == null) {
             loadingCallbacks = new ArrayList<>(1);

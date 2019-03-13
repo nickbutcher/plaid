@@ -109,8 +109,6 @@ class SearchDataManager @Inject constructor(
 
     override fun loadFailed(source: String) = loadFinished()
 
-    override fun isDataLoading() = loadingCount.get() > 0
-
     override fun registerCallback(callback: DataLoadingSubject.DataLoadingCallbacks) {
         loadingCallbacks.add(callback)
     }
