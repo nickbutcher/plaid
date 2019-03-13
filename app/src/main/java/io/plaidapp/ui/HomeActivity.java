@@ -71,6 +71,7 @@ import io.plaidapp.core.designernews.data.poststory.PostStoryService;
 import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.feed.FeedAdapter;
+import io.plaidapp.core.feed.FeedProgressUiModel;
 import io.plaidapp.core.ui.ConnectivityChecker;
 import io.plaidapp.core.ui.HomeGridItemAnimator;
 import io.plaidapp.core.ui.PlaidItemsList;
@@ -233,10 +234,19 @@ public class HomeActivity extends FragmentActivity {
         grid.setLayoutManager(layoutManager);
         grid.addOnScrollListener(toolbarElevation);
         grid.addOnScrollListener(
-                new InfiniteScrollListener(layoutManager, viewModel.getDataManager()) {
+                new InfiniteScrollListener(layoutManager) {
                     @Override
                     public void onLoadMore() {
                         viewModel.loadData();
+                    }
+
+                    @Override
+                    public boolean isDataLoading() {
+                        FeedProgressUiModel uiModel = viewModel.getFeedProgress().getValue();
+                        if(uiModel !=  null){
+                            return uiModel.isLoading();
+                        }
+                        return false;
                     }
                 });
         grid.setHasFixedSize(true);

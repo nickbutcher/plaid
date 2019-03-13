@@ -19,22 +19,19 @@ package io.plaidapp.core.ui.recyclerview
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-import io.plaidapp.core.data.DataLoadingSubject
-
 /**
  * A scroll listener for RecyclerView to load more items as you approach the end.
  *
  * Adapted from https://gist.github.com/ssinss/e06f12ef66c51252563e
  */
 abstract class InfiniteScrollListener(
-    private val layoutManager: LinearLayoutManager,
-    private val dataLoading: DataLoadingSubject
+    private val layoutManager: LinearLayoutManager
 ) : RecyclerView.OnScrollListener() {
     private val loadMoreRunnable = Runnable { onLoadMore() }
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         // bail out if scrolling upward or already loading data
-        if (dy < 0 || dataLoading.isDataLoading) return
+        if (dy < 0 || isDataLoading()) return
 
         val visibleItemCount = recyclerView.childCount
         val totalItemCount = layoutManager.itemCount
@@ -46,6 +43,8 @@ abstract class InfiniteScrollListener(
     }
 
     abstract fun onLoadMore()
+
+    abstract fun isDataLoading(): Boolean
 
     companion object {
         // The minimum number of items remaining before we should loading more.
