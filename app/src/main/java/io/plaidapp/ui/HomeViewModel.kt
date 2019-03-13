@@ -18,6 +18,7 @@ package io.plaidapp.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
@@ -61,26 +62,25 @@ class HomeViewModel(
     val feedProgress: LiveData<FeedProgressUiModel>
         get() = _feedProgress
 
+    private val feedData = MutableLiveData<List<PlaidItem>>()
     private val _feed = MutableLiveData<FeedUiModel>()
-    val feed: LiveData<FeedUiModel>
-        get() = _feed
 
     private val onDataLoadedCallback = object : OnDataLoadedCallback<List<PlaidItem>> {
-            override fun onDataLoaded(data: List<PlaidItem>) {
-                val oldItems = _feed.value?.items.orEmpty()
-                updateFeedData(oldItems, data)
-            }
+        override fun onDataLoaded(data: List<PlaidItem>) {
+            val oldItems = feedData.value.orEmpty()
+            updateFeedData(oldItems, data)
         }
+    }
     // listener for notifying adapter when data sources are deactivated
     private val filtersChangedCallbacks = object : FiltersChangedCallback() {
         override fun onFiltersChanged(changedFilter: Source) {
             if (!changedFilter.active) {
-                handleDataSourceRemoved(changedFilter.key, _feed.value?.items.orEmpty())
+                handleDataSourceRemoved(changedFilter.key, feedData.value.orEmpty())
             }
         }
 
         override fun onFilterRemoved(sourceKey: String) {
-            handleDataSourceRemoved(sourceKey, _feed.value?.items.orEmpty())
+            handleDataSourceRemoved(sourceKey, feedData.value.orEmpty())
         }
 
         override fun onFiltersUpdated(sources: List<Source>) {
@@ -98,16 +98,20 @@ class HomeViewModel(
         }
     }
 
-    // TODO - find a better solution
-    // https://github.com/nickbutcher/plaid/issues/654
-    var columns = 2
-
     init {
         sourcesRepository.registerFilterChangedCallback(filtersChangedCallbacks)
         dataManager.setOnDataLoadedCallback(onDataLoadedCallback)
         dataManager.registerCallback(dataLoadingCallbacks)
         getSources()
         loadData()
+    }
+
+    fun getFeed(columns: Int): LiveData<FeedUiModel> {
+        return Transformations.switchMap(feedData) {
+            expandPopularItems(it, columns)
+            _feed.value = FeedUiModel(it)
+            _feed
+        }
     }
 
     fun isDesignerNewsUserLoggedIn() = designerNewsLoginRepository.isLoggedIn
@@ -155,8 +159,8 @@ class HomeViewModel(
             _sources.postValue(SourcesUiModel(newSourcesUiModel))
         } else {
             val highlightUiModel = createSourcesHighlightUiModel(
-                    oldSourceUiModel.sourceUiModels,
-                    newSourcesUiModel
+                oldSourceUiModel.sourceUiModels,
+                newSourcesUiModel
             )
             val event = if (highlightUiModel != null) {
                 Event(highlightUiModel)
@@ -201,8 +205,7 @@ class HomeViewModel(
     }
 
     private fun updateFeedData(oldItems: List<PlaidItem>, newItems: List<PlaidItem>) {
-        val items = getPlaidItemsForDisplay(oldItems, newItems, columns)
-        _feed.value = FeedUiModel(items)
+        feedData.value = getPlaidItemsForDisplay(oldItems, newItems)
     }
 
     private fun handleDataSourceRemoved(dataSourceKey: String, oldItems: List<PlaidItem>) {
@@ -210,8 +213,7 @@ class HomeViewModel(
         items.removeAll {
             dataSourceKey == it.dataSource
         }
-        expandPopularItems(items, columns)
-        _feed.value = FeedUiModel(items)
+        feedData.value = items
     }
 
     private fun createNewSourceUiModels(sources: List<Source>): List<SourceUiModel> {
@@ -219,17 +221,17 @@ class HomeViewModel(
         Collections.sort(mutableSources, Source.SourceComparator())
         return mutableSources.map {
             SourceUiModel(
-                    it.key,
-                    it.name,
-                    it.active,
-                    it.iconRes,
-                    it.isSwipeDismissable,
-                    { sourceUiModel -> sourcesRepository.changeSourceActiveState(sourceUiModel.key) },
-                    { sourceUiModel ->
-                        if (sourceUiModel.isSwipeDismissable) {
-                            sourcesRepository.removeSource(sourceUiModel.key)
-                        }
+                it.key,
+                it.name,
+                it.active,
+                it.iconRes,
+                it.isSwipeDismissable,
+                { sourceUiModel -> sourcesRepository.changeSourceActiveState(sourceUiModel.key) },
+                { sourceUiModel ->
+                    if (sourceUiModel.isSwipeDismissable) {
+                        sourcesRepository.removeSource(sourceUiModel.key)
                     }
+                }
             )
         }
     }

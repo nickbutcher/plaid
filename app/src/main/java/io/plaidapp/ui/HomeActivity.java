@@ -33,7 +33,6 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.SpannedString;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.transition.TransitionManager;
@@ -132,8 +131,6 @@ public class HomeActivity extends FragmentActivity {
 
         inject(this);
 
-        viewModel.setColumns(columns);
-
         boolean pocketInstalled = PocketUtils.isPocketInstalled(this);
 
         adapter = new FeedAdapter(this, columns, pocketInstalled);
@@ -172,7 +169,7 @@ public class HomeActivity extends FragmentActivity {
             }
         });
 
-        viewModel.getFeed().observe(this, feedUiModel -> {
+        viewModel.getFeed(columns).observe(this, feedUiModel -> {
             adapter.setItems(feedUiModel.getItems());
             checkEmptyState();
         });
@@ -492,7 +489,7 @@ public class HomeActivity extends FragmentActivity {
                     // actually add the story to the grid
                     Story newStory = intent.getParcelableExtra(PostStoryService.EXTRA_NEW_STORY);
 
-                    List<PlaidItem> items = PlaidItemsList.getPlaidItemsForDisplay(
+                    List<PlaidItem> items = PlaidItemsList.getPlaidItemsForDisplayExpanded(
                             adapter.getItems(), Collections.singletonList(newStory), columns);
                     adapter.setItems(items);
                     break;
