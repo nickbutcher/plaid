@@ -59,6 +59,7 @@ class HomeViewModelTest {
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    private val columns = 2
     private val dataManager: DataManager = mock()
     private val loginRepository: LoginRepository = mock()
     private val sourcesRepository: SourcesRepository = mock()
@@ -281,7 +282,7 @@ class HomeViewModelTest {
         filtersChangedCallback.value.onFilterRemoved(dribbbleSource.key)
 
         // Then feed emits a new list, without the removed filter
-        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(2))
+        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(columns))
         assertEquals(listOf(post, story), feed!!.items)
     }
 
@@ -292,14 +293,14 @@ class HomeViewModelTest {
         verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
-        val initialFeed = LiveDataTestUtil.getValue(homeViewModel.getFeed(2))
+        val initialFeed = LiveDataTestUtil.getValue(homeViewModel.getFeed(columns))
 
         // When an active source was changed
         val activeSource = Source.DribbbleSearchSource("dribbble", true)
         filtersChangedCallback.value.onFiltersChanged(activeSource)
 
         // Then feed didn't emit a new value
-        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(2))
+        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(columns))
         assertEquals(initialFeed, feed)
     }
 
@@ -316,7 +317,7 @@ class HomeViewModelTest {
         filtersChangedCallback.value.onFiltersChanged(inactiveSource)
 
         // Then feed emits a new list, without the removed filter
-        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(2))
+        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(columns))
         assertEquals(listOf(post, story), feed!!.items)
     }
 
