@@ -63,7 +63,6 @@ class HomeViewModel(
         get() = _feedProgress
 
     private val feedData = MutableLiveData<List<PlaidItem>>()
-    private val _feed = MutableLiveData<FeedUiModel>()
 
     private val onDataLoadedCallback = object : OnDataLoadedCallback<List<PlaidItem>> {
         override fun onDataLoaded(data: List<PlaidItem>) {
@@ -109,8 +108,9 @@ class HomeViewModel(
     fun getFeed(columns: Int): LiveData<FeedUiModel> {
         return Transformations.switchMap(feedData) {
             expandPopularItems(it, columns)
-            _feed.value = FeedUiModel(it)
-            _feed
+            val feed = MutableLiveData<FeedUiModel>()
+            feed.value = FeedUiModel(it)
+            return@switchMap feed
         }
     }
 
