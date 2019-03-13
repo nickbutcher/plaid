@@ -154,9 +154,12 @@ class SearchActivity : AppCompatActivity() {
             itemAnimator = SlideInItemAnimator()
             this.layoutManager = layoutManager
             addOnScrollListener(object :
-                InfiniteScrollListener(layoutManager, viewModel.getDataLoadingSubject()) {
+                InfiniteScrollListener(layoutManager) {
                 override fun onLoadMore() {
                     viewModel.loadMore()
+                }
+                override fun isDataLoading(): Boolean {
+                    return viewModel.searchProgress.value?.isLoading ?: false
                 }
             })
             setHasFixedSize(true)
