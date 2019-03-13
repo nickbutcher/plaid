@@ -108,9 +108,7 @@ class HomeViewModel(
     fun getFeed(columns: Int): LiveData<FeedUiModel> {
         return Transformations.switchMap(feedData) {
             expandPopularItems(it, columns)
-            val feed = MutableLiveData<FeedUiModel>()
-            feed.value = FeedUiModel(it)
-            return@switchMap feed
+            return@switchMap MutableLiveData(FeedUiModel(it))
         }
     }
 
