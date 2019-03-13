@@ -281,7 +281,7 @@ class HomeViewModelTest {
         filtersChangedCallback.value.onFilterRemoved(dribbbleSource.key)
 
         // Then feed emits a new list, without the removed filter
-        val feed = LiveDataTestUtil.getValue(homeViewModel.feed)
+        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(2))
         assertEquals(listOf(post, story), feed!!.items)
     }
 
@@ -292,14 +292,14 @@ class HomeViewModelTest {
         verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
-        val initialFeed = LiveDataTestUtil.getValue(homeViewModel.feed)
+        val initialFeed = LiveDataTestUtil.getValue(homeViewModel.getFeed(2))
 
         // When an active source was changed
         val activeSource = Source.DribbbleSearchSource("dribbble", true)
         filtersChangedCallback.value.onFiltersChanged(activeSource)
 
         // Then feed didn't emit a new value
-        val feed = LiveDataTestUtil.getValue(homeViewModel.feed)
+        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(2))
         assertEquals(initialFeed, feed)
     }
 
@@ -316,7 +316,7 @@ class HomeViewModelTest {
         filtersChangedCallback.value.onFiltersChanged(inactiveSource)
 
         // Then feed emits a new list, without the removed filter
-        val feed = LiveDataTestUtil.getValue(homeViewModel.feed)
+        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(2))
         assertEquals(listOf(post, story), feed!!.items)
     }
 
@@ -367,7 +367,7 @@ class HomeViewModelTest {
         dataLoadedCallback.value.onDataLoaded(listOf(post, shot, story))
 
         // Then feed emits a new list
-        val feed = LiveDataTestUtil.getValue(homeViewModel.feed)
+        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(2))
         assertEquals(listOf(post, story, shot), feed!!.items)
     }
 

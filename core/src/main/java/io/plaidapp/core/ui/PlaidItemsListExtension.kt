@@ -33,16 +33,25 @@ import java.util.Collections
  * Prepares items for display of de-duplicating items and sorting them (depending on the data
  * source).
  */
-fun getPlaidItemsForDisplay(
+
+fun getPlaidItemsForDisplayExpanded(
     oldItems: List<PlaidItem>,
     newItems: List<PlaidItem>,
     columns: Int
+): List<PlaidItem> {
+    val itemsToBeDisplayed = getPlaidItemsForDisplay(oldItems, newItems)
+    expandPopularItems(itemsToBeDisplayed, columns)
+    return itemsToBeDisplayed
+}
+
+fun getPlaidItemsForDisplay(
+    oldItems: List<PlaidItem>,
+    newItems: List<PlaidItem>
 ): List<PlaidItem> {
     val itemsToBeDisplayed = oldItems.toMutableList()
     weighItems(newItems.toMutableList())
     deduplicateAndAdd(itemsToBeDisplayed, newItems)
     sort(itemsToBeDisplayed)
-    expandPopularItems(itemsToBeDisplayed, columns)
     return itemsToBeDisplayed
 }
 
