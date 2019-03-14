@@ -16,7 +16,7 @@
 
 package io.plaidapp
 
-import io.plaidapp.core.data.SourceItem
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSource
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryLinks
 import io.plaidapp.core.dribbble.data.DribbbleSourceItem
@@ -28,7 +28,7 @@ import io.plaidapp.core.ui.filter.SourceUiModel
 import java.util.Date
 import java.util.GregorianCalendar
 
-val designerNewsSource = SourceItem.DesignerNewsSearchSource(
+val designerNewsSource = DesignerNewsSearchSource(
     "query",
     true
 )

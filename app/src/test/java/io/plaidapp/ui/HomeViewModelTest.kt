@@ -29,6 +29,7 @@ import io.plaidapp.core.data.OnDataLoadedCallback
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.data.prefs.SourcesRepository
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSource
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.dribbble.data.DribbbleSourceItem
 import io.plaidapp.core.feed.FeedProgressUiModel
@@ -158,7 +159,7 @@ class HomeViewModelTest {
         // Then two sources are added to the repository
         val expected = listOf(
             DribbbleSourceItem("query", true),
-            SourceItem.DesignerNewsSearchSource("query", true)
+            DesignerNewsSearchSource("query", true)
         )
         verify(sourcesRepository).addOrMarkActiveSources(expected)
     }

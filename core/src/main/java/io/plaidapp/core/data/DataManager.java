@@ -20,6 +20,7 @@ package io.plaidapp.core.data;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import io.plaidapp.core.data.prefs.SourcesRepository;
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSource;
 import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.designernews.domain.LoadStoriesUseCase;
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase;
@@ -136,8 +137,8 @@ public class DataManager implements DataLoadingSubject {
                 default:
                     if (source instanceof DribbbleSourceItem) {
                         loadDribbbleSearch((DribbbleSourceItem) source, page);
-                    } else if (source instanceof SourceItem.DesignerNewsSearchSource) {
-                        loadDesignerNewsSearch((SourceItem.DesignerNewsSearchSource) source, page);
+                    } else if (source instanceof DesignerNewsSearchSource) {
+                        loadDesignerNewsSearch((DesignerNewsSearchSource) source, page);
                     }
                     break;
             }
@@ -192,7 +193,7 @@ public class DataManager implements DataLoadingSubject {
         });
     }
 
-    private void loadDesignerNewsSearch(final SourceItem.DesignerNewsSearchSource source,
+    private void loadDesignerNewsSearch(final DesignerNewsSearchSource source,
                                         final int page) {
         searchStoriesUseCase.invoke(source.getKey(), page, (result, pageResult, sourceResult) -> {
             if (result instanceof Result.Success) {

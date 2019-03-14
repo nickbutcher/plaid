@@ -18,6 +18,7 @@ package io.plaidapp.core.data.prefs
 
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.SourceItem
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSource
 import io.plaidapp.core.dribbble.data.DribbbleSourceItem
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
 import kotlinx.coroutines.withContext
@@ -65,10 +66,10 @@ class SourcesRepository(
                     sources.add(DribbbleSourceItem(query, activeState))
                 }
                 // add Designer News source
-                sourceKey.startsWith(SourceItem.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX) -> {
-                    val query = sourceKey.replace(SourceItem.DesignerNewsSearchSource
+                sourceKey.startsWith(DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX) -> {
+                    val query = sourceKey.replace(DesignerNewsSearchSource
                             .DESIGNER_NEWS_QUERY_PREFIX, "")
-                    sources.add(SourceItem.DesignerNewsSearchSource(query, activeState))
+                    sources.add(DesignerNewsSearchSource(query, activeState))
                 }
                 // remove deprecated sources
                 isDeprecatedDesignerNewsSource(sourceKey) -> dataSource.removeSource(sourceKey)
