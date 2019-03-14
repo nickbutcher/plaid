@@ -26,9 +26,10 @@ import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.DataManager
 import io.plaidapp.core.data.OnDataLoadedCallback
 import io.plaidapp.core.data.PlaidItem
-import io.plaidapp.core.data.Source
+import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.data.login.LoginRepository
+import io.plaidapp.core.dribbble.data.DribbbleSourceItem
 import io.plaidapp.core.feed.FeedProgressUiModel
 import io.plaidapp.core.feed.FeedUiModel
 import io.plaidapp.core.ui.expandPopularItems
@@ -72,7 +73,7 @@ class HomeViewModel(
     }
     // listener for notifying adapter when data sources are deactivated
     private val filtersChangedCallbacks = object : FiltersChangedCallback() {
-        override fun onFiltersChanged(changedFilter: Source) {
+        override fun onFiltersChanged(changedFilter: SourceItem) {
             if (!changedFilter.active) {
                 handleDataSourceRemoved(changedFilter.key, feedData.value.orEmpty())
             }
@@ -82,7 +83,7 @@ class HomeViewModel(
             handleDataSourceRemoved(sourceKey, feedData.value.orEmpty())
         }
 
-        override fun onFiltersUpdated(sources: List<Source>) {
+        override fun onFiltersUpdated(sources: List<SourceItem>) {
             updateSourcesUiModel(sources)
         }
     }
@@ -133,12 +134,12 @@ class HomeViewModel(
         if (query.isBlank()) {
             return
         }
-        val sources = mutableListOf<Source>()
+        val sources = mutableListOf<SourceItem>()
         if (isDribbble) {
-            sources.add(Source.DribbbleSearchSource(query, true))
+            sources.add(DribbbleSourceItem(query, true))
         }
         if (isDesignerNews) {
-            sources.add(Source.DesignerNewsSearchSource(query, true))
+            sources.add(SourceItem.DesignerNewsSearchSource(query, true))
         }
         viewModelScope.launch(dispatcherProvider.io) {
             sourcesRepository.addOrMarkActiveSources(sources)
@@ -152,7 +153,7 @@ class HomeViewModel(
         }
     }
 
-    private fun updateSourcesUiModel(sources: List<Source>) {
+    private fun updateSourcesUiModel(sources: List<SourceItem>) {
         val newSourcesUiModel = createNewSourceUiModels(sources)
         val oldSourceUiModel = _sources.value
         if (oldSourceUiModel == null) {
@@ -216,9 +217,9 @@ class HomeViewModel(
         feedData.value = items
     }
 
-    private fun createNewSourceUiModels(sources: List<Source>): List<SourceUiModel> {
+    private fun createNewSourceUiModels(sources: List<SourceItem>): List<SourceUiModel> {
         val mutableSources = sources.toMutableList()
-        Collections.sort(mutableSources, Source.SourceComparator())
+        Collections.sort(mutableSources, SourceItem.SourceComparator())
         return mutableSources.map {
             SourceUiModel(
                 it.key,

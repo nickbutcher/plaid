@@ -23,6 +23,7 @@ import io.plaidapp.core.data.prefs.SourcesRepository;
 import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.designernews.domain.LoadStoriesUseCase;
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase;
+import io.plaidapp.core.dribbble.data.DribbbleSourceItem;
 import io.plaidapp.core.dribbble.data.ShotsRepository;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
 import io.plaidapp.core.producthunt.domain.LoadPostsUseCase;
@@ -83,7 +84,7 @@ public class DataManager implements DataLoadingSubject {
     }
 
     public void loadAllDataSources() {
-        for (Source filter : sourcesRepository.getSourcesSync()) {
+        for (SourceItem filter : sourcesRepository.getSourcesSync()) {
             loadSource(filter);
         }
     }
@@ -103,11 +104,11 @@ public class DataManager implements DataLoadingSubject {
 
     private final FiltersChangedCallback filterListener = new FiltersChangedCallback() {
         @Override
-        public void onFiltersChanged(Source changedFilter) {
+        public void onFiltersChanged(SourceItem changedFilter) {
             if (changedFilter.getActive()) {
                 loadSource(changedFilter);
             } else { // filter deactivated
-                final String key = changedFilter.key;
+                final String key = changedFilter.getKey();
                 if (inflightCalls.containsKey(key)) {
                     final Call call = inflightCalls.get(key);
                     if (call != null) call.cancel();
@@ -121,11 +122,11 @@ public class DataManager implements DataLoadingSubject {
         }
     };
 
-    private void loadSource(Source source) {
+    private void loadSource(SourceItem source) {
         if (source.getActive()) {
             loadStarted();
-            final int page = getNextPageIndex(source.key);
-            switch (source.key) {
+            final int page = getNextPageIndex(source.getKey());
+            switch (source.getKey()) {
                 case SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR:
                     loadDesignerNewsStories(page);
                     break;
@@ -133,10 +134,10 @@ public class DataManager implements DataLoadingSubject {
                     loadProductHunt(page);
                     break;
                 default:
-                    if (source instanceof Source.DribbbleSearchSource) {
-                        loadDribbbleSearch((Source.DribbbleSearchSource) source, page);
-                    } else if (source instanceof Source.DesignerNewsSearchSource) {
-                        loadDesignerNewsSearch((Source.DesignerNewsSearchSource) source, page);
+                    if (source instanceof DribbbleSourceItem) {
+                        loadDribbbleSearch((DribbbleSourceItem) source, page);
+                    } else if (source instanceof SourceItem.DesignerNewsSearchSource) {
+                        loadDesignerNewsSearch((SourceItem.DesignerNewsSearchSource) source, page);
                     }
                     break;
             }
@@ -144,10 +145,10 @@ public class DataManager implements DataLoadingSubject {
     }
 
     private void setupPageIndexes() {
-        final List<Source> dateSources = sourcesRepository.getSourcesSync();
+        final List<SourceItem> dateSources = sourcesRepository.getSourcesSync();
         pageIndexes = new HashMap<>(dateSources.size());
-        for (Source source : dateSources) {
-            pageIndexes.put(source.key, 0);
+        for (SourceItem source : dateSources) {
+            pageIndexes.put(source.getKey(), 0);
         }
     }
 
@@ -191,25 +192,25 @@ public class DataManager implements DataLoadingSubject {
         });
     }
 
-    private void loadDesignerNewsSearch(final Source.DesignerNewsSearchSource source,
+    private void loadDesignerNewsSearch(final SourceItem.DesignerNewsSearchSource source,
                                         final int page) {
-        searchStoriesUseCase.invoke(source.key, page, (result, pageResult, sourceResult) -> {
+        searchStoriesUseCase.invoke(source.getKey(), page, (result, pageResult, sourceResult) -> {
             if (result instanceof Result.Success) {
-                sourceLoaded(((Result.Success<List<Story>>) result).getData(), page, source.key);
+                sourceLoaded(((Result.Success<List<Story>>) result).getData(), page, source.getKey());
             } else {
-                loadFailed(source.key);
+                loadFailed(source.getKey());
             }
             return Unit.INSTANCE;
         });
     }
 
-    private void loadDribbbleSearch(final Source.DribbbleSearchSource source, final int page) {
-        shotsRepository.search(source.query, page, result -> {
+    private void loadDribbbleSearch(final DribbbleSourceItem source, final int page) {
+        shotsRepository.search(source.getQuery(), page, result -> {
             if (result instanceof Result.Success) {
                 Result.Success<List<Shot>> success = (Result.Success<List<Shot>>) result;
-                sourceLoaded(success.getData(), page, source.key);
+                sourceLoaded(success.getData(), page, source.getKey());
             } else {
-                loadFailed(source.key);
+                loadFailed(source.getKey());
             }
             return Unit.INSTANCE;
         });

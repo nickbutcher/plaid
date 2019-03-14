@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.ui.filter
+package io.plaidapp.core.dribbble.data
 
+import io.plaidapp.core.R
 import io.plaidapp.core.data.SourceItem
 
-/**
- * Callbacks called when a filter was changed or when a filter was removed
- */
-abstract class FiltersChangedCallback {
+data class DribbbleSourceItem(
+    val query: String,
+    override var active: Boolean
+) : SourceItem(
+    DRIBBBLE_QUERY_PREFIX + query,
+    SEARCH_SORT_ORDER,
+    "“$query”",
+    R.drawable.ic_dribbble,
+    active,
+    true
+) {
 
-    open fun onFiltersChanged(changedFilter: SourceItem) {}
-
-    open fun onFilterRemoved(sourceKey: String) {}
-
-    open fun onFiltersUpdated(sources: List<SourceItem>) {}
+    companion object {
+        const val DRIBBBLE_QUERY_PREFIX = "DRIBBBLE_QUERY_"
+        private const val SEARCH_SORT_ORDER = 400
+    }
 }

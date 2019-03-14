@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.ui.filter
+package io.plaidapp.core.producthunt.data
 
+import io.plaidapp.core.R
 import io.plaidapp.core.data.SourceItem
+import io.plaidapp.core.data.prefs.SourcesRepository
 
-/**
- * Callbacks called when a filter was changed or when a filter was removed
- */
-abstract class FiltersChangedCallback {
-
-    open fun onFiltersChanged(changedFilter: SourceItem) {}
-
-    open fun onFilterRemoved(sourceKey: String) {}
-
-    open fun onFiltersUpdated(sources: List<SourceItem>) {}
-}
+data class ProductHuntSourceItem(override val name: String) : SourceItem(
+    SourcesRepository.SOURCE_PRODUCT_HUNT,
+    500,
+    name,
+    R.drawable.ic_product_hunt,
+    false
+)

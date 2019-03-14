@@ -16,9 +16,10 @@
 
 package io.plaidapp
 
-import io.plaidapp.core.data.Source
+import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryLinks
+import io.plaidapp.core.dribbble.data.DribbbleSourceItem
 import io.plaidapp.core.dribbble.data.api.model.Images
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.api.model.User
@@ -27,7 +28,7 @@ import io.plaidapp.core.ui.filter.SourceUiModel
 import java.util.Date
 import java.util.GregorianCalendar
 
-val designerNewsSource = Source.DesignerNewsSearchSource(
+val designerNewsSource = SourceItem.DesignerNewsSearchSource(
     "query",
     true
 )
@@ -40,7 +41,7 @@ val designerNewsSourceUiModel = SourceUiModel(
     onSourceClicked = {},
     onSourceDismissed = {}
 )
-val dribbbleSource = Source.DribbbleSearchSource("dribbble", true)
+val dribbbleSource = DribbbleSourceItem("dribbble", true)
 
 val post = Post(
     id = 345L,

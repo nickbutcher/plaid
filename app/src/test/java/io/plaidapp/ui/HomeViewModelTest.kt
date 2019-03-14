@@ -27,9 +27,10 @@ import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.DataManager
 import io.plaidapp.core.data.OnDataLoadedCallback
 import io.plaidapp.core.data.PlaidItem
-import io.plaidapp.core.data.Source
+import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.data.login.LoginRepository
+import io.plaidapp.core.dribbble.data.DribbbleSourceItem
 import io.plaidapp.core.feed.FeedProgressUiModel
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
 import io.plaidapp.core.ui.filter.SourcesHighlightUiModel
@@ -156,8 +157,8 @@ class HomeViewModelTest {
 
         // Then two sources are added to the repository
         val expected = listOf(
-            Source.DribbbleSearchSource("query", true),
-            Source.DesignerNewsSearchSource("query", true)
+            DribbbleSourceItem("query", true),
+            SourceItem.DesignerNewsSearchSource("query", true)
         )
         verify(sourcesRepository).addOrMarkActiveSources(expected)
     }
@@ -188,7 +189,7 @@ class HomeViewModelTest {
     @Test
     fun filtersUpdated_oneNewSource() {
         // Given a view model
-        val sources = mutableListOf<Source>(designerNewsSource)
+        val sources = mutableListOf<SourceItem>(designerNewsSource)
         val homeViewModel = createViewModel(sources)
         verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
@@ -296,7 +297,7 @@ class HomeViewModelTest {
         val initialFeed = LiveDataTestUtil.getValue(homeViewModel.getFeed(columns))
 
         // When an active source was changed
-        val activeSource = Source.DribbbleSearchSource("dribbble", true)
+        val activeSource = DribbbleSourceItem("dribbble", true)
         filtersChangedCallback.value.onFiltersChanged(activeSource)
 
         // Then feed didn't emit a new value
@@ -313,7 +314,7 @@ class HomeViewModelTest {
         )
 
         // When an inactive source was changed
-        val inactiveSource = Source.DribbbleSearchSource("dribbble", false)
+        val inactiveSource = DribbbleSourceItem("dribbble", false)
         filtersChangedCallback.value.onFiltersChanged(inactiveSource)
 
         // Then feed emits a new list, without the removed filter
@@ -383,7 +384,7 @@ class HomeViewModelTest {
     }
 
     private fun createViewModel(
-        list: List<Source> = emptyList()
+        list: List<SourceItem> = emptyList()
     ): HomeViewModel = runBlocking {
         whenever(sourcesRepository.getSources()).thenReturn(list)
         return@runBlocking HomeViewModel(
