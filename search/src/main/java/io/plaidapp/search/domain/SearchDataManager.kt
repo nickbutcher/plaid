@@ -20,7 +20,7 @@ import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.OnDataLoadedCallback
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.data.SourceItem
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSource
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
 import io.plaidapp.core.dribbble.data.DribbbleSourceItem
 import io.plaidapp.core.dribbble.data.ShotsRepository
@@ -75,7 +75,7 @@ class SearchDataManager @Inject constructor(
 
     private fun searchDesignerNews(query: String, resultsPage: Int) {
         loadStarted()
-        val source = SourceItem.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query
+        val source = DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query
         searchStories(source, resultsPage) { result, page, _ ->
             when (result) {
                 is Result.Success -> sourceLoaded(result.data, page)
@@ -107,7 +107,7 @@ class SearchDataManager @Inject constructor(
             setPage(result, page)
             setDataSource(
                 result,
-                SourceItem.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query
+                DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query
             )
             onDataLoadedCallback?.onDataLoaded(result)
         }

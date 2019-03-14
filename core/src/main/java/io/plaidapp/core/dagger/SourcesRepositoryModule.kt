@@ -24,6 +24,7 @@ import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.data.prefs.SourcesLocalDataSource
 import io.plaidapp.core.data.prefs.SourcesRepository
+import io.plaidapp.core.designernews.data.DesignerNewsSourceItem
 import io.plaidapp.core.dribbble.data.DribbbleSourceItem
 import io.plaidapp.core.producthunt.data.ProductHuntSourceItem
 
@@ -51,11 +52,13 @@ class SourcesRepositoryModule {
         val defaultProductHuntSourceName = context.getString(R.string.source_product_hunt)
 
         val defaultSources = mutableListOf<SourceItem>()
-        defaultSources.add(SourceItem.DesignerNewsSource(
+        defaultSources.add(
+            DesignerNewsSourceItem(
                 SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR,
                 100,
                 defaultDesignerNewsSourceName,
-                true))
+                true)
+        )
         // 200 sort order range left for DN searches
         defaultSources.add(DribbbleSourceItem(defaultDribbbleSourceName, true))
         // 400 sort order range left for dribbble searches

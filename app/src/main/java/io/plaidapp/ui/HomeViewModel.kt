@@ -28,6 +28,7 @@ import io.plaidapp.core.data.OnDataLoadedCallback
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.data.prefs.SourcesRepository
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSource
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.dribbble.data.DribbbleSourceItem
 import io.plaidapp.core.feed.FeedProgressUiModel
@@ -139,7 +140,7 @@ class HomeViewModel(
             sources.add(DribbbleSourceItem(query, true))
         }
         if (isDesignerNews) {
-            sources.add(SourceItem.DesignerNewsSearchSource(query, true))
+            sources.add(DesignerNewsSearchSource(query, true))
         }
         viewModelScope.launch(dispatcherProvider.io) {
             sourcesRepository.addOrMarkActiveSources(sources)
