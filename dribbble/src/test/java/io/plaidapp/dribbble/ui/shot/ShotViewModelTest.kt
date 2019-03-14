@@ -180,7 +180,7 @@ class ShotViewModelTest {
         whenever(repo.getShot(shotId)).thenReturn(Result.Success(shot))
         if (shareInfo != null) {
             runBlocking {
-              whenever(getShareShotInfoUseCase(any())).thenReturn(shareInfo)
+                whenever(getShareShotInfoUseCase(any())).thenReturn(shareInfo)
             }
         }
         return ShotViewModel(
@@ -190,5 +190,5 @@ class ShotViewModelTest {
             getShareShotInfoUseCase,
             provideFakeCoroutinesContextProvider(context)
         )
-      }
+    }
 }
