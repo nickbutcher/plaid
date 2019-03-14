@@ -33,7 +33,6 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.SpannedString;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.transition.TransitionManager;
@@ -243,7 +242,7 @@ public class HomeActivity extends FragmentActivity {
                     @Override
                     public boolean isDataLoading() {
                         FeedProgressUiModel uiModel = viewModel.getFeedProgress().getValue();
-                        if(uiModel !=  null){
+                        if (uiModel != null) {
                             return uiModel.isLoading();
                         }
                         return false;
