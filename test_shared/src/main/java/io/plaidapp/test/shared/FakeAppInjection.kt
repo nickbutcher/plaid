@@ -16,8 +16,20 @@
 
 package io.plaidapp.test.shared
 
+import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers.Unconfined
+import kotlin.coroutines.CoroutineContext
 
-fun provideFakeCoroutinesDispatcherProvider(): CoroutinesDispatcherProvider =
-    CoroutinesDispatcherProvider(Unconfined, Unconfined, Unconfined)
+fun provideFakeCoroutinesDispatcherProvider(dispatcher: CoroutineDispatcher = Unconfined): CoroutinesDispatcherProvider =
+    CoroutinesDispatcherProvider(dispatcher, dispatcher, dispatcher)
+
+/**
+ * Use CoroutineContext when the use of TestCoroutineContext is necessary for testing,
+ * replace with TestCoroutineDispatcher when available.
+ *
+ * @see https://github.com/Kotlin/kotlinx.coroutines/pull/890
+ */
+fun provideFakeCoroutinesContextProvider(context: CoroutineContext = Unconfined): CoroutinesContextProvider =
+    CoroutinesContextProvider(context, context, context)

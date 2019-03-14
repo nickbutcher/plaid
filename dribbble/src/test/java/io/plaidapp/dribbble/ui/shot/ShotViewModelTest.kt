@@ -31,12 +31,18 @@ import io.plaidapp.dribbble.domain.ShareShotInfo
 import io.plaidapp.dribbble.testShot
 import io.plaidapp.dribbble.testShotUiModel
 import io.plaidapp.test.shared.LiveDataTestUtil
-import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
+import io.plaidapp.test.shared.provideFakeCoroutinesContextProvider
+import kotlinx.coroutines.Dispatchers.Unconfined
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineContext
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Tests for [ShotViewModel], mocking out its dependencies.
@@ -65,6 +71,28 @@ class ShotViewModelTest {
         assertNotNull(result)
     }
 
+  @Test
+  @ObsoleteCoroutinesApi
+  fun loadShot_emitsTwoUiModels() {
+    val testContext = TestCoroutineContext()
+
+    // Here we create the VM that should post 2 objects to LiveData
+    val viewModel = withViewModel(context = testContext)
+
+    // Checking the fast result has been emitted
+    val fastResult: ShotUiModel? = LiveDataTestUtil.getValue(viewModel.shotUiModel)
+    assertNotNull(fastResult)
+    assertTrue(fastResult!!.formattedDescription.isEmpty())
+
+    // Triggering the launch in the method
+    testContext.triggerActions()
+
+    // Checking the slow result has been emitted
+    val slowResult: ShotUiModel? = LiveDataTestUtil.getValue(viewModel.shotUiModel)
+    assertNotNull(slowResult)
+    assertTrue(slowResult!!.formattedDescription.isNotEmpty())
+  }
+
     @Test(expected = IllegalStateException::class)
     fun loadShot_notInRepo() {
         // Given that the repo fails to return the requested shot
@@ -76,7 +104,7 @@ class ShotViewModelTest {
             repo,
             createShotUiModel,
             getShareShotInfoUseCase,
-            provideFakeCoroutinesDispatcherProvider()
+            provideFakeCoroutinesContextProvider()
         )
         // Then it throws
     }
@@ -143,22 +171,24 @@ class ShotViewModelTest {
         assertEquals(id, shotId)
     }
 
-    private fun withViewModel(
-        shot: Shot = testShot,
-        shareInfo: ShareShotInfo? = null
-    ): ShotViewModel {
-        whenever(repo.getShot(shotId)).thenReturn(Result.Success(shot))
-        if (shareInfo != null) {
-            runBlocking {
-                whenever(getShareShotInfoUseCase(any())).thenReturn(shareInfo)
-            }
-        }
-        return ShotViewModel(
-            shotId,
-            repo,
-            createShotUiModel,
-            getShareShotInfoUseCase,
-            provideFakeCoroutinesDispatcherProvider()
-        )
+  @ExperimentalCoroutinesApi
+  private fun withViewModel(
+      shot: Shot = testShot,
+      shareInfo: ShareShotInfo? = null,
+      context: CoroutineContext = Unconfined
+  ): ShotViewModel {
+    whenever(repo.getShot(shotId)).thenReturn(Result.Success(shot))
+    if (shareInfo != null) {
+      runBlocking {
+        whenever(getShareShotInfoUseCase(any())).thenReturn(shareInfo)
+      }
     }
+    return ShotViewModel(
+        shotId,
+        repo,
+        createShotUiModel,
+        getShareShotInfoUseCase,
+        provideFakeCoroutinesContextProvider(context)
+    )
+  }
 }

@@ -20,7 +20,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.plaidapp.core.data.CoroutinesDispatcherProvider
+import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.api.model.Shot
@@ -39,7 +39,7 @@ class ShotViewModel @Inject constructor(
     shotsRepository: ShotsRepository,
     private val createShotUiModel: CreateShotUiModelUseCase,
     private val getShareShotInfo: GetShareShotInfoUseCase,
-    private val dispatcherProvider: CoroutinesDispatcherProvider
+    private val contextProvider: CoroutinesContextProvider
 ) : ViewModel() {
 
     private val _shotUiModel = MutableLiveData<ShotUiModel>()
@@ -67,7 +67,7 @@ class ShotViewModel @Inject constructor(
 
     fun shareShotRequested() {
         _shotUiModel.value?.let { model ->
-            viewModelScope.launch(dispatcherProvider.io) {
+          viewModelScope.launch(contextProvider.io) {
                 val shareInfo = getShareShotInfo(model)
                 _shareShot.postValue(Event(shareInfo))
             }
@@ -89,7 +89,7 @@ class ShotViewModel @Inject constructor(
     }
 
     private fun processUiModel(shot: Shot) {
-        viewModelScope.launch(dispatcherProvider.main) {
+      viewModelScope.launch(contextProvider.main) {
             val uiModel = createShotUiModel(shot)
             _shotUiModel.value = uiModel
         }
