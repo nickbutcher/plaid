@@ -20,11 +20,11 @@ package io.plaidapp.core.ui
 
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.PlaidItemSorting
-import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.domain.StoryWeigher
 import io.plaidapp.core.dribbble.data.api.ShotWeigher
 import io.plaidapp.core.dribbble.data.api.model.Shot
+import io.plaidapp.core.producthunt.data.ProductHuntSourceItem.Companion.SOURCE_PRODUCT_HUNT
 import io.plaidapp.core.producthunt.data.api.PostWeigher
 import io.plaidapp.core.producthunt.data.api.model.Post
 import java.util.Collections
@@ -96,9 +96,9 @@ private fun weighItems(items: MutableList<out PlaidItem>?) {
 
     // some sources should just use the natural order i.e. as returned by the API as users
     // have an expectation about the order they appear in
-    items.filter { SourcesRepository.SOURCE_PRODUCT_HUNT == it.dataSource }.apply {
-            PlaidItemSorting.NaturalOrderWeigher().weigh(this)
-        }
+    items.filter { SOURCE_PRODUCT_HUNT == it.dataSource }.apply {
+        PlaidItemSorting.NaturalOrderWeigher().weigh(this)
+    }
 
     // otherwise use our own weight calculation. We prefer this as it leads to a less
     // regular pattern of items in the grid
@@ -108,7 +108,7 @@ private fun weighItems(items: MutableList<out PlaidItem>?) {
     items.filter { it is Story }.apply {
         StoryWeigher().weigh(this as List<Story>)
     }
-    items.filter { it is Post && SourcesRepository.SOURCE_PRODUCT_HUNT != it.dataSource }.apply {
+    items.filter { it is Post && SOURCE_PRODUCT_HUNT != it.dataSource }.apply {
         PostWeigher().weigh(this as List<Post>)
     }
 }

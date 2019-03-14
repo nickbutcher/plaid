@@ -37,7 +37,7 @@ data class DesignerNewsSearchSource(
 ) {
 
     companion object {
-
+        const val SOURCE_DESIGNER_NEWS_POPULAR = "SOURCE_DESIGNER_NEWS_POPULAR"
         const val DESIGNER_NEWS_QUERY_PREFIX = "DESIGNER_NEWS_QUERY_"
         private const val SEARCH_SORT_ORDER = 200
     }

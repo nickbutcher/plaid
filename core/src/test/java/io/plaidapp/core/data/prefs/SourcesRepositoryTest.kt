@@ -21,10 +21,10 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.SourceItem
-import io.plaidapp.core.data.prefs.SourcesRepository.Companion.SOURCE_PRODUCT_HUNT
 import io.plaidapp.core.dribbble.data.DribbbleSourceItem
 import io.plaidapp.core.dribbble.data.DribbbleSourceItem.Companion.DRIBBBLE_QUERY_PREFIX
 import io.plaidapp.core.producthunt.data.ProductHuntSourceItem
+import io.plaidapp.core.producthunt.data.ProductHuntSourceItem.Companion.SOURCE_PRODUCT_HUNT
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking

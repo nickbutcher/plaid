@@ -154,8 +154,6 @@ class SourcesRepository(
     }
 
     companion object {
-        const val SOURCE_DESIGNER_NEWS_POPULAR = "SOURCE_DESIGNER_NEWS_POPULAR"
-        const val SOURCE_PRODUCT_HUNT = "SOURCE_PRODUCT_HUNT"
 
         @Volatile
         private var INSTANCE: SourcesRepository? = null

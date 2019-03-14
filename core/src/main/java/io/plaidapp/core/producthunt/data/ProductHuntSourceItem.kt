@@ -18,12 +18,15 @@ package io.plaidapp.core.producthunt.data
 
 import io.plaidapp.core.R
 import io.plaidapp.core.data.SourceItem
-import io.plaidapp.core.data.prefs.SourcesRepository
 
 data class ProductHuntSourceItem(override val name: String) : SourceItem(
-    SourcesRepository.SOURCE_PRODUCT_HUNT,
+    SOURCE_PRODUCT_HUNT,
     500,
     name,
     R.drawable.ic_product_hunt,
     false
-)
+) {
+    companion object {
+        const val SOURCE_PRODUCT_HUNT = "SOURCE_PRODUCT_HUNT"
+    }
+}
