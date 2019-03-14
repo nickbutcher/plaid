@@ -16,12 +16,23 @@
 
 package io.plaidapp.core.data
 
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 /**
  * Provide coroutines context.
+ *
+ * Prefer usage of [CoroutinesDispatcherProvider]
  */
+@Deprecated(
+    message = "Use CoroutinesDispatcherProvider instead",
+    replaceWith = ReplaceWith(
+        expression = "CoroutinesDispatcherProvider",
+        imports = ["io.plaidapp.core.data.CoroutinesDispatcherProvider"]
+    )
+)
+@ObsoleteCoroutinesApi
 data class CoroutinesContextProvider(
     val main: CoroutineContext,
     val computation: CoroutineContext,
