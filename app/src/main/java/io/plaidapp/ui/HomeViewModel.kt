@@ -107,6 +107,8 @@ class HomeViewModel(
 
     fun getFeed(columns: Int): LiveData<FeedUiModel> {
         return Transformations.switchMap(feedData) {
+            // TODO move this on a background thread
+            //  https://github.com/nickbutcher/plaid/issues/658
             expandPopularItems(it, columns)
             return@switchMap MutableLiveData(FeedUiModel(it))
         }
