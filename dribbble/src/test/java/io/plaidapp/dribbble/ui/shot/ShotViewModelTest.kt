@@ -71,27 +71,27 @@ class ShotViewModelTest {
         assertNotNull(result)
     }
 
-  @Test
-  @ObsoleteCoroutinesApi
-  fun loadShot_emitsTwoUiModels() {
-    val testContext = TestCoroutineContext()
+    @Test
+    @ObsoleteCoroutinesApi
+    fun loadShot_emitsTwoUiModels() {
+        val testContext = TestCoroutineContext()
 
-    // Here we create the VM that should post 2 objects to LiveData
-    val viewModel = withViewModel(context = testContext)
+        // Here we create the VM that should post 2 objects to LiveData
+        val viewModel = withViewModel(context = testContext)
 
-    // Checking the fast result has been emitted
-    val fastResult: ShotUiModel? = LiveDataTestUtil.getValue(viewModel.shotUiModel)
-    assertNotNull(fastResult)
-    assertTrue(fastResult!!.formattedDescription.isEmpty())
+        // Checking the fast result has been emitted
+        val fastResult: ShotUiModel? = LiveDataTestUtil.getValue(viewModel.shotUiModel)
+        assertNotNull(fastResult)
+        assertTrue(fastResult!!.formattedDescription.isEmpty())
 
-    // Triggering the launch in the method
-    testContext.triggerActions()
+        // Triggering the launch in the method
+        testContext.triggerActions()
 
-    // Checking the slow result has been emitted
-    val slowResult: ShotUiModel? = LiveDataTestUtil.getValue(viewModel.shotUiModel)
-    assertNotNull(slowResult)
-    assertTrue(slowResult!!.formattedDescription.isNotEmpty())
-  }
+        // Checking the slow result has been emitted
+        val slowResult: ShotUiModel? = LiveDataTestUtil.getValue(viewModel.shotUiModel)
+        assertNotNull(slowResult)
+        assertTrue(slowResult!!.formattedDescription.isNotEmpty())
+    }
 
     @Test(expected = IllegalStateException::class)
     fun loadShot_notInRepo() {
@@ -171,24 +171,24 @@ class ShotViewModelTest {
         assertEquals(id, shotId)
     }
 
-  @ExperimentalCoroutinesApi
-  private fun withViewModel(
-      shot: Shot = testShot,
-      shareInfo: ShareShotInfo? = null,
-      context: CoroutineContext = Unconfined
-  ): ShotViewModel {
-    whenever(repo.getShot(shotId)).thenReturn(Result.Success(shot))
-    if (shareInfo != null) {
-      runBlocking {
-        whenever(getShareShotInfoUseCase(any())).thenReturn(shareInfo)
+    @ExperimentalCoroutinesApi
+    private fun withViewModel(
+        shot: Shot = testShot,
+        shareInfo: ShareShotInfo? = null,
+        context: CoroutineContext = Unconfined
+    ): ShotViewModel {
+        whenever(repo.getShot(shotId)).thenReturn(Result.Success(shot))
+        if (shareInfo != null) {
+            runBlocking {
+              whenever(getShareShotInfoUseCase(any())).thenReturn(shareInfo)
+            }
+        }
+        return ShotViewModel(
+            shotId,
+            repo,
+            createShotUiModel,
+            getShareShotInfoUseCase,
+            provideFakeCoroutinesContextProvider(context)
+        )
       }
-    }
-    return ShotViewModel(
-        shotId,
-        repo,
-        createShotUiModel,
-        getShareShotInfoUseCase,
-        provideFakeCoroutinesContextProvider(context)
-    )
-  }
 }

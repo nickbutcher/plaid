@@ -67,7 +67,7 @@ class ShotViewModel @Inject constructor(
 
     fun shareShotRequested() {
         _shotUiModel.value?.let { model ->
-          viewModelScope.launch(contextProvider.io) {
+            viewModelScope.launch(contextProvider.io) {
                 val shareInfo = getShareShotInfo(model)
                 _shareShot.postValue(Event(shareInfo))
             }
@@ -89,7 +89,7 @@ class ShotViewModel @Inject constructor(
     }
 
     private fun processUiModel(shot: Shot) {
-      viewModelScope.launch(contextProvider.main) {
+        viewModelScope.launch(contextProvider.main) {
             val uiModel = createShotUiModel(shot)
             _shotUiModel.value = uiModel
         }
