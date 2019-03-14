@@ -20,6 +20,7 @@ package io.plaidapp.core.data;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import io.plaidapp.core.data.prefs.SourcesRepository;
+import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.designernews.domain.LoadStoriesUseCase;
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase;
 import io.plaidapp.core.dribbble.data.ShotsRepository;
@@ -39,7 +40,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Responsible for loading data from the various sources. Instantiating classes are responsible for
  * providing the {code onDataLoaded} method to do something with the data.
  */
-public class DataManager implements LoadSourceCallback, DataLoadingSubject {
+public class DataManager implements DataLoadingSubject {
 
     private final AtomicInteger loadingCount = new AtomicInteger(0);
     private List<DataLoadingCallbacks> loadingCallbacks;
@@ -101,24 +102,24 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
     }
 
     private final FiltersChangedCallback filterListener = new FiltersChangedCallback() {
-                @Override
-                public void onFiltersChanged(Source changedFilter) {
-                    if (changedFilter.getActive()) {
-                        loadSource(changedFilter);
-                    } else { // filter deactivated
-                        final String key = changedFilter.key;
-                        if (inflightCalls.containsKey(key)) {
-                            final Call call = inflightCalls.get(key);
-                            if (call != null) call.cancel();
-                            inflightCalls.remove(key);
-                        }
-                        loadStoriesUseCase.cancelRequestOfSource(key);
-                        searchStoriesUseCase.cancelRequestOfSource(key);
-                        // clear the page index for the source
-                        pageIndexes.put(key, 0);
-                    }
+        @Override
+        public void onFiltersChanged(Source changedFilter) {
+            if (changedFilter.getActive()) {
+                loadSource(changedFilter);
+            } else { // filter deactivated
+                final String key = changedFilter.key;
+                if (inflightCalls.containsKey(key)) {
+                    final Call call = inflightCalls.get(key);
+                    if (call != null) call.cancel();
+                    inflightCalls.remove(key);
                 }
-            };
+                loadStoriesUseCase.cancelRequestOfSource(key);
+                searchStoriesUseCase.cancelRequestOfSource(key);
+                // clear the page index for the source
+                pageIndexes.put(key, 0);
+            }
+        }
+    };
 
     private void loadSource(Source source) {
         if (source.getActive()) {
@@ -163,9 +164,8 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
         return pageIndexes.get(key) != 0;
     }
 
-    @Override
-    public void sourceLoaded(@Nullable List<? extends PlaidItem> data, int page,
-                             @NonNull String source) {
+    private void sourceLoaded(@Nullable List<? extends PlaidItem> data, int page,
+                              @NonNull String source) {
         loadFinished();
         if (data != null && !data.isEmpty() && sourceIsEnabled(source)) {
             setPage(data, page);
@@ -175,19 +175,32 @@ public class DataManager implements LoadSourceCallback, DataLoadingSubject {
         inflightCalls.remove(source);
     }
 
-    @Override
-    public void loadFailed(@NonNull String source) {
+    private void loadFailed(@NonNull String source) {
         loadFinished();
         inflightCalls.remove(source);
     }
 
     private void loadDesignerNewsStories(final int page) {
-        loadStoriesUseCase.invoke(page, this);
+        loadStoriesUseCase.invoke(page, (result, pageResult, source) -> {
+            if (result instanceof Result.Success) {
+                sourceLoaded(((Result.Success<List<Story>>) result).getData(), page, source);
+            } else {
+                loadFailed(source);
+            }
+            return Unit.INSTANCE;
+        });
     }
 
     private void loadDesignerNewsSearch(final Source.DesignerNewsSearchSource source,
                                         final int page) {
-        searchStoriesUseCase.invoke(source.key, page, this);
+        searchStoriesUseCase.invoke(source.key, page, (result, pageResult, sourceResult) -> {
+            if (result instanceof Result.Success) {
+                sourceLoaded(((Result.Success<List<Story>>) result).getData(), page, source.key);
+            } else {
+                loadFailed(source.key);
+            }
+            return Unit.INSTANCE;
+        });
     }
 
     private void loadDribbbleSearch(final Source.DribbbleSearchSource source, final int page) {
