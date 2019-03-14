@@ -18,7 +18,7 @@ package io.plaidapp.core.designernews.domain
 
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.data.prefs.SourcesRepository
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSource.Companion.SOURCE_DESIGNER_NEWS_POPULAR
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.toStory
@@ -47,7 +47,7 @@ class LoadStoriesUseCase @Inject constructor(
         page: Int,
         onResult: (result: Result<List<Story>>, page: Int, source: String) -> Unit
     ) {
-        val jobId = "${SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR}::$page"
+        val jobId = "$SOURCE_DESIGNER_NEWS_POPULAR::$page"
         parentJobs[jobId] = launchLoad(page, onResult, jobId)
     }
 
@@ -65,13 +65,13 @@ class LoadStoriesUseCase @Inject constructor(
                     onResult(
                         Result.Success(stories),
                         page,
-                        SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR
+                        SOURCE_DESIGNER_NEWS_POPULAR
                     )
                 }
             }
             is Result.Error -> {
                 withContext(dispatcherProvider.main) {
-                    onResult(result, page, SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR)
+                    onResult(result, page, SOURCE_DESIGNER_NEWS_POPULAR)
                 }
             }
         }.exhaustive

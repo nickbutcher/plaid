@@ -38,6 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static io.plaidapp.core.designernews.data.DesignerNewsSearchSource.SOURCE_DESIGNER_NEWS_POPULAR;
+import static io.plaidapp.core.producthunt.data.ProductHuntSourceItem.SOURCE_PRODUCT_HUNT;
+
 /**
  * Responsible for loading data from the various sources. Instantiating classes are responsible for
  * providing the {code onDataLoaded} method to do something with the data.
@@ -128,10 +131,10 @@ public class DataManager implements DataLoadingSubject {
             loadStarted();
             final int page = getNextPageIndex(source.getKey());
             switch (source.getKey()) {
-                case SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR:
+                case SOURCE_DESIGNER_NEWS_POPULAR:
                     loadDesignerNewsStories(page);
                     break;
-                case SourcesRepository.SOURCE_PRODUCT_HUNT:
+                case SOURCE_PRODUCT_HUNT:
                     loadProductHunt(page);
                     break;
                 default:
@@ -222,11 +225,11 @@ public class DataManager implements DataLoadingSubject {
         loadPosts.invoke(
                 page - 1,
                 it -> {
-                    sourceLoaded(it, page, SourcesRepository.SOURCE_PRODUCT_HUNT);
+                    sourceLoaded(it, page, SOURCE_PRODUCT_HUNT);
                     return Unit.INSTANCE;
                 },
                 error -> {
-                    loadFailed(SourcesRepository.SOURCE_PRODUCT_HUNT);
+                    loadFailed(SOURCE_PRODUCT_HUNT);
                     return Unit.INSTANCE;
                 });
     }

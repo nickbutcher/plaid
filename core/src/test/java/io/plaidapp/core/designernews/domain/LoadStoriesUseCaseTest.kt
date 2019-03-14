@@ -19,7 +19,7 @@ package io.plaidapp.core.designernews.domain
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.data.prefs.SourcesRepository
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSource.Companion.SOURCE_DESIGNER_NEWS_POPULAR
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
@@ -84,7 +84,7 @@ class LoadStoriesUseCaseTest {
         loadStoriesUseCase(1) { resultData, page, source ->
             result = resultData
             assertEquals(1, page)
-            assertEquals(SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR, source)
+            assertEquals(SOURCE_DESIGNER_NEWS_POPULAR, source)
         }
 
         // Then the result was triggered
@@ -102,7 +102,7 @@ class LoadStoriesUseCaseTest {
         loadStoriesUseCase(2) { resultData, page, source ->
             result = resultData
             assertEquals(2, page)
-            assertEquals(SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR, source)
+            assertEquals(SOURCE_DESIGNER_NEWS_POPULAR, source)
         }
 
         // Then the result was triggered
