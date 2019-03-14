@@ -17,10 +17,11 @@
 package io.plaidapp.core.designernews.domain
 
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
-import io.plaidapp.core.data.LoadSourceCallback
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
+import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.toStory
+import io.plaidapp.core.util.exhaustive
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
@@ -40,27 +41,36 @@ class SearchStoriesUseCase @Inject constructor(
 
     private val parentJobs = mutableMapOf<String, Job>()
 
-    operator fun invoke(query: String, page: Int, callback: LoadSourceCallback) {
+    operator fun invoke(
+        query: String,
+        page: Int,
+        onResult: (result: Result<List<Story>>, page: Int, source: String) -> Unit
+    ) {
         val jobId = "$query::$page"
-        parentJobs[jobId] = launchRequest(query, page, callback, jobId)
+        parentJobs[jobId] = launchRequest(query, page, onResult, jobId)
     }
 
     private fun launchRequest(
         query: String,
         page: Int,
-        callback: LoadSourceCallback,
+        onResult: (result: Result<List<Story>>, page: Int, source: String) -> Unit,
         jobId: String
     ) = scope.launch(dispatcherProvider.computation) {
         val result = storiesRepository.search(query, page)
         parentJobs.remove(jobId)
-        if (result is Result.Success) {
-            val stories = result.data.map { it.toStory() }
-            withContext(dispatcherProvider.main) {
-                callback.sourceLoaded(stories, page, query)
+        when (result) {
+            is Result.Success -> {
+                val stories = result.data.map { it.toStory() }
+                withContext(dispatcherProvider.main) {
+                    onResult(Result.Success(stories), page, query)
+                }
             }
-        } else {
-            withContext(dispatcherProvider.main) { callback.loadFailed(query) }
-        }
+            is Result.Error -> {
+                withContext(dispatcherProvider.main) {
+                    onResult(result, page, query)
+                }
+            }
+        }.exhaustive
     }
 
     fun cancelAllRequests() {

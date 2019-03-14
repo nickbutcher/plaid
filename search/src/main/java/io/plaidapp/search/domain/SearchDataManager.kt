@@ -17,7 +17,6 @@
 package io.plaidapp.search.domain
 
 import io.plaidapp.core.data.DataLoadingSubject
-import io.plaidapp.core.data.LoadSourceCallback
 import io.plaidapp.core.data.OnDataLoadedCallback
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
@@ -25,6 +24,7 @@ import io.plaidapp.core.data.Source
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.api.model.Shot
+import io.plaidapp.core.util.exhaustive
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
@@ -35,7 +35,7 @@ import javax.inject.Inject
 class SearchDataManager @Inject constructor(
     private val shotsRepository: ShotsRepository,
     private val searchStories: SearchStoriesUseCase
-) : DataLoadingSubject, LoadSourceCallback {
+) : DataLoadingSubject {
 
     var onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>? = null
 
@@ -75,7 +75,12 @@ class SearchDataManager @Inject constructor(
     private fun searchDesignerNews(query: String, resultsPage: Int) {
         loadStarted()
         val source = Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query
-        searchStories(source, resultsPage, this)
+        searchStories(source, resultsPage) { result, page, _ ->
+            when (result) {
+                is Result.Success -> sourceLoaded(result.data, page)
+                is Result.Error -> loadFinished()
+            }.exhaustive
+        }
     }
 
     private fun searchDribbble(query: String, resultsPage: Int) {
@@ -95,7 +100,7 @@ class SearchDataManager @Inject constructor(
         }
     }
 
-    override fun sourceLoaded(result: List<PlaidItem>?, page: Int, source: String) {
+    private fun sourceLoaded(result: List<PlaidItem>?, page: Int) {
         loadFinished()
         if (result != null) {
             setPage(result, page)
@@ -106,8 +111,6 @@ class SearchDataManager @Inject constructor(
             onDataLoadedCallback?.onDataLoaded(result)
         }
     }
-
-    override fun loadFailed(source: String) = loadFinished()
 
     override fun registerCallback(callback: DataLoadingSubject.DataLoadingCallbacks) {
         loadingCallbacks.add(callback)
