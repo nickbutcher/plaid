@@ -32,16 +32,4 @@ class VotesRepository(private val remoteDataSource: VotesRemoteDataSource) {
         // TODO save the response in the database
         return remoteDataSource.upvoteComment(commentId, userId)
     }
-
-    companion object {
-        @Volatile
-        private var INSTANCE: VotesRepository? = null
-
-        fun getInstance(remoteDataSource: VotesRemoteDataSource): VotesRepository {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE
-                    ?: VotesRepository(remoteDataSource).also { INSTANCE = it }
-            }
-        }
-    }
 }

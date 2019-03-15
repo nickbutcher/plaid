@@ -24,6 +24,7 @@ import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.BuildConfig
 import io.plaidapp.core.dagger.DesignerNewsApi
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.data.api.DeEnvelopingConverter
 import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.core.designernews.data.api.DesignerNewsSearchConverter
@@ -45,6 +46,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class DesignerNewsDataModule {
 
     @Provides
+    @FeatureScope
     fun provideLoginRepository(
         localSource: LoginLocalDataSource,
         remoteSource: LoginRemoteDataSource
@@ -52,6 +54,7 @@ class DesignerNewsDataModule {
         LoginRepository.getInstance(localSource, remoteSource)
 
     @Provides
+    @FeatureScope
     fun provideAuthTokenLocalDataSource(
         sharedPreferences: SharedPreferences
     ): AuthTokenLocalDataSource =
@@ -69,6 +72,7 @@ class DesignerNewsDataModule {
     }
 
     @Provides
+    @FeatureScope
     fun provideDesignerNewsService(
         @DesignerNewsApi client: Lazy<OkHttpClient>,
         gson: Gson
@@ -85,12 +89,14 @@ class DesignerNewsDataModule {
     }
 
     @Provides
+    @FeatureScope
     fun provideStoriesRepository(
         storiesRemoteDataSource: StoriesRemoteDataSource
     ): StoriesRepository =
         StoriesRepository.getInstance(storiesRemoteDataSource)
 
     @Provides
+    @FeatureScope
     fun provideStoriesRemoteDataSource(service: DesignerNewsService): StoriesRemoteDataSource {
         return StoriesRemoteDataSource.getInstance(service)
     }

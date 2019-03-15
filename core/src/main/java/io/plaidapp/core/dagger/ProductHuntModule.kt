@@ -21,6 +21,7 @@ import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.BuildConfig
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.api.DeEnvelopingConverter
 import io.plaidapp.core.producthunt.data.ProductHuntRemoteDataSource
@@ -38,6 +39,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class ProductHuntModule {
 
     @Provides
+    @FeatureScope
     fun provideProductHuntRepository(
         remoteDataSource: ProductHuntRemoteDataSource,
         dispatcherProvider: CoroutinesDispatcherProvider
@@ -54,6 +56,7 @@ class ProductHuntModule {
     }
 
     @Provides
+    @FeatureScope
     fun provideProductHuntService(
         @ProductHuntApi okhttpClient: Lazy<OkHttpClient>,
         converterFactory: GsonConverterFactory,

@@ -20,6 +20,7 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.R
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.data.prefs.SourcesLocalDataSource
@@ -36,6 +37,7 @@ import io.plaidapp.core.producthunt.data.ProductHuntSourceItem
 class SourcesRepositoryModule {
 
     @Provides
+    @FeatureScope
     fun provideSourceRepository(
         context: Context,
         dispatcherProvider: CoroutinesDispatcherProvider

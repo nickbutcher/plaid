@@ -20,17 +20,20 @@ import android.app.Service
 import android.content.Context
 import dagger.Module
 import dagger.Provides
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
 
 /**
  * Dagger module for [UpvoteStoryService].
  */
-@Module(includes = [DesignerNewsDataModule::class])
+@Module
 class UpvoteStoryServiceModule(private val service: UpvoteStoryService) {
 
     @Provides
+    @FeatureScope
     fun context(): Context = service
 
     @Provides
+    @FeatureScope
     fun service(): Service = service
 }

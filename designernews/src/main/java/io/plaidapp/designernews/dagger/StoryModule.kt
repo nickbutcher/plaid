@@ -19,6 +19,7 @@ package io.plaidapp.designernews.dagger
 import androidx.lifecycle.ViewModelProviders
 import dagger.Module
 import dagger.Provides
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.designernews.data.api.DesignerNewsService
 import io.plaidapp.designernews.data.comments.CommentsRemoteDataSource
@@ -79,18 +80,22 @@ class StoryModule(private val storyId: Long, private val activity: StoryActivity
         )
 
     @Provides
+    @FeatureScope
     fun provideUserRepository(dataSource: UserRemoteDataSource): UserRepository =
-        UserRepository.getInstance(dataSource)
+        UserRepository(dataSource)
 
     @Provides
+    @FeatureScope
     fun provideCommentsRemoteDataSource(service: DesignerNewsService): CommentsRemoteDataSource =
-        CommentsRemoteDataSource.getInstance(service)
+        CommentsRemoteDataSource(service)
 
     @Provides
+    @FeatureScope
     fun provideVotesRepository(remoteDataSource: VotesRemoteDataSource): VotesRepository =
-        VotesRepository.getInstance(remoteDataSource)
+        VotesRepository(remoteDataSource)
 
     @Provides
+    @FeatureScope
     fun provideCommentsRepository(dataSource: CommentsRemoteDataSource): CommentsRepository =
-        CommentsRepository.getInstance(dataSource)
+        CommentsRepository(dataSource)
 }

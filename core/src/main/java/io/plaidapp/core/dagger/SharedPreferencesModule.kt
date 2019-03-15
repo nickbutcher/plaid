@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
+import io.plaidapp.core.dagger.scope.FeatureScope
 
 /**
  * Provide [SharedPreferences] to this app's components.
@@ -27,7 +28,9 @@ import dagger.Provides
 @Module
 open class SharedPreferencesModule(val context: Context, val name: String) {
 
-    @Provides fun provideSharedPreferences(): SharedPreferences {
+    @Provides
+    @FeatureScope
+    fun provideSharedPreferences(): SharedPreferences {
         return context.applicationContext.getSharedPreferences(name, Context.MODE_PRIVATE)
     }
 }

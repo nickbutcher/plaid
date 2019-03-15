@@ -24,4 +24,4 @@ import kotlin.annotation.AnnotationRetention.RUNTIME
  */
 @Scope
 @Retention(RUNTIME)
-annotation class ModuleScope
+annotation class FeatureScope

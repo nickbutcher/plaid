@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import dagger.Module
 import dagger.Provides
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
@@ -39,6 +40,7 @@ import io.plaidapp.dribbble.ui.shot.ShotViewModelFactory
 class DribbbleModule(private val activity: ShotActivity, private val shotId: Long) {
 
     @Provides
+    @FeatureScope
     fun provideContext(): Context = activity
 
     @Provides
@@ -47,6 +49,7 @@ class DribbbleModule(private val activity: ShotActivity, private val shotId: Lon
     }
 
     @Provides
+    @FeatureScope
     fun chromeFader(): ElasticDragDismissFrameLayout.SystemChromeFader {
         return object : ElasticDragDismissFrameLayout.SystemChromeFader(activity) {
             override fun onDragDismissed() {
@@ -56,6 +59,7 @@ class DribbbleModule(private val activity: ShotActivity, private val shotId: Lon
     }
 
     @Provides
+    @FeatureScope
     fun htmlParser() = HtmlParser()
 
     @Provides
@@ -75,5 +79,6 @@ class DribbbleModule(private val activity: ShotActivity, private val shotId: Lon
     }
 
     @Provides
+    @FeatureScope
     fun fileAuthority() = FileAuthority(BuildConfig.FILES_AUTHORITY)
 }
