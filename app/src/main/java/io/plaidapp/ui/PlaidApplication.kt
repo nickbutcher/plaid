@@ -21,7 +21,6 @@ import android.app.Application
 import android.content.Context
 import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.DaggerCoreComponent
-import io.plaidapp.core.dagger.MarkdownModule
 
 /**
  * Io and Behold
@@ -30,9 +29,7 @@ class PlaidApplication : Application() {
 
     private val coreComponent: CoreComponent by lazy {
         DaggerCoreComponent
-            .builder()
-            .markdownModule(MarkdownModule(resources.displayMetrics))
-            .build()
+            .create()
     }
 
     companion object {

@@ -19,10 +19,6 @@ package io.plaidapp.designernews.dagger
 import androidx.lifecycle.ViewModelProviders
 import dagger.Module
 import dagger.Provides
-import io.plaidapp.core.dagger.CoreDataModule
-import io.plaidapp.core.dagger.MarkdownModule
-import io.plaidapp.core.dagger.SharedPreferencesModule
-import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.designernews.data.api.DesignerNewsService
 import io.plaidapp.designernews.data.comments.CommentsRemoteDataSource
@@ -46,13 +42,7 @@ import io.plaidapp.designernews.ui.story.StoryViewModelFactory
 /**
  * Dagger module for [StoryActivity].
  */
-@Module(
-    includes = [CoreDataModule::class,
-        DesignerNewsDataModule::class,
-        DataModule::class,
-        MarkdownModule::class,
-        SharedPreferencesModule::class]
-)
+@Module
 class StoryModule(private val storyId: Long, private val activity: StoryActivity) {
 
     @Provides

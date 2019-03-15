@@ -26,7 +26,10 @@ import io.plaidapp.ui.HomeActivity
 /**
  * Dagger component for the [HomeActivity].
  */
-@Component(modules = [HomeModule::class], dependencies = [CoreComponent::class])
+@Component(
+        modules = [HomeModule::class, SharedPreferencesModule::class],
+        dependencies = [CoreComponent::class]
+)
 interface HomeComponent : BaseActivityComponent<HomeActivity> {
 
     @Component.Builder

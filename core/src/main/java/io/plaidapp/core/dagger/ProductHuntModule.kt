@@ -30,17 +30,11 @@ import io.plaidapp.core.producthunt.data.api.ProductHuntService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Qualifier
-import kotlin.annotation.AnnotationRetention.BINARY
-
-@Retention(BINARY)
-@Qualifier
-private annotation class LocalApi
 
 /**
  * Dagger module to provide injections for Product Hunt.
  */
-@Module(includes = [CoreDataModule::class])
+@Module
 class ProductHuntModule {
 
     @Provides
@@ -49,9 +43,11 @@ class ProductHuntModule {
         dispatcherProvider: CoroutinesDispatcherProvider
     ) = ProductHuntRepository.getInstance(remoteDataSource, dispatcherProvider)
 
-    @LocalApi
+    @ProductHuntApi
     @Provides
-    fun providePrivateOkHttpClient(upstreamClient: OkHttpClient): OkHttpClient {
+    fun providePrivateOkHttpClient(
+        upstreamClient: OkHttpClient
+    ): OkHttpClient {
         return upstreamClient.newBuilder()
             .addInterceptor(AuthInterceptor(BuildConfig.PRODUCT_HUNT_DEVELOPER_TOKEN))
             .build()
@@ -59,7 +55,7 @@ class ProductHuntModule {
 
     @Provides
     fun provideProductHuntService(
-        @LocalApi okhttpClient: Lazy<OkHttpClient>,
+        @ProductHuntApi okhttpClient: Lazy<OkHttpClient>,
         converterFactory: GsonConverterFactory,
         deEnvelopingConverter: DeEnvelopingConverter,
         callAdapterFactory: CoroutineCallAdapterFactory
