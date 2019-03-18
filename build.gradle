@@ -59,6 +59,9 @@ buildscript { scriptHandler ->
     ext.names = [
             'applicationId': 'io.plaidapp'
     ]
+    ext.settings = [
+            'maxHeapSize': '1024m'
+    ]
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.0-beta05'

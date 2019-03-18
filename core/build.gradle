@@ -62,6 +62,12 @@ android {
         exclude 'META-INF/core_debug.kotlin_module'
     }
 
+    testOptions {
+        unitTests.all {
+            maxHeapSize = settings.maxHeapSize
+        }
+    }
+
 }
 
 dependencies {
