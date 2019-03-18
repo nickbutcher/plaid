@@ -21,6 +21,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 
 /**
@@ -37,8 +38,8 @@ abstract class LoggedInUserDao {
      * data before inserting the LoggedInUser.
      *
      * This method should be used instead of [insertLoggedInUser].
-     * This method should be called from a transaction.
      */
+    @Transaction
     open suspend fun setLoggedInUser(loggedInUser: LoggedInUser) {
         deleteLoggedInUser()
         insertLoggedInUser(loggedInUser)
