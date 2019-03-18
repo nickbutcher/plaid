@@ -50,7 +50,7 @@ android {
 dependencies {
     implementation project(':app')
     implementation project(':core')
-    implementation "androidx.room:room-coroutines:${versions.room}"
+    implementation "androidx.room:room-ktx:${versions.room}"
 
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
     kapt "androidx.room:room-compiler:${versions.room}"
