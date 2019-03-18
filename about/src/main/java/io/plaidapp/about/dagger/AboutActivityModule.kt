@@ -29,11 +29,9 @@ import io.plaidapp.core.dagger.scope.FeatureScope
 @Module class AboutActivityModule(private val activity: AboutActivity) {
 
     @Provides
-    @FeatureScope
     fun provideContext(): AboutActivity = activity
 
     @Provides
-    @FeatureScope
     fun provideResources(): Resources = activity.resources
 
     @Provides
