@@ -48,7 +48,7 @@ class SearchDataManager @Inject constructor(
         private set
     private var page = 1
 
-    fun searchFor(newQuery: String) {
+    suspend fun searchFor(newQuery: String) {
         if (query != newQuery) {
             clear()
             query = newQuery
@@ -59,7 +59,7 @@ class SearchDataManager @Inject constructor(
         searchDesignerNews(newQuery, page)
     }
 
-    fun loadMore() = searchFor(query)
+    suspend fun loadMore() = searchFor(query)
 
     fun clear() {
         cancelLoading()
@@ -69,19 +69,17 @@ class SearchDataManager @Inject constructor(
     }
 
     fun cancelLoading() {
-        searchStories.cancelAllRequests()
         shotsRepository.cancelAllSearches()
     }
 
-    private fun searchDesignerNews(query: String, resultsPage: Int) {
+    private suspend fun searchDesignerNews(query: String, resultsPage: Int) {
         loadStarted()
         val source = DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query
-        searchStories(source, resultsPage) { result, page, _ ->
-            when (result) {
-                is Result.Success -> sourceLoaded(result.data, page)
-                is Result.Error -> loadFinished()
-            }.exhaustive
-        }
+        val result = searchStories(source, resultsPage)
+        when (result) {
+            is Result.Success -> sourceLoaded(result.data, page)
+            is Result.Error -> loadFinished()
+        }.exhaustive
     }
 
     private fun searchDribbble(query: String, resultsPage: Int) {
