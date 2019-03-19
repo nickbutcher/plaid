@@ -28,6 +28,12 @@ import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.producthunt.data.ProductHuntSourceItem.Companion.SOURCE_PRODUCT_HUNT
 import io.plaidapp.core.producthunt.domain.LoadPostsUseCase
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
+import io.plaidapp.core.util.exhaustive
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import java.util.ArrayList
 import java.util.HashMap
@@ -42,8 +48,14 @@ class DataManager(
     private val loadPosts: LoadPostsUseCase,
     private val searchStoriesUseCase: SearchStoriesUseCase,
     private val shotsRepository: ShotsRepository,
-    private val sourcesRepository: SourcesRepository
+    private val sourcesRepository: SourcesRepository,
+    private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : DataLoadingSubject {
+
+    private var parentJob = SupervisorJob()
+    private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
+
+    private val parentJobs = mutableMapOf<String, Job>()
 
     private val loadingCount = AtomicInteger(0)
     private var loadingCallbacks: MutableList<DataLoadingSubject.DataLoadingCallbacks>? = null
@@ -99,7 +111,7 @@ class DataManager(
         shotsRepository.cancelAllSearches()
         loadStoriesUseCase.cancelAllRequests()
         searchStoriesUseCase.cancelAllRequests()
-        loadPosts.cancelAllRequests()
+        parentJob.cancelChildren()
     }
 
     private fun loadSource(source: SourceItem) {
@@ -108,7 +120,10 @@ class DataManager(
             val page = getNextPageIndex(source.key)
             when (source.key) {
                 SOURCE_DESIGNER_NEWS_POPULAR -> loadDesignerNewsStories(page)
-                SOURCE_PRODUCT_HUNT -> loadProductHunt(page)
+                SOURCE_PRODUCT_HUNT -> {
+                    val jobId = "$page"
+                    parentJobs[jobId] = launchLoadProductHunt(page, jobId)
+                }
                 else -> if (source is DribbbleSourceItem) {
                     loadDribbbleSearch(source, page)
                 } else if (source is DesignerNewsSearchSource) {
@@ -194,18 +209,14 @@ class DataManager(
         }
     }
 
-    private fun loadProductHunt(page: Int) {
+    private fun launchLoadProductHunt(page: Int, jobId: String) = scope.launch {
         // this API's paging is 0 based but this class (& sorting) is 1 based so adjust locally
-        loadPosts.invoke(
-            page - 1,
-            {
-                sourceLoaded(it, page, SOURCE_PRODUCT_HUNT)
-                Unit
-            },
-            {
-                loadFailed(SOURCE_PRODUCT_HUNT)
-                Unit
-            })
+        val result = loadPosts(page - 1)
+        parentJobs.remove(jobId)
+        when (result) {
+            is Result.Success -> sourceLoaded(result.data, page, SOURCE_PRODUCT_HUNT)
+            is Result.Error -> loadFailed(SOURCE_PRODUCT_HUNT)
+        }.exhaustive
     }
 
     override fun registerCallback(callback: DataLoadingSubject.DataLoadingCallbacks) {
