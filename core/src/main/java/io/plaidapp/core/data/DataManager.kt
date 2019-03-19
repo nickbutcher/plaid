@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicInteger
  * providing the {code onDataLoaded} method to do something with the data.
  */
 class DataManager(
-    private val loadStoriesUseCase: LoadStoriesUseCase,
+    private val loadStories: LoadStoriesUseCase,
     private val loadPosts: LoadPostsUseCase,
     private val searchStoriesUseCase: SearchStoriesUseCase,
     private val shotsRepository: ShotsRepository,
@@ -74,7 +74,7 @@ class DataManager(
                     call?.cancel()
                     inflightCalls.remove(key)
                 }
-                loadStoriesUseCase.cancelRequestOfSource(key)
+                // TODO make sure in flight calls are removed
                 searchStoriesUseCase.cancelRequestOfSource(key)
                 // clear the page index for the source
                 pageIndexes[key] = 0
@@ -109,8 +109,8 @@ class DataManager(
             inflightCalls.clear()
         }
         shotsRepository.cancelAllSearches()
-        loadStoriesUseCase.cancelAllRequests()
-        searchStoriesUseCase.cancelAllRequests()
+        parentJobs.values.forEach { it.cancel() }
+        parentJobs.clear()
         parentJob.cancelChildren()
     }
 
@@ -119,7 +119,10 @@ class DataManager(
             loadStarted()
             val page = getNextPageIndex(source.key)
             when (source.key) {
-                SOURCE_DESIGNER_NEWS_POPULAR -> loadDesignerNewsStories(page)
+                SOURCE_DESIGNER_NEWS_POPULAR -> {
+                    val jobId = "$SOURCE_DESIGNER_NEWS_POPULAR::$page"
+                    launchLoadDesignerNewsStories(page, jobId)
+                }
                 SOURCE_PRODUCT_HUNT -> {
                     val jobId = "$page"
                     parentJobs[jobId] = launchLoadProductHunt(page, jobId)
@@ -159,7 +162,8 @@ class DataManager(
     private fun sourceLoaded(
         data: List<PlaidItem>?,
         page: Int,
-        source: String
+        source: String,
+        jobId: String
     ) {
         loadFinished()
         if (data != null && !data.isEmpty() && sourceIsEnabled(source)) {
@@ -168,30 +172,29 @@ class DataManager(
             onDataLoaded(data)
         }
         inflightCalls.remove(source)
+        parentJobs.remove(jobId)
     }
 
-    private fun loadFailed(source: String) {
+    private fun loadFailed(source: String, jobId: String) {
         loadFinished()
+        parentJobs.remove(jobId)
         inflightCalls.remove(source)
     }
 
-    private fun loadDesignerNewsStories(page: Int) {
-        loadStoriesUseCase.invoke(page) { result, _, source ->
-            if (result is Result.Success<*>) {
-                sourceLoaded((result as Result.Success<List<Story>>).data, page, source)
-            } else {
-                loadFailed(source)
-            }
-            Unit
-        }
+    private fun launchLoadDesignerNewsStories(page: Int, jobId: String) = scope.launch {
+        val result = loadStories(page)
+        when (result) {
+            is Result.Success -> sourceLoaded(result.data, page, SOURCE_DESIGNER_NEWS_POPULAR, jobId)
+            is Result.Error -> loadFailed(SOURCE_DESIGNER_NEWS_POPULAR, jobId)
+        }.exhaustive
     }
 
     private fun loadDesignerNewsSearch(source: DesignerNewsSearchSource, page: Int) {
         searchStoriesUseCase.invoke(source.key, page) { result, _, _ ->
             if (result is Result.Success<*>) {
-                sourceLoaded((result as Result.Success<List<Story>>).data, page, source.key)
+                sourceLoaded((result as Result.Success<List<Story>>).data, page, source.key, "")
             } else {
-                loadFailed(source.key)
+                loadFailed(source.key, "")
             }
             Unit
         }
@@ -201,9 +204,9 @@ class DataManager(
         shotsRepository.search(source.query, page) { result ->
             if (result is Result.Success<*>) {
                 val (data) = result as Result.Success<List<Shot>>
-                sourceLoaded(data, page, source.key)
+                sourceLoaded(data, page, source.key, "")
             } else {
-                loadFailed(source.key)
+                loadFailed(source.key, "")
             }
             Unit
         }
@@ -214,8 +217,8 @@ class DataManager(
         val result = loadPosts(page - 1)
         parentJobs.remove(jobId)
         when (result) {
-            is Result.Success -> sourceLoaded(result.data, page, SOURCE_PRODUCT_HUNT)
-            is Result.Error -> loadFailed(SOURCE_PRODUCT_HUNT)
+            is Result.Success -> sourceLoaded(result.data, page, SOURCE_PRODUCT_HUNT, jobId)
+            is Result.Error -> loadFailed(SOURCE_PRODUCT_HUNT, jobId)
         }.exhaustive
     }
 

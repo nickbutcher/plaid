@@ -19,13 +19,11 @@ package io.plaidapp.core.designernews.domain
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.DesignerNewsSearchSource.Companion.SOURCE_DESIGNER_NEWS_POPULAR
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.storyLinks
 import io.plaidapp.core.designernews.userId
-import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -68,24 +66,16 @@ class LoadStoriesUseCaseTest {
     private val stories = listOf(story, storySequel)
 
     private val storiesRepository: StoriesRepository = mock()
-    private val loadStoriesUseCase = LoadStoriesUseCase(
-        storiesRepository,
-        provideFakeCoroutinesDispatcherProvider()
-    )
+    private val loadStoriesUseCase = LoadStoriesUseCase(storiesRepository)
 
     @Test
     fun loadStories_withSuccess() = runBlocking {
         // Given a list of story responses returned for a specific page
         val expected = Result.Success(storyResponses)
         whenever(storiesRepository.loadStories(1)).thenReturn(expected)
-        var result: Result<List<Story>>? = null
 
         // When loading stories
-        loadStoriesUseCase(1) { resultData, page, source ->
-            result = resultData
-            assertEquals(1, page)
-            assertEquals(SOURCE_DESIGNER_NEWS_POPULAR, source)
-        }
+        val result = loadStoriesUseCase(1)
 
         // Then the result was triggered
         assertEquals(Result.Success(stories), result)
@@ -96,14 +86,9 @@ class LoadStoriesUseCaseTest {
         // Given that an error is returned for a specific page
         val expected = Result.Error(IOException("error"))
         whenever(storiesRepository.loadStories(2)).thenReturn(expected)
-        var result: Result<List<Story>>? = null
 
         // When loading stories
-        loadStoriesUseCase(2) { resultData, page, source ->
-            result = resultData
-            assertEquals(2, page)
-            assertEquals(SOURCE_DESIGNER_NEWS_POPULAR, source)
-        }
+        val result = loadStoriesUseCase(2)
 
         // Then the result was triggered
         assertEquals(expected, result)
