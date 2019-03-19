@@ -16,72 +16,30 @@
 
 package io.plaidapp.core.designernews.domain
 
-import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.DesignerNewsSearchSource.Companion.SOURCE_DESIGNER_NEWS_POPULAR
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.toStory
 import io.plaidapp.core.util.exhaustive
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * Use case that loads stories from [StoriesRepository].
  */
 class LoadStoriesUseCase @Inject constructor(
-    private val storiesRepository: StoriesRepository,
-    private val dispatcherProvider: CoroutinesDispatcherProvider
+    private val storiesRepository: StoriesRepository
 ) {
-    private var parentJob = SupervisorJob()
-    private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
 
-    private val parentJobs = mutableMapOf<String, Job>()
-
-    operator fun invoke(
-        page: Int,
-        onResult: (result: Result<List<Story>>, page: Int, source: String) -> Unit
-    ) {
-        val jobId = "$SOURCE_DESIGNER_NEWS_POPULAR::$page"
-        parentJobs[jobId] = launchLoad(page, onResult, jobId)
-    }
-
-    private fun launchLoad(
-        page: Int,
-        onResult: (result: Result<List<Story>>, page: Int, source: String) -> Unit,
-        jobId: String
-    ) = scope.launch(dispatcherProvider.computation) {
+    suspend operator fun invoke(page: Int): Result<List<Story>> {
         val result = storiesRepository.loadStories(page)
-        parentJobs.remove(jobId)
         when (result) {
             is Result.Success -> {
                 val stories = result.data.map { it.toStory() }
-                withContext(dispatcherProvider.main) {
-                    onResult(
-                        Result.Success(stories),
-                        page,
-                        SOURCE_DESIGNER_NEWS_POPULAR
-                    )
-                }
+                return Result.Success(stories)
             }
             is Result.Error -> {
-                withContext(dispatcherProvider.main) {
-                    onResult(result, page, SOURCE_DESIGNER_NEWS_POPULAR)
-                }
+                return result
             }
         }.exhaustive
-    }
-
-    fun cancelAllRequests() {
-        parentJob.cancelChildren()
-    }
-
-    fun cancelRequestOfSource(source: String) {
-        parentJobs[source].apply { this?.cancel() }
     }
 }
