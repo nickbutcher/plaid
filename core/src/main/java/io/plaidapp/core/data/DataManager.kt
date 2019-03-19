@@ -96,8 +96,8 @@ class DataManager(
         onDataLoadedCallback?.onDataLoaded(data)
     }
 
-    fun loadAllDataSources() {
-        sourcesRepository.getSourcesSync().forEach { loadSource(it) }
+    suspend fun loadAllDataSources() {
+        sourcesRepository.getSources().forEach { loadSource(it) }
     }
 
     fun cancelLoading() {

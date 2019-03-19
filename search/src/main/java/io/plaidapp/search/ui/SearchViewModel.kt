@@ -77,11 +77,6 @@ class SearchViewModel(
         dataManager.loadMore()
     }
 
-    override fun onCleared() {
-        dataManager.cancelLoading()
-        super.onCleared()
-    }
-
     fun clearResults() {
         dataManager.clear()
     }

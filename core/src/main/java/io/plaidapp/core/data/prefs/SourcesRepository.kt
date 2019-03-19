@@ -40,8 +40,8 @@ class SourcesRepository(
         callbacks.add(callback)
     }
 
-    suspend fun getSources() = withContext(dispatcherProvider.io) {
-        getSourcesSync()
+    suspend fun getSources(): List<SourceItem> = withContext(dispatcherProvider.io) {
+        return@withContext getSourcesSync()
     }
 
     @Deprecated("Use the suspending getSources")

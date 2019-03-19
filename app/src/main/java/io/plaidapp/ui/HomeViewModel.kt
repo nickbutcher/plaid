@@ -122,7 +122,7 @@ class HomeViewModel(
         designerNewsLoginRepository.logout()
     }
 
-    fun loadData() {
+    fun loadData() = viewModelScope.launch(dispatcherProvider.computation) {
         dataManager.loadAllDataSources()
     }
 
