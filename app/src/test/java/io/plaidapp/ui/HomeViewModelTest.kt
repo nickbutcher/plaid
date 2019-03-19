@@ -352,7 +352,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun dataLoading_atInit() {
+    fun dataLoading_atInit() = runBlocking {
         // When creating a view model
         createViewModel()
 
