@@ -20,6 +20,7 @@ import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
 import io.plaidapp.core.dagger.scope.FeatureScope
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.DataManager
 import io.plaidapp.core.data.prefs.SourcesRepository
@@ -43,13 +44,15 @@ class DataManagerModule {
         searchStories: SearchStoriesUseCase,
         loadPosts: LoadPostsUseCase,
         shotsRepository: ShotsRepository,
-        sourcesRepository: SourcesRepository
+        sourcesRepository: SourcesRepository,
+        coroutinesDispatcherProvider: CoroutinesDispatcherProvider
     ): DataManager = getDataManager(
         loadStories,
         loadPosts,
         searchStories,
         shotsRepository,
-        sourcesRepository
+        sourcesRepository,
+        coroutinesDispatcherProvider
     )
 
     @Provides
@@ -59,13 +62,15 @@ class DataManagerModule {
         loadPosts: LoadPostsUseCase,
         searchStories: SearchStoriesUseCase,
         shotsRepository: ShotsRepository,
-        sourcesRepository: SourcesRepository
+        sourcesRepository: SourcesRepository,
+        coroutinesDispatcherProvider: CoroutinesDispatcherProvider
     ): DataLoadingSubject = getDataManager(
         loadStories,
         loadPosts,
         searchStories,
         shotsRepository,
-        sourcesRepository
+        sourcesRepository,
+        coroutinesDispatcherProvider
     )
 
     private fun getDataManager(
@@ -73,7 +78,8 @@ class DataManagerModule {
         loadPosts: LoadPostsUseCase,
         searchStories: SearchStoriesUseCase,
         shotsRepository: ShotsRepository,
-        sourcesRepository: SourcesRepository
+        sourcesRepository: SourcesRepository,
+        coroutinesDispatcherProvider: CoroutinesDispatcherProvider
     ): DataManager {
         return if (::manager.isInitialized) {
             manager
@@ -83,7 +89,8 @@ class DataManagerModule {
                 loadPosts,
                 searchStories,
                 shotsRepository,
-                sourcesRepository
+                sourcesRepository,
+                coroutinesDispatcherProvider
             )
             manager
         }

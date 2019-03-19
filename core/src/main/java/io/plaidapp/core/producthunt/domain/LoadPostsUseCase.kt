@@ -16,65 +16,34 @@
 
 package io.plaidapp.core.producthunt.domain
 
-import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.producthunt.data.api.ProductHuntRepository
 import io.plaidapp.core.producthunt.data.api.model.Post
 import io.plaidapp.core.producthunt.data.api.model.toPost
 import io.plaidapp.core.util.exhaustive
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * Class that knows how to load posts
  */
 class LoadPostsUseCase @Inject constructor(
-    private val productHuntRepository: ProductHuntRepository,
-    private val dispatcherProvider: CoroutinesDispatcherProvider
+    private val productHuntRepository: ProductHuntRepository
 ) {
-    private var parentJob = SupervisorJob()
-    private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
-
-    private val parentJobs = mutableMapOf<String, Job>()
-
-    operator fun invoke(
-        page: Int,
-        onSuccess: (List<Post>) -> Unit,
-        onError: (String) -> Unit
-    ) {
-        val jobId = "$page"
-        parentJobs[jobId] = launchRequest(page, onSuccess, onError, jobId)
-    }
 
     /**
      * Load Product Hunt data for a specific page and return the result either in onSuccess or in
      * onError
      */
-    private fun launchRequest(
-        page: Int,
-        onSuccess: (List<Post>) -> Unit,
-        onError: (String) -> Unit,
-        jobId: String
-    ) = scope.launch {
+    suspend operator fun invoke(
+        page: Int
+    ): Result<List<Post>> {
         val result = productHuntRepository.loadPosts(page)
-        parentJobs.remove(jobId)
-        withContext(dispatcherProvider.main) {
-            when (result) {
-                is Result.Success -> {
-                    val posts = result.data.posts.map { it.toPost() }
-                    onSuccess(posts)
-                }
-                is Result.Error -> onError(result.exception.toString())
-            }.exhaustive
-        }
-    }
-
-    fun cancelAllRequests() {
-        parentJob.cancelChildren()
+        when (result) {
+            is Result.Success -> {
+                val posts = result.data.posts.map { it.toPost() }
+                return Result.Success(posts)
+            }
+            is Result.Error -> return result
+        }.exhaustive
     }
 }
