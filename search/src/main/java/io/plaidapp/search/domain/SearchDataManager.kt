@@ -62,14 +62,10 @@ class SearchDataManager @Inject constructor(
     suspend fun loadMore() = searchFor(query)
 
     fun clear() {
-        cancelLoading()
+        // TODO make sure the requests are cancelled
         query = ""
         page = 1
         resetLoadingCount()
-    }
-
-    fun cancelLoading() {
-        shotsRepository.cancelAllSearches()
     }
 
     private suspend fun searchDesignerNews(query: String, resultsPage: Int) {
@@ -82,20 +78,18 @@ class SearchDataManager @Inject constructor(
         }.exhaustive
     }
 
-    private fun searchDribbble(query: String, resultsPage: Int) {
+    private suspend fun searchDribbble(query: String, resultsPage: Int) {
         loadStarted()
-        shotsRepository.search(query, page) { result ->
-            loadFinished()
-            if (result is Result.Success<*>) {
-                val shots = (result as Result.Success<List<Shot>>).data
-                setPage(shots, resultsPage)
-                setDataSource(
-                    shots,
-                    DribbbleSourceItem.DRIBBBLE_QUERY_PREFIX + query
-                )
-                onDataLoadedCallback?.onDataLoaded(shots)
-            }
-            return@search
+        val result = shotsRepository.search(query, page)
+        loadFinished()
+        if (result is Result.Success<*>) {
+            val shots = (result as Result.Success<List<Shot>>).data
+            setPage(shots, resultsPage)
+            setDataSource(
+                shots,
+                DribbbleSourceItem.DRIBBBLE_QUERY_PREFIX + query
+            )
+            onDataLoadedCallback?.onDataLoaded(shots)
         }
     }
 

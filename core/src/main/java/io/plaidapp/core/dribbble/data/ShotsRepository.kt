@@ -20,10 +20,6 @@ import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
@@ -34,20 +30,16 @@ class ShotsRepository constructor(
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) {
 
-    private val parentJob = Job()
-    private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
-
-    private val inflight = mutableMapOf<String, Job>()
     private val shotCache = mutableMapOf<Long, Shot>()
 
-    fun search(
-        query: String,
-        page: Int,
-        onResult: (Result<List<Shot>>) -> Unit
-    ) {
-        val id = "$query::$page"
-        inflight[id] = launchSearch(query, page, id, onResult)
-    }
+    suspend fun search(query: String, page: Int): Result<List<Shot>> =
+        withContext(dispatcherProvider.io) {
+            val result = remoteDataSource.search(query, page)
+            if (result is Result.Success) {
+                cache(result.data)
+            }
+            return@withContext result
+        }
 
     fun getShot(id: Long): Result<Shot> {
         val shot = shotCache[id]
@@ -56,25 +48,6 @@ class ShotsRepository constructor(
         } else {
             Result.Error(IllegalStateException("Shot $id not cached"))
         }
-    }
-
-    fun cancelAllSearches() {
-        parentJob.cancelChildren()
-        inflight.clear()
-    }
-
-    private fun launchSearch(
-        query: String,
-        page: Int,
-        id: String,
-        onResult: (Result<List<Shot>>) -> Unit
-    ) = scope.launch(dispatcherProvider.io) {
-        val result = remoteDataSource.search(query, page)
-        inflight.remove(id)
-        if (result is Result.Success) {
-            cache(result.data)
-        }
-        withContext(dispatcherProvider.main) { onResult(result) }
     }
 
     private fun cache(shots: List<Shot>) {

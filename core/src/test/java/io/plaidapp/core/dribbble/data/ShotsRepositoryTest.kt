@@ -20,7 +20,6 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
@@ -48,10 +47,9 @@ class ShotsRepositoryTest {
         // Given that the data source responds with success
         val result = Result.Success(shots)
         whenever(dataSource.search(query, page)).thenReturn(result)
-        var data: Result<List<Shot>>? = null
 
         // When searching for a query
-        repository.search(query, page) { data = it }
+        val data = repository.search(query, page)
 
         // Then the correct method was called
         verify(dataSource).search(query, page)
@@ -64,10 +62,9 @@ class ShotsRepositoryTest {
         // Given that the data source responds with failure
         val result = Result.Error(IOException("error"))
         whenever(dataSource.search(query, page)).thenReturn(result)
-        var data: Result<List<Shot>>? = null
 
         // When searching for a query
-        repository.search(query, page) { data = it }
+        val data = repository.search(query, page)
 
         // Then an error result is reported
         assertNotNull(data)
@@ -78,7 +75,7 @@ class ShotsRepositoryTest {
     fun getShot_whenSearchSucceeded() = runBlocking {
         // Given that a search has been performed successfully and data cached
         whenever(dataSource.search(query, page)).thenReturn(Result.Success(shots))
-        repository.search(query, page) { }
+        repository.search(query, page)
 
         // When getting a shot by id
         val result = repository.getShot(shots[0].id)
@@ -93,7 +90,7 @@ class ShotsRepositoryTest {
     fun getShot_whenSearchFailed() = runBlocking {
         // Given that a search fails so no data is cached
         whenever(dataSource.search(query, page)).thenReturn(Result.Error(IOException("error")))
-        repository.search(query, page) { }
+        repository.search(query, page)
 
         // When getting a shot by id
         val result = repository.getShot(shots[0].id)
