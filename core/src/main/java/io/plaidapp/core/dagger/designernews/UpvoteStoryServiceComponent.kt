@@ -20,6 +20,7 @@ import dagger.Component
 import io.plaidapp.core.dagger.BaseServiceComponent
 import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.SharedPreferencesModule
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
 
 /**
@@ -33,6 +34,7 @@ import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
     ],
     dependencies = [CoreComponent::class]
 )
+@FeatureScope
 interface UpvoteStoryServiceComponent : BaseServiceComponent<UpvoteStoryService> {
 
     @Component.Builder

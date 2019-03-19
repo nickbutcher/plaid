@@ -21,7 +21,7 @@ import dagger.Module
 import dagger.Provides
 import io.plaidapp.about.ui.AboutActivity
 import io.plaidapp.about.ui.AboutStyler
-import io.plaidapp.core.dagger.scope.ModuleScope
+import io.plaidapp.core.dagger.scope.FeatureScope
 
 /**
  * Dagger module providing stuff for [AboutActivity].
@@ -29,14 +29,12 @@ import io.plaidapp.core.dagger.scope.ModuleScope
 @Module class AboutActivityModule(private val activity: AboutActivity) {
 
     @Provides
-    @ModuleScope
     fun provideContext(): AboutActivity = activity
 
     @Provides
-    @ModuleScope
     fun provideResources(): Resources = activity.resources
 
     @Provides
-    @ModuleScope
+    @FeatureScope
     fun provideAboutStyler(): AboutStyler = AboutStyler(activity)
 }

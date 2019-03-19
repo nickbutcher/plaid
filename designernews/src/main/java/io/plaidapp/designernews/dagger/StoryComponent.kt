@@ -22,6 +22,7 @@ import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.MarkdownModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.designernews.ui.story.StoryActivity
 
 /**
@@ -36,6 +37,7 @@ import io.plaidapp.designernews.ui.story.StoryActivity
         StoryModule::class],
     dependencies = [CoreComponent::class]
 )
+@FeatureScope
 interface StoryComponent : BaseActivityComponent<StoryActivity> {
 
     @Component.Builder

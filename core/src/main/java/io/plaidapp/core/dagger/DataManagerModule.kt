@@ -19,6 +19,7 @@ package io.plaidapp.core.dagger
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.DataManager
 import io.plaidapp.core.data.prefs.SourcesRepository
@@ -36,6 +37,7 @@ class DataManagerModule {
     private lateinit var manager: DataManager
 
     @Provides
+    @FeatureScope
     fun provideDataManager(
         loadStories: LoadStoriesUseCase,
         searchStories: SearchStoriesUseCase,
@@ -51,6 +53,7 @@ class DataManagerModule {
     )
 
     @Provides
+    @FeatureScope
     fun provideDataLoadingSubject(
         loadStories: LoadStoriesUseCase,
         loadPosts: LoadPostsUseCase,

@@ -21,6 +21,7 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import dagger.Component
 import okhttp3.OkHttpClient
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 /**
  * Component providing application wide singletons.
@@ -28,6 +29,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Activity.coreComponent extension function.
  */
 @Component(modules = [CoreDataModule::class])
+@Singleton
 interface CoreComponent {
 
     @Component.Builder interface Builder {

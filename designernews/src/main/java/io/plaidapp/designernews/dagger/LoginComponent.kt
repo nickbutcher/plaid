@@ -21,6 +21,7 @@ import io.plaidapp.core.dagger.BaseActivityComponent
 import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.designernews.ui.login.LoginActivity
 
 /**
@@ -33,6 +34,7 @@ import io.plaidapp.designernews.ui.login.LoginActivity
     ],
     dependencies = [CoreComponent::class]
 )
+@FeatureScope
 interface LoginComponent : BaseActivityComponent<LoginActivity> {
 
     interface Builder {

@@ -50,15 +50,4 @@ class UserRepository(private val dataSource: UserRemoteDataSource) {
             result.data.forEach { cachedUsers[it.id] = it }
         }
     }
-
-    companion object {
-        @Volatile
-        private var INSTANCE: UserRepository? = null
-
-        fun getInstance(dataSource: UserRemoteDataSource): UserRepository {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: UserRepository(dataSource).also { INSTANCE = it }
-            }
-        }
-    }
 }

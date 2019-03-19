@@ -22,6 +22,7 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.data.api.DeEnvelopingConverter
 import io.plaidapp.designernews.data.api.DesignerNewsService
 import io.plaidapp.designernews.data.database.DesignerNewsDatabase
@@ -37,6 +38,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class DataModule {
 
     @Provides
+    @FeatureScope
     fun provideDesignerNewsService(
         client: Lazy<OkHttpClient>,
         gson: Gson
@@ -52,6 +54,7 @@ class DataModule {
     }
 
     @Provides
+    @FeatureScope
     fun provideLoggedInUserDao(context: Context): LoggedInUserDao {
         return DesignerNewsDatabase.getInstance(context).loggedInUserDao()
     }

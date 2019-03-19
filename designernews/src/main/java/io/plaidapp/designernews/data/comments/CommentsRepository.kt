@@ -62,17 +62,4 @@ class CommentsRepository(private val remoteDataSource: CommentsRemoteDataSource)
             userId = userId
         )
     }
-
-    companion object {
-        @Volatile
-        private var INSTANCE: CommentsRepository? = null
-
-        fun getInstance(
-            remoteDataSource: CommentsRemoteDataSource
-        ): CommentsRepository {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: CommentsRepository(remoteDataSource).also { INSTANCE = it }
-            }
-        }
-    }
 }
