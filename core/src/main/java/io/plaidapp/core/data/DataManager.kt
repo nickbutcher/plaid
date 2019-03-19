@@ -105,7 +105,6 @@ class DataManager(
             inflightCalls.values.forEach { it.cancel() }
             inflightCalls.clear()
         }
-        shotsRepository.cancelAllSearches()
         parentJobs.values.forEach { it.cancel() }
         parentJobs.clear()
         parentJob.cancelChildren()
@@ -125,7 +124,8 @@ class DataManager(
                     parentJobs[jobId] = launchLoadProductHunt(page, jobId)
                 }
                 else -> if (source is DribbbleSourceItem) {
-                    loadDribbbleSearch(source, page)
+                    val jobId = "${source.query}::$page"
+                    loadDribbbleSearch(source, page, jobId)
                 } else if (source is DesignerNewsSearchSource) {
                     val jobId = "${source.query}::$page"
                     loadDesignerNewsSearch(source, page, jobId)
@@ -201,16 +201,14 @@ class DataManager(
             }.exhaustive
         }
 
-    private fun loadDribbbleSearch(source: DribbbleSourceItem, page: Int) {
-        shotsRepository.search(source.query, page) { result ->
-            if (result is Result.Success) {
-                sourceLoaded(result.data, page, source.key, "")
-            } else {
-                loadFailed(source.key, "")
-            }
-            Unit
+    private fun loadDribbbleSearch(source: DribbbleSourceItem, page: Int, jobId: String) =
+        scope.launch {
+            val result = shotsRepository.search(source.query, page)
+            when (result) {
+                is Result.Success -> sourceLoaded(result.data, page, source.key, jobId)
+                is Result.Error -> loadFailed(source.key, jobId)
+            }.exhaustive
         }
-    }
 
     private fun launchLoadProductHunt(page: Int, jobId: String) = scope.launch {
         // this API's paging is 0 based but this class (& sorting) is 1 based so adjust locally
