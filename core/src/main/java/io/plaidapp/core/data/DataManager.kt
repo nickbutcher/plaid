@@ -19,12 +19,10 @@ package io.plaidapp.core.data
 import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.data.DesignerNewsSearchSource
 import io.plaidapp.core.designernews.data.DesignerNewsSearchSource.Companion.SOURCE_DESIGNER_NEWS_POPULAR
-import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.domain.LoadStoriesUseCase
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
 import io.plaidapp.core.dribbble.data.DribbbleSourceItem
 import io.plaidapp.core.dribbble.data.ShotsRepository
-import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.producthunt.data.ProductHuntSourceItem.Companion.SOURCE_PRODUCT_HUNT
 import io.plaidapp.core.producthunt.domain.LoadPostsUseCase
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
@@ -46,7 +44,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class DataManager(
     private val loadStories: LoadStoriesUseCase,
     private val loadPosts: LoadPostsUseCase,
-    private val searchStoriesUseCase: SearchStoriesUseCase,
+    private val searchStories: SearchStoriesUseCase,
     private val shotsRepository: ShotsRepository,
     private val sourcesRepository: SourcesRepository,
     private val dispatcherProvider: CoroutinesDispatcherProvider
@@ -75,7 +73,6 @@ class DataManager(
                     inflightCalls.remove(key)
                 }
                 // TODO make sure in flight calls are removed
-                searchStoriesUseCase.cancelRequestOfSource(key)
                 // clear the page index for the source
                 pageIndexes[key] = 0
             }
@@ -130,7 +127,8 @@ class DataManager(
                 else -> if (source is DribbbleSourceItem) {
                     loadDribbbleSearch(source, page)
                 } else if (source is DesignerNewsSearchSource) {
-                    loadDesignerNewsSearch(source, page)
+                    val jobId = "${source.query}::$page"
+                    loadDesignerNewsSearch(source, page, jobId)
                 }
             }
         }
@@ -184,27 +182,29 @@ class DataManager(
     private fun launchLoadDesignerNewsStories(page: Int, jobId: String) = scope.launch {
         val result = loadStories(page)
         when (result) {
-            is Result.Success -> sourceLoaded(result.data, page, SOURCE_DESIGNER_NEWS_POPULAR, jobId)
+            is Result.Success -> sourceLoaded(
+                result.data,
+                page,
+                SOURCE_DESIGNER_NEWS_POPULAR,
+                jobId
+            )
             is Result.Error -> loadFailed(SOURCE_DESIGNER_NEWS_POPULAR, jobId)
         }.exhaustive
     }
 
-    private fun loadDesignerNewsSearch(source: DesignerNewsSearchSource, page: Int) {
-        searchStoriesUseCase.invoke(source.key, page) { result, _, _ ->
-            if (result is Result.Success<*>) {
-                sourceLoaded((result as Result.Success<List<Story>>).data, page, source.key, "")
-            } else {
-                loadFailed(source.key, "")
-            }
-            Unit
+    private fun loadDesignerNewsSearch(source: DesignerNewsSearchSource, page: Int, jobId: String) =
+        scope.launch {
+            val result = searchStories(source.key, page)
+            when (result) {
+                is Result.Success -> sourceLoaded(result.data, page, source.key, jobId)
+                is Result.Error -> loadFailed(source.key, jobId)
+            }.exhaustive
         }
-    }
 
     private fun loadDribbbleSearch(source: DribbbleSourceItem, page: Int) {
         shotsRepository.search(source.query, page) { result ->
-            if (result is Result.Success<*>) {
-                val (data) = result as Result.Success<List<Shot>>
-                sourceLoaded(data, page, source.key, "")
+            if (result is Result.Success) {
+                sourceLoaded(result.data, page, source.key, "")
             } else {
                 loadFailed(source.key, "")
             }

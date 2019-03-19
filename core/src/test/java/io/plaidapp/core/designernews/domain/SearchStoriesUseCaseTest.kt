@@ -24,7 +24,6 @@ import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.storyLinks
 import io.plaidapp.core.designernews.userId
-import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -68,24 +67,16 @@ class SearchStoriesUseCaseTest {
     private val query = "Plaid 2.0"
 
     private val storiesRepository: StoriesRepository = mock()
-    private val searchStoriesUseCase = SearchStoriesUseCase(
-        storiesRepository,
-        provideFakeCoroutinesDispatcherProvider()
-    )
+    private val searchStoriesUseCase = SearchStoriesUseCase(storiesRepository)
 
     @Test
     fun search_withSuccess() = runBlocking {
         // Given a list of stories returned for a specific query and page
         val expected = Result.Success(storiesResponses)
         whenever(storiesRepository.search(query, 1)).thenReturn(expected)
-        var result: Result<List<Story>>? = null
 
         // When searching for stories
-        searchStoriesUseCase(query, 1) { resultData, page, source ->
-            result = resultData
-            assertEquals(1, page)
-            assertEquals(query, source)
-        }
+        val result = searchStoriesUseCase(query, 1)
 
         // Then the result was triggered
         assertEquals(Result.Success(stories), result)
@@ -96,14 +87,9 @@ class SearchStoriesUseCaseTest {
         // Given that an error is returned for a specific query and page search
         val expected = Result.Error(IOException("error"))
         whenever(storiesRepository.search(query, 2)).thenReturn(expected)
-        var result: Result<List<Story>>? = null
 
         // When searching for stories
-        searchStoriesUseCase(query, 2) { resultData, page, source ->
-            result = resultData
-            assertEquals(2, page)
-            assertEquals(query, source)
-        }
+        val result = searchStoriesUseCase(query, 2)
 
         // Then the result was triggered
         assertEquals(expected, result)
