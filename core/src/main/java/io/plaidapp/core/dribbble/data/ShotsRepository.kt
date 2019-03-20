@@ -16,30 +16,24 @@
 
 package io.plaidapp.core.dribbble.data
 
-import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
-import kotlinx.coroutines.withContext
 
 /**
  * Repository class that handles working with Dribbble.
  */
-class ShotsRepository constructor(
-    private val remoteDataSource: SearchRemoteDataSource,
-    private val dispatcherProvider: CoroutinesDispatcherProvider
-) {
+class ShotsRepository constructor(private val remoteDataSource: SearchRemoteDataSource) {
 
     private val shotCache = mutableMapOf<Long, Shot>()
 
-    suspend fun search(query: String, page: Int): Result<List<Shot>> =
-        withContext(dispatcherProvider.io) {
-            val result = remoteDataSource.search(query, page)
-            if (result is Result.Success) {
-                cache(result.data)
-            }
-            return@withContext result
+    suspend fun search(query: String, page: Int): Result<List<Shot>> {
+        val result = remoteDataSource.search(query, page)
+        if (result is Result.Success) {
+            cache(result.data)
         }
+        return result
+    }
 
     fun getShot(id: Long): Result<Shot> {
         val shot = shotCache[id]
@@ -58,12 +52,9 @@ class ShotsRepository constructor(
         @Volatile
         private var INSTANCE: ShotsRepository? = null
 
-        fun getInstance(
-            remoteDataSource: SearchRemoteDataSource,
-            dispatcherProvider: CoroutinesDispatcherProvider
-        ): ShotsRepository {
+        fun getInstance(remoteDataSource: SearchRemoteDataSource): ShotsRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: ShotsRepository(remoteDataSource, dispatcherProvider)
+                INSTANCE ?: ShotsRepository(remoteDataSource)
                     .also { INSTANCE = it }
             }
         }
