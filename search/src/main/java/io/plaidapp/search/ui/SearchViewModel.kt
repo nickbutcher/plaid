@@ -50,17 +50,17 @@ class SearchViewModel(
     private val onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>> =
         object : OnDataLoadedCallback<List<PlaidItem>> {
             override fun onDataLoaded(data: List<PlaidItem>) {
-                _searchResults.value = Event(FeedUiModel(data))
+                _searchResults.postValue(Event(FeedUiModel(data)))
             }
         }
 
     private val dataLoadingCallbacks = object : DataLoadingSubject.DataLoadingCallbacks {
         override fun dataStartedLoading() {
-            _searchProgress.value = FeedProgressUiModel(true)
+            _searchProgress.postValue(FeedProgressUiModel(true))
         }
 
         override fun dataFinishedLoading() {
-            _searchProgress.value = FeedProgressUiModel(false)
+            _searchProgress.postValue(FeedProgressUiModel(false))
         }
     }
 
