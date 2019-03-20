@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   Copyright 2015 Google Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,5 +38,10 @@
 
     <!--searchable label-->
     <string name="search_hint">Search Dribbble &amp; Designer News</string>
+
+    <!--connectivity-->
+    <string name="no_connectivity">Your network is unavailable.\nCheck your data or wifi connection.</string>
+    <string name="no_connectivity_content_description">Your network is unavailable</string>
+    <string name="network_settings">Network Settings</string>
 
 </resources>

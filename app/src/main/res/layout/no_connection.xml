@@ -14,11 +14,49 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
-
-<ImageView
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/no_connection"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:paddingBottom="?android:actionBarSize"
-    android:src="@drawable/no_connection" />
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/no_connection_holder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:elevation="100dp">
+
+    <ImageView
+        android:id="@+id/no_connection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_large"
+        android:src="@drawable/no_connection"
+        android:contentDescription="@string/no_connectivity_content_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <io.plaidapp.core.ui.widget.BaselineGridTextView
+        android:id="@+id/no_connection_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/padding_normal"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.EmptyText"
+        android:text="@string/no_connectivity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/no_connection" />
+
+    <Button
+        style="?android:borderlessButtonStyle"
+        android:id="@+id/no_connection_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_normal"
+        android:text="@string/network_settings"
+        android:textColor="?android:attr/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/no_connection_text" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
