@@ -21,7 +21,6 @@ import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.dagger.scope.FeatureScope
-import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchConverter
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchService
@@ -37,10 +36,8 @@ class DribbbleDataModule {
 
     @Provides
     @FeatureScope
-    fun provideShotsRepository(
-        remoteDataSource: SearchRemoteDataSource,
-        dispatcherProvider: CoroutinesDispatcherProvider
-    ) = ShotsRepository.getInstance(remoteDataSource, dispatcherProvider)
+    fun provideShotsRepository(remoteDataSource: SearchRemoteDataSource) =
+        ShotsRepository.getInstance(remoteDataSource)
 
     @Provides
     @FeatureScope
