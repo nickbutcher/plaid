@@ -31,6 +31,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
@@ -52,8 +53,8 @@ class DataManager @Inject constructor(
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : DataLoadingSubject {
 
-    private var parentJob = SupervisorJob()
-    private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
+    private val parentJob = SupervisorJob()
+    private val scope = CoroutineScope(dispatcherProvider.computation + parentJob)
 
     private val parentJobs = mutableMapOf<InFlightRequestData, Job>()
 
@@ -80,6 +81,7 @@ class DataManager @Inject constructor(
 
     init {
         sourcesRepository.registerFilterChangedCallback(filterListener)
+        // build a map of source keys to pages initialized to 0
         pageIndexes = sourcesRepository.getSourcesSync().map { it.key to 0 }.toMap().toMutableMap()
     }
 
@@ -93,7 +95,7 @@ class DataManager @Inject constructor(
         onDataLoadedCallback?.onDataLoaded(data)
     }
 
-    suspend fun loadMore() {
+    suspend fun loadMore() = withContext(dispatcherProvider.computation) {
         sourcesRepository.getSources().forEach { loadSource(it) }
     }
 
@@ -157,23 +159,22 @@ class DataManager @Inject constructor(
         parentJobs.remove(request)
     }
 
-    private fun launchLoadDesignerNewsStories(data: InFlightRequestData) =
-        scope.launch(dispatcherProvider.computation) {
-            val result = loadStories(data.page)
-            when (result) {
-                is Result.Success -> sourceLoaded(
-                    result.data,
-                    SOURCE_DESIGNER_NEWS_POPULAR,
-                    data
-                )
-                is Result.Error -> loadFailed(data)
-            }.exhaustive
-        }
+    private fun launchLoadDesignerNewsStories(data: InFlightRequestData) = scope.launch {
+        val result = loadStories(data.page)
+        when (result) {
+            is Result.Success -> sourceLoaded(
+                result.data,
+                SOURCE_DESIGNER_NEWS_POPULAR,
+                data
+            )
+            is Result.Error -> loadFailed(data)
+        }.exhaustive
+    }
 
     private fun loadDesignerNewsSearch(
         source: DesignerNewsSearchSource,
         data: InFlightRequestData
-    ) = scope.launch(dispatcherProvider.computation) {
+    ) = scope.launch {
         val result = searchStories(source.key, data.page)
         when (result) {
             is Result.Success -> sourceLoaded(result.data, source.key, data)
@@ -182,7 +183,7 @@ class DataManager @Inject constructor(
     }
 
     private fun loadDribbbleSearch(source: DribbbleSourceItem, data: InFlightRequestData) =
-        scope.launch(dispatcherProvider.computation) {
+        scope.launch {
             val result = shotsRepository.search(source.query, data.page)
             when (result) {
                 is Result.Success -> sourceLoaded(result.data, source.key, data)
