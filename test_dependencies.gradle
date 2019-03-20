@@ -20,6 +20,7 @@ dependencies {
     testImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
     testImplementation "junit:junit:${versions.junit}"
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
 
     // Work around issue with runtime classpath version conflict
     implementation "androidx.arch.core:core-runtime:${versions.androidxCoreRuntime}"
