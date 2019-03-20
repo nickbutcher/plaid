@@ -123,7 +123,7 @@ class HomeViewModel(
     }
 
     fun loadData() = viewModelScope.launch(dispatcherProvider.computation) {
-        dataManager.loadAllDataSources()
+        dataManager.loadMore()
     }
 
     override fun onCleared() {
@@ -207,7 +207,7 @@ class HomeViewModel(
     }
 
     private fun updateFeedData(oldItems: List<PlaidItem>, newItems: List<PlaidItem>) {
-        feedData.value = getPlaidItemsForDisplay(oldItems, newItems)
+        feedData.postValue(getPlaidItemsForDisplay(oldItems, newItems))
     }
 
     private fun handleDataSourceRemoved(dataSourceKey: String, oldItems: List<PlaidItem>) {
@@ -215,7 +215,7 @@ class HomeViewModel(
         items.removeAll {
             dataSourceKey == it.dataSource
         }
-        feedData.value = items
+        feedData.postValue(items)
     }
 
     private fun createNewSourceUiModels(sources: List<SourceItem>): List<SourceUiModel> {
