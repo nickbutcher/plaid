@@ -30,12 +30,15 @@ import io.plaidapp.core.util.exhaustive
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
-import retrofit2.Call
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.concurrent.atomic.AtomicInteger
+
+/**
+ * Data class mapping the key based on which we're requesting data and the page
+ */
+private data class InFlightRequestData(val key: String, val page: Int)
 
 /**
  * Responsible for loading data from the various sources. Instantiating classes are responsible for
@@ -53,13 +56,12 @@ class DataManager(
     private var parentJob = SupervisorJob()
     private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
 
-    private val parentJobs = mutableMapOf<String, Job>()
+    private val parentJobs = mutableMapOf<InFlightRequestData, Job>()
 
     private val loadingCount = AtomicInteger(0)
     private var loadingCallbacks: MutableList<DataLoadingSubject.DataLoadingCallbacks>? = null
     private var onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>? = null
     private lateinit var pageIndexes: MutableMap<String, Int>
-    private val inflightCalls = HashMap<String, Call<*>>()
 
     private val filterListener = object : FiltersChangedCallback() {
         override fun onFiltersChanged(changedFilter: SourceItem) {
@@ -67,12 +69,9 @@ class DataManager(
                 loadSource(changedFilter)
             } else { // filter deactivated
                 val key = changedFilter.key
-                if (inflightCalls.containsKey(key)) {
-                    val call = inflightCalls[key]
-                    call?.cancel()
-                    inflightCalls.remove(key)
+                parentJobs.filter { it.key.key == key }.forEach { job ->
+                    parentJobs.remove(job.key)
                 }
-                // TODO make sure in flight calls are removed
                 // clear the page index for the source
                 pageIndexes[key] = 0
             }
@@ -101,34 +100,28 @@ class DataManager(
     }
 
     fun cancelLoading() {
-        if (inflightCalls.size > 0) {
-            inflightCalls.values.forEach { it.cancel() }
-            inflightCalls.clear()
-        }
         parentJobs.values.forEach { it.cancel() }
         parentJobs.clear()
-        parentJob.cancelChildren()
     }
 
     private fun loadSource(source: SourceItem) {
         if (source.active) {
             loadStarted()
             val page = getNextPageIndex(source.key)
+            // TODO each source data loading should be delegated to a different object
+            // specialized in loading that specific type of data
+            val data = InFlightRequestData(source.key, page)
             when (source.key) {
                 SOURCE_DESIGNER_NEWS_POPULAR -> {
-                    val jobId = "$SOURCE_DESIGNER_NEWS_POPULAR::$page"
-                    launchLoadDesignerNewsStories(page, jobId)
+                    parentJobs[data] = launchLoadDesignerNewsStories(data)
                 }
                 SOURCE_PRODUCT_HUNT -> {
-                    val jobId = "$page"
-                    parentJobs[jobId] = launchLoadProductHunt(page, jobId)
+                    parentJobs[data] = launchLoadProductHunt(data)
                 }
                 else -> if (source is DribbbleSourceItem) {
-                    val jobId = "${source.query}::$page"
-                    loadDribbbleSearch(source, page, jobId)
+                    parentJobs[data] = loadDribbbleSearch(source, data)
                 } else if (source is DesignerNewsSearchSource) {
-                    val jobId = "${source.query}::$page"
-                    loadDesignerNewsSearch(source, page, jobId)
+                    parentJobs[data] = loadDesignerNewsSearch(source, data)
                 }
             }
         }
@@ -159,64 +152,61 @@ class DataManager(
 
     private fun sourceLoaded(
         data: List<PlaidItem>?,
-        page: Int,
         source: String,
-        jobId: String
+        request: InFlightRequestData
     ) {
         loadFinished()
         if (data != null && !data.isEmpty() && sourceIsEnabled(source)) {
-            setPage(data, page)
+            setPage(data, request.page)
             setDataSource(data, source)
             onDataLoaded(data)
         }
-        inflightCalls.remove(source)
-        parentJobs.remove(jobId)
+        parentJobs.remove(request)
     }
 
-    private fun loadFailed(source: String, jobId: String) {
+    private fun loadFailed(request: InFlightRequestData) {
         loadFinished()
-        parentJobs.remove(jobId)
-        inflightCalls.remove(source)
+        parentJobs.remove(request)
     }
 
-    private fun launchLoadDesignerNewsStories(page: Int, jobId: String) = scope.launch {
-        val result = loadStories(page)
+    private fun launchLoadDesignerNewsStories(data: InFlightRequestData) = scope.launch {
+        val result = loadStories(data.page)
         when (result) {
             is Result.Success -> sourceLoaded(
                 result.data,
-                page,
                 SOURCE_DESIGNER_NEWS_POPULAR,
-                jobId
+                data
             )
-            is Result.Error -> loadFailed(SOURCE_DESIGNER_NEWS_POPULAR, jobId)
+            is Result.Error -> loadFailed(data)
         }.exhaustive
     }
 
-    private fun loadDesignerNewsSearch(source: DesignerNewsSearchSource, page: Int, jobId: String) =
-        scope.launch {
-            val result = searchStories(source.key, page)
-            when (result) {
-                is Result.Success -> sourceLoaded(result.data, page, source.key, jobId)
-                is Result.Error -> loadFailed(source.key, jobId)
-            }.exhaustive
-        }
-
-    private fun loadDribbbleSearch(source: DribbbleSourceItem, page: Int, jobId: String) =
-        scope.launch {
-            val result = shotsRepository.search(source.query, page)
-            when (result) {
-                is Result.Success -> sourceLoaded(result.data, page, source.key, jobId)
-                is Result.Error -> loadFailed(source.key, jobId)
-            }.exhaustive
-        }
-
-    private fun launchLoadProductHunt(page: Int, jobId: String) = scope.launch {
-        // this API's paging is 0 based but this class (& sorting) is 1 based so adjust locally
-        val result = loadPosts(page - 1)
-        parentJobs.remove(jobId)
+    private fun loadDesignerNewsSearch(
+        source: DesignerNewsSearchSource,
+        data: InFlightRequestData
+    ) = scope.launch {
+        val result = searchStories(source.key, data.page)
         when (result) {
-            is Result.Success -> sourceLoaded(result.data, page, SOURCE_PRODUCT_HUNT, jobId)
-            is Result.Error -> loadFailed(SOURCE_PRODUCT_HUNT, jobId)
+            is Result.Success -> sourceLoaded(result.data, source.key, data)
+            is Result.Error -> loadFailed(data)
+        }.exhaustive
+    }
+
+    private fun loadDribbbleSearch(source: DribbbleSourceItem, data: InFlightRequestData) =
+        scope.launch {
+            val result = shotsRepository.search(source.query, data.page)
+            when (result) {
+                is Result.Success -> sourceLoaded(result.data, source.key, data)
+                is Result.Error -> loadFailed(data)
+            }.exhaustive
+        }
+
+    private fun launchLoadProductHunt(data: InFlightRequestData) = scope.launch {
+        // this API's paging is 0 based but this class (& sorting) is 1 based so adjust locally
+        val result = loadPosts(data.page - 1)
+        when (result) {
+            is Result.Success -> sourceLoaded(result.data, SOURCE_PRODUCT_HUNT, data)
+            is Result.Error -> loadFailed(data)
         }.exhaustive
     }
 

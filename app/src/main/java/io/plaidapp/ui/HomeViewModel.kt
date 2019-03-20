@@ -91,11 +91,11 @@ class HomeViewModel(
 
     private val dataLoadingCallbacks = object : DataLoadingSubject.DataLoadingCallbacks {
         override fun dataStartedLoading() {
-            _feedProgress.value = FeedProgressUiModel(true)
+            _feedProgress.postValue(FeedProgressUiModel(true))
         }
 
         override fun dataFinishedLoading() {
-            _feedProgress.value = FeedProgressUiModel(false)
+            _feedProgress.postValue(FeedProgressUiModel(false))
         }
     }
 
