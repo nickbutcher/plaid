@@ -34,6 +34,7 @@ import kotlinx.coroutines.launch
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.concurrent.atomic.AtomicInteger
+import javax.inject.Inject
 
 /**
  * Data class mapping the key based on which we're requesting data and the page
@@ -44,7 +45,7 @@ private data class InFlightRequestData(val key: String, val page: Int)
  * Responsible for loading data from the various sources. Instantiating classes are responsible for
  * providing the {code onDataLoaded} method to do something with the data.
  */
-class DataManager(
+class DataManager @Inject constructor(
     private val loadStories: LoadStoriesUseCase,
     private val loadPosts: LoadPostsUseCase,
     private val searchStories: SearchStoriesUseCase,
@@ -70,6 +71,7 @@ class DataManager(
             } else { // filter deactivated
                 val key = changedFilter.key
                 parentJobs.filter { it.key.key == key }.forEach { job ->
+                    job.value.cancel()
                     parentJobs.remove(job.key)
                 }
                 // clear the page index for the source
@@ -95,7 +97,7 @@ class DataManager(
         onDataLoadedCallback?.onDataLoaded(data)
     }
 
-    suspend fun loadAllDataSources() {
+    suspend fun loadMore() {
         sourcesRepository.getSources().forEach { loadSource(it) }
     }
 
@@ -169,22 +171,23 @@ class DataManager(
         parentJobs.remove(request)
     }
 
-    private fun launchLoadDesignerNewsStories(data: InFlightRequestData) = scope.launch {
-        val result = loadStories(data.page)
-        when (result) {
-            is Result.Success -> sourceLoaded(
-                result.data,
-                SOURCE_DESIGNER_NEWS_POPULAR,
-                data
-            )
-            is Result.Error -> loadFailed(data)
-        }.exhaustive
-    }
+    private fun launchLoadDesignerNewsStories(data: InFlightRequestData) =
+        scope.launch(dispatcherProvider.computation) {
+            val result = loadStories(data.page)
+            when (result) {
+                is Result.Success -> sourceLoaded(
+                    result.data,
+                    SOURCE_DESIGNER_NEWS_POPULAR,
+                    data
+                )
+                is Result.Error -> loadFailed(data)
+            }.exhaustive
+        }
 
     private fun loadDesignerNewsSearch(
         source: DesignerNewsSearchSource,
         data: InFlightRequestData
-    ) = scope.launch {
+    ) = scope.launch(dispatcherProvider.computation) {
         val result = searchStories(source.key, data.page)
         when (result) {
             is Result.Success -> sourceLoaded(result.data, source.key, data)
@@ -193,7 +196,7 @@ class DataManager(
     }
 
     private fun loadDribbbleSearch(source: DribbbleSourceItem, data: InFlightRequestData) =
-        scope.launch {
+        scope.launch(dispatcherProvider.computation) {
             val result = shotsRepository.search(source.query, data.page)
             when (result) {
                 is Result.Success -> sourceLoaded(result.data, source.key, data)

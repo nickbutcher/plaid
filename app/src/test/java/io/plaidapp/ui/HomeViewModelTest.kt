@@ -357,7 +357,7 @@ class HomeViewModelTest {
         createViewModel()
 
         // Then load data was called
-        verify(dataManager).loadAllDataSources()
+        verify(dataManager).loadMore()
     }
 
     @Test

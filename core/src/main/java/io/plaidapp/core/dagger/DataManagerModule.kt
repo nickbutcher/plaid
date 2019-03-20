@@ -35,8 +35,6 @@ import io.plaidapp.core.producthunt.domain.LoadPostsUseCase
 @Module(includes = [DesignerNewsDataModule::class, ProductHuntModule::class])
 class DataManagerModule {
 
-    private lateinit var manager: DataManager
-
     @Provides
     @FeatureScope
     fun provideDataManager(
@@ -81,18 +79,13 @@ class DataManagerModule {
         sourcesRepository: SourcesRepository,
         coroutinesDispatcherProvider: CoroutinesDispatcherProvider
     ): DataManager {
-        return if (::manager.isInitialized) {
-            manager
-        } else {
-            manager = DataManager(
-                loadStories,
-                loadPosts,
-                searchStories,
-                shotsRepository,
-                sourcesRepository,
-                coroutinesDispatcherProvider
-            )
-            manager
-        }
+        return DataManager(
+            loadStories,
+            loadPosts,
+            searchStories,
+            shotsRepository,
+            sourcesRepository,
+            coroutinesDispatcherProvider
+        )
     }
 }
