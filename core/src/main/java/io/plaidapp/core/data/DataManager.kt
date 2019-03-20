@@ -31,8 +31,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import java.util.ArrayList
-import java.util.HashMap
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
@@ -60,7 +58,7 @@ class DataManager @Inject constructor(
     private val parentJobs = mutableMapOf<InFlightRequestData, Job>()
 
     private val loadingCount = AtomicInteger(0)
-    private var loadingCallbacks: MutableList<DataLoadingSubject.DataLoadingCallbacks>? = null
+    private var loadingCallbacks = mutableListOf<DataLoadingSubject.DataLoadingCallbacks>()
     private var onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>? = null
     private lateinit var pageIndexes: MutableMap<String, Int>
 
@@ -81,10 +79,8 @@ class DataManager @Inject constructor(
     }
 
     init {
-        setOnDataLoadedCallback(onDataLoadedCallback)
-
         sourcesRepository.registerFilterChangedCallback(filterListener)
-        setupPageIndexes()
+        pageIndexes = sourcesRepository.getSourcesSync().map { it.key to 0 }.toMap().toMutableMap()
     }
 
     fun setOnDataLoadedCallback(
@@ -129,20 +125,10 @@ class DataManager @Inject constructor(
         }
     }
 
-    private fun setupPageIndexes() {
-        val dateSources = sourcesRepository.getSourcesSync()
-        pageIndexes = HashMap(dateSources.size)
-        dateSources.forEach {
-            if (pageIndexes[it.key] != null) {
-                pageIndexes[it.key] = 0
-            }
-        }
-    }
-
     private fun getNextPageIndex(dataSource: String): Int {
         var nextPage = 1 // default to one – i.e. for newly added sources
         if (pageIndexes.containsKey(dataSource)) {
-            nextPage = pageIndexes[dataSource]?.or(0)?.plus(1) ?: 1
+            nextPage = pageIndexes.getValue(dataSource) + 1
         }
         pageIndexes[dataSource] = nextPage
         return nextPage
@@ -214,10 +200,7 @@ class DataManager @Inject constructor(
     }
 
     override fun registerCallback(callback: DataLoadingSubject.DataLoadingCallbacks) {
-        if (loadingCallbacks == null) {
-            loadingCallbacks = ArrayList(1)
-        }
-        loadingCallbacks?.add(callback)
+        loadingCallbacks.add(callback)
     }
 
     private fun loadStarted() {
@@ -233,8 +216,8 @@ class DataManager @Inject constructor(
     }
 
     private fun setPage(items: List<PlaidItem>, page: Int) {
-        for (item in items) {
-            item.page = page
+        items.forEach {
+            it.page = page
         }
     }
 
@@ -245,13 +228,13 @@ class DataManager @Inject constructor(
     }
 
     private fun dispatchLoadingStartedCallbacks() {
-        loadingCallbacks?.forEach {
+        loadingCallbacks.forEach {
             it.dataStartedLoading()
         }
     }
 
     private fun dispatchLoadingFinishedCallbacks() {
-        loadingCallbacks?.forEach {
+        loadingCallbacks.forEach {
             it.dataFinishedLoading()
         }
     }
