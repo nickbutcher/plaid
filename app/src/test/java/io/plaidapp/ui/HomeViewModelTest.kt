@@ -41,6 +41,7 @@ import io.plaidapp.dribbbleSource
 import io.plaidapp.post
 import io.plaidapp.shot
 import io.plaidapp.story
+import io.plaidapp.test.shared.CoroutinesMainDispatcherRule
 import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
@@ -56,6 +57,9 @@ import org.mockito.MockitoAnnotations
  * Tests for [HomeViewModel], with dependencies mocked.
  */
 class HomeViewModelTest {
+
+    @get:Rule
+    var coroutinesMainDispatcherRule = CoroutinesMainDispatcherRule()
 
     // Executes tasks in the Architecture Components in the same thread
     @get:Rule
