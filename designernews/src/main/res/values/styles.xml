@@ -61,7 +61,7 @@
     </style>
     
     <style name="Widget.Plaid.TextEntry" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
-        <item name="boxBackgroundColor">@color/text_field_background</item>
+        <item name="boxBackgroundColor">@color/surface_contrast</item>
     </style>
 
 </resources>
