@@ -85,7 +85,7 @@ class FilterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     fun createHighlightAnimator(): Animator {
-        val highlightColor = ColorUtils.getThemeColor(itemView.context, R.attr.colorPrimary, -1)
+        val highlightColor = ColorUtils.getThemeColor(itemView.context, R.attr.colorPrimary)
         val fadeFromTo = ColorUtils.modifyAlpha(highlightColor, 0)
 
         return ObjectAnimator.ofArgb(

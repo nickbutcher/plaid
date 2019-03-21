@@ -22,6 +22,8 @@
     <color name="primary">#69F0AE</color>
     <color name="primary_dark">#4aa87a</color>
     <color name="color_surface">@color/background_light</color>
+    <color name="color_highlighted_surface">#ffffff</color>
+    <color name="color_background">#e0e0e0</color>
 
     <!-- common colours -->
     <color name="text_primary_dark">#de000000</color> <!-- 87% -->
@@ -33,7 +35,6 @@
     <color name="ripple_light">#99ffffff</color>
     <color name="ripple_dark">@color/mid_grey</color>
     <color name="background_light">#fafafa</color> <!-- grey 50 -->
-    <color name="background_lightish">#e0e0e0</color> <!-- grey 300 -->
     <color name="background_card">#ffffff</color>
     <color name="background_dark">#ff333333</color>
     <color name="immersive_bars">#99000000</color>
@@ -56,7 +57,6 @@
     <color name="divider">#1f000000</color> <!-- 12% black -->
     <color name="page_indicator_dark">#80333333</color>
     <color name="page_indicator_dark_selected">#ff333333</color>
-    <color name="selected_comment_background">#ffffffff</color>
     <color name="error">#ffdd2c00</color>
     <color name="delete">#fff44336</color>
     <color name="shadow">#4c000000</color>
@@ -76,8 +76,6 @@
     <color name="designer_news_story_comment_background">@android:color/transparent</color>
 
     <color name="designer_news_super_dark">#000133</color>
-    <color name="designer_news_quote_line">#ffeceef1</color>
-    <color name="designer_news_quote">#73000000</color>
 
     <!-- product hunt-->
     <color name="product_hunt">#ffff9800</color>
@@ -87,4 +85,5 @@
         <item>#ff212121</item>
         <item>#ff232323</item>
     </array>
+
 </resources>

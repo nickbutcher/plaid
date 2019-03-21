@@ -26,18 +26,17 @@
     android:paddingEnd="@dimen/designer_news_story_comment_actions_padding_end"
     android:paddingBottom="@dimen/spacing_normal"
     android:clipToPadding="false"
-    android:background="@color/selected_comment_background"
+    android:background="@color/color_highlighted_surface"
     android:elevation="@dimen/designer_news_story_comment_action_elevation">
 
-    <Button
+    <io.plaidapp.core.ui.widget.BaselineGridTextView
         android:id="@+id/comment_votes"
         android:layout_width="@dimen/fab_size"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:drawableTop="@drawable/asl_upvote"
         android:textAppearance="@style/TextAppearance.CommentAuthor"
-        tools:text="33 likes"
-        style="?android:borderlessButtonStyle" />
+        tools:text="33 likes" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/comment_reply_label"

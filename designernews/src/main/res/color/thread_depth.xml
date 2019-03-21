@@ -12,12 +12,8 @@
   or implied. See the License for the specific language governing permissions and limitations under
   the License.
   -->
-
-<resources>
-
-    <!-- app palette -->
-    <color name="color_surface">@color/background_dark</color>
-    <color name="color_highlighted_surface">#ff404040</color>
-    <color name="color_background">#ff292929</color>
-
-</resources>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:color="?attr/colorOnSurface"
+        android:alpha="0.08" />
+</selector>

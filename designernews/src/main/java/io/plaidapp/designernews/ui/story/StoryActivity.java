@@ -39,7 +39,6 @@ import android.text.style.TextAppearanceSpan;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.view.animation.Interpolator;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -53,7 +52,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -89,9 +87,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
-import static io.plaidapp.core.util.AnimUtils.getFastOutLinearInInterpolator;
-import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
-import static io.plaidapp.core.util.AnimUtils.getLinearOutSlowInInterpolator;
+import static io.plaidapp.core.util.AnimUtils.*;
 
 public class StoryActivity extends AppCompatActivity {
 
@@ -874,9 +870,8 @@ public class StoryActivity extends AppCompatActivity {
                             result -> {
                                 if (result instanceof Result.Success) {
                                     comment.setUpvoted(true);
-                                    ;
                                     // TODO fix this
-//                                    comment.vote_count++;
+                                    // comment.vote_count++;
                                     holder.getCommentVotes().setText(String.valueOf(comment.getUpvotesCount()));
                                     holder.getCommentVotes().setActivated(true);
                                 } else {

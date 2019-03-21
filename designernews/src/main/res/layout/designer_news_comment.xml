@@ -36,7 +36,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/comment_text"
         android:layout_marginStart="@dimen/padding_normal"
-        android:paddingEnd="@dimen/spacing_normal" />
+        android:paddingEnd="@dimen/spacing_normal"
+        android:tint="@color/thread_depth" />
 
     <io.plaidapp.core.ui.widget.BaselineGridTextView
         android:id="@+id/comment_time_ago"
@@ -59,7 +60,7 @@
         app:layout_constraintHorizontal_bias="0"
         android:paddingTop="@dimen/spacing_micro"
         android:ellipsize="end"
-        android:textAppearance="@style/TextAppearance.CommentAuthor.DesignerNews"
+        android:textAppearance="@style/TextAppearance.CommentAuthor"
         tools:text="Nick B" />
 
     <io.plaidapp.core.ui.widget.BaselineGridTextView
