@@ -21,6 +21,7 @@
     <!-- app palette -->
     <color name="primary">#69F0AE</color>
     <color name="primary_dark">#4aa87a</color>
+    <color name="color_surface">@color/background_light</color>
 
     <!-- common colours -->
     <color name="text_primary_dark">#de000000</color> <!-- 87% -->
