@@ -21,6 +21,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.capture
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.timeout
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.DataLoadingSubject
@@ -361,7 +362,7 @@ class HomeViewModelTest {
         createViewModel()
 
         // Then load data was called
-        verify(dataManager).loadMore()
+        verify(dataManager, timeout(100)).loadMore()
     }
 
     @Test

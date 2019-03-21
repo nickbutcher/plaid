@@ -18,6 +18,7 @@ package io.plaidapp.test.shared
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.rules.TestWatcher
@@ -31,7 +32,7 @@ class CoroutinesMainDispatcherRule : TestWatcher() {
 
     override fun starting(description: Description?) {
         super.starting(description)
-        Dispatchers.setMain(Dispatchers.Unconfined)
+        Dispatchers.setMain(singleThreadExecutor.asCoroutineDispatcher())
     }
 
     override fun finished(description: Description?) {
