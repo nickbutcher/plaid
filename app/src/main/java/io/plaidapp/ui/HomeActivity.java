@@ -323,7 +323,7 @@ public class HomeActivity extends FragmentActivity {
         final long sharedShotId = data.getLongExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID,
                 -1L);
         if (sharedShotId != -1L                                             // returning from a shot
-                && adapter.getDataItemCount() > 0                           // grid populated
+                && adapter.getItems().size() > 0                           // grid populated
                 && grid.findViewHolderForItemId(sharedShotId) == null) {    // view not attached
             final int position = adapter.getItemPosition(sharedShotId);
             if (position == RecyclerView.NO_POSITION) return;
@@ -570,7 +570,7 @@ public class HomeActivity extends FragmentActivity {
     }
 
     void checkEmptyState() {
-        if (adapter.getDataItemCount() == 0) {
+        if (adapter.getItems().size() == 0) {
             // if grid is empty check whether we're loading or if no filters are selected
             if (sourcesRepository.getActiveSourcesCount() > 0 && connectivityChecker != null) {
                 Boolean connected = connectivityChecker.getConnectedStatus().getValue();
@@ -757,7 +757,7 @@ public class HomeActivity extends FragmentActivity {
     }
 
     private void handleNetworkConnected() {
-        if (adapter.getDataItemCount() != 0) return;
+        if (adapter.getItems().size() != 0) return;
 
         TransitionManager.beginDelayedTransition(drawer);
         if(noConnection != null) {

@@ -81,9 +81,6 @@ class FeedAdapter(
     private var items: List<PlaidItem> = emptyList()
     private var showLoadingMore = false
 
-    val dataItemCount: Int
-        get() = items.size
-
     private val loadingMoreItemPosition: Int
         get() = if (showLoadingMore) itemCount - 1 else RecyclerView.NO_POSITION
 
@@ -97,17 +94,18 @@ class FeedAdapter(
         if (loadingColorArrayId != 0) {
             val placeholderColors = host.resources.getIntArray(loadingColorArrayId)
             shotLoadingPlaceholders = arrayOfNulls(placeholderColors.size)
-            for (i in placeholderColors.indices) {
-                shotLoadingPlaceholders[i] = ColorDrawable(placeholderColors[i])
+            placeholderColors.indices.forEach {
+                shotLoadingPlaceholders[it] = ColorDrawable(placeholderColors[it])
             }
         } else {
             shotLoadingPlaceholders = arrayOf(ColorDrawable(Color.DKGRAY))
         }
         val initialGifBadgeColorId = a.getResourceId(R.styleable.DribbbleFeed_initialBadgeColor, 0)
-        initialGifBadgeColor = if (initialGifBadgeColorId != 0)
+        initialGifBadgeColor = if (initialGifBadgeColorId != 0) {
             ContextCompat.getColor(host, initialGifBadgeColorId)
-        else
+        } else {
             0x40ffffff
+        }
         a.recycle()
     }
 
@@ -125,11 +123,11 @@ class FeedAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
-            TYPE_DESIGNER_NEWS_STORY -> (holder as StoryViewHolder).bind((getItem(position) as Story?)!!)
+            TYPE_DESIGNER_NEWS_STORY -> (holder as StoryViewHolder).bind((getItem(position) as Story))
             TYPE_DRIBBBLE_SHOT -> bindDribbbleShotHolder(
-                (getItem(position) as Shot?)!!, holder as DribbbleShotHolder, position
+                (getItem(position) as Shot), holder as DribbbleShotHolder, position
             )
-            TYPE_PRODUCT_HUNT_POST -> (holder as ProductHuntPostHolder).bind((getItem(position) as Post?)!!)
+            TYPE_PRODUCT_HUNT_POST -> (holder as ProductHuntPostHolder).bind((getItem(position) as Post))
             TYPE_LOADING_MORE -> bindLoadingViewHolder(holder as LoadingMoreHolder, position)
             else -> throw IllegalStateException("Unsupported View type")
         }
@@ -251,9 +249,7 @@ class FeedAdapter(
                     model: Any,
                     target: Target<Drawable>,
                     isFirstResource: Boolean
-                ): Boolean {
-                    return false
-                }
+                ) = false
             })
             .placeholder(shotLoadingPlaceholders[position % shotLoadingPlaceholders.size])
             .diskCacheStrategy(DiskCacheStrategy.DATA)
@@ -304,7 +300,7 @@ class FeedAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (position < dataItemCount && dataItemCount > 0) {
+        if (position < items.size && items.isNotEmpty()) {
             val item = getItem(position)
             when (item) {
                 is Story -> return TYPE_DESIGNER_NEWS_STORY
@@ -316,13 +312,15 @@ class FeedAdapter(
     }
 
     private fun getItem(position: Int): PlaidItem? {
-        return if (position < 0 || position >= items!!.size) null else items!![position]
+        return if (position < 0 || position >= items.size) null else items[position]
     }
 
     fun getItemColumnSpan(position: Int): Int {
         return if (getItemViewType(position) == TYPE_LOADING_MORE) {
             columns
-        } else getItem(position)!!.colspan
+        } else {
+            getItem(position)!!.colspan
+        }
     }
 
     /**
@@ -342,20 +340,18 @@ class FeedAdapter(
     }
 
     fun getItemPosition(itemId: Long): Int {
-        items?.indices?.forEach {
-            if (getItem(it)?.id == itemId) return it
+        items.forEachIndexed { index, plaidItem ->
+            if (plaidItem.id == itemId) return index
         }
         return RecyclerView.NO_POSITION
     }
 
     override fun getItemCount(): Int {
-        return dataItemCount + if (showLoadingMore) 1 else 0
+        return items.size + if (showLoadingMore) 1 else 0
     }
 
     // temporary method until we're able to move the item setting only to Activity and ViewModels
-    fun getItems(): List<PlaidItem>? {
-        return items
-    }
+    fun getItems() = items
 
     /**
      * The shared element transition to dribbble shots & dn stories can intersect with the FAB.
@@ -395,7 +391,9 @@ class FeedAdapter(
         val item = getItem(position)
         return if (item is Shot) {
             listOf(item)
-        } else emptyList()
+        } else {
+            emptyList()
+        }
     }
 
     override fun getPreloadRequestBuilder(item: Shot): RequestBuilder<Drawable>? {
@@ -405,7 +403,7 @@ class FeedAdapter(
     private class LoadingMoreHolder internal constructor(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
 
-        private val progress: ProgressBar = itemView as ProgressBar
+        private val progress = itemView as ProgressBar
 
         fun setVisibility(visibility: Int) {
             progress.visibility = visibility
