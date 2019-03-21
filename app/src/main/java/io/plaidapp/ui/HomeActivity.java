@@ -185,7 +185,7 @@ public class HomeActivity extends FragmentActivity {
         if (savedInstanceState == null) {
             animateToolbar();
         }
-        setExitSharedElementCallback(FeedAdapter.createSharedElementReenterCallback(this));
+        setExitSharedElementCallback(FeedAdapter.Companion.createSharedElementReenterCallback(this));
 
         setupGrid();
 
