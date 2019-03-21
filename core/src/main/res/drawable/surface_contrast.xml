@@ -12,8 +12,6 @@
   or implied. See the License for the specific language governing permissions and limitations under
   the License.
   -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:color="?colorOnSurface"
-        android:alpha="0.04" />
-</selector>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/surface_contrast" />
+</shape>

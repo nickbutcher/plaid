@@ -35,12 +35,12 @@
 
     <style name="TextAppearance.DribbbleShotTitle" parent="@android:style/TextAppearance.Material.Headline">
         <item name="android:fontFamily">@font/roboto_mono</item>
-        <item name="android:textColor">@color/text_primary_dark</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
         <item name="lineHeightHint">32sp</item>
     </style>
 
     <style name="TextAppearance.DribbbleShotDescription" parent="@android:style/TextAppearance.Material.Subhead">
-        <item name="android:textColor">@color/text_tertiary_dark</item>
+        <item name="android:textColor">?android:textColorTertiary</item>
         <item name="android:letterSpacing">0.01</item>
         <item name="lineHeightHint">24sp</item>
     </style>
