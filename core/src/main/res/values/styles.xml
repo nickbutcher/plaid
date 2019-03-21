@@ -18,7 +18,7 @@
 
 <resources>
 
-    <style name="Plaid" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Plaid" parent="@style/Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">#69f0ae</item>
         <item name="colorPrimaryVariant">#2bbd7e</item>
         <item name="colorOnPrimary">#000000</item>
@@ -27,10 +27,8 @@
         <item name="colorOnSecondary">#000000</item>
         <item name="colorError">@color/error</item>
         <item name="colorOnError">#ffffff</item>
-        <item name="colorSurface">@color/background_light</item>
-        <item name="colorOnSurface">#212121</item>
-        <item name="android:colorBackground">@color/background_light</item>
-        <item name="colorOnBackground">#212121</item>
+        <item name="colorSurface">@color/color_surface</item>
+        <item name="android:colorBackground">@color/color_surface</item>
         <item name="android:navigationBarColor">@color/background_super_dark</item>
         <item name="android:statusBarColor">@color/background_super_dark</item>
         <item name="android:textColorHint">@color/hint_disabled_dark</item>
