@@ -20,8 +20,9 @@ package io.plaidapp.designernews.dagger
 
 import `in`.uncod.android.bypass.Bypass
 import android.util.TypedValue
-import androidx.core.content.ContextCompat
 import io.plaidapp.core.dagger.MarkdownModule
+import io.plaidapp.core.util.ColorUtils
+import io.plaidapp.designernews.R
 import io.plaidapp.designernews.ui.login.LoginActivity
 import io.plaidapp.designernews.ui.story.StoryActivity
 import io.plaidapp.ui.coreComponent
@@ -32,15 +33,16 @@ import io.plaidapp.ui.coreComponent
 fun inject(storyId: Long, activity: StoryActivity) {
 
     val bypassOptions = Bypass.Options()
-        .setBlockQuoteLineColor(
-            ContextCompat.getColor(activity, io.plaidapp.R.color.designer_news_quote_line)
-        )
+        .setBlockQuoteLineColor(activity.getColor(R.color.thread_depth))
         .setBlockQuoteLineWidth(2) // dps
         .setBlockQuoteLineIndent(8) // dps
         .setPreImageLinebreakHeight(4) // dps
         .setBlockQuoteIndentSize(TypedValue.COMPLEX_UNIT_DIP, 2f)
         .setBlockQuoteTextColor(
-            ContextCompat.getColor(activity, io.plaidapp.R.color.designer_news_quote)
+            ColorUtils.getThemeColor(
+                activity,
+                android.R.attr.textColorSecondary
+            )
         )
 
     DaggerStoryComponent.builder()

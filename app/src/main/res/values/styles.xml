@@ -104,27 +104,26 @@
         <item name="lineHeightHint">28sp</item>
     </style>
 
-    <style name="TextAppearance.CommentAuthor" parent="@android:style/TextAppearance.Material.Caption">
+    <style name="TextAppearance.CommentAuthor" parent="@style/TextAppearance.MaterialComponents.Caption">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/original_poster_text_color</item>
         <item name="android:fontFeatureSettings">smcp, onum</item>
         <item name="android:letterSpacing">0.02</item>
     </style>
 
-    <!-- todo revert to material styles? -->
-    <style name="TextAppearance.Comment" parent="@android:style/TextAppearance.Material.Body1">
+    <style name="TextAppearance.Comment" parent="@style/TextAppearance.MaterialComponents.Body1">
         <item name="android:textSize">15sp</item>
-        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
         <item name="lineHeightHint">24sp</item>
-        <!--<item name="android:letterSpacing">0.01</item>-->
     </style>
 
     <style name="TextAppearance.Comment.None">
         <item name="android:textColor">@color/grey_300</item>
     </style>
 
-    <style name="TextAppearance.CommentTimestamp" parent="@android:style/TextAppearance.Material.Caption">
-        <item name="android:textColor">@color/hint_disabled_dark</item>
+    <style name="TextAppearance.CommentTimestamp" parent="@style/TextAppearance.MaterialComponents.Caption">
+        <item name="android:textColor">?android:textColorTertiary</item>
         <item name="android:textSize">14sp</item>
         <item name="android:fontFeatureSettings">onum, smcp</item>
         <item name="android:letterSpacing">0.02</item>

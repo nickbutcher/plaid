@@ -21,7 +21,7 @@
     android:id="@+id/comments_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_lightish"
+    android:background="?android:attr/colorBackground"
     android:transitionName="@string/transition_story_background"
     app:dragDismissDistance="@dimen/drag_dismiss_distance"
     app:dragDismissScale="0.95">
@@ -30,7 +30,7 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="@dimen/extended_height_toolbar"
-        android:background="?android:colorPrimary" />
+        android:background="?attr/colorPrimary" />
 
     <!-- wrapping layout needed for the ripple :( -->
     <FrameLayout

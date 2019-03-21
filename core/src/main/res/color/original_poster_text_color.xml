@@ -13,11 +13,11 @@
   the License.
   -->
 
-<resources>
+<selector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- app palette -->
-    <color name="color_surface">@color/background_dark</color>
-    <color name="color_highlighted_surface">#ff404040</color>
-    <color name="color_background">#ff292929</color>
+    <item app:state_original_poster="true" android:color="?attr/colorPrimary" />
+    <item android:color="?android:textColorPrimary" />
 
-</resources>
+</selector>
