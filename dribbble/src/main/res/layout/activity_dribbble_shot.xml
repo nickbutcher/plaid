@@ -62,7 +62,7 @@
             android:id="@+id/background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?colorSurface"
+            android:background="?attr/colorSurface"
             android:transitionName="@string/transition_shot_background" />
 
         <io.plaidapp.core.ui.widget.ParallaxScrimageView

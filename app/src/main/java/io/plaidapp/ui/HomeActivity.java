@@ -479,7 +479,7 @@ public class HomeActivity extends FragmentActivity {
         if (viewModel.isDesignerNewsUserLoggedIn()) {
             Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.PostStory.INSTANCE);
             FabTransform.addExtras(intent, ColorUtils.getThemeColor(
-                    this, R.attr.colorPrimary, -1), R.drawable.ic_add_dark);
+                    this, R.attr.colorPrimary), R.drawable.ic_add_dark);
             intent.putExtra(PostStoryService.EXTRA_BROADCAST_RESULT, true);
             registerPostStoryResultListener();
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, fab,
@@ -488,7 +488,7 @@ public class HomeActivity extends FragmentActivity {
         } else {
             Intent intent = ActivityHelper.intentTo(Activities.DesignerNews.Login.INSTANCE);
             FabTransform.addExtras(intent, ColorUtils.getThemeColor(
-                    this, R.attr.colorPrimary, -1), R.drawable.ic_add_dark);
+                    this, R.attr.colorPrimary), R.drawable.ic_add_dark);
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this, fab,
                     getString(R.string.transition_designer_news_login));
             startActivityForResult(intent, RC_NEW_DESIGNER_NEWS_LOGIN, options.toBundle());

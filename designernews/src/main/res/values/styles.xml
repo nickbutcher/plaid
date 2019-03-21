@@ -50,10 +50,6 @@
         <item name="android:colorControlNormal">@color/hint_disabled_dark</item>
     </style>
 
-    <style name="TextAppearance.CommentAuthor.DesignerNews">
-        <item name="android:textColor">@color/designer_news_author</item>
-    </style>
-
     <style name="TextAppearance.DesignerNewsDescription" parent="@android:style/TextAppearance.Material.Subhead">
         <item name="android:textColor">@color/text_secondary_dark</item>
         <item name="android:letterSpacing">0.01</item>

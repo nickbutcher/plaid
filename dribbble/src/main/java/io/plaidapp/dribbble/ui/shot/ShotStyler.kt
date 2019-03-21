@@ -45,7 +45,6 @@ class ShotStyler @Inject constructor(context: Context) {
     @ColorInt
     val highlightColor = ColorUtils.getThemeColor(
         context,
-        coreR.attr.colorPrimary,
-        coreR.color.primary
+        coreR.attr.colorPrimary
     )
 }
