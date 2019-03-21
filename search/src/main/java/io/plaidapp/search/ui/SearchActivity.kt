@@ -120,9 +120,9 @@ class SearchActivity : AppCompatActivity() {
                     results.visibility = View.VISIBLE
                     fab.visibility = View.VISIBLE
                 }
-                val feedItems = feedAdapter.items
+                val feedItems = feedAdapter.getItems().orEmpty()
                 val items = getPlaidItemsForDisplayExpanded(feedItems, searchUiModel.items, columns)
-                feedAdapter.items = items
+                feedAdapter.setItems(items)
             } else {
                 TransitionManager.beginDelayedTransition(
                     container, getTransition(io.plaidapp.core.R.transition.auto)
@@ -285,7 +285,7 @@ class SearchActivity : AppCompatActivity() {
             container,
             getTransition(io.plaidapp.core.R.transition.auto)
         )
-        feedAdapter.items = emptyList()
+        feedAdapter.setItems(emptyList())
         viewModel.clearResults()
         results.visibility = View.GONE
         progress.visibility = View.GONE
