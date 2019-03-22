@@ -71,14 +71,14 @@
 
     <!-- designer news -->
     <color name="designer_news">#03a9f4</color> <!--light blue 500 -->-->
-    <color name="designer_news_dark">#039be5</color> <!-- light blue 600 -->
+    <color name="designer_news_secondary">#03a9f4</color> <!--*not* varied in -night -->-->
+    <color name="designer_news_variant">#039be5</color> <!-- light blue 600 -->
     <color name="designer_news_link_highlight">#b303a9f4</color>
-    <color name="designer_news_story_comment_background">@android:color/transparent</color>
 
     <color name="designer_news_super_dark">#000133</color>
 
     <!-- product hunt-->
-    <color name="product_hunt">#ffff9800</color>
+    <color name="product_hunt">#ffff9800</color> <!--orange 500 -->-->
 
     <array name="loading_placeholders_dark">
         <item>#ff191919</item>

@@ -24,7 +24,6 @@
     android:paddingStart="@dimen/designer_news_story_comment_horizontal_padding"
     android:paddingEnd="@dimen/designer_news_story_comment_horizontal_padding"
     android:elevation="@dimen/designer_news_story_comment_elevation"
-    android:background="@color/designer_news_story_comment_background"
     android:foreground="?android:selectableItemBackground"
     android:stateListAnimator="@animator/selected_comment">
 

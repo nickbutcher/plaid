@@ -109,7 +109,8 @@ public class HomeActivity extends FragmentActivity {
     private ImageButton fab;
     private RecyclerView filtersList;
     private ProgressBar loading;
-    @Nullable private ImageView noConnection;
+    @Nullable
+    private ImageView noConnection;
     private ImageButton fabPosting;
     private GridLayoutManager layoutManager;
     private int columns;
@@ -141,7 +142,7 @@ public class HomeActivity extends FragmentActivity {
 
         adapter = new FeedAdapter(this, columns, pocketInstalled);
 
-        if(connectivityChecker != null) {
+        if (connectivityChecker != null) {
             getLifecycle().addObserver(connectivityChecker);
             connectivityChecker.getConnectedStatus().observe(this, connected -> {
                 if (connected) {
@@ -168,7 +169,7 @@ public class HomeActivity extends FragmentActivity {
         });
 
         viewModel.getFeedProgress().observe(this, feedProgressUiModel -> {
-            if(feedProgressUiModel.isLoading()){
+            if (feedProgressUiModel.isLoading()) {
                 adapter.dataStartedLoading();
             } else {
                 adapter.dataFinishedLoading();
@@ -224,7 +225,7 @@ public class HomeActivity extends FragmentActivity {
         columns = getResources().getInteger(R.integer.num_columns);
     }
 
-    private void setupGrid(){
+    private void setupGrid() {
         grid.setAdapter(adapter);
         layoutManager = new GridLayoutManager(this, columns);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -262,7 +263,7 @@ public class HomeActivity extends FragmentActivity {
         grid.addOnScrollListener(shotPreloader);
     }
 
-    private void handleDrawerInsets(WindowInsets insets){
+    private void handleDrawerInsets(WindowInsets insets) {
         // inset the toolbar down by the status bar height
         ViewGroup.MarginLayoutParams lpToolbar = (ViewGroup.MarginLayoutParams) toolbar
                 .getLayoutParams();
@@ -354,9 +355,16 @@ public class HomeActivity extends FragmentActivity {
         if (actionView instanceof CheckBox) {
             final CheckBox toggle = (CheckBox) actionView;
             toggle.setButtonDrawable(R.drawable.asl_theme);
-            toggle.setOnCheckedChangeListener((buttonView, isChecked) ->
-                    AppCompatDelegate.setDefaultNightMode(isChecked ?
-                            AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO));
+            toggle.setChecked(
+                    AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES);
+            toggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                AppCompatDelegate.setDefaultNightMode(isChecked ?
+                        AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                toggle.postDelayed(() -> {
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    recreate();
+                }, 800L);
+            });
         }
         return true;
     }
@@ -472,7 +480,6 @@ public class HomeActivity extends FragmentActivity {
             }
         }
     };
-
 
 
     protected void fabClick() {
@@ -709,10 +716,10 @@ public class HomeActivity extends FragmentActivity {
 
     /**
      * Highlight the new source(s) by:
-     *      1. opening the drawer
-     *      2. scrolling new source(s) into view
-     *      3. flashing new source(s) background
-     *      4. closing the drawer (if user hasn't interacted with it)
+     * 1. opening the drawer
+     * 2. scrolling new source(s) into view
+     * 3. flashing new source(s) background
+     * 4. closing the drawer (if user hasn't interacted with it)
      */
     private void highlightPosition(SourcesHighlightUiModel uiModel) {
         final Runnable closeDrawerRunnable = () -> drawer.closeDrawer(GravityCompat.END);
@@ -772,7 +779,7 @@ public class HomeActivity extends FragmentActivity {
         if (adapter.getItems().size() != 0) return;
 
         TransitionManager.beginDelayedTransition(drawer);
-        if(noConnection != null) {
+        if (noConnection != null) {
             noConnection.setVisibility(View.GONE);
         }
         loading.setVisibility(View.VISIBLE);
