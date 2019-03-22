@@ -17,7 +17,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item app:state_original_poster="true" android:color="?attr/colorPrimary" />
+    <item app:state_original_poster="true" android:color="?attr/colorSecondary" />
     <item android:color="?android:textColorPrimary" />
 
 </selector>

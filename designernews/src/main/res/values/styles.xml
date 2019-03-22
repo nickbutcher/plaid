@@ -20,10 +20,10 @@
 
     <style name="Plaid.DesignerNews" parent="Plaid.Translucent">
         <item name="colorPrimary">@color/designer_news</item>
-        <item name="colorPrimaryVariant">@color/designer_news_dark</item>
+        <item name="colorPrimaryVariant">@color/designer_news_variant</item>
         <item name="colorOnPrimary">#ffffff</item>
-        <item name="colorSecondary">@color/designer_news</item>
-        <item name="colorSecondaryVariant">@color/designer_news_dark</item>
+        <item name="colorSecondary">@color/designer_news_secondary</item>
+        <item name="colorSecondaryVariant">@color/designer_news_variant</item>
         <item name="colorControlActivated">@color/designer_news</item>
         <item name="android:colorButtonNormal">@color/designer_news_button</item>
     </style>
@@ -35,7 +35,7 @@
     </style>
 
     <style name="Plaid.DesignerNews.Story">
-        <item name="android:statusBarColor">@color/designer_news_dark</item>
+        <item name="android:statusBarColor">@color/designer_news_variant</item>
         <item name="android:navigationBarColor">@color/designer_news_super_dark</item>
         <item name="android:windowSharedElementEnterTransition">@transition/designer_news_story_shared_enter</item>
         <item name="android:windowSharedElementReturnTransition">@transition/designer_news_story_shared_return</item>

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   Copyright 2015 Google Inc.
 
@@ -18,11 +17,10 @@
 
 <ripple
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/ripple_dark">
+    android:color="@color/ripple_on_primary">
     <item>
-        <shape
-            android:shape="oval">
-            <solid android:color="?android:colorAccent" />
+        <shape android:shape="oval">
+            <solid android:color="?attr/colorPrimary" />
         </shape>
     </item>
 </ripple>
