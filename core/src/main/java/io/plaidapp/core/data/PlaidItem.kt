@@ -17,7 +17,8 @@
 package io.plaidapp.core.data
 
 /**
- * Base class for all model types
+ * Base class for all model types.
+ * // TODO - make the item immutable
  */
 abstract class PlaidItem(
     @Transient open val id: Long,

@@ -18,16 +18,14 @@ package io.plaidapp.core.designernews.domain
 
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import io.plaidapp.core.data.LoadFailedCallback
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.data.SourceLoadedCallback
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.storyLinks
 import io.plaidapp.core.designernews.userId
-import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.IOException
 import java.util.Date
@@ -69,40 +67,31 @@ class SearchStoriesUseCaseTest {
     private val query = "Plaid 2.0"
 
     private val storiesRepository: StoriesRepository = mock()
-    private val searchStoriesUseCase = SearchStoriesUseCase(
-        storiesRepository,
-        provideFakeCoroutinesDispatcherProvider()
-    )
+    private val searchStoriesUseCase = SearchStoriesUseCase(storiesRepository)
 
     @Test
     fun search_withSuccess() = runBlocking {
         // Given a list of stories returned for a specific query and page
-        val result = Result.Success(storiesResponses)
-        whenever(storiesRepository.search(query, 1)).thenReturn(result)
-
-        // Given a callback where we check the validity of the data received
-        val callback = SourceLoadedCallback()
+        val expected = Result.Success(storiesResponses)
+        whenever(storiesRepository.search(query, 1)).thenReturn(expected)
 
         // When searching for stories
-        searchStoriesUseCase(query, 1, callback)
+        val result = searchStoriesUseCase(query, 1)
 
-        // Then the correct data is received
-        callback.assertSourceLoaded(stories, 1, query)
+        // Then the result was triggered
+        assertEquals(Result.Success(stories), result)
     }
 
     @Test
     fun search_withError() = runBlocking {
         // Given that an error is returned for a specific query and page search
-        val result = Result.Error(IOException("error"))
-        whenever(storiesRepository.search(query, 2)).thenReturn(result)
-
-        // Given a callback where we check the validity of the data received
-        val callback = LoadFailedCallback()
+        val expected = Result.Error(IOException("error"))
+        whenever(storiesRepository.search(query, 2)).thenReturn(expected)
 
         // When searching for stories
-        searchStoriesUseCase(query, 2, callback)
+        val result = searchStoriesUseCase(query, 2)
 
-        // The correct callback was called
-        callback.assertLoadFailed(query)
+        // Then the result was triggered
+        assertEquals(expected, result)
     }
 }

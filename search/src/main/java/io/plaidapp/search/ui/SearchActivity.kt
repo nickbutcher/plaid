@@ -50,10 +50,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.util.ViewPreloadSizeProvider
-import io.plaidapp.core.data.pocket.PocketUtils
+import io.plaidapp.core.dagger.qualifier.IsPocketInstalled
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.feed.FeedAdapter
-import io.plaidapp.core.ui.getPlaidItemsForDisplay
+import io.plaidapp.core.ui.getPlaidItemsForDisplayExpanded
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener
 import io.plaidapp.core.ui.recyclerview.SlideInItemAnimator
 import io.plaidapp.core.util.Activities
@@ -95,6 +95,10 @@ class SearchActivity : AppCompatActivity() {
     @Inject
     lateinit var viewModel: SearchViewModel
 
+    @JvmField
+    @field:[Inject IsPocketInstalled]
+    var pocketInstalled: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -102,8 +106,6 @@ class SearchActivity : AppCompatActivity() {
         setupSearchView()
 
         Injector.inject(this)
-
-        val pocketInstalled = PocketUtils.isPocketInstalled(this)
 
         feedAdapter = FeedAdapter(this, columns, pocketInstalled)
 
@@ -118,9 +120,9 @@ class SearchActivity : AppCompatActivity() {
                     results.visibility = View.VISIBLE
                     fab.visibility = View.VISIBLE
                 }
-                val feedItems = feedAdapter.items
-                val items = getPlaidItemsForDisplay(feedItems, searchUiModel.items, columns)
-                feedAdapter.items = items
+                val feedItems = feedAdapter.getItems().orEmpty()
+                val items = getPlaidItemsForDisplayExpanded(feedItems, searchUiModel.items, columns)
+                feedAdapter.setItems(items)
             } else {
                 TransitionManager.beginDelayedTransition(
                     container, getTransition(io.plaidapp.core.R.transition.auto)
@@ -154,9 +156,12 @@ class SearchActivity : AppCompatActivity() {
             itemAnimator = SlideInItemAnimator()
             this.layoutManager = layoutManager
             addOnScrollListener(object :
-                InfiniteScrollListener(layoutManager, viewModel.getDataLoadingSubject()) {
+                InfiniteScrollListener(layoutManager) {
                 override fun onLoadMore() {
                     viewModel.loadMore()
+                }
+                override fun isDataLoading(): Boolean {
+                    return viewModel.searchProgress.value?.isLoading ?: false
                 }
             })
             setHasFixedSize(true)
@@ -280,7 +285,7 @@ class SearchActivity : AppCompatActivity() {
             container,
             getTransition(io.plaidapp.core.R.transition.auto)
         )
-        feedAdapter.items = emptyList()
+        feedAdapter.setItems(emptyList())
         viewModel.clearResults()
         results.visibility = View.GONE
         progress.visibility = View.GONE

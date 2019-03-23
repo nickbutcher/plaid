@@ -20,11 +20,11 @@ package io.plaidapp.core.ui
 
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.PlaidItemSorting
-import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.domain.StoryWeigher
 import io.plaidapp.core.dribbble.data.api.ShotWeigher
 import io.plaidapp.core.dribbble.data.api.model.Shot
+import io.plaidapp.core.producthunt.data.ProductHuntSourceItem.Companion.SOURCE_PRODUCT_HUNT
 import io.plaidapp.core.producthunt.data.api.PostWeigher
 import io.plaidapp.core.producthunt.data.api.model.Post
 import java.util.Collections
@@ -33,16 +33,25 @@ import java.util.Collections
  * Prepares items for display of de-duplicating items and sorting them (depending on the data
  * source).
  */
-fun getPlaidItemsForDisplay(
+
+fun getPlaidItemsForDisplayExpanded(
     oldItems: List<PlaidItem>,
     newItems: List<PlaidItem>,
     columns: Int
+): List<PlaidItem> {
+    val itemsToBeDisplayed = getPlaidItemsForDisplay(oldItems, newItems)
+    expandPopularItems(itemsToBeDisplayed, columns)
+    return itemsToBeDisplayed
+}
+
+fun getPlaidItemsForDisplay(
+    oldItems: List<PlaidItem>,
+    newItems: List<PlaidItem>
 ): List<PlaidItem> {
     val itemsToBeDisplayed = oldItems.toMutableList()
     weighItems(newItems.toMutableList())
     deduplicateAndAdd(itemsToBeDisplayed, newItems)
     sort(itemsToBeDisplayed)
-    expandPopularItems(itemsToBeDisplayed, columns)
     return itemsToBeDisplayed
 }
 
@@ -75,6 +84,7 @@ fun expandPopularItems(items: List<PlaidItem>, columns: Int) {
         }
     }
 }
+
 /**
  * Calculate a 'weight' [0, 1] for each data type for sorting. Each data type/source has a
  * different metric for weighing it e.g. Dribbble uses likes etc. but some sources should keep
@@ -84,22 +94,22 @@ fun expandPopularItems(items: List<PlaidItem>, columns: Int) {
 private fun weighItems(items: MutableList<out PlaidItem>?) {
     if (items == null || items.isEmpty()) return
 
-    // TODO this weighting algo assumes that all items in the list are of the same type
-    // update this to something better in the future
-
     // some sources should just use the natural order i.e. as returned by the API as users
     // have an expectation about the order they appear in
-    if (SourcesRepository.SOURCE_PRODUCT_HUNT == items[0].dataSource) {
-        PlaidItemSorting.NaturalOrderWeigher().weigh(items)
-    } else {
-        // otherwise use our own weight calculation. We prefer this as it leads to a less
-        // regular pattern of items in the grid
-        when {
-            items[0] is Shot -> ShotWeigher().weigh(items as List<Shot>)
-            items[0] is Story -> StoryWeigher().weigh(items as List<Story>)
-            items[0] is Post -> PostWeigher().weigh(items as List<Post>)
-            else -> throw RuntimeException("unknown item type")
-        }
+    items.filter { SOURCE_PRODUCT_HUNT == it.dataSource }.apply {
+        PlaidItemSorting.NaturalOrderWeigher().weigh(this)
+    }
+
+    // otherwise use our own weight calculation. We prefer this as it leads to a less
+    // regular pattern of items in the grid
+    items.filter { it is Shot }.apply {
+        ShotWeigher().weigh(this as List<Shot>)
+    }
+    items.filter { it is Story }.apply {
+        StoryWeigher().weigh(this as List<Story>)
+    }
+    items.filter { it is Post && SOURCE_PRODUCT_HUNT != it.dataSource }.apply {
+        PostWeigher().weigh(this as List<Post>)
     }
 }
 

@@ -20,6 +20,7 @@ dependencies {
     testImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
     testImplementation "junit:junit:${versions.junit}"
     testImplementation "org.mockito:mockito-core:${versions.mockito}"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
 
     // Work around issue with runtime classpath version conflict
     implementation "androidx.arch.core:core-runtime:${versions.androidxCoreRuntime}"
@@ -37,10 +38,11 @@ dependencies {
 
     androidTestImplementation project(':test_shared')
     androidTestImplementation "androidx.arch.core:core-testing:${versions.androidxArch}"
-    androidTestImplementation "androidx.test:runner:${versions.test_runner}"
-    androidTestImplementation "androidx.test:rules:${versions.test_rules}"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:${versions.espresso}"
     androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
+    androidTestImplementation "androidx.test.ext:junit:${versions.extJunit}"
+    androidTestImplementation "androidx.test:rules:${versions.test_rules}"
+    androidTestImplementation "androidx.test:runner:${versions.test_runner}"
     androidTestImplementation "androidx.test.uiautomator:uiautomator:${versions.ui_automator}"
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockito_kotlin}"
     androidTestImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"

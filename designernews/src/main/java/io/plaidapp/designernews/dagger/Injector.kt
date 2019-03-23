@@ -57,6 +57,7 @@ fun inject(storyId: Long, activity: StoryActivity) {
 fun inject(activity: LoginActivity) {
 
     DaggerLoginComponent.builder()
+        .coreComponent(activity.coreComponent())
         .sharedPreferencesModule(DesignerNewsPreferencesModule(activity))
         .build()
         .inject(activity)

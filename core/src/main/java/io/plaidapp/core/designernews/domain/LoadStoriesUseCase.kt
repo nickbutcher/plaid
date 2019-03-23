@@ -16,60 +16,30 @@
 
 package io.plaidapp.core.designernews.domain
 
-import io.plaidapp.core.data.CoroutinesDispatcherProvider
-import io.plaidapp.core.data.LoadSourceCallback
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
+import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.toStory
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import io.plaidapp.core.util.exhaustive
 import javax.inject.Inject
 
 /**
  * Use case that loads stories from [StoriesRepository].
  */
 class LoadStoriesUseCase @Inject constructor(
-    private val storiesRepository: StoriesRepository,
-    private val dispatcherProvider: CoroutinesDispatcherProvider
+    private val storiesRepository: StoriesRepository
 ) {
-    private var parentJob = Job()
-    private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
 
-    private val parentJobs = mutableMapOf<String, Job>()
-
-    operator fun invoke(page: Int, callback: LoadSourceCallback) {
-        val jobId = "${SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR}::$page"
-        parentJobs[jobId] = launchLoad(page, callback, jobId)
-    }
-
-    private fun launchLoad(
-        page: Int,
-        callback: LoadSourceCallback,
-        jobId: String
-    ) = scope.launch(dispatcherProvider.computation) {
+    suspend operator fun invoke(page: Int): Result<List<Story>> {
         val result = storiesRepository.loadStories(page)
-        parentJobs.remove(jobId)
-        if (result is Result.Success) {
-            val stories = result.data.map { it.toStory() }
-            withContext(dispatcherProvider.main) {
-                callback.sourceLoaded(stories, page, SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR)
+        when (result) {
+            is Result.Success -> {
+                val stories = result.data.map { it.toStory() }
+                return Result.Success(stories)
             }
-        } else {
-            withContext(dispatcherProvider.main) {
-                callback.loadFailed(SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR)
+            is Result.Error -> {
+                return result
             }
-        }
-    }
-
-    fun cancelAllRequests() {
-        parentJob.cancelChildren()
-    }
-
-    fun cancelRequestOfSource(source: String) {
-        parentJobs[source].apply { this?.cancel() }
+        }.exhaustive
     }
 }

@@ -16,12 +16,14 @@
 
 package io.plaidapp.core.util
 
-import androidx.databinding.BindingAdapter
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
+import androidx.databinding.BindingAdapter
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestListener
 import io.plaidapp.core.util.glide.GlideApp
 
 @BindingAdapter("goneUnless")
@@ -42,14 +44,27 @@ fun bindVisibleUnless(view: View, visible: Boolean) {
     }
 }
 
-@BindingAdapter("imageUrl", "placeholder", "circleCrop", "crossFade", requireAll = false)
+@BindingAdapter(
+    "imageUrl",
+    "imagePlaceholder",
+    "circleCropImage",
+    "crossFadeImage",
+    "overrideImageWidth",
+    "overrideImageHeight",
+    "imageLoadListener",
+    requireAll = false
+)
 fun bindImage(
     imageView: ImageView,
     imageUrl: String?,
     placeholder: Int? = null,
     circleCrop: Boolean? = false,
-    crossFade: Boolean? = false
+    crossFade: Boolean? = false,
+    overrideWidth: Int? = null,
+    overrideHeight: Int? = null,
+    listener: RequestListener<Drawable>?
 ) {
+    if (imageUrl == null) return
     var request = GlideApp.with(imageView.context).load(imageUrl)
     if (placeholder != null) {
         request = request.placeholder(placeholder)
@@ -59,6 +74,12 @@ fun bindImage(
     }
     if (crossFade == true) {
         request = request.transition(DrawableTransitionOptions.withCrossFade())
+    }
+    if (overrideWidth != null && overrideHeight != null) {
+        request = request.override(overrideWidth, overrideHeight)
+    }
+    if (listener != null) {
+        request = request.listener(listener)
     }
     request.into(imageView)
 }

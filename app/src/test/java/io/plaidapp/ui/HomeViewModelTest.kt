@@ -17,25 +17,36 @@
 package io.plaidapp.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.capture
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.timeout
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.DataManager
-import io.plaidapp.core.data.Source
+import io.plaidapp.core.data.OnDataLoadedCallback
+import io.plaidapp.core.data.PlaidItem
+import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.data.prefs.SourcesRepository
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSource
 import io.plaidapp.core.designernews.data.login.LoginRepository
+import io.plaidapp.core.dribbble.data.DribbbleSourceItem
 import io.plaidapp.core.feed.FeedProgressUiModel
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
-import io.plaidapp.core.ui.filter.SourceUiModel
 import io.plaidapp.core.ui.filter.SourcesHighlightUiModel
+import io.plaidapp.designerNewsSource
+import io.plaidapp.designerNewsSourceUiModel
+import io.plaidapp.dribbbleSource
+import io.plaidapp.post
+import io.plaidapp.shot
+import io.plaidapp.story
+import io.plaidapp.test.shared.CoroutinesMainDispatcherRule
 import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -48,24 +59,14 @@ import org.mockito.MockitoAnnotations
  */
 class HomeViewModelTest {
 
+    @get:Rule
+    var coroutinesMainDispatcherRule = CoroutinesMainDispatcherRule()
+
     // Executes tasks in the Architecture Components in the same thread
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val designerNewsSource = Source.DesignerNewsSearchSource(
-        "query",
-        true
-    )
-    private val designerNewsSourceUiModel = SourceUiModel(
-        designerNewsSource.key,
-        designerNewsSource.name,
-        designerNewsSource.active,
-        designerNewsSource.iconRes,
-        designerNewsSource.isSwipeDismissable,
-        {},
-        {}
-    )
-    private val dribbbleSource = Source.DribbbleSearchSource("dribbble", true)
+    private val columns = 2
     private val dataManager: DataManager = mock()
     private val loginRepository: LoginRepository = mock()
     private val sourcesRepository: SourcesRepository = mock()
@@ -75,6 +76,9 @@ class HomeViewModelTest {
 
     @Captor
     private lateinit var dataLoadingCallback: ArgumentCaptor<DataLoadingSubject.DataLoadingCallbacks>
+
+    @Captor
+    private lateinit var dataLoadedCallback: ArgumentCaptor<OnDataLoadedCallback<List<PlaidItem>>>
 
     @Before
     fun setup() {
@@ -108,6 +112,18 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun addSources_blankQuery() = runBlocking {
+        // Given a view model
+        val homeViewModel = createViewModel()
+
+        // When adding an empty query
+        homeViewModel.addSources("", isDribbble = true, isDesignerNews = false)
+
+        // Then nothing is added to the repository
+        verify(sourcesRepository, never()).addOrMarkActiveSources(any())
+    }
+
+    @Test
     fun addSources_Dribbble() = runBlocking {
         // Given a view model
         val homeViewModel = createViewModel()
@@ -126,7 +142,11 @@ class HomeViewModelTest {
         val homeViewModel = createViewModel()
 
         // When adding a Designer News source
-        homeViewModel.addSources(designerNewsSource.query, isDribbble = false, isDesignerNews = true)
+        homeViewModel.addSources(
+            query = designerNewsSource.query,
+            isDribbble = false,
+            isDesignerNews = true
+        )
 
         // Then a Designer News source is added to the repository
         val expected = listOf(designerNewsSource)
@@ -143,8 +163,8 @@ class HomeViewModelTest {
 
         // Then two sources are added to the repository
         val expected = listOf(
-            Source.DribbbleSearchSource("query", true),
-            Source.DesignerNewsSearchSource("query", true)
+            DribbbleSourceItem("query", true),
+            DesignerNewsSearchSource("query", true)
         )
         verify(sourcesRepository).addOrMarkActiveSources(expected)
     }
@@ -175,7 +195,7 @@ class HomeViewModelTest {
     @Test
     fun filtersUpdated_oneNewSource() {
         // Given a view model
-        val sources = mutableListOf<Source>(designerNewsSource)
+        val sources = mutableListOf<SourceItem>(designerNewsSource)
         val homeViewModel = createViewModel(sources)
         verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
@@ -259,52 +279,53 @@ class HomeViewModelTest {
 
     @Test
     fun filtersRemoved() {
-        // Given a view model
-        val homeViewModel = createViewModel()
+        // Given a view model with feed data
+        val homeViewModel = createViewModelWithFeedData(listOf(post, shot, story))
         verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
 
         // When a source was removed
-        filtersChangedCallback.value.onFilterRemoved(designerNewsSource.key)
+        filtersChangedCallback.value.onFilterRemoved(dribbbleSource.key)
 
-        // Then source removed value is the expected one
-        val source = LiveDataTestUtil.getValue(homeViewModel.sourceRemoved)
-        assertEquals(designerNewsSource.key, source)
+        // Then feed emits a new list, without the removed filter
+        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(columns))
+        assertEquals(listOf(post, story), feed!!.items)
     }
 
     @Test
     fun filtersChanged_activeSource() {
-        // Given a view model
-        val homeViewModel = createViewModel()
+        // Given a view model with feed data
+        val homeViewModel = createViewModelWithFeedData(listOf(post, shot, story))
         verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
+        val initialFeed = LiveDataTestUtil.getValue(homeViewModel.getFeed(columns))
 
         // When an active source was changed
-        val activeSource = Source.DribbbleSearchSource("dribbble", true)
+        val activeSource = DribbbleSourceItem("dribbble", true)
         filtersChangedCallback.value.onFiltersChanged(activeSource)
 
-        // Then source removed value is null
-        val source = LiveDataTestUtil.getValue(homeViewModel.sourceRemoved)
-        assertNull(source)
+        // Then feed didn't emit a new value
+        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(columns))
+        assertEquals(initialFeed, feed)
     }
 
     @Test
     fun filtersChanged_inactiveSource() {
-        // Given a view model
-        val homeViewModel = createViewModel()
+        // Given a view model with feed data
+        val homeViewModel = createViewModelWithFeedData(listOf(post, shot, story))
         verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
 
         // When an inactive source was changed
-        val inactiveSource = Source.DribbbleSearchSource("dribbble", false)
+        val inactiveSource = DribbbleSourceItem("dribbble", false)
         filtersChangedCallback.value.onFiltersChanged(inactiveSource)
 
-        // Then the source removed contains the inactive source
-        val source = LiveDataTestUtil.getValue(homeViewModel.sourceRemoved)
-        assertEquals(inactiveSource.key, source)
+        // Then feed emits a new list, without the removed filter
+        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(columns))
+        assertEquals(listOf(post, story), feed!!.items)
     }
 
     @Test
@@ -335,8 +356,41 @@ class HomeViewModelTest {
         assertEquals(FeedProgressUiModel(false), progress)
     }
 
+    @Test
+    fun dataLoading_atInit() = runBlocking {
+        // When creating a view model
+        createViewModel()
+
+        // Then load data was called
+        verify(dataManager, timeout(100)).loadMore()
+    }
+
+    @Test
+    fun feed_emitsWhenDataLoaded() {
+        // Given a view model
+        val homeViewModel = createViewModel()
+        verify(dataManager).setOnDataLoadedCallback(capture(dataLoadedCallback))
+
+        // When data loaded
+        dataLoadedCallback.value.onDataLoaded(listOf(post, shot, story))
+
+        // Then feed emits a new list
+        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(2))
+        assertEquals(listOf(post, story, shot), feed!!.items)
+    }
+
+    private fun createViewModelWithFeedData(feedData: List<PlaidItem>): HomeViewModel {
+        val homeViewModel = createViewModel()
+        verify(dataManager).setOnDataLoadedCallback(capture(dataLoadedCallback))
+
+        // When data loaded return feedData
+        dataLoadedCallback.value.onDataLoaded(feedData)
+
+        return homeViewModel
+    }
+
     private fun createViewModel(
-        list: List<Source> = emptyList()
+        list: List<SourceItem> = emptyList()
     ): HomeViewModel = runBlocking {
         whenever(sourcesRepository.getSources()).thenReturn(list)
         return@runBlocking HomeViewModel(

@@ -18,7 +18,7 @@ package io.plaidapp.core.producthunt.data
 
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.producthunt.data.api.ProductHuntService
-import io.plaidapp.core.producthunt.data.api.model.Post
+import io.plaidapp.core.producthunt.data.api.model.GetPostsResponse
 import io.plaidapp.core.util.safeApiCall
 import java.io.IOException
 import javax.inject.Inject
@@ -36,8 +36,8 @@ class ProductHuntRemoteDataSource @Inject constructor(private val service: Produ
             errorMessage = "Error loading ProductHunt data"
     )
 
-    private suspend fun requestData(page: Int): Result<List<Post>> {
-        val response = service.getPosts(page).await()
+    private suspend fun requestData(page: Int): Result<GetPostsResponse> {
+        val response = service.getPostsAsync(page).await()
         if (response.isSuccessful) {
             val body = response.body()
             if (body != null) {

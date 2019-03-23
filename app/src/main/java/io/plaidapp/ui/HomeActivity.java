@@ -33,7 +33,6 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.SpannedString;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.transition.TransitionManager;
@@ -64,15 +63,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import io.plaidapp.R;
-import io.plaidapp.core.data.DataManager;
+import io.plaidapp.core.dagger.qualifier.IsPocketInstalled;
 import io.plaidapp.core.data.PlaidItem;
-import io.plaidapp.core.data.pocket.PocketUtils;
 import io.plaidapp.core.data.prefs.SourcesRepository;
 import io.plaidapp.core.designernews.data.poststory.PostStoryService;
 import io.plaidapp.core.designernews.data.stories.model.Story;
 import io.plaidapp.core.dribbble.data.api.model.Shot;
-import io.plaidapp.core.ui.ConnectivityChecker;
 import io.plaidapp.core.feed.FeedAdapter;
+import io.plaidapp.core.feed.FeedProgressUiModel;
+import io.plaidapp.core.ui.ConnectivityChecker;
 import io.plaidapp.core.ui.HomeGridItemAnimator;
 import io.plaidapp.core.ui.PlaidItemsList;
 import io.plaidapp.core.ui.filter.FilterAdapter;
@@ -117,9 +116,6 @@ public class HomeActivity extends FragmentActivity {
 
     // data
     @Inject
-    DataManager dataManager;
-
-    @Inject
     SourcesRepository sourcesRepository;
     @Inject
     @Nullable
@@ -128,19 +124,17 @@ public class HomeActivity extends FragmentActivity {
     @Inject
     HomeViewModel viewModel;
 
+    @IsPocketInstalled
+    @Inject
+    boolean pocketInstalled;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         bindResources();
 
-        inject(this, data -> {
-            List<PlaidItem> items = PlaidItemsList.getPlaidItemsForDisplay(adapter.getItems(), data, columns);
-            adapter.setItems(items);
-            checkEmptyState();
-        });
-
-        boolean pocketInstalled = PocketUtils.isPocketInstalled(this);
+        inject(this);
 
         adapter = new FeedAdapter(this, columns, pocketInstalled);
 
@@ -169,10 +163,6 @@ public class HomeActivity extends FragmentActivity {
                 }
             }
         });
-        viewModel.getSourceRemoved().observe(this, source -> {
-                    handleDataSourceRemoved(source);
-                    checkEmptyState();
-                });
 
         viewModel.getFeedProgress().observe(this, feedProgressUiModel -> {
             if(feedProgressUiModel.isLoading()){
@@ -180,6 +170,11 @@ public class HomeActivity extends FragmentActivity {
             } else {
                 adapter.dataFinishedLoading();
             }
+        });
+
+        viewModel.getFeed(columns).observe(this, feedUiModel -> {
+            adapter.setItems(feedUiModel.getItems());
+            checkEmptyState();
         });
 
         drawer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -190,7 +185,7 @@ public class HomeActivity extends FragmentActivity {
         if (savedInstanceState == null) {
             animateToolbar();
         }
-        setExitSharedElementCallback(FeedAdapter.createSharedElementReenterCallback(this));
+        setExitSharedElementCallback(FeedAdapter.Companion.createSharedElementReenterCallback(this));
 
         setupGrid();
 
@@ -204,8 +199,6 @@ public class HomeActivity extends FragmentActivity {
 
         filtersList.setAdapter(filtersAdapter);
         filtersList.setItemAnimator(new FilterAnimator());
-
-        dataManager.loadAllDataSources();
 
         ItemTouchHelper.Callback callback = new FilterTouchHelperCallback(filtersAdapter, this);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
@@ -240,10 +233,19 @@ public class HomeActivity extends FragmentActivity {
         grid.setLayoutManager(layoutManager);
         grid.addOnScrollListener(toolbarElevation);
         grid.addOnScrollListener(
-                new InfiniteScrollListener(layoutManager, dataManager) {
+                new InfiniteScrollListener(layoutManager) {
                     @Override
                     public void onLoadMore() {
-                        dataManager.loadAllDataSources();
+                        viewModel.loadData();
+                    }
+
+                    @Override
+                    public boolean isDataLoading() {
+                        FeedProgressUiModel uiModel = viewModel.getFeedProgress().getValue();
+                        if (uiModel != null) {
+                            return uiModel.isLoading();
+                        }
+                        return false;
                     }
                 });
         grid.setHasFixedSize(true);
@@ -321,7 +323,7 @@ public class HomeActivity extends FragmentActivity {
         final long sharedShotId = data.getLongExtra(Activities.Dribbble.Shot.RESULT_EXTRA_SHOT_ID,
                 -1L);
         if (sharedShotId != -1L                                             // returning from a shot
-                && adapter.getDataItemCount() > 0                           // grid populated
+                && adapter.getItems().size() > 0                           // grid populated
                 && grid.findViewHolderForItemId(sharedShotId) == null) {    // view not attached
             final int position = adapter.getItemPosition(sharedShotId);
             if (position == RecyclerView.NO_POSITION) return;
@@ -408,7 +410,6 @@ public class HomeActivity extends FragmentActivity {
                 }
                 if (resultCode == Activities.Search.RESULT_CODE_SAVE) {
                     String query = data.getStringExtra(Activities.Search.EXTRA_QUERY);
-                    if (TextUtils.isEmpty(query)) return;
                     boolean isDribbble =
                             data.getBooleanExtra(Activities.Search.EXTRA_SAVE_DRIBBBLE, false);
                     boolean isDesignerNews =
@@ -460,17 +461,7 @@ public class HomeActivity extends FragmentActivity {
         }
     };
 
-    private void handleDataSourceRemoved(String dataSourceKey){
-        List<PlaidItem> items = adapter.getItems();
-        for (int i = items.size() - 1; i >= 0; i--) {
-            PlaidItem item = items.get(i);
-            if (dataSourceKey.equals(item.getDataSource())) {
-                items.remove(i);
-            }
-        }
-        PlaidItemsList.expandPopularItems(items, columns);
-        adapter.setItems(items);
-    }
+
 
     protected void fabClick() {
         if (viewModel.isDesignerNewsUserLoggedIn()) {
@@ -510,7 +501,7 @@ public class HomeActivity extends FragmentActivity {
                     // actually add the story to the grid
                     Story newStory = intent.getParcelableExtra(PostStoryService.EXTRA_NEW_STORY);
 
-                    List<PlaidItem> items = PlaidItemsList.getPlaidItemsForDisplay(
+                    List<PlaidItem> items = PlaidItemsList.getPlaidItemsForDisplayExpanded(
                             adapter.getItems(), Collections.singletonList(newStory), columns);
                     adapter.setItems(items);
                     break;
@@ -579,7 +570,7 @@ public class HomeActivity extends FragmentActivity {
     }
 
     void checkEmptyState() {
-        if (adapter.getDataItemCount() == 0) {
+        if (adapter.getItems().size() == 0) {
             // if grid is empty check whether we're loading or if no filters are selected
             if (sourcesRepository.getActiveSourcesCount() > 0 && connectivityChecker != null) {
                 Boolean connected = connectivityChecker.getConnectedStatus().getValue();
@@ -766,14 +757,14 @@ public class HomeActivity extends FragmentActivity {
     }
 
     private void handleNetworkConnected() {
-        if (adapter.getDataItemCount() != 0) return;
+        if (adapter.getItems().size() != 0) return;
 
         TransitionManager.beginDelayedTransition(drawer);
         if(noConnection != null) {
             noConnection.setVisibility(View.GONE);
         }
         loading.setVisibility(View.VISIBLE);
-        dataManager.loadAllDataSources();
+        viewModel.loadData();
     }
 
 }

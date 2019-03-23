@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.database
+package io.plaidapp.designernews.data.database
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 import io.plaidapp.test.shared.LiveDataTestUtil
@@ -28,10 +29,12 @@ import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
 /**
  * These tests verify [LoggedInUserDao] Room database operations for a [LoggedInUser].
  */
+@RunWith(AndroidJUnit4::class)
 class LoggedInUserDaoTest {
     private lateinit var database: DesignerNewsDatabase
     private lateinit var loggedInUser: LoggedInUser

@@ -17,14 +17,15 @@
 package io.plaidapp.search.domain
 
 import io.plaidapp.core.data.DataLoadingSubject
-import io.plaidapp.core.data.LoadSourceCallback
 import io.plaidapp.core.data.OnDataLoadedCallback
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.data.Source
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSource
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
+import io.plaidapp.core.dribbble.data.DribbbleSourceItem
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.api.model.Shot
+import io.plaidapp.core.util.exhaustive
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
@@ -35,7 +36,7 @@ import javax.inject.Inject
 class SearchDataManager @Inject constructor(
     private val shotsRepository: ShotsRepository,
     private val searchStories: SearchStoriesUseCase
-) : DataLoadingSubject, LoadSourceCallback {
+) : DataLoadingSubject {
 
     var onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>? = null
 
@@ -47,7 +48,7 @@ class SearchDataManager @Inject constructor(
         private set
     private var page = 1
 
-    fun searchFor(newQuery: String) {
+    suspend fun searchFor(newQuery: String) {
         if (query != newQuery) {
             clear()
             query = newQuery
@@ -58,58 +59,51 @@ class SearchDataManager @Inject constructor(
         searchDesignerNews(newQuery, page)
     }
 
-    fun loadMore() = searchFor(query)
+    suspend fun loadMore() = searchFor(query)
 
     fun clear() {
-        cancelLoading()
+        // TODO make sure the requests are cancelled
         query = ""
         page = 1
         resetLoadingCount()
     }
 
-    fun cancelLoading() {
-        searchStories.cancelAllRequests()
-        shotsRepository.cancelAllSearches()
+    private suspend fun searchDesignerNews(query: String, resultsPage: Int) {
+        loadStarted()
+        val source = DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query
+        val result = searchStories(source, resultsPage)
+        when (result) {
+            is Result.Success -> sourceLoaded(result.data, page)
+            is Result.Error -> loadFinished()
+        }.exhaustive
     }
 
-    private fun searchDesignerNews(query: String, resultsPage: Int) {
+    private suspend fun searchDribbble(query: String, resultsPage: Int) {
         loadStarted()
-        val source = Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query
-        searchStories(source, resultsPage, this)
-    }
-
-    private fun searchDribbble(query: String, resultsPage: Int) {
-        loadStarted()
-        shotsRepository.search(query, page) { result ->
-            loadFinished()
-            if (result is Result.Success<*>) {
-                val shots = (result as Result.Success<List<Shot>>).data
-                setPage(shots, resultsPage)
-                setDataSource(
-                    shots,
-                    Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX + query
-                )
-                onDataLoadedCallback?.onDataLoaded(shots)
-            }
-            return@search
+        val result = shotsRepository.search(query, page)
+        loadFinished()
+        if (result is Result.Success<*>) {
+            val shots = (result as Result.Success<List<Shot>>).data
+            setPage(shots, resultsPage)
+            setDataSource(
+                shots,
+                DribbbleSourceItem.DRIBBBLE_QUERY_PREFIX + query
+            )
+            onDataLoadedCallback?.onDataLoaded(shots)
         }
     }
 
-    override fun sourceLoaded(result: List<PlaidItem>?, page: Int, source: String) {
+    private fun sourceLoaded(result: List<PlaidItem>?, page: Int) {
         loadFinished()
         if (result != null) {
             setPage(result, page)
             setDataSource(
                 result,
-                Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query
+                DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX + query
             )
             onDataLoadedCallback?.onDataLoaded(result)
         }
     }
-
-    override fun loadFailed(source: String) = loadFinished()
-
-    override fun isDataLoading() = loadingCount.get() > 0
 
     override fun registerCallback(callback: DataLoadingSubject.DataLoadingCallbacks) {
         loadingCallbacks.add(callback)

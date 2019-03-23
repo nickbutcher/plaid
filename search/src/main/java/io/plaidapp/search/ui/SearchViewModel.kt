@@ -19,6 +19,8 @@ package io.plaidapp.search.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.OnDataLoadedCallback
 import io.plaidapp.core.data.PlaidItem
@@ -26,12 +28,16 @@ import io.plaidapp.core.feed.FeedProgressUiModel
 import io.plaidapp.core.feed.FeedUiModel
 import io.plaidapp.core.util.event.Event
 import io.plaidapp.search.domain.SearchDataManager
+import kotlinx.coroutines.launch
 
 /**
  * [ViewModel] for the [SearchActivity]. Works with the data manager to load data and prepares it
  * for display in the [SearchActivity].
  */
-class SearchViewModel(private val dataManager: SearchDataManager) : ViewModel() {
+class SearchViewModel(
+    private val dataManager: SearchDataManager,
+    private val dispatcherProvider: CoroutinesDispatcherProvider
+) : ViewModel() {
 
     private val _searchResults = MutableLiveData<Event<FeedUiModel>>()
     val searchResults: LiveData<Event<FeedUiModel>>
@@ -44,17 +50,17 @@ class SearchViewModel(private val dataManager: SearchDataManager) : ViewModel() 
     private val onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>> =
         object : OnDataLoadedCallback<List<PlaidItem>> {
             override fun onDataLoaded(data: List<PlaidItem>) {
-                _searchResults.value = Event(FeedUiModel(data))
+                _searchResults.postValue(Event(FeedUiModel(data)))
             }
         }
 
     private val dataLoadingCallbacks = object : DataLoadingSubject.DataLoadingCallbacks {
         override fun dataStartedLoading() {
-            _searchProgress.value = FeedProgressUiModel(true)
+            _searchProgress.postValue(FeedProgressUiModel(true))
         }
 
         override fun dataFinishedLoading() {
-            _searchProgress.value = FeedProgressUiModel(false)
+            _searchProgress.postValue(FeedProgressUiModel(false))
         }
     }
 
@@ -63,24 +69,15 @@ class SearchViewModel(private val dataManager: SearchDataManager) : ViewModel() 
         dataManager.registerCallback(dataLoadingCallbacks)
     }
 
-    fun searchFor(query: String) {
+    fun searchFor(query: String) = viewModelScope.launch(dispatcherProvider.computation) {
         dataManager.searchFor(query)
     }
 
-    fun loadMore() {
+    fun loadMore() = viewModelScope.launch(dispatcherProvider.computation) {
         dataManager.loadMore()
-    }
-
-    override fun onCleared() {
-        dataManager.cancelLoading()
-        super.onCleared()
     }
 
     fun clearResults() {
         dataManager.clear()
-    }
-
-    fun getDataLoadingSubject(): DataLoadingSubject {
-        return dataManager
     }
 }

@@ -21,12 +21,23 @@ import io.plaidapp.core.dagger.BaseActivityComponent
 import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.MarkdownModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
+import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.designernews.ui.story.StoryActivity
 
 /**
  * Dagger component for [StoryActivity].
  */
-@Component(modules = [StoryModule::class], dependencies = [CoreComponent::class])
+@Component(
+    modules = [
+        SharedPreferencesModule::class,
+        MarkdownModule::class,
+        DesignerNewsDataModule::class,
+        DataModule::class,
+        StoryModule::class],
+    dependencies = [CoreComponent::class]
+)
+@FeatureScope
 interface StoryComponent : BaseActivityComponent<StoryActivity> {
 
     @Component.Builder

@@ -20,12 +20,13 @@ import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import dagger.Module
 import dagger.Provides
-import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
 import io.plaidapp.core.util.FileAuthority
+import io.plaidapp.core.util.HtmlParser
 import io.plaidapp.dribbble.BuildConfig
+import io.plaidapp.dribbble.domain.CreateShotUiModelUseCase
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
 import io.plaidapp.dribbble.ui.shot.ShotActivity
 import io.plaidapp.dribbble.ui.shot.ShotViewModel
@@ -34,7 +35,7 @@ import io.plaidapp.dribbble.ui.shot.ShotViewModelFactory
 /**
  * Module providing injections for the :dribbble feature module.
  */
-@Module(includes = [DribbbleDataModule::class])
+@Module
 class DribbbleModule(private val activity: ShotActivity, private val shotId: Long) {
 
     @Provides
@@ -55,14 +56,19 @@ class DribbbleModule(private val activity: ShotActivity, private val shotId: Lon
     }
 
     @Provides
+    fun htmlParser() = HtmlParser()
+
+    @Provides
     fun shotViewModelFactory(
         shotsRepository: ShotsRepository,
+        createShotUiModelUseCase: CreateShotUiModelUseCase,
         shareShotInfoUseCase: GetShareShotInfoUseCase,
         coroutinesDispatcherProvider: CoroutinesDispatcherProvider
     ): ShotViewModelFactory {
         return ShotViewModelFactory(
             shotId,
             shotsRepository,
+            createShotUiModelUseCase,
             shareShotInfoUseCase,
             coroutinesDispatcherProvider
         )

@@ -65,10 +65,8 @@ android {
 }
 
 dependencies {
-    kapt "androidx.room:room-compiler:${versions.room}"
     kapt "com.github.bumptech.glide:compiler:${versions.glide}"
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
-    implementation "androidx.room:room-coroutines:${versions.room}"
 }
 
 androidExtensions {

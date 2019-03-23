@@ -18,19 +18,27 @@ package io.plaidapp.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.DataManager
-import io.plaidapp.core.data.Source
+import io.plaidapp.core.data.OnDataLoadedCallback
+import io.plaidapp.core.data.PlaidItem
+import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.data.prefs.SourcesRepository
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSource
 import io.plaidapp.core.designernews.data.login.LoginRepository
+import io.plaidapp.core.dribbble.data.DribbbleSourceItem
 import io.plaidapp.core.feed.FeedProgressUiModel
+import io.plaidapp.core.feed.FeedUiModel
+import io.plaidapp.core.ui.expandPopularItems
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
 import io.plaidapp.core.ui.filter.SourceUiModel
 import io.plaidapp.core.ui.filter.SourcesHighlightUiModel
 import io.plaidapp.core.ui.filter.SourcesUiModel
+import io.plaidapp.core.ui.getPlaidItemsForDisplay
 import io.plaidapp.core.util.event.Event
 import kotlinx.coroutines.launch
 import java.util.Collections
@@ -48,11 +56,6 @@ class HomeViewModel(
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel() {
 
-    // TODO keeping this one temporarily, until we deal with [FeedAdapter]
-    private val _sourceRemoved = MutableLiveData<String>()
-    val sourceRemoved: LiveData<String>
-        get() = _sourceRemoved
-
     private val _sources = MutableLiveData<SourcesUiModel>()
     val sources: LiveData<SourcesUiModel>
         get() = _sources
@@ -61,37 +64,56 @@ class HomeViewModel(
     val feedProgress: LiveData<FeedProgressUiModel>
         get() = _feedProgress
 
+    private val feedData = MutableLiveData<List<PlaidItem>>()
+
+    private val onDataLoadedCallback = object : OnDataLoadedCallback<List<PlaidItem>> {
+        override fun onDataLoaded(data: List<PlaidItem>) {
+            val oldItems = feedData.value.orEmpty()
+            updateFeedData(oldItems, data)
+        }
+    }
     // listener for notifying adapter when data sources are deactivated
     private val filtersChangedCallbacks = object : FiltersChangedCallback() {
-        override fun onFiltersChanged(changedFilter: Source) {
+        override fun onFiltersChanged(changedFilter: SourceItem) {
             if (!changedFilter.active) {
-                _sourceRemoved.value = changedFilter.key
+                handleDataSourceRemoved(changedFilter.key, feedData.value.orEmpty())
             }
         }
 
         override fun onFilterRemoved(sourceKey: String) {
-            _sourceRemoved.value = sourceKey
+            handleDataSourceRemoved(sourceKey, feedData.value.orEmpty())
         }
 
-        override fun onFiltersUpdated(sources: List<Source>) {
+        override fun onFiltersUpdated(sources: List<SourceItem>) {
             updateSourcesUiModel(sources)
         }
     }
 
     private val dataLoadingCallbacks = object : DataLoadingSubject.DataLoadingCallbacks {
         override fun dataStartedLoading() {
-            _feedProgress.value = FeedProgressUiModel(true)
+            _feedProgress.postValue(FeedProgressUiModel(true))
         }
 
         override fun dataFinishedLoading() {
-            _feedProgress.value = FeedProgressUiModel(false)
+            _feedProgress.postValue(FeedProgressUiModel(false))
         }
     }
 
     init {
         sourcesRepository.registerFilterChangedCallback(filtersChangedCallbacks)
+        dataManager.setOnDataLoadedCallback(onDataLoadedCallback)
         dataManager.registerCallback(dataLoadingCallbacks)
         getSources()
+        loadData()
+    }
+
+    fun getFeed(columns: Int): LiveData<FeedUiModel> {
+        return Transformations.switchMap(feedData) {
+            // TODO move this on a background thread
+            //  https://github.com/nickbutcher/plaid/issues/658
+            expandPopularItems(it, columns)
+            return@switchMap MutableLiveData(FeedUiModel(it))
+        }
     }
 
     fun isDesignerNewsUserLoggedIn() = designerNewsLoginRepository.isLoggedIn
@@ -100,8 +122,8 @@ class HomeViewModel(
         designerNewsLoginRepository.logout()
     }
 
-    fun loadData() {
-        dataManager.loadAllDataSources()
+    fun loadData() = viewModelScope.launch {
+        dataManager.loadMore()
     }
 
     override fun onCleared() {
@@ -110,12 +132,15 @@ class HomeViewModel(
     }
 
     fun addSources(query: String, isDribbble: Boolean, isDesignerNews: Boolean) {
-        val sources = mutableListOf<Source>()
+        if (query.isBlank()) {
+            return
+        }
+        val sources = mutableListOf<SourceItem>()
         if (isDribbble) {
-            sources.add(Source.DribbbleSearchSource(query, true))
+            sources.add(DribbbleSourceItem(query, true))
         }
         if (isDesignerNews) {
-            sources.add(Source.DesignerNewsSearchSource(query, true))
+            sources.add(DesignerNewsSearchSource(query, true))
         }
         viewModelScope.launch(dispatcherProvider.io) {
             sourcesRepository.addOrMarkActiveSources(sources)
@@ -129,15 +154,15 @@ class HomeViewModel(
         }
     }
 
-    private fun updateSourcesUiModel(sources: List<Source>) {
+    private fun updateSourcesUiModel(sources: List<SourceItem>) {
         val newSourcesUiModel = createNewSourceUiModels(sources)
         val oldSourceUiModel = _sources.value
         if (oldSourceUiModel == null) {
             _sources.postValue(SourcesUiModel(newSourcesUiModel))
         } else {
             val highlightUiModel = createSourcesHighlightUiModel(
-                    oldSourceUiModel.sourceUiModels,
-                    newSourcesUiModel
+                oldSourceUiModel.sourceUiModels,
+                newSourcesUiModel
             )
             val event = if (highlightUiModel != null) {
                 Event(highlightUiModel)
@@ -181,22 +206,34 @@ class HomeViewModel(
         }
     }
 
-    private fun createNewSourceUiModels(sources: List<Source>): List<SourceUiModel> {
+    private fun updateFeedData(oldItems: List<PlaidItem>, newItems: List<PlaidItem>) {
+        feedData.postValue(getPlaidItemsForDisplay(oldItems, newItems))
+    }
+
+    private fun handleDataSourceRemoved(dataSourceKey: String, oldItems: List<PlaidItem>) {
+        val items = oldItems.toMutableList()
+        items.removeAll {
+            dataSourceKey == it.dataSource
+        }
+        feedData.postValue(items)
+    }
+
+    private fun createNewSourceUiModels(sources: List<SourceItem>): List<SourceUiModel> {
         val mutableSources = sources.toMutableList()
-        Collections.sort(mutableSources, Source.SourceComparator())
+        Collections.sort(mutableSources, SourceItem.SourceComparator())
         return mutableSources.map {
             SourceUiModel(
-                    it.key,
-                    it.name,
-                    it.active,
-                    it.iconRes,
-                    it.isSwipeDismissable,
-                    { sourceUiModel -> sourcesRepository.changeSourceActiveState(sourceUiModel.key) },
-                    { sourceUiModel ->
-                        if (sourceUiModel.isSwipeDismissable) {
-                            sourcesRepository.removeSource(sourceUiModel.key)
-                        }
+                it.key,
+                it.name,
+                it.active,
+                it.iconRes,
+                it.isSwipeDismissable,
+                { sourceUiModel -> sourcesRepository.changeSourceActiveState(sourceUiModel.key) },
+                { sourceUiModel ->
+                    if (sourceUiModel.isSwipeDismissable) {
+                        sourcesRepository.removeSource(sourceUiModel.key)
                     }
+                }
             )
         }
     }

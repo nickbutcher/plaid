@@ -19,15 +19,15 @@ package io.plaidapp.core.dagger
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
+import io.plaidapp.core.dagger.scope.FeatureScope
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.DataManager
-import io.plaidapp.core.data.OnDataLoadedCallback
-import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.domain.LoadStoriesUseCase
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
 import io.plaidapp.core.dribbble.data.ShotsRepository
-import io.plaidapp.core.producthunt.data.api.ProductHuntRepository
+import io.plaidapp.core.producthunt.domain.LoadPostsUseCase
 
 /**
  * Module to provide [DataManager].
@@ -35,62 +35,57 @@ import io.plaidapp.core.producthunt.data.api.ProductHuntRepository
 @Module(includes = [DesignerNewsDataModule::class, ProductHuntModule::class])
 class DataManagerModule {
 
-    private lateinit var manager: DataManager
-
     @Provides
+    @FeatureScope
     fun provideDataManager(
-        onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>,
-        loadStoriesUseCase: LoadStoriesUseCase,
-        searchStoriesUseCase: SearchStoriesUseCase,
-        productHuntRepository: ProductHuntRepository,
+        loadStories: LoadStoriesUseCase,
+        searchStories: SearchStoriesUseCase,
+        loadPosts: LoadPostsUseCase,
         shotsRepository: ShotsRepository,
-        sourcesRepository: SourcesRepository
+        sourcesRepository: SourcesRepository,
+        coroutinesDispatcherProvider: CoroutinesDispatcherProvider
     ): DataManager = getDataManager(
-        onDataLoadedCallback,
-        loadStoriesUseCase,
-        productHuntRepository,
-        searchStoriesUseCase,
+        loadStories,
+        loadPosts,
+        searchStories,
         shotsRepository,
-        sourcesRepository
+        sourcesRepository,
+        coroutinesDispatcherProvider
     )
 
     @Provides
+    @FeatureScope
     fun provideDataLoadingSubject(
-        onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>,
-        loadStoriesUseCase: LoadStoriesUseCase,
-        productHuntRepository: ProductHuntRepository,
-        searchStoriesUseCase: SearchStoriesUseCase,
+        loadStories: LoadStoriesUseCase,
+        loadPosts: LoadPostsUseCase,
+        searchStories: SearchStoriesUseCase,
         shotsRepository: ShotsRepository,
-        sourcesRepository: SourcesRepository
+        sourcesRepository: SourcesRepository,
+        coroutinesDispatcherProvider: CoroutinesDispatcherProvider
     ): DataLoadingSubject = getDataManager(
-        onDataLoadedCallback,
-        loadStoriesUseCase,
-        productHuntRepository,
-        searchStoriesUseCase,
+        loadStories,
+        loadPosts,
+        searchStories,
         shotsRepository,
-        sourcesRepository
+        sourcesRepository,
+        coroutinesDispatcherProvider
     )
 
     private fun getDataManager(
-        onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>>,
-        loadStoriesUseCase: LoadStoriesUseCase,
-        productHuntRepository: ProductHuntRepository,
-        searchStoriesUseCase: SearchStoriesUseCase,
+        loadStories: LoadStoriesUseCase,
+        loadPosts: LoadPostsUseCase,
+        searchStories: SearchStoriesUseCase,
         shotsRepository: ShotsRepository,
-        sourcesRepository: SourcesRepository
+        sourcesRepository: SourcesRepository,
+        coroutinesDispatcherProvider: CoroutinesDispatcherProvider
     ): DataManager {
-        return if (::manager.isInitialized) {
-            manager
-        } else {
-            manager = DataManager(
-                onDataLoadedCallback,
-                loadStoriesUseCase,
-                productHuntRepository,
-                searchStoriesUseCase,
-                shotsRepository,
-                sourcesRepository
-            )
-            manager
-        }
+        return DataManager(
+            loadStories,
+            loadPosts,
+            searchStories,
+            shotsRepository,
+            sourcesRepository,
+            coroutinesDispatcherProvider
+        )
     }
 }

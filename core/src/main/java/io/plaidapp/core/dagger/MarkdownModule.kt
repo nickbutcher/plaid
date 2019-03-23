@@ -21,14 +21,18 @@ import `in`.uncod.android.bypass.Markdown
 import android.util.DisplayMetrics
 import dagger.Module
 import dagger.Provides
+import io.plaidapp.core.dagger.scope.FeatureScope
 
 /**
  * Provide [Markdown] to this app's components.
  */
-@Module class MarkdownModule constructor(
+@Module
+class MarkdownModule constructor(
     private val displayMetrics: DisplayMetrics,
     private val options: Bypass.Options = Bypass.Options()
 ) {
 
-    @Provides fun provideMarkdown(): Markdown = Bypass(displayMetrics, options)
+    @Provides
+    @FeatureScope
+    fun provideMarkdown(): Markdown = Bypass(displayMetrics, options)
 }

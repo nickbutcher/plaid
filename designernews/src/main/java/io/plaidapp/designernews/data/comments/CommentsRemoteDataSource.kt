@@ -91,14 +91,4 @@ class CommentsRemoteDataSource(private val service: DesignerNewsService) {
         }
         return Result.Error(IOException("Error posting comment ${response.code()} ${response.message()}"))
     }
-
-    companion object {
-        @Volatile private var INSTANCE: CommentsRemoteDataSource? = null
-
-        fun getInstance(service: DesignerNewsService): CommentsRemoteDataSource {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: CommentsRemoteDataSource(service).also { INSTANCE = it }
-            }
-        }
-    }
 }

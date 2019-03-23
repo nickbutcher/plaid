@@ -20,10 +20,15 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.R
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
-import io.plaidapp.core.data.Source
+import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.data.prefs.SourcesLocalDataSource
 import io.plaidapp.core.data.prefs.SourcesRepository
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSource.Companion.SOURCE_DESIGNER_NEWS_POPULAR
+import io.plaidapp.core.designernews.data.DesignerNewsSourceItem
+import io.plaidapp.core.dribbble.data.DribbbleSourceItem
+import io.plaidapp.core.producthunt.data.ProductHuntSourceItem
 
 /**
  * Module to provide [SourcesRepository].
@@ -32,6 +37,7 @@ import io.plaidapp.core.data.prefs.SourcesRepository
 class SourcesRepositoryModule {
 
     @Provides
+    @FeatureScope
     fun provideSourceRepository(
         context: Context,
         dispatcherProvider: CoroutinesDispatcherProvider
@@ -42,27 +48,24 @@ class SourcesRepositoryModule {
         return SourcesRepository.getInstance(defaultSources, localDataSource, dispatcherProvider)
     }
 
-    private fun provideDefaultSources(context: Context): List<Source> {
+    private fun provideDefaultSources(context: Context): List<SourceItem> {
         val defaultDesignerNewsSourceName = context.getString(R.string.source_designer_news_popular)
         val defaultDribbbleSourceName = context.getString(R.string
                 .source_dribbble_search_material_design)
         val defaultProductHuntSourceName = context.getString(R.string.source_product_hunt)
 
-        val defaultSources = mutableListOf<Source>()
-        defaultSources.add(Source.DesignerNewsSource(
-                SourcesRepository.SOURCE_DESIGNER_NEWS_POPULAR,
+        val defaultSources = mutableListOf<SourceItem>()
+        defaultSources.add(
+            DesignerNewsSourceItem(
+                SOURCE_DESIGNER_NEWS_POPULAR,
                 100,
                 defaultDesignerNewsSourceName,
-                true))
+                true)
+        )
         // 200 sort order range left for DN searches
-        defaultSources.add(Source.DribbbleSearchSource(defaultDribbbleSourceName, true))
+        defaultSources.add(DribbbleSourceItem(defaultDribbbleSourceName, true))
         // 400 sort order range left for dribbble searches
-        defaultSources.add(Source(
-                SourcesRepository.SOURCE_PRODUCT_HUNT,
-                500,
-                defaultProductHuntSourceName,
-                R.drawable.ic_product_hunt,
-                false))
+        defaultSources.add(ProductHuntSourceItem(defaultProductHuntSourceName))
         return defaultSources
     }
 

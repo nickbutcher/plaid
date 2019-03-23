@@ -16,53 +16,31 @@
 
 package io.plaidapp.designernews.dagger
 
+import android.content.Context
 import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
-import io.plaidapp.core.BuildConfig
-import io.plaidapp.core.dagger.CoreDataModule
-import io.plaidapp.core.dagger.SharedPreferencesModule
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.data.api.DeEnvelopingConverter
-import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
-import io.plaidapp.designernews.data.api.ClientAuthInterceptor
 import io.plaidapp.designernews.data.api.DesignerNewsService
+import io.plaidapp.designernews.data.database.DesignerNewsDatabase
+import io.plaidapp.designernews.data.database.LoggedInUserDao
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Qualifier
-import kotlin.annotation.AnnotationRetention.BINARY
-
-@Retention(BINARY)
-@Qualifier
-private annotation class LocalApi
 
 /**
  * Dagger module to provide data functionality for DesignerNews.
  */
-@Module(
-    includes = [
-        SharedPreferencesModule::class,
-        CoreDataModule::class
-    ]
-)
+@Module
 class DataModule {
 
-    @LocalApi
     @Provides
-    fun providePrivateOkHttpClient(
-        upstream: OkHttpClient,
-        tokenHolder: AuthTokenLocalDataSource
-    ): OkHttpClient {
-        return upstream.newBuilder()
-            .addInterceptor(ClientAuthInterceptor(tokenHolder, BuildConfig.DESIGNER_NEWS_CLIENT_ID))
-            .build()
-    }
-
-    @Provides
+    @FeatureScope
     fun provideDesignerNewsService(
-        @LocalApi client: Lazy<OkHttpClient>,
+        client: Lazy<OkHttpClient>,
         gson: Gson
     ): DesignerNewsService {
         return Retrofit.Builder()
@@ -73,5 +51,11 @@ class DataModule {
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
             .create(DesignerNewsService::class.java)
+    }
+
+    @Provides
+    @FeatureScope
+    fun provideLoggedInUserDao(context: Context): LoggedInUserDao {
+        return DesignerNewsDatabase.getInstance(context).loggedInUserDao()
     }
 }

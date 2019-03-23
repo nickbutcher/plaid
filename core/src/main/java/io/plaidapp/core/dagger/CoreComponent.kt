@@ -16,30 +16,28 @@
 
 package io.plaidapp.core.dagger
 
+import com.google.gson.Gson
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Component
-import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
-import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
+import okhttp3.OkHttpClient
+import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 /**
  * Component providing application wide singletons.
  * To call this make use of PlaidApplication.coreComponent or the
  * Activity.coreComponent extension function.
  */
-@Component(
-    modules = [
-        CoreDataModule::class,
-        DesignerNewsDataModule::class,
-        DribbbleDataModule::class,
-        MarkdownModule::class,
-        ProductHuntModule::class,
-        SharedPreferencesModule::class
-    ]
-)
+@Component(modules = [CoreDataModule::class])
+@Singleton
 interface CoreComponent {
 
     @Component.Builder interface Builder {
         fun build(): CoreComponent
-        fun markdownModule(module: MarkdownModule): Builder
-        fun sharedPreferencesModuleModule(module: SharedPreferencesModule): Builder
     }
+
+    fun provideOkHttpClient(): OkHttpClient
+    fun provideGson(): Gson
+    fun provideGsonConverterFactory(): GsonConverterFactory
+    fun provideCallAdapterFactory(): CoroutineCallAdapterFactory
 }

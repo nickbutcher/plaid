@@ -14,28 +14,14 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.data.database
+package io.plaidapp.core.dagger.scope
 
-import androidx.room.TypeConverter
+import javax.inject.Scope
+import kotlin.annotation.AnnotationRetention.RUNTIME
 
 /**
- * Type converters to allow Room to reference complex data types.
+ * Scope for a feature module.
  */
-class Converters {
-
-    @TypeConverter fun csvToLongArray(csvString: String): List<Long> {
-        return if (csvString.isEmpty()) {
-            emptyList()
-        } else {
-            csvString.split(CSV_DELIMITER).map { it.toLong() }
-        }
-    }
-
-    @TypeConverter fun longListToCsv(longList: List<Long>): String {
-        return longList.joinToString(CSV_DELIMITER)
-    }
-
-    companion object {
-        private const val CSV_DELIMITER = ","
-    }
-}
+@Scope
+@Retention(RUNTIME)
+annotation class FeatureScope

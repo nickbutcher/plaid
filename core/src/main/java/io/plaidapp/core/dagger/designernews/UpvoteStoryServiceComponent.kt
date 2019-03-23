@@ -18,8 +18,9 @@ package io.plaidapp.core.dagger.designernews
 
 import dagger.Component
 import io.plaidapp.core.dagger.BaseServiceComponent
-import io.plaidapp.core.dagger.CoreDataModule
+import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.SharedPreferencesModule
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
 
 /**
@@ -28,16 +29,18 @@ import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
 @Component(
     modules = [
         UpvoteStoryServiceModule::class,
-        CoreDataModule::class,
-        DesignerNewsDataModule::class
-    ]
+        DesignerNewsDataModule::class,
+        SharedPreferencesModule::class
+    ],
+    dependencies = [CoreComponent::class]
 )
+@FeatureScope
 interface UpvoteStoryServiceComponent : BaseServiceComponent<UpvoteStoryService> {
 
     @Component.Builder
     interface Builder {
-
         fun build(): UpvoteStoryServiceComponent
+        fun coreComponent(component: CoreComponent): Builder
         fun sharedPreferencesModule(module: SharedPreferencesModule): Builder
         fun upvoteServiceModule(module: UpvoteStoryServiceModule): Builder
     }

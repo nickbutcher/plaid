@@ -19,12 +19,7 @@ package io.plaidapp.core.producthunt.data.api
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.producthunt.data.ProductHuntRemoteDataSource
-import io.plaidapp.core.producthunt.data.api.model.Post
-import io.plaidapp.core.util.exhaustive
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.launch
+import io.plaidapp.core.producthunt.data.api.model.GetPostsResponse
 import kotlinx.coroutines.withContext
 
 /**
@@ -34,37 +29,14 @@ class ProductHuntRepository(
     private val remoteDataSource: ProductHuntRemoteDataSource,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) {
-    private val parentJob = Job()
-    private val scope = CoroutineScope(dispatcherProvider.main + parentJob)
 
     /**
-     * Load Product Hunt data for a specific page and return the result either in onSuccess or in
-     * onError
+     * Load Product Hunt data for a specific page.
      */
-    fun loadProductHuntData(
-        page: Int,
-        onSuccess: (List<Post>) -> Unit,
-        onError: (String) -> Unit
-    ) {
-        launchLoad(page, onSuccess, onError)
-    }
-
-    private fun launchLoad(
-        page: Int,
-        onSuccess: (List<Post>) -> Unit,
-        onError: (String) -> Unit
-    ) = scope.launch(dispatcherProvider.io) {
-        val result = remoteDataSource.loadData(page)
-        withContext(dispatcherProvider.main) {
-            when (result) {
-                is Result.Success -> onSuccess(result.data)
-                is Result.Error -> onError(result.exception.toString())
-            }.exhaustive
+    suspend fun loadPosts(page: Int): Result<GetPostsResponse> {
+        return withContext(dispatcherProvider.io) {
+            return@withContext remoteDataSource.loadData(page)
         }
-    }
-
-    fun cancelAllRequests() {
-        parentJob.cancelChildren()
     }
 
     companion object {
@@ -77,7 +49,7 @@ class ProductHuntRepository(
         ): ProductHuntRepository {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: ProductHuntRepository(remoteDataSource, dispatcherProvider)
-                                .also { INSTANCE = it }
+                    .also { INSTANCE = it }
             }
         }
     }

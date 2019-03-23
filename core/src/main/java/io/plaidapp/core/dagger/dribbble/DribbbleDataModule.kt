@@ -20,8 +20,7 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
-import io.plaidapp.core.dagger.CoreDataModule
-import io.plaidapp.core.data.CoroutinesDispatcherProvider
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchConverter
 import io.plaidapp.core.dribbble.data.search.DribbbleSearchService
@@ -32,20 +31,21 @@ import retrofit2.Retrofit
 /**
  * Dagger module providing classes required to dribbble with data.
  */
-@Module(includes = [CoreDataModule::class])
+@Module
 class DribbbleDataModule {
 
     @Provides
-    fun provideShotsRepository(
-        remoteDataSource: SearchRemoteDataSource,
-        dispatcherProvider: CoroutinesDispatcherProvider
-    ) = ShotsRepository.getInstance(remoteDataSource, dispatcherProvider)
+    @FeatureScope
+    fun provideShotsRepository(remoteDataSource: SearchRemoteDataSource) =
+        ShotsRepository.getInstance(remoteDataSource)
 
     @Provides
+    @FeatureScope
     fun provideConverterFactory(): DribbbleSearchConverter.Factory =
         DribbbleSearchConverter.Factory()
 
     @Provides
+    @FeatureScope
     fun provideDribbbleSearchService(
         client: Lazy<OkHttpClient>,
         converterFactory: DribbbleSearchConverter.Factory,

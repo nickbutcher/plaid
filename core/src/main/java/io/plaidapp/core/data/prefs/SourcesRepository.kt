@@ -17,7 +17,9 @@
 package io.plaidapp.core.data.prefs
 
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
-import io.plaidapp.core.data.Source
+import io.plaidapp.core.data.SourceItem
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSource
+import io.plaidapp.core.dribbble.data.DribbbleSourceItem
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
 import kotlinx.coroutines.withContext
 import java.util.Collections
@@ -26,24 +28,24 @@ import java.util.Collections
  * Manage saving and retrieving data sources from disk.
  */
 class SourcesRepository(
-    private val defaultSources: List<Source>,
+    private val defaultSources: List<SourceItem>,
     private val dataSource: SourcesLocalDataSource,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) {
 
-    private val cache = mutableListOf<Source>()
+    private val cache = mutableListOf<SourceItem>()
     private val callbacks = mutableListOf<FiltersChangedCallback>()
 
     fun registerFilterChangedCallback(callback: FiltersChangedCallback) {
         callbacks.add(callback)
     }
 
-    suspend fun getSources() = withContext(dispatcherProvider.io) {
-        getSourcesSync()
+    suspend fun getSources(): List<SourceItem> = withContext(dispatcherProvider.io) {
+        return@withContext getSourcesSync()
     }
 
     @Deprecated("Use the suspending getSources")
-    fun getSourcesSync(): List<Source> {
+    fun getSourcesSync(): List<SourceItem> {
         if (cache.isNotEmpty()) {
             return cache
         }
@@ -54,20 +56,20 @@ class SourcesRepository(
             return defaultSources
         }
 
-        val sources = mutableListOf<Source>()
+        val sources = mutableListOf<SourceItem>()
         sourceKeys.forEach { sourceKey ->
             val activeState = dataSource.getSourceActiveState(sourceKey)
             when {
                 // add Dribbble source
-                sourceKey.startsWith(Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX) -> {
-                    val query = sourceKey.replace(Source.DribbbleSearchSource.DRIBBBLE_QUERY_PREFIX, "")
-                    sources.add(Source.DribbbleSearchSource(query, activeState))
+                sourceKey.startsWith(DribbbleSourceItem.DRIBBBLE_QUERY_PREFIX) -> {
+                    val query = sourceKey.replace(DribbbleSourceItem.DRIBBBLE_QUERY_PREFIX, "")
+                    sources.add(DribbbleSourceItem(query, activeState))
                 }
                 // add Designer News source
-                sourceKey.startsWith(Source.DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX) -> {
-                    val query = sourceKey.replace(Source.DesignerNewsSearchSource
+                sourceKey.startsWith(DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX) -> {
+                    val query = sourceKey.replace(DesignerNewsSearchSource
                             .DESIGNER_NEWS_QUERY_PREFIX, "")
-                    sources.add(Source.DesignerNewsSearchSource(query, activeState))
+                    sources.add(DesignerNewsSearchSource(query, activeState))
                 }
                 // remove deprecated sources
                 isDeprecatedDesignerNewsSource(sourceKey) -> dataSource.removeSource(sourceKey)
@@ -75,20 +77,20 @@ class SourcesRepository(
                 else -> getSourceFromDefaults(sourceKey, activeState)?.let { sources.add(it) }
             }
         }
-        Collections.sort(sources, Source.SourceComparator())
+        Collections.sort(sources, SourceItem.SourceComparator())
         cache.addAll(sources)
         dispatchSourcesUpdated()
         return cache
     }
 
-    fun addSources(sources: List<Source>) {
+    fun addSources(sources: List<SourceItem>) {
         sources.forEach { dataSource.addSource(it.key, it.active) }
         cache.addAll(sources)
         dispatchSourcesUpdated()
     }
 
-    fun addOrMarkActiveSources(sources: List<Source>) {
-        val sourcesToAdd = mutableListOf<Source>()
+    fun addOrMarkActiveSources(sources: List<SourceItem>) {
+        val sourcesToAdd = mutableListOf<SourceItem>()
         sources.forEach { toAdd ->
             // first check if it already exists
             var sourcePresent = false
@@ -134,7 +136,7 @@ class SourcesRepository(
         return getSourcesSync().count { it.active }
     }
 
-    private fun getSourceFromDefaults(key: String, active: Boolean): Source? {
+    private fun getSourceFromDefaults(key: String, active: Boolean): SourceItem? {
         return defaultSources.firstOrNull { source -> source.key == key }
                 .also { it?.active = active }
     }
@@ -143,7 +145,7 @@ class SourcesRepository(
         callbacks.forEach { it.onFiltersUpdated(cache) }
     }
 
-    private fun dispatchSourceChanged(source: Source) {
+    private fun dispatchSourceChanged(source: SourceItem) {
         callbacks.forEach { it.onFiltersChanged(source) }
     }
 
@@ -152,14 +154,12 @@ class SourcesRepository(
     }
 
     companion object {
-        const val SOURCE_DESIGNER_NEWS_POPULAR = "SOURCE_DESIGNER_NEWS_POPULAR"
-        const val SOURCE_PRODUCT_HUNT = "SOURCE_PRODUCT_HUNT"
 
         @Volatile
         private var INSTANCE: SourcesRepository? = null
 
         fun getInstance(
-            defaultSources: List<Source>,
+            defaultSources: List<SourceItem>,
             dataSource: SourcesLocalDataSource,
             dispatcherProvider: CoroutinesDispatcherProvider
         ): SourcesRepository {

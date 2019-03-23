@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2019 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.dagger
+package io.plaidapp.core.dribbble.data
 
-import dagger.Module
-import dagger.Provides
-import io.plaidapp.core.data.OnDataLoadedCallback
-import io.plaidapp.core.data.PlaidItem
+import io.plaidapp.core.R
+import io.plaidapp.core.data.SourceItem
 
-/**
- * Module to provide [OnDataLoadedCallback].
- */
-@Module class OnDataLoadedModule(
-    private val callback: OnDataLoadedCallback<List<PlaidItem>>
+data class DribbbleSourceItem(
+    val query: String,
+    override var active: Boolean
+) : SourceItem(
+    DRIBBBLE_QUERY_PREFIX + query,
+    SEARCH_SORT_ORDER,
+    "“$query”",
+    R.drawable.ic_dribbble,
+    active,
+    true
 ) {
 
-    @Provides
-    fun provideOnDataLoadedCallback() = callback
+    companion object {
+        const val DRIBBBLE_QUERY_PREFIX = "DRIBBBLE_QUERY_"
+        private const val SEARCH_SORT_ORDER = 400
+    }
 }

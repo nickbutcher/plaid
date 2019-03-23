@@ -16,16 +16,16 @@
 
 package io.plaidapp.core.ui.filter
 
-import io.plaidapp.core.data.Source
+import io.plaidapp.core.data.SourceItem
 
 /**
  * Callbacks called when a filter was changed or when a filter was removed
  */
 abstract class FiltersChangedCallback {
 
-    open fun onFiltersChanged(changedFilter: Source) {}
+    open fun onFiltersChanged(changedFilter: SourceItem) {}
 
     open fun onFilterRemoved(sourceKey: String) {}
 
-    open fun onFiltersUpdated(sources: List<Source>) {}
+    open fun onFiltersUpdated(sources: List<SourceItem>) {}
 }

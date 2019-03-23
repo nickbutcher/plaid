@@ -16,50 +16,52 @@
 
 package io.plaidapp.about.ui.model
 
+import `in`.uncod.android.bypass.Bypass
 import `in`.uncod.android.bypass.Markdown
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import android.content.res.ColorStateList
 import android.content.res.Resources
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.anyOrNull
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import io.plaidapp.about.ui.AboutActivity
 import io.plaidapp.about.ui.AboutStyler
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
 
 /**
  * Test the behavior of [AboutViewModel].
  *
- * Mocking [Markdown] due to native dependency as well as [Resources].
+ * Mock [Markdown] due to native dependency as well as [Resources].
  */
+@RunWith(AndroidJUnit4::class)
 class AboutViewModelIntegrationTest {
 
     // Executes tasks in the Architecture Components in the same thread
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val markdown = mock<Markdown> {
-        on {
-            markdownToSpannable(
-                any(),
-                any(),
-                any(),
-                anyOrNull()
-            )
-        } doReturn "Mock markdown"
-    }
-    private val resources = mock<Resources> { on { getString(any()) } doReturn "Mock resources" }
+    @get:Rule
+    var activityTestRule = ActivityTestRule(AboutActivity::class.java)
 
-    private val aboutStyler = mock<AboutStyler> {
-        on { linksColor } doReturn ColorStateList(arrayOf(intArrayOf(0, 1)), intArrayOf(0xff00ff))
-        on { highlightColor } doReturn 0xff00ff
-    }
-
+    private lateinit var markdown: Markdown
+    private lateinit var aboutStyler: AboutStyler
     private lateinit var aboutViewModel: AboutViewModel
 
-    @Before
-    fun setUpViewModel() {
+    @Before fun setUpViewModel() {
+        val activity = activityTestRule.activity
+        val resources = activity.resources
+
+        aboutStyler = AboutStyler(activity)
+        markdown = Bypass(resources.displayMetrics, Bypass.Options())
         aboutViewModel = AboutViewModel(aboutStyler, resources, markdown)
+    }
+
+    @Test fun testLibraryClick() {
+        aboutViewModel.libraries.forEach {
+            aboutViewModel.onLibraryClick(it)
+            assertEquals(aboutViewModel.navigationTarget.value!!.peek(), it.link)
+        }
     }
 }

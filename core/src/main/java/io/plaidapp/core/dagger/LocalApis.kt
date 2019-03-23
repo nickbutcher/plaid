@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2019 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.data
+package io.plaidapp.core.dagger
 
-interface LoadSourceCallback {
+import javax.inject.Qualifier
 
-    fun sourceLoaded(result: List<PlaidItem>?, page: Int, source: String)
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class DesignerNewsApi
 
-    fun loadFailed(source: String)
-}
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class ProductHuntApi

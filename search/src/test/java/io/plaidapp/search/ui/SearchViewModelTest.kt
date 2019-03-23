@@ -24,6 +24,8 @@ import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.feed.FeedProgressUiModel
 import io.plaidapp.search.domain.SearchDataManager
 import io.plaidapp.test.shared.LiveDataTestUtil
+import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -42,7 +44,7 @@ class SearchViewModelTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val dataManager: SearchDataManager = mock()
-    private val viewModel = SearchViewModel(dataManager)
+    private val viewModel = SearchViewModel(dataManager, provideFakeCoroutinesDispatcherProvider())
 
     @Captor
     private lateinit var dataLoadingCallback: ArgumentCaptor<DataLoadingSubject.DataLoadingCallbacks>
@@ -53,7 +55,7 @@ class SearchViewModelTest {
     }
 
     @Test
-    fun searchFor_searchesInDataManager() {
+    fun searchFor_searchesInDataManager() = runBlocking {
         // Given a query
         val query = "Plaid"
 
@@ -65,7 +67,7 @@ class SearchViewModelTest {
     }
 
     @Test
-    fun loadMore_loadsInDataManager() {
+    fun loadMore_loadsInDataManager() = runBlocking {
         // When loading more
         viewModel.loadMore()
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2019 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.data
+package io.plaidapp.core.producthunt.data
 
-import org.junit.Assert.assertEquals
+import io.plaidapp.core.R
+import io.plaidapp.core.data.SourceItem
 
-class LoadFailedCallback : LoadSourceCallback {
-    var source: String? = null
-
-    override fun sourceLoaded(result: List<PlaidItem>?, page: Int, source: String) {
-    }
-
-    override fun loadFailed(source: String) {
-        this.source = source
-    }
-
-    fun assertLoadFailed(expectedFailedSource: String) {
-        assertEquals(expectedFailedSource, source)
+data class ProductHuntSourceItem(override val name: String) : SourceItem(
+    SOURCE_PRODUCT_HUNT,
+    500,
+    name,
+    R.drawable.ic_product_hunt,
+    false
+) {
+    companion object {
+        const val SOURCE_PRODUCT_HUNT = "SOURCE_PRODUCT_HUNT"
     }
 }

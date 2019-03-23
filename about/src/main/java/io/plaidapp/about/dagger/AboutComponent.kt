@@ -21,13 +21,13 @@ import dagger.Component
 import io.plaidapp.about.ui.AboutActivity
 import io.plaidapp.core.dagger.BaseActivityComponent
 import io.plaidapp.core.dagger.MarkdownModule
-import io.plaidapp.core.dagger.scope.ModuleScope
+import io.plaidapp.core.dagger.scope.FeatureScope
 
 /**
  * Dagger component for `about` feature module.
  */
 @Component(modules = [AboutActivityModule::class, MarkdownModule::class])
-@ModuleScope
+@FeatureScope
 interface AboutComponent : BaseActivityComponent<AboutActivity> {
 
     @Component.Builder

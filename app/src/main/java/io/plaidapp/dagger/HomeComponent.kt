@@ -20,14 +20,18 @@ import dagger.BindsInstance
 import dagger.Component
 import io.plaidapp.core.dagger.BaseActivityComponent
 import io.plaidapp.core.dagger.CoreComponent
-import io.plaidapp.core.dagger.OnDataLoadedModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.ui.HomeActivity
 
 /**
  * Dagger component for the [HomeActivity].
  */
-@Component(modules = [HomeModule::class], dependencies = [CoreComponent::class])
+@Component(
+        modules = [HomeModule::class, SharedPreferencesModule::class],
+        dependencies = [CoreComponent::class]
+)
+@FeatureScope
 interface HomeComponent : BaseActivityComponent<HomeActivity> {
 
     @Component.Builder
@@ -36,7 +40,6 @@ interface HomeComponent : BaseActivityComponent<HomeActivity> {
         fun build(): HomeComponent
         @BindsInstance fun homeActivity(activity: HomeActivity): Builder
         fun coreComponent(module: CoreComponent): Builder
-        fun dataLoadedModule(module: OnDataLoadedModule): Builder
         fun sharedPreferencesModule(module: SharedPreferencesModule): Builder
     }
 }

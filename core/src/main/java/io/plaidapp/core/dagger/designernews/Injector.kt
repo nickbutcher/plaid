@@ -18,6 +18,8 @@
 
 package io.plaidapp.core.dagger.designernews
 
+import io.plaidapp.core.dagger.CoreComponent
+import io.plaidapp.core.dagger.DaggerCoreComponent
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
@@ -26,9 +28,16 @@ import io.plaidapp.core.designernews.data.votes.UpvoteStoryService
  * Injector for [UpvoteStoryService].
  */
 
+private val coreComponent: CoreComponent by lazy {
+    DaggerCoreComponent
+        .builder()
+        .build()
+}
+
 fun inject(service: UpvoteStoryService) {
 
     DaggerUpvoteStoryServiceComponent.builder()
+            .coreComponent(coreComponent)
             .sharedPreferencesModule(
                     SharedPreferencesModule(service, LoginLocalDataSource.DESIGNER_NEWS_PREF)
             )
