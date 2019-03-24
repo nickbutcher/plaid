@@ -1,10 +1,7 @@
-version: 2
+version: 2.1
 
-references:
-#  cache_key: &cache_key
-#    key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-
-  config_android: &config_android
+executors:
+  plaid-android-executor:
     docker:
       - image: circleci/android:api-28-alpha
     working_directory: ~/plaid
@@ -13,37 +10,39 @@ references:
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
       TERM: dumb
 
-  config_gcloud: &config_gcloud
+  plaid-gcloud-executor:
     docker:
       - image: google/cloud-sdk:latest
     working_directory: ~/plaid
     environment:
       TERM: dumb
 
+commands:
+  store-plaid-artifacts:
+    description: "It stores Lint & Test artifacts"
+    parameters:
+      artifact-path:
+        type: string
+    steps:
+      - store_artifacts:
+          path: <<parameters.artifact-path>>
+
 jobs:
   build:
-    <<: *config_android
+    executor: plaid-android-executor
     steps:
       - checkout
-#      - restore_cache:
-#          <<: *cache_key
       - run:
           name: Download Dependencies
           command: ./gradlew dependencies
-#      - save_cache:
-#          <<: *cache_key
-#          paths:
-#            - ~/.gradle/caches
-#            - ~/.gradle/wrapper
       - run:
           name: Run JVM Tests & Lint, assemble app and test APKs for debug and release
           command: ./gradlew check assemble assembleAndroidTest
       - run:
           name: Gather Lint results
           command: scripts/copy_lint_results.sh
-      - store_artifacts:
-          path: ci_results/lint
-
+      - store-plaid-artifacts:
+          artifact-path: ci_results/lint
       # Persist build directory for all modules
       - persist_to_workspace:
           root: .
@@ -52,7 +51,7 @@ jobs:
             - ./**/build
 
   test_instrumented:
-    <<: *config_gcloud
+    executor: plaid-gcloud-executor
     steps:
       - checkout
       - attach_workspace:
@@ -64,9 +63,9 @@ jobs:
           name: Run tests on Firebase Test Lab and download results
           command: scripts/ftl_run_tests.sh $CIRCLE_BUILD_NUM firebase_test_results
           when: always
-      - store_artifacts:
-          path: firebase_test_results
-      - store_test_Results:
+      - store-plaid-artifacts:
+          artifact-path: firebase_test_results
+      - store_test_results:
           path: firebase_test_results
 
 workflows:
