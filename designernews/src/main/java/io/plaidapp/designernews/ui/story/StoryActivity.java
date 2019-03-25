@@ -117,9 +117,12 @@ public class StoryActivity extends AppCompatActivity {
 
     private Story story;
 
-    @Inject StoryViewModel viewModel;
-    @Inject LoginRepository loginRepository;
-    @Inject Markdown markdown;
+    @Inject
+    StoryViewModel viewModel;
+    @Inject
+    LoginRepository loginRepository;
+    @Inject
+    Markdown markdown;
 
     private CustomTabActivityHelper customTab;
 

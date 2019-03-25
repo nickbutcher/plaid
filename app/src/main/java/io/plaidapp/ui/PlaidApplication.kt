@@ -19,6 +19,8 @@ package io.plaidapp.ui
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.DaggerCoreComponent
 
@@ -27,9 +29,13 @@ import io.plaidapp.core.dagger.DaggerCoreComponent
  */
 class PlaidApplication : Application() {
 
+    override fun onCreate() {
+        super.onCreate()
+        setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
+    }
+
     private val coreComponent: CoreComponent by lazy {
-        DaggerCoreComponent
-            .create()
+        DaggerCoreComponent.create()
     }
 
     companion object {

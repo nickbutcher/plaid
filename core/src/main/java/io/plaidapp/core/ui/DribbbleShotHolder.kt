@@ -19,6 +19,7 @@ package io.plaidapp.core.ui
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.Drawable
 import android.view.MotionEvent
@@ -31,9 +32,12 @@ import io.plaidapp.core.util.AnimUtils
 import io.plaidapp.core.util.ObservableColorMatrix
 import io.plaidapp.core.util.asGif
 
+private const val NIGHT_MODE_RGB_SCALE = 0.85f
+
 class DribbbleShotHolder constructor(
     itemView: View,
     private val initialGifBadgeColor: Int,
+    private val isNightMode: Boolean,
     private val onItemClicked: (image: View, position: Int) -> Unit
 ) : RecyclerView.ViewHolder(itemView) {
 
@@ -49,21 +53,23 @@ class DribbbleShotHolder constructor(
             // check if it's an event we care about, else bail fast
             val action = event.action
             if (!(action == MotionEvent.ACTION_DOWN ||
-                            action == MotionEvent.ACTION_UP ||
-                            action == MotionEvent.ACTION_CANCEL)) {
+                    action == MotionEvent.ACTION_UP ||
+                    action == MotionEvent.ACTION_CANCEL)
+            ) {
                 return@setOnTouchListener false
             }
 
             // get the image and check if it's an animated GIF
-            val drawable = image.getDrawable() ?: return@setOnTouchListener false
+            val drawable = image.drawable ?: return@setOnTouchListener false
             val gif = drawable.asGif() ?: return@setOnTouchListener false
             // GIF found, start/stop it on press/lift
             when (action) {
-                MotionEvent.ACTION_DOWN -> gif!!.start()
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> gif!!.stop()
+                MotionEvent.ACTION_DOWN -> gif.start()
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> gif.stop()
             }
             return@setOnTouchListener false
         }
+        darkenImage()
     }
 
     fun reset() {
@@ -75,20 +81,18 @@ class DribbbleShotHolder constructor(
     fun fade() {
         image.setHasTransientState(true)
         val cm = ObservableColorMatrix()
-        val saturationAnimator = ObjectAnimator.ofFloat(
-                cm, ObservableColorMatrix.SATURATION, 0f, 1f)
-        saturationAnimator.apply {
-            addUpdateListener { _ ->
-                // just animating the color matrix does not invalidate the
+        ObjectAnimator.ofFloat(cm, ObservableColorMatrix.SATURATION, 0f, 1f).apply {
+            addUpdateListener {
+                // Setting the saturation overwrites any darkening so need to reapply.
+                // Just animating the color matrix does not invalidate the
                 // drawable so need this update listener.  Also have to create a
                 // new CMCF as the matrix is immutable :(
-                image.colorFilter = ColorMatrixColorFilter(cm)
+                darkenImage(cm)
             }
             duration = 2000L
             interpolator = AnimUtils.getFastOutSlowInInterpolator(image.context)
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
-                    image.clearColorFilter()
                     image.setHasTransientState(false)
                 }
             })
@@ -102,5 +106,17 @@ class DribbbleShotHolder constructor(
             this.drawBadge = drawBadge
             this.transitionName = transitionName
         }
+    }
+
+    private fun darkenImage(colorMatrix: ColorMatrix = ColorMatrix()) {
+        if (isNightMode) {
+            colorMatrix.setScale(
+                NIGHT_MODE_RGB_SCALE,
+                NIGHT_MODE_RGB_SCALE,
+                NIGHT_MODE_RGB_SCALE,
+                1f
+            )
+        }
+        image.colorFilter = ColorMatrixColorFilter(colorMatrix)
     }
 }

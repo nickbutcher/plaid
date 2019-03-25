@@ -70,7 +70,8 @@ class FeedAdapter(
     // we need to hold on to an activity ref for the shared element transitions :/
     private val host: Activity,
     private val columns: Int,
-    private val pocketIsInstalled: Boolean
+    private val pocketIsInstalled: Boolean,
+    private val isNightMode: Boolean
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ListPreloader.PreloadModelProvider<Shot> {
     private val layoutInflater: LayoutInflater = LayoutInflater.from(host)
     private val shotLoadingPlaceholders: Array<ColorDrawable?>
@@ -203,8 +204,8 @@ class FeedAdapter(
     private fun createDribbbleShotHolder(parent: ViewGroup): DribbbleShotHolder {
         return DribbbleShotHolder(
             layoutInflater.inflate(R.layout.dribbble_shot_item, parent, false),
-            initialGifBadgeColor
-        ) { view, position ->
+            initialGifBadgeColor,
+            isNightMode) { view, position ->
             val intent = intentTo(Activities.Dribbble.Shot)
             intent.putExtra(
                 Activities.Dribbble.Shot.EXTRA_SHOT_ID,
