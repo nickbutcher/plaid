@@ -73,7 +73,7 @@
             android:foreground="@drawable/mid_grey_ripple"
             android:stateListAnimator="@animator/app_bar_pin"
             android:transitionName="@string/transition_shot"
-            android:background="@color/surface_contrast"
+            android:background="@drawable/surface_contrast"
             android:onClick="@{() -> viewModel.viewShotRequested()}"
             app:imageUrl="@{uiModel.imageUrl}"
             app:imageLoadListener="@{shotLoadListener}"

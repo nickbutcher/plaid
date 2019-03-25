@@ -45,19 +45,26 @@
 
     <style name="Plaid.DesignerNews.PostStory">
         <item name="android:windowAnimationStyle">@null</item>
-       <item name="android:statusBarColor">@color/background_super_dark</item>
+        <item name="android:statusBarColor">@color/background_super_dark</item>
         <item name="android:navigationBarColor">@color/background_super_dark</item>
         <item name="android:colorControlNormal">@color/hint_disabled_dark</item>
     </style>
 
-    <style name="TextAppearance.DesignerNewsDescription" parent="@android:style/TextAppearance.Material.Subhead">
-        <item name="android:textColor">@color/text_secondary_dark</item>
+    <style name="TextAppearance.DesignerNewsDescription" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:letterSpacing">0.01</item>
         <item name="lineHeightHint">24sp</item>
     </style>
-    
+
     <style name="Widget.Plaid.TextEntry" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="boxBackgroundColor">@color/surface_contrast</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Plaid.TextEntry</item>
+    </style>
+
+    <!-- Set colorPrimary to colorSecondary as this doesn't vary in dark mode
+         i.e. contrasts on a dark colorSurface-->
+    <style name="ThemeOverlay.Plaid.TextEntry" parent="@style/ThemeOverlay.MaterialComponents.TextInputEditText.FilledBox">
+        <item name="colorPrimary">?attr/colorSecondary</item>
     </style>
 
 </resources>

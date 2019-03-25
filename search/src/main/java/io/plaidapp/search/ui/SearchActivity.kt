@@ -57,12 +57,14 @@ import io.plaidapp.core.ui.expandPopularItems
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener
 import io.plaidapp.core.ui.recyclerview.SlideInItemAnimator
 import io.plaidapp.core.util.Activities
+import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.core.util.ImeUtils
 import io.plaidapp.core.util.ShortcutHelper
 import io.plaidapp.core.util.TransitionUtils
 import io.plaidapp.search.R
 import io.plaidapp.search.dagger.Injector
 import io.plaidapp.search.ui.transitions.CircularReveal
+import io.plaidapp.ui.PlaidApplication
 import javax.inject.Inject
 
 /**
@@ -106,7 +108,7 @@ class SearchActivity : AppCompatActivity() {
 
         Injector.inject(this)
 
-        feedAdapter = FeedAdapter(this, columns, pocketInstalled)
+        feedAdapter = FeedAdapter(this, columns, pocketInstalled, ColorUtils.isNightMode(this))
 
         viewModel.searchResults.observe(this, Observer { searchUiModel ->
             if (searchUiModel.items.isNotEmpty()) {

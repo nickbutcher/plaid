@@ -64,8 +64,6 @@ class ShotActivity : AppCompatActivity() {
         R.layout.activity_dribbble_shot
     )
 
-    private var largeAvatarSize: Int = 0
-
     private val shotLoadListener = object : RequestListener<Drawable> {
         override fun onResourceReady(
             resource: Drawable,
@@ -115,8 +113,6 @@ class ShotActivity : AppCompatActivity() {
         }
 
         inject(shotId)
-
-        largeAvatarSize = resources.getDimensionPixelSize(io.plaidapp.R.dimen.large_avatar_size)
 
         binding.viewModel = viewModel.also { vm ->
             vm.openLink.observe(this, EventObserver { openLink(it) })

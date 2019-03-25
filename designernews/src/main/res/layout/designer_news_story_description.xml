@@ -22,7 +22,7 @@
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/designer_news_story_comments_vertical_padding"
     android:elevation="@dimen/designer_news_story_comment_elevation"
-    android:background="?attr/colorSurface"
+    android:background="@color/designer_news_story_comment_background"
     android:orientation="vertical"
     android:transitionGroup="false"
     android:clipToPadding="false">
