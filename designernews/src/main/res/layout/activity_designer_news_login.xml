@@ -114,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:text="@string/sign_up"
-                    android:textColor="?android:colorAccent"
+                    android:textColor="?attr/colorSecondary"
                     android:onClick="@{() -> viewModel.signup()}"
                     style="@style/Widget.MaterialComponents.Button.TextButton" />
 

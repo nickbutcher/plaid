@@ -18,6 +18,7 @@
 package io.plaidapp.core.util;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -170,6 +171,11 @@ public class ColorUtils {
         final int color = a.getColor(0, Color.MAGENTA);
         a.recycle();
         return color;
+    }
+
+    public static boolean isNightMode(@NonNull Context context) {
+        return (context.getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
     }
 
     @Retention(RetentionPolicy.SOURCE)

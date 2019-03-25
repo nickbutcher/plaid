@@ -74,6 +74,7 @@
     <color name="designer_news_secondary">#03a9f4</color> <!--*not* varied in -night -->-->
     <color name="designer_news_variant">#039be5</color> <!-- light blue 600 -->
     <color name="designer_news_link_highlight">#b303a9f4</color>
+    <color name="designer_news_story_comment_background">@android:color/transparent</color>
 
     <color name="designer_news_super_dark">#000133</color>
 

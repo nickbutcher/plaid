@@ -53,11 +53,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -97,7 +97,7 @@ import java.util.List;
 
 import static io.plaidapp.dagger.Injector.inject;
 
-public class HomeActivity extends FragmentActivity {
+public class HomeActivity extends AppCompatActivity {
 
     private static final int RC_SEARCH = 0;
     private static final int RC_NEW_DESIGNER_NEWS_STORY = 4;
@@ -140,7 +140,7 @@ public class HomeActivity extends FragmentActivity {
 
         inject(this);
 
-        adapter = new FeedAdapter(this, columns, pocketInstalled);
+        adapter = new FeedAdapter(this, columns, pocketInstalled, ColorUtils.isNightMode(this));
 
         if (connectivityChecker != null) {
             getLifecycle().addObserver(connectivityChecker);
@@ -185,7 +185,7 @@ public class HomeActivity extends FragmentActivity {
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
 
-        setActionBar(toolbar);
+        setupToolbar();
         if (savedInstanceState == null) {
             animateToolbar();
         }
@@ -347,26 +347,24 @@ public class HomeActivity extends FragmentActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        final MenuItem toggleTheme = menu.findItem(R.id.menu_theme);
+    private void setupToolbar() {
+        toolbar.inflateMenu(R.menu.main);
+        final MenuItem toggleTheme = toolbar.getMenu().findItem(R.id.menu_theme);
         final View actionView = toggleTheme.getActionView();
         if (actionView instanceof CheckBox) {
             final CheckBox toggle = (CheckBox) actionView;
             toggle.setButtonDrawable(R.drawable.asl_theme);
-            toggle.setChecked(
-                    AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES);
+            toggle.setChecked(ColorUtils.isNightMode(this));
             toggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                AppCompatDelegate.setDefaultNightMode(isChecked ?
-                        AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                // delay to allow the toggle anim to run
                 toggle.postDelayed(() -> {
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    recreate();
+                    AppCompatDelegate.setDefaultNightMode(isChecked ?
+                            AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                    getDelegate().applyDayNight();
                 }, 800L);
             });
         }
-        return true;
+        setActionBar(toolbar);
     }
 
     @Override
