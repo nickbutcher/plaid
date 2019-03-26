@@ -22,6 +22,10 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowMinWidthMajor">100%</item>
+        <item name="android:windowMinWidthMinor">100%</item>
         <item name="android:colorPrimary">@color/designer_news</item>
         <item name="android:colorAccent">@color/designer_news</item>
         <item name="android:colorButtonNormal">@color/designer_news_button</item>
