@@ -1,28 +1,32 @@
 ## :loudspeaker: Type of change
-_Put an `x` in the boxes that apply_
-
+<!--- Put an `x` in the boxes that apply -->
 - [ ] Bugfix
 - [ ] New feature
+- [ ] Enhancement
 - [ ] Refactoring
 
-## :bulb: Description
+## :scroll: Description
+<!--- Describe your changes in detail -->
 
-## :scroll: Changes
+
+## :bulb: Motivation and Context
+<!--- Why is this change required? What problem does it solve? -->
+<!--- If it fixes an open issue, please link to the issue here. -->
 
 
 ## :green_heart: How did you test it?
 
 
 ## :pencil: Checklist
-_Put an `x` in the boxes that apply_
-
-- [ ] I run `./gradlew spotlessApply` before submitting the PR
-- [ ] I have performed a self-review of my own code
-- [ ] I have added tests that prove my fix is effective or that my feature works
+<!--- Put an `x` in the boxes that apply -->
+- [ ] I ran `./gradlew spotlessApply` before submitting the PR
+- [ ] I reviewed submitted code
+- [ ] I added tests to verify changes
 - [ ] All tests passing
+
 
 ## :crystal_ball: Next steps
 
 
-## :camera_flash: Screenshots
+## :camera_flash: Screenshots / GIFs
 _Mandatory for UI changes._
