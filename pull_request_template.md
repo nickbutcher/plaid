@@ -5,6 +5,7 @@
 - [ ] Enhancement
 - [ ] Refactoring
 
+
 ## :scroll: Description
 <!--- Describe your changes in detail -->
 
@@ -29,4 +30,4 @@
 
 
 ## :camera_flash: Screenshots / GIFs
-_Mandatory for UI changes._
+<!--- Mandatory for UI changes -->
