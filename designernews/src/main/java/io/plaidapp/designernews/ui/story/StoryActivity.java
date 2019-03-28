@@ -68,6 +68,7 @@ import io.plaidapp.core.ui.transitions.ReflowText;
 import io.plaidapp.core.ui.widget.CollapsingTitleLayout;
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.core.util.Activities;
+import io.plaidapp.core.util.ColorUtils;
 import io.plaidapp.core.util.HtmlUtils;
 import io.plaidapp.core.util.ImeUtils;
 import io.plaidapp.core.util.ViewUtils;
@@ -591,8 +592,8 @@ public class StoryActivity extends AppCompatActivity {
     private void needsLogin(View triggeringView, int requestCode) {
         Intent login = new Intent(StoryActivity.this,
                 LoginActivity.class);
-        MorphTransform.addExtras(login, ContextCompat.getColor(this,
-                io.plaidapp.R.color.background_light),
+        MorphTransform.addExtras(login,
+                ColorUtils.getThemeColor(this, io.plaidapp.core.R.attr.colorSurface),
                 triggeringView.getHeight() / 2);
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                 StoryActivity.this,
