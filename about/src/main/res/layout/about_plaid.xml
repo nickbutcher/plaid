@@ -35,21 +35,21 @@
             android:layout_height="@dimen/about_header_height"
             android:text="@string/app_name"
             android:fontFamily="@font/roboto_mono"
-            app:foregroundColor="?android:colorPrimary" />
+            app:foregroundColor="?attr/colorPrimary" />
 
         <io.plaidapp.core.ui.widget.BaselineGridTextView
             android:id="@+id/about_description"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/background_light"
+            android:background="?attr/colorSurface"
             android:breakStrategy="simple"
             android:paddingStart="@dimen/padding_normal"
             android:paddingTop="@dimen/padding_normal"
             android:paddingEnd="@dimen/padding_normal"
             android:paddingBottom="@dimen/spacing_large"
             android:textAppearance="@style/TextAppearance.About"
-            android:textColorHighlight="?android:colorPrimary"
+            android:textColorHighlight="?attr/colorPrimary"
             android:textColorLink="@color/plaid_links" />
 
     </LinearLayout>

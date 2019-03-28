@@ -84,15 +84,10 @@
         <item name="android:textColor">?android:colorAccent</item>
     </style>
 
-    <style name="TextAppearance.Subhead" parent="@android:style/TextAppearance.Material.Subhead">
-        <item name="android:textColor">@color/text_secondary_dark</item>
+    <style name="TextAppearance.Subhead" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:letterSpacing">0.01</item>
         <item name="lineHeightHint">24sp</item>
-    </style>
-
-    <style name="Widget.Plaid.SecondaryText">
-        <item name="android:textAppearance">@style/TextAppearance.SecondaryText</item>
-        <item name="android:letterSpacing">0.01</item>
     </style>
 
     <style name="TextAppearance.SecondaryText" parent="@android:style/TextAppearance.Material.Body1">

@@ -19,14 +19,14 @@
     <color name="color_surface">@color/background_dark</color>
     <color name="color_highlighted_surface">#ff404040</color>
     <color name="color_background">#ff292929</color>
+    <color name="page_indicators">#80cccccc</color>
+    <color name="page_indicator_selected">#ffcccccc</color>
 
     <!-- designer news -->
-    <!--<color name="designer_news">#0d47a1</color>--> <!-- blue 900 -->
     <color name="designer_news">#003c8f</color>
     <color name="designer_news_variant">#0b3c87</color>
 
     <!-- product hunt-->
-    <!--<color name="product_hunt">#ffbf360c</color>--> <!--deep orange 900 -->
     <color name="product_hunt">#7f311a</color>
 
 </resources>

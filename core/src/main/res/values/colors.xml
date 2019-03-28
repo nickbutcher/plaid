@@ -35,7 +35,6 @@
     <color name="ripple_light">#99ffffff</color>
     <color name="ripple_dark">@color/mid_grey</color>
     <color name="background_light">#fafafa</color> <!-- grey 50 -->
-    <color name="background_card">#ffffff</color>
     <color name="background_dark">#ff333333</color>
     <color name="immersive_bars">#99000000</color>
     <color name="light_immersive_bars">#b3eeeeee</color> <!-- 70% grey 200 -->
@@ -55,8 +54,8 @@
     <color name="inline_action_icon">#ff757575</color> <!-- grey 600 -->
     <color name="light_icon">#ffffffff</color>
     <color name="divider">#1f000000</color> <!-- 12% black -->
-    <color name="page_indicator_dark">#80333333</color>
-    <color name="page_indicator_dark_selected">#ff333333</color>
+    <color name="page_indicators">#80333333</color>
+    <color name="page_indicator_selected">#ff333333</color>
     <color name="error">#ffdd2c00</color>
     <color name="delete">#fff44336</color>
     <color name="shadow">#4c000000</color>
