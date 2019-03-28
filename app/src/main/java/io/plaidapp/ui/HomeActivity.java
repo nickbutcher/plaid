@@ -140,7 +140,7 @@ public class HomeActivity extends AppCompatActivity {
 
         inject(this);
 
-        adapter = new FeedAdapter(this, columns, pocketInstalled, ColorUtils.isNightMode(this));
+        adapter = new FeedAdapter(this, columns, pocketInstalled, ColorUtils.isDarkTheme(this));
 
         if (connectivityChecker != null) {
             getLifecycle().addObserver(connectivityChecker);
@@ -354,7 +354,7 @@ public class HomeActivity extends AppCompatActivity {
         if (actionView instanceof CheckBox) {
             final CheckBox toggle = (CheckBox) actionView;
             toggle.setButtonDrawable(R.drawable.asl_theme);
-            toggle.setChecked(ColorUtils.isNightMode(this));
+            toggle.setChecked(ColorUtils.isDarkTheme(this));
             toggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 // delay to allow the toggle anim to run
                 toggle.postDelayed(() -> {
