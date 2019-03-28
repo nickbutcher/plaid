@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/background_light"
+        android:background="?attr/colorSurface"
         android:elevation="@dimen/z_card">
 
         <ImageView
@@ -50,7 +50,7 @@
             android:paddingEnd="@dimen/padding_normal"
             android:paddingBottom="@dimen/spacing_large"
             android:textAppearance="@style/TextAppearance.About"
-            android:textColorHighlight="?android:colorPrimary"
+            android:textColorHighlight="?attr/colorPrimary"
             android:textColorLink="@color/plaid_links" />
 
     </LinearLayout>
