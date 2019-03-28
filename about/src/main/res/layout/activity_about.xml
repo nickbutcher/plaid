@@ -39,8 +39,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|center_horizontal"
                 android:layout_marginTop="@dimen/padding_normal"
-                app:pageIndicatorColor="@color/page_indicator_dark"
-                app:currentPageIndicatorColor="@color/page_indicator_dark_selected"/>
+                app:pageIndicatorColor="@color/page_indicators"
+                app:currentPageIndicatorColor="@color/page_indicator_selected"/>
 
     </io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout>
 
