@@ -173,7 +173,7 @@ public class ColorUtils {
         return color;
     }
 
-    public static boolean isNightMode(@NonNull Context context) {
+    public static boolean isDarkTheme(@NonNull Context context) {
         return (context.getResources().getConfiguration().uiMode
                 & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
     }
