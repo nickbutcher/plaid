@@ -53,7 +53,6 @@
     <color name="dark_icon_on_primary">#ff2a6046</color> <!-- 60% black on @color/primary -->
     <color name="inline_action_icon">#ff757575</color> <!-- grey 600 -->
     <color name="light_icon">#ffffffff</color>
-    <color name="divider">#1f000000</color> <!-- 12% black -->
     <color name="page_indicators">#80333333</color>
     <color name="page_indicator_selected">#ff333333</color>
     <color name="error">#ffdd2c00</color>

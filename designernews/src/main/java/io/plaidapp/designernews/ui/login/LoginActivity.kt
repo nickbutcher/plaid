@@ -17,21 +17,21 @@
 package io.plaidapp.designernews.ui.login
 
 import android.app.Activity
-import androidx.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
-import androidx.annotation.StringRes
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AppCompatActivity
 import android.transition.TransitionManager
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
 import io.plaidapp.core.ui.transitions.FabTransform
 import io.plaidapp.core.ui.transitions.MorphTransform
+import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.core.util.delegates.contentView
 import io.plaidapp.core.util.doAfterTextChanged
 import io.plaidapp.core.util.event.EventObserver
@@ -56,7 +56,7 @@ class LoginActivity : AppCompatActivity() {
 
         inject(this)
 
-        binding.setLifecycleOwner(this)
+        binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
         viewModel.uiState.observe(this, Observer {
@@ -82,7 +82,7 @@ class LoginActivity : AppCompatActivity() {
             MorphTransform.setup(
                 this,
                 binding.container,
-                ContextCompat.getColor(this, appR.color.background_light),
+                ColorUtils.getThemeColor(this, io.plaidapp.core.R.attr.colorSurface),
                 resources.getDimensionPixelSize(appR.dimen.dialog_corners)
             )
         }
