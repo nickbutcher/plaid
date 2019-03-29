@@ -124,8 +124,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:enabled="@{viewModel.uiState.enableLoginButton}"
-                    android:text="@string/dn_login_action"
-                    android:textAppearance="@style/TextAppearance.DarkButton" />
+                    android:text="@string/dn_login_action" />
 
             </FrameLayout>
 

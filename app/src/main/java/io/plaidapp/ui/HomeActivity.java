@@ -355,6 +355,7 @@ public class HomeActivity extends AppCompatActivity {
             final CheckBox toggle = (CheckBox) actionView;
             toggle.setButtonDrawable(R.drawable.asl_theme);
             toggle.setChecked(ColorUtils.isDarkTheme(this));
+            toggle.jumpDrawablesToCurrentState();
             toggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 // delay to allow the toggle anim to run
                 toggle.postDelayed(() -> {

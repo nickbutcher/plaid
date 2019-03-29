@@ -33,13 +33,12 @@
         <item name="android:windowReturnTransition">@transition/dribbble_shot_return</item>
     </style>
 
-    <style name="TextAppearance.DribbbleShotTitle" parent="@android:style/TextAppearance.Material.Headline">
-        <item name="android:fontFamily">@font/roboto_mono</item>
-        <item name="android:textColor">?android:textColorPrimary</item>
+    <style name="TextAppearance.DribbbleShotTitle" parent="@style/TextAppearance.MaterialComponents.Headline5">
+        <item name="fontFamily">@font/roboto_mono</item>
         <item name="lineHeightHint">32sp</item>
     </style>
 
-    <style name="TextAppearance.DribbbleShotDescription" parent="@android:style/TextAppearance.Material.Subhead">
+    <style name="TextAppearance.DribbbleShotDescription" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
         <item name="android:textColor">?android:textColorTertiary</item>
         <item name="android:letterSpacing">0.01</item>
         <item name="lineHeightHint">24sp</item>

@@ -32,11 +32,6 @@
     <string name="comment_lines">comment_lines</string>
     <string name="comment_add">comment_add</string>
 
-    <!-- drawing -->
-    <color name="comment_bubble">#777</color>
-    <color name="comment_line_stroke_color">#fbfbfb</color>
-    <integer name="comment_line_stroke_width">2</integer>
-
     <!-- timing -->
     <integer name="comment_lines_add_duration">300</integer>
 

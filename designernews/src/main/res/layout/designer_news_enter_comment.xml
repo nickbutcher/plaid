@@ -34,7 +34,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        app:hintTextAppearance="@style/TextAppearance.FloatLabelHint"
         style="@style/Widget.Plaid.TextEntry">
 
         <com.google.android.material.textfield.TextInputEditText

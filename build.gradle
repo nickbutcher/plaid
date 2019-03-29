@@ -17,13 +17,11 @@
 buildscript { scriptHandler ->
     apply from: 'repositories.gradle',
             to: scriptHandler
-    repositories {
-        google()
-    }
     ext.versions = [
             'compileSdk'         : 28,
             'minSdk'             : 23,
             'targetSdk'          : 28,
+            'appcompat'          : '1.1.0-alpha03',
             'androidx'           : '1.0.0',
             'androidxCollection' : '1.0.0',
             'androidxCoreRuntime': '2.0.1-alpha01',
@@ -31,12 +29,12 @@ buildscript { scriptHandler ->
             'constraintLayout'   : '2.0.0-alpha2',
             'coreKtx'            : '1.0.0',
             'coroutines'         : '1.1.1',
-            'crashlytics'        : '2.9.8',
+            'crashlytics'        : '2.9.9',
             'dagger'             : '2.16',
             'espresso'           : '3.1.0-beta02',
             'extJunit'           : '1.1.0',
             'fabric'             : '1.25.4',
-            'firebase'           : '16.0.6',
+            'firebase'           : '16.0.8',
             'glide'              : '4.8.0',
             'googleServices'     : '4.0.1',
             'gson'               : '2.8.5',
@@ -46,7 +44,7 @@ buildscript { scriptHandler ->
             'ktlint'             : '0.24.0',
             'legacyCoreUtils'    : '1.0.0',
             'lifecycle'          : '2.1.0-alpha01',
-            'material'           : '1.1.0-alpha04',
+            'material'           : '1.1.0-alpha05',
             'mockito'            : '2.23.0',
             'mockito_kotlin'     : '2.0.0-RC3',
             'okhttp'             : '3.10.0',

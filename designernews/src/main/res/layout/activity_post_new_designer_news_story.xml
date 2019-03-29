@@ -77,7 +77,7 @@
                     android:layout_marginStart="@dimen/padding_normal_til"
                     android:layout_marginTop="@dimen/spacing_normal"
                     android:layout_marginEnd="@dimen/padding_normal"
-                    app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
+                    style="@style/Widget.Plaid.TextEntry">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/new_story_title"
@@ -105,7 +105,7 @@
                     android:layout_marginTop="@dimen/spacing_normal"
                     android:layout_marginEnd="@dimen/padding_normal"
                     android:stateListAnimator="@animator/disable_text_entry"
-                    app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
+                    style="@style/Widget.Plaid.TextEntry">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/new_story_url"
@@ -125,7 +125,7 @@
                     android:layout_marginTop="@dimen/spacing_normal"
                     android:layout_marginEnd="@dimen/padding_normal"
                     android:stateListAnimator="@animator/disable_text_entry"
-                    app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
+                    style="@style/Widget.Plaid.TextEntry">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/new_story_comment"
@@ -148,7 +148,6 @@
                     android:padding="@dimen/spacing_micro"
                     android:stateListAnimator="@animator/raise"
                     android:text="@string/new_story_post"
-                    android:textAppearance="@style/TextAppearance.Button"
                     android:theme="@style/PlaidDarkOverlay" />
 
             </LinearLayout>

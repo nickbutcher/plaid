@@ -82,8 +82,7 @@
 
     <style name="TextAppearance" />
 
-    <style name="TextAppearance.DialogContent" parent="@android:style/TextAppearance.Material.Subhead">
-        <item name="android:textColor">@color/text_secondary_dark</item>
+    <style name="TextAppearance.DialogContent" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:letterSpacing">0.01</item>
         <item name="lineHeightHint">24sp</item>
@@ -94,24 +93,22 @@
         <item name="lineHeightHint">24sp</item>
     </style>
 
-    <style name="TextAppearance.Filter" parent="@android:style/TextAppearance.Material.Title">
+    <style name="TextAppearance.Filter" parent="@style/TextAppearance.MaterialComponents.Headline6">
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/filter_text</item>
     </style>
 
-    <style name="TextAppearance.TilePrimary" parent="@android:style/TextAppearance.Material.Subhead">
+    <style name="TextAppearance.TilePrimary" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
         <item name="android:letterSpacing">0.01</item>
-        <item name="android:fontFamily">@font/roboto_mono</item>
+        <item name="fontFamily">@font/roboto_mono</item>
         <item name="lineHeightHint">20sp</item>
     </style>
 
-    <style name="TextAppearance.TileSecondary" parent="@android:style/TextAppearance.Material.Body2">
+    <style name="TextAppearance.TileSecondary" parent="@style/TextAppearance.MaterialComponents.Body2">
         <item name="android:letterSpacing">0.01</item>
         <item name="android:textColor">?android:textColorSecondary</item>
     </style>
 
-    <style name="TextAppearance.ToolbarTitle" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/text_primary_light</item>
+    <style name="TextAppearance.ToolbarTitle" parent="@style/TextAppearance.MaterialComponents.Headline6">
         <item name="android:fontFamily">@font/roboto_mono</item>
     </style>
 
@@ -127,4 +124,13 @@
         <item name="titleInsetBottom">@dimen/padding_normal</item>
         <item name="android:maxLines">5</item>
     </style>
+
+    <style name="ThemeOverlay.Plaid" parent="" />
+
+    <!-- This won't be needed when we move creation of DN items into the dn module and
+         can set the correct theme -->
+    <style name="ThemeOverlay.Plaid.DesignerNews" parent="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="colorOnPrimary">#ffffff</item>
+    </style>
+
 </resources>
