@@ -71,7 +71,7 @@ class FeedAdapter(
     private val host: Activity,
     private val columns: Int,
     private val pocketIsInstalled: Boolean,
-    private val isNightMode: Boolean
+    private val isDarkTheme: Boolean
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ListPreloader.PreloadModelProvider<Shot> {
     private val layoutInflater: LayoutInflater = LayoutInflater.from(host)
     private val shotLoadingPlaceholders: Array<ColorDrawable?>
@@ -205,7 +205,7 @@ class FeedAdapter(
         return DribbbleShotHolder(
             layoutInflater.inflate(R.layout.dribbble_shot_item, parent, false),
             initialGifBadgeColor,
-            isNightMode) { view, position ->
+            isDarkTheme) { view, position ->
             val intent = intentTo(Activities.Dribbble.Shot)
             intent.putExtra(
                 Activities.Dribbble.Shot.EXTRA_SHOT_ID,

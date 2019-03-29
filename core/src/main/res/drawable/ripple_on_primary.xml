@@ -12,8 +12,6 @@
   or implied. See the License for the specific language governing permissions and limitations under
   the License.
   -->
-<resources>
-
-    <color name="designer_news_story_comment_background">@color/color_surface</color>
-
-</resources>
+<ripple
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/ripple_on_primary" />

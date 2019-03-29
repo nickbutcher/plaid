@@ -132,7 +132,7 @@
             android:layout_marginBottom="@dimen/padding_normal"
             android:background="@drawable/fab"
             android:elevation="@dimen/z_fab"
-            android:theme="@style/ExpandedFabTheme"
+            android:theme="@style/ThemeOverlay.ExpandedFab"
             android:translationX="196dp"
             android:translationY="196dp"
             android:visibility="gone">
@@ -157,7 +157,7 @@
                     android:paddingEnd="12dp"
                     android:paddingBottom="@dimen/spacing_normal"
                     android:text="@string/confirm_save_dribbble_search"
-                    android:textAppearance="@android:style/TextAppearance.Material.Body2" />
+                    android:textAppearance="?attr/textAppearanceBody2" />
 
                 <CheckedTextView
                     android:id="@+id/save_designer_news"
@@ -172,7 +172,7 @@
                     android:paddingEnd="12dp"
                     android:paddingBottom="@dimen/spacing_normal"
                     android:text="@string/confirm_save_designer_news_search"
-                    android:textAppearance="@android:style/TextAppearance.Material.Body2" />
+                    android:textAppearance="?attr/textAppearanceBody2" />
 
                 <Button
                     android:id="@+id/save_confirmed"

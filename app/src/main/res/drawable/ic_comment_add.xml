@@ -25,7 +25,7 @@
     <path
         android:name="comment_bubble"
         android:pathData="@string/path_comment_bubble"
-        android:fillColor="@color/comment_bubble" />
+        android:fillColor="?attr/colorControlNormal" />
 
     <group
         android:name="@string/comment_lines_add_group"
@@ -35,9 +35,9 @@
         <path
             android:name="@string/comment_add"
             android:pathData="@string/path_comment_add"
-            android:strokeColor="@color/comment_line_stroke_color"
+            android:strokeColor="?attr/colorSurface"
             android:strokeLineCap="square"
-            android:strokeWidth="@integer/comment_line_stroke_width" />
+            android:strokeWidth="2" />
 
     </group>
 

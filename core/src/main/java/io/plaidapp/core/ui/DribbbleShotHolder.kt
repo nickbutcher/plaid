@@ -33,6 +33,7 @@ import io.plaidapp.core.util.ObservableColorMatrix
 import io.plaidapp.core.util.asGif
 
 private const val NIGHT_MODE_RGB_SCALE = 0.85f
+private const val ALPHA_SCALE = 1.0f
 
 class DribbbleShotHolder constructor(
     itemView: View,
@@ -114,7 +115,7 @@ class DribbbleShotHolder constructor(
                 NIGHT_MODE_RGB_SCALE,
                 NIGHT_MODE_RGB_SCALE,
                 NIGHT_MODE_RGB_SCALE,
-                1f
+                ALPHA_SCALE
             )
         }
         image.colorFilter = ColorMatrixColorFilter(colorMatrix)
