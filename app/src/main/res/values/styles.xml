@@ -17,9 +17,8 @@
 
 <resources>
 
-    <style name="Widget.Plaid.Toolbar">
-        <item name="android:titleTextAppearance">@android:style/TextAppearance.Material.Widget.ActionBar.Title</item>
-        <item name="android:background">?android:colorPrimary</item>
+    <style name="Widget.Plaid.Toolbar" parent="@style/Widget.MaterialComponents.Toolbar">
+        <item name="android:background">?attr/colorPrimary</item>
         <item name="android:elevation">@dimen/z_app_bar</item>
         <item name="android:theme">@style/PlaidDarkOverlay</item>
     </style>
@@ -31,67 +30,31 @@
     <style name="Widget.Plaid.HomeToolbar" parent="Widget.Plaid.Toolbar.SmallCapsTitle">
         <item name="android:background">@null</item>
         <item name="android:elevation">0dp</item>
-        <item name="android:theme">@android:style/ThemeOverlay.Material.Dark</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.MaterialComponents.Dark.ActionBar</item>
     </style>
 
-    <style name="Widget.Plaid.OverlayToolbar" parent="android:Widget.Material.ActionBar">
-        <item name="android:background">@null</item>
-        <item name="android:windowNoTitle">true</item>
-    </style>
-
-    <style name="Widget.Plaid.Toolbar.Accent">
-        <item name="android:background">?android:colorAccent</item>
-        <item name="android:titleTextAppearance">@style/TextAppearance.AccentToolbar</item>
-    </style>
-
-    <style name="TextAppearance.AccentToolbar" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title.Inverse">
-        <item name="android:textColor">@color/text_on_accent</item>
-    </style>
-
-    <style name="TextAppearance.ToolbarTitleSmallCaps" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/text_primary_light</item>
+    <style name="TextAppearance.ToolbarTitleSmallCaps" parent="@style/TextAppearance.MaterialComponents.Headline6">
         <item name="android:fontFeatureSettings">smcp</item>
         <item name="android:letterSpacing">0.2</item>
     </style>
 
-    <style name="TextAppearance.DialogTitle" parent="@android:style/TextAppearance.Material.Title">
-        <item name="android:textColor">@color/text_primary_dark</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
+    <style name="TextAppearance.DialogTitle" parent="@style/TextAppearance.MaterialComponents.Headline6">
         <item name="android:letterSpacing">0.01</item>
         <item name="lineHeightHint">28sp</item>
     </style>
 
-    <style name="TextAppearance.EmptyState" parent="@android:style/TextAppearance.Material.Subhead">
-        <item name="android:textColor">@color/grey_300</item>
+    <style name="TextAppearance.EmptyState" parent="@style/TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">?android:textColorTertiary</item>
     </style>
 
-    <style name="TextAppearance.Button" parent="@android:style/TextAppearance.Material.Widget.Button">
-        <item name="android:textStyle">bold</item>
-        <item name="android:letterSpacing">0.1</item>
-    </style>
-
-    <style name="TextAppearance.DarkButton" parent="@android:style/TextAppearance.Material.Widget.Button">
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
-     <style name="LightRippleOverlay">
-        <item name="android:colorControlHighlight">@color/ripple_light</item>
-    </style>
-
-     <!-- By default float labels (well, the design lib) rely on AppCompat which we're not using
-     yet (minSdk=21). We use this style to work around this and to provide the accent color. -->
-    <style name="TextAppearance.FloatLabelHint" parent="@android:style/TextAppearance.Material.Caption">
-        <item name="android:textColor">?android:colorAccent</item>
+     <style name="ThemeOverlay.Plaid.RippleOnPrimary">
+        <item name="android:colorControlHighlight">@color/ripple_on_primary</item>
     </style>
 
     <style name="TextAppearance.Subhead" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:letterSpacing">0.01</item>
         <item name="lineHeightHint">24sp</item>
-    </style>
-
-    <style name="TextAppearance.SecondaryText" parent="@android:style/TextAppearance.Material.Body1">
-        <item name="android:textColor">@color/text_tertiary_dark</item>
     </style>
 
     <style name="TextAppearance.Author.Title" parent="@style/TextAppearance.CommentAuthor">
@@ -114,7 +77,7 @@
     </style>
 
     <style name="TextAppearance.Comment.None">
-        <item name="android:textColor">@color/grey_300</item>
+        <item name="android:textColor">?android:textColorTertiary</item>
     </style>
 
     <style name="TextAppearance.CommentTimestamp" parent="@style/TextAppearance.MaterialComponents.Caption">
@@ -124,8 +87,8 @@
         <item name="android:letterSpacing">0.02</item>
     </style>
 
-    <style name="Widget.Plaid.HintCheckBox" parent="@android:style/Widget.Material.CompoundButton.CheckBox">
-        <item name="android:textColor">@color/text_secondary_dark</item>
+    <style name="Widget.Plaid.HintCheckBox" parent="@style/Widget.MaterialComponents.CompoundButton.CheckBox">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
 
     <style name="Widget.Plaid.InlineActionButton" parent="@android:style/Widget.Material.Button">

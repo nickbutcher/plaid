@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/fab_size"
         android:paddingStart="@dimen/spacing_micro"
-        app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
+        style="@style/Widget.Plaid.TextEntry">
 
         <EditText
             android:id="@+id/comment_reply"

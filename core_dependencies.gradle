@@ -16,6 +16,7 @@
 dependencies {
     implementation project(':bypass')
 
+    implementation "androidx.appcompat:appcompat:${versions.appcompat}"
     implementation "androidx.room:room-runtime:${versions.room}"
     implementation "androidx.core:core-ktx:${versions.coreKtx}"
     implementation "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"

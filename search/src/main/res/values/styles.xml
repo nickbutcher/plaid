@@ -41,7 +41,7 @@
         <item name="android:searchViewStyle">@style/Widget.Plaid.SearchView</item>
     </style>
 
-    <style name="ExpandedFabTheme" parent="@android:style/ThemeOverlay.Material.Light">
+    <style name="ThemeOverlay.ExpandedFab" parent="@style/ThemeOverlay.MaterialComponents.Light">
         <item name="android:textColorPrimary">@color/dark_icon</item>
         <item name="android:textColorPrimaryDisableOnly">@color/dark_icon</item>
         <item name="android:colorControlActivated">@color/dark_icon</item>
