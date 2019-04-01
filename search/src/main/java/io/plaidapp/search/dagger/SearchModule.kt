@@ -24,6 +24,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.R
+import io.plaidapp.core.dagger.DataSourcesModule
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
@@ -39,7 +40,8 @@ import io.plaidapp.search.ui.SearchViewModelFactory
     includes = [
         DribbbleDataModule::class,
         DesignerNewsDataModule::class,
-        SharedPreferencesModule::class
+        SharedPreferencesModule::class,
+        DataSourcesModule::class
     ]
 )
 abstract class SearchModule {
