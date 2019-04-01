@@ -28,7 +28,7 @@ open class DesignerNewsSourceItem(
 
 data class DesignerNewsSearchSource(
     val query: String,
-    override var active: Boolean
+    override var active: Boolean = true
 ) : DesignerNewsSourceItem(
     DESIGNER_NEWS_QUERY_PREFIX + query,
     SEARCH_SORT_ORDER,

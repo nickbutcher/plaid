@@ -60,7 +60,6 @@ import io.plaidapp.core.util.Activities
 import io.plaidapp.core.util.ImeUtils
 import io.plaidapp.core.util.ShortcutHelper
 import io.plaidapp.core.util.TransitionUtils
-import io.plaidapp.core.util.event.EventObserver
 import io.plaidapp.search.R
 import io.plaidapp.search.dagger.Injector
 import io.plaidapp.search.ui.transitions.CircularReveal
@@ -109,7 +108,7 @@ class SearchActivity : AppCompatActivity() {
 
         feedAdapter = FeedAdapter(this, columns, pocketInstalled)
 
-        viewModel.searchResults.observe(this, EventObserver { searchUiModel ->
+        viewModel.searchResults.observe(this, Observer { searchUiModel ->
             if (searchUiModel.items.isNotEmpty()) {
                 if (results.visibility != View.VISIBLE) {
                     TransitionManager.beginDelayedTransition(
@@ -120,7 +119,7 @@ class SearchActivity : AppCompatActivity() {
                     results.visibility = View.VISIBLE
                     fab.visibility = View.VISIBLE
                 }
-                val feedItems = feedAdapter.getItems().orEmpty()
+                val feedItems = feedAdapter.getItems()
                 val items = getPlaidItemsForDisplayExpanded(feedItems, searchUiModel.items, columns)
                 feedAdapter.setItems(items)
             } else {
