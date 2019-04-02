@@ -21,6 +21,7 @@ import androidx.lifecycle.MutableLiveData
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.interfaces.SearchDataSourcesRegistry
+import io.plaidapp.core.ui.getPlaidItemsForDisplay
 
 class SearchUseCase(
     dataSourcesRegistry: SearchDataSourcesRegistry,
@@ -37,9 +38,9 @@ class SearchUseCase(
         dataSources.forEach {
             val result = it.loadMore()
             if (result is Result.Success) {
-                val lastResult = _searchResult.value.orEmpty().toMutableList()
-                lastResult.addAll(result.data)
-                _searchResult.postValue(lastResult)
+                val oldItems = _searchResult.value.orEmpty().toMutableList()
+                val searchResult = getPlaidItemsForDisplay(oldItems, result.data)
+                _searchResult.postValue(searchResult)
             }
         }
     }
