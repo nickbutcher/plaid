@@ -18,12 +18,11 @@ package io.plaidapp.designernews.dagger
 
 import dagger.Module
 import dagger.Provides
-import io.plaidapp.core.dagger.DataSourcesModule
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.interfaces.SearchDataSourceFactoriesRegistry
 import io.plaidapp.designernews.domain.search.DesignerNewsSearchDataSourceFactory
 
-@Module(includes = [DataSourcesModule::class])
+@Module
 class SearchDataModule {
 
     @Provides
