@@ -25,7 +25,7 @@ class DesignerNewsSearchDataSourceFactory(
     private val repository: StoriesRepository
 ) : SearchDataSourceFactory {
 
-    override fun buildDataSource(query: String): PlaidDataSource {
+    override fun create(query: String): PlaidDataSource {
         val sourceItem = DesignerNewsSearchSource(query)
         return DesignerNewsDataSource(
             sourceItem,

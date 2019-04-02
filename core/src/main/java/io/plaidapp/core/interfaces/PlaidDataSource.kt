@@ -20,7 +20,14 @@ import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.data.SourceItem
 
+/**
+ * Class that allows loading data based on a [SourceItem].
+ * Implementations of this class will handle how the data is retrieved and how pages are handled
+ */
 abstract class PlaidDataSource(val sourceItem: SourceItem) {
 
+    /**
+     * Load more data from this source
+     */
     abstract suspend fun loadMore(): Result<List<PlaidItem>>
 }
