@@ -24,7 +24,7 @@ import androidx.lifecycle.viewModelScope
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.feed.FeedProgressUiModel
 import io.plaidapp.core.feed.FeedUiModel
-import io.plaidapp.core.interfaces.SearchDataSourcesFactory
+import io.plaidapp.core.interfaces.SearchDataSourceFactoriesRegistry
 import io.plaidapp.search.domain.SearchUseCase
 import kotlinx.coroutines.launch
 
@@ -33,16 +33,18 @@ import kotlinx.coroutines.launch
  * for display in the [SearchActivity].
  */
 class SearchViewModel(
-    private val dataSourcesFactory: SearchDataSourcesFactory,
+    sourcesRegistry: SearchDataSourceFactoriesRegistry,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel() {
+
+    private val factories = sourcesRegistry.dataSourceFactories.value.orEmpty()
 
     private var searchUseCase: SearchUseCase? = null
 
     private val searchQuery = MutableLiveData<String>()
 
     private val results = Transformations.switchMap(searchQuery) {
-        searchUseCase = SearchUseCase(dataSourcesFactory, it)
+        searchUseCase = SearchUseCase(factories, it)
         loadMore()
         return@switchMap searchUseCase?.searchResult
     }

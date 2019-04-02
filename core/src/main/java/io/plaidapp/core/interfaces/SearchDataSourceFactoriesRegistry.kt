@@ -18,6 +18,7 @@ package io.plaidapp.core.interfaces
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import javax.inject.Inject
 
 private const val designerNewsSearchDataSourceFactoryProviderClassName =
     "io.plaidapp.designernews.domain.search.DesignerNewsSearchFactoryProvider"
@@ -26,7 +27,7 @@ private const val designerNewsSearchDataSourceFactoryProviderClassName =
 private val factoryClassNames =
     listOf(designerNewsSearchDataSourceFactoryProviderClassName)
 
-class SearchDataSourceFactoriesRegistry {
+class SearchDataSourceFactoriesRegistry @Inject constructor() {
 
     private val _dataSourceFactories =
         MutableLiveData<List<SearchDataSourceFactory>>(getAlreadyAvailableDataSourceFactories())

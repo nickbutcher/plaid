@@ -16,6 +16,10 @@
 
 package io.plaidapp.core.interfaces
 
+/**
+ * Factory for data sources that can be searched, based on a query.
+ */
 interface SearchDataSourceFactory {
-    fun buildDataSource(query: String): PlaidDataSource
+
+    fun create(query: String): PlaidDataSource
 }
