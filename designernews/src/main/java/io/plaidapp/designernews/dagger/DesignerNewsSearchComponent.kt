@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.interfaces
+package io.plaidapp.designernews.dagger
 
-class SearchDataSourcesRegistry(private val factories: List<SearchDataSourceFactory>) {
+import dagger.Component
 
-    fun buildSearchDataSources(query: String): List<PlaidDataSource> =
-        factories.map { it.buildDataSource(query) }
-}
+@Component(
+    modules = [SearchDataModule::class]
+)
+interface DesignerNewsSearchComponent

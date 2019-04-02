@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.interfaces.dribbble
+package io.plaidapp.designernews.domain.search
 
-import io.plaidapp.core.dribbble.data.DribbbleSourceItem
-import io.plaidapp.core.dribbble.data.ShotsRepository
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSource
+import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.interfaces.PlaidDataSource
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
-import javax.inject.Inject
 
-class DribbbleSearchDataSourceFactory @Inject constructor(
-    private val repository: ShotsRepository
+class DesignerNewsSearchDataSourceFactory(
+    private val repository: StoriesRepository
 ) : SearchDataSourceFactory {
 
     override fun buildDataSource(query: String): PlaidDataSource {
-        val sourceItem = DribbbleSourceItem(query)
-        return DribbbleDataSource(
+        val sourceItem = DesignerNewsSearchSource(query)
+        return DesignerNewsDataSource(
             sourceItem,
             repository
         )

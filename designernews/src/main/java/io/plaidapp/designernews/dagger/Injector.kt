@@ -22,6 +22,7 @@ import `in`.uncod.android.bypass.Bypass
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
 import io.plaidapp.core.dagger.MarkdownModule
+import io.plaidapp.designernews.domain.search.DesignerNewsSearchFactoryProvider
 import io.plaidapp.designernews.ui.login.LoginActivity
 import io.plaidapp.designernews.ui.story.StoryActivity
 import io.plaidapp.ui.coreComponent
@@ -61,4 +62,9 @@ fun inject(activity: LoginActivity) {
         .sharedPreferencesModule(DesignerNewsPreferencesModule(activity))
         .build()
         .inject(activity)
+}
+
+fun DesignerNewsSearchFactoryProvider.inject() {
+
+    DaggerDesignerNewsSearchComponent.create()
 }

@@ -14,28 +14,25 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.dagger
+package io.plaidapp.designernews.dagger
 
 import dagger.Module
 import dagger.Provides
+import io.plaidapp.core.dagger.DataSourcesModule
+import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.interfaces.SearchDataSourceFactoriesRegistry
-import io.plaidapp.core.interfaces.SearchDataSourceFactory
-import io.plaidapp.core.interfaces.SearchDataSourcesFactory
+import io.plaidapp.designernews.domain.search.DesignerNewsSearchDataSourceFactory
 
-@Module
-class DataSourcesModule {
-
-    @Provides
-    fun searchDataSourceFactoriesRegistry(): SearchDataSourceFactoriesRegistry {
-        return SearchDataSourceFactoriesRegistry()
-    }
+@Module(includes = [DataSourcesModule::class])
+class SearchDataModule {
 
     @Provides
-    fun searchDataSourcesRegistry(
-        factoriesRegistry: SearchDataSourceFactoriesRegistry
-    ): SearchDataSourcesFactory {
-        val factories: List<SearchDataSourceFactory> =
-            factoriesRegistry.dataSourceFactories.value.orEmpty()
-        return SearchDataSourcesFactory(factories)
+    fun designerNewsSearchDataSourceFactory(
+        repository: StoriesRepository,
+        registry: SearchDataSourceFactoriesRegistry
+    ): DesignerNewsSearchDataSourceFactory {
+        val factory = DesignerNewsSearchDataSourceFactory(repository)
+        registry.add(factory)
+        return factory
     }
 }
