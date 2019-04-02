@@ -19,8 +19,6 @@ package io.plaidapp.core.dagger
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.interfaces.SearchDataSourceFactoriesRegistry
-import io.plaidapp.core.interfaces.SearchDataSourceFactory
-import io.plaidapp.core.interfaces.SearchDataSourcesFactory
 
 @Module
 class DataSourcesModule {
@@ -28,14 +26,5 @@ class DataSourcesModule {
     @Provides
     fun searchDataSourceFactoriesRegistry(): SearchDataSourceFactoriesRegistry {
         return SearchDataSourceFactoriesRegistry()
-    }
-
-    @Provides
-    fun searchDataSourcesRegistry(
-        factoriesRegistry: SearchDataSourceFactoriesRegistry
-    ): SearchDataSourcesFactory {
-        val factories: List<SearchDataSourceFactory> =
-            factoriesRegistry.dataSourceFactories.value.orEmpty()
-        return SearchDataSourcesFactory(factories)
     }
 }

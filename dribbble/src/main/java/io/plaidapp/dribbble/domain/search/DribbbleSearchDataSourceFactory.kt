@@ -25,7 +25,7 @@ class DribbbleSearchDataSourceFactory(
     private val repository: ShotsRepository
 ) : SearchDataSourceFactory {
 
-    override fun buildDataSource(query: String): PlaidDataSource {
+    override fun create(query: String): PlaidDataSource {
         val sourceItem = DribbbleSourceItem(query)
         return DribbbleDataSource(
             sourceItem,
