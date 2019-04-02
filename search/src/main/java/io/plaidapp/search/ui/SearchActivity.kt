@@ -53,7 +53,7 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider
 import io.plaidapp.core.dagger.qualifier.IsPocketInstalled
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.feed.FeedAdapter
-import io.plaidapp.core.ui.getPlaidItemsForDisplayExpanded
+import io.plaidapp.core.ui.expandPopularItems
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener
 import io.plaidapp.core.ui.recyclerview.SlideInItemAnimator
 import io.plaidapp.core.util.Activities
@@ -119,8 +119,8 @@ class SearchActivity : AppCompatActivity() {
                     results.visibility = View.VISIBLE
                     fab.visibility = View.VISIBLE
                 }
-                val feedItems = feedAdapter.getItems()
-                val items = getPlaidItemsForDisplayExpanded(feedItems, searchUiModel.items, columns)
+                val items = searchUiModel.items
+                expandPopularItems(items, columns)
                 feedAdapter.setItems(items)
             } else {
                 TransitionManager.beginDelayedTransition(

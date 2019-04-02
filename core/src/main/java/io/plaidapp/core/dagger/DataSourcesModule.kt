@@ -21,13 +21,18 @@ import dagger.Provides
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.core.interfaces.SearchDataSourcesRegistry
 import io.plaidapp.core.interfaces.designernews.DesignerNewsSearchDataSourceFactory
+import io.plaidapp.core.interfaces.dribbble.DribbbleSearchDataSourceFactory
 
 @Module
 class DataSourcesModule {
 
     @Provides
-    fun searchDataSourcesRegistry(dnDataSourceFactory: DesignerNewsSearchDataSourceFactory): SearchDataSourcesRegistry {
-        val factories: List<SearchDataSourceFactory> = listOf(dnDataSourceFactory)
+    fun searchDataSourcesRegistry(
+        dnDataSourceFactory: DesignerNewsSearchDataSourceFactory,
+        dribbbleSourceFactory: DribbbleSearchDataSourceFactory
+    ): SearchDataSourcesRegistry {
+        val factories: List<SearchDataSourceFactory> =
+            listOf(dnDataSourceFactory, dribbbleSourceFactory)
         return SearchDataSourcesRegistry(factories)
     }
 }
