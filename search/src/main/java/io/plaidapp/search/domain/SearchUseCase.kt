@@ -20,15 +20,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.interfaces.SearchDataSourcesRegistry
+import io.plaidapp.core.interfaces.SearchDataSourcesFactory
 import io.plaidapp.core.ui.getPlaidItemsForDisplay
 
 class SearchUseCase(
-    dataSourcesRegistry: SearchDataSourcesRegistry,
+    dataSourcesFactory: SearchDataSourcesFactory,
     query: String
 ) {
 
-    private val dataSources = dataSourcesRegistry.buildSearchDataSources(query)
+    private val dataSources = dataSourcesFactory.buildSearchDataSources(query)
 
     private val _searchResult = MutableLiveData<List<PlaidItem>>()
     val searchResult: LiveData<List<PlaidItem>>

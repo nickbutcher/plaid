@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.interfaces.dribbble
+package io.plaidapp.designernews.domain.search
 
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.data.SourceItem
-import io.plaidapp.core.dribbble.data.ShotsRepository
+import io.plaidapp.core.designernews.data.stories.StoriesRepository
+import io.plaidapp.core.designernews.data.stories.model.toStory
 import io.plaidapp.core.interfaces.PlaidDataSource
 import io.plaidapp.core.util.exhaustive
 
-class DribbbleDataSource(
+class DesignerNewsDataSource(
     sourceItem: SourceItem,
-    private val repository: ShotsRepository
+    private val repository: StoriesRepository
 ) : PlaidDataSource(sourceItem) {
 
     private var page = 0
@@ -35,7 +36,8 @@ class DribbbleDataSource(
         (return when (result) {
             is Result.Success -> {
                 page++
-                Result.Success(result.data)
+                val stories = result.data.map { it.toStory() }
+                Result.Success(stories)
             }
             is Result.Error -> result
         }).exhaustive

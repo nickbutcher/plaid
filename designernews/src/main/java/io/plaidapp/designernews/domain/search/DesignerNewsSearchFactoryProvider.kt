@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.interfaces.designernews
+package io.plaidapp.designernews.domain.search
 
-import io.plaidapp.core.designernews.data.DesignerNewsSearchSource
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
-import io.plaidapp.core.interfaces.PlaidDataSource
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
+import io.plaidapp.core.interfaces.SearchFactoryProvider
+import io.plaidapp.designernews.dagger.inject
 import javax.inject.Inject
 
-class DesignerNewsSearchDataSourceFactory @Inject constructor(
-    private val repository: StoriesRepository
-) : SearchDataSourceFactory {
+class DesignerNewsSearchFactoryProvider : SearchFactoryProvider {
 
-    override fun buildDataSource(query: String): PlaidDataSource {
-        val sourceItem = DesignerNewsSearchSource(query)
-        return DesignerNewsDataSource(
-            sourceItem,
-            repository
-        )
+    init {
+        inject()
+    }
+
+    @Inject
+    lateinit var repository: StoriesRepository
+
+    override fun getFactory(): SearchDataSourceFactory {
+        return DesignerNewsSearchDataSourceFactory(repository)
     }
 }

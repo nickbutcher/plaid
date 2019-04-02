@@ -19,14 +19,14 @@ package io.plaidapp.search.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
-import io.plaidapp.core.interfaces.SearchDataSourcesRegistry
+import io.plaidapp.core.interfaces.SearchDataSourcesFactory
 import javax.inject.Inject
 
 /**
  * Factory to create [SearchViewModel]
  */
 class SearchViewModelFactory @Inject constructor(
-    private val dataSourcesRegistry: SearchDataSourcesRegistry,
+    private val dataSourcesFactory: SearchDataSourcesFactory,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModelProvider.Factory {
 
@@ -35,6 +35,6 @@ class SearchViewModelFactory @Inject constructor(
         if (modelClass != SearchViewModel::class.java) {
             throw IllegalArgumentException("Unknown ViewModel class")
         }
-        return SearchViewModel(dataSourcesRegistry, dispatcherProvider) as T
+        return SearchViewModel(dataSourcesFactory, dispatcherProvider) as T
     }
 }
