@@ -14,30 +14,21 @@
  * limitations under the License.
  */
 
-package io.plaidapp.designernews.domain.search
+package io.plaidapp.designernews
 
-import android.content.Context
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
-import io.plaidapp.core.interfaces.SearchFactoryProvider
 import io.plaidapp.designernews.dagger.DaggerDesignerNewsSearchComponent
-import javax.inject.Inject
+import io.plaidapp.registry.FactoryRegistrationService
 
-class DesignerNewsSearchFactoryProvider(context: Context) : SearchFactoryProvider {
-
-    @Inject
-    lateinit var _factory: DesignerNewsSearchDataSourceFactory
-
-    init {
-        DaggerDesignerNewsSearchComponent.builder()
-            .sharedPreferencesModule(
-                SharedPreferencesModule(context, LoginLocalDataSource.DESIGNER_NEWS_PREF)
-            )
-            .build()
-    }
+class DesignerNewsFactoryRegistrationService : FactoryRegistrationService() {
 
     override fun getFactory(): SearchDataSourceFactory {
-        return _factory
+        return DaggerDesignerNewsSearchComponent.builder()
+            .sharedPreferencesModule(
+                SharedPreferencesModule(this, LoginLocalDataSource.DESIGNER_NEWS_PREF)
+            ).build()
+            .factory()
     }
 }

@@ -20,38 +20,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import javax.inject.Inject
 
-private const val designerNewsSearchDataSourceFactoryProviderClassName =
-    "io.plaidapp.designernews.domain.search.DesignerNewsSearchFactoryProvider"
-
-// TODO add dribbble as well
-private val factoryClassNames =
-    listOf(designerNewsSearchDataSourceFactoryProviderClassName)
-
 class SearchDataSourceFactoriesRegistry @Inject constructor() {
 
     private val _dataSourceFactories =
-        MutableLiveData<List<SearchDataSourceFactory>>(getAlreadyAvailableDataSourceFactories())
+        MutableLiveData<List<SearchDataSourceFactory>>()
 
     val dataSourceFactories: LiveData<List<SearchDataSourceFactory>>
         get() = _dataSourceFactories
 
     fun add(dataSourceFactory: SearchDataSourceFactory) {
         val existingDataSources = _dataSourceFactories.value.orEmpty().toMutableList()
+        if (existingDataSources.contains(dataSourceFactory)) return
         existingDataSources.add(dataSourceFactory)
         _dataSourceFactories.postValue(existingDataSources)
     }
 
     fun remove(dataSourceFactory: SearchDataSourceFactory) {
         val existingDataSources = _dataSourceFactories.value.orEmpty().toMutableList()
+        if (existingDataSources.contains(dataSourceFactory)) return
         existingDataSources.remove(dataSourceFactory)
         _dataSourceFactories.postValue(existingDataSources)
-    }
-
-    private fun getAlreadyAvailableDataSourceFactories(): List<SearchDataSourceFactory> {
-        return factoryClassNames.map {
-            val clazz = Class.forName(it)
-            val instance = clazz.newInstance() as SearchFactoryProvider
-            instance.getFactory()
-        }
     }
 }

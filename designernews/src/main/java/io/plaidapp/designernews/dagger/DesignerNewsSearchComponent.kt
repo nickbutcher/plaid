@@ -17,8 +17,24 @@
 package io.plaidapp.designernews.dagger
 
 import dagger.Component
+import io.plaidapp.core.dagger.CoreDataModule
+import io.plaidapp.core.dagger.SharedPreferencesModule
+import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
+import io.plaidapp.core.dagger.scope.FeatureScope
+import io.plaidapp.designernews.domain.search.DesignerNewsSearchDataSourceFactory
 
 @Component(
-    modules = [SearchDataModule::class]
+    modules = [
+        CoreDataModule::class,
+        DataModule::class,
+        DesignerNewsDataModule::class,
+        SearchDataModule::class,
+        SharedPreferencesModule::class
+    ]
 )
-interface DesignerNewsSearchComponent
+@FeatureScope
+interface DesignerNewsSearchComponent {
+
+    @FeatureScope
+    fun factory(): DesignerNewsSearchDataSourceFactory
+}
