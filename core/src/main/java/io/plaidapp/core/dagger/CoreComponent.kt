@@ -19,6 +19,7 @@ package io.plaidapp.core.dagger
 import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Component
+import io.plaidapp.core.interfaces.SearchDataSourceFactoriesRegistry
 import okhttp3.OkHttpClient
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -40,4 +41,5 @@ interface CoreComponent {
     fun provideGson(): Gson
     fun provideGsonConverterFactory(): GsonConverterFactory
     fun provideCallAdapterFactory(): CoroutineCallAdapterFactory
+    fun registry(): SearchDataSourceFactoriesRegistry
 }

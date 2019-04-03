@@ -14,22 +14,9 @@
  * limitations under the License.
  */
 
-package io.plaidapp.designernews.dagger
+package io.plaidapp.designernews
 
-import dagger.Module
-import dagger.Provides
-import io.plaidapp.core.dagger.scope.FeatureScope
-import io.plaidapp.core.designernews.data.stories.StoriesRepository
-import io.plaidapp.designernews.domain.search.DesignerNewsSearchDataSourceFactory
+import io.plaidapp.registry.SearchBroadcastReceiver
 
-@Module
-class SearchDataModule {
-
-    @Provides
-    @FeatureScope
-    fun designerNewsSearchDataSourceFactory(
-        repository: StoriesRepository
-    ): DesignerNewsSearchDataSourceFactory {
-        return DesignerNewsSearchDataSourceFactory(repository)
-    }
-}
+class DesignerNewsSearchBroadcastReceiver :
+    SearchBroadcastReceiver(DesignerNewsFactoryRegistrationService::class.java)

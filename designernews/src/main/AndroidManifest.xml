@@ -74,6 +74,15 @@
         <service
             android:name="io.plaidapp.core.designernews.data.votes.UpvoteStoryService"
             android:exported="false" />
+
+        <!-- Enable decoupled registration of search sources. -->
+        <service android:name=".DesignerNewsFactoryRegistrationService" android:exported="false"/>
+
+        <receiver android:name=".DesignerNewsSearchBroadcastReceiver">
+            <intent-filter>
+                <action android:name="io.plaidapp.register.SEARCH_FACTORY" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
