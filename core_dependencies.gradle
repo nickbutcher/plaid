@@ -23,7 +23,7 @@ dependencies {
     implementation "androidx.palette:palette:${versions.androidx}"
     implementation "androidx.recyclerview:recyclerview:${versions.androidx}"
     implementation "androidx.dynamicanimation:dynamicanimation:${versions.androidx}"
-    implementation "android.arch.work:work-runtime-ktx:${versions.workmanager}"
+    implementation "androidx.work:work-runtime-ktx:${versions.workmanager}"
     implementation "com.android.support:customtabs:${versions.supportLibrary}"
     implementation "com.android.support:design:${versions.supportLibrary}"
     implementation "com.android.support:palette-v7:${versions.supportLibrary}"

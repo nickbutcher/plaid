@@ -17,6 +17,9 @@
 buildscript { scriptHandler ->
     apply from: 'repositories.gradle',
             to: scriptHandler
+    repositories {
+        google()
+    }
     ext.versions = [
             'compileSdk'         : 28,
             'minSdk'             : 23,
@@ -54,19 +57,18 @@ buildscript { scriptHandler ->
             'test_rules'         : '1.1.0-beta02',
             'test_runner'        : '1.1.0-beta02',
             'ui_automator'       : '2.2.0-beta02',
-            'viewPager2'         : '1.0.0-alpha02'
-            'workmanager'        : '1.0.0'
+            'viewPager2'         : '1.0.0-alpha02',
+            'workmanager'        : '2.0.1'
     ]
     ext.names = [
             'applicationId': 'io.plaidapp'
     ]
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0-rc02'
+        classpath 'com.android.tools.build:gradle:3.4.0-rc03'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         classpath "com.google.gms:google-services:${versions.googleServices}"
         classpath "io.fabric.tools:gradle:${versions.fabric}"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 
 }

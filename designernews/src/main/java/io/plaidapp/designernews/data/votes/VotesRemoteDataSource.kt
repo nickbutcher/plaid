@@ -16,15 +16,12 @@
 
 package io.plaidapp.designernews.data.votes
 
-import android.provider.SyncStateContract
 import androidx.work.*
-import androidx.work.impl.model.WorkTypeConverters.StateIds.SUCCEEDED
 import io.plaidapp.core.data.Result
 import io.plaidapp.designernews.data.votes.model.UpvoteCommentRequest
-import io.plaidapp.designernews.data.votes.model.UpvoteStoryRequest
 import io.plaidapp.core.util.safeApiCall
 import io.plaidapp.designernews.data.api.DesignerNewsService
-import io.plaidapp.designernews.worker.UpvoteStory
+import io.plaidapp.designernews.worker.UpvoteStoryWorker
 import io.plaidapp.designernews.worker.KEY_STORY_ID
 import io.plaidapp.designernews.worker.KEY_USER_ID
 import java.io.IOException
@@ -33,7 +30,8 @@ import javax.inject.Inject
 /**
  * Class that works with the Designer News API to up/down vote comments and stories
  */
-class VotesRemoteDataSource @Inject constructor(private val service: DesignerNewsService) {
+class VotesRemoteDataSource @Inject constructor(private val service: DesignerNewsService,
+                                                private val workManager: WorkManager) {
 
     suspend fun upvoteStory(storyId: Long, userId: Long) = safeApiCall(
         call = { requestUpvoteStory(storyId, userId) },
@@ -41,18 +39,6 @@ class VotesRemoteDataSource @Inject constructor(private val service: DesignerNew
     )
 
     private suspend fun requestUpvoteStory(storyId: Long, userId: Long): Result<Unit> {
-//        val request = UpvoteStoryRequest(storyId, userId)
-//        val response = service.upvoteStoryV2(request).await()
-//        return if (response.isSuccessful) {
-//            Result.Success(Unit)
-//        } else {
-//            Result.Error(
-//                IOException(
-//                    "Unable to upvote story ${response.code()} ${response.errorBody()?.string()}"
-//                )
-//            )
-//        }
-
         val requestData = workDataOf(
                 KEY_STORY_ID to storyId,
                 KEY_USER_ID to userId)
@@ -61,12 +47,11 @@ class VotesRemoteDataSource @Inject constructor(private val service: DesignerNew
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
 
-        val request = OneTimeWorkRequestBuilder<UpvoteStory>()
+        val request = OneTimeWorkRequestBuilder<UpvoteStoryWorker>()
                 .setConstraints(constraints)
                 .setInputData(requestData)
                 .build()
 
-        val workManager =WorkManager.getInstance()
         workManager.enqueue(request).result.get()
 
         val workInfo = workManager.getWorkInfoById(request.id).get()

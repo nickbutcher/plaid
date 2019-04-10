@@ -20,39 +20,33 @@ import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import io.plaidapp.core.designernews.data.votes.model.UpvoteStoryRequest
+import io.plaidapp.designernews.data.api.DesignerNewsService
+import io.plaidapp.designernews.data.votes.model.UpvoteStoryRequest
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 
-class UpvoteStory(appContext: Context, workerParams: WorkerParameters)
+class UpvoteStoryWorker(appContext: Context, workerParams: WorkerParameters, private val service: DesignerNewsService)
     : CoroutineWorker(appContext, workerParams) {
 
-    override val coroutineContext = Dispatchers.IO
+    override val coroutineContext = Dispatchers.Unconfined
 
-    override suspend fun doWork(): Result = coroutineScope {
+    override suspend fun doWork(): Result {
+
         // Upvote the comment
-        try {
+        return try {
 
             val storyId = inputData.getLong(KEY_STORY_ID, 0)
             val userId = inputData.getLong(KEY_USER_ID, 0)
 
 
             val request = UpvoteStoryRequest(storyId, userId)
-//        val response = service.upvoteStoryV2(request).await()
-//        return if (response.isSuccessful) {
-//            Result.Success(Unit)
-//        } else {
-//            Result.Error(
-//                IOException(
-//                    "Unable to upvote story ${response.code()} ${response.errorBody()?.string()}"
-//                )
-//            )
-//        }
-
-            // Indicate whether the task finished successfully with the Result
-            Log.v(TAG_UPVOTE, "Success")
-            Result.success()
-
+            val response = service.upvoteStoryV2(request).await()
+            if (response.isSuccessful) {
+                // Indicate whether the task finished successfully with the Result
+                Log.v(TAG_UPVOTE, "Success")
+                Result.success()
+            } else {
+                Result.failure()
+            }
         } catch (e: Exception) {
 
             Result.failure()
