@@ -43,6 +43,7 @@ interface StoryComponent : BaseActivityComponent<StoryActivity> {
     @Component.Builder
     interface Builder {
         fun build(): StoryComponent
+        fun dataModule(dataModule: DataModule): Builder
         fun coreComponent(coreComponent: CoreComponent): Builder
         fun designerNewsModule(module: StoryModule): Builder
         fun markdownModule(module: MarkdownModule): Builder

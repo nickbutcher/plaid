@@ -27,7 +27,6 @@ import io.plaidapp.core.dagger.DesignerNewsApi
 import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.data.api.DeEnvelopingConverter
 import io.plaidapp.core.designernews.data.api.ClientAuthInterceptor
-import io.plaidapp.core.designernews.data.api.DesignerNewsSearchConverter
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
@@ -81,7 +80,7 @@ class DesignerNewsDataModule {
             .baseUrl(DesignerNewsService.ENDPOINT)
             .callFactory { client.get().newCall(it) }
             .addConverterFactory(DeEnvelopingConverter(gson))
-            .addConverterFactory(DesignerNewsSearchConverter.Factory())
+//            .addConverterFactory(DesignerNewsSearchConverter.Factory())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()

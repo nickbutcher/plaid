@@ -16,18 +16,29 @@
 
 package io.plaidapp.designernews.data.votes
 
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import io.plaidapp.core.data.Result
 import io.plaidapp.designernews.data.votes.model.UpvoteCommentRequest
-import io.plaidapp.designernews.data.votes.model.UpvoteStoryRequest
 import io.plaidapp.core.util.safeApiCall
 import io.plaidapp.designernews.data.api.DesignerNewsService
+import io.plaidapp.designernews.worker.UpvoteStoryWorker
+import io.plaidapp.designernews.worker.KEY_STORY_ID
+import io.plaidapp.designernews.worker.KEY_USER_ID
 import java.io.IOException
 import javax.inject.Inject
 
 /**
  * Class that works with the Designer News API to up/down vote comments and stories
  */
-class VotesRemoteDataSource @Inject constructor(private val service: DesignerNewsService) {
+class VotesRemoteDataSource @Inject constructor(
+    private val service: DesignerNewsService,
+    private val workManager: WorkManager
+) {
 
     suspend fun upvoteStory(storyId: Long, userId: Long) = safeApiCall(
         call = { requestUpvoteStory(storyId, userId) },
@@ -35,14 +46,28 @@ class VotesRemoteDataSource @Inject constructor(private val service: DesignerNew
     )
 
     private suspend fun requestUpvoteStory(storyId: Long, userId: Long): Result<Unit> {
-        val request = UpvoteStoryRequest(storyId, userId)
-        val response = service.upvoteStoryV2(request).await()
-        return if (response.isSuccessful) {
+        val requestData = workDataOf(
+                KEY_STORY_ID to storyId,
+                KEY_USER_ID to userId)
+
+        val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+
+        val request = OneTimeWorkRequestBuilder<UpvoteStoryWorker>()
+                .setConstraints(constraints)
+                .setInputData(requestData)
+                .build()
+
+        workManager.enqueue(request).result.get()
+
+        val workInfo = workManager.getWorkInfoById(request.id).get()
+        return if (workInfo.state == WorkInfo.State.SUCCEEDED) {
             Result.Success(Unit)
         } else {
             Result.Error(
                 IOException(
-                    "Unable to upvote story ${response.code()} ${response.errorBody()?.string()}"
+                    "Unable to upvote story ${workInfo.state}"
                 )
             )
         }
