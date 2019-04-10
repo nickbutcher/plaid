@@ -16,6 +16,7 @@
 
 package io.plaidapp.designernews.data.votes
 
+import androidx.work.WorkManager
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.mock
@@ -41,7 +42,8 @@ class VotesRemoteDataSourceTest {
     private val commentId = 435L
 
     private val service: DesignerNewsService = mock()
-    private val dataSource = VotesRemoteDataSource(service)
+    private val workManager: WorkManager = mock()
+    private val dataSource = VotesRemoteDataSource(service, workManager)
 
     @Test
     fun upvoteStory_whenRequestSuccessful() = runBlocking {

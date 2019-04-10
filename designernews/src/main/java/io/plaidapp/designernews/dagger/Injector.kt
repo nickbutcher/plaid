@@ -33,34 +33,34 @@ import io.plaidapp.ui.coreComponent
 fun inject(storyId: Long, activity: StoryActivity) {
 
     val bypassOptions = Bypass.Options()
-        .setBlockQuoteLineColor(activity.getColor(R.color.thread_depth))
-        .setBlockQuoteLineWidth(2) // dps
-        .setBlockQuoteLineIndent(8) // dps
-        .setPreImageLinebreakHeight(4) // dps
-        .setBlockQuoteIndentSize(TypedValue.COMPLEX_UNIT_DIP, 2f)
-        .setBlockQuoteTextColor(
-            ColorUtils.getThemeColor(
-                activity,
-                android.R.attr.textColorSecondary
+            .setBlockQuoteLineColor(
+                    ContextCompat.getColor(activity, io.plaidapp.R.color.designer_news_quote_line)
             )
-        )
+            .setBlockQuoteLineWidth(2) // dps
+            .setBlockQuoteLineIndent(8) // dps
+            .setPreImageLinebreakHeight(4) // dps
+            .setBlockQuoteIndentSize(TypedValue.COMPLEX_UNIT_DIP, 2f)
+            .setBlockQuoteTextColor(
+                    ContextCompat.getColor(activity, io.plaidapp.R.color.designer_news_quote)
+            )
 
     DaggerStoryComponent.builder()
-        .coreComponent(activity.coreComponent())
-        .designerNewsModule(StoryModule(storyId, activity))
-        .markdownModule(MarkdownModule(activity.resources.displayMetrics, bypassOptions))
-        .sharedPreferencesModule(
-            DesignerNewsPreferencesModule(activity)
-        )
-        .build()
-        .inject(activity)
+            .dataModule(DataModule(activity.applicationContext))
+            .coreComponent(activity.coreComponent())
+            .designerNewsModule(StoryModule(storyId, activity))
+            .markdownModule(MarkdownModule(activity.resources.displayMetrics, bypassOptions))
+            .sharedPreferencesModule(
+                    DesignerNewsPreferencesModule(activity)
+            )
+            .build()
+            .inject(activity)
 }
 
 fun inject(activity: LoginActivity) {
 
     DaggerLoginComponent.builder()
-        .coreComponent(activity.coreComponent())
-        .sharedPreferencesModule(DesignerNewsPreferencesModule(activity))
-        .build()
-        .inject(activity)
+            .coreComponent(activity.coreComponent())
+            .sharedPreferencesModule(DesignerNewsPreferencesModule(activity))
+            .build()
+            .inject(activity)
 }

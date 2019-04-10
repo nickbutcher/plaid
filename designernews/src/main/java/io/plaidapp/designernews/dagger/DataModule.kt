@@ -17,6 +17,8 @@
 package io.plaidapp.designernews.dagger
 
 import android.content.Context
+import androidx.work.Configuration
+import androidx.work.WorkManager
 import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Lazy
@@ -27,6 +29,7 @@ import io.plaidapp.core.data.api.DeEnvelopingConverter
 import io.plaidapp.designernews.data.api.DesignerNewsService
 import io.plaidapp.designernews.data.database.DesignerNewsDatabase
 import io.plaidapp.designernews.data.database.LoggedInUserDao
+import io.plaidapp.designernews.worker.UpvoteStoryWorkerFactory
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -35,7 +38,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Dagger module to provide data functionality for DesignerNews.
  */
 @Module
-class DataModule {
+class DataModule(val context: Context) {
 
     @Provides
     @FeatureScope
@@ -57,5 +60,22 @@ class DataModule {
     @FeatureScope
     fun provideLoggedInUserDao(context: Context): LoggedInUserDao {
         return DesignerNewsDatabase.getInstance(context).loggedInUserDao()
+    }
+
+    @Provides
+    @FeatureScope
+    fun provideWorkManager(service: DesignerNewsService): WorkManager {
+        // provide custom configuration
+        val config = Configuration.Builder()
+                .setMinimumLoggingLevel(android.util.Log.INFO)
+                .setWorkerFactory(UpvoteStoryWorkerFactory(service))
+                .build()
+
+        // initialize WorkManager
+        WorkManager.initialize(context, config)
+
+        // TODO update to WorkManager v2.1.0 new getInstance(context)
+        // to avoid possible double initialization (and the failsafe exception)
+        return WorkManager.getInstance()
     }
 }
