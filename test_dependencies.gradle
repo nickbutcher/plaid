@@ -44,6 +44,7 @@ dependencies {
     androidTestImplementation "androidx.test:rules:${versions.test_rules}"
     androidTestImplementation "androidx.test:runner:${versions.test_runner}"
     androidTestImplementation "androidx.test.uiautomator:uiautomator:${versions.ui_automator}"
+    androidTestImplementation "androidx.work:work-testing:${versions.workmanager}"
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:${versions.mockito_kotlin}"
     androidTestImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
     androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
