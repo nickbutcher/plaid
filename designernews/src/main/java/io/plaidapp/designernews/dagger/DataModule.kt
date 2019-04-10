@@ -62,7 +62,6 @@ class DataModule(val context: Context) {
         return DesignerNewsDatabase.getInstance(context).loggedInUserDao()
     }
 
-
     @Provides
     @FeatureScope
     fun provideWorkManager(service: DesignerNewsService): WorkManager {
@@ -72,7 +71,7 @@ class DataModule(val context: Context) {
                 .setWorkerFactory(UpvoteStoryWorkerFactory(service))
                 .build()
 
-        //initialize WorkManager
+        // initialize WorkManager
         WorkManager.initialize(context, config)
 
         // TODO update to WorkManager v2.1.0 new getInstance(context)

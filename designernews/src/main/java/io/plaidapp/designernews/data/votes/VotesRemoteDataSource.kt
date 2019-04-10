@@ -16,7 +16,12 @@
 
 package io.plaidapp.designernews.data.votes
 
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import io.plaidapp.core.data.Result
 import io.plaidapp.designernews.data.votes.model.UpvoteCommentRequest
 import io.plaidapp.core.util.safeApiCall
@@ -30,8 +35,10 @@ import javax.inject.Inject
 /**
  * Class that works with the Designer News API to up/down vote comments and stories
  */
-class VotesRemoteDataSource @Inject constructor(private val service: DesignerNewsService,
-                                                private val workManager: WorkManager) {
+class VotesRemoteDataSource @Inject constructor(
+    private val service: DesignerNewsService,
+    private val workManager: WorkManager
+) {
 
     suspend fun upvoteStory(storyId: Long, userId: Long) = safeApiCall(
         call = { requestUpvoteStory(storyId, userId) },

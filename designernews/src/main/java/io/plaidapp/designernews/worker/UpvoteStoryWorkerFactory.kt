@@ -24,9 +24,11 @@ import io.plaidapp.designernews.data.api.DesignerNewsService
 
 class UpvoteStoryWorkerFactory(private val service: DesignerNewsService) : WorkerFactory() {
 
-    override fun createWorker(appContext: Context,
-                              workerClassName: String,
-                              workerParameters: WorkerParameters): ListenableWorker {
+    override fun createWorker(
+        appContext: Context,
+        workerClassName: String,
+        workerParameters: WorkerParameters
+    ): ListenableWorker {
 
         if (workerClassName.equals("io.plaidapp.designernews.worker.UpvoteStoryWorker")) {
             return UpvoteStoryWorker(appContext, workerParameters, service)

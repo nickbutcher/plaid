@@ -20,9 +20,9 @@ import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import kotlinx.coroutines.Dispatchers
 import io.plaidapp.designernews.data.api.DesignerNewsService
 import io.plaidapp.designernews.data.votes.model.UpvoteStoryRequest
-import kotlinx.coroutines.Dispatchers
 
 class UpvoteStoryWorker(appContext: Context, workerParams: WorkerParameters, private val service: DesignerNewsService)
     : CoroutineWorker(appContext, workerParams) {
@@ -36,7 +36,6 @@ class UpvoteStoryWorker(appContext: Context, workerParams: WorkerParameters, pri
 
             val storyId = inputData.getLong(KEY_STORY_ID, 0)
             val userId = inputData.getLong(KEY_USER_ID, 0)
-
 
             val request = UpvoteStoryRequest(storyId, userId)
             val response = service.upvoteStoryV2(request).await()
