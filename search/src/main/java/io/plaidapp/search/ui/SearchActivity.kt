@@ -18,7 +18,6 @@ package io.plaidapp.search.ui
 
 import android.app.SearchManager
 import android.app.SharedElementCallback
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Point
@@ -91,7 +90,6 @@ class SearchActivity : AppCompatActivity() {
     private var focusQuery = true
 
     private lateinit var feedAdapter: FeedAdapter
-    private lateinit var designerNewsSearchBroadcastReceiver: BroadcastReceiver
 
     @Inject
     lateinit var viewModel: SearchViewModel
@@ -110,7 +108,9 @@ class SearchActivity : AppCompatActivity() {
 
         feedAdapter = FeedAdapter(this, columns, pocketInstalled)
 
-        sendBroadcast(Intent("io.plaidapp.register.SEARCH_FACTORY"))
+        val intent = Intent("io.plaidapp.register.SEARCH_FACTORY")
+            .setPackage("io.plaidapp")
+        sendBroadcast(intent)
 
         viewModel.searchResults.observe(this, Observer { searchUiModel ->
             if (searchUiModel.items.isNotEmpty()) {

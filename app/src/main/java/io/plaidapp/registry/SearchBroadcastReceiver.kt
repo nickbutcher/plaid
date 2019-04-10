@@ -19,26 +19,21 @@ package io.plaidapp.registry
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import io.plaidapp.core.interfaces.SearchDataSourceFactory
+import io.plaidapp.ui.PlaidApplication
 
 /**
  * Extend this receiver to enable hooking into Plaid's #SearchDataSourceFactoriesRegistry.
  */
-abstract class SearchBroadcastReceiver(
-    private val target: Class<out FactoryRegistrationService>
-) : BroadcastReceiver() {
+abstract class SearchBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         // TODO handle intent
-        if (context != null) {
-            val startRegistrationService = Intent(context, target)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(startRegistrationService)
-            } else {
-                context.startService(startRegistrationService)
-            }
-        }
+        if (context == null) return
+        PlaidApplication.coreComponent(context).registry().add(getFactory(context))
     }
+
+    abstract fun getFactory(context: Context): SearchDataSourceFactory
 
     companion object {
         const val ACTION = "io.plaidapp.register.SEARCH_FACTORY"
