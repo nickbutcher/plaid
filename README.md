@@ -2,11 +2,11 @@
 
 Rewriting Plaid using [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/), in Kotlin. 
 
-🛑 During the initial development stage, we're not accepting external PRs that touch on the app's architecture. 🛑
+👀 "[Up for grabs](https://github.com/nickbutcher/plaid/issues?q=is%3Aissue+is%3Aopen+label%3A%22Up+for+grabs+%F0%9F%A4%9A%22)" issues – We're happy to [get your contributions](https://github.com/nickbutcher/plaid/blob/master/CONTRIBUTING.md#contributing-a-patch) on those!
 
-✋ From time to time we'll open issues as "[Up for grabs](https://github.com/nickbutcher/plaid/issues?q=is%3Aissue+is%3Aopen+label%3A%22Up+for+grabs+%F0%9F%A4%9A%22)". We'll be happy to [get your contributions](https://github.com/nickbutcher/plaid/blob/master/CONTRIBUTING.md#contributing-a-patch) on those!  
+👍 Comments and new issues created are welcomed.
 
-👍 Comments and new issues created are welcomed. 
+🛑 We're currently not accepting external PRs that touch on the app's architecture.
 
 [![CircleCI](https://circleci.com/gh/nickbutcher/plaid/tree/master.svg?style=shield)](https://circleci.com/gh/nickbutcher/plaid/tree/master)
 
