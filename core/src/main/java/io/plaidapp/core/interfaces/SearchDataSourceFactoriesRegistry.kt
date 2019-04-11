@@ -16,29 +16,22 @@
 
 package io.plaidapp.core.interfaces
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import javax.inject.Inject
 
 class SearchDataSourceFactoriesRegistry @Inject constructor() {
 
-    private val _dataSourceFactories =
-        MutableLiveData<List<SearchDataSourceFactory>>()
+    private val _dataSourceFactories = mutableListOf<SearchDataSourceFactory>()
 
-    val dataSourceFactories: LiveData<List<SearchDataSourceFactory>>
+    val dataSourceFactories: List<SearchDataSourceFactory>
         get() = _dataSourceFactories
 
     fun add(dataSourceFactory: SearchDataSourceFactory) {
-        val existingDataSources = _dataSourceFactories.value.orEmpty().toMutableList()
-        if (existingDataSources.contains(dataSourceFactory)) return
-        existingDataSources.add(dataSourceFactory)
-        _dataSourceFactories.postValue(existingDataSources)
+        if (_dataSourceFactories.contains(dataSourceFactory)) return
+        _dataSourceFactories.add(dataSourceFactory)
     }
 
     fun remove(dataSourceFactory: SearchDataSourceFactory) {
-        val existingDataSources = _dataSourceFactories.value.orEmpty().toMutableList()
-        if (existingDataSources.contains(dataSourceFactory)) return
-        existingDataSources.remove(dataSourceFactory)
-        _dataSourceFactories.postValue(existingDataSources)
+        if (_dataSourceFactories.contains(dataSourceFactory)) return
+        _dataSourceFactories.remove(dataSourceFactory)
     }
 }
