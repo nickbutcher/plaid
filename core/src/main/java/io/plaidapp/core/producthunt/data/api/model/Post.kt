@@ -16,14 +16,11 @@
 
 package io.plaidapp.core.producthunt.data.api.model
 
-import android.os.Parcelable
 import io.plaidapp.core.data.PlaidItem
-import kotlinx.android.parcel.Parcelize
 
 /**
  * Models a post on Product Hunt.
  */
-@Parcelize
 class Post(
     override val id: Long,
     override val title: String,
@@ -33,4 +30,4 @@ class Post(
     val redirectUrl: String,
     val commentsCount: Int,
     val votesCount: Int
-) : PlaidItem(id, title, url), Parcelable
+) : PlaidItem(id, title, url)

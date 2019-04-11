@@ -37,7 +37,7 @@ class SearchViewModel(
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel() {
 
-    private val factories = sourcesRegistry.dataSourceFactories.value.orEmpty()
+    private val factories = sourcesRegistry.dataSourceFactories
 
     private var searchUseCase: SearchUseCase? = null
 
