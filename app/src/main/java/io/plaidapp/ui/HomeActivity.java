@@ -73,7 +73,6 @@ import io.plaidapp.core.feed.FeedAdapter;
 import io.plaidapp.core.feed.FeedProgressUiModel;
 import io.plaidapp.core.ui.ConnectivityChecker;
 import io.plaidapp.core.ui.HomeGridItemAnimator;
-import io.plaidapp.core.ui.Notifications;
 import io.plaidapp.core.ui.PlaidItemsList;
 import io.plaidapp.core.ui.filter.FilterAdapter;
 import io.plaidapp.core.ui.filter.FilterAnimator;
@@ -136,7 +135,6 @@ public class HomeActivity extends FragmentActivity {
         bindResources();
 
         inject(this);
-        Notifications.registerChannel(this);
 
         adapter = new FeedAdapter(this, columns, pocketInstalled);
 
