@@ -17,16 +17,21 @@
 package io.plaidapp.search.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.nhaarman.mockitokotlin2.capture
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.DataLoadingSubject
-import io.plaidapp.core.feed.FeedProgressUiModel
-import io.plaidapp.search.domain.SearchDataManager
+import io.plaidapp.core.data.PlaidItem
+import io.plaidapp.core.data.Result
+import io.plaidapp.core.dribbble.data.DribbbleSourceItem
+import io.plaidapp.core.interfaces.PlaidDataSource
+import io.plaidapp.core.interfaces.SearchDataSourceFactoriesRegistry
+import io.plaidapp.core.interfaces.SearchDataSourceFactory
+import io.plaidapp.search.shots
+import io.plaidapp.search.testShot1
 import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -43,8 +48,8 @@ class SearchViewModelTest {
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val dataManager: SearchDataManager = mock()
-    private val viewModel = SearchViewModel(dataManager, provideFakeCoroutinesDispatcherProvider())
+    private val factory = FakeSearchDataSourceFactory()
+    private val registry: SearchDataSourceFactoriesRegistry = mock()
 
     @Captor
     private lateinit var dataLoadingCallback: ArgumentCaptor<DataLoadingSubject.DataLoadingCallbacks>
@@ -52,61 +57,60 @@ class SearchViewModelTest {
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
+        whenever(registry.dataSourceFactories).thenReturn(listOf(factory))
     }
 
     @Test
     fun searchFor_searchesInDataManager() = runBlocking {
         // Given a query
         val query = "Plaid"
+        // And an expected success result
+        val result = Result.Success(shots)
+        factory.dataSource.result = result
+        val viewModel = SearchViewModel(registry, provideFakeCoroutinesDispatcherProvider())
 
         // When searching for the query
         viewModel.searchFor(query)
 
-        // Then search is called in data manager
-        verify(dataManager).searchFor(query)
+        // Then search results emits with the data that was passed initially
+        val results = LiveDataTestUtil.getValue(viewModel.searchResults)
+        assertEquals(results!!.items, result.data)
     }
 
     @Test
     fun loadMore_loadsInDataManager() = runBlocking {
+        // Given a query
+        val query = "Plaid"
+        val viewModel = SearchViewModel(registry, provideFakeCoroutinesDispatcherProvider())
+        // And a search for the query
+        viewModel.searchFor(query)
+        // Given a result
+        val moreResult = Result.Success(listOf(testShot1))
+        factory.dataSource.result = moreResult
+
         // When loading more
         viewModel.loadMore()
 
-        // Then load more is called in data manager
-        verify(dataManager).loadMore()
+        // Then search results emits with the data that was passed
+        val results = LiveDataTestUtil.getValue(viewModel.searchResults)
+        assertEquals(results!!.items, moreResult.data)
     }
+}
 
-    @Test
-    fun clearResults_clearsInDataManager() {
-        // When clearing results
-        viewModel.clearResults()
+val dribbbleSource = DribbbleSourceItem("dribbble", true)
 
-        // Then clear results is called in data manager
-        verify(dataManager).clear()
+class FakeSearchDataSourceFactory : SearchDataSourceFactory {
+    var dataSource = FakeDataSource()
+    override fun create(query: String): PlaidDataSource {
+        return dataSource
     }
+}
 
-    @Test
-    fun dataLoading() {
-        // Given a view model
-        verify(dataManager).registerCallback(capture(dataLoadingCallback))
+class FakeDataSource : PlaidDataSource(dribbbleSource) {
 
-        // When data started loading
-        dataLoadingCallback.value.dataStartedLoading()
+    var result = Result.Success(emptyList<PlaidItem>())
 
-        // Then the feedProgress emits true
-        val progress = LiveDataTestUtil.getValue(viewModel.searchProgress)
-        Assert.assertEquals(FeedProgressUiModel(true), progress)
-    }
-
-    @Test
-    fun dataFinishedLoading() {
-        // Given a view model
-        verify(dataManager).registerCallback(capture(dataLoadingCallback))
-
-        // When data finished loading
-        dataLoadingCallback.value.dataFinishedLoading()
-
-        // Then the feedProgress emits false
-        val progress = LiveDataTestUtil.getValue(viewModel.searchProgress)
-        Assert.assertEquals(FeedProgressUiModel(false), progress)
+    override suspend fun loadMore(): Result<List<PlaidItem>> {
+        return result
     }
 }
