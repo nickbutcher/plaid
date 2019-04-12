@@ -24,13 +24,10 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.R
-import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.dagger.qualifier.IsPocketInstalled
-import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.pocket.PocketUtils
-import io.plaidapp.search.domain.SearchDataManager
 import io.plaidapp.search.ui.SearchActivity
 import io.plaidapp.search.ui.SearchViewModel
 import io.plaidapp.search.ui.SearchViewModelFactory
@@ -38,8 +35,7 @@ import io.plaidapp.search.ui.SearchViewModelFactory
 @Module(
     includes = [
         DribbbleDataModule::class,
-        DesignerNewsDataModule::class,
-        SharedPreferencesModule::class
+        DesignerNewsDataModule::class
     ]
 )
 abstract class SearchModule {
@@ -52,9 +48,6 @@ abstract class SearchModule {
 
     @Binds
     abstract fun context(activity: Activity): Context
-
-    @Binds
-    abstract fun dataLoadingSubject(searchDataManager: SearchDataManager): DataLoadingSubject
 
     @Module
     companion object {
