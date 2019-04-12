@@ -17,11 +17,10 @@
 package io.plaidapp.designernews.domain.search
 
 import android.content.Context
-import io.plaidapp.core.dagger.SharedPreferencesModule
-import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.core.interfaces.SearchFactoryProvider
 import io.plaidapp.designernews.dagger.DaggerDesignerNewsSearchComponent
+import io.plaidapp.designernews.dagger.DesignerNewsPreferencesModule
 import javax.inject.Inject
 
 class DesignerNewsSearchFactoryProvider(context: Context) : SearchFactoryProvider {
@@ -31,8 +30,8 @@ class DesignerNewsSearchFactoryProvider(context: Context) : SearchFactoryProvide
 
     init {
         DaggerDesignerNewsSearchComponent.builder()
-            .sharedPreferencesModule(
-                SharedPreferencesModule(context, LoginLocalDataSource.DESIGNER_NEWS_PREF)
+            .designerNewsPreferencesModule(
+                DesignerNewsPreferencesModule(context)
             )
             .build()
     }

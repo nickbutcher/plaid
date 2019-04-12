@@ -19,7 +19,6 @@ package io.plaidapp.search.ui
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import io.plaidapp.core.data.DataLoadingSubject
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.DribbbleSourceItem
@@ -35,8 +34,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
 import org.mockito.MockitoAnnotations
 
 /**
@@ -50,9 +47,6 @@ class SearchViewModelTest {
 
     private val factory = FakeSearchDataSourceFactory()
     private val registry: SearchDataSourceFactoriesRegistry = mock()
-
-    @Captor
-    private lateinit var dataLoadingCallback: ArgumentCaptor<DataLoadingSubject.DataLoadingCallbacks>
 
     @Before
     fun setup() {
