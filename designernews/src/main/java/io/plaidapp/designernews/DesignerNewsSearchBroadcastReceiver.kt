@@ -17,17 +17,16 @@
 package io.plaidapp.designernews
 
 import android.content.Context
-import io.plaidapp.core.dagger.SharedPreferencesModule
-import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.designernews.dagger.DaggerDesignerNewsSearchComponent
+import io.plaidapp.designernews.dagger.DesignerNewsPreferencesModule
 import io.plaidapp.registry.SearchBroadcastReceiver
 
 class DesignerNewsSearchBroadcastReceiver : SearchBroadcastReceiver() {
 
     override fun getFactory(context: Context) =
         DaggerDesignerNewsSearchComponent.builder()
-            .sharedPreferencesModule(
-                SharedPreferencesModule(context, LoginLocalDataSource.DESIGNER_NEWS_PREF)
+            .designerNewsPreferencesModule(
+                DesignerNewsPreferencesModule(context)
             ).build()
             .factory()
 }
