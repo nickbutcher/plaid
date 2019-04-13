@@ -25,7 +25,7 @@ class SearchDataSourceFactoriesRegistry @Inject constructor(
     private val _dataSourceFactories = mutableListOf<SearchDataSourceFactory>()
 
     init {
-        defaultFactories.get()?.forEach { add(it) }
+        defaultFactories.get()?.apply { _dataSourceFactories.addAll(this) }
     }
 
     val dataSourceFactories: List<SearchDataSourceFactory>

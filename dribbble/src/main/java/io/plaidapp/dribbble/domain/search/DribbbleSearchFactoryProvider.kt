@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.interfaces
+package io.plaidapp.dribbble.domain.search
 
 import android.content.Context
+import io.plaidapp.core.interfaces.SearchDataSourceFactory
+import io.plaidapp.core.interfaces.SearchFactoryProvider
+import io.plaidapp.dribbble.dagger.DaggerDribbbleSearchComponent
+import io.plaidapp.ui.PlaidApplication.Companion.coreComponent
 
-interface SearchFactoryProvider {
+object DribbbleSearchFactoryProvider : SearchFactoryProvider {
 
-    fun getFactory(context: Context): SearchDataSourceFactory
+    override fun getFactory(context: Context): SearchDataSourceFactory {
+        return DaggerDribbbleSearchComponent.builder()
+            .coreComponent(coreComponent(context))
+            .build().factory()
+    }
 }
