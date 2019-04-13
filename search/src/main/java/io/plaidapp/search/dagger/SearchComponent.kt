@@ -21,6 +21,7 @@ import dagger.Component
 import io.plaidapp.core.dagger.BaseActivityComponent
 import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.scope.FeatureScope
+import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.search.ui.SearchActivity
 
 /**
@@ -29,6 +30,8 @@ import io.plaidapp.search.ui.SearchActivity
 @Component(modules = [SearchModule::class], dependencies = [CoreComponent::class])
 @FeatureScope
 interface SearchComponent : BaseActivityComponent<SearchActivity> {
+
+    fun factory(): SearchDataSourceFactory?
 
     @Component.Builder
     interface Builder {
