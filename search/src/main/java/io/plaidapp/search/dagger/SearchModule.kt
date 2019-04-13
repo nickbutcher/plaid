@@ -28,6 +28,8 @@ import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.dagger.qualifier.IsPocketInstalled
 import io.plaidapp.core.data.pocket.PocketUtils
+import io.plaidapp.core.interfaces.SearchDataSourceFactory
+import io.plaidapp.core.interfaces.SearchFactoryProvider
 import io.plaidapp.search.ui.SearchActivity
 import io.plaidapp.search.ui.SearchViewModel
 import io.plaidapp.search.ui.SearchViewModelFactory
@@ -60,6 +62,19 @@ abstract class SearchModule {
         @JvmStatic
         @Provides
         fun isPocketInstalled(activity: Activity): Boolean = PocketUtils.isPocketInstalled(activity)
+
+        @JvmStatic
+        @Provides
+        fun factory(activity: Activity): SearchDataSourceFactory? {
+            try {
+                val provider = Class
+                    .forName("io.plaidapp.designernews.domain.search.DesignerNewsSearchFactoryProvider")
+                    .kotlin.objectInstance as SearchFactoryProvider
+                return provider.getFactory(activity.applicationContext)
+            } catch (e: ClassNotFoundException) {
+                return null
+            }
+        }
 
         @JvmStatic
         @Provides

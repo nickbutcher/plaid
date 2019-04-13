@@ -21,22 +21,14 @@ import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.core.interfaces.SearchFactoryProvider
 import io.plaidapp.designernews.dagger.DaggerDesignerNewsSearchComponent
 import io.plaidapp.designernews.dagger.DesignerNewsPreferencesModule
-import javax.inject.Inject
 
-class DesignerNewsSearchFactoryProvider(context: Context) : SearchFactoryProvider {
+object DesignerNewsSearchFactoryProvider : SearchFactoryProvider {
 
-    @Inject
-    lateinit var _factory: DesignerNewsSearchDataSourceFactory
-
-    init {
-        DaggerDesignerNewsSearchComponent.builder()
+    override fun getFactory(context: Context): SearchDataSourceFactory? {
+        return DaggerDesignerNewsSearchComponent.builder()
             .designerNewsPreferencesModule(
                 DesignerNewsPreferencesModule(context)
             )
-            .build()
-    }
-
-    override fun getFactory(): SearchDataSourceFactory {
-        return _factory
+            .build().factory()
     }
 }
