@@ -21,7 +21,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.dribbble.data.DribbbleSourceItem
+import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.interfaces.PlaidDataSource
 import io.plaidapp.core.interfaces.SearchDataSourceFactoriesRegistry
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
@@ -91,7 +91,9 @@ class SearchViewModelTest {
     }
 }
 
-val dribbbleSource = DribbbleSourceItem("dribbble", true)
+val sourceItem = object : SourceItem(
+    "query", 100, "name", 0, true, true
+) {}
 
 class FakeSearchDataSourceFactory : SearchDataSourceFactory {
     var dataSource = FakeDataSource()
@@ -100,7 +102,7 @@ class FakeSearchDataSourceFactory : SearchDataSourceFactory {
     }
 }
 
-class FakeDataSource : PlaidDataSource(dribbbleSource) {
+class FakeDataSource : PlaidDataSource(sourceItem) {
 
     var result = Result.Success(emptyList<PlaidItem>())
 
