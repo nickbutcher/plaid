@@ -20,16 +20,17 @@ import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
+import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.designernews.domain.search.DesignerNewsSearchDataSourceFactory
 
-@Module
+@Module(includes = [DesignerNewsPreferencesModule::class])
 class SearchDataModule {
 
     @Provides
     @FeatureScope
-    fun designerNewsSearchDataSourceFactory(
+    fun searchDataSourceFactory(
         repository: StoriesRepository
-    ): DesignerNewsSearchDataSourceFactory {
+    ): SearchDataSourceFactory {
         return DesignerNewsSearchDataSourceFactory(repository)
     }
 }

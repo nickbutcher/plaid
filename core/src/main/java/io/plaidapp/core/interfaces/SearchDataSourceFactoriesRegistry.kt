@@ -17,10 +17,16 @@
 package io.plaidapp.core.interfaces
 
 import javax.inject.Inject
+import javax.inject.Provider
 
-class SearchDataSourceFactoriesRegistry @Inject constructor() {
-
+class SearchDataSourceFactoriesRegistry @Inject constructor(
+    defaultFactory: Provider<SearchDataSourceFactory?>
+) {
     private val _dataSourceFactories = mutableListOf<SearchDataSourceFactory>()
+
+    init {
+        defaultFactory.get()?.apply { add(this) }
+    }
 
     val dataSourceFactories: List<SearchDataSourceFactory>
         get() = _dataSourceFactories

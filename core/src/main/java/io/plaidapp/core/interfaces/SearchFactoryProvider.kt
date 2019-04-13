@@ -16,7 +16,9 @@
 
 package io.plaidapp.core.interfaces
 
+import android.content.Context
+
 interface SearchFactoryProvider {
 
-    fun getFactory(): SearchDataSourceFactory
+    fun getFactory(context: Context): SearchDataSourceFactory?
 }

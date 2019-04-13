@@ -108,10 +108,6 @@ class SearchActivity : AppCompatActivity() {
 
         feedAdapter = FeedAdapter(this, columns, pocketInstalled)
 
-        val intent = Intent("io.plaidapp.register.SEARCH_FACTORY")
-            .setPackage("io.plaidapp")
-        sendBroadcast(intent)
-
         viewModel.searchResults.observe(this, Observer { searchUiModel ->
             if (searchUiModel.items.isNotEmpty()) {
                 if (results.visibility != View.VISIBLE) {
