@@ -42,6 +42,7 @@ dependencies {
     implementation project(':app')
     implementation project(':core')
 
+    implementation "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 
 }
