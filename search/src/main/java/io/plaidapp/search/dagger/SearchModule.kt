@@ -67,19 +67,31 @@ abstract class SearchModule {
         @Provides
         fun factories(activity: Activity): List<SearchDataSourceFactory> {
             val factories = mutableListOf<SearchDataSourceFactory>()
-            try {
-                val provider = Class
-                    .forName("io.plaidapp.designernews.domain.search.DesignerNewsSearchFactoryProvider")
-                    .kotlin.objectInstance as SearchFactoryProvider
-                val factory = provider.getFactory(activity.applicationContext)
-                factory?.apply {
-                    factories.add(this)
-                }
-            } catch (e: ClassNotFoundException) {
-                // nothing to do
-            }
+
+            searchDataSourceFactory(
+                activity,
+                "io.plaidapp.designernews.domain.search.DesignerNewsSearchFactoryProvider"
+            )?.apply { factories.add(this) }
+
+            searchDataSourceFactory(
+                activity,
+                "io.plaidapp.dribbble.domain.search.DribbbleSearchFactoryProvider"
+            )?.apply { factories.add(this) }
 
             return factories
+        }
+
+        private fun searchDataSourceFactory(
+            activity: Activity,
+            className: String
+        ): SearchDataSourceFactory? {
+            return try {
+                val provider =
+                    Class.forName(className).kotlin.objectInstance as SearchFactoryProvider
+                provider.getFactory(activity.applicationContext)
+            } catch (e: ClassNotFoundException) {
+                null
+            }
         }
 
         @JvmStatic
