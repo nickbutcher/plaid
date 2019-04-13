@@ -24,7 +24,7 @@ import io.plaidapp.designernews.dagger.DesignerNewsPreferencesModule
 
 object DesignerNewsSearchFactoryProvider : SearchFactoryProvider {
 
-    override fun getFactory(context: Context): SearchDataSourceFactory? {
+    override fun getFactory(context: Context): SearchDataSourceFactory {
         return DaggerDesignerNewsSearchComponent.builder()
             .designerNewsPreferencesModule(
                 DesignerNewsPreferencesModule(context)
