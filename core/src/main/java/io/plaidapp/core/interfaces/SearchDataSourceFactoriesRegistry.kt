@@ -20,12 +20,12 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class SearchDataSourceFactoriesRegistry @Inject constructor(
-    defaultFactory: Provider<SearchDataSourceFactory?>
+    defaultFactories: Provider<List<SearchDataSourceFactory>>
 ) {
     private val _dataSourceFactories = mutableListOf<SearchDataSourceFactory>()
 
     init {
-        defaultFactory.get()?.apply { add(this) }
+        defaultFactories.get()?.forEach { add(it) }
     }
 
     val dataSourceFactories: List<SearchDataSourceFactory>
