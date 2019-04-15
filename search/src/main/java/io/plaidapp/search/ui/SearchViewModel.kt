@@ -24,7 +24,7 @@ import androidx.lifecycle.viewModelScope
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.feed.FeedProgressUiModel
 import io.plaidapp.core.feed.FeedUiModel
-import io.plaidapp.core.interfaces.SearchDataSourceFactoriesRegistry
+import io.plaidapp.search.domain.SearchDataSourceFactoriesRegistry
 import io.plaidapp.search.domain.SearchUseCase
 import kotlinx.coroutines.launch
 

@@ -19,7 +19,7 @@ package io.plaidapp.search.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
-import io.plaidapp.core.interfaces.SearchDataSourceFactoriesRegistry
+import io.plaidapp.search.domain.SearchDataSourceFactoriesRegistry
 import javax.inject.Inject
 
 /**
