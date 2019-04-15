@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package io.plaidapp.dribbble.dagger
+package io.plaidapp.designernews.domain.search
 
-import dagger.Module
-import dagger.Provides
-import io.plaidapp.core.dagger.scope.FeatureScope
-import io.plaidapp.core.dribbble.data.ShotsRepository
+import android.content.Context
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
-import io.plaidapp.dribbble.domain.search.DribbbleSearchDataSourceFactory
+import io.plaidapp.core.interfaces.SearchFactoryProvider
+import io.plaidapp.designernews.dagger.DaggerDesignerNewsSearchComponent
+import io.plaidapp.designernews.dagger.DesignerNewsPreferencesModule
 
-@Module
-class SearchDataModule {
+object DesignerNewsSearchFactoryProvider : SearchFactoryProvider {
 
-    @Provides
-    @FeatureScope
-    fun searchDataSourceFactory(
-        repository: ShotsRepository
-    ): SearchDataSourceFactory {
-        return DribbbleSearchDataSourceFactory(repository)
+    override fun getFactory(context: Context): SearchDataSourceFactory {
+        return DaggerDesignerNewsSearchComponent.builder()
+            .designerNewsPreferencesModule(
+                DesignerNewsPreferencesModule(context)
+            )
+            .build().factory()
     }
 }

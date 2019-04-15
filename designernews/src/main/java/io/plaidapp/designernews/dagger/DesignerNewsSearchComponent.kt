@@ -20,6 +20,7 @@ import dagger.Component
 import io.plaidapp.core.dagger.CoreDataModule
 import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
 import io.plaidapp.core.dagger.scope.FeatureScope
+import io.plaidapp.core.interfaces.SearchDataSourceFactory
 
 @Component(
     modules = [
@@ -33,4 +34,6 @@ import io.plaidapp.core.dagger.scope.FeatureScope
 @FeatureScope
 interface DesignerNewsSearchComponent {
 
+    @FeatureScope
+    fun factory(): SearchDataSourceFactory
 }

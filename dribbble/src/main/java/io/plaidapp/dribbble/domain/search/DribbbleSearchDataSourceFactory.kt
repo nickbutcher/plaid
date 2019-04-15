@@ -20,9 +20,8 @@ import io.plaidapp.core.dribbble.data.DribbbleSourceItem
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.interfaces.PlaidDataSource
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
-import javax.inject.Inject
 
-class DribbbleSearchDataSourceFactory @Inject constructor(
+class DribbbleSearchDataSourceFactory(
     private val repository: ShotsRepository
 ) : SearchDataSourceFactory {
 

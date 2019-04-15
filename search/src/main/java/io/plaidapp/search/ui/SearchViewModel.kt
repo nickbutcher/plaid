@@ -44,7 +44,7 @@ class SearchViewModel(
     private val searchQuery = MutableLiveData<String>()
 
     private val results = Transformations.switchMap(searchQuery) {
-        searchUseCase = SearchUseCase(factories.toList(), it)
+        searchUseCase = SearchUseCase(factories, it)
         loadMore()
         return@switchMap searchUseCase?.searchResult
     }
