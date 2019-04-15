@@ -19,6 +19,7 @@ package io.plaidapp.dribbble.dagger
 import dagger.Component
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.dagger.scope.FeatureScope
+import io.plaidapp.core.interfaces.SearchDataSourceFactory
 
 @Component(
     modules = [
@@ -30,4 +31,6 @@ import io.plaidapp.core.dagger.scope.FeatureScope
 @FeatureScope
 interface DribbbleSearchComponent {
 
+    @FeatureScope
+    fun factory(): SearchDataSourceFactory
 }

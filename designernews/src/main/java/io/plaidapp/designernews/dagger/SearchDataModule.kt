@@ -16,16 +16,21 @@
 
 package io.plaidapp.designernews.dagger
 
-import dagger.Binds
 import dagger.Module
-import dagger.multibindings.IntoSet
+import dagger.Provides
+import io.plaidapp.core.dagger.scope.FeatureScope
+import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.designernews.domain.search.DesignerNewsSearchDataSourceFactory
 
 @Module(includes = [DesignerNewsPreferencesModule::class])
-interface SearchDataModule {
+class SearchDataModule {
 
-    @Binds
-    @IntoSet
-    fun searchDataSourceFactory(designerNewsFactory: DesignerNewsSearchDataSourceFactory): SearchDataSourceFactory
+    @Provides
+    @FeatureScope
+    fun searchDataSourceFactory(
+        repository: StoriesRepository
+    ): SearchDataSourceFactory {
+        return DesignerNewsSearchDataSourceFactory(repository)
+    }
 }

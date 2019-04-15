@@ -20,9 +20,8 @@ import io.plaidapp.core.designernews.data.DesignerNewsSearchSource
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.interfaces.PlaidDataSource
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
-import javax.inject.Inject
 
-class DesignerNewsSearchDataSourceFactory @Inject constructor(
+class DesignerNewsSearchDataSourceFactory(
     private val repository: StoriesRepository
 ) : SearchDataSourceFactory {
 

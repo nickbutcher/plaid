@@ -23,11 +23,11 @@ import androidx.lifecycle.ViewModelProviders
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.Multibinds
 import io.plaidapp.R
 import io.plaidapp.core.dagger.qualifier.IsPocketInstalled
 import io.plaidapp.core.data.pocket.PocketUtils
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
+import io.plaidapp.core.interfaces.SearchFactoryProvider
 import io.plaidapp.search.ui.SearchActivity
 import io.plaidapp.search.ui.SearchViewModel
 import io.plaidapp.search.ui.SearchViewModelFactory
@@ -44,9 +44,6 @@ abstract class SearchModule {
     @Binds
     abstract fun context(activity: Activity): Context
 
-    @Multibinds
-    abstract fun factories(): Set<SearchDataSourceFactory>
-
     @Module
     companion object {
 
@@ -59,36 +56,36 @@ abstract class SearchModule {
         @Provides
         fun isPocketInstalled(activity: Activity): Boolean = PocketUtils.isPocketInstalled(activity)
 
-//        @JvmStatic
-//        @Provides
-//        fun factories(activity: Activity): Set<SearchDataSourceFactory> {
-//            val factories = mutableSetOf<SearchDataSourceFactory>()
-//
-//            searchDataSourceFactory(
-//                activity,
-//                "io.plaidapp.designernews.domain.search.DesignerNewsSearchFactoryProvider"
-//            )?.apply { factories.add(this) }
-//
-//            searchDataSourceFactory(
-//                activity,
-//                "io.plaidapp.dribbble.domain.search.DribbbleSearchFactoryProvider"
-//            )?.apply { factories.add(this) }
-//
-//            return factories
-//        }
-//
-//        private fun searchDataSourceFactory(
-//            activity: Activity,
-//            className: String
-//        ): SearchDataSourceFactory? {
-//            return try {
-//                val provider =
-//                    Class.forName(className).kotlin.objectInstance as SearchFactoryProvider
-//                provider.getFactory(activity.applicationContext)
-//            } catch (e: ClassNotFoundException) {
-//                null
-//            }
-//        }
+        @JvmStatic
+        @Provides
+        fun factories(activity: Activity): List<SearchDataSourceFactory> {
+            val factories = mutableListOf<SearchDataSourceFactory>()
+
+            searchDataSourceFactory(
+                activity,
+                "io.plaidapp.designernews.domain.search.DesignerNewsSearchFactoryProvider"
+            )?.apply { factories.add(this) }
+
+            searchDataSourceFactory(
+                activity,
+                "io.plaidapp.dribbble.domain.search.DribbbleSearchFactoryProvider"
+            )?.apply { factories.add(this) }
+
+            return factories
+        }
+
+        private fun searchDataSourceFactory(
+            activity: Activity,
+            className: String
+        ): SearchDataSourceFactory? {
+            return try {
+                val provider =
+                    Class.forName(className).kotlin.objectInstance as SearchFactoryProvider
+                provider.getFactory(activity.applicationContext)
+            } catch (e: ClassNotFoundException) {
+                null
+            }
+        }
 
         @JvmStatic
         @Provides
