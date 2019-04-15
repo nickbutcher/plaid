@@ -31,7 +31,7 @@ import io.plaidapp.search.ui.SearchActivity
 @FeatureScope
 interface SearchComponent : BaseActivityComponent<SearchActivity> {
 
-    fun factories(): Set<SearchDataSourceFactory>
+    fun factories(): List<SearchDataSourceFactory>
 
     @Component.Builder
     interface Builder {
