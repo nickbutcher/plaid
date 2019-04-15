@@ -16,21 +16,16 @@
 
 package io.plaidapp.dribbble.dagger
 
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
-import io.plaidapp.core.dagger.scope.FeatureScope
-import io.plaidapp.core.dribbble.data.ShotsRepository
+import dagger.multibindings.IntoSet
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.dribbble.domain.search.DribbbleSearchDataSourceFactory
 
 @Module
-class SearchDataModule {
+interface SearchDataModule {
 
-    @Provides
-    @FeatureScope
-    fun searchDataSourceFactory(
-        repository: ShotsRepository
-    ): SearchDataSourceFactory {
-        return DribbbleSearchDataSourceFactory(repository)
-    }
+    @Binds
+    @IntoSet
+    fun searchDataSourceFactory(dribbbleFactory: DribbbleSearchDataSourceFactory): SearchDataSourceFactory
 }
