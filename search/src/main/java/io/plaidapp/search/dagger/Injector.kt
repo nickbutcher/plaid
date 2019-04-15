@@ -16,7 +16,6 @@
 
 package io.plaidapp.search.dagger
 
-import io.plaidapp.core.interfaces.ModuleInitializer
 import io.plaidapp.search.ui.SearchActivity
 import io.plaidapp.ui.coreComponent
 
@@ -29,10 +28,6 @@ object Injector {
 
     @JvmStatic
     fun inject(activity: SearchActivity) {
-        val initializer =
-            Class.forName("io.plaidapp.designernews.dagger.DesignerNewsSearchInitializer").kotlin.objectInstance as ModuleInitializer
-        initializer.init(activity)
-
         DaggerSearchComponent.builder()
             .coreComponent(activity.coreComponent())
             .searchActivity(activity)
