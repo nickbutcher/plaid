@@ -23,7 +23,7 @@ import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.interfaces.PlaidDataSource
-import io.plaidapp.core.interfaces.SearchDataSourceFactoriesRegistry
+import io.plaidapp.search.domain.SearchDataSourceFactoriesRegistry
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.search.shots
 import io.plaidapp.search.testShot1

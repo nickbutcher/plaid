@@ -24,8 +24,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.R
-import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
-import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.dagger.qualifier.IsPocketInstalled
 import io.plaidapp.core.data.pocket.PocketUtils
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
@@ -34,12 +32,7 @@ import io.plaidapp.search.ui.SearchActivity
 import io.plaidapp.search.ui.SearchViewModel
 import io.plaidapp.search.ui.SearchViewModelFactory
 
-@Module(
-    includes = [
-        DribbbleDataModule::class,
-        DesignerNewsDataModule::class
-    ]
-)
+@Module
 abstract class SearchModule {
 
     @Binds
