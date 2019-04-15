@@ -21,15 +21,15 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class SearchDataSourceFactoriesRegistry @Inject constructor(
-    defaultFactories: Provider<List<SearchDataSourceFactory>>
+    defaultFactories: Provider<Set<SearchDataSourceFactory>>
 ) {
-    private val _dataSourceFactories = mutableListOf<SearchDataSourceFactory>()
+    private val _dataSourceFactories = mutableSetOf<SearchDataSourceFactory>()
 
     init {
         defaultFactories.get()?.apply { _dataSourceFactories.addAll(this) }
     }
 
-    val dataSourceFactories: List<SearchDataSourceFactory>
+    val dataSourceFactories: Set<SearchDataSourceFactory>
         get() = _dataSourceFactories
 
     fun add(dataSourceFactory: SearchDataSourceFactory) {
