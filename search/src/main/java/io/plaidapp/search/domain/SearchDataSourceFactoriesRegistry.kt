@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.interfaces
+package io.plaidapp.search.domain
 
+import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import javax.inject.Inject
 import javax.inject.Provider
 
