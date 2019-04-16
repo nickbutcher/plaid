@@ -17,6 +17,7 @@
 package io.plaidapp.dribbble.dagger
 
 import dagger.Component
+import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
@@ -26,7 +27,7 @@ import io.plaidapp.core.interfaces.SearchDataSourceFactory
         DribbbleDataModule::class,
         SearchDataModule::class
     ],
-    dependencies = [io.plaidapp.core.dagger.CoreComponent::class]
+    dependencies = [CoreComponent::class]
 )
 @FeatureScope
 interface DribbbleSearchComponent {
