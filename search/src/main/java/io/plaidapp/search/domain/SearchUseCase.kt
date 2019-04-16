@@ -24,7 +24,7 @@ import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.core.ui.getPlaidItemsForDisplay
 
 class SearchUseCase(
-    factories: List<SearchDataSourceFactory>,
+    factories: Set<SearchDataSourceFactory>,
     query: String
 ) {
 

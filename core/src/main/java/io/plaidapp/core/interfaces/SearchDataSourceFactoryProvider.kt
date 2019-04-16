@@ -18,7 +18,10 @@ package io.plaidapp.core.interfaces
 
 import android.content.Context
 
-interface SearchFactoryProvider {
+/**
+ * Provider for [SearchDataSourceFactory], that based on the context, is able to construct the factory
+ */
+interface SearchDataSourceFactoryProvider {
 
     fun getFactory(context: Context): SearchDataSourceFactory
 }

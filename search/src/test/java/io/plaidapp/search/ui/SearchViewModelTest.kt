@@ -51,7 +51,7 @@ class SearchViewModelTest {
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        whenever(registry.dataSourceFactories).thenReturn(listOf(factory))
+        whenever(registry.dataSourceFactories).thenReturn(setOf(factory))
     }
 
     @Test
