@@ -23,6 +23,7 @@ import java.util.Comparator
  * Representation of a data source item
  */
 abstract class SourceItem(
+    val id: String,
     val key: String,
     val sortOrder: Int,
     open val name: String,

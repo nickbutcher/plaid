@@ -16,20 +16,28 @@
 
 package io.plaidapp.designernews.domain.search
 
-import io.plaidapp.core.designernews.data.DesignerNewsSearchSourceItem
+import com.nhaarman.mockitokotlin2.mock
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
-import io.plaidapp.core.interfaces.PlaidDataSource
-import io.plaidapp.core.interfaces.SearchDataSourceFactory
+import org.junit.Assert.assertEquals
+import org.junit.Test
 
 /**
- * Factory for Designer News sources that can be searched
+ * Test for [DesignerNewsSearchDataSourceFactory], mocking dependencies
  */
-class DesignerNewsSearchDataSourceFactory(
-    private val repository: StoriesRepository
-) : SearchDataSourceFactory {
+class DesignerNewsSearchDataSourceFactoryTest {
 
-    override fun create(query: String): PlaidDataSource {
-        val sourceItem = DesignerNewsSearchSourceItem(query)
-        return DesignerNewsDataSource(sourceItem, repository)
+    private val repository: StoriesRepository = mock()
+    private val factory = DesignerNewsSearchDataSourceFactory(repository)
+
+    @Test
+    fun create() {
+        // Given a query
+        val query = "Android"
+
+        // When creating the data source
+        val dataSource = factory.create(query)
+
+        // Then the source item has the query as a key
+        assertEquals(query, dataSource.sourceItem.key)
     }
 }

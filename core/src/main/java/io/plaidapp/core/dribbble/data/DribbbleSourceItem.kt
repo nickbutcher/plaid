@@ -23,6 +23,7 @@ data class DribbbleSourceItem(
     val query: String,
     override var active: Boolean = true
 ) : SourceItem(
+    DRIBBBLE_QUERY_PREFIX + query,
     query,
     SEARCH_SORT_ORDER,
     "“$query”",
