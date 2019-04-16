@@ -21,8 +21,10 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.interfaces.PlaidDataSource
-import io.plaidapp.core.util.exhaustive
 
+/**
+ * Data source that knows how to get dribbble data for a specific source item.
+ */
 class DribbbleDataSource(
     sourceItem: SourceItem,
     private val repository: ShotsRepository
@@ -32,12 +34,12 @@ class DribbbleDataSource(
 
     override suspend fun loadMore(): Result<List<PlaidItem>> {
         val result = repository.search(sourceItem.key, page)
-        (return when (result) {
+        return when (result) {
             is Result.Success -> {
                 page++
                 Result.Success(result.data)
             }
             is Result.Error -> result
-        }).exhaustive
+        }
     }
 }

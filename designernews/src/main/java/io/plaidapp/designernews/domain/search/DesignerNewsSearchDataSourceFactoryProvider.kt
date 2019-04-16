@@ -22,8 +22,15 @@ import io.plaidapp.core.interfaces.SearchDataSourceFactoryProvider
 import io.plaidapp.designernews.dagger.DaggerDesignerNewsSearchComponent
 import io.plaidapp.designernews.dagger.DesignerNewsPreferencesModule
 
+/**
+ * Provider for DesignerNews implementations of [SearchDataSourceFactory]
+ */
 class DesignerNewsSearchDataSourceFactoryProvider : SearchDataSourceFactoryProvider {
 
+    /**
+     * To construct the concrete implementation of [SearchDataSourceFactory], we need to build the
+     * dependency graph
+     */
     override fun getFactory(context: Context): SearchDataSourceFactory {
         return DaggerDesignerNewsSearchComponent.builder()
             .designerNewsPreferencesModule(

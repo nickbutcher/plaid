@@ -102,7 +102,7 @@ class FilterAdapter : ListAdapter<SourceUiModel, FilterViewHolder>(sourceUiModel
     }
 
     override fun getItemId(position: Int): Long {
-        return getItem(position).key.hashCode().toLong()
+        return getItem(position).id.hashCode().toLong()
     }
 
     override fun onItemDismiss(position: Int) {

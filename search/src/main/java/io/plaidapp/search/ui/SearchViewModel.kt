@@ -25,7 +25,7 @@ import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.feed.FeedProgressUiModel
 import io.plaidapp.core.feed.FeedUiModel
 import io.plaidapp.search.domain.SearchDataSourceFactoriesRegistry
-import io.plaidapp.search.domain.SearchUseCase
+import io.plaidapp.search.domain.LoadSearchDataUseCase
 import kotlinx.coroutines.launch
 
 /**
@@ -39,14 +39,14 @@ class SearchViewModel(
 
     private val factories = sourcesRegistry.dataSourceFactories
 
-    private var searchUseCase: SearchUseCase? = null
+    private var loadSearchData: LoadSearchDataUseCase? = null
 
     private val searchQuery = MutableLiveData<String>()
 
     private val results = Transformations.switchMap(searchQuery) {
-        searchUseCase = SearchUseCase(factories, it)
+        loadSearchData = LoadSearchDataUseCase(factories, it)
         loadMore()
-        return@switchMap searchUseCase?.searchResult
+        return@switchMap loadSearchData?.searchResult
     }
 
     val searchResults: LiveData<FeedUiModel> = Transformations.map(results) {
@@ -63,11 +63,11 @@ class SearchViewModel(
 
     fun loadMore() = viewModelScope.launch(dispatcherProvider.computation) {
         _searchProgress.postValue(FeedProgressUiModel(true))
-        searchUseCase?.loadMore()
+        loadSearchData?.invoke()
         _searchProgress.postValue(FeedProgressUiModel(false))
     }
 
     fun clearResults() {
-        searchUseCase = null
+        loadSearchData = null
     }
 }

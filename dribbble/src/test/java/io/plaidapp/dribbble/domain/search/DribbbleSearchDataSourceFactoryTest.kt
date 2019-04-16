@@ -16,20 +16,28 @@
 
 package io.plaidapp.dribbble.domain.search
 
-import io.plaidapp.core.dribbble.data.DribbbleSourceItem
+import com.nhaarman.mockitokotlin2.mock
 import io.plaidapp.core.dribbble.data.ShotsRepository
-import io.plaidapp.core.interfaces.PlaidDataSource
-import io.plaidapp.core.interfaces.SearchDataSourceFactory
+import org.junit.Assert.assertEquals
+import org.junit.Test
 
 /**
- * Factory for Designer News sources that can be searched
+ * Test for  [DribbbleSearchDataSourceFactory], mocking dependencies
  */
-class DribbbleSearchDataSourceFactory(
-    private val repository: ShotsRepository
-) : SearchDataSourceFactory {
+class DribbbleSearchDataSourceFactoryTest {
 
-    override fun create(query: String): PlaidDataSource {
-        val sourceItem = DribbbleSourceItem(query)
-        return DribbbleDataSource(sourceItem, repository)
+    private val repository: ShotsRepository = mock()
+    private val factory = DribbbleSearchDataSourceFactory(repository)
+
+    @Test
+    fun create() {
+        // Given a query
+        val query = "Android"
+
+        // When creating the data source
+        val dataSource = factory.create(query)
+
+        // Then the source item has the query as a key
+        assertEquals(query, dataSource.sourceItem.key)
     }
 }

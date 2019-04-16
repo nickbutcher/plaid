@@ -36,12 +36,10 @@ class SearchDataSourceFactoriesRegistry @Inject constructor(
         get() = _dataSourceFactories
 
     fun add(dataSourceFactory: SearchDataSourceFactory) {
-        if (_dataSourceFactories.contains(dataSourceFactory)) return
         _dataSourceFactories.add(dataSourceFactory)
     }
 
     fun remove(dataSourceFactory: SearchDataSourceFactory) {
-        if (_dataSourceFactories.contains(dataSourceFactory)) return
         _dataSourceFactories.remove(dataSourceFactory)
     }
 }
