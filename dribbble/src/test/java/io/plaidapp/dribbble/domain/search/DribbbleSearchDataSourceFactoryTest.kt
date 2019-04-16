@@ -19,7 +19,6 @@ package io.plaidapp.dribbble.domain.search
 import com.nhaarman.mockitokotlin2.mock
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import org.junit.Assert.assertEquals
-import org.junit.Test
 
 /**
  * Test for  [DribbbleSearchDataSourceFactory], mocking dependencies
@@ -29,7 +28,6 @@ class DribbbleSearchDataSourceFactoryTest {
     private val repository: ShotsRepository = mock()
     private val factory = DribbbleSearchDataSourceFactory(repository)
 
-    @Test
     fun create() {
         // Given a query
         val query = "Android"
