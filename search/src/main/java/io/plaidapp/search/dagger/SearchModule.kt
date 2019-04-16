@@ -25,12 +25,14 @@ import dagger.Module
 import dagger.Provides
 import io.plaidapp.R
 import io.plaidapp.core.dagger.qualifier.IsPocketInstalled
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.data.pocket.PocketUtils
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.core.interfaces.SearchDataSourceFactoryProvider
 import io.plaidapp.search.ui.SearchActivity
 import io.plaidapp.search.ui.SearchViewModel
 import io.plaidapp.search.ui.SearchViewModelFactory
+import kotlin.reflect.full.createInstance
 
 @Module
 abstract class SearchModule {
@@ -58,6 +60,7 @@ abstract class SearchModule {
 
         @JvmStatic
         @Provides
+        @FeatureScope
         fun factories(activity: Activity): Set<SearchDataSourceFactory> {
             val factories = mutableSetOf<SearchDataSourceFactory>()
 
@@ -80,8 +83,8 @@ abstract class SearchModule {
         ): SearchDataSourceFactory? {
             return try {
                 val provider =
-                    Class.forName(className).kotlin.objectInstance as SearchDataSourceFactoryProvider
-                provider.getFactory(context.applicationContext)
+                    Class.forName(className).kotlin.createInstance() as SearchDataSourceFactoryProvider
+                provider.getFactory(context)
             } catch (e: ClassNotFoundException) {
                 null
             }

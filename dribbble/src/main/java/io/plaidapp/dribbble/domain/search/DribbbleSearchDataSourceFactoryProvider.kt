@@ -22,7 +22,7 @@ import io.plaidapp.core.interfaces.SearchDataSourceFactoryProvider
 import io.plaidapp.dribbble.dagger.DaggerDribbbleSearchComponent
 import io.plaidapp.ui.PlaidApplication.Companion.coreComponent
 
-object DribbbleSearchDataSourceFactoryProvider : SearchDataSourceFactoryProvider {
+class DribbbleSearchDataSourceFactoryProvider : SearchDataSourceFactoryProvider {
 
     override fun getFactory(context: Context): SearchDataSourceFactory {
         return DaggerDribbbleSearchComponent.builder()
