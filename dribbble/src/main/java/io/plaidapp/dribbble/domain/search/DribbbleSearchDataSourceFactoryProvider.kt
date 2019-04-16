@@ -18,11 +18,11 @@ package io.plaidapp.dribbble.domain.search
 
 import android.content.Context
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
-import io.plaidapp.core.interfaces.SearchFactoryProvider
+import io.plaidapp.core.interfaces.SearchDataSourceFactoryProvider
 import io.plaidapp.dribbble.dagger.DaggerDribbbleSearchComponent
 import io.plaidapp.ui.PlaidApplication.Companion.coreComponent
 
-object DribbbleSearchFactoryProvider : SearchFactoryProvider {
+object DribbbleSearchDataSourceFactoryProvider : SearchDataSourceFactoryProvider {
 
     override fun getFactory(context: Context): SearchDataSourceFactory {
         return DaggerDribbbleSearchComponent.builder()
