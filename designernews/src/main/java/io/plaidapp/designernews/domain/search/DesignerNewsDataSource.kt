@@ -22,8 +22,10 @@ import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.toStory
 import io.plaidapp.core.interfaces.PlaidDataSource
-import io.plaidapp.core.util.exhaustive
 
+/**
+ * Data source that knows how to get designer news data for a specific source item.
+ */
 class DesignerNewsDataSource(
     sourceItem: SourceItem,
     private val repository: StoriesRepository
@@ -33,13 +35,13 @@ class DesignerNewsDataSource(
 
     override suspend fun loadMore(): Result<List<PlaidItem>> {
         val result = repository.search(sourceItem.key, page)
-        (return when (result) {
+        return when (result) {
             is Result.Success -> {
                 page++
                 val stories = result.data.map { it.toStory() }
                 Result.Success(stories)
             }
             is Result.Error -> result
-        }).exhaustive
+        }
     }
 }

@@ -19,7 +19,8 @@ package io.plaidapp.core.interfaces
 import android.content.Context
 
 /**
- * Provider for [SearchDataSourceFactory], that based on the context, is able to construct the factory
+ * Provider for [SearchDataSourceFactory], that based on the context, is able to construct the
+ * factory
  */
 interface SearchDataSourceFactoryProvider {
 

@@ -17,8 +17,8 @@
 package io.plaidapp.core.data
 
 import io.plaidapp.core.data.prefs.SourcesRepository
-import io.plaidapp.core.designernews.data.DesignerNewsSearchSource
-import io.plaidapp.core.designernews.data.DesignerNewsSearchSource.Companion.SOURCE_DESIGNER_NEWS_POPULAR
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSourceItem
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSourceItem.Companion.SOURCE_DESIGNER_NEWS_POPULAR
 import io.plaidapp.core.designernews.domain.LoadStoriesUseCase
 import io.plaidapp.core.designernews.domain.SearchStoriesUseCase
 import io.plaidapp.core.dribbble.data.DribbbleSourceItem
@@ -120,7 +120,7 @@ class DataManager @Inject constructor(
                 }
                 else -> if (source is DribbbleSourceItem) {
                     parentJobs[data] = loadDribbbleSearch(source, data)
-                } else if (source is DesignerNewsSearchSource) {
+                } else if (source is DesignerNewsSearchSourceItem) {
                     parentJobs[data] = loadDesignerNewsSearch(source, data)
                 }
             }
@@ -172,12 +172,12 @@ class DataManager @Inject constructor(
     }
 
     private fun loadDesignerNewsSearch(
-        source: DesignerNewsSearchSource,
+        sourceItem: DesignerNewsSearchSourceItem,
         data: InFlightRequestData
     ) = scope.launch {
-        val result = searchStories(source.key, data.page)
+        val result = searchStories(sourceItem.key, data.page)
         when (result) {
-            is Result.Success -> sourceLoaded(result.data, source.key, data)
+            is Result.Success -> sourceLoaded(result.data, sourceItem.key, data)
             is Result.Error -> loadFailed(data)
         }.exhaustive
     }

@@ -23,8 +23,8 @@ import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.interfaces.PlaidDataSource
-import io.plaidapp.search.domain.SearchDataSourceFactoriesRegistry
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
+import io.plaidapp.search.domain.SearchDataSourceFactoriesRegistry
 import io.plaidapp.search.shots
 import io.plaidapp.search.testShot1
 import io.plaidapp.test.shared.LiveDataTestUtil
@@ -92,7 +92,7 @@ class SearchViewModelTest {
 }
 
 val sourceItem = object : SourceItem(
-    "query", 100, "name", 0, true, true
+    "id", "query", 100, "name", 0, true, true
 ) {}
 
 class FakeSearchDataSourceFactory : SearchDataSourceFactory {

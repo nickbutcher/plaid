@@ -23,7 +23,12 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.core.ui.getPlaidItemsForDisplay
 
-class SearchUseCase(
+/**
+ * Searches for a query in a list of data sources. Exposes the results of the search in a LiveData,
+ * that is updated whenever loading of search results is requested.
+ * The results of loading more are appended at the end of the list.
+ */
+class LoadSearchDataUseCase(
     factories: Set<SearchDataSourceFactory>,
     query: String
 ) {
@@ -34,7 +39,7 @@ class SearchUseCase(
     val searchResult: LiveData<List<PlaidItem>>
         get() = _searchResult
 
-    suspend fun loadMore() {
+    suspend operator fun invoke() {
         dataSources.forEach {
             val result = it.loadMore()
             if (result is Result.Success) {

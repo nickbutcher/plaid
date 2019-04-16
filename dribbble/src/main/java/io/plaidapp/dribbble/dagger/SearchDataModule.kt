@@ -30,7 +30,5 @@ class SearchDataModule {
     @FeatureScope
     fun searchDataSourceFactory(
         repository: ShotsRepository
-    ): SearchDataSourceFactory {
-        return DribbbleSearchDataSourceFactory(repository)
-    }
+    ): SearchDataSourceFactory = DribbbleSearchDataSourceFactory(repository)
 }
