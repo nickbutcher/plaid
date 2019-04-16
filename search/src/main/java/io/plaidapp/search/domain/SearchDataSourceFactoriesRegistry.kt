@@ -34,12 +34,4 @@ class SearchDataSourceFactoriesRegistry @Inject constructor(
 
     val dataSourceFactories: Set<SearchDataSourceFactory>
         get() = _dataSourceFactories
-
-    fun add(dataSourceFactory: SearchDataSourceFactory) {
-        _dataSourceFactories.add(dataSourceFactory)
-    }
-
-    fun remove(dataSourceFactory: SearchDataSourceFactory) {
-        _dataSourceFactories.remove(dataSourceFactory)
-    }
 }
