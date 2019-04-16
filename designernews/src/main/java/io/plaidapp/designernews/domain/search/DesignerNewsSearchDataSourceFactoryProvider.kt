@@ -22,7 +22,7 @@ import io.plaidapp.core.interfaces.SearchDataSourceFactoryProvider
 import io.plaidapp.designernews.dagger.DaggerDesignerNewsSearchComponent
 import io.plaidapp.designernews.dagger.DesignerNewsPreferencesModule
 
-object DesignerNewsSearchDataSourceFactoryProvider : SearchDataSourceFactoryProvider {
+class DesignerNewsSearchDataSourceFactoryProvider : SearchDataSourceFactoryProvider {
 
     override fun getFactory(context: Context): SearchDataSourceFactory {
         return DaggerDesignerNewsSearchComponent.builder()

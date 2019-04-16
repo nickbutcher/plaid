@@ -34,6 +34,5 @@ import io.plaidapp.core.interfaces.SearchDataSourceFactory
 @FeatureScope
 interface DesignerNewsSearchComponent {
 
-    @FeatureScope
     fun factory(): SearchDataSourceFactory
 }
