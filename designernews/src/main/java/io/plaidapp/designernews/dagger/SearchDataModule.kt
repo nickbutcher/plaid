@@ -23,7 +23,7 @@ import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.designernews.domain.search.DesignerNewsSearchDataSourceFactory
 
-@Module(includes = [DesignerNewsPreferencesModule::class])
+@Module
 class SearchDataModule {
 
     @Provides

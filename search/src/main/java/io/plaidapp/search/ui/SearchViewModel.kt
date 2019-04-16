@@ -58,7 +58,7 @@ class SearchViewModel(
         get() = _searchProgress
 
     fun searchFor(query: String) {
-        searchQuery.postValue(query)
+        searchQuery.value = query
     }
 
     fun loadMore() = viewModelScope.launch(dispatcherProvider.computation) {

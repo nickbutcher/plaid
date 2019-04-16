@@ -22,6 +22,12 @@ import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.core.ui.getPlaidItemsForDisplay
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlin.coroutines.coroutineContext
 
 /**
  * Searches for a query in a list of data sources. Exposes the results of the search in a LiveData,
@@ -40,13 +46,20 @@ class LoadSearchDataUseCase(
         get() = _searchResult
 
     suspend operator fun invoke() {
+        val job = SupervisorJob(coroutineContext[Job])
+        val scope = CoroutineScope(job)
+        val deferredJobs = mutableListOf<Deferred<Unit>>()
+
         dataSources.forEach {
-            val result = it.loadMore()
-            if (result is Result.Success) {
-                val oldItems = _searchResult.value.orEmpty().toMutableList()
-                val searchResult = getPlaidItemsForDisplay(oldItems, result.data)
-                _searchResult.postValue(searchResult)
-            }
+            deferredJobs.add(scope.async {
+                val result = it.loadMore()
+                if (result is Result.Success) {
+                    val oldItems = _searchResult.value.orEmpty().toMutableList()
+                    val searchResult = getPlaidItemsForDisplay(oldItems, result.data)
+                    _searchResult.postValue(searchResult)
+                }
+            })
         }
+        deferredJobs.forEach { it.await() }
     }
 }
