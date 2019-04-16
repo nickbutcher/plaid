@@ -31,6 +31,5 @@ import io.plaidapp.core.interfaces.SearchDataSourceFactory
 @FeatureScope
 interface DribbbleSearchComponent {
 
-    @FeatureScope
     fun factory(): SearchDataSourceFactory
 }
