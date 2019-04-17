@@ -19,6 +19,7 @@ package io.plaidapp.designernews.domain.search
 import com.nhaarman.mockitokotlin2.mock
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import org.junit.Assert.assertEquals
+import org.junit.Test
 
 /**
  * Test for [DesignerNewsSearchDataSourceFactory], mocking dependencies
@@ -28,6 +29,7 @@ class DesignerNewsSearchDataSourceFactoryTest {
     private val repository: StoriesRepository = mock()
     private val factory = DesignerNewsSearchDataSourceFactory(repository)
 
+    @Test
     fun create() {
         // Given a query
         val query = "Android"

@@ -25,7 +25,7 @@ open class DesignerNewsSourceItem(
     sortOrder: Int,
     name: String,
     active: Boolean
-) : SourceItem(id, key, sortOrder, name, R.drawable.ic_designer_news, active, true)
+) : SourceItem(id, key, sortOrder, name, io.plaidapp.core.R.drawable.ic_designer_news, active, true)
 
 data class DesignerNewsSearchSourceItem(
     val query: String,
