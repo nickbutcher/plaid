@@ -18,9 +18,9 @@ buildscript { scriptHandler ->
     apply from: 'repositories.gradle',
             to: scriptHandler
     ext.versions = [
-            'compileSdk'         : 28,
+            'compileSdk'         : 'android-Q',
             'minSdk'             : 23,
-            'targetSdk'          : 28,
+            'targetSdk'          : 29,
             'androidx'           : '1.0.0',
             'androidxCollection' : '1.0.0',
             'androidxCoreRuntime': '2.0.1-alpha01',

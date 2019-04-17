@@ -28,6 +28,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Annotation;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -44,6 +45,7 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.WindowInsets;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -52,7 +54,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.os.BuildCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
@@ -62,6 +66,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
+import com.google.android.material.snackbar.Snackbar;
 import io.plaidapp.R;
 import io.plaidapp.core.dagger.qualifier.IsPocketInstalled;
 import io.plaidapp.core.data.PlaidItem;
@@ -106,13 +111,15 @@ public class HomeActivity extends FragmentActivity {
     private ImageButton fab;
     private RecyclerView filtersList;
     private ProgressBar loading;
-    @Nullable private ImageView noConnection;
+    @Nullable
+    private ConstraintLayout noConnection;
     private ImageButton fabPosting;
     private GridLayoutManager layoutManager;
     private int columns;
     private TextView noFiltersEmptyText;
     private FilterAdapter filtersAdapter;
     private FeedAdapter adapter;
+    private Snackbar settingsSnackbar;
 
     // data
     @Inject
@@ -138,7 +145,7 @@ public class HomeActivity extends FragmentActivity {
 
         adapter = new FeedAdapter(this, columns, pocketInstalled);
 
-        if(connectivityChecker != null) {
+        if (connectivityChecker != null) {
             getLifecycle().addObserver(connectivityChecker);
             connectivityChecker.getConnectedStatus().observe(this, connected -> {
                 if (connected) {
@@ -165,7 +172,7 @@ public class HomeActivity extends FragmentActivity {
         });
 
         viewModel.getFeedProgress().observe(this, feedProgressUiModel -> {
-            if(feedProgressUiModel.isLoading()){
+            if (feedProgressUiModel.isLoading()) {
                 adapter.dataStartedLoading();
             } else {
                 adapter.dataFinishedLoading();
@@ -216,12 +223,12 @@ public class HomeActivity extends FragmentActivity {
         });
         filtersList = findViewById(R.id.filters);
         loading = findViewById(android.R.id.empty);
-        noConnection = findViewById(R.id.no_connection);
+        noConnection = findViewById(R.id.no_connection_holder);
 
         columns = getResources().getInteger(R.integer.num_columns);
     }
 
-    private void setupGrid(){
+    private void setupGrid() {
         grid.setAdapter(adapter);
         layoutManager = new GridLayoutManager(this, columns);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -259,7 +266,7 @@ public class HomeActivity extends FragmentActivity {
         grid.addOnScrollListener(shotPreloader);
     }
 
-    private void handleDrawerInsets(WindowInsets insets){
+    private void handleDrawerInsets(WindowInsets insets) {
         // inset the toolbar down by the status bar height
         ViewGroup.MarginLayoutParams lpToolbar = (ViewGroup.MarginLayoutParams) toolbar
                 .getLayoutParams();
@@ -460,7 +467,6 @@ public class HomeActivity extends FragmentActivity {
             }
         }
     };
-
 
 
     protected void fabClick() {
@@ -697,10 +703,10 @@ public class HomeActivity extends FragmentActivity {
 
     /**
      * Highlight the new source(s) by:
-     *      1. opening the drawer
-     *      2. scrolling new source(s) into view
-     *      3. flashing new source(s) background
-     *      4. closing the drawer (if user hasn't interacted with it)
+     * 1. opening the drawer
+     * 2. scrolling new source(s) into view
+     * 3. flashing new source(s) background
+     * 4. closing the drawer (if user hasn't interacted with it)
      */
     private void highlightPosition(SourcesHighlightUiModel uiModel) {
         final Runnable closeDrawerRunnable = () -> drawer.closeDrawer(GravityCompat.END);
@@ -746,13 +752,23 @@ public class HomeActivity extends FragmentActivity {
         loading.setVisibility(View.GONE);
         if (noConnection == null) {
             final ViewStub stub = findViewById(R.id.stub_no_connection);
-            noConnection = (ImageView) stub.inflate();
+            noConnection = (ConstraintLayout) stub.inflate();
         }
         final AnimatedVectorDrawable avd =
                 (AnimatedVectorDrawable) getDrawable(R.drawable.avd_no_connection);
         if (noConnection != null && avd != null) {
-            noConnection.setImageDrawable(avd);
+            ImageView imageView = noConnection.findViewById(R.id.no_connection);
+            imageView.setImageDrawable(avd);
             avd.start();
+
+            Button settingsButton = noConnection.findViewById(R.id.no_connection_button);
+            settingsButton.setOnClickListener(v -> {
+                if (BuildCompat.isAtLeastQ()) {
+                    startActivity(new Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY));
+                } else {
+                    startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                }
+            });
         }
     }
 
@@ -760,7 +776,7 @@ public class HomeActivity extends FragmentActivity {
         if (adapter.getItems().size() != 0) return;
 
         TransitionManager.beginDelayedTransition(drawer);
-        if(noConnection != null) {
+        if (noConnection != null) {
             noConnection.setVisibility(View.GONE);
         }
         loading.setVisibility(View.VISIBLE);
