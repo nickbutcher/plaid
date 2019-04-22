@@ -37,7 +37,7 @@
             android:pathData="@string/path_comment_lines"
             android:strokeColor="?attr/colorSurface"
             android:strokeLineCap="square"
-            android:strokeWidth="2" />
+            android:strokeWidth="@integer/comment_line_stroke_width" />
 
     </group>
 
