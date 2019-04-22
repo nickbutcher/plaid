@@ -88,7 +88,9 @@ import java.util.Date;
 import java.util.List;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
-import static io.plaidapp.core.util.AnimUtils.*;
+import static io.plaidapp.core.util.AnimUtils.getFastOutLinearInInterpolator;
+import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
+import static io.plaidapp.core.util.AnimUtils.getLinearOutSlowInInterpolator;
 
 public class StoryActivity extends AppCompatActivity {
 
@@ -118,12 +120,9 @@ public class StoryActivity extends AppCompatActivity {
 
     private Story story;
 
-    @Inject
-    StoryViewModel viewModel;
-    @Inject
-    LoginRepository loginRepository;
-    @Inject
-    Markdown markdown;
+    @Inject StoryViewModel viewModel;
+    @Inject LoginRepository loginRepository;
+    @Inject Markdown markdown;
 
     private CustomTabActivityHelper customTab;
 
@@ -229,6 +228,7 @@ public class StoryActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case RC_LOGIN_UPVOTE:
                 if (resultCode == RESULT_OK) {
