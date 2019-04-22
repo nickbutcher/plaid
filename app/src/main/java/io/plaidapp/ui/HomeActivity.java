@@ -109,8 +109,7 @@ public class HomeActivity extends AppCompatActivity {
     private ImageButton fab;
     private RecyclerView filtersList;
     private ProgressBar loading;
-    @Nullable
-    private ImageView noConnection;
+    @Nullable private ImageView noConnection;
     private ImageButton fabPosting;
     private GridLayoutManager layoutManager;
     private int columns;
@@ -420,6 +419,7 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case RC_SEARCH:
                 // reset the search icon which we hid

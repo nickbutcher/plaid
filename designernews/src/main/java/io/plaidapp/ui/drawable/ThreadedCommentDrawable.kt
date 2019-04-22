@@ -66,10 +66,12 @@ class ThreadedCommentDrawable(
 
     override fun setAlpha(i: Int) {
         paint.alpha = i
+        invalidateSelf()
     }
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
         paint.colorFilter = colorFilter
+        invalidateSelf()
     }
 
     override fun setTintList(tint: ColorStateList?) {

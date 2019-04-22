@@ -41,6 +41,7 @@ import io.plaidapp.designernews.databinding.ActivityDesignerNewsLoginBinding
 import io.plaidapp.designernews.databinding.ToastLoggedInConfirmationBinding
 import javax.inject.Inject
 import io.plaidapp.R as appR
+import io.plaidapp.core.R as coreR
 
 class LoginActivity : AppCompatActivity() {
 
@@ -82,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
             MorphTransform.setup(
                 this,
                 binding.container,
-                ColorUtils.getThemeColor(this, io.plaidapp.core.R.attr.colorSurface),
+                ColorUtils.getThemeColor(this, coreR.attr.colorSurface),
                 resources.getDimensionPixelSize(appR.dimen.dialog_corners)
             )
         }

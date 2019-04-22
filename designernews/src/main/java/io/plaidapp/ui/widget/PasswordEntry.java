@@ -46,7 +46,7 @@ public class PasswordEntry extends TextInputEditText {
 
     private boolean passwordMasked;
     private MaskMorphDrawable maskDrawable;
-    ColorStateList textColor;
+    private ColorStateList textColor;
 
     public PasswordEntry(Context context) {
         super(context);
@@ -127,9 +127,9 @@ public class PasswordEntry extends TextInputEditText {
         private final long hidePasswordDuration;
         private final Interpolator fastOutSlowIn;
 
-        CharSequence password;
-        PasswordCharacter[] characters;
-        float morphProgress;
+        private CharSequence password;
+        private PasswordCharacter[] characters;
+        private float morphProgress;
 
         MaskMorphDrawable(Context context, TextPaint textPaint,
                           int baseline, float charWidth, int insetStart) {
@@ -217,7 +217,7 @@ public class PasswordEntry extends TextInputEditText {
             return anim;
         }
 
-        void updateBounds() {
+        private void updateBounds() {
             Rect oldBounds = getBounds();
             if (password != null) {
                 setBounds(
