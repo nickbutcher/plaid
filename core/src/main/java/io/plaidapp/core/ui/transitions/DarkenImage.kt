@@ -59,6 +59,7 @@ class DarkenImage(context: Context, attrs: AttributeSet) : Transition(context, a
         if (!isDarkTheme) return null
         if (initialRgbScale == finalRgbScale) return null
         val iv = endValues?.view as? ImageView ?: return null
+        if (iv.drawable == null) return null
         return ValueAnimator.ofFloat(initialRgbScale, finalRgbScale).apply {
             addUpdateListener { listener ->
                 val cm = ColorMatrix()
