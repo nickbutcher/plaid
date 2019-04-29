@@ -8,7 +8,7 @@ Rewriting Plaid using [Android Architecture Components](https://developer.androi
 
 🛑 We're currently not accepting external PRs that touch on the app's architecture.
 
-[![CircleCI](https://circleci.com/gh/nickbutcher/plaid/tree/master.svg?style=shield)](https://circleci.com/gh/nickbutcher/plaid/tree/master)
+[![CircleCI](https://circleci.com/gh/android/plaid/tree/master.svg?style=shield)](https://circleci.com/gh/android/plaid/tree/master)
 
 ### Background
 
