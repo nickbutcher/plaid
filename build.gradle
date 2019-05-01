@@ -82,6 +82,10 @@ ext {
 }
 
 subprojects {
+    buildscript {
+        apply from: rootProject.file('repositories.gradle')
+    }
+
     apply plugin: 'com.diffplug.gradle.spotless'
     spotless {
         kotlin {

@@ -23,8 +23,6 @@ apply plugin: 'kotlin-kapt'
 apply from: '../core_dependencies.gradle'
 apply from: '../test_dependencies.gradle'
 
-apply from: '../repositories.gradle'
-
 android {
     compileSdkVersion versions.compileSdk
 
