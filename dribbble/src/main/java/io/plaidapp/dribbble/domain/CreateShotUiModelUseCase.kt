@@ -31,12 +31,13 @@ class CreateShotUiModelUseCase @Inject constructor(
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) {
 
-    suspend operator fun invoke(model: Shot): ShotUiModel = withContext(dispatcherProvider.computation) {
+    operator fun invoke(model: Shot): ShotUiModel { //= withContext(dispatcherProvider.computation) {
 
         val desc = htmlParser.parse(model.description, styler.linkColors, styler.highlightColor)
         val numberFormatter = NumberFormat.getInstance(styler.locale)
 
-        return@withContext ShotUiModel(
+        //return@withContext ShotUiModel(
+        return ShotUiModel(
             id = model.id,
             title = model.title,
             url = model.htmlUrl,

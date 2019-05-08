@@ -89,9 +89,9 @@ class ShotViewModel @Inject constructor(
     }
 
     private fun processUiModel(shot: Shot) {
-        viewModelScope.launch(dispatcherProvider.main) {
+        //viewModelScope.launch(dispatcherProvider.main) {
             val uiModel = createShotUiModel(shot)
             _shotUiModel.value = uiModel
-        }
+        //}
     }
 }

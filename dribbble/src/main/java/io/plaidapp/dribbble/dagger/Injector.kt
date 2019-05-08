@@ -17,6 +17,7 @@
 package io.plaidapp.dribbble.dagger
 
 import io.plaidapp.dribbble.ui.shot.ShotActivity
+import io.plaidapp.ui.PlaidApplication.Companion.coreComponent
 import io.plaidapp.ui.coreComponent
 
 /**
