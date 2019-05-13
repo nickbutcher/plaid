@@ -17,7 +17,12 @@
 package io.plaidapp.test.shared
 
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers.Unconfined
 
-fun provideFakeCoroutinesDispatcherProvider(): CoroutinesDispatcherProvider =
-    CoroutinesDispatcherProvider(Unconfined, Unconfined, Unconfined)
+fun provideFakeCoroutinesDispatcherProvider(
+    main: CoroutineDispatcher = Unconfined,
+    computation: CoroutineDispatcher = Unconfined,
+    io: CoroutineDispatcher = Unconfined
+
+): CoroutinesDispatcherProvider = CoroutinesDispatcherProvider(main, computation, io)
