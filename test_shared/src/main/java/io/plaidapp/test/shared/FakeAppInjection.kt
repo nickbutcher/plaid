@@ -20,9 +20,12 @@ import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers.Unconfined
 
+// Using Unconfined here as a way to execute coroutines in tests in the test thread.
+// That makes the test to wait for the coroutine to finish before carry on.
+// This needs to be improved in the future, either using a CoroutinesMainDispatcherRule
+// or the recently added TestCoroutineDispatcher when it hits stable.
 fun provideFakeCoroutinesDispatcherProvider(
     main: CoroutineDispatcher = Unconfined,
     computation: CoroutineDispatcher = Unconfined,
     io: CoroutineDispatcher = Unconfined
-
 ): CoroutinesDispatcherProvider = CoroutinesDispatcherProvider(main, computation, io)
