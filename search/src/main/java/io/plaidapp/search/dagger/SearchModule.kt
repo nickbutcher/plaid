@@ -24,24 +24,17 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.R
-import io.plaidapp.core.dagger.SharedPreferencesModule
-import io.plaidapp.core.dagger.designernews.DesignerNewsDataModule
-import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.dagger.qualifier.IsPocketInstalled
-import io.plaidapp.core.data.DataLoadingSubject
+import io.plaidapp.core.dagger.scope.FeatureScope
 import io.plaidapp.core.data.pocket.PocketUtils
-import io.plaidapp.search.domain.SearchDataManager
+import io.plaidapp.core.interfaces.SearchDataSourceFactory
+import io.plaidapp.core.interfaces.SearchDataSourceFactoryProvider
 import io.plaidapp.search.ui.SearchActivity
 import io.plaidapp.search.ui.SearchViewModel
 import io.plaidapp.search.ui.SearchViewModelFactory
+import kotlin.reflect.full.createInstance
 
-@Module(
-    includes = [
-        DribbbleDataModule::class,
-        DesignerNewsDataModule::class,
-        SharedPreferencesModule::class
-    ]
-)
+@Module
 abstract class SearchModule {
 
     @Binds
@@ -52,9 +45,6 @@ abstract class SearchModule {
 
     @Binds
     abstract fun context(activity: Activity): Context
-
-    @Binds
-    abstract fun dataLoadingSubject(searchDataManager: SearchDataManager): DataLoadingSubject
 
     @Module
     companion object {
@@ -67,6 +57,38 @@ abstract class SearchModule {
         @JvmStatic
         @Provides
         fun isPocketInstalled(activity: Activity): Boolean = PocketUtils.isPocketInstalled(activity)
+
+        @JvmStatic
+        @Provides
+        @FeatureScope
+        fun factories(activity: Activity): Set<SearchDataSourceFactory> {
+            val factories = mutableSetOf<SearchDataSourceFactory>()
+
+            searchDataSourceFactory(
+                activity,
+                "io.plaidapp.designernews.domain.search.DesignerNewsSearchDataSourceFactoryProvider"
+            )?.apply { factories.add(this) }
+
+            searchDataSourceFactory(
+                activity,
+                "io.plaidapp.dribbble.domain.search.DribbbleSearchDataSourceFactoryProvider"
+            )?.apply { factories.add(this) }
+
+            return factories
+        }
+
+        private fun searchDataSourceFactory(
+            context: Context,
+            className: String
+        ): SearchDataSourceFactory? {
+            return try {
+                val provider =
+                    Class.forName(className).kotlin.createInstance() as SearchDataSourceFactoryProvider
+                provider.getFactory(context)
+            } catch (e: ClassNotFoundException) {
+                null
+            }
+        }
 
         @JvmStatic
         @Provides

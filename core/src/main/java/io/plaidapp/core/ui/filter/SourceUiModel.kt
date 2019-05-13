@@ -23,6 +23,7 @@ import io.plaidapp.core.util.event.Event
  * UI model for a source
  */
 data class SourceUiModel(
+    val id: String,
     val key: String,
     val name: String,
     val active: Boolean,

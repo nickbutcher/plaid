@@ -20,8 +20,8 @@ import dagger.BindsInstance
 import dagger.Component
 import io.plaidapp.core.dagger.BaseActivityComponent
 import io.plaidapp.core.dagger.CoreComponent
-import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.dagger.scope.FeatureScope
+import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.search.ui.SearchActivity
 
 /**
@@ -31,12 +31,13 @@ import io.plaidapp.search.ui.SearchActivity
 @FeatureScope
 interface SearchComponent : BaseActivityComponent<SearchActivity> {
 
+    fun factories(): Set<SearchDataSourceFactory>
+
     @Component.Builder
     interface Builder {
 
         fun build(): SearchComponent
         @BindsInstance fun searchActivity(activity: SearchActivity): Builder
         fun coreComponent(component: CoreComponent): Builder
-        fun sharedPreferencesModule(module: SharedPreferencesModule): Builder
     }
 }

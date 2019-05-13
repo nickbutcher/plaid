@@ -31,7 +31,7 @@
         android:id="@+id/libs_list_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grey_200" />
+        android:background="?android:colorBackground" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/libs_list"

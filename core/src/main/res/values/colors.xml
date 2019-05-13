@@ -20,21 +20,19 @@
 
     <!-- app palette -->
     <color name="primary">#69F0AE</color>
-    <color name="accent">@color/primary</color> <!-- mono-color -->
     <color name="primary_dark">#4aa87a</color>
+    <color name="color_surface">@color/background_light</color>
+    <color name="color_highlighted_surface">#ffffff</color>
+    <color name="color_background">#e0e0e0</color>
 
     <!-- common colours -->
     <color name="text_primary_dark">#de000000</color> <!-- 87% -->
     <color name="text_secondary_dark">#8a000000</color> <!-- 54% -->
-    <color name="text_tertiary_dark">#61000000</color> <!-- 38% -->
     <color name="text_primary_light">#ffffffff</color>
     <color name="text_secondary_light">#b3ffffff</color> <!-- 70% -->
     <color name="text_disabled_light">#4dffffff</color> <!-- 30% -->
-    <color name="ripple_light">#99ffffff</color>
     <color name="ripple_dark">@color/mid_grey</color>
     <color name="background_light">#fafafa</color> <!-- grey 50 -->
-    <color name="background_lightish">#e0e0e0</color> <!-- grey 300 -->
-    <color name="background_card">#ffffff</color>
     <color name="background_dark">#ff333333</color>
     <color name="immersive_bars">#99000000</color>
     <color name="light_immersive_bars">#b3eeeeee</color> <!-- 70% grey 200 -->
@@ -53,10 +51,8 @@
     <color name="dark_icon_on_primary">#ff2a6046</color> <!-- 60% black on @color/primary -->
     <color name="inline_action_icon">#ff757575</color> <!-- grey 600 -->
     <color name="light_icon">#ffffffff</color>
-    <color name="divider">#1f000000</color> <!-- 12% black -->
-    <color name="page_indicator_dark">#80333333</color>
-    <color name="page_indicator_dark_selected">#ff333333</color>
-    <color name="selected_comment_background">#ffffffff</color>
+    <color name="page_indicators">#80333333</color>
+    <color name="page_indicator_selected">#ff333333</color>
     <color name="error">#ffdd2c00</color>
     <color name="delete">#fff44336</color>
     <color name="shadow">#4c000000</color>
@@ -71,20 +67,20 @@
 
     <!-- designer news -->
     <color name="designer_news">#03a9f4</color> <!--light blue 500 -->-->
-    <color name="designer_news_dark">#039be5</color> <!-- light blue 600 -->
+    <color name="designer_news_secondary">#03a9f4</color> <!--*not* varied in -night -->
+    <color name="designer_news_variant">#039be5</color> <!-- light blue 600 -->
     <color name="designer_news_link_highlight">#b303a9f4</color>
     <color name="designer_news_story_comment_background">@android:color/transparent</color>
 
     <color name="designer_news_super_dark">#000133</color>
-    <color name="designer_news_quote_line">#ffeceef1</color>
-    <color name="designer_news_quote">#73000000</color>
 
     <!-- product hunt-->
-    <color name="product_hunt">#ffff9800</color>
+    <color name="product_hunt">#ffff9800</color> <!--orange 500 -->
 
     <array name="loading_placeholders_dark">
         <item>#ff191919</item>
         <item>#ff212121</item>
         <item>#ff232323</item>
     </array>
+
 </resources>

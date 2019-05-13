@@ -16,8 +16,6 @@
 
 package io.plaidapp.search.dagger
 
-import io.plaidapp.core.dagger.SharedPreferencesModule
-import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.search.ui.SearchActivity
 import io.plaidapp.ui.coreComponent
 
@@ -32,12 +30,6 @@ object Injector {
     fun inject(activity: SearchActivity) {
         DaggerSearchComponent.builder()
             .coreComponent(activity.coreComponent())
-            .sharedPreferencesModule(
-                SharedPreferencesModule(
-                    activity,
-                    LoginLocalDataSource.DESIGNER_NEWS_PREF
-                )
-            )
             .searchActivity(activity)
             .build()
             .inject(activity)

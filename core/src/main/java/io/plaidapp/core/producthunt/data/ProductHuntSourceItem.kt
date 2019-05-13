@@ -21,6 +21,7 @@ import io.plaidapp.core.data.SourceItem
 
 data class ProductHuntSourceItem(override val name: String) : SourceItem(
     SOURCE_PRODUCT_HUNT,
+    SOURCE_PRODUCT_HUNT,
     500,
     name,
     R.drawable.ic_product_hunt,

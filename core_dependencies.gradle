@@ -16,15 +16,14 @@
 dependencies {
     implementation project(':bypass')
 
+    implementation "androidx.appcompat:appcompat:${versions.appcompat}"
     implementation "androidx.room:room-runtime:${versions.room}"
     implementation "androidx.core:core-ktx:${versions.coreKtx}"
     implementation "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"
     implementation "androidx.browser:browser:${versions.androidx}"
     implementation "androidx.palette:palette:${versions.androidx}"
     implementation "androidx.recyclerview:recyclerview:${versions.androidx}"
-    implementation "androidx.dynamicanimation:dynamicanimation:${versions.androidx}"
     implementation "com.android.support:customtabs:${versions.supportLibrary}"
-    implementation "com.android.support:design:${versions.supportLibrary}"
     implementation "com.android.support:palette-v7:${versions.supportLibrary}"
     implementation "com.android.support:support-v4:${versions.supportLibrary}" // Required for version pinning.
     implementation "com.android.support:support-dynamic-animation:${versions.supportLibrary}"

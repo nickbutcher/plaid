@@ -53,14 +53,14 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider
 import io.plaidapp.core.dagger.qualifier.IsPocketInstalled
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.feed.FeedAdapter
-import io.plaidapp.core.ui.getPlaidItemsForDisplayExpanded
+import io.plaidapp.core.ui.expandPopularItems
 import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener
 import io.plaidapp.core.ui.recyclerview.SlideInItemAnimator
 import io.plaidapp.core.util.Activities
+import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.core.util.ImeUtils
 import io.plaidapp.core.util.ShortcutHelper
 import io.plaidapp.core.util.TransitionUtils
-import io.plaidapp.core.util.event.EventObserver
 import io.plaidapp.search.R
 import io.plaidapp.search.dagger.Injector
 import io.plaidapp.search.ui.transitions.CircularReveal
@@ -107,9 +107,9 @@ class SearchActivity : AppCompatActivity() {
 
         Injector.inject(this)
 
-        feedAdapter = FeedAdapter(this, columns, pocketInstalled)
+        feedAdapter = FeedAdapter(this, columns, pocketInstalled, ColorUtils.isDarkTheme(this))
 
-        viewModel.searchResults.observe(this, EventObserver { searchUiModel ->
+        viewModel.searchResults.observe(this, Observer { searchUiModel ->
             if (searchUiModel.items.isNotEmpty()) {
                 if (results.visibility != View.VISIBLE) {
                     TransitionManager.beginDelayedTransition(
@@ -120,8 +120,8 @@ class SearchActivity : AppCompatActivity() {
                     results.visibility = View.VISIBLE
                     fab.visibility = View.VISIBLE
                 }
-                val feedItems = feedAdapter.getItems().orEmpty()
-                val items = getPlaidItemsForDisplayExpanded(feedItems, searchUiModel.items, columns)
+                val items = searchUiModel.items
+                expandPopularItems(items, columns)
                 feedAdapter.setItems(items)
             } else {
                 TransitionManager.beginDelayedTransition(
@@ -160,6 +160,7 @@ class SearchActivity : AppCompatActivity() {
                 override fun onLoadMore() {
                     viewModel.loadMore()
                 }
+
                 override fun isDataLoading(): Boolean {
                     return viewModel.searchProgress.value?.isLoading ?: false
                 }
@@ -199,6 +200,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
         if (intent.hasExtra(SearchManager.QUERY)) {
             val query = intent.getStringExtra(SearchManager.QUERY)
             if (!TextUtils.isEmpty(query)) {
@@ -301,7 +303,7 @@ class SearchActivity : AppCompatActivity() {
                 noResults =
                     (findViewById<View>(R.id.stub_no_search_results) as ViewStub).inflate() as TextView
                 noResults?.apply {
-                    setOnClickListener { v ->
+                    setOnClickListener {
                         searchView.setQuery("", false)
                         searchView.requestFocus()
                         ImeUtils.showIme(searchView)

@@ -36,7 +36,6 @@ class AboutStyler @Inject constructor(activity: AboutActivity) {
     @ColorInt
     val highlightColor = ColorUtils.getThemeColor(
         activity,
-        coreR.attr.colorPrimary,
-        coreR.color.primary
+        coreR.attr.colorPrimary
     )
 }

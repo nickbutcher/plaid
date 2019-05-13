@@ -35,7 +35,7 @@
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_light"
+        android:background="?attr/colorSurface"
         android:transitionName="@string/transition_story_background" />
 
     <!-- Description added as header to the list.

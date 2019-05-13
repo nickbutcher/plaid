@@ -17,7 +17,7 @@
 package io.plaidapp.core.designernews.data.stories
 
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.DesignerNewsSearchSource
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSourceItem
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import retrofit2.Response
@@ -43,7 +43,7 @@ class StoriesRemoteDataSource(private val service: DesignerNewsService) {
 
     suspend fun search(query: String, page: Int): Result<List<StoryResponse>> {
         val queryWithoutPrefix =
-            query.replace(DesignerNewsSearchSource.DESIGNER_NEWS_QUERY_PREFIX, "")
+            query.replace(DesignerNewsSearchSourceItem.DESIGNER_NEWS_QUERY_PREFIX, "")
         return try {
             val searchResults = service.search(queryWithoutPrefix, page).await()
             val ids = searchResults.body()

@@ -41,4 +41,14 @@
         </targets>
     </transition>
 
+    <transition
+        class="io.plaidapp.core.ui.transitions.DarkenImage"
+        app:initialRgbScale="1.0"
+        app:finalRgbScale="0.85"
+        android:interpolator="@android:interpolator/linear">
+        <targets>
+            <target android:targetId="@id/shot" />
+        </targets>
+    </transition>
+
 </transitionSet>

@@ -17,128 +17,128 @@
   -->
 
 <layout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
-                name="viewModel"
-                type="io.plaidapp.designernews.ui.login.LoginViewModel"/>
+            name="viewModel"
+            type="io.plaidapp.designernews.ui.login.LoginViewModel" />
 
     </data>
 
     <FrameLayout
-            android:id="@+id/frame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        android:id="@+id/frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
-                android:id="@+id/container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_large"
-                android:layout_marginEnd="@dimen/spacing_large"
-                android:paddingStart="@dimen/padding_normal"
-                android:paddingTop="@dimen/padding_dialog"
-                android:paddingEnd="@dimen/padding_dialog"
-                android:paddingBottom="@dimen/padding_normal"
-                android:orientation="vertical"
-                android:layout_gravity="center"
-                android:elevation="@dimen/z_fab"
-                android:background="@drawable/dialog_background"
-                android:clickable="true"
-                android:transitionName="@string/transition_designer_news_login">
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_large"
+            android:layout_marginEnd="@dimen/spacing_large"
+            android:paddingStart="@dimen/padding_normal"
+            android:paddingTop="@dimen/padding_dialog"
+            android:paddingEnd="@dimen/padding_dialog"
+            android:paddingBottom="@dimen/padding_normal"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:elevation="@dimen/z_fab"
+            android:background="@drawable/dialog_background"
+            android:clickable="true"
+            android:transitionName="@string/transition_designer_news_login">
 
             <io.plaidapp.core.ui.widget.BaselineGridTextView
-                    android:id="@+id/dialog_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dialog_title_spacing"
-                    android:layout_marginStart="@dimen/spacing_normal"
-                    android:text="@string/designer_news_login"
-                    app:visibleUnless="@{viewModel.uiState.showProgress}"
-                    android:textAppearance="@style/TextAppearance.DialogTitle"/>
+                android:id="@+id/dialog_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dialog_title_spacing"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:text="@string/designer_news_login"
+                app:visibleUnless="@{viewModel.uiState.showProgress}"
+                android:textAppearance="@style/TextAppearance.DialogTitle" />
 
             <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/username_float_label"
+                android:id="@+id/username_float_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_micro"
+                app:goneUnless="@{viewModel.uiState.showProgress}"
+                style="@style/Widget.Plaid.TextEntry">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_micro"
-                    app:goneUnless="@{viewModel.uiState.showProgress}"
-                    app:hintTextAppearance="@style/TextAppearance.FloatLabelHint">
-
-                <EditText
-                        android:id="@+id/username"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/username"
-                        android:inputType="textEmailAddress"
-                        android:textColorHighlight="@color/designer_news_link_highlight"
-                        android:selectAllOnFocus="true"/>
+                    android:hint="@string/username"
+                    android:inputType="textEmailAddress"
+                    android:textColorHighlight="@color/designer_news_link_highlight"
+                    android:selectAllOnFocus="true" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/password_float_label"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_micro"
-                    app:goneUnless="@{viewModel.uiState.showProgress}"
-                    app:hintTextAppearance="@style/TextAppearance.FloatLabelHint"
-                    app:passwordToggleEnabled="true"
-                    app:passwordToggleDrawable="@drawable/asl_password_visibility"
-                    app:passwordToggleTint="?colorControlNormal">
+                android:id="@+id/password_float_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_micro"
+                android:layout_marginTop="@dimen/padding_normal"
+                app:goneUnless="@{viewModel.uiState.showProgress}"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleDrawable="@drawable/asl_password_visibility"
+                app:passwordToggleTint="?colorControlNormal"
+                style="@style/Widget.Plaid.TextEntry">
 
                 <io.plaidapp.ui.widget.PasswordEntry
-                        android:id="@+id/password"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/password"
-                        android:inputType="textPassword"
-                        android:selectAllOnFocus="true"/>
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    android:selectAllOnFocus="true" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <FrameLayout
-                    android:id="@+id/actions_container"
-                    android:layout_width="match_parent"
+                android:id="@+id/actions_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:goneUnless="@{viewModel.uiState.showProgress}"
+                android:layout_marginTop="@dimen/padding_normal">
+
+                <Button
+                    android:id="@+id/signup"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:goneUnless="@{viewModel.uiState.showProgress}"
-                    android:layout_marginTop="@dimen/padding_normal">
+                    android:layout_gravity="start"
+                    android:text="@string/sign_up"
+                    android:textColor="?attr/colorSecondary"
+                    android:onClick="@{() -> viewModel.signup()}"
+                    style="@style/Widget.MaterialComponents.Button.TextButton" />
 
                 <Button
-                        android:id="@+id/signup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:text="@string/sign_up"
-                        android:textColor="?android:colorAccent"
-                        android:onClick="@{() -> viewModel.signup()}"
-                        style="?android:borderlessButtonStyle"/>
-
-                <Button
-                        android:id="@+id/login"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:enabled="@{viewModel.uiState.enableLoginButton}"
-                        android:text="@string/dn_login_action"
-                        android:textAppearance="@style/TextAppearance.DarkButton"/>
+                    android:id="@+id/login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:enabled="@{viewModel.uiState.enableLoginButton}"
+                    android:text="@string/dn_login_action" />
 
             </FrameLayout>
 
             <ProgressBar
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/loading"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/spacing_huge"
-                    android:layout_gravity="center"
-                    android:indeterminate="true"
-                    app:visibleUnless="@{viewModel.uiState.showProgress}"
-                    android:indeterminateTint="@color/grey_300"
-                    android:indeterminateTintMode="src_in"/>
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/loading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_huge"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                app:visibleUnless="@{viewModel.uiState.showProgress}"
+                android:indeterminateTint="@color/grey_300"
+                android:indeterminateTintMode="src_in" />
 
         </LinearLayout>
 

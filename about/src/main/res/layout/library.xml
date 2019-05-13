@@ -28,7 +28,7 @@
     android:paddingBottom="@dimen/spacing_normal"
     android:foreground="?android:selectableItemBackground"
     android:stateListAnimator="@animator/raise"
-    android:background="@color/background_card"
+    android:background="?attr/colorSurface"
     android:elevation="@dimen/z_card">
 
     <ImageView
@@ -60,7 +60,7 @@
         android:layout_alignParentEnd="true"
         android:maxLines="2"
         android:ellipsize="end"
-        style="@style/Widget.Plaid.SecondaryText" />
+        android:textAppearance="@style/TextAppearance.Subhead" />
 
     <Button
         android:id="@+id/library_link"
@@ -69,7 +69,6 @@
         android:layout_alignParentEnd="true"
         android:layout_below="@id/library_description"
         android:text="@string/about_lib_link"
-        android:textColor="@color/text_secondary_dark"
-        style="?android:borderlessButtonStyle" />
+        style="@style/Widget.Button.About.Library" />
 
 </io.plaidapp.core.ui.widget.ForegroundRelativeLayout>

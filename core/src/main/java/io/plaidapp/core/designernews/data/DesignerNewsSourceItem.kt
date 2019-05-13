@@ -20,17 +20,19 @@ import io.plaidapp.core.R
 import io.plaidapp.core.data.SourceItem
 
 open class DesignerNewsSourceItem(
+    id: String,
     key: String,
     sortOrder: Int,
     name: String,
     active: Boolean
-) : SourceItem(key, sortOrder, name, R.drawable.ic_designer_news, active, true)
+) : SourceItem(id, key, sortOrder, name, R.drawable.ic_designer_news, active, true)
 
-data class DesignerNewsSearchSource(
+data class DesignerNewsSearchSourceItem(
     val query: String,
-    override var active: Boolean
+    override var active: Boolean = true
 ) : DesignerNewsSourceItem(
     DESIGNER_NEWS_QUERY_PREFIX + query,
+    query,
     SEARCH_SORT_ORDER,
     "“$query”",
     active

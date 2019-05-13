@@ -62,7 +62,7 @@
             android:id="@+id/background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/background_light"
+            android:background="?attr/colorSurface"
             android:transitionName="@string/transition_shot_background" />
 
         <io.plaidapp.core.ui.widget.ParallaxScrimageView
@@ -73,7 +73,7 @@
             android:foreground="@drawable/mid_grey_ripple"
             android:stateListAnimator="@animator/app_bar_pin"
             android:transitionName="@string/transition_shot"
-            android:background="@color/light_grey"
+            android:background="@drawable/surface_contrast"
             android:onClick="@{() -> viewModel.viewShotRequested()}"
             app:imageUrl="@{uiModel.imageUrl}"
             app:imageLoadListener="@{shotLoadListener}"
@@ -144,7 +144,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/shot_spacer"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:background="@color/light_grey"
+                    android:background="@drawable/surface_contrast"
                     android:paddingBottom="@dimen/padding_normal"
                     android:paddingEnd="@dimen/padding_normal"
                     android:paddingStart="@dimen/padding_normal"
@@ -169,7 +169,7 @@
                     app:goneUnless="@{uiModel.shouldHideDescription}"
                     tools:text="Check out this sweet eye candy!" />
 
-                <Button
+                <io.plaidapp.core.ui.widget.BaselineGridTextView
                     android:id="@+id/shot_like_count"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -187,7 +187,7 @@
                     tools:text="33 likes"
                     style="@style/Widget.Plaid.InlineActionButton" />
 
-                <Button
+                <io.plaidapp.core.ui.widget.BaselineGridTextView
                     android:id="@+id/shot_view_count"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -204,7 +204,7 @@
                     tools:text="33 views"
                     style="@style/Widget.Plaid.InlineActionButton" />
 
-                <Button
+                <io.plaidapp.core.ui.widget.BaselineGridTextView
                     android:id="@+id/shot_share_action"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

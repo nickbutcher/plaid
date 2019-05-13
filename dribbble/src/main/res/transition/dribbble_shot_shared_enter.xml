@@ -17,6 +17,7 @@
 
 <transitionSet
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:duration="350"
     android:transitionOrdering="together">
 
@@ -31,6 +32,16 @@
     <transition
         class="io.plaidapp.core.ui.transitions.ShotSharedEnter"
         android:interpolator="@android:interpolator/fast_out_slow_in">
+        <targets>
+            <target android:targetId="@id/shot" />
+        </targets>
+    </transition>
+
+    <transition
+        class="io.plaidapp.core.ui.transitions.DarkenImage"
+        app:initialRgbScale="0.85"
+        app:finalRgbScale="1.0"
+        android:interpolator="@android:interpolator/linear">
         <targets>
             <target android:targetId="@id/shot" />
         </targets>

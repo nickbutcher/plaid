@@ -27,14 +27,12 @@ import android.graphics.ColorFilter;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.InsetDrawable;
-import androidx.annotation.NonNull;
-import com.google.android.material.textfield.TextInputEditText;
 import android.text.TextPaint;
 import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
 import android.view.animation.Interpolator;
-
+import androidx.annotation.NonNull;
+import com.google.android.material.textfield.TextInputEditText;
 import io.plaidapp.core.util.AnimUtils;
 
 import static io.plaidapp.core.util.AnimUtils.lerp;
@@ -44,9 +42,9 @@ import static io.plaidapp.core.util.AnimUtils.lerp;
  */
 public class PasswordEntry extends TextInputEditText {
 
-    static final char[] PASSWORD_MASK = { '\u2022' }; // PasswordTransformationMethod#DOT
+    static final char[] PASSWORD_MASK = {'\u2022'}; // PasswordTransformationMethod#DOT
 
-    private boolean passwordMasked = false;
+    private boolean passwordMasked;
     private MaskMorphDrawable maskDrawable;
     private ColorStateList textColor;
 
@@ -88,9 +86,9 @@ public class PasswordEntry extends TextInputEditText {
     private void passwordVisibilityToggled(boolean isMasked, CharSequence password) {
         if (maskDrawable == null) {
             // lazily create the drawable that morphs the dots
-            if (!isLaidOut() || getText().length() < 1) return;
+            if (!isLaidOut() || getText() == null || getText().length() < 1) return;
             maskDrawable = new MaskMorphDrawable(getContext(), getPaint(), getBaseline(),
-                    getLayout().getPrimaryHorizontal(1), getTextLeft());
+                    getLayout().getPrimaryHorizontal(1), getPaddingLeft());
             maskDrawable.setBounds(getPaddingLeft(), getPaddingTop(), getPaddingLeft(),
                     getHeight() - getPaddingBottom());
             getOverlay().add(maskDrawable);
@@ -108,17 +106,6 @@ public class PasswordEntry extends TextInputEditText {
             }
         });
         maskMorph.start();
-    }
-
-    private int getTextLeft() {
-        int left = 0;
-        if (getBackground() instanceof InsetDrawable) {
-            InsetDrawable back = (InsetDrawable) getBackground();
-            Rect padding = new Rect();
-            back.getPadding(padding);
-            left = padding.left;
-        }
-        return left;
     }
 
     /**

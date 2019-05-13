@@ -25,7 +25,7 @@ import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.data.prefs.SourcesLocalDataSource
 import io.plaidapp.core.data.prefs.SourcesRepository
-import io.plaidapp.core.designernews.data.DesignerNewsSearchSource.Companion.SOURCE_DESIGNER_NEWS_POPULAR
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSourceItem.Companion.SOURCE_DESIGNER_NEWS_POPULAR
 import io.plaidapp.core.designernews.data.DesignerNewsSourceItem
 import io.plaidapp.core.dribbble.data.DribbbleSourceItem
 import io.plaidapp.core.producthunt.data.ProductHuntSourceItem
@@ -57,6 +57,7 @@ class SourcesRepositoryModule {
         val defaultSources = mutableListOf<SourceItem>()
         defaultSources.add(
             DesignerNewsSourceItem(
+                SOURCE_DESIGNER_NEWS_POPULAR,
                 SOURCE_DESIGNER_NEWS_POPULAR,
                 100,
                 defaultDesignerNewsSourceName,

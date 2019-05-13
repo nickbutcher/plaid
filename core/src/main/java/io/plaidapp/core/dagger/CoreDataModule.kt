@@ -49,12 +49,12 @@ class CoreDataModule {
     @Provides
     fun provideCallAdapterFactory(): CoroutineCallAdapterFactory = CoroutineCallAdapterFactory()
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideGson(): Gson = Gson()
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideGsonConverterFactory(gson: Gson): GsonConverterFactory =
         GsonConverterFactory.create(gson)
 }

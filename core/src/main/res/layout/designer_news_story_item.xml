@@ -23,11 +23,11 @@
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:background="@color/designer_news"
-    android:foreground="@drawable/light_ripple"
+    android:foreground="@drawable/ripple_on_primary"
     android:orientation="vertical"
     android:elevation="@dimen/z_card"
     android:stateListAnimator="@animator/raise"
-    android:theme="@style/PlaidDarkOverlay">
+    android:theme="@style/ThemeOverlay.Plaid.DesignerNews">
 
     <io.plaidapp.core.ui.widget.BaselineGridTextView
         android:id="@+id/story_title"
@@ -55,7 +55,7 @@
             android:layout_height="@dimen/grid_icon_with_padding"
             android:layout_gravity="bottom|start"
             android:layout_margin="@dimen/spacing_micro"
-            android:background="@drawable/light_ripple"
+            android:background="@drawable/ripple_on_primary"
             android:padding="@dimen/spacing_normal"
             android:scaleType="centerInside"
             android:src="@drawable/ic_pocket"/>
@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/spacing_micro"
-            android:background="@drawable/light_ripple"
+            android:background="@drawable/ripple_on_primary"
             android:drawablePadding="@dimen/spacing_normal"
             android:drawableStart="@drawable/ic_comment_light"
             android:gravity="center_vertical"

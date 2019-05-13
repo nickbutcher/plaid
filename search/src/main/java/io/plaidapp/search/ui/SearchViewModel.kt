@@ -18,16 +18,14 @@ package io.plaidapp.search.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
-import io.plaidapp.core.data.DataLoadingSubject
-import io.plaidapp.core.data.OnDataLoadedCallback
-import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.feed.FeedProgressUiModel
 import io.plaidapp.core.feed.FeedUiModel
-import io.plaidapp.core.util.event.Event
-import io.plaidapp.search.domain.SearchDataManager
+import io.plaidapp.search.domain.SearchDataSourceFactoriesRegistry
+import io.plaidapp.search.domain.LoadSearchDataUseCase
 import kotlinx.coroutines.launch
 
 /**
@@ -35,49 +33,41 @@ import kotlinx.coroutines.launch
  * for display in the [SearchActivity].
  */
 class SearchViewModel(
-    private val dataManager: SearchDataManager,
+    sourcesRegistry: SearchDataSourceFactoriesRegistry,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel() {
 
-    private val _searchResults = MutableLiveData<Event<FeedUiModel>>()
-    val searchResults: LiveData<Event<FeedUiModel>>
-        get() = _searchResults
+    private val factories = sourcesRegistry.dataSourceFactories
+
+    private var loadSearchData: LoadSearchDataUseCase? = null
+
+    private val searchQuery = MutableLiveData<String>()
+
+    private val results = Transformations.switchMap(searchQuery) {
+        loadSearchData = LoadSearchDataUseCase(factories, it)
+        loadMore()
+        return@switchMap loadSearchData?.searchResult
+    }
+
+    val searchResults: LiveData<FeedUiModel> = Transformations.map(results) {
+        FeedUiModel(it)
+    }
 
     private val _searchProgress = MutableLiveData<FeedProgressUiModel>()
     val searchProgress: LiveData<FeedProgressUiModel>
         get() = _searchProgress
 
-    private val onDataLoadedCallback: OnDataLoadedCallback<List<PlaidItem>> =
-        object : OnDataLoadedCallback<List<PlaidItem>> {
-            override fun onDataLoaded(data: List<PlaidItem>) {
-                _searchResults.postValue(Event(FeedUiModel(data)))
-            }
-        }
-
-    private val dataLoadingCallbacks = object : DataLoadingSubject.DataLoadingCallbacks {
-        override fun dataStartedLoading() {
-            _searchProgress.postValue(FeedProgressUiModel(true))
-        }
-
-        override fun dataFinishedLoading() {
-            _searchProgress.postValue(FeedProgressUiModel(false))
-        }
-    }
-
-    init {
-        dataManager.onDataLoadedCallback = onDataLoadedCallback
-        dataManager.registerCallback(dataLoadingCallbacks)
-    }
-
-    fun searchFor(query: String) = viewModelScope.launch(dispatcherProvider.computation) {
-        dataManager.searchFor(query)
+    fun searchFor(query: String) {
+        searchQuery.value = query
     }
 
     fun loadMore() = viewModelScope.launch(dispatcherProvider.computation) {
-        dataManager.loadMore()
+        _searchProgress.postValue(FeedProgressUiModel(true))
+        loadSearchData?.invoke()
+        _searchProgress.postValue(FeedProgressUiModel(false))
     }
 
     fun clearResults() {
-        dataManager.clear()
+        loadSearchData = null
     }
 }
