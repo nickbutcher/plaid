@@ -20,6 +20,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.DataLoadingSubject
@@ -109,10 +110,10 @@ class HomeViewModel(
 
     fun getFeed(columns: Int): LiveData<FeedUiModel> {
         return Transformations.switchMap(feedData) {
-            // TODO move this on a background thread
-            //  https://github.com/nickbutcher/plaid/issues/658
-            expandPopularItems(it, columns)
-            return@switchMap MutableLiveData(FeedUiModel(it))
+            return@switchMap liveData(viewModelScope.coroutineContext + dispatcherProvider.computation) {
+                expandPopularItems(it, columns)
+                emit(FeedUiModel(it))
+            }
         }
     }
 

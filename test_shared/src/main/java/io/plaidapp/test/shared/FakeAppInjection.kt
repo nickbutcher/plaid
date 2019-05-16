@@ -22,7 +22,7 @@ import kotlinx.coroutines.Dispatchers.Unconfined
 
 // Using Unconfined here as a way to execute coroutines in tests in the test thread.
 // That makes the test to wait for the coroutine to finish before carry on.
-// This needs to be improved in the future, either using a CoroutinesMainDispatcherRule
+// This needs to be improved in the future, either using a CoroutinesTestRule
 // or the recently added TestCoroutineDispatcher when it hits stable.
 fun provideFakeCoroutinesDispatcherProvider(
     main: CoroutineDispatcher = Unconfined,
