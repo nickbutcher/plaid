@@ -27,6 +27,7 @@ import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.search.domain.SearchDataSourceFactoriesRegistry
 import io.plaidapp.search.shots
 import io.plaidapp.search.testShot1
+import io.plaidapp.test.shared.CoroutinesTestRule
 import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
@@ -40,6 +41,10 @@ import org.mockito.MockitoAnnotations
  * Tests for [SearchViewModel] that mocks the dependencies
  */
 class SearchViewModelTest {
+
+    // Set the main coroutines dispatcher for unit testing
+    @get:Rule
+    var coroutinesTestRule = CoroutinesTestRule()
 
     // Executes tasks in the Architecture Components in the same thread
     @get:Rule
