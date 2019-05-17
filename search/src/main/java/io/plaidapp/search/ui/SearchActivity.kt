@@ -122,7 +122,7 @@ class SearchActivity : AppCompatActivity() {
                 }
                 val items = searchUiModel.items
                 expandPopularItems(items, columns)
-                feedAdapter.setItems(items)
+                feedAdapter.items = items
             } else {
                 TransitionManager.beginDelayedTransition(
                     container, getTransition(io.plaidapp.core.R.transition.auto)
@@ -287,7 +287,7 @@ class SearchActivity : AppCompatActivity() {
             container,
             getTransition(io.plaidapp.core.R.transition.auto)
         )
-        feedAdapter.setItems(emptyList())
+        feedAdapter.items = emptyList()
         viewModel.clearResults()
         results.visibility = View.GONE
         progress.visibility = View.GONE
@@ -359,7 +359,7 @@ class SearchActivity : AppCompatActivity() {
                     return true
                 }
             })
-            setOnQueryTextFocusChangeListener { v, hasFocus ->
+            setOnQueryTextFocusChangeListener { _, hasFocus ->
                 if (hasFocus && confirmSaveContainer.visibility == View.VISIBLE) {
                     hideSaveConfirmation()
                 }
