@@ -19,13 +19,18 @@ package io.plaidapp.test.shared
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers.Unconfined
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 
-// Using Unconfined here as a way to execute coroutines in tests in the test thread.
-// That makes the test to wait for the coroutine to finish before carry on.
-// This needs to be improved in the future, either using a CoroutinesTestRule
-// or the recently added TestCoroutineDispatcher when it hits stable.
+@ExperimentalCoroutinesApi
 fun provideFakeCoroutinesDispatcherProvider(
-    main: CoroutineDispatcher = Unconfined,
-    computation: CoroutineDispatcher = Unconfined,
-    io: CoroutineDispatcher = Unconfined
-): CoroutinesDispatcherProvider = CoroutinesDispatcherProvider(main, computation, io)
+    main: CoroutineDispatcher? = null,
+    computation: CoroutineDispatcher? = null,
+    io: CoroutineDispatcher? = null
+): CoroutinesDispatcherProvider {
+    val sharedTestCoroutineDispatcher = TestCoroutineDispatcher()
+    return CoroutinesDispatcherProvider(
+        main ?: sharedTestCoroutineDispatcher,
+        computation ?: sharedTestCoroutineDispatcher,
+        io ?: sharedTestCoroutineDispatcher)
+}
