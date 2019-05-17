@@ -62,7 +62,6 @@ import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
 import io.plaidapp.core.util.glide.DribbbleTarget
 import io.plaidapp.core.util.glide.GlideApp
 import io.plaidapp.core.util.intentTo
-
 /**
  * Adapter for displaying a grid of [PlaidItem]s.
  */
@@ -79,11 +78,18 @@ class FeedAdapter(
 
     @ColorInt
     private val initialGifBadgeColor: Int
-    private var items: List<PlaidItem> = emptyList()
     private var showLoadingMore = false
-
     private val loadingMoreItemPosition: Int
         get() = if (showLoadingMore) itemCount - 1 else RecyclerView.NO_POSITION
+
+    var items: List<PlaidItem> = emptyList()
+        /**
+         * Main entry point for setting items to this adapter.
+         */
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     init {
         setHasStableIds(true)
@@ -324,14 +330,6 @@ class FeedAdapter(
         }
     }
 
-    /**
-     * Main entry point for setting items to this adapter.
-     */
-    fun setItems(newItems: List<PlaidItem>) {
-        items = newItems
-        notifyDataSetChanged()
-    }
-
     override fun getItemId(position: Int): Long {
         return if (getItemViewType(position) == TYPE_LOADING_MORE) {
             -1L
@@ -350,9 +348,6 @@ class FeedAdapter(
     override fun getItemCount(): Int {
         return items.size + if (showLoadingMore) 1 else 0
     }
-
-    // temporary method until we're able to move the item setting only to Activity and ViewModels
-    fun getItems() = items
 
     /**
      * The shared element transition to dribbble shots & dn stories can intersect with the FAB.
