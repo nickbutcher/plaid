@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout="@layout/no_search_results" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/search_results"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -104,7 +104,7 @@
             android:visibility="gone" />
 
         <ImageButton
-            android:id="@id/fab"
+            android:id="@+id/fab"
             android:layout_width="@dimen/fab_size"
             android:layout_height="@dimen/fab_size"
             android:layout_gravity="bottom|end"
@@ -132,7 +132,7 @@
             android:layout_marginBottom="@dimen/padding_normal"
             android:background="@drawable/fab"
             android:elevation="@dimen/z_fab"
-            android:theme="@style/ExpandedFabTheme"
+            android:theme="@style/ThemeOverlay.ExpandedFab"
             android:translationX="196dp"
             android:translationY="196dp"
             android:visibility="gone">
@@ -157,7 +157,7 @@
                     android:paddingEnd="12dp"
                     android:paddingBottom="@dimen/spacing_normal"
                     android:text="@string/confirm_save_dribbble_search"
-                    android:textAppearance="@android:style/TextAppearance.Material.Body2" />
+                    android:textAppearance="?attr/textAppearanceBody2" />
 
                 <CheckedTextView
                     android:id="@+id/save_designer_news"
@@ -172,7 +172,7 @@
                     android:paddingEnd="12dp"
                     android:paddingBottom="@dimen/spacing_normal"
                     android:text="@string/confirm_save_designer_news_search"
-                    android:textAppearance="@android:style/TextAppearance.Material.Body2" />
+                    android:textAppearance="?attr/textAppearanceBody2" />
 
                 <Button
                     android:id="@+id/save_confirmed"

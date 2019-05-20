@@ -16,42 +16,35 @@
 
 package io.plaidapp.dribbble.ui.shot
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
-import io.plaidapp.core.data.CoroutinesContextProvider
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.util.event.Event
+import io.plaidapp.dribbble.domain.CreateShotUiModelUseCase
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
 import io.plaidapp.dribbble.domain.ShareShotInfo
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * View model for [ShotActivity].
  */
-class ShotViewModel(
+class ShotViewModel @Inject constructor(
     shotId: Long,
     shotsRepository: ShotsRepository,
-    private val getShareShotInfoUseCase: GetShareShotInfoUseCase,
-    private val contextProvider: CoroutinesContextProvider
+    private val createShotUiModel: CreateShotUiModelUseCase,
+    private val getShareShotInfo: GetShareShotInfoUseCase,
+    private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel() {
 
-    val shot: Shot
-
-    init {
-        val result = shotsRepository.getShot(shotId)
-        if (result is Result.Success) {
-            shot = result.data
-        } else {
-            // TODO re-throw Error.exception once Loading state removed.
-            throw IllegalStateException("Could not retrieve shot $shotId")
-        }
-    }
-
-    private var shareShotJob: Job? = null
+    private val _shotUiModel = MutableLiveData<ShotUiModel>()
+    val shotUiModel: LiveData<ShotUiModel>
+        get() = _shotUiModel
 
     private val _openLink = MutableLiveData<Event<String>>()
     val openLink: LiveData<Event<String>>
@@ -61,21 +54,44 @@ class ShotViewModel(
     val shareShot: LiveData<Event<ShareShotInfo>>
         get() = _shareShot
 
+    init {
+        val result = shotsRepository.getShot(shotId)
+        if (result is Result.Success) {
+            _shotUiModel.value = result.data.toShotUiModel()
+            processUiModel(result.data)
+        } else {
+            // TODO re-throw Error.exception once Loading state removed.
+            throw IllegalStateException("Could not retrieve shot $shotId")
+        }
+    }
+
     fun shareShotRequested() {
-        shareShotJob?.cancel()
-        shareShotJob = launchShare()
+        _shotUiModel.value?.let { model ->
+            viewModelScope.launch(dispatcherProvider.io) {
+                val shareInfo = getShareShotInfo(model)
+                _shareShot.postValue(Event(shareInfo))
+            }
+        }
     }
 
     fun viewShotRequested() {
-        _openLink.value = Event(shot.htmlUrl)
+        _shotUiModel.value?.let { model ->
+            _openLink.value = Event(model.url)
+        }
     }
 
-    override fun onCleared() {
-        shareShotJob?.cancel()
+    fun getAssistWebUrl(): String {
+        return shotUiModel.value?.url.orEmpty()
     }
 
-    private fun launchShare() = launch(contextProvider.io) {
-        val shareInfo = getShareShotInfoUseCase(shot)
-        _shareShot.postValue(Event(shareInfo))
+    fun getShotId(): Long {
+        return shotUiModel.value?.id ?: -1L
+    }
+
+    private fun processUiModel(shot: Shot) {
+        viewModelScope.launch(dispatcherProvider.main) {
+            val uiModel = createShotUiModel(shot)
+            _shotUiModel.value = uiModel
+        }
     }
 }

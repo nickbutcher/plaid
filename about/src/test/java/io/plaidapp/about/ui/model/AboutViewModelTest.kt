@@ -17,13 +17,13 @@
 package io.plaidapp.about.ui.model
 
 import `in`.uncod.android.bypass.Markdown
-import android.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.res.ColorStateList
 import android.content.res.Resources
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.anyOrNull
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.anyOrNull
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
 import io.plaidapp.about.ui.AboutStyler
 import io.plaidapp.test.shared.LiveDataTestUtil
 import org.hamcrest.CoreMatchers.`is`

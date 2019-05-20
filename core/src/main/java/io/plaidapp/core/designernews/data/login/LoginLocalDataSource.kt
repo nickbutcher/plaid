@@ -18,31 +18,33 @@ package io.plaidapp.core.designernews.data.login
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser
+import javax.inject.Inject
 
 /**
  * Local storage for Designer News login related data, implemented using SharedPreferences
  */
-class LoginLocalDataSource(private val prefs: SharedPreferences) {
+class LoginLocalDataSource @Inject constructor(private val prefs: SharedPreferences) {
 
     /**
      * Instance of the logged in user. If missing, null is returned
      */
-    var user: User?
+    var user: LoggedInUser?
         get() {
             val userId = prefs.getLong(KEY_USER_ID, 0L)
             val username = prefs.getString(KEY_USER_NAME, null)
             val userAvatar = prefs.getString(KEY_USER_AVATAR, null)
-            if (userId == 0L && username == null && userAvatar == null) {
+            if (userId == 0L || username == null) {
                 return null
             }
             // TODO save the entire user
-            return User(
+            return LoggedInUser(
                 id = userId,
                 firstName = "",
                 lastName = "",
                 displayName = username,
-                portraitUrl = userAvatar
+                portraitUrl = userAvatar,
+                upvotes = emptyList()
             )
         }
         set(value) {

@@ -16,7 +16,7 @@
 
 package io.plaidapp.core.producthunt.ui
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 
@@ -39,13 +39,13 @@ class ProductHuntPostHolder(
     private var comments: TextView = itemView.findViewById(R.id.story_comments)
 
     init {
-        comments.setOnClickListener { post?.let { commentsClicked(it) } }
-        itemView.setOnClickListener { post?.let { viewClicked(it) } }
+        comments.setOnClickListener { post?.let { post -> commentsClicked(post) } }
+        itemView.setOnClickListener { post?.let { post -> viewClicked(post) } }
     }
 
     fun bind(item: Post) {
         post = item
-        title.text = item.name
+        title.text = item.title
         tagline.text = item.tagline
         comments.text = item.commentsCount.toString()
     }

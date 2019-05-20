@@ -17,8 +17,8 @@
 package io.plaidapp.core.designernews.data.login
 
 import android.content.Context
-import android.support.test.InstrumentationRegistry.getInstrumentation
-import io.plaidapp.core.designernews.data.users.model.User
+import androidx.test.platform.app.InstrumentationRegistry
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -30,8 +30,8 @@ import org.junit.Test
  */
 class LoginLocalDataSourceTest {
 
-    private var sharedPreferences = getInstrumentation().context
-            .getSharedPreferences("test", Context.MODE_PRIVATE)
+    private var sharedPreferences = InstrumentationRegistry.getInstrumentation().context
+        .getSharedPreferences("test", Context.MODE_PRIVATE)
 
     private var dataSource = LoginLocalDataSource(sharedPreferences)
 
@@ -51,30 +51,40 @@ class LoginLocalDataSourceTest {
     @Test
     fun user_set() {
         // Given a user
-        val user = User(
+        val user = LoggedInUser(
             id = 3,
             firstName = "Pladinium",
             lastName = "Plaidescu",
             displayName = "Plaidinium Plaidescu",
-            portraitUrl = "www"
+            portraitUrl = "www",
+            upvotes = listOf(1L, 2L)
         )
 
         // When inserting it in the data source
         dataSource.user = user
 
         // Then it can then be retrieved
-        assertEquals(user.copy(firstName = "", lastName = ""), dataSource.user)
+        val expected = LoggedInUser(
+            id = 3,
+            firstName = "",
+            lastName = "",
+            displayName = "Plaidinium Plaidescu",
+            portraitUrl = "www",
+            upvotes = emptyList()
+        )
+        assertEquals(expected, dataSource.user)
     }
 
     @Test
     fun logout() {
         // Given a user set
-        val user = User(
+        val user = LoggedInUser(
             id = 3,
             firstName = "Plaidy",
             lastName = "Plaidinkski",
             displayName = "Plaidy Plaidinski",
-            portraitUrl = "www"
+            portraitUrl = "www",
+            upvotes = listOf(123L, 234L, 345L)
         )
         dataSource.user = user
 

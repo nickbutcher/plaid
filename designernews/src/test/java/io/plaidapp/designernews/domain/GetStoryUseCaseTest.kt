@@ -16,12 +16,13 @@
 
 package io.plaidapp.designernews.domain
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
+import io.plaidapp.designernews.storyLinks
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -36,9 +37,20 @@ class GetStoryUseCaseTest {
     private val createdDate: Date = GregorianCalendar(2018, 1, 13).time
     private val storyId = 45L
     private val storyResponse =
-        StoryResponse(id = storyId, title = "Plaid 2.0 was released", created_at = createdDate)
+        StoryResponse(
+            id = storyId,
+            title = "Plaid 2.0 was released",
+            created_at = createdDate,
+            links = storyLinks
+        )
     private val story =
-        Story(id = storyId, title = "Plaid 2.0 was released", createdAt = createdDate)
+        Story(
+            id = storyId,
+            title = "Plaid 2.0 was released",
+            createdAt = createdDate,
+            userId = storyLinks.user,
+            links = storyLinks
+        )
 
     private val storiesRepository: StoriesRepository = mock()
     private val getStoryUseCase = GetStoryUseCase(storiesRepository)

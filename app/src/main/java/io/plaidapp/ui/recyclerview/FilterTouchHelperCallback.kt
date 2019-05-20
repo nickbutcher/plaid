@@ -25,13 +25,13 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.Shader.TileMode.CLAMP
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.ViewHolder
-import android.support.v7.widget.helper.ItemTouchHelper
-import android.support.v7.widget.helper.ItemTouchHelper.START
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper.START
 import io.plaidapp.R
-import io.plaidapp.core.ui.FilterAdapter
+import io.plaidapp.core.ui.filter.FilterViewHolder
 import io.plaidapp.core.ui.recyclerview.FilterSwipeDismissListener
 import io.plaidapp.util.setTranslation
 
@@ -82,7 +82,7 @@ class FilterTouchHelperCallback(
 
     override fun getSwipeDirs(rv: RecyclerView, viewHolder: ViewHolder): Int {
         // can only swipe-dismiss certain sources
-        val swipeDir = if ((viewHolder as FilterAdapter.FilterViewHolder).isSwipeable) START else 0
+        val swipeDir = if ((viewHolder as FilterViewHolder).isSwipeable) START else 0
         return makeMovementFlags(0, swipeDir)
     }
 
@@ -172,7 +172,9 @@ class FilterTouchHelperCallback(
                 iconColorFilter = iconColor
             }
             if (circleRadius > 0f) {
-                c.drawCircle(cx, cy, circleRadius, circlePaint)
+                circlePaint?.let { paint ->
+                    c.drawCircle(cx, cy, circleRadius, paint)
+                }
             }
             it.draw(c)
         }

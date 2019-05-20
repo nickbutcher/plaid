@@ -20,12 +20,16 @@ package io.plaidapp.core.designernews.data.votes;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import io.plaidapp.core.dagger.designernews.Injector;
+import io.plaidapp.core.designernews.data.api.DesignerNewsService;
+import io.plaidapp.core.designernews.data.login.LoginRepository;
 import io.plaidapp.core.designernews.data.stories.model.Story;
-import io.plaidapp.core.designernews.DesignerNewsPrefs;
 import retrofit2.Call;
 import retrofit2.Response;
+
+import javax.inject.Inject;
 
 public class UpvoteStoryService extends IntentService {
 
@@ -34,6 +38,15 @@ public class UpvoteStoryService extends IntentService {
 
     public UpvoteStoryService() {
         super("UpvoteStoryService");
+    }
+
+    @Inject DesignerNewsService service;
+    @Inject LoginRepository repository;
+
+    @Override
+    public void onStart(@Nullable Intent intent, int startId) {
+        super.onStart(intent, startId);
+        Injector.inject(this);
     }
 
     public static void startActionUpvote(@NonNull Context context, long storyId) {
@@ -55,13 +68,13 @@ public class UpvoteStoryService extends IntentService {
 
     private void handleActionUpvote(long storyId) {
         if (storyId == 0L) return;
-        final DesignerNewsPrefs designerNewsPrefs = DesignerNewsPrefs.get(this);
-        if (!designerNewsPrefs.isLoggedIn()) {
+
+        if (!repository.isLoggedIn()) {
             // TODO prompt for login
             return;
         }
 
-        final Call<Story> upvoteStoryCall = designerNewsPrefs.getApi().upvoteStory(storyId);
+        final Call<Story> upvoteStoryCall = service.upvoteStory(storyId);
         try {
             final Response<Story> response = upvoteStoryCall.execute();
             // TODO report success

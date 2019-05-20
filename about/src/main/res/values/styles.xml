@@ -22,9 +22,15 @@
         <item name="android:windowReturnTransition">@transition/about_return</item>
     </style>
 
-    <style name="TextAppearance.About" parent="@android:style/TextAppearance.Material.Body1">
+    <style name="TextAppearance.About" parent="@style/TextAppearance.MaterialComponents.Body1">
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="lineHeightHint">24sp</item>
     </style>
+
+    <style name="Widget.Button.About.Library" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="rippleColor">?attr/colorControlHighlight</item>
+    </style>
+
 </resources>

@@ -16,22 +16,26 @@
 
 package io.plaidapp.about.ui
 
-import android.app.Activity
-import android.support.annotation.ColorInt
-import android.support.v4.content.ContextCompat
-import io.plaidapp.core.R as coreR
+import android.content.res.ColorStateList
+import androidx.annotation.ColorInt
+import androidx.appcompat.content.res.AppCompatResources
 import io.plaidapp.core.util.ColorUtils
+import javax.inject.Inject
+import io.plaidapp.core.R as coreR
 
 /**
- * Provide style colors to links and highlights in about activity.
+ * Provide style colors to links and highlights in [AboutActivity].
  */
-class AboutStyler(activity: Activity) {
+class AboutStyler @Inject constructor(activity: AboutActivity) {
 
-    val linksColor = ContextCompat.getColorStateList(activity, coreR.color.plaid_links)!!
+    val linksColor: ColorStateList = AppCompatResources.getColorStateList(
+        activity,
+        coreR.color.plaid_links
+    )
+
     @ColorInt
     val highlightColor = ColorUtils.getThemeColor(
         activity,
-        coreR.attr.colorPrimary,
-        coreR.color.primary
+        coreR.attr.colorPrimary
     )
 }

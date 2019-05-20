@@ -29,6 +29,7 @@ fun StoryResponse.toStory() = Story(
     commentHtml = comment_html,
     commentCount = comment_count,
     voteCount = vote_count,
+    userId = links.user,
     createdAt = created_at,
     links = links
 )
@@ -45,5 +46,5 @@ data class StoryResponse(
     @SerializedName("comment_count") val comment_count: Int = 0,
     @SerializedName("vote_count") val vote_count: Int = 0,
     @SerializedName("created_at") val created_at: Date,
-    @SerializedName("links") val links: StoryLinks? = null
+    @SerializedName("links") val links: StoryLinks
 )

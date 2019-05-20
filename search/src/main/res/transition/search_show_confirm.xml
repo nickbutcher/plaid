@@ -21,7 +21,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <transition
-        class="io.plaidapp.ui.search.transitions.CircularReveal"
+        class="io.plaidapp.search.ui.transitions.CircularReveal"
         app:startRadius="@dimen/fab_radius"
         android:duration="250"
         android:interpolator="@android:interpolator/fast_out_slow_in">
@@ -37,7 +37,7 @@
         </targets>
         <fade android:duration="500" />
         <transition
-            class="io.plaidapp.ui.search.transitions.CircularReveal"
+            class="io.plaidapp.search.ui.transitions.CircularReveal"
             app:centerOn="@id/fab"
             android:duration="280" />
     </transitionSet>

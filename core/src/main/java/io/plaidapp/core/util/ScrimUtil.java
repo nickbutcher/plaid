@@ -26,11 +26,9 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
-import android.support.annotation.ColorInt;
-import android.support.v4.math.MathUtils;
+import androidx.annotation.ColorInt;
+import androidx.core.math.MathUtils;
 import android.view.Gravity;
-
-import io.plaidapp.core.util.ColorUtils;
 
 /**
  * * Borrowed from github.com/romannurik/muzei

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "575982651947",
+    "firebase_url": "https://plaid-f6e0f.firebaseio.com",
+    "project_id": "plaid-f6e0f",
+    "storage_bucket": "plaid-f6e0f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:575982651947:android:e41f681f54e65271",
+        "android_client_info": {
+          "package_name": "io.plaidapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "575982651947-g8ab25j87qfv4cjdc0l2avg41fngkcf8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.plaidapp",
+            "certificate_hash": "efa9845bc1e2d2474ccd2c022f4df4dd5a33347b"
+          }
+        },
+        {
+          "client_id": "575982651947-rtsodjemkvdq3tqm7fcl4tevgekalapu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3CVtxqUh-yKDr7HbTuY2g8mTkxHIplnQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "575982651947-rtsodjemkvdq3tqm7fcl4tevgekalapu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

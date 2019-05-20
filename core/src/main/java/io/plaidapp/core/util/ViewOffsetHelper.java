@@ -19,8 +19,8 @@
 
 package io.plaidapp.core.util;
 
-import android.support.animation.FloatPropertyCompat;
-import android.support.v4.view.ViewCompat;
+import androidx.dynamicanimation.animation.FloatPropertyCompat;
+import androidx.core.view.ViewCompat;
 import android.view.View;
 
 /**

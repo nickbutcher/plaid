@@ -25,10 +25,10 @@ data class User(
     @SerializedName("id") val id: Long,
     @SerializedName("name") val name: String,
     @SerializedName("username") val username: String,
-    @SerializedName("avatar_url") val avatarUrl: String? = null
+    @SerializedName("avatar_url") val avatarUrl: String
 ) {
 
-    val highQualityAvatarUrl: String? by lazy {
-        avatarUrl?.replace("/normal/", "/original/")
+    val highQualityAvatarUrl: String by lazy {
+        avatarUrl.replace("/normal/", "/original/")
     }
 }

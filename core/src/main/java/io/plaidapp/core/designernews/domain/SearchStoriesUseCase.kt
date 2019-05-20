@@ -16,52 +16,26 @@
 
 package io.plaidapp.core.designernews.domain
 
-import io.plaidapp.core.data.CoroutinesContextProvider
-import io.plaidapp.core.data.LoadSourceCallback
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
+import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.toStory
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import io.plaidapp.core.util.exhaustive
+import javax.inject.Inject
 
 /**
  * Use case that searches for stories based on a query and a page in [StoriesRepository]
  */
-class SearchStoriesUseCase(
-    private val storiesRepository: StoriesRepository,
-    private val contextProvider: CoroutinesContextProvider
-) {
-    private val parentJobs = mutableMapOf<String, Job>()
+class SearchStoriesUseCase @Inject constructor(private val storiesRepository: StoriesRepository) {
 
-    operator fun invoke(query: String, page: Int, callback: LoadSourceCallback) {
-        val jobId = "$query::$page"
-        parentJobs[jobId] = launchRequest(query, page, callback, jobId)
-    }
-
-    private fun launchRequest(
-        query: String,
-        page: Int,
-        callback: LoadSourceCallback,
-        jobId: String
-    ) = launch(contextProvider.io) {
+    suspend operator fun invoke(query: String, page: Int): Result<List<Story>> {
         val result = storiesRepository.search(query, page)
-        parentJobs.remove(jobId)
-        if (result is Result.Success) {
-            val stories = result.data.map { it.toStory() }
-            withContext(contextProvider.main) {
-                callback.sourceLoaded(stories, page, query)
+        when (result) {
+            is Result.Success -> {
+                val stories = result.data.map { it.toStory() }
+                return Result.Success(stories)
             }
-        } else {
-            withContext(contextProvider.main) { callback.loadFailed(query) }
-        }
-    }
-
-    fun cancelAllRequests() {
-        parentJobs.values.forEach { it.cancel() }
-    }
-
-    fun cancelRequestOfSource(source: String) {
-        parentJobs[source].apply { this?.cancel() }
+            is Result.Error -> return result
+        }.exhaustive
     }
 }

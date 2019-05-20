@@ -17,19 +17,22 @@
 package io.plaidapp.dribbble.domain
 
 import android.net.Uri
-import io.plaidapp.core.dribbble.data.api.model.Shot
+import io.plaidapp.dribbble.ui.shot.ShotUiModel
+import io.plaidapp.core.util.ImageUriProvider
+import javax.inject.Inject
 
 /**
  * A UseCase which prepares the information required to share a shot.
  */
-class GetShareShotInfoUseCase(private val imageUriProvider: ImageUriProvider) {
+class GetShareShotInfoUseCase @Inject constructor(private val imageUriProvider: ImageUriProvider) {
 
-    suspend operator fun invoke(shot: Shot): ShareShotInfo {
-        val url = shot.images.best() ?: throw IllegalArgumentException()
-        val uri = imageUriProvider(url, shot.images.bestSize()).await()
-        val text = "“${shot.title}” by ${shot.user.name}\n${shot.url}"
+    suspend operator fun invoke(shotUiModel: ShotUiModel): ShareShotInfo {
+        val url = shotUiModel.imageUrl
+        val imageSize = shotUiModel.imageSize
+        val uri = imageUriProvider(url, imageSize.width, imageSize.height)
+        val text = "“${shotUiModel.title}” by ${shotUiModel.userName}\n${shotUiModel.url}"
         val mime = getImageMimeType(url)
-        return ShareShotInfo(uri, shot.title, text, mime)
+        return ShareShotInfo(uri, shotUiModel.title, text, mime)
     }
 
     private fun getImageMimeType(fileName: String): String {

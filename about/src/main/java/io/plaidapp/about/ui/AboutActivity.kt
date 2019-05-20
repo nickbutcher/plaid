@@ -16,22 +16,24 @@
 
 package io.plaidapp.about.ui
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.customtabs.CustomTabsIntent
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
 import android.transition.TransitionInflater
+import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.lifecycle.ViewModelProviders
 import io.plaidapp.about.R
+import io.plaidapp.about.dagger.inject
+import io.plaidapp.about.databinding.ActivityAboutBinding
 import io.plaidapp.about.ui.adapter.AboutPagerAdapter
 import io.plaidapp.about.ui.model.AboutViewModel
 import io.plaidapp.about.ui.model.AboutViewModelFactory
-import io.plaidapp.about.ui.widget.InkPageIndicator
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
+import io.plaidapp.core.util.delegates.contentView
 import io.plaidapp.core.util.event.EventObserver
+import javax.inject.Inject
 import io.plaidapp.R as appR
 
 /**
@@ -42,15 +44,19 @@ import io.plaidapp.R as appR
  */
 class AboutActivity : AppCompatActivity() {
 
+    @Inject
+    internal lateinit var aboutViewModelFactory: AboutViewModelFactory
+
+    private val binding by contentView<AboutActivity, ActivityAboutBinding>(
+        R.layout.activity_about
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
 
-        val draggableFrame = findViewById<ElasticDragDismissFrameLayout>(R.id.draggable_frame)
-        val pager = findViewById<ViewPager>(R.id.pager)
-        val pageIndicator = findViewById<InkPageIndicator>(R.id.indicator)
+        inject()
 
-        val aboutViewModelFactory = AboutViewModelFactory(AboutStyler(this), resources)
         val viewModel = ViewModelProviders
             .of(this, aboutViewModelFactory)
             .get(AboutViewModel::class.java)
@@ -60,19 +66,22 @@ class AboutActivity : AppCompatActivity() {
                 })
             }
 
-        pager.apply {
+        binding.pager.apply {
             adapter = AboutPagerAdapter(viewModel.uiModel)
-            pageMargin = resources.getDimensionPixelSize(appR.dimen.spacing_normal)
+
+            // Set the margin between pages in the ViewPager2
+            val pageMargin = resources.getDimensionPixelSize(appR.dimen.spacing_normal)
+            setPageTransformer { page, position -> page.translationX = position * pageMargin }
         }
 
-        pageIndicator?.setViewPager(pager)
+        binding.indicator.setViewPager(binding.pager)
 
-        draggableFrame?.addListener(
+        binding.draggableFrame.addListener(
             object : ElasticDragDismissFrameLayout.SystemChromeFader(this) {
                 override fun onDragDismissed() {
                     // if we drag dismiss downward then the default reversal of the enter
                     // transition would slide content upward which looks weird. So reverse it.
-                    if (draggableFrame.translationY > 0) {
+                    if (binding.draggableFrame.translationY > 0) {
                         window.returnTransition = TransitionInflater.from(this@AboutActivity)
                             .inflateTransition(R.transition.about_return_downward)
                     }

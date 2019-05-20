@@ -16,54 +16,30 @@
 
 package io.plaidapp.core.designernews.domain
 
-import io.plaidapp.core.data.CoroutinesContextProvider
-import io.plaidapp.core.data.LoadSourceCallback
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.data.prefs.SourceManager
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
+import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.toStory
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import io.plaidapp.core.util.exhaustive
+import javax.inject.Inject
 
 /**
  * Use case that loads stories from [StoriesRepository].
  */
-class LoadStoriesUseCase(
-    private val storiesRepository: StoriesRepository,
-    private val contextProvider: CoroutinesContextProvider
+class LoadStoriesUseCase @Inject constructor(
+    private val storiesRepository: StoriesRepository
 ) {
-    private val parentJobs = mutableMapOf<String, Job>()
 
-    operator fun invoke(page: Int, callback: LoadSourceCallback) {
-        val jobId = "${SourceManager.SOURCE_DESIGNER_NEWS_POPULAR}::$page"
-        parentJobs[jobId] = launchLoad(page, callback, jobId)
-    }
-
-    private fun launchLoad(
-        page: Int,
-        callback: LoadSourceCallback,
-        jobId: String
-    ) = launch(contextProvider.io) {
+    suspend operator fun invoke(page: Int): Result<List<Story>> {
         val result = storiesRepository.loadStories(page)
-        parentJobs.remove(jobId)
-        if (result is Result.Success) {
-            val stories = result.data.map { it.toStory() }
-            withContext(contextProvider.main) {
-                callback.sourceLoaded(stories, page, SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
+        when (result) {
+            is Result.Success -> {
+                val stories = result.data.map { it.toStory() }
+                return Result.Success(stories)
             }
-        } else {
-            withContext(contextProvider.main) {
-                callback.loadFailed(SourceManager.SOURCE_DESIGNER_NEWS_POPULAR)
+            is Result.Error -> {
+                return result
             }
-        }
-    }
-
-    fun cancelAllRequests() {
-        parentJobs.values.forEach { it.cancel() }
-    }
-
-    fun cancelRequestOfSource(source: String) {
-        parentJobs[source].apply { this?.cancel() }
+        }.exhaustive
     }
 }

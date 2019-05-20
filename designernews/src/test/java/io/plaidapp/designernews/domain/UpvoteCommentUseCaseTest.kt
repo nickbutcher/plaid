@@ -16,13 +16,13 @@
 
 package io.plaidapp.designernews.domain
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.login.LoginRepository
-import io.plaidapp.core.designernews.data.users.model.User
-import io.plaidapp.core.designernews.data.votes.VotesRepository
-import kotlinx.coroutines.experimental.runBlocking
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser
+import io.plaidapp.designernews.data.votes.VotesRepository
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -35,12 +35,13 @@ class UpvoteCommentUseCaseTest {
 
     private val commentId = 24L
     private val userId = 63L
-    private val user = User(
+    private val user = LoggedInUser(
         id = userId,
         firstName = "Plaicent",
         lastName = "van Plaid",
         displayName = "Plaicent van Plaid",
-        portraitUrl = "www"
+        portraitUrl = "www",
+        upvotes = listOf(1L, 2L, 3L)
     )
 
     private val loginRepository: LoginRepository = mock()
@@ -54,7 +55,7 @@ class UpvoteCommentUseCaseTest {
 
         // When upvoting a comment
         // Then an exception is thrown
-        runBlocking { upvoteCommentUseCase.upvoteComment(1L) }
+        runBlocking { upvoteCommentUseCase(1L) }
     }
 
     @Test
@@ -66,7 +67,7 @@ class UpvoteCommentUseCaseTest {
             .thenReturn(Result.Success(Unit))
 
         // When upvoting a comment
-        val result = upvoteCommentUseCase.upvoteComment(commentId)
+        val result = upvoteCommentUseCase(commentId)
 
         // Then the use case returns success
         assertEquals(Result.Success(Unit), result)
@@ -81,7 +82,7 @@ class UpvoteCommentUseCaseTest {
             .thenReturn(Result.Error(IOException("error")))
 
         // When upvoting a comment
-        val result = upvoteCommentUseCase.upvoteComment(commentId)
+        val result = upvoteCommentUseCase(commentId)
 
         // Then the use case returns with error
         assertTrue(result is Result.Error)

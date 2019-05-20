@@ -28,7 +28,7 @@
 
     <application>
         <activity
-            android:name="io.plaidapp.ui.search.SearchActivity"
+            android:name=".ui.SearchActivity"
             android:launchMode="singleTop"
             android:theme="@style/Plaid.Translucent.Search">
             <intent-filter>

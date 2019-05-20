@@ -16,19 +16,21 @@
 
 package io.plaidapp.core.designernews.data.login
 
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.doAnswer
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.never
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doAnswer
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.login.model.AccessToken
-import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.core.designernews.data.login.model.LoggedInUserResponse
+import io.plaidapp.core.designernews.data.login.model.UserLinks
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 import io.plaidapp.core.designernews.errorResponseBody
-import kotlinx.coroutines.experimental.CompletableDeferred
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -42,12 +44,22 @@ import java.net.UnknownHostException
  */
 class LoginRemoteDataSourceTest {
 
-    private val user = User(
+    private val response = LoggedInUserResponse(
+        id = 3,
+        first_name = "Plaidy",
+        last_name = "Plaidinski",
+        display_name = "Plaidy Plaidinski",
+        portrait_url = "www",
+        userLinks = UserLinks(listOf(123L, 234L, 345L))
+    )
+
+    private val user = LoggedInUser(
         id = 3,
         firstName = "Plaidy",
         lastName = "Plaidinski",
         displayName = "Plaidy Plaidinski",
-        portraitUrl = "www"
+        portraitUrl = "www",
+        upvotes = listOf(123L, 234L, 345L)
     )
     private val accessToken = AccessToken("token")
 
@@ -69,7 +81,7 @@ class LoginRemoteDataSourceTest {
         // Given that all API calls are successful
         val accessTokenResponse = Response.success(accessToken)
         whenever(service.login(any())).thenReturn(CompletableDeferred(accessTokenResponse))
-        val authUserResponse = Response.success(listOf(user))
+        val authUserResponse = Response.success(listOf(response))
         whenever(service.getAuthedUser()).thenReturn(CompletableDeferred(authUserResponse))
 
         // When logging in
@@ -103,7 +115,7 @@ class LoginRemoteDataSourceTest {
         val accessTokenRespone = Response.success(accessToken)
         whenever(service.login(any())).thenReturn(CompletableDeferred(accessTokenRespone))
         // And the get authed user failed
-        val failureResponse = Response.error<List<User>>(
+        val failureResponse = Response.error<List<LoggedInUserResponse>>(
             400,
             errorResponseBody
         )

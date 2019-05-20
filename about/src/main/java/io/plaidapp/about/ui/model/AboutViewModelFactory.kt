@@ -16,28 +16,22 @@
 
 package io.plaidapp.about.ui.model
 
-import `in`.uncod.android.bypass.Bypass
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import android.content.res.Resources
-import io.plaidapp.about.ui.AboutStyler
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import javax.inject.Inject
 
 /**
  * Factory to create [AboutViewModel]
  */
-internal class AboutViewModelFactory(
-    private val aboutStyler: AboutStyler,
-    val resources: Resources
-) : ViewModelProvider.Factory {
+
+internal class AboutViewModelFactory @Inject constructor() : ViewModelProvider.Factory {
+
+    @Inject lateinit var aboutViewModel: AboutViewModel
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(AboutViewModel::class.java)) {
-            AboutViewModel(
-                aboutStyler,
-                resources,
-                Bypass(resources.displayMetrics, Bypass.Options())
-            ) as T
+            aboutViewModel as T
         } else {
             throw IllegalArgumentException(
                 "Class ${modelClass.name} is not supported in this factory."

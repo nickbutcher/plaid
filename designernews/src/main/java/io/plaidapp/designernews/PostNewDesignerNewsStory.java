@@ -23,9 +23,9 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ShareCompat;
-import android.support.v4.content.ContextCompat;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.core.app.ShareCompat;
+import androidx.core.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -37,18 +37,19 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import io.plaidapp.core.util.ActivityHelper;
+import io.plaidapp.core.designernews.data.login.LoginRepository;
 import io.plaidapp.core.designernews.data.poststory.PostStoryService;
-import io.plaidapp.core.designernews.DesignerNewsPrefs;
 import io.plaidapp.core.ui.transitions.FabTransform;
 import io.plaidapp.core.ui.transitions.MorphTransform;
 import io.plaidapp.core.ui.widget.BottomSheet;
 import io.plaidapp.core.ui.widget.ObservableScrollView;
 import io.plaidapp.core.util.Activities;
+import io.plaidapp.core.util.ActivityHelper;
 import io.plaidapp.core.util.AnimUtils;
 import io.plaidapp.core.util.ImeUtils;
 import io.plaidapp.core.util.ShortcutHelper;
+
+import javax.inject.Inject;
 
 public class PostNewDesignerNewsStory extends Activity {
 
@@ -63,6 +64,7 @@ public class PostNewDesignerNewsStory extends Activity {
     private EditText comment;
     private Button post;
     private float appBarElevation;
+    @Inject LoginRepository loginRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -253,7 +255,7 @@ public class PostNewDesignerNewsStory extends Activity {
     }
 
     protected void postNewStory() {
-        if (DesignerNewsPrefs.get(this).isLoggedIn()) {
+        if (loginRepository.isLoggedIn()) {
             ImeUtils.hideIme(title);
             Intent postIntent = new Intent(PostStoryService.ACTION_POST_NEW_STORY, null,
                     this, PostStoryService.class);

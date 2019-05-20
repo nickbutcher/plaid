@@ -16,11 +16,11 @@
 
 package io.plaidapp.core.designernews.data.login
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.users.model.User
-import kotlinx.coroutines.experimental.runBlocking
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -36,12 +36,13 @@ class LoginRepositoryTest {
 
     private val username = "user"
     private val pass = "pass"
-    private val user = User(
+    private val user = LoggedInUser(
         id = 3,
         firstName = "Plaida",
         lastName = "Plaidich",
         displayName = "Plaida Plaidich",
-        portraitUrl = "www"
+        portraitUrl = "www",
+        upvotes = listOf(1L, 2L, 444L)
     )
 
     private var localDataSource: LoginLocalDataSource = mock()

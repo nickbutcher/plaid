@@ -16,11 +16,12 @@
 
 package io.plaidapp.core.designernews.data.stories
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
-import kotlinx.coroutines.experimental.runBlocking
+import io.plaidapp.core.designernews.storyLinks
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -34,10 +35,18 @@ import java.util.GregorianCalendar
  */
 class StoriesRepositoryTest {
     private val createdDate: Date = GregorianCalendar(2018, 1, 13).time
-    private val story =
-        StoryResponse(id = 45L, title = "Plaid 2.0 was released", created_at = createdDate)
-    private val storySequel =
-        StoryResponse(id = 876L, title = "Plaid 2.0 is bug free", created_at = createdDate)
+    private val story = StoryResponse(
+        id = 45L,
+        title = "Plaid 2.0 was released",
+        created_at = createdDate,
+        links = storyLinks
+    )
+    private val storySequel = StoryResponse(
+        id = 876L,
+        title = "Plaid 2.0 is bug free",
+        created_at = createdDate,
+        links = storyLinks
+    )
     private val stories = listOf(story, storySequel)
     private val query = "Plaid 2.0"
 

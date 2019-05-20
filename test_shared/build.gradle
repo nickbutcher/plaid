@@ -18,6 +18,11 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+apply from: '../core_dependencies.gradle'
+apply from: '../test_dependencies.gradle'
+
+apply from: '../repositories.gradle'
+
 android {
     compileSdkVersion versions.compileSdk
 
@@ -29,18 +34,19 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    packagingOptions {
+        exclude 'META-INF/test_shared_debug.kotlin_module'
+    }
 }
 
-repositories {
-    google()
-    jcenter()
-}
 dependencies {
     implementation project(':core')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
+    implementation "junit:junit:${versions.junit}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
 
 }
 

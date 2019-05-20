@@ -17,8 +17,7 @@
 package io.plaidapp.core.designernews.data.login
 
 import io.plaidapp.core.data.Result
-import io.plaidapp.core.designernews.data.api.DesignerNewsService
-import io.plaidapp.core.designernews.data.users.model.User
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 
 /**
  * Repository that handles Designer News login data. It knows what data sources need to be
@@ -31,7 +30,7 @@ class LoginRepository(
 
     // local cache of the user object, so we don't retrieve it from the local storage every time
     // we need it
-    var user: User? = null
+    var user: LoggedInUser? = null
         private set
 
     val isLoggedIn: Boolean
@@ -48,7 +47,7 @@ class LoginRepository(
         remoteDataSource.logout()
     }
 
-    suspend fun login(username: String, password: String): Result<User> {
+    suspend fun login(username: String, password: String): Result<LoggedInUser> {
         val result = remoteDataSource.login(username, password)
 
         if (result is Result.Success) {
@@ -57,14 +56,9 @@ class LoginRepository(
         return result
     }
 
-    private fun setLoggedInUser(loggedInUser: User) {
+    private fun setLoggedInUser(loggedInUser: LoggedInUser) {
         user = loggedInUser
         localDataSource.user = user
-    }
-
-    // exposing this for now, until we can remove the API usage from the DesignerNewsPrefs
-    fun getService(): DesignerNewsService {
-        return remoteDataSource.service
     }
 
     companion object {

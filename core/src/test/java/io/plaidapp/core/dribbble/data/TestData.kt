@@ -29,7 +29,8 @@ import okhttp3.ResponseBody
 val player = User(
     id = 1L,
     name = "Nick Butcher",
-    username = "nickbutcher"
+    username = "nickbutcher",
+    avatarUrl = "www.prettyplaid.nb"
 )
 
 val shots = listOf(

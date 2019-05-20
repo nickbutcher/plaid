@@ -18,20 +18,20 @@
 package io.plaidapp.core.util;
 
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.support.annotation.AttrRes;
-import android.support.annotation.CheckResult;
-import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
-import android.support.annotation.FloatRange;
-import android.support.annotation.IntDef;
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.math.MathUtils;
-import android.support.v7.graphics.Palette;
-import android.util.TypedValue;
+import android.graphics.Color;
+import androidx.annotation.AttrRes;
+import androidx.annotation.CheckResult;
+import androidx.annotation.ColorInt;
+import androidx.annotation.FloatRange;
+import androidx.annotation.IntDef;
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.math.MathUtils;
+import androidx.palette.graphics.Palette;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -116,7 +116,7 @@ public class ColorUtils {
      * Check if a color is dark (convert to XYZ & check Y component)
      */
     public static boolean isDark(@ColorInt int color) {
-        return android.support.v4.graphics.ColorUtils.calculateLuminance(color) < 0.5;
+        return androidx.core.graphics.ColorUtils.calculateLuminance(color) < 0.5;
     }
 
     /**
@@ -132,7 +132,7 @@ public class ColorUtils {
                                         boolean isDark,
                                         @FloatRange(from = 0f, to = 1f) float lightnessMultiplier) {
         float[] hsl = new float[3];
-        android.support.v4.graphics.ColorUtils.colorToHSL(color, hsl);
+        androidx.core.graphics.ColorUtils.colorToHSL(color, hsl);
 
         if (!isDark) {
             lightnessMultiplier += 1f;
@@ -140,8 +140,8 @@ public class ColorUtils {
             lightnessMultiplier = 1f - lightnessMultiplier;
         }
 
-        hsl[2] = MathUtils.clamp(hsl[2] * lightnessMultiplier,0f, 1f);
-        return android.support.v4.graphics.ColorUtils.HSLToColor(hsl);
+        hsl[2] = MathUtils.clamp(hsl[2] * lightnessMultiplier, 0f, 1f);
+        return androidx.core.graphics.ColorUtils.HSLToColor(hsl);
     }
 
     public static @ColorInt int scrimify(@ColorInt int color,
@@ -152,20 +152,26 @@ public class ColorUtils {
     /**
      * Queries the theme of the given {@code context} for a theme color.
      *
-     * @param context            the context holding the current theme.
-     * @param attrResId          the theme color attribute to resolve.
-     * @param fallbackColorResId a color resource id tto fallback to if the theme color cannot be
-     *                           resolved.
-     * @return the theme color or the fallback color.
+     * @param context the context holding the current theme.
+     * @param attrResId the theme color attribute to resolve.
+     * @return the theme color
      */
     @ColorInt
-    public static int getThemeColor(@NonNull Context context, @AttrRes int attrResId,
-            @ColorRes int fallbackColorResId) {
-        final TypedValue tv = new TypedValue();
-        if (context.getTheme().resolveAttribute(attrResId, tv, true)) {
-            return tv.data;
+    public static int getThemeColor(@NonNull Context context, @AttrRes int attrResId) {
+        final TypedArray a = context.obtainStyledAttributes(null, new int[]{attrResId});
+        try {
+            return a.getColor(0, Color.MAGENTA);
+        } finally {
+            a.recycle();
         }
-        return ContextCompat.getColor(context, fallbackColorResId);
+    }
+
+    /**
+     * Whether the current configuration is a dark theme i.e. in Night configuration.
+     */
+    public static boolean isDarkTheme(@NonNull Context context) {
+        return (context.getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
     }
 
     @Retention(RetentionPolicy.SOURCE)

@@ -17,6 +17,7 @@
 package io.plaidapp.core.designernews.data.stories
 
 import io.plaidapp.core.data.Result
+import io.plaidapp.core.designernews.data.DesignerNewsSearchSourceItem
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import retrofit2.Response
@@ -41,15 +42,32 @@ class StoriesRemoteDataSource(private val service: DesignerNewsService) {
     }
 
     suspend fun search(query: String, page: Int): Result<List<StoryResponse>> {
+        val queryWithoutPrefix =
+            query.replace(DesignerNewsSearchSourceItem.DESIGNER_NEWS_QUERY_PREFIX, "")
         return try {
-            val response = service.search(query, page).await()
+            val searchResults = service.search(queryWithoutPrefix, page).await()
+            val ids = searchResults.body()
+            if (searchResults.isSuccessful && !ids.isNullOrEmpty()) {
+                val commaSeparatedIds = ids.joinToString(",")
+                loadStories(commaSeparatedIds)
+            } else {
+                Result.Error(IOException("Error searching $queryWithoutPrefix"))
+            }
+        } catch (e: Exception) {
+            Result.Error(IOException("Error searching $queryWithoutPrefix", e))
+        }
+    }
+
+    private suspend fun loadStories(commaSeparatedIds: String): Result<List<StoryResponse>> {
+        return try {
+            val response = service.getStories(commaSeparatedIds).await()
             getResult(response = response, onError = {
                 Result.Error(
-                    IOException("Error searching $query ${response.code()} ${response.message()}")
+                    IOException("Error getting stories ${response.code()} ${response.message()}")
                 )
             })
         } catch (e: Exception) {
-            Result.Error(IOException("Error searching $query", e))
+            Result.Error(IOException("Error getting stories", e))
         }
     }
 

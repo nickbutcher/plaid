@@ -63,7 +63,7 @@ object DribbbleSearchConverter : Converter<ResponseBody, List<Shot>> {
         val title = descriptionBlock.select("strong").first().text()
         // API responses wrap description in a <p> tag. Do the same for consistent display.
         var description = descriptionBlock.select("span.comment").text().trim { it <= ' ' }
-        if (!description.isNullOrEmpty()) {
+        if (description.isNotEmpty()) {
             description = "<p>$description</p>"
         }
         var imgUrl = element.select("img").first().attr("src")
@@ -76,8 +76,10 @@ object DribbbleSearchConverter : Converter<ResponseBody, List<Shot>> {
         } catch (e: ParseException) {
             null
         }
-        val likesCount = element.select("li.fav").first().child(0).text().replace(",", "").toLong()
-        val viewsCount = element.select("li.views").first().child(0).text().replace(",", "").toLong()
+        // in case the shot doesn't have any likes, the tag is missing completely
+        val likesCount = element.select("li.fav").first()?.child(0)?.text()?.toInt() ?: 0
+
+        val viewsCount = element.select("li.views").first().child(0).text().replace(",", "").toInt()
         val player = parsePlayer(element.select("h2").first())
 
         return Shot(
@@ -103,7 +105,7 @@ object DribbbleSearchConverter : Converter<ResponseBody, List<Shot>> {
         val matchId = PATTERN_PLAYER_ID.matcher(avatarUrl)
         var id: Long = -1L
         if (matchId.find() && matchId.groupCount() == 1) {
-            id = java.lang.Long.parseLong(matchId.group(1))
+            id = matchId.group(1).toLong()
         }
         val slashUsername = userBlock.attr("href")
         val username = slashUsername.substring(1)

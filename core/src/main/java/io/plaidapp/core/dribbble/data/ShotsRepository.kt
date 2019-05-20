@@ -16,32 +16,23 @@
 
 package io.plaidapp.core.dribbble.data
 
-import io.plaidapp.core.data.CoroutinesContextProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
 
 /**
  * Repository class that handles working with Dribbble.
  */
-class ShotsRepository(
-    private val remoteDataSource: SearchRemoteDataSource,
-    private val contextProvider: CoroutinesContextProvider
-) {
+class ShotsRepository constructor(private val remoteDataSource: SearchRemoteDataSource) {
 
-    private val inflight = mutableMapOf<String, Job>()
     private val shotCache = mutableMapOf<Long, Shot>()
 
-    fun search(
-        query: String,
-        page: Int,
-        onResult: (Result<List<Shot>>) -> Unit
-    ) {
-        val id = "$query::$page"
-        inflight[id] = launchSearch(query, page, id, onResult)
+    suspend fun search(query: String, page: Int): Result<List<Shot>> {
+        val result = remoteDataSource.search(query, page)
+        if (result is Result.Success) {
+            cache(result.data)
+        }
+        return result
     }
 
     fun getShot(id: Long): Result<Shot> {
@@ -53,38 +44,17 @@ class ShotsRepository(
         }
     }
 
-    fun cancelAllSearches() {
-        inflight.values.forEach { it.cancel() }
-        inflight.clear()
-    }
-
-    private fun launchSearch(
-        query: String,
-        page: Int,
-        id: String,
-        onResult: (Result<List<Shot>>) -> Unit
-    ) = launch(contextProvider.io) {
-        val result = remoteDataSource.search(query, page)
-        inflight.remove(id)
-        if (result is Result.Success) {
-            cache(result.data)
-        }
-        withContext(contextProvider.main) { onResult(result) }
-    }
-
     private fun cache(shots: List<Shot>) {
         shots.associateTo(shotCache) { it.id to it }
     }
 
     companion object {
-        @Volatile private var INSTANCE: ShotsRepository? = null
+        @Volatile
+        private var INSTANCE: ShotsRepository? = null
 
-        fun getInstance(
-            remoteDataSource: SearchRemoteDataSource,
-            contextProvider: CoroutinesContextProvider
-        ): ShotsRepository {
+        fun getInstance(remoteDataSource: SearchRemoteDataSource): ShotsRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: ShotsRepository(remoteDataSource, contextProvider)
+                INSTANCE ?: ShotsRepository(remoteDataSource)
                     .also { INSTANCE = it }
             }
         }

@@ -18,21 +18,24 @@
 
 <resources>
 
-    <style name="Plaid.Translucent.DesignerNewsLogin">
+    <style name="Plaid.DesignerNews" parent="Plaid.Translucent">
+        <item name="colorPrimary">@color/designer_news</item>
+        <item name="colorPrimaryVariant">@color/designer_news_variant</item>
+        <item name="colorOnPrimary">#ffffff</item>
+        <item name="colorSecondary">@color/designer_news_secondary</item>
+        <item name="colorSecondaryVariant">@color/designer_news_variant</item>
+        <item name="colorControlActivated">@color/designer_news</item>
+        <item name="android:colorButtonNormal">@color/designer_news_button</item>
+    </style>
+
+    <style name="Plaid.DesignerNews.Login">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowAnimationStyle">@null</item>
-        <item name="android:colorPrimary">@color/designer_news</item>
-        <item name="android:colorAccent">@color/designer_news</item>
-        <item name="android:colorButtonNormal">@color/designer_news_button</item>
-        <item name="android:colorControlActivated">@color/designer_news</item>
     </style>
 
-    <style name="Plaid.Translucent.DesignerNewsStory">
-        <item name="android:colorPrimary">@color/designer_news</item>
-        <item name="android:colorAccent">@color/designer_news</item>
-        <item name="android:colorControlActivated">?android:colorAccent</item>
-        <item name="android:statusBarColor">@color/designer_news_dark</item>
+    <style name="Plaid.DesignerNews.Story">
+        <item name="android:statusBarColor">@color/designer_news_variant</item>
         <item name="android:navigationBarColor">@color/designer_news_super_dark</item>
         <item name="android:windowSharedElementEnterTransition">@transition/designer_news_story_shared_enter</item>
         <item name="android:windowSharedElementReturnTransition">@transition/designer_news_story_shared_return</item>
@@ -40,25 +43,28 @@
         <item name="android:windowReturnTransition">@transition/designer_news_story_return</item>
     </style>
 
-    <style name="Plaid.Translucent.PostDesignerNewsStory">
+    <style name="Plaid.DesignerNews.PostStory">
         <item name="android:windowAnimationStyle">@null</item>
-        <item name="android:colorPrimary">@color/designer_news</item>
-        <item name="android:colorAccent">@color/designer_news</item>
         <item name="android:statusBarColor">@color/background_super_dark</item>
         <item name="android:navigationBarColor">@color/background_super_dark</item>
-        <item name="android:colorButtonNormal">@color/designer_news_button</item>
-        <item name="android:colorControlActivated">@color/designer_news</item>
         <item name="android:colorControlNormal">@color/hint_disabled_dark</item>
     </style>
 
-    <style name="TextAppearance.CommentAuthor.DesignerNews">
-        <item name="android:textColor">@color/designer_news_author</item>
-    </style>
-
-    <style name="TextAppearance.DesignerNewsDescription" parent="@android:style/TextAppearance.Material.Subhead">
-        <item name="android:textColor">@color/text_secondary_dark</item>
+    <style name="TextAppearance.DesignerNewsDescription" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:letterSpacing">0.01</item>
         <item name="lineHeightHint">24sp</item>
+    </style>
+
+    <style name="Widget.Plaid.TextEntry" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/surface_contrast</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Plaid.TextEntry</item>
+    </style>
+
+    <!-- Set colorPrimary to colorSecondary as this doesn't vary in dark mode
+         i.e. contrasts on a dark colorSurface-->
+    <style name="ThemeOverlay.Plaid.TextEntry" parent="@style/ThemeOverlay.MaterialComponents.TextInputEditText.FilledBox">
+        <item name="colorPrimary">?attr/colorSecondary</item>
     </style>
 
 </resources>

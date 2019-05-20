@@ -16,17 +16,17 @@
 
 package io.plaidapp.core.dribbble.data.search
 
-import com.nhaarman.mockito_kotlin.doAnswer
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.doAnswer
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.errorResponseBody
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource.SortOrder
 import io.plaidapp.core.dribbble.data.shots
-import kotlinx.coroutines.experimental.CompletableDeferred
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -44,7 +44,7 @@ class SearchRemoteDataSourceTest {
 
     private val query = "Plaid shirts"
     private val page = 0
-    private val defaultSortOrder = DribbbleSearchService.SORT_RECENT
+    private val defaultSortOrder = SortOrder.RECENT.sort
     private val defaultResultsPerPage = DribbbleSearchService.PER_PAGE_DEFAULT
 
     @Test

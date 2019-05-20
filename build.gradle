@@ -14,50 +14,55 @@
  * limitations under the License.
  */
 
-buildscript {
-
+buildscript { scriptHandler ->
+    apply from: 'repositories.gradle',
+            to: scriptHandler
     ext.versions = [
-            'compileSdk'        : 28,
-            'minSdk'            : 23,
-            'targetSdk'         : 28,
-            'constraintLayout'  : '1.1.2',
-            'coreKtx'           : '0.3',
-            'coroutines'        : '0.22.5',
-            'crashlytics'       : '2.9.4',
-            'espresso'          : '3.0.2',
-            'fabric'            : '1.25.4',
-            'firebase'          : '16.0.1',
-            'glide'             : '4.7.1',
-            'googleServices'    : '4.0.1',
-            'gson'              : '2.8.5',
-            'jsoup'             : '1.11.3',
-            'junit'             : '4.12',
-            'kotlin'            : '1.2.60',
-            'ktlint'            : '0.24.0',
-            'lifecycle'         : '1.1.1',
-            'mockito'           : '2.19.0',
-            'mockito_kotlin'    : '1.6.0',
-            'okhttp'            : '3.10.0',
-            'retrofit'          : '2.4.0',
-            'retrofitCoroutines': '1.0.0',
-            'room'              : '1.1.1',
-            'supportLibrary'    : '27.1.1',
-            'test_rules'        : '1.0.2',
-            'test_runner'       : '1.0.2'
+            'compileSdk'         : 28,
+            'minSdk'             : 23,
+            'targetSdk'          : 28,
+            'appcompat'          : '1.1.0-alpha04',
+            'androidx'           : '1.0.0',
+            'androidxCollection' : '1.0.0',
+            'androidxCoreRuntime': '2.0.1-alpha01',
+            'androidxArch'       : '2.0.0',
+            'constraintLayout'   : '2.0.0-alpha2',
+            'coreKtx'            : '1.0.0',
+            'coroutines'         : '1.1.1',
+            'crashlytics'        : '2.9.8',
+            'dagger'             : '2.16',
+            'espresso'           : '3.1.0-beta02',
+            'extJunit'           : '1.1.0',
+            'fabric'             : '1.25.4',
+            'firebase'           : '16.0.6',
+            'glide'              : '4.8.0',
+            'googleServices'     : '4.0.1',
+            'gson'               : '2.8.5',
+            'jsoup'              : '1.11.3',
+            'junit'              : '4.12',
+            'kotlin'             : '1.3.20',
+            'ktlint'             : '0.24.0',
+            'legacyCoreUtils'    : '1.0.0',
+            'lifecycle'          : '2.1.0-alpha01',
+            'material'           : '1.1.0-alpha05',
+            'mockito'            : '2.23.0',
+            'mockito_kotlin'     : '2.0.0-RC3',
+            'okhttp'             : '3.10.0',
+            'retrofit'           : '2.4.0',
+            'retrofitCoroutines' : '0.9.2',
+            'room'               : '2.1.0-alpha05',
+            'supportLibrary'     : '28.0.0',
+            'test_rules'         : '1.1.0-beta02',
+            'test_runner'        : '1.1.0-beta02',
+            'ui_automator'       : '2.2.0-beta02',
+            'viewPager2'         : '1.0.0-alpha02'
     ]
     ext.names = [
             'applicationId': 'io.plaidapp'
     ]
 
-    repositories {
-        google()
-        mavenCentral()
-        jcenter()
-        maven { url 'https://maven.fabric.io/public' }
-    }
-
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0-alpha03'
+        classpath 'com.android.tools.build:gradle:3.4.0-rc02'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         classpath "com.google.gms:google-services:${versions.googleServices}"
         classpath "io.fabric.tools:gradle:${versions.fabric}"
@@ -66,7 +71,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.diffplug.gradle.spotless' version '3.13.0'
+    id 'com.diffplug.gradle.spotless' version '3.14.0'
 }
 
 ext {

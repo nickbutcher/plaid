@@ -18,6 +18,12 @@
 apply plugin: 'com.android.dynamic-feature'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+apply from: '../core_dependencies.gradle'
+apply from: '../test_dependencies.gradle'
+
+apply from: '../repositories.gradle'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -27,8 +33,12 @@ android {
         targetSdkVersion versions.targetSdk
         resConfig 'en'
 
-        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
+    }
+
+    dataBinding {
+        enabled true
     }
 
     compileOptions {
@@ -37,23 +47,16 @@ android {
     }
 }
 
-repositories {
-    google()
-    jcenter()
-}
-
 dependencies {
     implementation project(':app')
+    implementation project(':core')
+    implementation "androidx.room:room-ktx:${versions.room}"
 
-    testImplementation project(':test_shared')
-    testImplementation "android.arch.core:core-testing:${versions.lifecycle}"
-    testImplementation "com.nhaarman:mockito-kotlin:${versions.mockito_kotlin}"
-    testImplementation "junit:junit:${versions.junit}"
-    testImplementation "org.mockito:mockito-core:${versions.mockito}"
+    kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
+    kapt "androidx.room:room-compiler:${versions.room}"
 }
 
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
+// enabling experimental for Kotlin parcelize supports
+androidExtensions {
+    experimental = true
 }

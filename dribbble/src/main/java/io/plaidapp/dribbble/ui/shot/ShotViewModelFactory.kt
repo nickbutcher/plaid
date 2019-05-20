@@ -16,20 +16,23 @@
 
 package io.plaidapp.dribbble.ui.shot
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import io.plaidapp.core.data.CoroutinesContextProvider
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.dribbble.data.ShotsRepository
+import io.plaidapp.dribbble.domain.CreateShotUiModelUseCase
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
+import javax.inject.Inject
 
 /**
  * Factory for creating [ShotViewModel] with args.
  */
-class ShotViewModelFactory(
+class ShotViewModelFactory @Inject constructor(
     private val shotId: Long,
     private val shotRepository: ShotsRepository,
+    private val createShotUiModel: CreateShotUiModelUseCase,
     private val getShareShotInfoUseCase: GetShareShotInfoUseCase,
-    private val contextProvider: CoroutinesContextProvider
+    private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -40,8 +43,9 @@ class ShotViewModelFactory(
         return ShotViewModel(
             shotId,
             shotRepository,
+            createShotUiModel,
             getShareShotInfoUseCase,
-            contextProvider
+            dispatcherProvider
         ) as T
     }
 }

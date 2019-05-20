@@ -26,7 +26,7 @@
         </targets>
         <fade />
         <transition
-            class="io.plaidapp.ui.search.transitions.CircularReveal"
+            class="io.plaidapp.search.ui.transitions.CircularReveal"
             app:centerOn="@id/searchback"
             android:interpolator="@android:interpolator/linear_out_slow_in" />
     </transitionSet>

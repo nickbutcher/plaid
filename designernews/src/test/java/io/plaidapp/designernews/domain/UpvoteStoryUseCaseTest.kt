@@ -16,13 +16,13 @@
 
 package io.plaidapp.designernews.domain
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.login.LoginRepository
-import io.plaidapp.core.designernews.data.users.model.User
-import io.plaidapp.core.designernews.data.votes.VotesRepository
-import kotlinx.coroutines.experimental.runBlocking
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser
+import io.plaidapp.designernews.data.votes.VotesRepository
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import java.io.IOException
@@ -34,12 +34,13 @@ class UpvoteStoryUseCaseTest {
 
     private val storyId = 24L
     private val userId = 63L
-    private val user = User(
+    private val user = LoggedInUser(
         id = userId,
         firstName = "Plaicent",
         lastName = "van Plaid",
         displayName = "Plaicent van Plaid",
-        portraitUrl = "www"
+        portraitUrl = "www",
+        upvotes = listOf(123L)
     )
 
     private val loginRepository: LoginRepository = mock()
@@ -53,7 +54,7 @@ class UpvoteStoryUseCaseTest {
 
         // When upvoting a story
         // Then an exception is thrown
-        runBlocking { upvoteStoryUseCase.upvoteStory(1L) }
+        runBlocking { upvoteStoryUseCase(1L) }
     }
 
     @Test
@@ -65,7 +66,7 @@ class UpvoteStoryUseCaseTest {
             .thenReturn(Result.Success(Unit))
 
         // When upvoting a story
-        val result = upvoteStoryUseCase.upvoteStory(storyId)
+        val result = upvoteStoryUseCase(storyId)
 
         // Then the use case returns success
         Assert.assertEquals(Result.Success(Unit), result)
@@ -80,7 +81,7 @@ class UpvoteStoryUseCaseTest {
             .thenReturn(Result.Error(IOException("error")))
 
         // When upvoting a story
-        val result = upvoteStoryUseCase.upvoteStory(storyId)
+        val result = upvoteStoryUseCase(storyId)
 
         // Then the use case returns with error
         Assert.assertTrue(result is Result.Error)

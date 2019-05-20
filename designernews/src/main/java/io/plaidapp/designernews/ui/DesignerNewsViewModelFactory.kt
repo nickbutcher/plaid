@@ -16,23 +16,25 @@
 
 package io.plaidapp.designernews.ui
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import io.plaidapp.core.data.CoroutinesContextProvider
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.designernews.ui.login.LoginViewModel
+import javax.inject.Inject
 
 /**
  * Factory for Designer News [ViewModel]s
  */
-class DesignerNewsViewModelFactory(
+class DesignerNewsViewModelFactory @Inject constructor(
     private val loginRepository: LoginRepository,
-    private val contextProvider: CoroutinesContextProvider
+    private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModelProvider.Factory {
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
-            return LoginViewModel(loginRepository, contextProvider) as T
+            return LoginViewModel(loginRepository, dispatcherProvider) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

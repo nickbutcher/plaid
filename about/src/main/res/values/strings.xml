@@ -2,11 +2,9 @@
 <resources>
     <!-- about screen -->
     <string name="about_plaid_0">Plaid is a source of design news &amp; inspiration that serves as a concrete example of [material design principles](https://www.google.com/design/spec/material-design/introduction.html#introduction-principles). Plaid pulls data from [Designer News](https://www.designernews.co/), [Dribbble](https://dribbble.com/) &amp; [Product Hunt](https://www.producthunt.com/); it is in no way an official client for these services nor endorsed by them. It is rather good&#160;though.</string>
-    <string name="about_plaid_1">Plaid is written by Nick&#160;Butcher</string>
-    <string name="about_plaid_2">[Twitter](http://twitter.com/crafty) | [Google+](http://google.com/+NickButcher)</string>
-    <string name="about_plaid_3">The source code is available on [GitHub](http://github.com/nickbutcher/plaid)</string>
-    <string name="about_icon_0">"Plaid\'s icon is lovingly crafted by the inimitable Roman&#160;Nurik"</string>
-    <string name="about_icon_1">[Twitter](http://twitter.com/romannurik) | [Google+](http://google.com/+RomanNurik)</string>
+    <string name="about_plaid_1">Plaid is written by [Nick&#160;Butcher](http://twitter.com/crafty), [Florina&#160;Muntenescu](http://twitter.com/fmuntenescu), [Ben&#160;Weiss](http://twitter.com/keyboardsurfer), [Tiem&#160;Song](http://twitter.com/tiembo), [Manuel Vivo](https://twitter.com/manuelvicnt) and the Android community.</string>
+    <string name="about_plaid_2">The source code is available on [GitHub](http://github.com/nickbutcher/plaid).</string>
+    <string name="about_icon">"Plaid\'s icon is lovingly crafted by the inimitable [Roman&#160;Nurik"](http://twitter.com/romannurik)</string>
     <string name="about_libs_intro">Plaid is built with the help of these awesome&#160;libraries</string>
     <string name="about_lib_link">website</string>
 

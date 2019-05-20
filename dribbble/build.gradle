@@ -19,6 +19,11 @@ apply plugin: 'com.android.dynamic-feature'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
+apply from: '../core_dependencies.gradle'
+apply from: '../test_dependencies.gradle'
+
+apply from: '../repositories.gradle'
+
 android {
     compileSdkVersion versions.compileSdk
 
@@ -40,27 +45,9 @@ android {
     }
 }
 
-repositories {
-    google()
-    jcenter()
-}
-
 dependencies {
     implementation project(':app')
+    implementation project(':core')
 
-    testImplementation project(':test_shared')
-    testImplementation "android.arch.core:core-testing:${versions.lifecycle}"
-    testImplementation "com.nhaarman:mockito-kotlin:${versions.mockito_kotlin}"
-    testImplementation "junit:junit:${versions.junit}"
-    testImplementation "org.mockito:mockito-core:${versions.mockito}"
-
-    // Work around issue with runtime classpath version conflict
-    androidTestImplementation "com.android.support:support-core-utils:${versions.supportLibrary}"
-    androidTestImplementation "android.arch.lifecycle:runtime:${versions.lifecycle}"
-}
-
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
+    kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }

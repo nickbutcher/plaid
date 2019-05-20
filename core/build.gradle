@@ -20,6 +20,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+apply from: '../core_dependencies.gradle'
+apply from: '../test_dependencies.gradle'
+
+apply from: '../repositories.gradle'
+
 android {
     compileSdkVersion versions.compileSdk
 
@@ -27,7 +32,7 @@ android {
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
 
-        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         buildConfigField 'String', 'DESIGNER_NEWS_CLIENT_ID', "\"${designer_news_client_id}\""
         buildConfigField 'String',
@@ -59,60 +64,9 @@ android {
 
 }
 
-repositories {
-    google()
-    jcenter()
-}
-
 dependencies {
-    api project(':bypass')
-
-    api "android.arch.persistence.room:runtime:${versions.room}"
-    api "androidx.core:core-ktx:${versions.coreKtx}"
-    api "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
-    api "com.android.support:customtabs:${versions.supportLibrary}"
-    api "com.android.support:design:${versions.supportLibrary}"
-    api "com.android.support:palette-v7:${versions.supportLibrary}"
-    api "com.android.support:recyclerview-v7:${versions.supportLibrary}"
-    api "com.android.support:support-dynamic-animation:${versions.supportLibrary}"
-    api "com.github.bumptech.glide:glide:${versions.glide}"
     kapt "com.github.bumptech.glide:compiler:${versions.glide}"
-    api "com.github.bumptech.glide:okhttp3-integration:${versions.glide}"
-    api "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
-    api "com.google.code.gson:gson:${versions.gson}"
-    api "com.squareup.retrofit2:retrofit:${versions.retrofit}"
-    api "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
-    api "com.squareup.okhttp3:okhttp:${versions.okhttp}"
-    api "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
-    api "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:" +
-            "${versions.retrofitCoroutines}"
-    api "org.jsoup:jsoup:${versions.jsoup}"
-    api "android.arch.lifecycle:viewmodel:${versions.lifecycle}"
-    api "android.arch.lifecycle:extensions:${versions.lifecycle}"
-    kapt "android.arch.persistence.room:compiler:${versions.room}"
-
-    testImplementation project(':test_shared')
-    testImplementation "com.nhaarman:mockito-kotlin:${versions.mockito_kotlin}"
-    testImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
-    testImplementation "junit:junit:${versions.junit}"
-    testImplementation "org.mockito:mockito-core:${versions.mockito}"
-
-    androidTestImplementation project(':test_shared')
-    androidTestImplementation "com.android.support.test:runner:${versions.test_runner}"
-    androidTestImplementation "com.android.support.test:rules:${versions.test_rules}"
-    androidTestImplementation "com.android.support.test.espresso:espresso-core:${versions.espresso}"
-    androidTestImplementation "org.mockito:mockito-core:${versions.mockito}"
-    androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
-    androidTestImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
-}
-
-kotlin {
-    experimental {
-        coroutines 'enable'
-    }
+    kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }
 
 androidExtensions {

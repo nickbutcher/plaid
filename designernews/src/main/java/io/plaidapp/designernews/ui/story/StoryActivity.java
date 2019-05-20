@@ -23,7 +23,6 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.SharedElementCallback;
 import android.app.assist.AssistContent;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -32,41 +31,36 @@ import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.ShareCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.style.TextAppearanceSpan;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.view.animation.Interpolator;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.app.ShareCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
-import in.uncod.android.bypass.Bypass;
 import in.uncod.android.bypass.Markdown;
 import io.plaidapp.core.data.Result;
-import io.plaidapp.core.designernews.DesignerNewsPrefs;
-import io.plaidapp.core.designernews.Injection;
+import io.plaidapp.core.designernews.data.login.LoginRepository;
+import io.plaidapp.core.designernews.data.login.model.LoggedInUser;
 import io.plaidapp.core.designernews.data.stories.model.Story;
-import io.plaidapp.core.designernews.data.users.model.User;
-import io.plaidapp.core.designernews.domain.CommentsUseCase;
 import io.plaidapp.core.designernews.domain.model.Comment;
 import io.plaidapp.core.ui.transitions.GravityArcMotion;
 import io.plaidapp.core.ui.transitions.MorphTransform;
@@ -74,24 +68,22 @@ import io.plaidapp.core.ui.transitions.ReflowText;
 import io.plaidapp.core.ui.widget.CollapsingTitleLayout;
 import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout;
 import io.plaidapp.core.util.Activities;
+import io.plaidapp.core.util.ColorUtils;
 import io.plaidapp.core.util.HtmlUtils;
 import io.plaidapp.core.util.ImeUtils;
 import io.plaidapp.core.util.ViewUtils;
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper;
 import io.plaidapp.core.util.glide.GlideApp;
 import io.plaidapp.core.util.glide.ImageSpanTarget;
-import io.plaidapp.designernews.InjectionKt;
 import io.plaidapp.designernews.R;
+import io.plaidapp.designernews.dagger.Injector;
 import io.plaidapp.designernews.ui.login.LoginActivity;
 import io.plaidapp.ui.widget.PinnedOffsetView;
 import kotlin.Unit;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
+import javax.inject.Inject;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -128,11 +120,10 @@ public class StoryActivity extends AppCompatActivity {
 
     private Story story;
 
-    private CommentsUseCase commentsUseCase;
-    private StoryViewModel viewModel;
+    @Inject StoryViewModel viewModel;
+    @Inject LoginRepository loginRepository;
+    @Inject Markdown markdown;
 
-    private DesignerNewsPrefs designerNewsPrefs;
-    private Markdown markdown;
     private CustomTabActivityHelper customTab;
 
     @Override
@@ -140,40 +131,20 @@ public class StoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_designer_news_story);
 
-        Long storyId = getIntent().getLongExtra(Activities.DesignerNews.Story.EXTRA_STORY_ID, -1);
+        long storyId = getIntent().getLongExtra(Activities.DesignerNews.Story.EXTRA_STORY_ID, -1);
         if (storyId == -1) {
             finishAfterTransition();
         }
-        StoryViewModelFactory factory = InjectionKt.provideStoryViewModelFactory(storyId, this);
-        viewModel = ViewModelProviders.of(this, factory).get(StoryViewModel.class);
-        commentsUseCase = Injection.provideCommentsUseCase(this);
 
+        Injector.inject(storyId, this);
         bindResources();
 
         story = viewModel.getStory();
-
-        commentsUseCase.getComments(story.getLinks().getComments(),
-                result -> {
-                    if (result instanceof Result.Success) {
-                        Result.Success<List<Comment>> success = (Result.Success<List<Comment>>) result;
-                        List<Comment> data = success.getData();
-                        setupComments(data);
-                    }
-                    return Unit.INSTANCE;
-                });
+        viewModel.getUiModel().observe(this,
+                storyUiModel -> setupComments(storyUiModel.getComments()));
 
         fab.setOnClickListener(fabClick);
         chromeFader = new ElasticDragDismissFrameLayout.SystemChromeFader(this);
-        markdown = new Bypass(getResources().getDisplayMetrics(), new Bypass.Options()
-                .setBlockQuoteLineColor(
-                        ContextCompat.getColor(this, io.plaidapp.R.color.designer_news_quote_line))
-                .setBlockQuoteLineWidth(2) // dps
-                .setBlockQuoteLineIndent(8) // dps
-                .setPreImageLinebreakHeight(4) //dps
-                .setBlockQuoteIndentSize(TypedValue.COMPLEX_UNIT_DIP, 2f)
-                .setBlockQuoteTextColor(
-                        ContextCompat.getColor(this, io.plaidapp.R.color.designer_news_quote)));
-        designerNewsPrefs = DesignerNewsPrefs.get(this);
         layoutManager = new LinearLayoutManager(this);
         commentsList.setLayoutManager(layoutManager);
         commentsList.setItemAnimator(new CommentAnimator(
@@ -221,11 +192,7 @@ public class StoryActivity extends AppCompatActivity {
 
     private void setupComments(List<Comment> comments) {
         if (comments.size() > 0) {
-            // flatten the comments from a nested structure {@see Comment#comments} to a
-            // list appropriate for our adapter (using the depth attribute).
-            List<Comment> flattened = new ArrayList<>(story.getCommentCount());
-            unnestComments(comments, flattened);
-            commentsAdapter.updateList(flattened);
+            commentsAdapter.updateList(comments);
             commentsList.setAdapter(commentsAdapter);
         }
     }
@@ -261,6 +228,7 @@ public class StoryActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case RC_LOGIN_UPVOTE:
                 if (resultCode == RESULT_OK) {
@@ -548,7 +516,7 @@ public class StoryActivity extends AppCompatActivity {
         enterComment = enterCommentView.findViewById(R.id.comment);
         postComment = enterCommentView.findViewById(R.id.post_comment);
         postComment.setOnClickListener(v -> {
-            if (designerNewsPrefs.isLoggedIn()) {
+            if (loginRepository.isLoggedIn()) {
                 if (TextUtils.isEmpty(enterComment.getText())) return;
                 enterComment.setEnabled(false);
                 postComment.setEnabled(false);
@@ -559,25 +527,19 @@ public class StoryActivity extends AppCompatActivity {
             enterComment.clearFocus();
         });
         enterComment.setOnFocusChangeListener(enterCommentFocus);
-        // hide the comment view until we know that posting a DN comment works
-        enterCommentView.setVisibility(View.GONE);
         return enterCommentView;
     }
 
     private void addComment() {
-        final Call<Comment> comment = designerNewsPrefs.getApi()
-                .comment(story.getId(), enterComment.getText().toString());
-        comment.enqueue(new Callback<Comment>() {
-            @Override
-            public void onResponse(Call<Comment> call, Response<Comment> response) {
-                Comment responseComment = response.body();
+        // TODO move the result handling in the
+        viewModel.storyReplyRequested(enterComment.getText(), result -> {
+            if (result instanceof Result.Success) {
+                Comment responseComment = ((Result.Success<Comment>) result).getData();
                 commentAdded(responseComment);
-            }
-
-            @Override
-            public void onFailure(Call<Comment> call, Throwable t) {
+            } else {
                 commentAddingFailed();
             }
+            return Unit.INSTANCE;
         });
     }
 
@@ -596,7 +558,7 @@ public class StoryActivity extends AppCompatActivity {
     }
 
     private void upvoteStory() {
-        if (designerNewsPrefs.isLoggedIn()) {
+        if (loginRepository.isLoggedIn()) {
             if (!upvoteStory.isActivated()) {
                 upvoteStory.setActivated(true);
                 viewModel.storyUpvoteRequested(story.getId(),
@@ -630,23 +592,14 @@ public class StoryActivity extends AppCompatActivity {
     private void needsLogin(View triggeringView, int requestCode) {
         Intent login = new Intent(StoryActivity.this,
                 LoginActivity.class);
-        MorphTransform.addExtras(login, ContextCompat.getColor(this,
-                io.plaidapp.R.color.background_light),
+        MorphTransform.addExtras(login,
+                ColorUtils.getThemeColor(this, io.plaidapp.core.R.attr.colorSurface),
                 triggeringView.getHeight() / 2);
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                 StoryActivity.this,
                 triggeringView, getString(io.plaidapp.R.string.transition_designer_news_login));
 
         ActivityCompat.startActivityForResult(this, login, requestCode, options.toBundle());
-    }
-
-    private void unnestComments(List<Comment> nested, List<Comment> flat) {
-        for (Comment comment : nested) {
-            flat.add(comment);
-            if (comment.getReplies().size() > 0) {
-                unnestComments(comment.getReplies(), flat);
-            }
-        }
     }
 
     private View.OnFocusChangeListener enterCommentFocus = new View.OnFocusChangeListener() {
@@ -902,19 +855,13 @@ public class StoryActivity extends AppCompatActivity {
         }
 
         private void replyToComment(Long commentId, String reply) {
-            final Call<Comment> replyToComment = designerNewsPrefs.getApi()
-                    .replyToComment(commentId, reply);
-            replyToComment.enqueue(new Callback<Comment>() {
-                @Override
-                public void onResponse(Call<Comment> call, Response<Comment> response) {
-
-                }
-
-                @Override
-                public void onFailure(Call<Comment> call, Throwable t) {
+            // TODO move the result handling in the VM
+            viewModel.commentReplyRequested(reply, commentId, result -> {
+                if (result instanceof Result.Error) {
                     Toast.makeText(getApplicationContext(),
                             "Failed to post comment :(", Toast.LENGTH_SHORT).show();
                 }
+                return Unit.INSTANCE;
             });
         }
 
@@ -927,9 +874,8 @@ public class StoryActivity extends AppCompatActivity {
                             result -> {
                                 if (result instanceof Result.Success) {
                                     comment.setUpvoted(true);
-                                    ;
                                     // TODO fix this
-//                                    comment.vote_count++;
+                                    // comment.vote_count++;
                                     holder.getCommentVotes().setText(String.valueOf(comment.getUpvotesCount()));
                                     holder.getCommentVotes().setActivated(true);
                                 } else {
@@ -954,64 +900,6 @@ public class StoryActivity extends AppCompatActivity {
             holder.getCommentReply().clearFocus();
         }
 
-        private void handleCommentReplyFocus(CommentReplyViewHolder holder,
-                                             Interpolator interpolator) {
-            holder.getCommentVotes().animate()
-                    .translationX(-holder.getCommentVotes().getWidth())
-                    .alpha(0f)
-                    .setDuration(200L)
-                    .setInterpolator(interpolator);
-            holder.getReplyLabel().animate()
-                    .translationX(-holder.getCommentVotes().getWidth())
-                    .setDuration(200L)
-                    .setInterpolator(interpolator);
-            holder.getPostReply().setVisibility(View.VISIBLE);
-            holder.getPostReply().setAlpha(0f);
-            holder.getPostReply().animate()
-                    .alpha(1f)
-                    .setDuration(200L)
-                    .setInterpolator(interpolator)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            holder.itemView.setHasTransientState(true);
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            holder.itemView.setHasTransientState(false);
-                        }
-                    });
-        }
-
-        private void handleCommentReplyFocusLoss(CommentReplyViewHolder holder,
-                                                 Interpolator interpolator) {
-            holder.getCommentVotes().animate()
-                    .translationX(0f)
-                    .alpha(1f)
-                    .setDuration(200L)
-                    .setInterpolator(interpolator);
-            holder.getReplyLabel().animate()
-                    .translationX(0f)
-                    .setDuration(200L)
-                    .setInterpolator(interpolator);
-            holder.getPostReply().animate()
-                    .alpha(0f)
-                    .setDuration(200L)
-                    .setInterpolator(interpolator)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            holder.itemView.setHasTransientState(true);
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            holder.getPostReply().setVisibility(View.INVISIBLE);
-                            holder.itemView.setHasTransientState(true);
-                        }
-                    });
-        }
 
         @NonNull
         private CommentReplyViewHolder createCommentReplyHolder(ViewGroup parent) {
@@ -1020,11 +908,11 @@ public class StoryActivity extends AppCompatActivity {
 
             holder.getCommentVotes().setOnClickListener(v -> {
                 Comment comment = getComment(holder.getAdapterPosition());
-                handleCommentVotesClick(holder, designerNewsPrefs.isLoggedIn(), comment);
+                handleCommentVotesClick(holder, loginRepository.isLoggedIn(), comment);
             });
 
             holder.getPostReply().setOnClickListener(v -> {
-                if (designerNewsPrefs.isLoggedIn()) {
+                if (loginRepository.isLoggedIn()) {
                     String reply = holder.getCommentReply().getText().toString();
                     if (reply.isEmpty()) return;
 
@@ -1035,7 +923,7 @@ public class StoryActivity extends AppCompatActivity {
                     // insert a locally created comment before actually
                     // hitting the API for immediate response
                     int replyDepth = replyingTo.getDepth() + 1;
-                    User user = designerNewsPrefs.getUser();
+                    LoggedInUser user = loginRepository.getUser();
                     String commentBody = holder.getCommentReply().getText().toString();
                     final int newReplyPosition = commentsAdapter.addCommentReply(
                             new Comment(
@@ -1045,7 +933,6 @@ public class StoryActivity extends AppCompatActivity {
                                     new Date(),
                                     replyDepth,
                                     0,
-                                    Collections.emptyList(),
                                     user.getId(),
                                     user.getDisplayName(),
                                     user.getPortraitUrl(),
@@ -1065,15 +952,13 @@ public class StoryActivity extends AppCompatActivity {
 
             holder.getCommentReply().setOnFocusChangeListener((v, hasFocus) -> {
                 replyToCommentFocused = hasFocus;
-                final Interpolator interpolator = getFastOutSlowInInterpolator(holder
-                        .itemView.getContext());
                 if (hasFocus) {
-                    handleCommentReplyFocus(holder, interpolator);
-                    updateFabVisibility();
+                    holder.createCommentReplyFocusAnimator().start();
+
                 } else {
-                    handleCommentReplyFocusLoss(holder, interpolator);
-                    updateFabVisibility();
+                    holder.createCommentReplyFocusLossAnimator().start();
                 }
+                updateFabVisibility();
                 holder.getPostReply().setActivated(hasFocus);
             });
             return holder;

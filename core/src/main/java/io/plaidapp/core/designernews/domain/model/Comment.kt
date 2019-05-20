@@ -28,7 +28,6 @@ data class Comment(
     val createdAt: Date,
     val depth: Int,
     val upvotesCount: Int,
-    val replies: List<Comment>,
     val userId: Long,
     val userDisplayName: String?,
     val userPortraitUrl: String?,
