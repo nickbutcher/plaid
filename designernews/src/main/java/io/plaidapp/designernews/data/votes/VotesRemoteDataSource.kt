@@ -45,7 +45,7 @@ class VotesRemoteDataSource @Inject constructor(
         errorMessage = "Unable to upvote story"
     )
 
-    private suspend fun requestUpvoteStory(storyId: Long, userId: Long): Result<Unit> {
+    private fun requestUpvoteStory(storyId: Long, userId: Long): Result<Unit> {
         val requestData = workDataOf(
                 KEY_STORY_ID to storyId,
                 KEY_USER_ID to userId)
@@ -59,7 +59,9 @@ class VotesRemoteDataSource @Inject constructor(
                 .setInputData(requestData)
                 .build()
 
-        workManager.enqueue(request).result.get()
+        val listenableFuture = workManager.enqueue(request).getResult()
+
+        listenableFuture.get()// .addListener({ runOnUiThread(Runnable { this@MainActivity.onWorkCompleted() }) }, CurrentThreadExecutor())
 
         val workInfo = workManager.getWorkInfoById(request.id).get()
         return if (workInfo.state == WorkInfo.State.SUCCEEDED) {

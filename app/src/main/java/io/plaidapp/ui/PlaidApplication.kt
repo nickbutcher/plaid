@@ -19,13 +19,23 @@ package io.plaidapp.ui
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import androidx.work.Configuration
 import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.DaggerCoreComponent
+import io.plaidapp.util.PlaidWorkerFactory
 
 /**
  * Io and Behold
  */
-class PlaidApplication : Application() {
+class PlaidApplication : Application(), Configuration.Provider {
+
+    private val plaidWorkerFactory = PlaidWorkerFactory()
+
+    override fun getWorkManagerConfiguration(): Configuration =
+            Configuration.Builder()
+                    .setMinimumLoggingLevel(android.util.Log.INFO)
+                    .setWorkerFactory(plaidWorkerFactory)
+                    .build()
 
     private val coreComponent: CoreComponent by lazy {
         DaggerCoreComponent

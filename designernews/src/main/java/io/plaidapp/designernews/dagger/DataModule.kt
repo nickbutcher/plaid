@@ -30,6 +30,7 @@ import io.plaidapp.designernews.data.api.DesignerNewsService
 import io.plaidapp.designernews.data.database.DesignerNewsDatabase
 import io.plaidapp.designernews.data.database.LoggedInUserDao
 import io.plaidapp.designernews.worker.UpvoteStoryWorkerFactory
+import io.plaidapp.util.PlaidWorkerFactory
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -66,16 +67,12 @@ class DataModule(val context: Context) {
     @FeatureScope
     fun provideWorkManager(service: DesignerNewsService): WorkManager {
         // provide custom configuration
-        val config = Configuration.Builder()
-                .setMinimumLoggingLevel(android.util.Log.INFO)
-                .setWorkerFactory(UpvoteStoryWorkerFactory(service))
-                .build()
+        val appContext = context.applicationContext
+        if (appContext is Configuration.Provider) {
+            val factory = appContext.getWorkManagerConfiguration().workerFactory as PlaidWorkerFactory
+            factory.addFactory(UpvoteStoryWorkerFactory(service))
+        }
 
-        // initialize WorkManager
-        WorkManager.initialize(context, config)
-
-        // TODO update to WorkManager v2.1.0 new getInstance(context)
-        // to avoid possible double initialization (and the failsafe exception)
-        return WorkManager.getInstance()
+        return WorkManager.getInstance(context)
     }
 }
