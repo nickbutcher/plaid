@@ -23,11 +23,10 @@ import androidx.work.WorkerParameters
 import kotlinx.coroutines.Dispatchers
 import io.plaidapp.designernews.data.api.DesignerNewsService
 import io.plaidapp.designernews.data.votes.model.UpvoteStoryRequest
+import kotlinx.coroutines.Dispatchers.Unconfined
 
 class UpvoteStoryWorker(appContext: Context, workerParams: WorkerParameters, private val service: DesignerNewsService)
     : CoroutineWorker(appContext, workerParams) {
-
-    override val coroutineContext = Dispatchers.Unconfined
 
     override suspend fun doWork(): Result {
 

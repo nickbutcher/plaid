@@ -28,12 +28,12 @@ class UpvoteStoryWorkerFactory(private val service: DesignerNewsService) : Worke
         appContext: Context,
         workerClassName: String,
         workerParameters: WorkerParameters
-    ): ListenableWorker {
+    ): ListenableWorker? {
 
-        if (workerClassName.equals("io.plaidapp.designernews.worker.UpvoteStoryWorker")) {
-            return UpvoteStoryWorker(appContext, workerParameters, service)
+        return if (workerClassName.equals("io.plaidapp.designernews.worker.UpvoteStoryWorker")) {
+            UpvoteStoryWorker(appContext, workerParameters, service)
         } else {
-            throw Exception("Unexpected Worker classname: $workerClassName")
+            null
         }
     }
 }

@@ -43,7 +43,7 @@ buildscript { scriptHandler ->
             'gson'               : '2.8.5',
             'jsoup'              : '1.11.3',
             'junit'              : '4.12',
-            'kotlin'             : '1.3.21',
+            'kotlin'             : '1.3.31',
             'ktlint'             : '0.24.0',
             'legacyCoreUtils'    : '1.0.0',
             'lifecycle'          : '2.1.0-alpha01',
@@ -59,14 +59,14 @@ buildscript { scriptHandler ->
             'test_runner'        : '1.1.0-beta02',
             'ui_automator'       : '2.2.0-beta02',
             'viewPager2'         : '1.0.0-alpha02',
-            'workmanager'        : '2.0.1'
+            'workmanager'        : '2.1.0-alpha02'
     ]
     ext.names = [
             'applicationId': 'io.plaidapp'
     ]
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0-rc03'
+        classpath 'com.android.tools.build:gradle:3.4.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         classpath "com.google.gms:google-services:${versions.googleServices}"
         classpath "io.fabric.tools:gradle:${versions.fabric}"

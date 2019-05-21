@@ -23,13 +23,23 @@ import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import androidx.core.os.BuildCompat
+import androidx.work.Configuration
 import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.DaggerCoreComponent
+import io.plaidapp.util.PlaidWorkerFactory
 
 /**
  * Io and Behold
  */
-class PlaidApplication : Application() {
+class PlaidApplication : Application(), Configuration.Provider {
+
+    private val plaidWorkerFactory = PlaidWorkerFactory()
+
+    override fun getWorkManagerConfiguration(): Configuration =
+            Configuration.Builder()
+                    .setMinimumLoggingLevel(android.util.Log.INFO)
+                    .setWorkerFactory(plaidWorkerFactory)
+                    .build()
 
     override fun onCreate() {
         super.onCreate()
