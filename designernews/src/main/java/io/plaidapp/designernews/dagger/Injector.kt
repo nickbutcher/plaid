@@ -20,9 +20,8 @@ package io.plaidapp.designernews.dagger
 
 import `in`.uncod.android.bypass.Bypass
 import android.util.TypedValue
+import androidx.core.content.ContextCompat
 import io.plaidapp.core.dagger.MarkdownModule
-import io.plaidapp.core.util.ColorUtils
-import io.plaidapp.designernews.R
 import io.plaidapp.designernews.ui.login.LoginActivity
 import io.plaidapp.designernews.ui.story.StoryActivity
 import io.plaidapp.ui.coreComponent
