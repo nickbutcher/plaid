@@ -174,7 +174,7 @@
                     android:text="@string/confirm_save_designer_news_search"
                     android:textAppearance="?attr/textAppearanceBody2" />
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/save_confirmed"
                     style="?android:borderlessButtonStyle"
                     android:layout_width="wrap_content"
