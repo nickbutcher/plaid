@@ -55,6 +55,7 @@ import android.widget.Toolbar;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.TooltipCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -363,6 +364,7 @@ public class HomeActivity extends AppCompatActivity {
                     getDelegate().applyDayNight();
                 }, 800L);
             });
+            TooltipCompat.setTooltipText(toggle, getString(R.string.theme));
         }
         setActionBar(toolbar);
     }
