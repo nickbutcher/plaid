@@ -22,6 +22,7 @@ import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.DataManager
 import io.plaidapp.core.data.prefs.SourcesRepository
 import io.plaidapp.core.designernews.data.login.LoginRepository
+import io.plaidapp.domain.LoadFeedUseCase
 import javax.inject.Inject
 
 /**
@@ -29,6 +30,7 @@ import javax.inject.Inject
  */
 class HomeViewModelFactory @Inject constructor(
     private val dataManager: DataManager,
+    private val loadFeed:  LoadFeedUseCase,
     private val designerNewsLoginRepository: LoginRepository,
     private val sourcesRepository: SourcesRepository,
     private val dispatcherProvider: CoroutinesDispatcherProvider
@@ -41,6 +43,7 @@ class HomeViewModelFactory @Inject constructor(
         }
         return HomeViewModel(
             dataManager,
+            loadFeed,
             designerNewsLoginRepository,
             sourcesRepository,
             dispatcherProvider

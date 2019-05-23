@@ -22,6 +22,7 @@ import io.plaidapp.core.dagger.BaseActivityComponent
 import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.SharedPreferencesModule
 import io.plaidapp.core.dagger.scope.FeatureScope
+import io.plaidapp.core.feed.DataSourcesRegistry
 import io.plaidapp.ui.HomeActivity
 
 /**
@@ -33,6 +34,8 @@ import io.plaidapp.ui.HomeActivity
 )
 @FeatureScope
 interface HomeComponent : BaseActivityComponent<HomeActivity> {
+
+    fun dataSourcesRegistry(): DataSourcesRegistry
 
     @Component.Builder
     interface Builder {

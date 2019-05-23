@@ -28,17 +28,18 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
+import javax.inject.Inject
 import kotlin.coroutines.coroutineContext
 
-class LoadFeedUseCase(
+class LoadFeedUseCase @Inject constructor(
     private val registry: DataSourcesRegistry
 ) {
 
     private val dataSources = registry.dataSources
 
-    private val _searchResult = MutableLiveData<List<PlaidItem>>()
-    val searchResult: LiveData<List<PlaidItem>>
-        get() = _searchResult
+    private val _feedResult = MutableLiveData<List<PlaidItem>>()
+    val feedResult: LiveData<List<PlaidItem>>
+        get() = _feedResult
 
     suspend operator fun invoke() {
         dataSources.value?.apply { loadMore(this) }
@@ -53,9 +54,9 @@ class LoadFeedUseCase(
             deferredJobs.add(scope.async {
                 val result = it.loadMore()
                 if (result is Result.Success) {
-                    val oldItems = _searchResult.value.orEmpty().toMutableList()
+                    val oldItems = _feedResult.value.orEmpty().toMutableList()
                     val searchResult = getPlaidItemsForDisplay(oldItems, result.data)
-                    _searchResult.postValue(searchResult)
+                    _feedResult.postValue(searchResult)
                 }
             })
         }

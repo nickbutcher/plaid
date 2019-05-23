@@ -40,6 +40,7 @@ import io.plaidapp.core.ui.filter.SourcesHighlightUiModel
 import io.plaidapp.core.ui.filter.SourcesUiModel
 import io.plaidapp.core.ui.getPlaidItemsForDisplay
 import io.plaidapp.core.util.event.Event
+import io.plaidapp.domain.LoadFeedUseCase
 import kotlinx.coroutines.launch
 import java.util.Collections
 
@@ -51,6 +52,7 @@ import java.util.Collections
  */
 class HomeViewModel(
     val dataManager: DataManager,
+    private val loadFeed: LoadFeedUseCase,
     private val designerNewsLoginRepository: LoginRepository,
     private val sourcesRepository: SourcesRepository,
     private val dispatcherProvider: CoroutinesDispatcherProvider

@@ -31,6 +31,8 @@ import io.plaidapp.core.dagger.SourcesRepositoryModule
 import io.plaidapp.core.dagger.dribbble.DribbbleDataModule
 import io.plaidapp.core.dagger.qualifier.IsPocketInstalled
 import io.plaidapp.core.data.pocket.PocketUtils
+import io.plaidapp.core.feed.DataSourcesRegistry
+import io.plaidapp.core.interfaces.PlaidDataSource
 import io.plaidapp.core.ui.ConnectivityChecker
 import io.plaidapp.ui.HomeActivity
 import io.plaidapp.ui.HomeViewModel
@@ -87,6 +89,14 @@ abstract class HomeModule {
             } else {
                 null
             }
+        }
+
+        @JvmStatic
+        @Provides
+        fun dataSourcesRegistry(activity: Activity): DataSourcesRegistry {
+            val dataSources = emptySet<PlaidDataSource>()
+
+            return DataSourcesRegistry(dataSources)
         }
     }
 }
