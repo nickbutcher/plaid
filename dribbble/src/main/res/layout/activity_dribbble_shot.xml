@@ -165,7 +165,7 @@
                     android:textAppearance="@style/TextAppearance.DribbbleShotDescription"
                     android:textColorHighlight="@color/dribbble_link_highlight"
                     android:textColorLink="@color/dribbble_links"
-                    app:htmlText="@{uiModel.formattedDescription}"
+                    app:htmlTextOrGone="@{uiModel.formattedDescription}"
                     tools:text="Check out this sweet eye candy!" />
 
                 <io.plaidapp.core.ui.widget.BaselineGridTextView
