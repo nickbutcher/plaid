@@ -166,7 +166,6 @@
                     android:textColorHighlight="@color/dribbble_link_highlight"
                     android:textColorLink="@color/dribbble_links"
                     app:htmlText="@{uiModel.formattedDescription}"
-                    app:goneUnless="@{uiModel.shouldHideDescription}"
                     tools:text="Check out this sweet eye candy!" />
 
                 <io.plaidapp.core.ui.widget.BaselineGridTextView
