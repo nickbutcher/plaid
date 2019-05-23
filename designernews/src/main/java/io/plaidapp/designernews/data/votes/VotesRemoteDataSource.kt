@@ -21,6 +21,7 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import androidx.work.await
 import androidx.work.workDataOf
 import io.plaidapp.core.data.Result
 import io.plaidapp.designernews.data.votes.model.UpvoteCommentRequest
@@ -45,7 +46,7 @@ class VotesRemoteDataSource @Inject constructor(
         errorMessage = "Unable to upvote story"
     )
 
-    private fun requestUpvoteStory(storyId: Long, userId: Long): Result<Unit> {
+    private suspend fun requestUpvoteStory(storyId: Long, userId: Long): Result<Unit> {
         val requestData = workDataOf(
                 KEY_STORY_ID to storyId,
                 KEY_USER_ID to userId)
@@ -59,9 +60,9 @@ class VotesRemoteDataSource @Inject constructor(
                 .setInputData(requestData)
                 .build()
 
-        val listenableFuture = workManager.enqueue(request).getResult()
+        val listenableFuture = workManager.enqueue(request).result
 
-        listenableFuture.get()// .addListener({ runOnUiThread(Runnable { this@MainActivity.onWorkCompleted() }) }, CurrentThreadExecutor())
+        listenableFuture.await()
 
         val workInfo = workManager.getWorkInfoById(request.id).get()
         return if (workInfo.state == WorkInfo.State.SUCCEEDED) {
