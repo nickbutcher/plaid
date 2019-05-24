@@ -69,7 +69,6 @@ fun bindHtmlText(
     htmlText: CharSequence?
 ) {
     if (htmlText == null) {
-        // Fixes #675
         textView.visibility = GONE
         return
     }
