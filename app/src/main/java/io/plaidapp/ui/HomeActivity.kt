@@ -388,9 +388,8 @@ class HomeActivity : AppCompatActivity() {
             )
             itemAnimator = HomeGridItemAnimator()
             addOnScrollListener(shotPreloader)
+            layoutManager = this@HomeActivity.layoutManager
         }
-
-        layoutManager = grid.layoutManager as GridLayoutManager
     }
 
     private fun handleDrawerInsets(insets: WindowInsets) {
