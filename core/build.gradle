@@ -72,6 +72,8 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:${versions.okhttp}"
     implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
     implementation "org.jsoup:jsoup:${versions.jsoup}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
 
     kapt "com.github.bumptech.glide:compiler:${versions.glide}"
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
