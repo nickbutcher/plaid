@@ -30,7 +30,7 @@ import javax.inject.Inject
  */
 class HomeViewModelFactory @Inject constructor(
     private val dataManager: DataManager,
-    private val loadFeed:  LoadFeedUseCase,
+    private val loadFeed: LoadFeedUseCase,
     private val designerNewsLoginRepository: LoginRepository,
     private val sourcesRepository: SourcesRepository,
     private val dispatcherProvider: CoroutinesDispatcherProvider

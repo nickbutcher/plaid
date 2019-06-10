@@ -66,12 +66,17 @@ class HomeViewModel(
     val feedProgress: LiveData<FeedProgressUiModel>
         get() = _feedProgress
 
-    private val feedData = MutableLiveData<List<PlaidItem>>()
+    private val _feedData: LiveData<List<PlaidItem>> = Transformations.map(loadFeed.feedResult) { data ->
+        val oldItems = feedData.value.orEmpty()
+        getPlaidItemsForDisplay(oldItems, data)
+    }
+    private val feedData: LiveData<List<PlaidItem>>
+        get() = _feedData
 
     private val onDataLoadedCallback = object : OnDataLoadedCallback<List<PlaidItem>> {
         override fun onDataLoaded(data: List<PlaidItem>) {
-            val oldItems = feedData.value.orEmpty()
-            updateFeedData(oldItems, data)
+//            val oldItems = feedData.value.orEmpty()
+//            updateFeedData(oldItems, data)
         }
     }
     // listener for notifying adapter when data sources are deactivated
@@ -125,11 +130,12 @@ class HomeViewModel(
     }
 
     fun loadData() = viewModelScope.launch {
-        dataManager.loadMore()
+        loadFeed()
     }
 
     override fun onCleared() {
-        dataManager.cancelLoading()
+        // dataManager.cancelLoading()
+        // TODO cancel loading of feed data
         super.onCleared()
     }
 
@@ -208,16 +214,12 @@ class HomeViewModel(
         }
     }
 
-    private fun updateFeedData(oldItems: List<PlaidItem>, newItems: List<PlaidItem>) {
-        feedData.postValue(getPlaidItemsForDisplay(oldItems, newItems))
-    }
-
     private fun handleDataSourceRemoved(dataSourceKey: String, oldItems: List<PlaidItem>) {
         val items = oldItems.toMutableList()
         items.removeAll {
             dataSourceKey == it.dataSource
         }
-        feedData.postValue(items)
+//        feedData.postValue(items)
     }
 
     private fun createNewSourceUiModels(sources: List<SourceItem>): List<SourceUiModel> {
