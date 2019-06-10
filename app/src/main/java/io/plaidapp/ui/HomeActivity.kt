@@ -104,7 +104,7 @@ class HomeActivity : AppCompatActivity() {
 
     private var columns = 0
     private var filtersAdapter = FilterAdapter()
-    private lateinit var layoutManager: GridLayoutManager
+    private lateinit var gridLayoutManager: GridLayoutManager
     private lateinit var drawer: DrawerLayout
 
     private lateinit var toolbar: Toolbar
@@ -188,8 +188,8 @@ class HomeActivity : AppCompatActivity() {
             // toolbar is laid out in front of the grid but when we scroll, we lower it's elevation
             // to allow the content to pass in front (and reset when scrolled to top of the grid)
             if (newState == RecyclerView.SCROLL_STATE_IDLE &&
-                layoutManager.findFirstVisibleItemPosition() == 0 &&
-                layoutManager.findViewByPosition(0)!!.top == grid.paddingTop &&
+                gridLayoutManager.findFirstVisibleItemPosition() == 0 &&
+                gridLayoutManager.findViewByPosition(0)!!.top == grid.paddingTop &&
                 toolbar.translationZ != 0f
             ) {
                 // at top, reset elevation
@@ -348,7 +348,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupGrid() {
-        layoutManager = GridLayoutManager(this@HomeActivity, columns).apply {
+        gridLayoutManager = GridLayoutManager(this@HomeActivity, columns).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return feedAdapter.getItemColumnSpan(position)
@@ -356,7 +356,7 @@ class HomeActivity : AppCompatActivity() {
             }
         }
         val infiniteScrollListener =
-            object : InfiniteScrollListener(layoutManager) {
+            object : InfiniteScrollListener(gridLayoutManager) {
                 override fun onLoadMore() {
                     viewModel.loadData()
                 }
@@ -376,6 +376,7 @@ class HomeActivity : AppCompatActivity() {
         )
 
         with(grid) {
+            layoutManager = gridLayoutManager
             adapter = feedAdapter
             addOnScrollListener(toolbarElevation)
             addOnScrollListener(infiniteScrollListener)
@@ -389,8 +390,6 @@ class HomeActivity : AppCompatActivity() {
             itemAnimator = HomeGridItemAnimator()
             addOnScrollListener(shotPreloader)
         }
-
-        layoutManager = grid.layoutManager as GridLayoutManager
     }
 
     private fun handleDrawerInsets(insets: WindowInsets) {
