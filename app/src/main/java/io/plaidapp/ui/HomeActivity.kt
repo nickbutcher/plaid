@@ -74,7 +74,6 @@ import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener
 import io.plaidapp.core.util.Activities
 import io.plaidapp.core.util.AnimUtils
 import io.plaidapp.core.util.ColorUtils
-import io.plaidapp.core.util.ShortcutHelper
 import io.plaidapp.core.util.ViewUtils
 import io.plaidapp.core.util.drawableToBitmap
 import io.plaidapp.core.util.event.Event
@@ -471,7 +470,6 @@ class HomeActivity : AppCompatActivity() {
                     startActivity(intentTo(Activities.DesignerNews.Login))
                 } else {
                     viewModel.logoutFromDesignerNews()
-                    ShortcutHelper.disablePostShortcut(this)
                     // TODO something better than a toast
                     Toast.makeText(
                         applicationContext, R.string.designer_news_logged_out,
