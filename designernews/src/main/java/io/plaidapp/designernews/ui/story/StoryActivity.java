@@ -194,15 +194,22 @@ public class StoryActivity extends AppCompatActivity {
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         final int stableListPaddingBottom = commentsList.getPaddingBottom();
+        final int stableListPaddingRight = commentsList.getPaddingRight();
+        final int stableFabMarginBottom = ((MarginLayoutParams) fab.getLayoutParams()).bottomMargin;
+        final int stableFabMarginRight = ((MarginLayoutParams) fab.getLayoutParams()).bottomMargin;
         draggableFrame.setOnApplyWindowInsetsListener((v, insets) -> {
-            final MarginLayoutParams lp = (MarginLayoutParams) v.getLayoutParams();
-            lp.topMargin = insets.getSystemWindowInsetTop();
-            v.setLayoutParams(lp);
+            final MarginLayoutParams listLp = (MarginLayoutParams) v.getLayoutParams();
+            listLp.topMargin = insets.getSystemWindowInsetTop();
+            v.setLayoutParams(listLp);
             commentsList.setPadding(
                     commentsList.getPaddingLeft(),
                     commentsList.getPaddingTop(),
-                    commentsList.getPaddingRight(),
+                    stableListPaddingRight + insets.getSystemWindowInsetRight(),
                     stableListPaddingBottom + insets.getSystemWindowInsetBottom());
+            final MarginLayoutParams fabLp = (MarginLayoutParams) fab.getLayoutParams();
+            fabLp.rightMargin = stableFabMarginRight + insets.getSystemWindowInsetRight();
+            fabLp.bottomMargin = stableFabMarginBottom + insets.getSystemWindowInsetBottom();
+            fab.setLayoutParams(fabLp);
             return insets;
         });
 
