@@ -39,7 +39,6 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         resConfig 'en'
-        buildConfigField 'String', 'GIT_SHA', "\"${gitSha}\""
         manifestPlaceholders += [
                 crashlyticsEnabled: false
         ]
