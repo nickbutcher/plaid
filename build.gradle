@@ -17,6 +17,9 @@
 buildscript { scriptHandler ->
     apply from: 'repositories.gradle',
             to: scriptHandler
+    repositories {
+        google()
+    }
     ext.versions = [
             'compileSdk'         : 28,
             'minSdk'             : 23,
@@ -62,7 +65,7 @@ buildscript { scriptHandler ->
     ]
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.1'
+        classpath 'com.android.tools.build:gradle:3.5.0-beta04'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         classpath "com.google.gms:google-services:${versions.googleServices}"
         classpath "io.fabric.tools:gradle:${versions.fabric}"
