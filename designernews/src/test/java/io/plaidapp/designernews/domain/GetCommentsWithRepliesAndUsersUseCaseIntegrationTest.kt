@@ -37,7 +37,6 @@ import io.plaidapp.designernews.reply1NoUser
 import io.plaidapp.designernews.replyResponse1
 import io.plaidapp.designernews.user1
 import io.plaidapp.designernews.user2
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -82,7 +81,7 @@ class GetCommentsWithRepliesAndUsersUseCaseIntegrationTest {
             400,
             errorResponseBody
         )
-        whenever(service.getComments("11")).thenReturn(CompletableDeferred(apiResult))
+        whenever(service.getComments("11")).thenReturn(apiResult)
 
         // When getting the comments
         val result = repository(listOf(11L))
@@ -124,8 +123,7 @@ class GetCommentsWithRepliesAndUsersUseCaseIntegrationTest {
             400,
             errorResponseBody
         )
-        whenever(service.getComments("11,12"))
-            .thenReturn(CompletableDeferred(resultChildrenError))
+        whenever(service.getComments("11,12")).thenReturn(resultChildrenError)
         // Given that the user request responds with success
         withUsers(listOf(user2), "222")
 
@@ -152,7 +150,7 @@ class GetCommentsWithRepliesAndUsersUseCaseIntegrationTest {
             errorResponseBody
         )
         whenever(service.getUsers("111"))
-            .thenReturn(CompletableDeferred(userError))
+            .thenReturn(userError)
 
         // When getting the comments from the repository
         val result = repository(listOf(11L))
@@ -167,16 +165,16 @@ class GetCommentsWithRepliesAndUsersUseCaseIntegrationTest {
     // Given that the users request responds with success
     private fun withUsers(users: List<User>, ids: String) = runBlocking {
         val userResult = Response.success(users)
-        whenever(service.getUsers(ids)).thenReturn(CompletableDeferred(userResult))
+        whenever(service.getUsers(ids)).thenReturn(userResult)
     }
 
-    private fun withComments(commentResponse: CommentResponse, ids: String) {
+    private suspend fun withComments(commentResponse: CommentResponse, ids: String) {
         val resultParent = Response.success(listOf(commentResponse))
-        whenever(service.getComments(ids)).thenReturn(CompletableDeferred(resultParent))
+        whenever(service.getComments(ids)).thenReturn(resultParent)
     }
 
-    private fun withComments(commentResponse: List<CommentResponse>, ids: String) {
+    private suspend fun withComments(commentResponse: List<CommentResponse>, ids: String) {
         val resultParent = Response.success(commentResponse)
-        whenever(service.getComments(ids)).thenReturn(CompletableDeferred(resultParent))
+        whenever(service.getComments(ids)).thenReturn(resultParent)
     }
 }

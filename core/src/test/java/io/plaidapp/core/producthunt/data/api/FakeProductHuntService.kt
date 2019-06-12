@@ -17,8 +17,6 @@
 package io.plaidapp.core.producthunt.data.api
 
 import io.plaidapp.core.producthunt.data.api.model.GetPostsResponse
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Deferred
 import retrofit2.Response
 
 /**
@@ -26,8 +24,8 @@ import retrofit2.Response
  */
 abstract class FakeProductHuntService : ProductHuntService {
 
-    override fun getPostsAsync(page: Int): Deferred<Response<GetPostsResponse>> {
-        return CompletableDeferred(getPostsResponse())
+    override suspend fun getPostsAsync(page: Int): Response<GetPostsResponse> {
+        return getPostsResponse()
     }
 
     abstract fun getPostsResponse(): Response<GetPostsResponse>

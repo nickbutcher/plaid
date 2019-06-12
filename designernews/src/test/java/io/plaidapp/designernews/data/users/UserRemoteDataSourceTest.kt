@@ -23,7 +23,6 @@ import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.designernews.data.api.DesignerNewsService
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType
 import okhttp3.ResponseBody
@@ -96,16 +95,16 @@ class UserRemoteDataSourceTest {
         assertTrue(result is Result.Error)
     }
 
-    private fun withUsersSuccess(ids: String, users: List<User>) {
+    private suspend fun withUsersSuccess(ids: String, users: List<User>) {
         val result = Response.success(users)
-        whenever(service.getUsers(ids)).thenReturn(CompletableDeferred(result))
+        whenever(service.getUsers(ids)).thenReturn(result)
     }
 
-    private fun withUsersError(ids: String) {
+    private suspend fun withUsersError(ids: String) {
         val result = Response.error<List<User>>(
             400,
             errorResponseBody
         )
-        whenever(service.getUsers(ids)).thenReturn(CompletableDeferred(result))
+        whenever(service.getUsers(ids)).thenReturn(result)
     }
 }

@@ -17,7 +17,6 @@
 package io.plaidapp.core.dribbble.data.search
 
 import io.plaidapp.core.dribbble.data.api.model.Shot
-import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -28,12 +27,12 @@ import retrofit2.http.Query
 interface DribbbleSearchService {
 
     @GET("search")
-    fun searchDeferred(
+    suspend fun searchDeferred(
         @Query("q") query: String,
         @Query("page") page: Int?,
         @Query("s") sort: String,
         @Query("per_page") pageSize: Int
-    ): Deferred<Response<List<Shot>>>
+    ): Response<List<Shot>>
 
     companion object {
 

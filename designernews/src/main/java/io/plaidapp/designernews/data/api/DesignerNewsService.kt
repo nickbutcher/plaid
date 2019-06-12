@@ -17,15 +17,12 @@
 package io.plaidapp.designernews.data.api
 
 import io.plaidapp.core.data.api.EnvelopePayload
-import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.designernews.data.votes.model.UpvoteCommentRequest
 import io.plaidapp.designernews.data.votes.model.UpvoteStoryRequest
 import io.plaidapp.designernews.data.comments.model.CommentResponse
 import io.plaidapp.designernews.data.comments.model.NewCommentRequest
 import io.plaidapp.designernews.data.comments.model.PostCommentResponse
-import kotlinx.coroutines.Deferred
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -43,27 +40,23 @@ interface DesignerNewsService {
 
     @EnvelopePayload("users")
     @GET("api/v2/users/{ids}")
-    fun getUsers(@Path("ids") userids: String): Deferred<Response<List<User>>>
-
-    @EnvelopePayload("story")
-    @POST("api/v2/stories/{id}/upvote")
-    fun upvoteStory(@Path("id") storyId: Long): Call<Story>
+    suspend fun getUsers(@Path("ids") userids: String): Response<List<User>>
 
     @Headers("Content-Type: application/vnd.api+json")
     @POST("api/v2/upvotes")
-    fun upvoteStoryV2(@Body request: UpvoteStoryRequest): Deferred<Response<Unit>>
+    suspend fun upvoteStory(@Body request: UpvoteStoryRequest): Response<Unit>
 
     @EnvelopePayload("comments")
     @GET("api/v2/comments/{ids}")
-    fun getComments(@Path("ids") commentIds: String): Deferred<Response<List<CommentResponse>>>
+    suspend fun getComments(@Path("ids") commentIds: String): Response<List<CommentResponse>>
 
     @Headers("Content-Type: application/vnd.api+json")
     @POST("api/v2/comments")
-    fun comment(@Body comment: NewCommentRequest): Deferred<Response<PostCommentResponse>>
+    suspend fun comment(@Body comment: NewCommentRequest): Response<PostCommentResponse>
 
     @Headers("Content-Type: application/vnd.api+json")
     @POST("api/v2/comment_upvotes")
-    fun upvoteComment(@Body request: UpvoteCommentRequest): Deferred<Response<Unit>>
+    suspend fun upvoteComment(@Body request: UpvoteCommentRequest): Response<Unit>
 
     companion object {
         const val ENDPOINT = "https://www.designernews.co/"

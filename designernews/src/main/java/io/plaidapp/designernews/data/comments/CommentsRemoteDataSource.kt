@@ -38,7 +38,7 @@ class CommentsRemoteDataSource(private val service: DesignerNewsService) {
 
     private suspend fun requestGetComments(ids: List<Long>): Result<List<CommentResponse>> {
         val requestIds = ids.joinToString(",")
-        val response = service.getComments(requestIds).await()
+        val response = service.getComments(requestIds)
         if (response.isSuccessful) {
             val body = response.body()
             if (body != null) {
@@ -82,7 +82,7 @@ class CommentsRemoteDataSource(private val service: DesignerNewsService) {
             story = storyId?.toString(),
             user = userId.toString()
         )
-        val response = service.comment(request).await()
+        val response = service.comment(request)
         if (response.isSuccessful) {
             val body = response.body()
             if (body != null && !body.comments.isEmpty()) {
