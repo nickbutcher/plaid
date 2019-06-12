@@ -20,6 +20,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.WindowInsets
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -82,4 +83,79 @@ fun bindImage(
         request = request.listener(listener)
     }
     request.into(imageView)
+}
+
+@BindingAdapter("layoutFullscreen")
+fun bindLayoutFullscreen(view: View, fullscreen: Boolean) {
+    if (fullscreen) {
+        view.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+    }
+}
+
+@BindingAdapter(
+    "paddingLeftSystemWindowInsets",
+    "paddingTopSystemWindowInsets",
+    "paddingRightSystemWindowInsets",
+    "paddingBottomSystemWindowInsets",
+    requireAll = false
+)
+fun applySystemWindowInsets(
+    view: View,
+    applyLeft: Boolean,
+    applyTop: Boolean,
+    applyRight: Boolean,
+    applyBottom: Boolean
+) {
+    view.doOnApplyWindowInsets { view, insets, padding ->
+        val left = if (applyLeft) insets.systemWindowInsetLeft else 0
+        val top = if (applyTop) insets.systemWindowInsetTop else 0
+        val right = if (applyRight) insets.systemWindowInsetRight else 0
+        val bottom = if (applyBottom) insets.systemWindowInsetBottom else 0
+
+        view.setPadding(
+            padding.left + left,
+            padding.top + top,
+            padding.right + right,
+            padding.bottom + bottom
+        )
+    }
+}
+
+fun View.doOnApplyWindowInsets(f: (View, WindowInsets, InitialPadding) -> Unit) {
+    // Create a snapshot of the view's padding state
+    val initialPadding = recordInitialPaddingForView(this)
+    // Set an actual OnApplyWindowInsetsListener which proxies to the given
+    // lambda, also passing in the original padding state
+    setOnApplyWindowInsetsListener { v, insets ->
+        f(v, insets, initialPadding)
+        // Always return the insets, so that children can also use them
+        insets
+    }
+    // request some insets
+    requestApplyInsetsWhenAttached()
+}
+
+class InitialPadding(val left: Int, val top: Int, val right: Int, val bottom: Int)
+
+private fun recordInitialPaddingForView(view: View) = InitialPadding(
+    view.paddingLeft, view.paddingTop, view.paddingRight, view.paddingBottom)
+
+fun View.requestApplyInsetsWhenAttached() {
+    if (isAttachedToWindow) {
+        // We're already attached, just request as normal
+        requestApplyInsets()
+    } else {
+        // We're not attached to the hierarchy, add a listener to
+        // request when we are
+        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(v: View) {
+                v.removeOnAttachStateChangeListener(this)
+                v.requestApplyInsets()
+            }
+
+            override fun onViewDetachedFromWindow(v: View) = Unit
+        })
+    }
 }
