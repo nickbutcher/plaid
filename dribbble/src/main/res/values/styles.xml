@@ -21,7 +21,6 @@
         <item name="android:colorPrimary">@color/dribbble</item>
         <item name="android:colorAccent">@color/dribbble</item>
         <item name="android:statusBarColor">@color/dribbble_super_dark</item>
-        <item name="android:navigationBarColor">@color/dribbble_super_dark</item>
         <item name="android:colorControlActivated">?android:colorAccent</item>
         <item name="android:windowAllowReturnTransitionOverlap">false</item>
     </style>
