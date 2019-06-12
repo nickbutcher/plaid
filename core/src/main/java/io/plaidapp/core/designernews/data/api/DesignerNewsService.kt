@@ -19,16 +19,13 @@ package io.plaidapp.core.designernews.data.api
 import io.plaidapp.core.data.api.EnvelopePayload
 import io.plaidapp.core.designernews.data.login.model.AccessToken
 import io.plaidapp.core.designernews.data.login.model.LoggedInUserResponse
-import io.plaidapp.core.designernews.data.poststory.model.NewStoryRequest
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import retrofit2.Call
 import retrofit2.Response
-import retrofit2.http.Body
 import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -71,11 +68,6 @@ interface DesignerNewsService {
     @EnvelopePayload("story")
     @POST("api/v2/stories/{id}/upvote")
     fun upvoteStory(@Path("id") storyId: Long): Call<Story>
-
-    @EnvelopePayload("stories")
-    @Headers("Content-Type: application/vnd.api+json")
-    @POST("api/v2/stories")
-    fun postStory(@Body story: NewStoryRequest): Call<List<Story>>
 
     companion object {
         const val ENDPOINT = "https://www.designernews.co/"
