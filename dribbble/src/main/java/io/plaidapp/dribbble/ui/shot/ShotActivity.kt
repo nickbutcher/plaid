@@ -137,17 +137,6 @@ class ShotActivity : AppCompatActivity() {
             }
             back.setOnClickListener { setResultAndFinish() }
         }
-
-        binding.draggableFrame.apply {
-            systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
-            setOnApplyWindowInsetsListener { _, insets ->
-                updateLayoutParams<MarginLayoutParams> { topMargin = insets.systemWindowInsetTop }
-                binding.bodyScroll.updatePadding(bottom = insets.systemWindowInsetBottom)
-                insets
-            }
-        }
     }
 
     override fun onResume() {

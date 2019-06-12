@@ -20,8 +20,10 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.ImageView
+import androidx.core.view.updateLayoutParams
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
@@ -101,14 +103,14 @@ fun bindLayoutFullscreen(view: View, fullscreen: Boolean) {
     "paddingBottomSystemWindowInsets",
     requireAll = false
 )
-fun applySystemWindowInsets(
+fun applySystemWindowInsetsPadding(
     view: View,
     applyLeft: Boolean,
     applyTop: Boolean,
     applyRight: Boolean,
     applyBottom: Boolean
 ) {
-    view.doOnApplyWindowInsets { view, insets, padding ->
+    view.doOnApplyWindowInsets { view, insets, padding, _ ->
         val left = if (applyLeft) insets.systemWindowInsetLeft else 0
         val top = if (applyTop) insets.systemWindowInsetTop else 0
         val right = if (applyRight) insets.systemWindowInsetRight else 0
@@ -123,13 +125,43 @@ fun applySystemWindowInsets(
     }
 }
 
-fun View.doOnApplyWindowInsets(f: (View, WindowInsets, InitialPadding) -> Unit) {
-    // Create a snapshot of the view's padding state
+@BindingAdapter(
+    "marginLeftSystemWindowInsets",
+    "marginTopSystemWindowInsets",
+    "marginRightSystemWindowInsets",
+    "marginBottomSystemWindowInsets",
+    requireAll = false
+)
+fun applySystemWindowInsetsMargin(
+    view: View,
+    applyLeft: Boolean,
+    applyTop: Boolean,
+    applyRight: Boolean,
+    applyBottom: Boolean
+) {
+    view.doOnApplyWindowInsets { view, insets, _, margin ->
+        val left = if (applyLeft) insets.systemWindowInsetLeft else 0
+        val top = if (applyTop) insets.systemWindowInsetTop else 0
+        val right = if (applyRight) insets.systemWindowInsetRight else 0
+        val bottom = if (applyBottom) insets.systemWindowInsetBottom else 0
+
+        view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            leftMargin = margin.left + left
+            topMargin = margin.top + top
+            rightMargin = margin.right + right
+            bottomMargin = margin.bottom + bottom
+        }
+    }
+}
+
+fun View.doOnApplyWindowInsets(f: (View, WindowInsets, InitialPadding, InitialMargin) -> Unit) {
+    // Create a snapshot of the view's padding & margin states
     val initialPadding = recordInitialPaddingForView(this)
+    val initialMargin = recordInitialMarginForView(this)
     // Set an actual OnApplyWindowInsetsListener which proxies to the given
-    // lambda, also passing in the original padding state
+    // lambda, also passing in the original padding & margin states
     setOnApplyWindowInsetsListener { v, insets ->
-        f(v, insets, initialPadding)
+        f(v, insets, initialPadding, initialMargin)
         // Always return the insets, so that children can also use them
         insets
     }
@@ -139,8 +171,17 @@ fun View.doOnApplyWindowInsets(f: (View, WindowInsets, InitialPadding) -> Unit) 
 
 class InitialPadding(val left: Int, val top: Int, val right: Int, val bottom: Int)
 
+class InitialMargin(val left: Int, val top: Int, val right: Int, val bottom: Int)
+
 private fun recordInitialPaddingForView(view: View) = InitialPadding(
-    view.paddingLeft, view.paddingTop, view.paddingRight, view.paddingBottom)
+    view.paddingLeft, view.paddingTop, view.paddingRight, view.paddingBottom
+)
+
+private fun recordInitialMarginForView(view: View): InitialMargin {
+    val lp = view.layoutParams as? ViewGroup.MarginLayoutParams
+        ?: throw IllegalArgumentException("Invalid view layout params")
+    return InitialMargin(lp.leftMargin, lp.topMargin, lp.rightMargin, lp.bottomMargin)
+}
 
 fun View.requestApplyInsetsWhenAttached() {
     if (isAttachedToWindow) {
