@@ -73,8 +73,6 @@
     <color name="designer_news_link_highlight">#b303a9f4</color>
     <color name="designer_news_story_comment_background">@android:color/transparent</color>
 
-    <color name="designer_news_super_dark">#000133</color>
-
     <!-- product hunt-->
     <color name="product_hunt">#ffff9800</color> <!--orange 500 -->
 
