@@ -29,17 +29,6 @@
     <string name="source_dribbble_search_material_design">Material Design</string>
     <string name="source_product_hunt">Product Hunt</string>
 
-    <!-- new designer news story -->
-    <string name="new_story_title">Post a story to Designer News</string>
-    <string name="new_story_instructions">Submit a link or provide a comment to start a discussion.</string>
-    <string name="new_story_link_or_comment">Include a link <b>or</b> a comment</string>
-    <string name="new_story_post_title">Post title</string>
-    <string name="new_story_url">Url</string>
-    <string name="new_story_url_hint">Link</string>
-    <string name="new_story_post">Post</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-
     <!-- designer news login -->
     <string name="username">Username</string>
     <string name="password">Password</string>
@@ -61,9 +50,6 @@
     <string name="shortcut_search_short_label">@string/search</string>
     <string name="shortcut_search_long_label">@string/search</string>
     <string name="shortcut_search_disabled">Search not available</string>
-    <string name="shortcut_post_short_label">New Story</string>
-    <string name="shortcut_post_long_label">New Designer News story</string>
-    <string name="shortcut_post_disabled">Log in to Designer News to post a new story</string>
 
     <string name="search">Search</string>
     <string name="filter">Filter</string>

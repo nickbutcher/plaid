@@ -70,7 +70,7 @@ object DribbbleSearchConverter : Converter<ResponseBody, List<Shot>> {
         if (imgUrl.contains("_teaser.")) {
             imgUrl = imgUrl.replace("_teaser.", ".")
         }
-        val animated = element.select("div.gif-indicator").first() != null
+        val animated = imgUrl?.endsWith(".gif", ignoreCase = true) ?: false
         val createdAt: Date? = try {
             DATE_FORMAT.parse(descriptionBlock.select("em.timestamp").first().text())
         } catch (e: ParseException) {

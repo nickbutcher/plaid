@@ -17,7 +17,6 @@
 package io.plaidapp.core.producthunt.data.api
 
 import io.plaidapp.core.producthunt.data.api.model.GetPostsResponse
-import kotlinx.coroutines.Deferred
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -28,7 +27,7 @@ import retrofit2.http.Query
 interface ProductHuntService {
 
     @GET("v1/posts")
-    fun getPostsAsync(@Query("days_ago") page: Int): Deferred<Response<GetPostsResponse>>
+    suspend fun getPostsAsync(@Query("days_ago") page: Int): Response<GetPostsResponse>
 
     companion object {
 

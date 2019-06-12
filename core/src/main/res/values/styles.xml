@@ -75,7 +75,6 @@
     <style name="Plaid.DesignerNews" parent="@style/Plaid.Translucent" />
     <style name="Plaid.DesignerNews.Login" />
     <style name="Plaid.DesignerNews.Story" />
-    <style name="Plaid.DesignerNews.PostStory" />
     <style name="Plaid.Translucent.Dribbble" />
     <style name="Plaid.Translucent.Dribbble.Shot" />
     <style name="Plaid.Translucent.Search" />

@@ -21,7 +21,6 @@ import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.producthunt.data.api.ProductHuntService
 import io.plaidapp.core.producthunt.data.api.model.GetPostsResponse
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -41,7 +40,7 @@ class ProductHuntRemoteDataSourceTest {
     fun loadData_whenResultSuccessful() = runBlocking {
         // Given that the service responds with success
         val result = Response.success(responseDataSuccess)
-        whenever(service.getPostsAsync(1)).thenReturn(CompletableDeferred(result))
+        whenever(service.getPostsAsync(1)).thenReturn(result)
 
         // When loading the data
         val response = dataSource.loadData(1)
@@ -58,7 +57,7 @@ class ProductHuntRemoteDataSourceTest {
             400,
             errorResponseBody
         )
-        whenever(service.getPostsAsync(1)).thenReturn(CompletableDeferred(result))
+        whenever(service.getPostsAsync(1)).thenReturn(result)
 
         // When loading posts
         val response = dataSource.loadData(1)

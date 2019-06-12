@@ -30,7 +30,7 @@ class StoriesRemoteDataSource(private val service: DesignerNewsService) {
 
     suspend fun loadStories(page: Int): Result<List<StoryResponse>> {
         return try {
-            val response = service.getStories(page).await()
+            val response = service.getStories(page)
             getResult(response = response, onError = {
                 Result.Error(
                     IOException("Error getting stories ${response.code()} ${response.message()}")
@@ -45,7 +45,7 @@ class StoriesRemoteDataSource(private val service: DesignerNewsService) {
         val queryWithoutPrefix =
             query.replace(DesignerNewsSearchSourceItem.DESIGNER_NEWS_QUERY_PREFIX, "")
         return try {
-            val searchResults = service.search(queryWithoutPrefix, page).await()
+            val searchResults = service.search(queryWithoutPrefix, page)
             val ids = searchResults.body()
             if (searchResults.isSuccessful && !ids.isNullOrEmpty()) {
                 val commaSeparatedIds = ids.joinToString(",")
@@ -60,7 +60,7 @@ class StoriesRemoteDataSource(private val service: DesignerNewsService) {
 
     private suspend fun loadStories(commaSeparatedIds: String): Result<List<StoryResponse>> {
         return try {
-            val response = service.getStories(commaSeparatedIds).await()
+            val response = service.getStories(commaSeparatedIds)
             getResult(response = response, onError = {
                 Result.Error(
                     IOException("Error getting stories ${response.code()} ${response.message()}")

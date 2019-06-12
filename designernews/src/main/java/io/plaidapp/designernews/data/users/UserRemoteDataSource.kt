@@ -36,7 +36,7 @@ class UserRemoteDataSource @Inject constructor(private val service: DesignerNews
     private suspend fun requestGetUsers(userIds: List<Long>): Result<List<User>> {
         val requestIds = userIds.joinToString(",")
 
-        val response = service.getUsers(requestIds).await()
+        val response = service.getUsers(requestIds)
         if (response.isSuccessful) {
             val body = response.body()
             if (body != null) {

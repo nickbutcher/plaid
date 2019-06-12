@@ -109,16 +109,6 @@ object Activities {
                         .addDefaultShareMenuItem()
             }
         }
-
-        /**
-         * PostNewDesignerNewsStory Activity
-         */
-        object PostStory : AddressableActivity {
-            override val className = "$PACKAGE_NAME.designernews.PostNewDesignerNewsStory"
-
-            const val RESULT_DRAG_DISMISSED = 3
-            const val RESULT_POSTING = 4
-        }
     }
 
     /**

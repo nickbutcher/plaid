@@ -76,28 +76,6 @@
             android:layout_gravity="center"
             android:layout="@layout/no_connection" />
 
-        <ImageButton
-            android:id="@+id/fab"
-            android:layout_width="@dimen/fab_size"
-            android:layout_height="@dimen/fab_size"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="@dimen/padding_normal"
-            android:layout_marginBottom="@dimen/padding_normal"
-            android:background="@drawable/fab"
-            android:elevation="@dimen/z_fab"
-            android:src="@drawable/ic_add_dark"
-            android:visibility="gone"
-            android:stateListAnimator="@animator/raise" />
-
-        <ViewStub
-            android:id="@+id/stub_posting_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="@dimen/padding_normal"
-            android:layout_marginBottom="@dimen/padding_normal"
-            android:layout="@layout/posting_progress" />
-
     </FrameLayout>
 
     <!-- filter drawer -->

@@ -27,7 +27,6 @@ import io.plaidapp.designernews.data.comments.model.PostCommentResponse
 import io.plaidapp.designernews.errorResponseBody
 import io.plaidapp.designernews.repliesResponses
 import io.plaidapp.designernews.replyResponse1
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -50,7 +49,7 @@ class CommentsRemoteDataSourceTest {
     fun getComments_whenRequestSuccessful() = runBlocking {
         // Given that the service responds with success
         val result = Response.success(repliesResponses)
-        whenever(service.getComments("1")).thenReturn(CompletableDeferred(result))
+        whenever(service.getComments("1")).thenReturn(result)
 
         // When getting the list of comments
         val response = dataSource.getComments(listOf(1L))
@@ -64,7 +63,7 @@ class CommentsRemoteDataSourceTest {
     fun getComments_forMultipleComments() = runBlocking {
         // Given that the service responds with success for specific ids
         val result = Response.success(repliesResponses)
-        whenever(service.getComments("11,12")).thenReturn(CompletableDeferred(result))
+        whenever(service.getComments("11,12")).thenReturn(result)
 
         // When getting the list of comments for specific list of ids
         val response = dataSource.getComments(listOf(11L, 12L))
@@ -81,7 +80,7 @@ class CommentsRemoteDataSourceTest {
             400,
             errorResponseBody
         )
-        whenever(service.getComments("1")).thenReturn(CompletableDeferred(result))
+        whenever(service.getComments("1")).thenReturn(result)
 
         // When getting the list of comments
         val response = dataSource.getComments(listOf(1L))
@@ -94,7 +93,7 @@ class CommentsRemoteDataSourceTest {
     fun getComments_whenResponseEmpty() = runBlocking {
         // Given that the service responds with success but with an empty response
         val result = Response.success<List<CommentResponse>>(null)
-        whenever(service.getComments("1")).thenReturn(CompletableDeferred(result))
+        whenever(service.getComments("1")).thenReturn(result)
 
         // When getting the list of comments
         val response = dataSource.getComments(listOf(1L))
@@ -147,7 +146,7 @@ class CommentsRemoteDataSourceTest {
             )
         )
         val request = NewCommentRequest(body, "11", null, "111")
-        whenever(service.comment(request)).thenReturn(CompletableDeferred(response))
+        whenever(service.comment(request)).thenReturn(response)
 
         // When adding a comment
         val result = dataSource.comment(body, 11L, null, 111L)
@@ -163,7 +162,7 @@ class CommentsRemoteDataSourceTest {
             PostCommentResponse(listOf(replyResponse1))
         )
         val request = NewCommentRequest(body, "11", null, "111")
-        whenever(service.comment(request)).thenReturn(CompletableDeferred(response))
+        whenever(service.comment(request)).thenReturn(response)
 
         // When adding a comment
         val result = dataSource.comment(body, 11L, null, 111L)
