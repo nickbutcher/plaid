@@ -87,6 +87,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static android.view.ViewGroup.MarginLayoutParams;
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 import static io.plaidapp.core.util.AnimUtils.getFastOutLinearInInterpolator;
 import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
@@ -120,9 +121,12 @@ public class StoryActivity extends AppCompatActivity {
 
     private Story story;
 
-    @Inject StoryViewModel viewModel;
-    @Inject LoginRepository loginRepository;
-    @Inject Markdown markdown;
+    @Inject
+    StoryViewModel viewModel;
+    @Inject
+    LoginRepository loginRepository;
+    @Inject
+    Markdown markdown;
 
     private CustomTabActivityHelper customTab;
 
@@ -185,6 +189,22 @@ public class StoryActivity extends AppCompatActivity {
         commentsAdapter = new DesignerNewsCommentsAdapter(
                 header, new ArrayList<>(0), enterCommentView);
         commentsList.setAdapter(commentsAdapter);
+
+        draggableFrame.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        final int stableListPaddingBottom = commentsList.getPaddingBottom();
+        draggableFrame.setOnApplyWindowInsetsListener((v, insets) -> {
+            final MarginLayoutParams lp = (MarginLayoutParams) v.getLayoutParams();
+            lp.topMargin = insets.getSystemWindowInsetTop();
+            v.setLayoutParams(lp);
+            commentsList.setPadding(
+                    commentsList.getPaddingLeft(),
+                    commentsList.getPaddingTop(),
+                    commentsList.getPaddingRight(),
+                    stableListPaddingBottom + insets.getSystemWindowInsetBottom());
+            return insets;
+        });
 
         customTab = new CustomTabActivityHelper();
         customTab.setConnectionCallback(customTabConnect);
