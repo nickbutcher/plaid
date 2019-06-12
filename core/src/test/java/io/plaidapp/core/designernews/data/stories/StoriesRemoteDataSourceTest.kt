@@ -25,7 +25,6 @@ import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.errorResponseBody
 import io.plaidapp.core.designernews.storyLinks
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -102,9 +101,9 @@ class StoriesRemoteDataSourceTest {
     fun search_withSuccess() = runBlocking {
         // Given that the service responds with success
         val storyIds = stories.map { it.id.toString() }
-        whenever(service.search(query, 2)).thenReturn(CompletableDeferred(Response.success(storyIds)))
+        whenever(service.search(query, 2)).thenReturn(Response.success(storyIds))
         val commaSeparatedIds = storyIds.joinToString(",")
-        whenever(service.getStories(commaSeparatedIds)).thenReturn(CompletableDeferred(Response.success(stories)))
+        whenever(service.getStories(commaSeparatedIds)).thenReturn(Response.success(stories))
 
         // When searching for stories
         val result = dataSource.search(query, 2)
@@ -117,7 +116,7 @@ class StoriesRemoteDataSourceTest {
     fun search_withErrorScrapingResults() = runBlocking {
         // Given that the service responds with error
         val error = Response.error<List<String>>(400, errorResponseBody)
-        whenever(service.search(query, 1)).thenReturn(CompletableDeferred(error))
+        whenever(service.search(query, 1)).thenReturn(error)
 
         // When searching for stories
         val result = dataSource.search(query, 1)
@@ -144,7 +143,7 @@ class StoriesRemoteDataSourceTest {
         // Given that the service responds with error
         val storyIds = stories.joinToString(",") { it.id.toString() }
         val error = Response.error<List<StoryResponse>>(400, errorResponseBody)
-        whenever(service.getStories(storyIds)).thenReturn(CompletableDeferred(error))
+        whenever(service.getStories(storyIds)).thenReturn(error)
 
         // When searching for stories
         val result = dataSource.search(query, 1)
@@ -166,16 +165,16 @@ class StoriesRemoteDataSourceTest {
         assertTrue(result is Result.Error)
     }
 
-    private fun withStoriesSuccess(page: Int, stories: List<StoryResponse>) {
+    private suspend fun withStoriesSuccess(page: Int, stories: List<StoryResponse>) {
         val result = Response.success(stories)
-        whenever(service.getStories(page)).thenReturn(CompletableDeferred(result))
+        whenever(service.getStories(page)).thenReturn(result)
     }
 
-    private fun withStoriesError(page: Int) {
+    private suspend fun withStoriesError(page: Int) {
         val result = Response.error<List<StoryResponse>>(
             400,
             errorResponseBody
         )
-        whenever(service.getStories(page)).thenReturn(CompletableDeferred(result))
+        whenever(service.getStories(page)).thenReturn(result)
     }
 }

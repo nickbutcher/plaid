@@ -36,7 +36,7 @@ class VotesRemoteDataSource @Inject constructor(private val service: DesignerNew
 
     private suspend fun requestUpvoteStory(storyId: Long, userId: Long): Result<Unit> {
         val request = UpvoteStoryRequest(storyId, userId)
-        val response = service.upvoteStoryV2(request).await()
+        val response = service.upvoteStory(request)
         return if (response.isSuccessful) {
             Result.Success(Unit)
         } else {
@@ -55,7 +55,7 @@ class VotesRemoteDataSource @Inject constructor(private val service: DesignerNew
 
     private suspend fun requestUpvoteComment(commentId: Long, userId: Long): Result<Unit> {
         val request = UpvoteCommentRequest(commentId, userId)
-        val response = service.upvoteComment(request).await()
+        val response = service.upvoteComment(request)
         return if (response.isSuccessful) {
             Result.Success(Unit)
         } else {

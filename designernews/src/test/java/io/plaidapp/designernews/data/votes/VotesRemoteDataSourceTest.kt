@@ -23,7 +23,6 @@ import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.designernews.data.api.DesignerNewsService
 import io.plaidapp.designernews.errorResponseBody
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -47,7 +46,7 @@ class VotesRemoteDataSourceTest {
     fun upvoteStory_whenRequestSuccessful() = runBlocking {
         // Given that the service responds with success
         val response = Response.success(Unit)
-        whenever(service.upvoteStoryV2(any())).thenReturn(CompletableDeferred(response))
+        whenever(service.upvoteStory(any())).thenReturn(response)
 
         // When upvoting a story
         val result = dataSource.upvoteStory(storyId, userId)
@@ -60,7 +59,7 @@ class VotesRemoteDataSourceTest {
     fun upvoteStory_whenRequestFailed() = runBlocking {
         // Given that the service responds with error
         val response = Response.error<Unit>(404, errorResponseBody)
-        whenever(service.upvoteStoryV2(any())).thenReturn(CompletableDeferred(response))
+        whenever(service.upvoteStory(any())).thenReturn(response)
 
         // When upvoting a story
         val result = dataSource.upvoteStory(storyId, userId)
@@ -73,7 +72,7 @@ class VotesRemoteDataSourceTest {
     fun upvoteStory_whenExceptionThrown() = runBlocking {
         // Given that the service trows an exception
         doAnswer { throw UnknownHostException() }
-            .whenever(service).upvoteStoryV2(any())
+            .whenever(service).upvoteStory(any())
 
         // When upvoting a story
         val result = dataSource.upvoteStory(storyId, userId)
@@ -86,7 +85,7 @@ class VotesRemoteDataSourceTest {
     fun upvoteComment_whenRequestSuccessful() = runBlocking {
         // Given that the service responds with success
         val response = Response.success(Unit)
-        whenever(service.upvoteComment(any())).thenReturn(CompletableDeferred(response))
+        whenever(service.upvoteComment(any())).thenReturn(response)
 
         // When upvoting a comment
         val result = dataSource.upvoteComment(storyId, userId)
@@ -99,7 +98,7 @@ class VotesRemoteDataSourceTest {
     fun upvoteComment_whenRequestFailed() = runBlocking {
         // Given that the service responds with error
         val response = Response.error<Unit>(404, errorResponseBody)
-        whenever(service.upvoteComment(any())).thenReturn(CompletableDeferred(response))
+        whenever(service.upvoteComment(any())).thenReturn(response)
 
         // When upvoting a comment
         val result = dataSource.upvoteComment(storyId, userId)

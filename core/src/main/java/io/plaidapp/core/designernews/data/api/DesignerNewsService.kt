@@ -22,8 +22,6 @@ import io.plaidapp.core.designernews.data.login.model.LoggedInUserResponse
 import io.plaidapp.core.designernews.data.poststory.model.NewStoryRequest
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
-import io.plaidapp.core.designernews.data.users.model.User
-import kotlinx.coroutines.Deferred
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -45,23 +43,19 @@ interface DesignerNewsService {
 
     @EnvelopePayload("stories")
     @GET("api/v2/stories")
-    fun getStories(@Query("page") page: Int?): Deferred<Response<List<StoryResponse>>>
+    suspend fun getStories(@Query("page") page: Int?): Response<List<StoryResponse>>
 
     @EnvelopePayload("stories")
     @GET("api/v2/stories/{ids}")
-    fun getStories(@Path("ids") commaSeparatedIds: String): Deferred<Response<List<StoryResponse>>>
-
-    @EnvelopePayload("users")
-    @GET("api/v2/users/{ids}")
-    fun getUsers(@Path("ids") userids: String): Deferred<Response<List<User>>>
+    suspend fun getStories(@Path("ids") commaSeparatedIds: String): Response<List<StoryResponse>>
 
     @EnvelopePayload("users")
     @GET("api/v2/me")
-    fun getAuthedUser(): Deferred<Response<List<LoggedInUserResponse>>>
+    suspend fun getAuthedUser(): Response<List<LoggedInUserResponse>>
 
     @FormUrlEncoded
     @POST("oauth/token")
-    fun login(@FieldMap loginParams: Map<String, String>): Deferred<Response<AccessToken>>
+    suspend fun login(@FieldMap loginParams: Map<String, String>): Response<AccessToken>
 
     /**
      * Search Designer News by scraping website.
@@ -69,10 +63,10 @@ interface DesignerNewsService {
      */
     @DesignerNewsSearch
     @GET("search?t=story")
-    fun search(
+    suspend fun search(
         @Query("q") query: String,
         @Query("p") page: Int?
-    ): Deferred<Response<List<String>>>
+    ): Response<List<String>>
 
     @EnvelopePayload("story")
     @POST("api/v2/stories/{id}/upvote")
