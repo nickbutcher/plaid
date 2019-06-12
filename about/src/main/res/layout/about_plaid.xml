@@ -16,42 +16,49 @@
   ~
   -->
 
-<ScrollView
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:nestedScrollingEnabled="true"
-    tools:showIn="@layout/activity_about">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:nestedScrollingEnabled="true"
+        android:clipToPadding="false"
+        app:paddingBottomSystemWindowInsets="@{true}"
+        app:paddingRightSystemWindowInsets="@{true}"
+        tools:showIn="@layout/activity_about">
 
-        <io.plaidapp.about.ui.widget.CutoutTextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/about_header_height"
-            android:text="@string/app_name"
-            android:fontFamily="@font/roboto_mono"
-            app:foregroundColor="?attr/colorPrimary" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <io.plaidapp.core.ui.widget.BaselineGridTextView
-            android:id="@+id/about_description"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="?attr/colorSurface"
-            android:breakStrategy="simple"
-            android:paddingStart="@dimen/padding_normal"
-            android:paddingTop="@dimen/padding_normal"
-            android:paddingEnd="@dimen/padding_normal"
-            android:paddingBottom="@dimen/spacing_large"
-            android:textAppearance="@style/TextAppearance.About"
-            android:textColorHighlight="?attr/colorPrimary"
-            android:textColorLink="@color/plaid_links" />
+            <io.plaidapp.about.ui.widget.CutoutTextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/about_header_height"
+                android:text="@string/app_name"
+                android:fontFamily="@font/roboto_mono"
+                app:foregroundColor="?attr/colorPrimary" />
 
-    </LinearLayout>
+            <io.plaidapp.core.ui.widget.BaselineGridTextView
+                android:id="@+id/about_description"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="?attr/colorSurface"
+                android:breakStrategy="simple"
+                android:paddingStart="@dimen/padding_normal"
+                android:paddingTop="@dimen/padding_normal"
+                android:paddingEnd="@dimen/padding_normal"
+                android:paddingBottom="@dimen/spacing_large"
+                android:textAppearance="@style/TextAppearance.About"
+                android:textColorHighlight="?attr/colorPrimary"
+                android:textColorLink="@color/plaid_links" />
 
-</ScrollView>
+        </LinearLayout>
+
+    </ScrollView>
+</layout>
