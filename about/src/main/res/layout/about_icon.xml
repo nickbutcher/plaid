@@ -45,7 +45,7 @@
                 android:layout_marginTop="@dimen/spacing_large"
                 android:padding="@dimen/about_icon_padding"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_launcher_512px" />
+                app:srcCompat="@drawable/ic_launcher_512px" />
 
             <io.plaidapp.core.ui.widget.BaselineGridTextView
                 android:id="@+id/icon_description"
