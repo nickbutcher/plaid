@@ -82,8 +82,8 @@ internal class AboutViewModel @Inject constructor(
     @VisibleForTesting
     internal val libraries = listOf(
         Library(
-            "Android support libraries",
-            "The Android support libraries offer a number of features that are " +
+            "Android Jetpack",
+            "Android Jetpack offer a number of features that are " +
                     "not built into the framework.",
             "https://developer.android.com/topic/libraries/support-library",
             "https://avatars.githubusercontent.com/u/32689599",
