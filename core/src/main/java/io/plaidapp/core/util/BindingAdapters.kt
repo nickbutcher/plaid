@@ -88,9 +88,9 @@ fun bindImage(
 }
 
 @BindingAdapter("layoutFullscreen")
-fun bindLayoutFullscreen(view: View, fullscreen: Boolean) {
-    if (fullscreen) {
-        view.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+fun View.bindLayoutFullscreen(previousFullscreen: Boolean, fullscreen: Boolean) {
+    if (previousFullscreen != fullscreen && fullscreen) {
+        systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
             View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
     }
@@ -103,14 +103,25 @@ fun bindLayoutFullscreen(view: View, fullscreen: Boolean) {
     "paddingBottomSystemWindowInsets",
     requireAll = false
 )
-fun applySystemWindowInsetsPadding(
-    view: View,
+fun View.applySystemWindowInsetsPadding(
+    previousApplyLeft: Boolean,
+    previousApplyTop: Boolean,
+    previousApplyRight: Boolean,
+    previousApplyBottom: Boolean,
     applyLeft: Boolean,
     applyTop: Boolean,
     applyRight: Boolean,
     applyBottom: Boolean
 ) {
-    view.doOnApplyWindowInsets { view, insets, padding, _ ->
+    if (previousApplyLeft == applyLeft &&
+        previousApplyTop == applyTop &&
+        previousApplyRight == applyRight &&
+        previousApplyBottom == applyBottom
+    ) {
+        return
+    }
+
+    doOnApplyWindowInsets { view, insets, padding, _ ->
         val left = if (applyLeft) insets.systemWindowInsetLeft else 0
         val top = if (applyTop) insets.systemWindowInsetTop else 0
         val right = if (applyRight) insets.systemWindowInsetRight else 0
@@ -132,14 +143,25 @@ fun applySystemWindowInsetsPadding(
     "marginBottomSystemWindowInsets",
     requireAll = false
 )
-fun applySystemWindowInsetsMargin(
-    view: View,
+fun View.applySystemWindowInsetsMargin(
+    previousApplyLeft: Boolean,
+    previousApplyTop: Boolean,
+    previousApplyRight: Boolean,
+    previousApplyBottom: Boolean,
     applyLeft: Boolean,
     applyTop: Boolean,
     applyRight: Boolean,
     applyBottom: Boolean
 ) {
-    view.doOnApplyWindowInsets { view, insets, _, margin ->
+    if (previousApplyLeft == applyLeft &&
+        previousApplyTop == applyTop &&
+        previousApplyRight == applyRight &&
+        previousApplyBottom == applyBottom
+    ) {
+        return
+    }
+
+    doOnApplyWindowInsets { view, insets, _, margin ->
         val left = if (applyLeft) insets.systemWindowInsetLeft else 0
         val top = if (applyTop) insets.systemWindowInsetTop else 0
         val right = if (applyRight) insets.systemWindowInsetRight else 0
@@ -154,14 +176,14 @@ fun applySystemWindowInsetsMargin(
     }
 }
 
-fun View.doOnApplyWindowInsets(f: (View, WindowInsets, InitialPadding, InitialMargin) -> Unit) {
+fun View.doOnApplyWindowInsets(block: (View, WindowInsets, InitialPadding, InitialMargin) -> Unit) {
     // Create a snapshot of the view's padding & margin states
     val initialPadding = recordInitialPaddingForView(this)
     val initialMargin = recordInitialMarginForView(this)
     // Set an actual OnApplyWindowInsetsListener which proxies to the given
     // lambda, also passing in the original padding & margin states
     setOnApplyWindowInsetsListener { v, insets ->
-        f(v, insets, initialPadding, initialMargin)
+        block(v, insets, initialPadding, initialMargin)
         // Always return the insets, so that children can also use them
         insets
     }
