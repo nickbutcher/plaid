@@ -74,8 +74,6 @@ class StoryModule(private val storyId: Long, private val activity: StoryActivity
             postStoryCommentUseCase,
             postReplyUseCase,
             commentsWithRepliesAndUsersUseCase,
-            upvoteStoryUseCase,
-            upvoteCommentUseCase,
             coroutinesDispatcherProvider
         )
 

@@ -35,8 +35,6 @@ class StoryViewModelFactory(
     private var postStoryComment: PostStoryCommentUseCase,
     private var postReply: PostReplyUseCase,
     private val getCommentsWithRepliesAndUsersUseCase: GetCommentsWithRepliesAndUsersUseCase,
-    private val upvoteStoryUseCase: UpvoteStoryUseCase,
-    private val upvoteCommentUseCase: UpvoteCommentUseCase,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModelProvider.Factory {
 
@@ -51,8 +49,6 @@ class StoryViewModelFactory(
             postStoryComment,
             postReply,
             getCommentsWithRepliesAndUsersUseCase,
-            upvoteStoryUseCase,
-            upvoteCommentUseCase,
             dispatcherProvider
         ) as T
     }
