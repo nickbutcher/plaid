@@ -39,10 +39,11 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/libs_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:paddingBottom="@dimen/spacing_normal"
             android:clipToPadding="false"
             android:scrollbars="vertical"
+            app:hasFixedSize="@{true}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:paddingBottomSystemWindowInsets="@{true}"
             app:paddingRightSystemWindowInsets="@{true}" />
