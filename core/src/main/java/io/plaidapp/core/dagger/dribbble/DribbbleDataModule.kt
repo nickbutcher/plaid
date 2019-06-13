@@ -16,7 +16,6 @@
 
 package io.plaidapp.core.dagger.dribbble
 
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
@@ -48,14 +47,12 @@ class DribbbleDataModule {
     @FeatureScope
     fun provideDribbbleSearchService(
         client: Lazy<OkHttpClient>,
-        converterFactory: DribbbleSearchConverter.Factory,
-        callAdapterFactory: CoroutineCallAdapterFactory
+        converterFactory: DribbbleSearchConverter.Factory
     ): DribbbleSearchService =
         Retrofit.Builder()
             .baseUrl(DribbbleSearchService.ENDPOINT)
             .callFactory { client.get().newCall(it) }
             .addConverterFactory(converterFactory)
-            .addCallAdapterFactory(callAdapterFactory)
             .build()
             .create(DribbbleSearchService::class.java)
 }

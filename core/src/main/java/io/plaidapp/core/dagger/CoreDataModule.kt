@@ -17,7 +17,6 @@
 package io.plaidapp.core.dagger
 
 import com.google.gson.Gson
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.BuildConfig
@@ -45,9 +44,6 @@ class CoreDataModule {
                 HttpLoggingInterceptor.Level.NONE
             }
         }
-
-    @Provides
-    fun provideCallAdapterFactory(): CoroutineCallAdapterFactory = CoroutineCallAdapterFactory()
 
     @Provides
     @Singleton
