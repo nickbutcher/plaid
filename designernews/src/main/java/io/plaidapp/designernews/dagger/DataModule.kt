@@ -18,7 +18,6 @@ package io.plaidapp.designernews.dagger
 
 import android.content.Context
 import com.google.gson.Gson
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
@@ -48,7 +47,6 @@ class DataModule {
             .callFactory { client.get().newCall(it) }
             .addConverterFactory(DeEnvelopingConverter(gson))
             .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
             .create(DesignerNewsService::class.java)
     }
