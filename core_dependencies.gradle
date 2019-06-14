@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 dependencies {
-    implementation project(':bypass')
     implementation "com.google.android.material:material:${versions.material}"
     implementation "com.google.dagger:dagger:${versions.dagger}"
-    implementation "com.google.code.gson:gson:${versions.gson}"
     implementation "androidx.core:core-ktx:${versions.coreKtx}"
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"

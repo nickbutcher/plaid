@@ -63,6 +63,8 @@ android {
 }
 
 dependencies {
+    implementation project(':bypass')
+    implementation "com.google.code.gson:gson:${versions.gson}"
     implementation "androidx.browser:browser:${versions.androidx}"
     implementation "androidx.room:room-runtime:${versions.room}"
     implementation "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"
@@ -74,7 +76,6 @@ dependencies {
     implementation "org.jsoup:jsoup:${versions.jsoup}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
-
     kapt "com.github.bumptech.glide:compiler:${versions.glide}"
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }

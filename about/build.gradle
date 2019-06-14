@@ -46,6 +46,7 @@ android {
 dependencies {
     implementation project(':app')
     implementation project(':core')
+    implementation project(':bypass')
 
     implementation "androidx.viewpager2:viewpager2:${versions.viewPager2}"
     implementation "com.android.support:customtabs:${versions.supportLibrary}"
