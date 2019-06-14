@@ -31,3 +31,4 @@
 
 ## :camera_flash: Screenshots / GIFs
 <!--- Mandatory for UI changes -->
+<img src="https://your_image_url" width="260">&emsp;<img src="https://your_image_url" width="260">
