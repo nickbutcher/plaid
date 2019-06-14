@@ -86,7 +86,7 @@ internal class AboutViewModel @Inject constructor(
             "Android Jetpack offer a number of features that are " +
                     "not built into the framework.",
             "https://developer.android.com/jetpack/",
-            "https://user-images.githubusercontent.com/351125/59462435-1e3a7a00-8dfa-11e9-801b-f22ad0cb6408.png",
+            "https://4.bp.blogspot.com/-NnAkV5vpYuw/XNMYF4RtLvI/AAAAAAAAI70/kdgLm3cnTO4FB4rUC0v9smscN3zHJPlLgCLcBGAs/s1600/Jetpack_logo%2B%25282%2529.png",
             false
         ),
         Library(
