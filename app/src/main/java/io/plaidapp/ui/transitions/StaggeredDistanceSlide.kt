@@ -26,6 +26,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.Keep
+import androidx.core.content.withStyledAttributes
 import io.plaidapp.R
 import io.plaidapp.core.util.TransitionUtils
 
@@ -49,9 +50,11 @@ class StaggeredDistanceSlide : Visibility {
 
     @Keep
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        val a = context.obtainStyledAttributes(attrs, R.styleable.StaggeredDistanceSlide)
-        spread = a.getInteger(R.styleable.StaggeredDistanceSlide_spread, 1)
-        a.recycle()
+        var tmpSpread = 1
+        context.withStyledAttributes(attrs, R.styleable.StaggeredDistanceSlide) {
+            tmpSpread = getInteger(R.styleable.StaggeredDistanceSlide_spread, 1)
+        }
+        spread = tmpSpread
     }
 
     override fun onAppear(
