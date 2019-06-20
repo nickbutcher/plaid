@@ -39,7 +39,7 @@ buildscript { scriptHandler ->
             'gson'               : '2.8.5',
             'jsoup'              : '1.11.3',
             'junit'              : '4.12',
-            'kotlin'             : '1.3.20',
+            'kotlin'             : '1.3.40',
             'ktlint'             : '0.24.0',
             'legacyCoreUtils'    : '1.0.0',
             'lifecycle'          : '2.2.0-alpha01',
@@ -61,7 +61,7 @@ buildscript { scriptHandler ->
     ]
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0-alpha06'
+        classpath 'com.android.tools.build:gradle:3.5.0-beta04'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         classpath "com.google.gms:google-services:${versions.googleServices}"
         classpath "io.fabric.tools:gradle:${versions.fabric}"
