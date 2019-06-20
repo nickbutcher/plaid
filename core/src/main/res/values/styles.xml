@@ -49,7 +49,7 @@
     <style name="Plaid.Home">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@color/immersive_bars</item>
-        <item name="android:navigationBarColor">@color/immersive_bars</item>
+        <item name="android:navigationBarColor">@color/nav_bar</item>
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowActionModeOverlay">true</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -63,6 +63,7 @@
         <!-- using a semi-transparent window background for the drag-back gesture -->
         <item name="android:windowBackground">@color/scrim</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:navigationBarColor">@color/nav_bar</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowIsTranslucent">true</item>
@@ -75,7 +76,6 @@
     <style name="Plaid.DesignerNews" parent="@style/Plaid.Translucent" />
     <style name="Plaid.DesignerNews.Login" />
     <style name="Plaid.DesignerNews.Story" />
-    <style name="Plaid.DesignerNews.PostStory" />
     <style name="Plaid.Translucent.Dribbble" />
     <style name="Plaid.Translucent.Dribbble.Shot" />
     <style name="Plaid.Translucent.Search" />

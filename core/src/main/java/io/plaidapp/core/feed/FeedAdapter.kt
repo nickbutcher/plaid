@@ -24,8 +24,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.transition.Transition
-import android.transition.TransitionInflater
 import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
@@ -56,8 +54,6 @@ import io.plaidapp.core.ui.DribbbleShotHolder
 import io.plaidapp.core.ui.HomeGridItemAnimator
 import io.plaidapp.core.ui.transitions.ReflowText
 import io.plaidapp.core.util.Activities
-import io.plaidapp.core.util.TransitionUtils
-import io.plaidapp.core.util.ViewUtils
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
 import io.plaidapp.core.util.glide.DribbbleTarget
 import io.plaidapp.core.util.glide.GlideApp
@@ -79,11 +75,18 @@ class FeedAdapter(
 
     @ColorInt
     private val initialGifBadgeColor: Int
-    private var items: List<PlaidItem> = emptyList()
     private var showLoadingMore = false
-
     private val loadingMoreItemPosition: Int
         get() = if (showLoadingMore) itemCount - 1 else RecyclerView.NO_POSITION
+
+    var items: List<PlaidItem> = emptyList()
+        /**
+         * Main entry point for setting items to this adapter.
+         */
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     init {
         setHasStableIds(true)
@@ -171,7 +174,6 @@ class FeedAdapter(
         val intent = intentTo(Activities.DesignerNews.Story)
         intent.putExtra(Activities.DesignerNews.Story.EXTRA_STORY_ID, data.story.id)
         ReflowText.addExtras(intent, ReflowText.ReflowableTextView(data.title))
-        setGridItemContentTransitions(data.itemView)
 
         // on return, fade the pocket & comments buttons in
         host.setExitSharedElementCallback(object : SharedElementCallback() {
@@ -205,13 +207,13 @@ class FeedAdapter(
         return DribbbleShotHolder(
             layoutInflater.inflate(R.layout.dribbble_shot_item, parent, false),
             initialGifBadgeColor,
-            isDarkTheme) { view, position ->
+            isDarkTheme
+        ) { view, position ->
             val intent = intentTo(Activities.Dribbble.Shot)
             intent.putExtra(
                 Activities.Dribbble.Shot.EXTRA_SHOT_ID,
                 getItem(position)!!.id
             )
-            setGridItemContentTransitions(view)
             val options = ActivityOptions.makeSceneTransitionAnimation(
                 host,
                 Pair.create(view, host.getString(R.string.transition_shot)),
@@ -324,14 +326,6 @@ class FeedAdapter(
         }
     }
 
-    /**
-     * Main entry point for setting items to this adapter.
-     */
-    fun setItems(newItems: List<PlaidItem>) {
-        items = newItems
-        notifyDataSetChanged()
-    }
-
     override fun getItemId(position: Int): Long {
         return if (getItemViewType(position) == TYPE_LOADING_MORE) {
             -1L
@@ -349,30 +343,6 @@ class FeedAdapter(
 
     override fun getItemCount(): Int {
         return items.size + if (showLoadingMore) 1 else 0
-    }
-
-    // temporary method until we're able to move the item setting only to Activity and ViewModels
-    fun getItems() = items
-
-    /**
-     * The shared element transition to dribbble shots & dn stories can intersect with the FAB.
-     * This can cause a strange layers-passing-through-each-other effect. On return hide the FAB
-     * and animate it back in after the transition.
-     */
-    private fun setGridItemContentTransitions(gridItem: View) {
-        val fab = host.findViewById<View>(R.id.fab)
-        if (!ViewUtils.viewsIntersect(gridItem, fab)) return
-
-        val reenter = TransitionInflater.from(host)
-            .inflateTransition(R.transition.grid_overlap_fab_reenter)
-        reenter.addListener(object : TransitionUtils.TransitionListenerAdapter() {
-
-            override fun onTransitionEnd(transition: Transition) {
-                // we only want these content transitions in certain cases so clear out when done.
-                host.window.reenterTransition = null
-            }
-        })
-        host.window.reenterTransition = reenter
     }
 
     fun dataStartedLoading() {

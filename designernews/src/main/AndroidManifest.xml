@@ -55,22 +55,6 @@
             android:theme="@style/Plaid.DesignerNews.Login"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity
-            android:name="io.plaidapp.designernews.PostNewDesignerNewsStory"
-            android:exported="true"
-            android:theme="@style/Plaid.DesignerNews.PostStory">
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-        </activity>
-
-        <service
-            android:name="io.plaidapp.core.designernews.data.poststory.PostStoryService"
-            android:exported="false" />
-
         <service
             android:name="io.plaidapp.core.designernews.data.votes.UpvoteStoryService"
             android:exported="false" />

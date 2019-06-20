@@ -18,6 +18,7 @@ package io.plaidapp.dribbble.ui.shot
 
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.text.format.DateUtils
+import android.view.View.GONE
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.PluralsRes
@@ -62,12 +63,15 @@ fun bindImage(
     request.into(imageView)
 }
 
-@BindingAdapter("htmlText")
+@BindingAdapter("htmlTextOrGone")
 fun bindHtmlText(
     textView: TextView,
     htmlText: CharSequence?
 ) {
-    if (htmlText == null) return
+    if (htmlText == null) {
+        textView.visibility = GONE
+        return
+    }
     HtmlUtils.setTextWithNiceLinks(textView, htmlText)
 }
 

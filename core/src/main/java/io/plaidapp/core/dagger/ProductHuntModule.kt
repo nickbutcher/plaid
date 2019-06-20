@@ -16,7 +16,6 @@
 
 package io.plaidapp.core.dagger
 
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
@@ -60,29 +59,25 @@ class ProductHuntModule {
     fun provideProductHuntService(
         @ProductHuntApi okhttpClient: Lazy<OkHttpClient>,
         converterFactory: GsonConverterFactory,
-        deEnvelopingConverter: DeEnvelopingConverter,
-        callAdapterFactory: CoroutineCallAdapterFactory
+        deEnvelopingConverter: DeEnvelopingConverter
     ): ProductHuntService {
         return createRetrofit(
             okhttpClient,
             converterFactory,
-            deEnvelopingConverter,
-            callAdapterFactory
+            deEnvelopingConverter
         ).create(ProductHuntService::class.java)
     }
 
     private fun createRetrofit(
         okhttpClient: Lazy<OkHttpClient>,
         converterFactory: GsonConverterFactory,
-        deEnvelopingConverter: DeEnvelopingConverter,
-        callAdapterFactory: CoroutineCallAdapterFactory
+        deEnvelopingConverter: DeEnvelopingConverter
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(ProductHuntService.ENDPOINT)
             .callFactory { okhttpClient.get().newCall(it) }
             .addConverterFactory(deEnvelopingConverter)
             .addConverterFactory(converterFactory)
-            .addCallAdapterFactory(callAdapterFactory)
             .build()
     }
 }

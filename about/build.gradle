@@ -19,10 +19,8 @@ apply plugin: 'com.android.dynamic-feature'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
-apply from: '../core_dependencies.gradle'
+apply from: '../shared_dependencies.gradle'
 apply from: '../test_dependencies.gradle'
-
-apply from: '../repositories.gradle'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -48,7 +46,11 @@ android {
 dependencies {
     implementation project(':app')
     implementation project(':core')
+    implementation project(':bypass')
 
     implementation "androidx.viewpager2:viewpager2:${versions.viewPager2}"
+    implementation "com.android.support:customtabs:${versions.supportLibrary}"
+    implementation "com.github.bumptech.glide:glide:${versions.glide}"
+
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }

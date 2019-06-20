@@ -82,11 +82,11 @@ internal class AboutViewModel @Inject constructor(
     @VisibleForTesting
     internal val libraries = listOf(
         Library(
-            "Android support libraries",
-            "The Android support libraries offer a number of features that are " +
+            "Android Jetpack",
+            "Android Jetpack offer a number of features that are " +
                     "not built into the framework.",
-            "https://developer.android.com/topic/libraries/support-library",
-            "https://avatars.githubusercontent.com/u/32689599",
+            "https://developer.android.com/jetpack/",
+            "https://4.bp.blogspot.com/-NnAkV5vpYuw/XNMYF4RtLvI/AAAAAAAAI70/kdgLm3cnTO4FB4rUC0v9smscN3zHJPlLgCLcBGAs/s1600/Jetpack_logo%2B%25282%2529.png",
             false
         ),
         Library(
@@ -104,10 +104,10 @@ internal class AboutViewModel @Inject constructor(
             true
         ),
         Library(
-            "Crashlytics",
+            "Firebase Crashlytics",
             "The most powerful, yet lightest weight crash reporting solution.",
             "https://firebase.google.com/products/crashlytics/",
-            "https://get.fabric.io/assets/logo_crashlytics-9b74c30b45657fa925e1659ff5e550a8.png",
+            "https://www.gstatic.com/mobilesdk/160503_mobilesdk/logo/2x/firebase_96dp.png",
             false
         ),
         Library(
@@ -151,7 +151,7 @@ internal class AboutViewModel @Inject constructor(
             "Mockito",
             "Tasty mocking framework for unit tests in Java",
             "http://site.mockito.org/",
-            "https://raw.githubusercontent.com/mockito/mockito/master/src/javadoc/org/mockito/logo.png",
+            "https://avatars3.githubusercontent.com/u/2054056?s=200&v=4",
             false
 
         ),
@@ -176,13 +176,6 @@ internal class AboutViewModel @Inject constructor(
             "http://square.github.io/retrofit/",
             "https://avatars.githubusercontent.com/u/82592",
             false
-        ),
-        Library(
-            "Kotlin Coroutine Adapter",
-            "A Retrofit 2 CallAdapter.Factory for Kotlin coroutine's Deferred.",
-            "https://github.com/JakeWharton/retrofit2-kotlin-coroutines-adapter",
-            "https://avatars.githubusercontent.com/u/66577",
-            true
         )
     )
 

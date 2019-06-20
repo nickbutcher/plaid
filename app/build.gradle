@@ -20,10 +20,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
-apply from: '../core_dependencies.gradle'
+apply from: '../shared_dependencies.gradle'
 apply from: '../test_dependencies.gradle'
-
-apply from: '../repositories.gradle'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -39,7 +37,6 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         resConfig 'en'
-        buildConfigField 'String', 'GIT_SHA', "\"${gitSha}\""
         manifestPlaceholders += [
                 crashlyticsEnabled: false
         ]
@@ -73,9 +70,11 @@ android {
 
 dependencies {
     implementation project(':core')
-
+    implementation "androidx.appcompat:appcompat:${versions.appcompat}"
     implementation "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
     implementation "com.google.firebase:firebase-core:${versions.firebase}"
+    implementation "com.github.bumptech.glide:glide:${versions.glide}"
+    implementation "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
 
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }

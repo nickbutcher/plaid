@@ -33,3 +33,14 @@ fun provideFakeCoroutinesDispatcherProvider(
         computation ?: sharedTestCoroutineDispatcher,
         io ?: sharedTestCoroutineDispatcher)
 }
+
+@ExperimentalCoroutinesApi
+fun provideFakeCoroutinesDispatcherProvider(
+    dispatcher: TestCoroutineDispatcher?
+): CoroutinesDispatcherProvider {
+    val sharedTestCoroutineDispatcher = TestCoroutineDispatcher()
+    return CoroutinesDispatcherProvider(
+        dispatcher ?: sharedTestCoroutineDispatcher,
+        dispatcher ?: sharedTestCoroutineDispatcher,
+        dispatcher ?: sharedTestCoroutineDispatcher)
+}

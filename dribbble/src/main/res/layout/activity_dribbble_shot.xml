@@ -50,6 +50,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:transitionGroup="false"
+        app:layoutFullscreen="@{true}"
+        app:marginTopSystemWindowInsets="@{true}"
+        app:marginRightSystemWindowInsets="@{true}"
         app:dragDismissDistance="@dimen/drag_dismiss_distance"
         app:dragDismissScale="0.95"
         tools:context=".ui.shot.ShotActivity">
@@ -116,7 +119,8 @@
             android:clipToPadding="false"
             android:orientation="vertical"
             android:scrollbars="vertical"
-            android:scrollbarStyle="insideOverlay">
+            android:scrollbarStyle="insideOverlay"
+            app:paddingBottomSystemWindowInsets="@{true}">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -165,8 +169,7 @@
                     android:textAppearance="@style/TextAppearance.DribbbleShotDescription"
                     android:textColorHighlight="@color/dribbble_link_highlight"
                     android:textColorLink="@color/dribbble_links"
-                    app:htmlText="@{uiModel.formattedDescription}"
-                    app:goneUnless="@{uiModel.shouldHideDescription}"
+                    app:htmlTextOrGone="@{uiModel.formattedDescription}"
                     tools:text="Check out this sweet eye candy!" />
 
                 <io.plaidapp.core.ui.widget.BaselineGridTextView

@@ -34,6 +34,7 @@
     <color name="ripple_dark">@color/mid_grey</color>
     <color name="background_light">#fafafa</color> <!-- grey 50 -->
     <color name="background_dark">#ff333333</color>
+    <color name="nav_bar">@color/immersive_bars</color> <!-- overridden on v29+ -->
     <color name="immersive_bars">#99000000</color>
     <color name="light_immersive_bars">#b3eeeeee</color> <!-- 70% grey 200 -->
     <color name="light_status_bar">@color/immersive_bars</color> <!-- overridden on v23+ -->
@@ -71,8 +72,6 @@
     <color name="designer_news_variant">#039be5</color> <!-- light blue 600 -->
     <color name="designer_news_link_highlight">#b303a9f4</color>
     <color name="designer_news_story_comment_background">@android:color/transparent</color>
-
-    <color name="designer_news_super_dark">#000133</color>
 
     <!-- product hunt-->
     <color name="product_hunt">#ffff9800</color> <!--orange 500 -->

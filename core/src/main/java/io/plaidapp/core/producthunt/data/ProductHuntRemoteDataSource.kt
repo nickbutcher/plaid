@@ -37,7 +37,7 @@ class ProductHuntRemoteDataSource @Inject constructor(private val service: Produ
     )
 
     private suspend fun requestData(page: Int): Result<GetPostsResponse> {
-        val response = service.getPostsAsync(page).await()
+        val response = service.getPostsAsync(page)
         if (response.isSuccessful) {
             val body = response.body()
             if (body != null) {

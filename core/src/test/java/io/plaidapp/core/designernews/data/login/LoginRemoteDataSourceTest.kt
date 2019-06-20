@@ -29,7 +29,6 @@ import io.plaidapp.core.designernews.data.login.model.LoggedInUserResponse
 import io.plaidapp.core.designernews.data.login.model.UserLinks
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 import io.plaidapp.core.designernews.errorResponseBody
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -80,9 +79,9 @@ class LoginRemoteDataSourceTest {
     fun login_successful_when_AccessTokenAndGetUserSuccessful() = runBlocking {
         // Given that all API calls are successful
         val accessTokenResponse = Response.success(accessToken)
-        whenever(service.login(any())).thenReturn(CompletableDeferred(accessTokenResponse))
+        whenever(service.login(any())).thenReturn(accessTokenResponse)
         val authUserResponse = Response.success(listOf(response))
-        whenever(service.getAuthedUser()).thenReturn(CompletableDeferred(authUserResponse))
+        whenever(service.getAuthedUser()).thenReturn(authUserResponse)
 
         // When logging in
         val result = dataSource.login("test", "test")
@@ -98,7 +97,7 @@ class LoginRemoteDataSourceTest {
             400,
             errorResponseBody
         )
-        whenever(service.login(any())).thenReturn(CompletableDeferred(failureResponse))
+        whenever(service.login(any())).thenReturn(failureResponse)
 
         // When logging in
         val result = dataSource.login("test", "test")
@@ -113,13 +112,13 @@ class LoginRemoteDataSourceTest {
     fun login_failed_whenGetUserFailed() = runBlocking {
         // Given that the access token is retrieved successfully
         val accessTokenRespone = Response.success(accessToken)
-        whenever(service.login(any())).thenReturn(CompletableDeferred(accessTokenRespone))
+        whenever(service.login(any())).thenReturn(accessTokenRespone)
         // And the get authed user failed
         val failureResponse = Response.error<List<LoggedInUserResponse>>(
             400,
             errorResponseBody
         )
-        whenever(service.getAuthedUser()).thenReturn(CompletableDeferred(failureResponse))
+        whenever(service.getAuthedUser()).thenReturn(failureResponse)
 
         // When logging in
         val result = dataSource.login("test", "test")
@@ -147,7 +146,7 @@ class LoginRemoteDataSourceTest {
     fun login_failed_whenGetUserThrowsException() = runBlocking {
         // Given that the access token is retrieved successfully
         val accessTokenRespone = Response.success(accessToken)
-        whenever(service.login(any())).thenReturn(CompletableDeferred(accessTokenRespone))
+        whenever(service.login(any())).thenReturn(accessTokenRespone)
         // And the get authed user throws an exception
         doAnswer { throw UnknownHostException() }
             .whenever(service).getAuthedUser()

@@ -62,7 +62,8 @@
             android:layout_weight="2"
             android:drawableTop="@drawable/asl_upvote"
             tools:text="33 likes"
-            style="@style/Widget.Plaid.InlineActionButton" />
+            style="@style/Widget.Plaid.InlineActionButton"
+            android:background="@null" />
 
         <Space
             android:layout_width="0dp"

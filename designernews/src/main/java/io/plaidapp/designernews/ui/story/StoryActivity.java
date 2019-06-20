@@ -87,14 +87,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static android.view.ViewGroup.MarginLayoutParams;
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 import static io.plaidapp.core.util.AnimUtils.getFastOutLinearInInterpolator;
 import static io.plaidapp.core.util.AnimUtils.getFastOutSlowInInterpolator;
 import static io.plaidapp.core.util.AnimUtils.getLinearOutSlowInInterpolator;
 
 public class StoryActivity extends AppCompatActivity {
-
-    private static final int RC_LOGIN_UPVOTE = 7;
 
     private View header;
     private RecyclerView commentsList;
@@ -110,7 +109,6 @@ public class StoryActivity extends AppCompatActivity {
     private PinnedOffsetView toolbarBackground;
     @Nullable
     private View background;
-    private TextView upvoteStory;
     private EditText enterComment;
     private ImageButton postComment;
     private int fabExpandDuration;
@@ -120,9 +118,12 @@ public class StoryActivity extends AppCompatActivity {
 
     private Story story;
 
-    @Inject StoryViewModel viewModel;
-    @Inject LoginRepository loginRepository;
-    @Inject Markdown markdown;
+    @Inject
+    StoryViewModel viewModel;
+    @Inject
+    LoginRepository loginRepository;
+    @Inject
+    Markdown markdown;
 
     private CustomTabActivityHelper customTab;
 
@@ -186,6 +187,29 @@ public class StoryActivity extends AppCompatActivity {
                 header, new ArrayList<>(0), enterCommentView);
         commentsList.setAdapter(commentsAdapter);
 
+        draggableFrame.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        final int stableListPaddingBottom = commentsList.getPaddingBottom();
+        final int stableListPaddingRight = commentsList.getPaddingRight();
+        final int stableFabMarginBottom = ((MarginLayoutParams) fab.getLayoutParams()).bottomMargin;
+        final int stableFabMarginRight = ((MarginLayoutParams) fab.getLayoutParams()).bottomMargin;
+        draggableFrame.setOnApplyWindowInsetsListener((v, insets) -> {
+            final MarginLayoutParams listLp = (MarginLayoutParams) v.getLayoutParams();
+            listLp.topMargin = insets.getSystemWindowInsetTop();
+            v.setLayoutParams(listLp);
+            commentsList.setPadding(
+                    commentsList.getPaddingLeft(),
+                    commentsList.getPaddingTop(),
+                    stableListPaddingRight + insets.getSystemWindowInsetRight(),
+                    stableListPaddingBottom + insets.getSystemWindowInsetBottom());
+            final MarginLayoutParams fabLp = (MarginLayoutParams) fab.getLayoutParams();
+            fabLp.rightMargin = stableFabMarginRight + insets.getSystemWindowInsetRight();
+            fabLp.bottomMargin = stableFabMarginBottom + insets.getSystemWindowInsetBottom();
+            fab.setLayoutParams(fabLp);
+            return insets;
+        });
+
         customTab = new CustomTabActivityHelper();
         customTab.setConnectionCallback(customTabConnect);
     }
@@ -224,18 +248,6 @@ public class StoryActivity extends AppCompatActivity {
         fab.setAlpha(1f);
         fabExpand.setVisibility(View.INVISIBLE);
         draggableFrame.addListener(chromeFader);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case RC_LOGIN_UPVOTE:
-                if (resultCode == RESULT_OK) {
-                    upvoteStory();
-                }
-                break;
-        }
     }
 
     @Override
@@ -461,9 +473,8 @@ public class StoryActivity extends AppCompatActivity {
             storyComment.setVisibility(View.GONE);
         }
 
-        upvoteStory = header.findViewById(R.id.story_vote_action);
-        storyUpvoted(story.getVoteCount());
-        upvoteStory.setOnClickListener(v -> upvoteStory());
+        TextView upvoteStory = header.findViewById(R.id.story_vote_action);
+        setVoteCountText(upvoteStory, story.getVoteCount());
 
         final TextView share = header.findViewById(R.id.story_share_action);
         share.setOnClickListener(v -> {
@@ -492,6 +503,12 @@ public class StoryActivity extends AppCompatActivity {
         } else {
             avatar.setVisibility(View.GONE);
         }
+    }
+
+    private void setVoteCountText(TextView upvoteStory, Integer voteCount) {
+        upvoteStory.setText(getResources().getQuantityString(
+                io.plaidapp.R.plurals.upvotes, voteCount,
+                NumberFormat.getInstance().format(voteCount)));
     }
 
     private CharSequence getStoryPosterTimeText(String userDisplayName, String userJob, Date createdAt) {
@@ -555,38 +572,6 @@ public class StoryActivity extends AppCompatActivity {
         enterComment.setEnabled(true);
         postComment.setEnabled(true);
         commentsAdapter.addComment(comment);
-    }
-
-    private void upvoteStory() {
-        if (loginRepository.isLoggedIn()) {
-            if (!upvoteStory.isActivated()) {
-                upvoteStory.setActivated(true);
-                viewModel.storyUpvoteRequested(story.getId(),
-                        it -> {
-                            if (it instanceof Result.Success) {
-                                storyUpvoted(story.getVoteCount() + 1);
-                            } else {
-                                Toast.makeText(this, "Unable to upvote story", Toast.LENGTH_LONG)
-                                        .show();
-                                upvoteStory.setActivated(false);
-                            }
-                            return Unit.INSTANCE;
-                        });
-
-            } else {
-                upvoteStory.setActivated(false);
-                // TODO delete upvote. Not available in v1 API.
-            }
-
-        } else {
-            needsLogin(upvoteStory, RC_LOGIN_UPVOTE);
-        }
-    }
-
-    private void storyUpvoted(int newUpvoteCount) {
-        upvoteStory.setText(getResources().getQuantityString(
-                io.plaidapp.R.plurals.upvotes, newUpvoteCount,
-                NumberFormat.getInstance().format(newUpvoteCount)));
     }
 
     private void needsLogin(View triggeringView, int requestCode) {
@@ -865,51 +850,10 @@ public class StoryActivity extends AppCompatActivity {
             });
         }
 
-        private void handleCommentVotesClick(CommentReplyViewHolder holder,
-                                             boolean isUserLoggedIn,
-                                             Comment comment) {
-            if (isUserLoggedIn) {
-                if (!holder.getCommentVotes().isActivated()) {
-                    viewModel.commentUpvoteRequested(story.getId(),
-                            result -> {
-                                if (result instanceof Result.Success) {
-                                    comment.setUpvoted(true);
-                                    // TODO fix this
-                                    // comment.vote_count++;
-                                    holder.getCommentVotes().setText(String.valueOf(comment.getUpvotesCount()));
-                                    holder.getCommentVotes().setActivated(true);
-                                } else {
-                                    Toast.makeText(StoryActivity.this, "Unable to upvote comment",
-                                            Toast.LENGTH_LONG)
-                                            .show();
-                                }
-                                return Unit.INSTANCE;
-                            });
-
-                } else {
-                    comment.setUpvoted(false);
-                    // TODO fix this
-//                    comment.setVoteCount(comment.getVoteCount() - 1);
-                    holder.getCommentVotes().setText(String.valueOf(comment.getUpvotesCount()));
-                    holder.getCommentVotes().setActivated(false);
-                    // TODO actually delete upvote - florina: why?
-                }
-            } else {
-                needsLogin(holder.getCommentVotes(), 0);
-            }
-            holder.getCommentReply().clearFocus();
-        }
-
-
         @NonNull
         private CommentReplyViewHolder createCommentReplyHolder(ViewGroup parent) {
             final CommentReplyViewHolder holder = new CommentReplyViewHolder(getLayoutInflater()
                     .inflate(R.layout.designer_news_comment_actions, parent, false));
-
-            holder.getCommentVotes().setOnClickListener(v -> {
-                Comment comment = getComment(holder.getAdapterPosition());
-                handleCommentVotesClick(holder, loginRepository.isLoggedIn(), comment);
-            });
 
             holder.getPostReply().setOnClickListener(v -> {
                 if (loginRepository.isLoggedIn()) {

@@ -20,10 +20,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
-apply from: '../core_dependencies.gradle'
+apply from: '../shared_dependencies.gradle'
 apply from: '../test_dependencies.gradle'
-
-apply from: '../repositories.gradle'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -65,6 +63,19 @@ android {
 }
 
 dependencies {
+    implementation project(':bypass')
+    implementation "com.google.code.gson:gson:${versions.gson}"
+    implementation "androidx.browser:browser:${versions.androidx}"
+    implementation "androidx.room:room-runtime:${versions.room}"
+    implementation "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"
+    implementation "com.android.support:palette-v7:${versions.supportLibrary}"
+    implementation "com.android.support:support-dynamic-animation:${versions.supportLibrary}"
+    implementation "com.github.bumptech.glide:glide:${versions.glide}"
+    implementation "com.squareup.okhttp3:okhttp:${versions.okhttp}"
+    implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
+    implementation "org.jsoup:jsoup:${versions.jsoup}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
     kapt "com.github.bumptech.glide:compiler:${versions.glide}"
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }

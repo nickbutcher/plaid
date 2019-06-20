@@ -30,7 +30,9 @@ import io.plaidapp.search.testShot1
 import io.plaidapp.test.shared.CoroutinesTestRule
 import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -40,6 +42,7 @@ import org.mockito.MockitoAnnotations
 /**
  * Tests for [SearchViewModel] that mocks the dependencies
  */
+@ExperimentalCoroutinesApi
 class SearchViewModelTest {
 
     // Set the main coroutines dispatcher for unit testing
@@ -60,13 +63,14 @@ class SearchViewModelTest {
     }
 
     @Test
-    fun searchFor_searchesInDataManager() = runBlocking {
+    fun searchFor_searchesInDataManager() = coroutinesTestRule.testDispatcher.runBlockingTest {
         // Given a query
         val query = "Plaid"
         // And an expected success result
         val result = Result.Success(shots)
         factory.dataSource.result = result
-        val viewModel = SearchViewModel(registry, provideFakeCoroutinesDispatcherProvider())
+        val viewModel = SearchViewModel(registry,
+            provideFakeCoroutinesDispatcherProvider(coroutinesTestRule.testDispatcher))
 
         // When searching for the query
         viewModel.searchFor(query)
@@ -77,10 +81,11 @@ class SearchViewModelTest {
     }
 
     @Test
-    fun loadMore_loadsInDataManager() = runBlocking {
+    fun loadMore_loadsInDataManager() = coroutinesTestRule.testDispatcher.runBlockingTest {
         // Given a query
         val query = "Plaid"
-        val viewModel = SearchViewModel(registry, provideFakeCoroutinesDispatcherProvider())
+        val viewModel = SearchViewModel(registry,
+            provideFakeCoroutinesDispatcherProvider(coroutinesTestRule.testDispatcher))
         // And a search for the query
         viewModel.searchFor(query)
         // Given a result

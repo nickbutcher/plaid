@@ -47,7 +47,7 @@ class LoginRemoteDataSource @Inject constructor(
     )
 
     private suspend fun requestLogin(username: String, password: String): Result<LoggedInUser> {
-        val response = service.login(buildLoginParams(username, password)).await()
+        val response = service.login(buildLoginParams(username, password))
         if (response.isSuccessful) {
             val body = response.body()
             if (body != null) {
@@ -60,7 +60,7 @@ class LoginRemoteDataSource @Inject constructor(
     }
 
     private suspend fun requestUser(): Result<LoggedInUser> {
-        val response = service.getAuthedUser().await()
+        val response = service.getAuthedUser()
         if (response.isSuccessful) {
             val users = response.body()
             if (users != null && users.isNotEmpty()) {

@@ -16,30 +16,37 @@
   ~
   -->
 
-<FrameLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:showIn="@layout/activity_about">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- we use a parallel view for the background rather than just setting a background on the
-         recycler view for a nicer return transition. i.e. we want the background to fade and the
-         list to slide out separately -->
-    <View
-        android:id="@+id/libs_list_background"
+    <FrameLayout
+        android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?android:colorBackground" />
+        tools:showIn="@layout/activity_about">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/libs_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/spacing_normal"
-        android:clipToPadding="false"
-        android:scrollbars="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        <!-- we use a parallel view for the background rather than just setting a background on the
+             recycler view for a nicer return transition. i.e. we want the background to fade and the
+             list to slide out separately -->
+        <View
+            android:id="@+id/libs_list_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?android:colorBackground" />
 
-</FrameLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/libs_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/spacing_normal"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"
+            app:hasFixedSize="@{true}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:paddingBottomSystemWindowInsets="@{true}"
+            app:paddingRightSystemWindowInsets="@{true}" />
+
+    </FrameLayout>
+</layout>

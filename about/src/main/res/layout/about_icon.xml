@@ -16,43 +16,51 @@
   ~
   -->
 
-<ScrollView
-    xmlns:tools="http://schemas.android.com/tools"
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:nestedScrollingEnabled="true"
-    tools:showIn="@layout/activity_about">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="?attr/colorSurface"
-        android:elevation="@dimen/z_card">
+        android:nestedScrollingEnabled="true"
+        android:clipToPadding="false"
+        app:paddingBottomSystemWindowInsets="@{true}"
+        app:paddingRightSystemWindowInsets="@{true}"
+        tools:showIn="@layout/activity_about">
 
-        <ImageView
-            android:id="@+id/icon"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/about_header_height"
-            android:layout_marginTop="@dimen/spacing_large"
-            android:padding="@dimen/about_icon_padding"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_launcher_512px" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="?attr/colorSurface"
+            android:elevation="@dimen/z_card">
 
-        <io.plaidapp.core.ui.widget.BaselineGridTextView
-            android:id="@+id/icon_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="top|center_horizontal"
-            android:paddingStart="@dimen/padding_normal"
-            android:paddingTop="24dp"
-            android:paddingEnd="@dimen/padding_normal"
-            android:paddingBottom="@dimen/spacing_large"
-            android:textAppearance="@style/TextAppearance.About"
-            android:textColorHighlight="?attr/colorPrimary"
-            android:textColorLink="@color/plaid_links" />
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/about_header_height"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:padding="@dimen/about_icon_padding"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/ic_launcher_512px" />
 
-    </LinearLayout>
+            <io.plaidapp.core.ui.widget.BaselineGridTextView
+                android:id="@+id/icon_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|center_horizontal"
+                android:paddingStart="@dimen/padding_normal"
+                android:paddingTop="24dp"
+                android:paddingEnd="@dimen/padding_normal"
+                android:paddingBottom="@dimen/spacing_large"
+                android:textAppearance="@style/TextAppearance.About"
+                android:textColorHighlight="?attr/colorPrimary"
+                android:textColorLink="@color/plaid_links" />
 
-</ScrollView>
+        </LinearLayout>
+
+    </ScrollView>
+</layout>

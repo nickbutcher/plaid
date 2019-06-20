@@ -33,6 +33,7 @@ import android.transition.TransitionSet
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.ViewStub
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
@@ -45,6 +46,9 @@ import androidx.annotation.TransitionRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.set
 import androidx.core.text.toSpannable
+import androidx.core.view.marginBottom
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -104,6 +108,7 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
         bindResources()
         setupSearchView()
+        setupInsets()
 
         Injector.inject(this)
 
@@ -122,7 +127,7 @@ class SearchActivity : AppCompatActivity() {
                 }
                 val items = searchUiModel.items
                 expandPopularItems(items, columns)
-                feedAdapter.setItems(items)
+                feedAdapter.items = items
             } else {
                 TransitionManager.beginDelayedTransition(
                     container, getTransition(io.plaidapp.core.R.transition.auto)
@@ -197,6 +202,26 @@ class SearchActivity : AppCompatActivity() {
         resultsScrim = findViewById(R.id.results_scrim)
         resultsScrim.setOnClickListener { hideSaveConfirmation() }
         columns = resources.getInteger(io.plaidapp.core.R.integer.num_columns)
+    }
+
+    private fun setupInsets() {
+        container.apply {
+            systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+            val stableFabMarginBottom = fab.marginBottom
+            setOnApplyWindowInsetsListener { _, insets ->
+                updatePadding(top = insets.systemWindowInsetTop)
+                results.updatePadding(bottom = insets.systemWindowInsetBottom)
+                fab.updateLayoutParams<MarginLayoutParams> {
+                    stableFabMarginBottom + insets.systemWindowInsetBottom
+                }
+                confirmSaveContainer.updateLayoutParams<MarginLayoutParams> {
+                    stableFabMarginBottom + insets.systemWindowInsetBottom
+                }
+                insets
+            }
+        }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -287,7 +312,7 @@ class SearchActivity : AppCompatActivity() {
             container,
             getTransition(io.plaidapp.core.R.transition.auto)
         )
-        feedAdapter.setItems(emptyList())
+        feedAdapter.items = emptyList()
         viewModel.clearResults()
         results.visibility = View.GONE
         progress.visibility = View.GONE
@@ -359,7 +384,7 @@ class SearchActivity : AppCompatActivity() {
                     return true
                 }
             })
-            setOnQueryTextFocusChangeListener { v, hasFocus ->
+            setOnQueryTextFocusChangeListener { _, hasFocus ->
                 if (hasFocus && confirmSaveContainer.visibility == View.VISIBLE) {
                     hideSaveConfirmation()
                 }
