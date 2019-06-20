@@ -401,11 +401,7 @@ class HomeViewModelTest {
             dataManager,
             loginRepository,
             sourcesRepository,
-            provideFakeCoroutinesDispatcherProvider(
-                coroutinesTestRule.testDispatcher,
-                coroutinesTestRule.testDispatcher,
-                coroutinesTestRule.testDispatcher
-            )
+            provideFakeCoroutinesDispatcherProvider(coroutinesTestRule.testDispatcher)
         )
     }
 }
