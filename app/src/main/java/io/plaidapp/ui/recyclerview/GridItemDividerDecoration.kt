@@ -54,9 +54,7 @@ class GridItemDividerDecoration(
         if (parent.isAnimating) return
         val lm = parent.layoutManager ?: return
 
-        val childCount = parent.childCount
-
-        for (i in 0 until childCount) {
+        (0 until parent.childCount).forEach { i ->
             val child = parent.getChildAt(i)
             val viewHolder = parent.getChildViewHolder(child)
 
