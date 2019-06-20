@@ -18,7 +18,6 @@ package io.plaidapp.test.shared
 
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 

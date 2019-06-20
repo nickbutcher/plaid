@@ -18,7 +18,6 @@ package io.plaidapp.search.domain
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
