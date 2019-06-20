@@ -29,8 +29,6 @@ import io.plaidapp.designernews.domain.GetCommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.PostReplyUseCase
 import io.plaidapp.designernews.domain.PostStoryCommentUseCase
-import io.plaidapp.designernews.domain.UpvoteCommentUseCase
-import io.plaidapp.designernews.domain.UpvoteStoryUseCase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -44,8 +42,6 @@ class StoryViewModel(
     private var postStoryComment: PostStoryCommentUseCase,
     private var postReply: PostReplyUseCase,
     private val getCommentsWithRepliesAndUsers: GetCommentsWithRepliesAndUsersUseCase,
-    private val upvoteStory: UpvoteStoryUseCase,
-    private val upvoteComment: UpvoteCommentUseCase,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel() {
 
@@ -65,19 +61,6 @@ class StoryViewModel(
             is Result.Error -> throw result.exception
         }.exhaustive
     }
-
-    fun storyUpvoteRequested(storyId: Long, onResult: (result: Result<Unit>) -> Unit) =
-            viewModelScope.launch(dispatcherProvider.computation) {
-                val result = upvoteStory(storyId)
-                withContext(dispatcherProvider.main) { onResult(result) }
-            }
-
-    fun commentUpvoteRequested(commentId: Long, onResult: (result: Result<Unit>) -> Unit) =
-            viewModelScope.launch(dispatcherProvider.computation) {
-
-                val result = upvoteComment(commentId)
-                withContext(dispatcherProvider.main) { onResult(result) }
-            }
 
     fun commentReplyRequested(
         text: CharSequence,

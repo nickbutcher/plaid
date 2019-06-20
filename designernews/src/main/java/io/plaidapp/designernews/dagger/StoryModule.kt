@@ -26,14 +26,10 @@ import io.plaidapp.designernews.data.comments.CommentsRemoteDataSource
 import io.plaidapp.designernews.data.comments.CommentsRepository
 import io.plaidapp.designernews.data.users.UserRemoteDataSource
 import io.plaidapp.designernews.data.users.UserRepository
-import io.plaidapp.designernews.data.votes.VotesRemoteDataSource
-import io.plaidapp.designernews.data.votes.VotesRepository
 import io.plaidapp.designernews.domain.GetCommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.PostReplyUseCase
 import io.plaidapp.designernews.domain.PostStoryCommentUseCase
-import io.plaidapp.designernews.domain.UpvoteCommentUseCase
-import io.plaidapp.designernews.domain.UpvoteStoryUseCase
 import io.plaidapp.designernews.ui.DesignerNewsViewModelFactory
 import io.plaidapp.designernews.ui.login.LoginViewModel
 import io.plaidapp.designernews.ui.story.StoryActivity
@@ -64,8 +60,6 @@ class StoryModule(private val storyId: Long, private val activity: StoryActivity
         postStoryCommentUseCase: PostStoryCommentUseCase,
         postReplyUseCase: PostReplyUseCase,
         commentsWithRepliesAndUsersUseCase: GetCommentsWithRepliesAndUsersUseCase,
-        upvoteStoryUseCase: UpvoteStoryUseCase,
-        upvoteCommentUseCase: UpvoteCommentUseCase,
         coroutinesDispatcherProvider: CoroutinesDispatcherProvider
     ): StoryViewModelFactory =
         StoryViewModelFactory(
@@ -74,8 +68,6 @@ class StoryModule(private val storyId: Long, private val activity: StoryActivity
             postStoryCommentUseCase,
             postReplyUseCase,
             commentsWithRepliesAndUsersUseCase,
-            upvoteStoryUseCase,
-            upvoteCommentUseCase,
             coroutinesDispatcherProvider
         )
 
@@ -88,11 +80,6 @@ class StoryModule(private val storyId: Long, private val activity: StoryActivity
     @FeatureScope
     fun provideCommentsRemoteDataSource(service: DesignerNewsService): CommentsRemoteDataSource =
         CommentsRemoteDataSource(service)
-
-    @Provides
-    @FeatureScope
-    fun provideVotesRepository(remoteDataSource: VotesRemoteDataSource): VotesRepository =
-        VotesRepository(remoteDataSource)
 
     @Provides
     @FeatureScope
