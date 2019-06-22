@@ -37,12 +37,16 @@ abstract class InfiniteScrollListener(
         val totalItemCount = layoutManager.itemCount
         val firstVisibleItem = layoutManager.findFirstVisibleItemPosition()
 
-        if (totalItemCount - visibleItemCount <= firstVisibleItem + VISIBLE_THRESHOLD) {
+        if (totalItemCount - visibleItemCount <= firstVisibleItem + VISIBLE_THRESHOLD && totalItemCount > 0) {
             recyclerView.post(loadMoreRunnable)
+        } else {
+            onStopLoading()
         }
     }
 
     abstract fun onLoadMore()
+
+    abstract fun onStopLoading()
 
     abstract fun isDataLoading(): Boolean
 

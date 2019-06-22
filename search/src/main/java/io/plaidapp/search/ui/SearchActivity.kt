@@ -169,6 +169,8 @@ class SearchActivity : AppCompatActivity() {
                 override fun isDataLoading(): Boolean {
                     return viewModel.searchProgress.value?.isLoading ?: false
                 }
+
+                override fun onStopLoading() {}
             })
             setHasFixedSize(true)
 
