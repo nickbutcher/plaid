@@ -57,6 +57,7 @@ class LoadSearchDataUseCase(
                 })
             }
         }
+        if (_searchResult.value == null) _searchResult.postValue(emptyList())
         deferredJobs.awaitAll()
     }
 }
