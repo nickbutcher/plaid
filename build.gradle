@@ -27,7 +27,7 @@ buildscript { scriptHandler ->
             'androidxArch'       : '2.0.0',
             'constraintLayout'   : '2.0.0-alpha2',
             'coreKtx'            : '1.2.0-alpha01',
-            'coroutines'         : '1.2.1',
+            'coroutines'         : '1.2.2',
             'crashlytics'        : '2.9.8',
             'dagger'             : '2.16',
             'espresso'           : '3.1.0-beta02',
