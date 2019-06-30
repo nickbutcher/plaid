@@ -39,6 +39,11 @@ android {
         buildConfigField 'String',
                 'PRODUCT_HUNT_DEVELOPER_TOKEN', "\"${product_hunt_developer_token}\""
 
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments << ['dagger.gradle.incremental': 'true']
+            }
+        }
     }
 
     dataBinding {
@@ -59,7 +64,6 @@ android {
     packagingOptions {
         exclude 'META-INF/core_debug.kotlin_module'
     }
-
 }
 
 dependencies {
@@ -78,6 +82,10 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
     kapt "com.github.bumptech.glide:compiler:${versions.glide}"
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
+}
+
+kapt {
+    useBuildCache = true
 }
 
 androidExtensions {
