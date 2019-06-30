@@ -50,6 +50,7 @@ repositories {
             includeGroup "org.ow2.asm"
             includeGroup "org.sonatype.oss"
             includeGroup "org.xerial"
+            includeGroup "net.ltgt.gradle.incap"
 
             excludeGroup "com.google.firebase"
             excludeGroup "com.google.android.gms"
