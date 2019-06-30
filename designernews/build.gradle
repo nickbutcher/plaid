@@ -33,6 +33,11 @@ android {
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments << ['dagger.gradle.incremental': 'true']
+            }
+        }
     }
 
     dataBinding {
@@ -55,7 +60,10 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:${versions.glide}"
 
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
-    kapt "androidx.room:room-compiler:${versions.room}"
+}
+
+kapt {
+    useBuildCache = true
 }
 
 // enabling experimental for Kotlin parcelize supports

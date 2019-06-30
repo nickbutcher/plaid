@@ -40,6 +40,12 @@ android {
         manifestPlaceholders += [
                 crashlyticsEnabled: false
         ]
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments << ['dagger.gradle.incremental': 'true']
+            }
+        }
     }
 
     dataBinding {
@@ -77,6 +83,10 @@ dependencies {
     implementation "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
 
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
+}
+
+kapt {
+    useBuildCache = true
 }
 
 // Must be applied after dependencies. See https://stackoverflow.com/a/38018985
