@@ -35,7 +35,7 @@ buildscript { scriptHandler ->
             'extJunit'           : '1.1.0',
             'fabric'             : '1.25.4',
             'firebase'           : '16.0.6',
-            'glide'              : '4.8.0',
+            'glide'              : '4.9.0',
             'googleServices'     : '4.0.1',
             'gson'               : '2.8.5',
             'jsoup'              : '1.11.3',
