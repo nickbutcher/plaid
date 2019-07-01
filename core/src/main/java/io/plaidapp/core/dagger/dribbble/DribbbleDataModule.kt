@@ -51,7 +51,7 @@ class DribbbleDataModule {
     ): DribbbleSearchService =
         Retrofit.Builder()
             .baseUrl(DribbbleSearchService.ENDPOINT)
-            .callFactory { client.get().newCall(it) }
+            .callFactory(client.get())
             .addConverterFactory(converterFactory)
             .build()
             .create(DribbbleSearchService::class.java)

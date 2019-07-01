@@ -22,7 +22,7 @@ import okhttp3.MediaType
 import okhttp3.ResponseBody
 import retrofit2.Response
 
-val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")!!
+val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")
 
 val post1 = GetPostItemResponse(
     id = 345L,
@@ -47,9 +47,9 @@ val post2 = GetPostItemResponse(
 
 val responseDataSuccess = GetPostsResponse(posts = listOf(post1, post2))
 
-val responseSuccess = Response.success(responseDataSuccess)!!
+val responseSuccess = Response.success(responseDataSuccess)
 
 val responseError = Response.error<GetPostsResponse>(
     400,
     errorResponseBody
-)!!
+)
