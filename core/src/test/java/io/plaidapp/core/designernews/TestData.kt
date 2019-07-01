@@ -33,7 +33,7 @@ val user = User(
     portraitUrl = "www"
 )
 
-val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")!!
+val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")
 
 const val userId = 123L
 
