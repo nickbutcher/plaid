@@ -102,11 +102,11 @@ private fun weighItems(items: MutableList<out PlaidItem>?) {
 
     // otherwise use our own weight calculation. We prefer this as it leads to a less
     // regular pattern of items in the grid
-    items.filter { it is Shot }.apply {
-        ShotWeigher().weigh(this as List<Shot>)
+    items.filterIsInstance<Shot>().apply {
+        ShotWeigher().weigh(this)
     }
-    items.filter { it is Story }.apply {
-        StoryWeigher().weigh(this as List<Story>)
+    items.filterIsInstance<Story>().apply {
+        StoryWeigher().weigh(this)
     }
     items.filter { it is Post && SOURCE_PRODUCT_HUNT != it.dataSource }.apply {
         PostWeigher().weigh(this as List<Post>)

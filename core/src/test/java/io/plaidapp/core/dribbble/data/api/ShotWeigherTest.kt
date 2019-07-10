@@ -81,12 +81,12 @@ class ShotWeigherTest {
     @Test
     fun weights_acrossPages_inExpectedOrder() {
         // Given a number of shots, with a range of likes and across different pages
-        val shot_p0_0 = shot0.apply { page = 0 }
-        val shot_p0_99 = shot99.apply { page = 0 }
-        val shot_p1_0 = shot0.copy().apply { page = 1 }
-        val shot_p1_99 = shot99.copy().apply { page = 1 }
-        val shot_p2_0 = shot0.copy().apply { page = 2 }
-        val shot_p2_99 = shot99.copy().apply { page = 2 }
+        val shot_p0_0 = shot0.copy(page = 0)
+        val shot_p0_99 = shot99.copy(page = 0)
+        val shot_p1_0 = shot0.copy(page = 1)
+        val shot_p1_99 = shot99.copy(page = 1)
+        val shot_p2_0 = shot0.copy(page = 2)
+        val shot_p2_99 = shot99.copy(page = 2)
         val shots = listOf(shot_p2_0, shot_p0_99, shot_p0_0, shot_p2_99, shot_p1_0, shot_p1_99)
 
         // When the weigher weighs them

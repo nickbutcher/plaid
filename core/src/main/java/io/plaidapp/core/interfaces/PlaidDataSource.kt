@@ -16,8 +16,9 @@
 
 package io.plaidapp.core.interfaces
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import io.plaidapp.core.data.PlaidItem
-import io.plaidapp.core.data.Result
 import io.plaidapp.core.data.SourceItem
 
 /**
@@ -26,8 +27,12 @@ import io.plaidapp.core.data.SourceItem
  */
 abstract class PlaidDataSource(val sourceItem: SourceItem) {
 
+    protected val _items = MutableLiveData<List<PlaidItem>>()
+    val items: LiveData<List<PlaidItem>>
+        get() = _items
+
     /**
      * Load more data from this source
      */
-    abstract suspend fun loadMore(): Result<List<PlaidItem>>
+    abstract suspend fun loadMore()
 }

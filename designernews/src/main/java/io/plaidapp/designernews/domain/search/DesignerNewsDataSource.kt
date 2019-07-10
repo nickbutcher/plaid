@@ -16,7 +16,6 @@
 
 package io.plaidapp.designernews.domain.search
 
-import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
@@ -33,15 +32,15 @@ class DesignerNewsDataSource(
 
     private var page = 0
 
-    override suspend fun loadMore(): Result<List<PlaidItem>> {
+    override suspend fun loadMore() {
         val result = repository.search(sourceItem.key, page)
-        return when (result) {
+        when (result) {
             is Result.Success -> {
                 page++
-                val stories = result.data.map { it.toStory() }
-                Result.Success(stories)
+                val stories = result.data.map { it.toStory(page) }
+                _items.postValue(stories)
             }
-            is Result.Error -> result
+            is Result.Error -> _items.postValue(emptyList())
         }
     }
 }
