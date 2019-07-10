@@ -30,6 +30,7 @@ import android.transition.Transition
 import android.transition.TransitionInflater
 import android.transition.TransitionManager
 import android.transition.TransitionSet
+import android.util.Log
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
@@ -127,6 +128,7 @@ class SearchActivity : AppCompatActivity() {
                 }
                 val items = searchUiModel.items
                 expandPopularItems(items, columns)
+                Log.d("flo", "activity items ${items.size}")
                 feedAdapter.items = items
             } else {
                 TransitionManager.beginDelayedTransition(

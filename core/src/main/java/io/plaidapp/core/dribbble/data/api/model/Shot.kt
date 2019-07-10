@@ -38,4 +38,8 @@ data class Shot(
 
     // todo move this into a decorator
     var hasFadedIn = false
+
+    override fun toString(): String {
+        return "Shot(title='$title')"
+    }
 }

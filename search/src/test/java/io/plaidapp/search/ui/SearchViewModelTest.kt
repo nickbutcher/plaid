@@ -106,7 +106,6 @@ class FakeDataSource : PlaidDataSource(sourceItem) {
 
     var result = Result.Success(emptyList<PlaidItem>())
 
-    override suspend fun loadMore(): Result<List<PlaidItem>> {
-        return result
+    override suspend fun loadMore() {
     }
 }

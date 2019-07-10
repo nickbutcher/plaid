@@ -43,4 +43,9 @@ data class Story(
     @Deprecated("Removed in DN API V2")
     @SerializedName("user_portrait_url") val userPortraitUrl: String? = null,
     @SerializedName("user_job") val userJob: String? = null
-) : PlaidItem(id, title, url)
+) : PlaidItem(id, title, url){
+
+    override fun toString(): String {
+        return "Story(title='$title')"
+    }
+}
