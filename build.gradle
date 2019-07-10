@@ -36,7 +36,7 @@ buildscript { scriptHandler ->
             'fabric'             : '1.28.0',
             'firebase'           : '17.0.0',
             'glide'              : '4.9.0',
-            'googleServices'     : '4.0.1',
+            'googleServices'     : '4.3.0',
             'gson'               : '2.8.5',
             'jsoup'              : '1.11.3',
             'junit'              : '4.12',
@@ -49,12 +49,12 @@ buildscript { scriptHandler ->
             'mockito_kotlin'     : '2.0.0-RC3',
             'okhttp'             : '3.10.0',
             'retrofit'           : '2.6.0',
-            'room'               : '2.1.0-alpha05',
+            'room'               : '2.1.0',
             'supportLibrary'     : '28.0.0',
             'test_rules'         : '1.1.0-beta02',
             'test_runner'        : '1.1.0-beta02',
             'ui_automator'       : '2.2.0-beta02',
-            'viewPager2'         : '1.0.0-alpha02'
+            'viewPager2'         : '1.0.0-alpha06'
     ]
     ext.names = [
             'applicationId': 'io.plaidapp'
