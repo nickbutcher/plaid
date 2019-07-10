@@ -17,15 +17,16 @@
 
 package io.plaidapp.core.ui.recyclerview
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.view.Gravity
 import android.view.View
+import androidx.dynamicanimation.animation.SpringAnimation.ALPHA
+import androidx.dynamicanimation.animation.SpringAnimation.TRANSLATION_X
+import androidx.dynamicanimation.animation.SpringAnimation.TRANSLATION_Y
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
-import io.plaidapp.core.util.AnimUtils
-import java.util.ArrayList
+import io.plaidapp.core.util.listenForAllSpringsEnd
+import io.plaidapp.core.util.spring
 
 /**
  * A [RecyclerView.ItemAnimator] that fades & slides newly added items in from a given
@@ -36,7 +37,7 @@ open class SlideInItemAnimator @JvmOverloads constructor(
     layoutDirection: Int = -1
 ) : DefaultItemAnimator() {
 
-    private val pendingAdds = ArrayList<RecyclerView.ViewHolder>()
+    private val pendingAdds = mutableListOf<RecyclerView.ViewHolder>()
     private val slideFromEdge: Int = Gravity.getAbsoluteGravity(slideFromEdge, layoutDirection)
 
     init {
@@ -47,11 +48,11 @@ open class SlideInItemAnimator @JvmOverloads constructor(
     override fun animateAdd(holder: RecyclerView.ViewHolder): Boolean {
         holder.itemView.alpha = 0f
         when (slideFromEdge) {
-            Gravity.LEFT -> holder.itemView.translationX = (-holder.itemView.width / 3).toFloat()
-            Gravity.TOP -> holder.itemView.translationY = (-holder.itemView.height / 3).toFloat()
-            Gravity.RIGHT -> holder.itemView.translationX = (holder.itemView.width / 3).toFloat()
+            Gravity.LEFT -> holder.itemView.translationX = -holder.itemView.width / 3f
+            Gravity.TOP -> holder.itemView.translationY = -holder.itemView.height / 3f
+            Gravity.RIGHT -> holder.itemView.translationX = holder.itemView.width / 3f
             else // Gravity.BOTTOM
-            -> holder.itemView.translationY = (holder.itemView.height / 3).toFloat()
+            -> holder.itemView.translationY = holder.itemView.height / 3f
         }
         pendingAdds.add(holder)
         return true
@@ -62,35 +63,31 @@ open class SlideInItemAnimator @JvmOverloads constructor(
         if (pendingAdds.isNotEmpty()) {
             for (i in pendingAdds.indices.reversed()) {
                 val holder = pendingAdds[i]
-                holder.itemView.animate()
-                    .alpha(1f)
-                    .translationX(0f)
-                    .translationY(0f)
-                    .setDuration(addDuration)
-                    .setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationStart(animation: Animator) {
-                            dispatchAddStarting(holder)
-                        }
+                val springAlpha = holder.itemView.spring(ALPHA)
+                val springTranslationX = holder.itemView.spring(TRANSLATION_X)
+                val springTranslationY = holder.itemView.spring(TRANSLATION_Y)
+                dispatchAddStarting(holder)
+                springAlpha.animateToFinalPosition(1f)
+                springTranslationX.animateToFinalPosition(0f)
+                springTranslationY.animateToFinalPosition(0f)
 
-                        override fun onAnimationEnd(animation: Animator) {
-                            animation.listeners.remove(this)
-                            dispatchAddFinished(holder)
-                            dispatchFinishedWhenDone()
-                        }
+                listenForAllSpringsEnd({ cancelled ->
+                    if (cancelled) {
+                        clearAnimatedValues(holder.itemView)
+                    }
+                    dispatchAddFinished(holder)
+                    dispatchFinishedWhenDone()
 
-                        override fun onAnimationCancel(animation: Animator) {
-                            clearAnimatedValues(holder.itemView)
-                        }
-                    }).interpolator = AnimUtils.getLinearOutSlowInInterpolator(
-                    holder.itemView.context
-                )
+                }, springAlpha, springTranslationX, springTranslationY)
                 pendingAdds.removeAt(i)
             }
         }
     }
 
     override fun endAnimation(holder: RecyclerView.ViewHolder) {
-        holder.itemView.animate().cancel()
+        holder.itemView.spring(ALPHA).cancel()
+        holder.itemView.spring(TRANSLATION_X).cancel()
+        holder.itemView.spring(TRANSLATION_Y).cancel()
         if (pendingAdds.remove(holder)) {
             dispatchAddFinished(holder)
             clearAnimatedValues(holder.itemView)
