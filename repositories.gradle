@@ -9,6 +9,7 @@ repositories {
             includeGroup "com.google.firebase"
             includeGroup "com.google.android.gms"
             includeGroup "com.google.android.material"
+            includeGroup "zipflinger"
         }
     }
 
