@@ -31,4 +31,7 @@
 
 ## :camera_flash: Screenshots / GIFs
 <!--- Mandatory for UI changes -->
-<img src="https://your_image_url" width="260">&emsp;<img src="https://your_image_url" width="260">
+<!-- Uncomment the next line and replace it with links to your screenshots. -->
+<!--
+<img src="https://placekitten.com/260/260" width="260">&emsp;<img src="https://placekitten.com/300/300" width="260">
+-->
