@@ -26,7 +26,7 @@ import java.util.Date
 data class Shot(
     @SerializedName("id") override val id: Long,
     @SerializedName("title") override val title: String,
-    @SerializedName("page") override val page: Int = 0,
+    @SerializedName("page") override val page: Int,
     @SerializedName("description") val description: String,
     @SerializedName("images") val images: Images,
     @SerializedName("views_count") val viewsCount: Int = 0,

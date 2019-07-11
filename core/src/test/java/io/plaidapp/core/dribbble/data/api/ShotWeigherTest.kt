@@ -33,6 +33,7 @@ class ShotWeigherTest {
     private val shot0 = Shot(
         likesCount = 0,
         id = 1L,
+        page = 0,
         title = "Foo",
         description = "",
         images = Images(),

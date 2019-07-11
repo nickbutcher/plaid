@@ -31,7 +31,7 @@ class GetStoryUseCase @Inject constructor(private val storiesRepository: Stories
     operator fun invoke(id: Long): Result<Story> {
         val result = storiesRepository.getStory(id)
         return if (result is Result.Success) {
-            Result.Success(result.data.toStory())
+            Result.Success(result.data.toStory(0))
         } else {
             Result.Error(IllegalStateException("Story $id not cached"))
         }

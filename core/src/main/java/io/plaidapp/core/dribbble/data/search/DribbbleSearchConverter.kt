@@ -88,6 +88,7 @@ object DribbbleSearchConverter : Converter<ResponseBody, List<Shot>> {
             id = id,
             htmlUrl = htmlUrl,
             title = title,
+            page = 0,
             description = description,
             images = Images(normal = imgUrl),
             animated = animated,

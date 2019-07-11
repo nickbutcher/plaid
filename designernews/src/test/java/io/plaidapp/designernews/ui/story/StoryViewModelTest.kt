@@ -62,6 +62,7 @@ class StoryViewModelTest {
     private val testStory = Story(
         id = storyId,
         title = "Plaid 2.0 was released",
+        page = 0,
         createdAt = createdDate,
         userId = userId,
         links = storyLinks

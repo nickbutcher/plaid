@@ -30,4 +30,4 @@ class Post(
     val redirectUrl: String,
     val commentsCount: Int,
     val votesCount: Int
-) : PlaidItem(id, title, url)
+) : PlaidItem(id, title, url, 0)
