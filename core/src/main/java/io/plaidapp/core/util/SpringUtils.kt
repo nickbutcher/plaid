@@ -37,15 +37,14 @@ fun View.spring(
     val key = getKey(property)
     var springAnim = getTag(key) as? SpringAnimation?
     if (springAnim == null) {
-        springAnim = SpringAnimation(this, property).apply {
-            spring = SpringForce().apply {
-                this.dampingRatio = damping
-                this.stiffness = stiffness
-                startVelocity?.let { setStartVelocity(it) }
-            }
-        }
+        springAnim = SpringAnimation(this, property)
         setTag(key, springAnim)
     }
+    springAnim.spring = (springAnim.spring ?: SpringForce()).apply {
+        this.dampingRatio = damping
+        this.stiffness = stiffness
+    }
+    startVelocity?.let { springAnim.setStartVelocity(it) }
     return springAnim
 }
 
