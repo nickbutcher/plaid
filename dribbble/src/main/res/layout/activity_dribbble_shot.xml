@@ -51,8 +51,9 @@
         android:layout_height="match_parent"
         android:transitionGroup="false"
         app:layoutFullscreen="@{true}"
-        app:marginTopSystemWindowInsets="@{true}"
+        app:marginLeftSystemWindowInsets="@{true}"
         app:marginRightSystemWindowInsets="@{true}"
+        app:marginTopSystemWindowInsets="@{true}"
         app:dragDismissDistance="@dimen/drag_dismiss_distance"
         app:dragDismissScale="0.95"
         tools:context=".ui.shot.ShotActivity">
