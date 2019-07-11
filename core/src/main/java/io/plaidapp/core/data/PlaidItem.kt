@@ -24,7 +24,7 @@ abstract class PlaidItem(
     @Transient open val id: Long,
     @Transient open val title: String,
     @Transient open var url: String? = null,
-    @Transient open val page: Int = 0
+    @Transient open val page: Int
 ) {
     var dataSource: String? = null
     var weight: Float = 0F // used for sorting

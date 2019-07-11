@@ -29,7 +29,7 @@ fun getDefaultUrl(id: Long) = "https://www.designernews.co/click/stories/$id"
 data class Story(
     @SerializedName("id") override val id: Long,
     @SerializedName("title") override val title: String,
-    @SerializedName("page") override val page: Int = 0,
+    @SerializedName("page") override val page: Int,
     @SerializedName("url")
     override var url: String? = getDefaultUrl(id),
     @SerializedName("comment") val comment: String? = null,
