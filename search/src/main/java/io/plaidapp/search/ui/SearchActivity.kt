@@ -211,13 +211,17 @@ class SearchActivity : AppCompatActivity() {
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
             val stableFabMarginBottom = fab.marginBottom
             setOnApplyWindowInsetsListener { _, insets ->
-                updatePadding(top = insets.systemWindowInsetTop)
+                updatePadding(
+                    top = insets.systemWindowInsetTop,
+                    left = insets.systemWindowInsetLeft,
+                    right = insets.systemWindowInsetRight
+                )
                 results.updatePadding(bottom = insets.systemWindowInsetBottom)
                 fab.updateLayoutParams<MarginLayoutParams> {
-                    stableFabMarginBottom + insets.systemWindowInsetBottom
+                    bottomMargin = stableFabMarginBottom + insets.systemWindowInsetBottom
                 }
                 confirmSaveContainer.updateLayoutParams<MarginLayoutParams> {
-                    stableFabMarginBottom + insets.systemWindowInsetBottom
+                    bottomMargin = stableFabMarginBottom + insets.systemWindowInsetBottom
                 }
                 insets
             }
