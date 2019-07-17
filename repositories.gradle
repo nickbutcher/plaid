@@ -10,6 +10,7 @@ repositories {
             includeGroup "com.google.android.gms"
             includeGroup "com.google.android.material"
             includeGroup "com.google.android.play"
+            includeGroup "zipflinger"
         }
     }
 

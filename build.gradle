@@ -17,6 +17,9 @@
 buildscript { scriptHandler ->
     apply from: 'repositories.gradle',
             to: scriptHandler
+    repositories {
+        google()
+    }
     ext.versions = [
             'compileSdk'         : 28,
             'minSdk'             : 23,
@@ -33,7 +36,7 @@ buildscript { scriptHandler ->
             'dagger'             : '2.23.2',
             'espresso'           : '3.1.0-beta02',
             'extJunit'           : '1.1.0',
-            'fabric'             : '1.25.4',
+            'fabric'             : '1.28.0',
             'firebase'           : '16.0.6',
             'glide'              : '4.9.0',
             'googleServices'     : '4.0.1',
@@ -63,7 +66,7 @@ buildscript { scriptHandler ->
     ]
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.1'
+        classpath 'com.android.tools.build:gradle:3.5.0-beta05'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         classpath "com.google.gms:google-services:${versions.googleServices}"
         classpath "io.fabric.tools:gradle:${versions.fabric}"
