@@ -38,5 +38,7 @@
 
     <!--searchable label-->
     <string name="search_hint">Search Dribbble &amp; Designer News</string>
+    <string name="update_downloaded">An update has just been downloaded.</string>
+    <string name="snackbar_restart">RESTART</string>
 
 </resources>

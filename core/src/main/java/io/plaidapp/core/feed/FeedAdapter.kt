@@ -20,8 +20,6 @@ import android.app.Activity
 import android.app.ActivityOptions
 import android.app.SharedElementCallback
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Pair
@@ -29,19 +27,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import androidx.annotation.ColorInt
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.ListPreloader
 import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.util.ViewPreloadSizeProvider
 import io.plaidapp.core.R
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.data.pocket.PocketUtils
@@ -55,7 +45,6 @@ import io.plaidapp.core.ui.HomeGridItemAnimator
 import io.plaidapp.core.ui.transitions.ReflowText
 import io.plaidapp.core.util.Activities
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
-import io.plaidapp.core.util.glide.DribbbleTarget
 import io.plaidapp.core.util.glide.GlideApp
 import io.plaidapp.core.util.intentTo
 
@@ -70,11 +59,7 @@ class FeedAdapter(
     private val isDarkTheme: Boolean
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ListPreloader.PreloadModelProvider<Shot> {
     private val layoutInflater: LayoutInflater = LayoutInflater.from(host)
-    private val shotLoadingPlaceholders: Array<ColorDrawable?>
-    private val shotPreloadSizeProvider = ViewPreloadSizeProvider<Shot>()
-
-    @ColorInt
-    private val initialGifBadgeColor: Int
+    private val shotStyle = DribbbleShotHolder.getShotLoadingPlaceholders(host)
     private var showLoadingMore = false
     private val loadingMoreItemPosition: Int
         get() = if (showLoadingMore) itemCount - 1 else RecyclerView.NO_POSITION
@@ -90,27 +75,6 @@ class FeedAdapter(
 
     init {
         setHasStableIds(true)
-
-        // get the dribbble shot placeholder colors & badge color from the theme
-        val a = host.obtainStyledAttributes(R.styleable.DribbbleFeed)
-        val loadingColorArrayId =
-            a.getResourceId(R.styleable.DribbbleFeed_shotLoadingPlaceholderColors, 0)
-        if (loadingColorArrayId != 0) {
-            val placeholderColors = host.resources.getIntArray(loadingColorArrayId)
-            shotLoadingPlaceholders = arrayOfNulls(placeholderColors.size)
-            placeholderColors.indices.forEach {
-                shotLoadingPlaceholders[it] = ColorDrawable(placeholderColors[it])
-            }
-        } else {
-            shotLoadingPlaceholders = arrayOf(ColorDrawable(Color.DKGRAY))
-        }
-        val initialGifBadgeColorId = a.getResourceId(R.styleable.DribbbleFeed_initialBadgeColor, 0)
-        initialGifBadgeColor = if (initialGifBadgeColorId != 0) {
-            ContextCompat.getColor(host, initialGifBadgeColorId)
-        } else {
-            0x40ffffff
-        }
-        a.recycle()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -128,11 +92,10 @@ class FeedAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
             TYPE_DESIGNER_NEWS_STORY -> (holder as StoryViewHolder).bind((getItem(position) as Story))
-            TYPE_DRIBBBLE_SHOT -> bindDribbbleShotHolder(
-                (getItem(position) as Shot), holder as DribbbleShotHolder, position
-            )
+            TYPE_DRIBBBLE_SHOT -> (holder as DribbbleShotHolder).bind(getItem(position) as Shot)
             TYPE_PRODUCT_HUNT_POST -> (holder as ProductHuntPostHolder).bind((getItem(position) as Post))
-            TYPE_LOADING_MORE -> bindLoadingViewHolder(holder as LoadingMoreHolder, position)
+            TYPE_FLEXIBLE_UPDATE_AVAILABLE -> (holder as FlexibleUpdateAvailableViewHolder)
+                TYPE_LOADING_MORE -> bindLoadingViewHolder(holder as LoadingMoreHolder, position)
             else -> throw IllegalStateException("Unsupported View type")
         }
     }
@@ -206,8 +169,8 @@ class FeedAdapter(
     private fun createDribbbleShotHolder(parent: ViewGroup): DribbbleShotHolder {
         return DribbbleShotHolder(
             layoutInflater.inflate(R.layout.dribbble_shot_item, parent, false),
-            initialGifBadgeColor,
-            isDarkTheme
+            isDarkTheme,
+            shotStyle
         ) { view, position ->
             val intent = intentTo(Activities.Dribbble.Shot)
             intent.putExtra(
@@ -222,54 +185,6 @@ class FeedAdapter(
             host.startActivityForResult(intent, REQUEST_CODE_VIEW_SHOT, options.toBundle())
             Unit
         }
-    }
-
-    private fun bindDribbbleShotHolder(
-        shot: Shot,
-        holder: DribbbleShotHolder,
-        position: Int
-    ) {
-        val imageSize = shot.images.bestSize()
-        GlideApp.with(host)
-            .load(shot.images.best())
-            .listener(object : RequestListener<Drawable> {
-                override fun onResourceReady(
-                    resource: Drawable,
-                    model: Any,
-                    target: Target<Drawable>,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    if (!shot.hasFadedIn) {
-                        holder.fade()
-                        shot.hasFadedIn = true
-                    }
-                    return false
-                }
-
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any,
-                    target: Target<Drawable>,
-                    isFirstResource: Boolean
-                ) = false
-            })
-            .placeholder(shotLoadingPlaceholders[position % shotLoadingPlaceholders.size])
-            .diskCacheStrategy(DiskCacheStrategy.DATA)
-            .fitCenter()
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .override(imageSize.width, imageSize.height)
-            .into(DribbbleTarget(holder.image, false))
-        // need both placeholder & background to prevent seeing through shot as it fades in
-        shotLoadingPlaceholders[position % shotLoadingPlaceholders.size]?.apply {
-            holder.prepareForFade(
-                this,
-                shot.animated,
-                // need a unique transition name per shot, let's use its url
-                shot.htmlUrl
-            )
-        }
-        shotPreloadSizeProvider.setView(holder.image)
     }
 
     private fun createProductHuntStoryHolder(parent: ViewGroup): ProductHuntPostHolder {

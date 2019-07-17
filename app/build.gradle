@@ -78,9 +78,10 @@ dependencies {
     implementation project(':core')
     implementation "androidx.appcompat:appcompat:${versions.appcompat}"
     implementation "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
-    implementation "com.google.firebase:firebase-core:${versions.firebase}"
     implementation "com.github.bumptech.glide:glide:${versions.glide}"
     implementation "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
+    implementation "com.google.android.play:core:${versions.playCore}"
+    implementation "com.google.firebase:firebase-core:${versions.firebase}"
 
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }

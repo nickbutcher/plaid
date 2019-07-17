@@ -23,6 +23,7 @@ import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.text.Annotation
 import android.text.Spannable
@@ -32,6 +33,7 @@ import android.text.SpannedString
 import android.text.style.ForegroundColorSpan
 import android.text.style.ImageSpan
 import android.transition.TransitionManager
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -57,6 +59,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.util.ViewPreloadSizeProvider
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.appupdate.AppUpdateInfo
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallState
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType
 import io.plaidapp.R
 import io.plaidapp.core.dagger.qualifier.IsPocketInstalled
 import io.plaidapp.core.data.prefs.SourcesRepository
@@ -81,6 +89,11 @@ import io.plaidapp.core.util.intentTo
 import io.plaidapp.dagger.inject
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration
+import io.plaidapp.util.checkForUpdate
+import io.plaidapp.util.onActivityResult
+import io.plaidapp.util.onInstalled
+import io.plaidapp.util.updateFlexibly
+import io.plaidapp.util.updateImmediately
 import javax.inject.Inject
 
 /**
@@ -184,6 +197,10 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    private val appUpdateManager by lazy {
+        AppUpdateManagerFactory.create(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
@@ -236,6 +253,11 @@ class HomeActivity : AppCompatActivity() {
             it.attachToRecyclerView(filtersList)
         }
         checkEmptyState()
+
+        appUpdateManager.checkForUpdate(
+            immediateUpdate = ::performImmediateUpdate,
+            flexibleUpdate = ::performFlexibleUpdate
+        )
     }
 
     private fun initViewModelObservers() {
@@ -515,6 +537,91 @@ class HomeActivity : AppCompatActivity() {
                     }
                 }
             }
+            RC_APP_UPDATE_CHECK -> {
+                // TODO define handling and handle these cases properly.
+                appUpdateManager.onActivityResult(
+                    resultCode, { Log.i(TAG, "User accepted update") },
+                    { Log.e(TAG, "User cancelled update.") },
+                    { Log.e(TAG, "In App Update failed with result code $resultCode.") }
+                )
+            }
+        }
+    }
+
+    /**
+     * Perform an In App Update depending on type.
+     *
+     * @param appUpdateInfo The [AppUpdateInfo] received.
+     * @param type either of the [AppUpdateType] values.
+     * @param updateReady Called once the update is installed.
+     */
+    private fun performInAppUpdate(
+        appUpdateInfo: AppUpdateInfo,
+        @AppUpdateType type: Int,
+        updateReady: () -> Unit
+    ) {
+        val listener = object : InstallStateUpdatedListener {
+            override fun onStateUpdate(state: InstallState) {
+                state.onInstalled {
+                    appUpdateManager.unregisterListener(this)
+                    updateReady()
+                }
+            }
+        }
+
+        with(appUpdateManager) {
+            registerListener(listener)
+
+            val homeActivity = this@HomeActivity
+            when (type) {
+                AppUpdateType.IMMEDIATE -> updateImmediately(homeActivity, RC_APP_UPDATE_CHECK)
+                AppUpdateType.FLEXIBLE -> updateFlexibly(homeActivity, RC_APP_UPDATE_CHECK)
+            }
+        }
+    }
+
+    private fun performImmediateUpdate(appUpdateInfo: AppUpdateInfo) {
+        /*
+           This is a basic check, which will be replaced with a more sophisticated one in the
+           future.
+
+           Instead of relying simply on the version code difference to check whether an update
+           is required immediately, other apps might want to defer to a server that provides the
+           signal required to decide on which update path should be followed.
+         */
+        if (appUpdateInfo.availableVersionCode() - getVersionCode() > 100) {
+            performInAppUpdate(appUpdateInfo, AppUpdateType.IMMEDIATE) {
+                appUpdateManager.completeUpdate()
+            }
+        }
+    }
+
+    private fun performFlexibleUpdate(appUpdateInfo: AppUpdateInfo) {
+        performInAppUpdate(appUpdateInfo, AppUpdateType.FLEXIBLE) {
+            flexibleUpdateReady()
+        }
+    }
+
+    private fun flexibleUpdateReady() {
+        // TODO("Add flexible in-app update tile as shown in #703")
+        Snackbar.make(
+            findViewById(R.id.home_frame), getString(R.string.update_downloaded),
+            Snackbar.LENGTH_INDEFINITE
+        )
+            .setAction(getString(R.string.snackbar_restart)) { appUpdateManager.completeUpdate() }
+            .show()
+    }
+
+    /**
+     * Get the versionCode for this installed application.
+     */
+    private fun getVersionCode(): Long {
+        val packageInfo = packageManager.getPackageInfo(packageName, 0)
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            packageInfo.longVersionCode
+        } else {
+            @Suppress("DEPRECATION")
+            packageInfo.versionCode.toLong()
         }
     }
 
@@ -644,6 +751,8 @@ class HomeActivity : AppCompatActivity() {
 
         private const val RC_SEARCH = 0
         private const val RC_NEW_DESIGNER_NEWS_LOGIN = 5
+        private const val RC_APP_UPDATE_CHECK = 6
+        private const val TAG = "HomeActivity"
     }
 }
 

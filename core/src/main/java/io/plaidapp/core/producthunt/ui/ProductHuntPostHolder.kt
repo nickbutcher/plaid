@@ -16,13 +16,12 @@
 
 package io.plaidapp.core.producthunt.ui
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
-
 import io.plaidapp.core.R
 import io.plaidapp.core.producthunt.data.api.model.Post
 import io.plaidapp.core.ui.recyclerview.Divided
+import io.plaidapp.core.ui.recyclerview.FeedViewHolder
 
 /**
  * ViewHolder for a Product Hunt Post
@@ -31,7 +30,7 @@ class ProductHuntPostHolder(
     itemView: View,
     private val commentsClicked: (post: Post) -> Unit,
     private val viewClicked: (post: Post) -> Unit
-) : RecyclerView.ViewHolder(itemView), Divided {
+) : FeedViewHolder<Post>(itemView), Divided {
 
     private var post: Post? = null
     private var title: TextView = itemView.findViewById(R.id.hunt_title)
@@ -43,7 +42,7 @@ class ProductHuntPostHolder(
         itemView.setOnClickListener { post?.let { post -> viewClicked(post) } }
     }
 
-    fun bind(item: Post) {
+    override fun bind(item: Post) {
         post = item
         title.text = item.title
         tagline.text = item.tagline
