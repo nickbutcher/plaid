@@ -57,7 +57,7 @@ class ShotActivity : AppCompatActivity() {
 
     @Inject
     internal lateinit var viewModel: ShotViewModel
-    @Inject
+
     internal lateinit var chromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
 
     private val binding by contentView<ShotActivity, ActivityDribbbleShotBinding>(
@@ -132,6 +132,12 @@ class ShotActivity : AppCompatActivity() {
                 shot.offset = -scrollY
             }
             back.setOnClickListener { setResultAndFinish() }
+        }
+
+        chromeFader = object : ElasticDragDismissFrameLayout.SystemChromeFader(this) {
+            override fun onDragDismissed() {
+                setResultAndFinish()
+            }
         }
     }
 

@@ -25,18 +25,19 @@
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:nestedScrollingEnabled="true"
         android:clipToPadding="false"
-        app:paddingBottomSystemWindowInsets="@{true}"
+        android:nestedScrollingEnabled="true"
+        app:paddingLeftSystemWindowInsets="@{true}"
         app:paddingRightSystemWindowInsets="@{true}"
+        app:paddingBottomSystemWindowInsets="@{true}"
         tools:showIn="@layout/activity_about">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
+            android:layout_height="wrap_content"
             android:background="?attr/colorSurface"
-            android:elevation="@dimen/z_card">
+            android:elevation="@dimen/z_card"
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/icon"
@@ -63,4 +64,5 @@
         </LinearLayout>
 
     </ScrollView>
+
 </layout>

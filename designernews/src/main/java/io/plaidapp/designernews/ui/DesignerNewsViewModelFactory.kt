@@ -33,9 +33,12 @@ class DesignerNewsViewModelFactory @Inject constructor(
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
-            return LoginViewModel(loginRepository, dispatcherProvider) as T
+        if (modelClass != LoginViewModel::class.java) {
+            throw IllegalArgumentException("Unknown ViewModel class")
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
+        return LoginViewModel(
+            loginRepository,
+            dispatcherProvider
+        ) as T
     }
 }

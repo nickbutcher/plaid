@@ -32,7 +32,7 @@ class SearchStoriesUseCase @Inject constructor(private val storiesRepository: St
         val result = storiesRepository.search(query, page)
         when (result) {
             is Result.Success -> {
-                val stories = result.data.map { it.toStory() }
+                val stories = result.data.map { it.toStory(page) }
                 return Result.Success(stories)
             }
             is Result.Error -> return result

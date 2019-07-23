@@ -31,6 +31,12 @@ android {
         def filesAuthorityValue = names.applicationId + '.shareprovider'
         buildConfigField 'String', 'FILES_AUTHORITY', "\"${filesAuthorityValue}\""
         manifestPlaceholders = [filesAuthority: filesAuthorityValue]
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments << ['dagger.gradle.incremental': 'true']
+            }
+        }
     }
 
     dataBinding {
@@ -52,4 +58,8 @@ dependencies {
     implementation "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
 
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
+}
+
+kapt {
+    useBuildCache = true
 }

@@ -25,6 +25,8 @@
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:paddingLeftSystemWindowInsets="@{true}"
+        app:paddingRightSystemWindowInsets="@{true}"
         tools:showIn="@layout/activity_about">
 
         <!-- we use a parallel view for the background rather than just setting a background on the
@@ -45,8 +47,8 @@
             android:scrollbars="vertical"
             app:hasFixedSize="@{true}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:paddingBottomSystemWindowInsets="@{true}"
-            app:paddingRightSystemWindowInsets="@{true}" />
+            app:paddingBottomSystemWindowInsets="@{true}" />
 
     </FrameLayout>
+
 </layout>

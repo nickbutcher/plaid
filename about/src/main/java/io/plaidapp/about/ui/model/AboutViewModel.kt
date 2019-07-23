@@ -32,13 +32,12 @@ import io.plaidapp.about.R
 import io.plaidapp.about.domain.model.Library
 import io.plaidapp.about.ui.AboutStyler
 import io.plaidapp.core.util.event.Event
-import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
 
 /**
  * [ViewModel] for the [io.plaidapp.about.ui.AboutActivity].
  */
-internal class AboutViewModel @Inject constructor(
+internal class AboutViewModel(
     private val aboutStyler: AboutStyler,
     private val resources: Resources,
     private val markdown: Markdown

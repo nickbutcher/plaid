@@ -23,10 +23,10 @@ package io.plaidapp.core.data
 abstract class PlaidItem(
     @Transient open val id: Long,
     @Transient open val title: String,
-    @Transient open var url: String? = null
+    @Transient open var url: String? = null,
+    @Transient open val page: Int
 ) {
     var dataSource: String? = null
-    var page: Int = 0
     var weight: Float = 0F // used for sorting
     var colspan: Int = 0
 }

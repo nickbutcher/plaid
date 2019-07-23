@@ -37,6 +37,7 @@ val shots = listOf(
     Shot(
         id = 1L,
         title = "Foo",
+        page = 0,
         description = "",
         images = Images(),
         user = player
@@ -44,6 +45,7 @@ val shots = listOf(
     Shot(
         id = 2L,
         title = "Bar",
+        page = 0,
         description = "",
         images = Images(),
         user = player
@@ -51,6 +53,7 @@ val shots = listOf(
     Shot(
         id = 3L,
         title = "Baz",
+        page = 0,
         description = "",
         images = Images(),
         user = player

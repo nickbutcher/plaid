@@ -48,4 +48,7 @@ dependencies {
     androidTestImplementation "com.squareup.retrofit2:retrofit-mock:${versions.retrofit}"
     androidTestImplementation "org.mockito:mockito-android:${versions.mockito}"
     androidTestImplementation "org.mockito:mockito-core:${versions.mockito}"
+    // Adding this to bring "google_play_services_version" into the test project
+    // without this, it fails on AGP 3.6.x.
+    androidTestImplementation "com.google.android.gms:play-services-gcm:16.0.0"
 }

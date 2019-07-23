@@ -149,7 +149,7 @@ class FeedAdapter(
         return StoryViewHolder(
             layoutInflater.inflate(R.layout.designer_news_story_item, parent, false),
             pocketIsInstalled,
-            { (_, _, url), position ->
+            { (_, _, _, url), position ->
                 PocketUtils.addToPocket(host, url)
                 // notify changed with a payload asking RV to run the anim
                 notifyItemChanged(position, HomeGridItemAnimator.ADD_TO_POCKET)

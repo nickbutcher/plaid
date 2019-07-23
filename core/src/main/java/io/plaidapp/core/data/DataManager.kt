@@ -218,7 +218,8 @@ class DataManager @Inject constructor(
 
     private fun setPage(items: List<PlaidItem>, page: Int) {
         items.forEach {
-            it.page = page
+            // TODO make sure that at every loading this is set
+//            it.page = page
         }
     }
 
