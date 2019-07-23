@@ -26,7 +26,7 @@ buildscript { scriptHandler ->
             'androidxCollection' : '1.0.0',
             'androidxArch'       : '2.0.0',
             'constraintLayout'   : '2.0.0-alpha2',
-            'coreKtx'            : '1.0.0',
+            'coreKtx'            : '1.2.0-alpha02',
             'coroutines'         : '1.2.2',
             'crashlytics'        : '2.10.1',
             'dagger'             : '2.23.2',
