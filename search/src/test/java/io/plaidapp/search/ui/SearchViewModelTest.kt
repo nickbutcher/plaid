@@ -27,11 +27,11 @@ import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.search.domain.SearchDataSourceFactoriesRegistry
 import io.plaidapp.search.shots
 import io.plaidapp.search.testShot1
-import io.plaidapp.test.shared.CoroutinesTestRule
+import io.plaidapp.test.shared.MainCoroutineRule
 import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
+import io.plaidapp.test.shared.runBlocking
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -46,7 +46,7 @@ class SearchViewModelTest {
 
     // Set the main coroutines dispatcher for unit testing
     @get:Rule
-    var coroutinesTestRule = CoroutinesTestRule()
+    var coroutinesRule = MainCoroutineRule()
 
     // Executes tasks in the Architecture Components in the same thread
     @get:Rule
@@ -62,14 +62,14 @@ class SearchViewModelTest {
     }
 
     @Test
-    fun searchFor_searchesInDataManager() = coroutinesTestRule.testDispatcher.runBlockingTest {
+    fun searchFor_searchesInDataManager() = coroutinesRule.runBlocking {
         // Given a query
         val query = "Plaid"
         // And an expected success result
         val result = Result.Success(shots)
         factory.dataSource.result = result
         val viewModel = SearchViewModel(registry,
-            provideFakeCoroutinesDispatcherProvider(coroutinesTestRule.testDispatcher))
+            provideFakeCoroutinesDispatcherProvider(coroutinesRule.testDispatcher))
 
         // When searching for the query
         viewModel.searchFor(query)
@@ -80,11 +80,11 @@ class SearchViewModelTest {
     }
 
     @Test
-    fun loadMore_loadsInDataManager() = coroutinesTestRule.testDispatcher.runBlockingTest {
+    fun loadMore_loadsInDataManager() = coroutinesRule.runBlocking {
         // Given a query
         val query = "Plaid"
         val viewModel = SearchViewModel(registry,
-            provideFakeCoroutinesDispatcherProvider(coroutinesTestRule.testDispatcher))
+            provideFakeCoroutinesDispatcherProvider(coroutinesRule.testDispatcher))
         // And a search for the query
         viewModel.searchFor(query)
         // Given a result

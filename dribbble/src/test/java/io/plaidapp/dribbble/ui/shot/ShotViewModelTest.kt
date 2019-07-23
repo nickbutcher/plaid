@@ -94,7 +94,7 @@ class ShotViewModelTest {
     }
 
     @Test
-    fun shotClicked_sendsOpenLinkEvent() = runBlockingTest {
+    fun shotClicked_sendsOpenLinkEvent() = runBlocking {
         // Given a view model with a shot with a known URL
         val url = "https://dribbble.com/shots/2344334-Plaid-Product-Icon"
         val mockShotUiModel = mock<ShotUiModel> { on { this.url } doReturn url }
