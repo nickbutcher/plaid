@@ -37,10 +37,14 @@ android {
 }
 
 dependencies {
-    implementation project(':app')
-    implementation project(':core')
+    api project(':app')
 
     implementation "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 
+}
+
+kapt {
+    useBuildCache = true
+    correctErrorTypes true
 }
