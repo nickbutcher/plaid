@@ -63,8 +63,14 @@ android {
 }
 
 dependencies {
+    api project(':bypass')
     kapt "com.github.bumptech.glide:compiler:${versions.glide}"
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
+}
+
+kapt {
+    useBuildCache = true
+    correctErrorTypes true
 }
 
 androidExtensions {
