@@ -21,9 +21,10 @@ import java.util.Date
 
 fun getDefaultStoryUrl(id: Long) = "https://www.designernews.co/click/stories/$id"
 
-fun StoryResponse.toStory() = Story(
+fun StoryResponse.toStory(page: Int) = Story(
     id = id,
     title = title,
+    page = page,
     url = url,
     comment = comment,
     commentHtml = comment_html,

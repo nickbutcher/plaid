@@ -19,7 +19,7 @@ apply plugin: 'com.android.dynamic-feature'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
-apply from: '../core_dependencies.gradle'
+apply from: '../shared_dependencies.gradle'
 apply from: '../test_dependencies.gradle'
 
 android {
@@ -31,6 +31,12 @@ android {
         def filesAuthorityValue = names.applicationId + '.shareprovider'
         buildConfigField 'String', 'FILES_AUTHORITY', "\"${filesAuthorityValue}\""
         manifestPlaceholders = [filesAuthority: filesAuthorityValue]
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments << ['dagger.gradle.incremental': 'true']
+            }
+        }
     }
 
     dataBinding {
@@ -45,6 +51,10 @@ android {
 
 dependencies {
     api project(':app')
+
+    implementation "com.android.support:customtabs:${versions.supportLibrary}"
+    implementation "com.android.support:palette-v7:${versions.supportLibrary}"
+    implementation "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
 
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }

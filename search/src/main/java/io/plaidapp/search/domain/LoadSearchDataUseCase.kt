@@ -17,9 +17,8 @@
 package io.plaidapp.search.domain
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
 import io.plaidapp.core.data.PlaidItem
-import io.plaidapp.core.data.Result
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.core.ui.getPlaidItemsForDisplay
 import kotlinx.coroutines.Deferred
@@ -39,24 +38,31 @@ class LoadSearchDataUseCase(
 
     private val dataSources = factories.map { it.create(query) }
 
-    private val _searchResult = MutableLiveData<List<PlaidItem>>()
+    private val _searchResult = MediatorLiveData<List<PlaidItem>>()
     val searchResult: LiveData<List<PlaidItem>>
         get() = _searchResult
+
+    init {
+        dataSources.forEach {
+            _searchResult.addSource(it.items) { newList ->
+                handleNewList(newList)
+            }
+        }
+    }
 
     suspend operator fun invoke() {
         val deferredJobs = mutableListOf<Deferred<Unit>>()
         supervisorScope {
             dataSources.forEach {
-                deferredJobs.add(async {
-                    val result = it.loadMore()
-                    if (result is Result.Success) {
-                        val oldItems = _searchResult.value.orEmpty().toMutableList()
-                        val searchResult = getPlaidItemsForDisplay(oldItems, result.data)
-                        _searchResult.postValue(searchResult)
-                    }
-                })
+                deferredJobs.add(async { it.loadMore() })
             }
         }
         deferredJobs.awaitAll()
+    }
+
+    private fun handleNewList(newList: List<PlaidItem>) {
+        val oldItems = _searchResult.value.orEmpty().toMutableList()
+        val searchResult = getPlaidItemsForDisplay(oldItems, newList)
+        _searchResult.postValue(searchResult)
     }
 }

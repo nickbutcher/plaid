@@ -19,7 +19,7 @@ apply plugin: 'com.android.dynamic-feature'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
-apply from: '../core_dependencies.gradle'
+apply from: '../shared_dependencies.gradle'
 apply from: '../test_dependencies.gradle'
 
 android {
@@ -30,6 +30,12 @@ android {
         targetSdkVersion versions.targetSdk
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments << ['dagger.gradle.incremental': 'true']
+            }
+        }
     }
 
     dataBinding {
@@ -40,13 +46,15 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
 }
 
 dependencies {
     api project(':app')
 
     implementation "androidx.viewpager2:viewpager2:${versions.viewPager2}"
+    implementation "com.android.support:customtabs:${versions.supportLibrary}"
+    implementation "com.github.bumptech.glide:glide:${versions.glide}"
+
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }
 

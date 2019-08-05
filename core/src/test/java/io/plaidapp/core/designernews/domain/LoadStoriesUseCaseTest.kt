@@ -51,6 +51,7 @@ class LoadStoriesUseCaseTest {
     private val story = Story(
         id = 45L,
         title = "Plaid 2.0 was released",
+        page = 1,
         createdAt = createdDate,
         userId = userId,
         links = storyLinks
@@ -58,6 +59,7 @@ class LoadStoriesUseCaseTest {
     private val storySequel = Story(
         id = 876L,
         title = "Plaid 2.0 is bug free",
+        page = 1,
         createdAt = createdDate,
         userId = userId,
         links = storyLinks

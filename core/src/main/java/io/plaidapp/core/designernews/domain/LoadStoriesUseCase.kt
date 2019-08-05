@@ -34,7 +34,7 @@ class LoadStoriesUseCase @Inject constructor(
         val result = storiesRepository.loadStories(page)
         when (result) {
             is Result.Success -> {
-                val stories = result.data.map { it.toStory() }
+                val stories = result.data.map { it.toStory(page) }
                 return Result.Success(stories)
             }
             is Result.Error -> {

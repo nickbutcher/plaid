@@ -35,6 +35,9 @@ class SearchViewModelFactory @Inject constructor(
         if (modelClass != SearchViewModel::class.java) {
             throw IllegalArgumentException("Unknown ViewModel class")
         }
-        return SearchViewModel(registry, dispatcherProvider) as T
+        return SearchViewModel(
+            registry,
+            dispatcherProvider
+        ) as T
     }
 }

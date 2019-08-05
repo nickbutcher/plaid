@@ -20,7 +20,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
-apply from: '../core_dependencies.gradle'
+apply from: '../shared_dependencies.gradle'
 apply from: '../test_dependencies.gradle'
 
 android {
@@ -40,6 +40,12 @@ android {
         manifestPlaceholders += [
                 crashlyticsEnabled: false
         ]
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments << ['dagger.gradle.incremental': 'true']
+            }
+        }
     }
 
     dataBinding {
@@ -70,9 +76,11 @@ android {
 
 dependencies {
     api project(':core')
-
+    implementation "androidx.appcompat:appcompat:${versions.appcompat}"
     implementation "com.crashlytics.sdk.android:crashlytics:${versions.crashlytics}"
     implementation "com.google.firebase:firebase-core:${versions.firebase}"
+    implementation "com.github.bumptech.glide:glide:${versions.glide}"
+    implementation "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
 
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }

@@ -46,12 +46,13 @@ class StoryResponseTest {
         )
 
         // When converting it to a story
-        val story = storyResponse.toStory()
+        val story = storyResponse.toStory(0)
 
         // The story has the expected data
         val expectedStory = Story(
             id = 987,
             title = "My Plaid story",
+            page = 0,
             comment = "This is amazing",
             commentHtml = "www.plaid.com",
             commentCount = 0,

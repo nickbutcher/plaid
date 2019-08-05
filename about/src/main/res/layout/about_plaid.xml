@@ -27,13 +27,14 @@
         android:layout_height="match_parent"
         android:nestedScrollingEnabled="true"
         android:clipToPadding="false"
-        app:paddingBottomSystemWindowInsets="@{true}"
+        app:paddingLeftSystemWindowInsets="@{true}"
         app:paddingRightSystemWindowInsets="@{true}"
+        app:paddingBottomSystemWindowInsets="@{true}"
         tools:showIn="@layout/activity_about">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <io.plaidapp.about.ui.widget.CutoutTextView
@@ -61,4 +62,5 @@
         </LinearLayout>
 
     </ScrollView>
+
 </layout>

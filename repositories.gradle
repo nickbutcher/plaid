@@ -9,6 +9,8 @@ repositories {
             includeGroup "com.google.firebase"
             includeGroup "com.google.android.gms"
             includeGroup "com.google.android.material"
+            includeGroup "com.google.gms"
+            includeGroup "zipflinger"
         }
     }
 
@@ -50,6 +52,7 @@ repositories {
             includeGroup "org.ow2.asm"
             includeGroup "org.sonatype.oss"
             includeGroup "org.xerial"
+            includeGroup "net.ltgt.gradle.incap"
 
             excludeGroup "com.google.firebase"
             excludeGroup "com.google.android.gms"
