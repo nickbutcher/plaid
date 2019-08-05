@@ -44,8 +44,12 @@ android {
 }
 
 dependencies {
-    implementation project(':app')
-    implementation project(':core')
+    api project(':app')
 
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
+}
+
+kapt {
+    useBuildCache = true
+    correctErrorTypes true
 }
