@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-dependencies {
-    implementation "com.google.android.material:material:${versions.material}"
-    implementation "com.google.dagger:dagger:${versions.dagger}"
-    implementation "androidx.core:core-ktx:${versions.coreKtx}"
-    implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
-    implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
-    implementation "androidx.lifecycle:lifecycle-viewmodel:${versions.lifecycle}"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:${versions.lifecycle}"
-    implementation "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}"
-}
+//dependencies {
+//    implementation "com.google.android.material:material:${versions.material}"
+//    implementation "com.google.dagger:dagger:${versions.dagger}"
+//    implementation "androidx.core:core-ktx:${versions.coreKtx}"
+//    implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
+//    implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
+//    implementation "androidx.lifecycle:lifecycle-viewmodel:${versions.lifecycle}"
+//    implementation "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
+//    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}"
+//}
