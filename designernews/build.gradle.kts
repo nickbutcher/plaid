@@ -16,8 +16,9 @@
  */
 
 plugins {
-    id("com.android.dynamic-feature")
+    id("com.android.library")
     kotlin("android")
+    id("kotlin-android-extensions")
     kotlin("kapt")
 }
 
@@ -27,6 +28,7 @@ android {
     defaultConfig {
         minSdkVersion(Versions.minSdk)
         targetSdkVersion(Versions.targetSdk)
+        resConfig("en")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -38,6 +40,7 @@ android {
     }
 
     dataBinding.isEnabled = true
+
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -53,13 +56,16 @@ dependencies {
     implementation(project(":core", "default"))
     implementation(project(":bypass", "default"))
 
-    implementation("androidx.viewpager2:viewpager2:${Versions.viewPager2}")
+    implementation("androidx.room:room-ktx:${Versions.room}")
     implementation("com.android.support:customtabs:${Versions.supportLibrary}")
     implementation("com.github.bumptech.glide:glide:${Versions.glide}")
 
     kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
 }
 
-kapt {
-    useBuildCache = true
+kapt.useBuildCache = true
+
+// enabling experimental for Kotlin parcelize supports
+androidExtensions {
+    isExperimental = true
 }

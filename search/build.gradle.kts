@@ -28,8 +28,6 @@ android {
         minSdkVersion(Versions.minSdk)
         targetSdkVersion(Versions.targetSdk)
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = mapOf("dagger.gradle.incremental" to "true")
@@ -37,29 +35,20 @@ android {
         }
     }
 
-    dataBinding.isEnabled = true
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
 
-sharedDependencies()
-testDependencies()
-
 dependencies {
     implementation(project(":app", "default"))
     implementation(project(":core", "default"))
-    implementation(project(":bypass", "default"))
 
-    implementation("androidx.viewpager2:viewpager2:${Versions.viewPager2}")
-    implementation("com.android.support:customtabs:${Versions.supportLibrary}")
-    implementation("com.github.bumptech.glide:glide:${Versions.glide}")
-
+    implementation("com.github.bumptech.glide:recyclerview-integration:${Versions.glide}")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
     kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
+
 }
 
-kapt {
-    useBuildCache = true
-}
+kapt.useBuildCache = true

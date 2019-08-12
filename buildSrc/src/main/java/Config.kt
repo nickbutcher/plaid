@@ -16,18 +16,16 @@
  */
 
 import org.gradle.api.artifacts.dsl.RepositoryHandler
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.maven
-import org.gradle.kotlin.dsl.version
-import org.gradle.plugin.use.PluginDependenciesSpec
 
 @Suppress("MayBeConstant") // Improve perf when changing values
 object Config {
-//    private const val kotlinVersion = "1.3.41"
 
     fun RepositoryHandler.deps() {
         google().content {
-            includeGroupByRegex("com\\.android\\..*")
-            includeGroupByRegex("androidx\\..*")
+            includeGroupByRegex("com.android.*")
+            includeGroupByRegex("androidx.*")
 
             includeGroup("android.arch.lifecycle")
             includeGroup("android.arch.core")
@@ -37,21 +35,22 @@ object Config {
             includeGroup("com.google.gms")
 
             includeGroup("zipflinger")
-//            includeGroup("com.crashlytics.sdk.android")
-//            includeGroup("io.fabric.sdk.android")
         }
 
         jcenter().content {
-            includeGroupByRegex("com\\.google\\..*")
-            includeGroupByRegex("com\\.sun\\..*")
-            includeGroupByRegex("com\\.squareup\\..*")
-            includeGroupByRegex("com\\.jakewharton\\..*")
-            includeGroupByRegex("com\\.googlecode\\..*")
-            includeGroupByRegex("org\\.jetbrains\\..*")
-            includeGroupByRegex("org\\.codehaus\\..*")
-            includeGroupByRegex("org\\.apache\\..*")
-            includeGroupByRegex("net\\.sf\\..*")
-            includeGroupByRegex("javax\\..*")
+            includeGroupByRegex("com.google.*")
+            includeGroupByRegex("com.sun.*")
+            includeGroupByRegex("com.squareup.*")
+            includeGroupByRegex("com.jakewharton.*")
+            includeGroupByRegex("com.googlecode.*")
+            includeGroupByRegex("org.jetbrains.*")
+            includeGroupByRegex("org.codehaus.*")
+            includeGroupByRegex("org.apache.*")
+            includeGroupByRegex("net.sf.*")
+            includeGroupByRegex("javax.*")
+            includeGroupByRegex("org.ow2.*")
+
+
             includeGroup("com.github.bumptech.glide")
             includeGroup("com.ibm.icu")
             includeGroup("com.nhaarman.mockitokotlin2")
@@ -74,10 +73,12 @@ object Config {
             includeGroup("org.jsoup")
             includeGroup("org.mockito")
             includeGroup("org.objenesis")
-            includeGroup("org.ow2.asm")
             includeGroup("org.sonatype.oss")
             includeGroup("org.xerial")
             includeGroup("net.ltgt.gradle.incap")
+
+            includeGroup("de.undercouch")
+            includeGroup("org.jdom")
 
             excludeGroup("com.google.firebase")
             excludeGroup("com.google.android.gms")
@@ -85,15 +86,13 @@ object Config {
         }
 
         maven("https://dl.bintray.com/kotlin/kotlin-eap/").content {
-            includeGroupByRegex("org\\.jetbrains\\..*")
+            includeGroupByRegex("org.jetbrains.*")
         }
 
         maven("https://maven.fabric.io/public").content {
-            includeGroupByRegex("io\\.fabric\\..*")
-            includeGroupByRegex("com\\.crashlytics\\..*")
+            includeGroupByRegex("io.fabric.*")
+            includeGroupByRegex("com.crashlytics.*")
         }
-
-        jcenter()
     }
 }
 
@@ -136,10 +135,7 @@ object Versions {
     val test_rules = "1.1.0-beta02"
     val test_runner = "1.1.0-beta02"
     val ui_automator = "2.2.0-beta02"
-    val viewPager2 = "1.0.0-alpha0"
-
-
-    //val gitCommitCount = gitCommitCount()
+    val viewPager2 = "1.0.0-beta02"
 }
 
 object Names {

@@ -17,7 +17,6 @@
 
 import org.gradle.api.Project
 import java.io.ByteArrayOutputStream
-import java.util.*
 
 fun Project.runCmd(vararg command: String) = try {
     val stdOut = ByteArrayOutputStream()
