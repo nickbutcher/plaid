@@ -28,7 +28,12 @@ android {
         minSdkVersion(Versions.minSdk)
         targetSdkVersion(Versions.targetSdk)
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        val filesAuthorityValue = Names.applicationId + ".shareprovider"
+        buildConfigField("String", "FILES_AUTHORITY", "${filesAuthorityValue}")
+
+        manifestPlaceholders = mapOf(
+                "filesAuthority" to filesAuthorityValue
+        )
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -51,15 +56,14 @@ testDependencies()
 dependencies {
     implementation(project(":app", "default"))
     implementation(project(":core", "default"))
-    implementation(project(":bypass", "default"))
 
-    implementation("androidx.viewpager2:viewpager2:${Versions.viewPager2}")
     implementation("com.android.support:customtabs:${Versions.supportLibrary}")
-    implementation("com.github.bumptech.glide:glide:${Versions.glide}")
+    implementation("com.android.support:palette-v7:${Versions.supportLibrary}")
+    implementation("com.github.bumptech.glide:recyclerview-integration:${Versions.glide}")
 
     kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
 }
 
-kapt {
-    useBuildCache = true
-}
+kapt.useBuildCache = true
+
+

@@ -30,13 +30,8 @@ buildscript {
 //plugins {
 //    id 'com.diffplug.gradle.spotless' version '3.14.0'
 //}
-//
 
 //subprojects {
-//    buildscript {
-//        apply from: rootProject.file('repositories.gradle')
-//    }
-//
 //    apply plugin: 'com.diffplug.gradle.spotless'
 //    spotless {
 //        kotlin {
@@ -46,32 +41,9 @@ buildscript {
 //        }
 //    }
 //}
+
 subprojects {
 
-//    repositories {
-//        jcenter()
-//    }
-//    plugins {
-//        kotlin("android")
-//    }
-//
-//    dependencies {
-//        implementation("com.google.android.material:material:${Versions.material}")
-//        implementation("com.google.dagger:dagger:${Versions.dagger}")
-//        implementation("androidx.core:core-ktx:${Versions.coreKtx}")
-//        implementation("com.squareup.retrofit2:retrofit:${Versions.retrofit}")
-//        implementation("com.squareup.retrofit2:converter-gson:${Versions.retrofit}")
-//        implementation("androidx.lifecycle:lifecycle-viewmodel:${Versions.lifecycle}")
-//        implementation("androidx.lifecycle:lifecycle-extensions:${Versions.lifecycle}")
-//        implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycle}")
-//    }
-//
-//    tasks {
-//        compileKotlin {
-//            kotlinOptions {
-//                allWarningsAsErrors = true
-//            }
-//        }
-//    }
-    apply(plugin = "dependencies")
+    Config.run { repositories.deps() }
+
 }

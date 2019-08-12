@@ -51,10 +51,8 @@ android {
         }
     }
 
-//    dataBinding {
-//        enabled true
-//    }
-//
+    dataBinding.isEnabled = true
+
     buildTypes {
         getByName("release") {
             // There's a Dex Splitter issue when enabling DataBinding & proguard in dynamic features
@@ -88,8 +86,11 @@ android {
     )
 }
 
+sharedDependencies()
+testDependencies()
+
 dependencies {
-    implementation(project(":core"))
+    implementation(project(":core", "default"))
     implementation("androidx.appcompat:appcompat:${Versions.appcompat}")
     implementation("com.crashlytics.sdk.android:crashlytics:${Versions.crashlytics}")
     implementation("com.google.firebase:firebase-core:${Versions.firebase}")

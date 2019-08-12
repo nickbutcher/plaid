@@ -16,9 +16,8 @@
  */
 
 plugins {
-    id("com.android.dynamic-feature")
+    id("com.android.library")
     kotlin("android")
-    kotlin("kapt")
 }
 
 android {
@@ -27,39 +26,22 @@ android {
     defaultConfig {
         minSdkVersion(Versions.minSdk)
         targetSdkVersion(Versions.targetSdk)
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = mapOf("dagger.gradle.incremental" to "true")
-            }
-        }
     }
-
-    dataBinding.isEnabled = true
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    packagingOptions {
+        exclude("META-INF/test_shared_debug.kotlin_module")
+    }
 }
-
-sharedDependencies()
-testDependencies()
 
 dependencies {
-    implementation(project(":app", "default"))
     implementation(project(":core", "default"))
-    implementation(project(":bypass", "default"))
 
-    implementation("androidx.viewpager2:viewpager2:${Versions.viewPager2}")
-    implementation("com.android.support:customtabs:${Versions.supportLibrary}")
-    implementation("com.github.bumptech.glide:glide:${Versions.glide}")
-
-    kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
-}
-
-kapt {
-    useBuildCache = true
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}")
+    implementation("junit:junit:${Versions.junit}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}")
 }
