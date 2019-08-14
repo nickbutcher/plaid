@@ -16,7 +16,7 @@
  */
 
 plugins {
-    id("com.android.library")
+    id("com.android.dynamic-feature")
     kotlin("android")
     id("kotlin-android-extensions")
     kotlin("kapt")
@@ -52,9 +52,9 @@ sharedDependencies()
 testDependencies()
 
 dependencies {
-    implementation(project(":app", "default"))
-    implementation(project(":core", "default"))
-    implementation(project(":bypass", "default"))
+    implementation(project(":app"))
+    implementation(project(":core"))
+    implementation(project(":bypass"))
 
     implementation("androidx.room:room-ktx:${Versions.room}")
     implementation("com.android.support:customtabs:${Versions.supportLibrary}")

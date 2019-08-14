@@ -42,8 +42,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":app", "default"))
-    implementation(project(":core", "default"))
+    implementation(project(":app"))
+    implementation(project(":core"))
 
     implementation("com.github.bumptech.glide:recyclerview-integration:${Versions.glide}")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
