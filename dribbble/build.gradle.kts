@@ -54,8 +54,8 @@ sharedDependencies()
 testDependencies()
 
 dependencies {
-    implementation(project(":app", "default"))
-    implementation(project(":core", "default"))
+    implementation(project(":app"))
+    implementation(project(":core"))
 
     implementation("com.android.support:customtabs:${Versions.supportLibrary}")
     implementation("com.android.support:palette-v7:${Versions.supportLibrary}")

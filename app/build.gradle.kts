@@ -78,7 +78,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    dynamicFeatures = mutableSetOf(
+    dynamicFeatures = hashSetOf(
             ":about",
             ":designernews",
             ":dribbble",
@@ -90,7 +90,7 @@ sharedDependencies()
 testDependencies()
 
 dependencies {
-    implementation(project(":core", "default"))
+    implementation(project(":core"))
     implementation("androidx.appcompat:appcompat:${Versions.appcompat}")
     implementation("com.crashlytics.sdk.android:crashlytics:${Versions.crashlytics}")
     implementation("com.google.firebase:firebase-core:${Versions.firebase}")

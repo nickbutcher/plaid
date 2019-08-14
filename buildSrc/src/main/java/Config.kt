@@ -100,7 +100,7 @@ object Versions {
     val compileSdk = 29
     val targetSdk = 28
     val minSdk = 23
-    val gradle_plugin = "3.6.0-alpha05"
+    val gradle_plugin = "3.6.0-alpha06"
 
     val appcompat = "1.1.0-rc01"
     val androidx = "1.0.0"

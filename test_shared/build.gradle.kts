@@ -37,7 +37,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":core", "default"))
+    implementation(project(":core"))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
