@@ -32,12 +32,13 @@ android {
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
-        buildConfigField 'String', 'DESIGNER_NEWS_CLIENT_ID', "\"${designer_news_client_id}\""
         buildConfigField 'String',
-                'DESIGNER_NEWS_CLIENT_SECRET', "\"${designer_news_client_secret}\""
+                'DESIGNER_NEWS_CLIENT_ID', "\"${getLocalProperty('designer.news.client.id')}\""
+        buildConfigField 'String',
+                'DESIGNER_NEWS_CLIENT_SECRET', "\"${getLocalProperty('designer.news.client.secret')}\""
 
         buildConfigField 'String',
-                'PRODUCT_HUNT_DEVELOPER_TOKEN', "\"${product_hunt_developer_token}\""
+                'PRODUCT_HUNT_DEVELOPER_TOKEN', "\"${getLocalProperty('product.hunt.developer.token')}\""
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -90,4 +91,10 @@ kapt {
 
 androidExtensions {
     experimental = true
+}
+
+def getLocalProperty(String propertyName) {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty(propertyName)
 }
