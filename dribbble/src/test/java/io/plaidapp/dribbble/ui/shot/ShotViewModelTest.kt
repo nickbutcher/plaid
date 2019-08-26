@@ -34,6 +34,7 @@ import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -155,7 +156,7 @@ class ShotViewModelTest {
     }
 
     @Test
-    fun loadShot_emitsTwoUiModels() {
+    fun loadShot_emitsTwoUiModels() = testCoroutineDispatcher.runBlockingTest {
         // Given coroutines have not started yet and the View Model is created
         testCoroutineDispatcher.pauseDispatcher()
         val viewModel = withViewModel()
