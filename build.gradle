@@ -39,7 +39,7 @@ buildscript { scriptHandler ->
             'gson'               : '2.8.5',
             'jsoup'              : '1.11.3',
             'junit'              : '4.12',
-            'kotlin'             : '1.3.41',
+            'kotlin'             : '1.3.50',
             'ktlint'             : '0.24.0',
             'legacyCoreUtils'    : '1.0.0',
             'lifecycle'          : '2.2.0-alpha03',
