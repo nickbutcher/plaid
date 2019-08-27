@@ -27,9 +27,11 @@ import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.search.domain.SearchDataSourceFactoriesRegistry
 import io.plaidapp.search.shots
 import io.plaidapp.search.testShot1
+import io.plaidapp.test.shared.MainCoroutineRule
 import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
-import kotlinx.coroutines.runBlocking
+import io.plaidapp.test.shared.runBlocking
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -39,7 +41,12 @@ import org.mockito.MockitoAnnotations
 /**
  * Tests for [SearchViewModel] that mocks the dependencies
  */
+@ExperimentalCoroutinesApi
 class SearchViewModelTest {
+
+    // Set the main coroutines dispatcher for unit testing
+    @get:Rule
+    var coroutinesRule = MainCoroutineRule()
 
     // Executes tasks in the Architecture Components in the same thread
     @get:Rule
@@ -55,13 +62,14 @@ class SearchViewModelTest {
     }
 
     @Test
-    fun searchFor_searchesInDataManager() = runBlocking {
+    fun searchFor_searchesInDataManager() = coroutinesRule.runBlocking {
         // Given a query
         val query = "Plaid"
         // And an expected success result
         val result = Result.Success(shots)
         factory.dataSource.result = result
-        val viewModel = SearchViewModel(registry, provideFakeCoroutinesDispatcherProvider())
+        val viewModel = SearchViewModel(registry,
+            provideFakeCoroutinesDispatcherProvider(coroutinesRule.testDispatcher))
 
         // When searching for the query
         viewModel.searchFor(query)
@@ -72,10 +80,11 @@ class SearchViewModelTest {
     }
 
     @Test
-    fun loadMore_loadsInDataManager() = runBlocking {
+    fun loadMore_loadsInDataManager() = coroutinesRule.runBlocking {
         // Given a query
         val query = "Plaid"
-        val viewModel = SearchViewModel(registry, provideFakeCoroutinesDispatcherProvider())
+        val viewModel = SearchViewModel(registry,
+            provideFakeCoroutinesDispatcherProvider(coroutinesRule.testDispatcher))
         // And a search for the query
         viewModel.searchFor(query)
         // Given a result

@@ -42,9 +42,11 @@ import io.plaidapp.dribbbleSource
 import io.plaidapp.post
 import io.plaidapp.shot
 import io.plaidapp.story
-import io.plaidapp.test.shared.CoroutinesMainDispatcherRule
+import io.plaidapp.test.shared.MainCoroutineRule
 import io.plaidapp.test.shared.LiveDataTestUtil
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
+import io.plaidapp.test.shared.runBlocking
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -57,10 +59,12 @@ import org.mockito.MockitoAnnotations
 /**
  * Tests for [HomeViewModel], with dependencies mocked.
  */
+@ExperimentalCoroutinesApi
 class HomeViewModelTest {
 
+    // Set the main coroutines dispatcher for unit testing
     @get:Rule
-    var coroutinesMainDispatcherRule = CoroutinesMainDispatcherRule()
+    var coroutinesRule = MainCoroutineRule()
 
     // Executes tasks in the Architecture Components in the same thread
     @get:Rule
@@ -278,7 +282,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun filtersRemoved() {
+    fun filtersRemoved() = coroutinesRule.runBlocking {
         // Given a view model with feed data
         val homeViewModel = createViewModelWithFeedData(listOf(post, shot, story))
         verify(sourcesRepository).registerFilterChangedCallback(
@@ -294,7 +298,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun filtersChanged_activeSource() {
+    fun filtersChanged_activeSource() = coroutinesRule.runBlocking {
         // Given a view model with feed data
         val homeViewModel = createViewModelWithFeedData(listOf(post, shot, story))
         verify(sourcesRepository).registerFilterChangedCallback(
@@ -312,7 +316,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun filtersChanged_inactiveSource() {
+    fun filtersChanged_inactiveSource() = coroutinesRule.runBlocking {
         // Given a view model with feed data
         val homeViewModel = createViewModelWithFeedData(listOf(post, shot, story))
         verify(sourcesRepository).registerFilterChangedCallback(
@@ -357,7 +361,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun dataLoading_atInit() = runBlocking {
+    fun dataLoading_atInit() = coroutinesRule.runBlocking {
         // When creating a view model
         createViewModel()
 
@@ -366,7 +370,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun feed_emitsWhenDataLoaded() {
+    fun feed_emitsWhenDataLoaded() = coroutinesRule.runBlocking {
         // Given a view model
         val homeViewModel = createViewModel()
         verify(dataManager).setOnDataLoadedCallback(capture(dataLoadedCallback))
@@ -391,13 +395,13 @@ class HomeViewModelTest {
 
     private fun createViewModel(
         list: List<SourceItem> = emptyList()
-    ): HomeViewModel = runBlocking {
-        whenever(sourcesRepository.getSources()).thenReturn(list)
-        return@runBlocking HomeViewModel(
+    ): HomeViewModel {
+        runBlocking { whenever(sourcesRepository.getSources()).thenReturn(list) }
+        return HomeViewModel(
             dataManager,
             loginRepository,
             sourcesRepository,
-            provideFakeCoroutinesDispatcherProvider()
+            provideFakeCoroutinesDispatcherProvider(coroutinesRule.testDispatcher)
         )
     }
 }
