@@ -34,3 +34,13 @@ package io.plaidapp.core.util
  */
 val <T> T.exhaustive: T
     get() = this
+
+/**
+ * A for each loop where traversal is backed by an [Iterator] allowing for list modification
+ * in place.
+ */
+inline fun <T> Iterable<T>.modifiableForEach(action: (T) -> Unit) {
+    iterator().apply {
+        while (hasNext()) next().apply(action)
+    }
+}
