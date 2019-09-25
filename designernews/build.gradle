@@ -66,10 +66,6 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }
 
-kapt {
-    useBuildCache = true
-}
-
 // enabling experimental for Kotlin parcelize supports
 androidExtensions {
     experimental = true

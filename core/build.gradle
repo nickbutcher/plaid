@@ -88,10 +88,6 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }
 
-kapt {
-    useBuildCache = true
-}
-
 androidExtensions {
     experimental = true
 }
