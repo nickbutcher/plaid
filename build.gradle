@@ -99,4 +99,10 @@ subprojects {
             licenseHeaderFile project.rootProject.file('scripts/copyright.kt'), '(buildscript|apply)'
         }
     }
+
+    if (project.hasProperty( "kapt" )) {
+        kapt {
+            useBuildCache = true
+        }
+    }
 }

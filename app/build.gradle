@@ -89,9 +89,5 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }
 
-kapt {
-    useBuildCache = true
-}
-
 // Must be applied after dependencies. See https://stackoverflow.com/a/38018985
 apply plugin: 'com.google.gms.google-services'
