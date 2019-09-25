@@ -85,6 +85,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
     kapt "com.github.bumptech.glide:compiler:${versions.glide}"
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
+    kapt "androidx.annotation:annotation:${versions.androidx}"
 }
 
 androidExtensions {
