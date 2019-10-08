@@ -43,7 +43,6 @@ import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.core.util.ViewUtils
 import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
 import io.plaidapp.core.util.delegates.contentView
-import io.plaidapp.core.util.event.EventObserver
 import io.plaidapp.core.util.glide.getBitmap
 import io.plaidapp.dribbble.R
 import io.plaidapp.dribbble.dagger.inject
@@ -126,8 +125,8 @@ class ShotActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launchWhenStarted {
-            for(event in viewModel.events) {
-                when(event) {
+            for (event in viewModel.events) {
+                when (event) {
                     is ShotViewModel.UserAction.OpenLink -> {
                         openLink(event.url)
                     }
@@ -137,7 +136,6 @@ class ShotActivity : AppCompatActivity() {
                 }
             }
         }
-
 
         binding.shotLoadListener = shotLoadListener
         binding.apply {

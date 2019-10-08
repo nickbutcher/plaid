@@ -96,7 +96,6 @@ class ShotViewModelTest {
         null
     }
 
-
     @Test(expected = IllegalStateException::class)
     fun loadShot_notInRepo() = testCoroutineDispatcher.runBlockingTest {
         // Given that the repo fails to return the requested shot
