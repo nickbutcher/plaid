@@ -16,19 +16,22 @@
 
 package io.plaidapp.dribbble.ui.shot
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.ShotsRepository
-import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.util.event.Event
 import io.plaidapp.dribbble.domain.CreateShotUiModelUseCase
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
-import io.plaidapp.dribbble.domain.ShareShotInfo
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.channels.consume
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import javax.inject.Inject
 
 /**
@@ -41,43 +44,48 @@ class ShotViewModel @Inject constructor(
     private val getShareShotInfo: GetShareShotInfoUseCase,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel() {
-
-    private val _shotUiModel = MutableLiveData<ShotUiModel>()
-    val shotUiModel: LiveData<ShotUiModel>
-        get() = _shotUiModel
-
-    private val _openLink = MutableLiveData<Event<String>>()
-    val openLink: LiveData<Event<String>>
-        get() = _openLink
-
-    private val _shareShot = MutableLiveData<Event<ShareShotInfo>>()
-    val shareShot: LiveData<Event<ShareShotInfo>>
-        get() = _shareShot
-
-    init {
+    //private val _shotUiModel = MutableLiveData<ShotUiModel>()
+    val shotUiModel = liveData(
+        context = viewModelScope.coroutineContext
+    ) {
         val result = shotsRepository.getShot(shotId)
         if (result is Result.Success) {
-            _shotUiModel.value = result.data.toShotUiModel()
-            processUiModel(result.data)
+            emit(result.data.toShotUiModel())
+            // this is for testing so that it can see two values :/.
+            yield()
+            emit(createShotUiModel(result.data))
         } else {
             // TODO re-throw Error.exception once Loading state removed.
             throw IllegalStateException("Could not retrieve shot $shotId")
         }
     }
 
-    fun shareShotRequested() {
-        _shotUiModel.value?.let { model ->
-            viewModelScope.launch(dispatcherProvider.io) {
+    private val openLinkRequest = Channel<Unit>(Channel.CONFLATED)
+    val openLink = liveData {
+        openLinkRequest.consume {
+            val model = shotUiModel.asFlow().first()
+            emit(Event(model.url))
+        }
+    }
+
+    private val shareShotRequest = Channel<Unit>(Channel.CONFLATED)
+
+    val shareShot = liveData {
+        shareShotRequest.consume {
+            withContext(dispatcherProvider.io) {
+                val model = shotUiModel.asFlow().first()
                 val shareInfo = getShareShotInfo(model)
-                _shareShot.postValue(Event(shareInfo))
+                emit(Event(shareInfo))
             }
         }
     }
 
+    fun shareShotRequested() {
+        shareShotRequest.offer(Unit)
+    }
+
     fun viewShotRequested() {
-        _shotUiModel.value?.let { model ->
-            _openLink.value = Event(model.url)
-        }
+        openLinkRequest.offer(Unit)
     }
 
     fun getAssistWebUrl(): String {
@@ -86,12 +94,5 @@ class ShotViewModel @Inject constructor(
 
     fun getShotId(): Long {
         return shotUiModel.value?.id ?: -1L
-    }
-
-    private fun processUiModel(shot: Shot) {
-        viewModelScope.launch(dispatcherProvider.main) {
-            val uiModel = createShotUiModel(shot)
-            _shotUiModel.value = uiModel
-        }
     }
 }
