@@ -60,7 +60,7 @@ buildscript { scriptHandler ->
     ]
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.0-alpha07'
+        classpath 'com.android.tools.build:gradle:3.6.0-alpha12'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         classpath "com.google.gms:google-services:${versions.googleServices}"
         classpath "io.fabric.tools:gradle:${versions.fabric}"
