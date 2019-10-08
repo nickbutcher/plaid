@@ -26,7 +26,7 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 import io.plaidapp.core.util.event.Event
-import io.plaidapp.test.shared.LiveDataTestUtil
+import io.plaidapp.test.shared.getOrAwaitValue
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -81,7 +81,7 @@ class LoginViewModelTest {
             showSuccess = Event(LoginResultUiModel("plaida plaidich", "www")),
             enableLoginButton = false
         )
-        val uiState = LiveDataTestUtil.getValue(viewModel.uiState)
+        val uiState = viewModel.uiState.getOrAwaitValue()
         assertEquals(expected, uiState)
     }
 
@@ -103,7 +103,7 @@ class LoginViewModelTest {
             showSuccess = null,
             enableLoginButton = true
         )
-        val uiState = LiveDataTestUtil.getValue(viewModel.uiState)
+        val uiState = viewModel.uiState.getOrAwaitValue()
         assertEquals(expectedUiModel, uiState)
     }
 
@@ -113,7 +113,7 @@ class LoginViewModelTest {
         val viewModel = LoginViewModel(loginRepo, provideFakeCoroutinesDispatcherProvider())
 
         // Then the login is disabled
-        val uiState = LiveDataTestUtil.getValue(viewModel.uiState)
+        val uiState = viewModel.uiState.getOrAwaitValue()
         assertEquals(initialUiModel, uiState)
     }
 
@@ -133,8 +133,8 @@ class LoginViewModelTest {
             enableLoginButton = true
         )
         // TODO leave only the last assert
-        val uiState = LiveDataTestUtil.getValue(viewModel.uiState)
-        assertEquals(expectedUiModel.showProgress, uiState!!.showProgress)
+        val uiState = viewModel.uiState.getOrAwaitValue()
+        assertEquals(expectedUiModel.showProgress, uiState.showProgress)
         assertEquals(expectedUiModel.showError, uiState.showError)
         assertEquals(expectedUiModel.showSuccess, uiState.showSuccess)
         assertEquals(expectedUiModel.enableLoginButton, uiState.enableLoginButton)
@@ -156,7 +156,7 @@ class LoginViewModelTest {
             showSuccess = null,
             enableLoginButton = false
         )
-        val uiState = LiveDataTestUtil.getValue(viewModel.uiState)
+        val uiState = viewModel.uiState.getOrAwaitValue()
         assertEquals(expectedUiModel, uiState)
     }
 
@@ -175,7 +175,7 @@ class LoginViewModelTest {
             showSuccess = null,
             enableLoginButton = false
         )
-        val uiState = LiveDataTestUtil.getValue(viewModel.uiState)
+        val uiState = viewModel.uiState.getOrAwaitValue()
         assertEquals(expectedUiModel, uiState)
     }
 
@@ -190,7 +190,7 @@ class LoginViewModelTest {
         // Then login is not triggered
         verify(loginRepo, never()).login(username, "")
         // Then the UI state is the initial state
-        val uiState = LiveDataTestUtil.getValue(viewModel.uiState)
+        val uiState = viewModel.uiState.getOrAwaitValue()
         assertEquals(initialUiModel, uiState)
     }
 
@@ -205,7 +205,7 @@ class LoginViewModelTest {
         // Then login is not triggered
         verify(loginRepo, never()).login(username, "")
         // Then the UI state is the initial state
-        val uiState = LiveDataTestUtil.getValue(viewModel.uiState)
+        val uiState = viewModel.uiState.getOrAwaitValue()
         assertEquals(initialUiModel, uiState)
     }
 
@@ -218,7 +218,7 @@ class LoginViewModelTest {
         viewModel.signup()
 
         // Then an open url event is emitted
-        val url = LiveDataTestUtil.getValue(viewModel.openUrl)
+        val url = viewModel.openUrl.getOrAwaitValue()
         assertNotNull(url)
     }
 }

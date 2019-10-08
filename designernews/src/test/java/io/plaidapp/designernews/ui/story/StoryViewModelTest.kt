@@ -29,7 +29,7 @@ import io.plaidapp.designernews.domain.PostReplyUseCase
 import io.plaidapp.designernews.domain.PostStoryCommentUseCase
 import io.plaidapp.designernews.flattendCommentsWithReplies
 import io.plaidapp.designernews.reply1
-import io.plaidapp.test.shared.LiveDataTestUtil
+import io.plaidapp.test.shared.getOrAwaitValue
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -107,8 +107,8 @@ class StoryViewModelTest {
         val viewModel = withViewModel()
 
         // Then the correct UI model is created
-        val event = LiveDataTestUtil.getValue(viewModel.uiModel)
-        assertEquals(event!!.comments, flattendCommentsWithReplies)
+        val event = viewModel.uiModel.getOrAwaitValue()
+        assertEquals(event.comments, flattendCommentsWithReplies)
     }
 
     @Test

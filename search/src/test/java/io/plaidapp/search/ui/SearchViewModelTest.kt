@@ -28,7 +28,7 @@ import io.plaidapp.search.domain.SearchDataSourceFactoriesRegistry
 import io.plaidapp.search.shots
 import io.plaidapp.search.testShot1
 import io.plaidapp.test.shared.MainCoroutineRule
-import io.plaidapp.test.shared.LiveDataTestUtil
+import io.plaidapp.test.shared.getOrAwaitValue
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import io.plaidapp.test.shared.runBlocking
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -75,8 +75,8 @@ class SearchViewModelTest {
         viewModel.searchFor(query)
 
         // Then search results emits with the data that was passed initially
-        val results = LiveDataTestUtil.getValue(viewModel.searchResults)
-        assertEquals(results!!.items, result.data)
+        val results = viewModel.searchResults.getOrAwaitValue()
+        assertEquals(results.items, result.data)
     }
 
     @Test
@@ -95,8 +95,8 @@ class SearchViewModelTest {
         viewModel.loadMore()
 
         // Then search results emits with the data that was passed
-        val results = LiveDataTestUtil.getValue(viewModel.searchResults)
-        assertEquals(results!!.items, moreResult.data)
+        val results = viewModel.searchResults.getOrAwaitValue()
+        assertEquals(results.items, moreResult.data)
     }
 }
 
