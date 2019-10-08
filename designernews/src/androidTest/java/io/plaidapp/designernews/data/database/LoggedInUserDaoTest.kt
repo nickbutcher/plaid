@@ -21,7 +21,7 @@ import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
-import io.plaidapp.test.shared.LiveDataTestUtil
+import io.plaidapp.test.shared.getOrAwaitValue
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -66,7 +66,7 @@ class LoggedInUserDaoTest {
         loggedInUserDao.setLoggedInUser(loggedInUser)
 
         // When getting the LoggedInUser via the DAO
-        val userFromDb = LiveDataTestUtil.getValue(loggedInUserDao.getLoggedInUser())
+        val userFromDb = loggedInUserDao.getLoggedInUser().getOrAwaitValue()
 
         // Then the retrieved LoggedInUser matches the original LoggedInUser object
         assertEquals(loggedInUser, userFromDb)
@@ -88,7 +88,7 @@ class LoggedInUserDaoTest {
         loggedInUserDao.setLoggedInUser(updatedUser)
 
         // Then a subsequent query for the LoggedInUser should show the updated information
-        val userFromDb = LiveDataTestUtil.getValue(loggedInUserDao.getLoggedInUser())
+        val userFromDb = loggedInUserDao.getLoggedInUser().getOrAwaitValue()
         assertEquals(updatedUser, userFromDb)
     }
 
@@ -108,7 +108,7 @@ class LoggedInUserDaoTest {
         loggedInUserDao.setLoggedInUser(newUser)
 
         // Then a query for LoggedInUser should return the new user
-        val userFromDb = LiveDataTestUtil.getValue(loggedInUserDao.getLoggedInUser())
+        val userFromDb = loggedInUserDao.getLoggedInUser().getOrAwaitValue()
         assertEquals(newUser, userFromDb)
     }
 
@@ -120,7 +120,7 @@ class LoggedInUserDaoTest {
         loggedInUserDao.deleteLoggedInUser()
 
         // Then a query for the LoggedInUser should be null
-        val userFromDb = LiveDataTestUtil.getValue(loggedInUserDao.getLoggedInUser())
+        val userFromDb = loggedInUserDao.getLoggedInUser().getOrAwaitValue()
         assertNull(userFromDb)
     }
 }

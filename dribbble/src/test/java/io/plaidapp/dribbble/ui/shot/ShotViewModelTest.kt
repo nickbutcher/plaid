@@ -24,13 +24,12 @@ import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.api.model.Shot
-import io.plaidapp.core.util.event.Event
 import io.plaidapp.dribbble.domain.CreateShotUiModelUseCase
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
 import io.plaidapp.dribbble.domain.ShareShotInfo
 import io.plaidapp.dribbble.testShot
 import io.plaidapp.dribbble.testShotUiModel
-import io.plaidapp.test.shared.LiveDataTestUtil
+import io.plaidapp.test.shared.getOrAwaitValue
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -73,7 +72,7 @@ class ShotViewModelTest {
         val viewModel = withViewModel()
 
         // Then a shotUiModel is present
-        val result: ShotUiModel? = LiveDataTestUtil.getValue(viewModel.shotUiModel)
+        val result = viewModel.shotUiModel.getOrAwaitValue()
         assertNotNull(result)
     }
 
@@ -105,9 +104,8 @@ class ShotViewModelTest {
         viewModel.viewShotRequested()
 
         // Then an event is emitted to open the given url
-        val openLinkEvent: Event<String>? = LiveDataTestUtil.getValue(viewModel.openLink)
-        assertNotNull(openLinkEvent)
-        assertEquals(url, openLinkEvent!!.peek())
+        val openLinkEvent = viewModel.openLink.getOrAwaitValue()
+        assertEquals(url, openLinkEvent.peek())
     }
 
     @Test
@@ -120,9 +118,8 @@ class ShotViewModelTest {
         viewModel.shareShotRequested()
 
         // Then an event is raised with the expected info
-        val shareInfoEvent: Event<ShareShotInfo>? = LiveDataTestUtil.getValue(viewModel.shareShot)
-        assertNotNull(shareInfoEvent)
-        assertEquals(expected, shareInfoEvent!!.peek())
+        val shareInfoEvent = viewModel.shareShot.getOrAwaitValue()
+        assertEquals(expected, shareInfoEvent.peek())
     }
 
     @Test
@@ -162,17 +159,15 @@ class ShotViewModelTest {
         val viewModel = withViewModel()
 
         // Then the fast result has been emitted
-        val fastResult: ShotUiModel? = LiveDataTestUtil.getValue(viewModel.shotUiModel)
-        assertNotNull(fastResult)
-        assertTrue(fastResult!!.formattedDescription.isEmpty())
+        val fastResult = viewModel.shotUiModel.getOrAwaitValue()
+        assertTrue(fastResult.formattedDescription.isEmpty())
 
         // When the coroutine starts
         testCoroutineDispatcher.resumeDispatcher()
 
         // Then the slow result has been emitted
-        val slowResult: ShotUiModel? = LiveDataTestUtil.getValue(viewModel.shotUiModel)
-        assertNotNull(slowResult)
-        assertTrue(slowResult!!.formattedDescription.isNotEmpty())
+        val slowResult = viewModel.shotUiModel.getOrAwaitValue()
+        assertTrue(slowResult.formattedDescription.isNotEmpty())
     }
 
     private fun withViewModel(

@@ -43,7 +43,7 @@ import io.plaidapp.post
 import io.plaidapp.shot
 import io.plaidapp.story
 import io.plaidapp.test.shared.MainCoroutineRule
-import io.plaidapp.test.shared.LiveDataTestUtil
+import io.plaidapp.test.shared.getOrAwaitValue
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import io.plaidapp.test.shared.runBlocking
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -185,13 +185,13 @@ class HomeViewModelTest {
         filtersChangedCallback.value.onFiltersUpdated(listOf(designerNewsSource, dribbbleSource))
 
         // Then ui model sources are emitted
-        val sources = LiveDataTestUtil.getValue(homeViewModel.sources)
+        val sources = homeViewModel.sources.getOrAwaitValue()
         // Then all sources are highlighted
         val sourcesHighlightUiModel = SourcesHighlightUiModel(
             highlightPositions = listOf(0, 1),
             scrollToPosition = 1
         )
-        assertEquals(sourcesHighlightUiModel, sources?.highlightSources!!.peek())
+        assertEquals(sourcesHighlightUiModel, sources.highlightSources!!.peek())
         // The expected sources are retrieved
         assertEquals(2, sources.sourceUiModels.size)
     }
@@ -210,13 +210,13 @@ class HomeViewModelTest {
         filtersChangedCallback.value.onFiltersUpdated(sources)
 
         // Then ui model sources are emitted
-        val sourcesUiModel = LiveDataTestUtil.getValue(homeViewModel.sources)
+        val sourcesUiModel = homeViewModel.sources.getOrAwaitValue()
         // Then all sources are highlighted
         val sourcesHighlightUiModel = SourcesHighlightUiModel(
             highlightPositions = listOf(1),
             scrollToPosition = 1
         )
-        assertEquals(sourcesHighlightUiModel, sourcesUiModel?.highlightSources!!.peek())
+        assertEquals(sourcesHighlightUiModel, sourcesUiModel.highlightSources!!.peek())
         // The expected sources are retrieved
         assertEquals(2, sourcesUiModel.sourceUiModels.size)
     }
@@ -231,7 +231,7 @@ class HomeViewModelTest {
         // Given that filters were updated
         filtersChangedCallback.value.onFiltersUpdated(listOf(designerNewsSource))
         // Given that ui model sources are emitted
-        val sources = LiveDataTestUtil.getValue(homeViewModel.sources)!!
+        val sources = homeViewModel.sources.getOrAwaitValue()
         val uiSource = sources.sourceUiModels[0]
 
         // When calling sourceClicked
@@ -251,8 +251,8 @@ class HomeViewModelTest {
         // Given that filters were updated
         filtersChangedCallback.value.onFiltersUpdated(listOf(designerNewsSource))
         // Given that ui model sources are emitted
-        val sources = LiveDataTestUtil.getValue(homeViewModel.sources)
-        val uiSource = sources!!.sourceUiModels[0]
+        val sources = homeViewModel.sources.getOrAwaitValue()
+        val uiSource = sources.sourceUiModels[0]
 
         // When calling onSourceDismissed
         uiSource.onSourceDismissed(designerNewsSourceUiModel.copy(isSwipeDismissable = true))
@@ -271,8 +271,8 @@ class HomeViewModelTest {
         // Given that filters were updated
         filtersChangedCallback.value.onFiltersUpdated(listOf(designerNewsSource))
         // Given that ui model sources are emitted
-        val sources = LiveDataTestUtil.getValue(homeViewModel.sources)
-        val uiSource = sources!!.sourceUiModels[0]
+        val sources = homeViewModel.sources.getOrAwaitValue()
+        val uiSource = sources.sourceUiModels[0]
 
         // When calling onSourceDismissed
         uiSource.onSourceDismissed(designerNewsSourceUiModel.copy(isSwipeDismissable = false))
@@ -293,8 +293,8 @@ class HomeViewModelTest {
         filtersChangedCallback.value.onFilterRemoved(dribbbleSource.key)
 
         // Then feed emits a new list, without the removed filter
-        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(columns))
-        assertEquals(listOf(post, story), feed!!.items)
+        val feed = homeViewModel.getFeed(columns).getOrAwaitValue()
+        assertEquals(listOf(post, story), feed.items)
     }
 
     @Test
@@ -304,14 +304,14 @@ class HomeViewModelTest {
         verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
-        val initialFeed = LiveDataTestUtil.getValue(homeViewModel.getFeed(columns))
+        val initialFeed = homeViewModel.getFeed(columns).getOrAwaitValue()
 
         // When an active source was changed
         val activeSource = DribbbleSourceItem("dribbble", true)
         filtersChangedCallback.value.onFiltersChanged(activeSource)
 
         // Then feed didn't emit a new value
-        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(columns))
+        val feed = homeViewModel.getFeed(columns).getOrAwaitValue()
         assertEquals(initialFeed, feed)
     }
 
@@ -328,8 +328,8 @@ class HomeViewModelTest {
         filtersChangedCallback.value.onFiltersChanged(inactiveSource)
 
         // Then feed emits a new list, without the removed filter
-        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(columns))
-        assertEquals(listOf(post, story), feed!!.items)
+        val feed = homeViewModel.getFeed(columns).getOrAwaitValue()
+        assertEquals(listOf(post, story), feed.items)
     }
 
     @Test
@@ -342,7 +342,7 @@ class HomeViewModelTest {
         dataLoadingCallback.value.dataStartedLoading()
 
         // Then the feedProgress emits true
-        val progress = LiveDataTestUtil.getValue(homeViewModel.feedProgress)
+        val progress = homeViewModel.feedProgress.getOrAwaitValue()
         assertEquals(FeedProgressUiModel(true), progress)
     }
 
@@ -356,7 +356,7 @@ class HomeViewModelTest {
         dataLoadingCallback.value.dataFinishedLoading()
 
         // Then the feedProgress emits false
-        val progress = LiveDataTestUtil.getValue(homeViewModel.feedProgress)
+        val progress = homeViewModel.feedProgress.getOrAwaitValue()
         assertEquals(FeedProgressUiModel(false), progress)
     }
 
@@ -379,8 +379,8 @@ class HomeViewModelTest {
         dataLoadedCallback.value.onDataLoaded(listOf(post, shot, story))
 
         // Then feed emits a new list
-        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(2))
-        assertEquals(listOf(post, story, shot), feed!!.items)
+        val feed = homeViewModel.getFeed(2).getOrAwaitValue()
+        assertEquals(listOf(post, story, shot), feed.items)
     }
 
     private fun createViewModelWithFeedData(feedData: List<PlaidItem>): HomeViewModel {

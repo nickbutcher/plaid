@@ -25,7 +25,7 @@ import com.nhaarman.mockitokotlin2.anyOrNull
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import io.plaidapp.about.ui.AboutStyler
-import io.plaidapp.test.shared.LiveDataTestUtil
+import io.plaidapp.test.shared.getOrAwaitValue
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
@@ -73,8 +73,8 @@ class AboutViewModelTest {
         // Click on all the libraries
         aboutViewModel.libraries.forEach {
             aboutViewModel.onLibraryClick(it)
-            val event = LiveDataTestUtil.getValue(aboutViewModel.navigationTarget)
-            assertThat(event?.peek(), `is`(equalTo(it.link)))
+            val event = aboutViewModel.navigationTarget.getOrAwaitValue()
+            assertThat(event.peek(), `is`(equalTo(it.link)))
         }
     }
 }
