@@ -23,14 +23,14 @@ import androidx.lifecycle.viewModelScope
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.ShotsRepository
-import io.plaidapp.core.util.event.Event
 import io.plaidapp.dribbble.domain.CreateShotUiModelUseCase
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
+import io.plaidapp.dribbble.domain.ShareShotInfo
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.channels.consume
+import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.yield
 import javax.inject.Inject
 
@@ -44,7 +44,6 @@ class ShotViewModel @Inject constructor(
     private val getShareShotInfo: GetShareShotInfoUseCase,
     private val dispatcherProvider: CoroutinesDispatcherProvider
 ) : ViewModel() {
-    //private val _shotUiModel = MutableLiveData<ShotUiModel>()
     val shotUiModel = liveData(
         context = viewModelScope.coroutineContext
     ) {
@@ -61,22 +60,24 @@ class ShotViewModel @Inject constructor(
     }
 
     private val openLinkRequest = Channel<Unit>(Channel.CONFLATED)
-    val openLink = liveData {
-        openLinkRequest.consume {
-            val model = shotUiModel.asFlow().first()
-            emit(Event(model.url))
-        }
-    }
 
     private val shareShotRequest = Channel<Unit>(Channel.CONFLATED)
 
-    val shareShot = liveData {
-        shareShotRequest.consume {
-            withContext(dispatcherProvider.io) {
-                val model = shotUiModel.asFlow().first()
-                val shareInfo = getShareShotInfo(model)
-                emit(Event(shareInfo))
+    @ExperimentalCoroutinesApi
+    val events = viewModelScope.produce(dispatcherProvider.computation) {
+        while (true) {
+            val action = select<UserAction> {
+                shareShotRequest.onReceive {
+                    val model = shotUiModel.asFlow().first()
+                    val shareInfo = getShareShotInfo(model)
+                    UserAction.ShareShot(shareInfo)
+                }
+                openLinkRequest.onReceive {
+                    val model = shotUiModel.asFlow().first()
+                    UserAction.OpenLink(model.url)
+                }
             }
+            send(action)
         }
     }
 
@@ -94,5 +95,10 @@ class ShotViewModel @Inject constructor(
 
     fun getShotId(): Long {
         return shotUiModel.value?.id ?: -1L
+    }
+
+    sealed class UserAction {
+        class ShareShot(val info: ShareShotInfo) : UserAction()
+        class OpenLink(val url: String) : UserAction()
     }
 }

@@ -26,12 +26,13 @@ import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.dribbble.data.ShotsRepository
 import io.plaidapp.core.dribbble.data.api.model.Shot
-import io.plaidapp.core.util.event.Event
 import io.plaidapp.dribbble.domain.CreateShotUiModelUseCase
 import io.plaidapp.dribbble.domain.GetShareShotInfoUseCase
 import io.plaidapp.dribbble.domain.ShareShotInfo
 import io.plaidapp.dribbble.testShot
 import io.plaidapp.dribbble.testShotUiModel
+import io.plaidapp.dribbble.ui.shot.ShotViewModel.UserAction.OpenLink
+import io.plaidapp.dribbble.ui.shot.ShotViewModel.UserAction.ShareShot
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -123,9 +124,9 @@ class ShotViewModelTest {
         viewModel.viewShotRequested()
 
         // Then an event is emitted to open the given url
-        val openLinkEvent: Event<String>? = viewModel.openLink.currentOrNextValue()
+        val openLinkEvent = viewModel.events.poll()
         assertNotNull(openLinkEvent)
-        assertEquals(url, openLinkEvent!!.peek())
+        assertEquals(url, (openLinkEvent as OpenLink).url)
     }
 
     @Test
@@ -138,13 +139,13 @@ class ShotViewModelTest {
         viewModel.shareShotRequested()
 
         // Then an event is raised with the expected info
-        val shareInfoEvent: Event<ShareShotInfo>? = viewModel.shareShot.currentOrNextValue()
+        val shareInfoEvent = viewModel.events.poll()
         assertNotNull(shareInfoEvent)
-        assertEquals(expected, shareInfoEvent!!.peek())
+        assertEquals(expected, (shareInfoEvent as ShareShot).info)
     }
 
     @Test
-    fun getAssistWebUrl_returnsShotUrl() = testCoroutineDispatcher.runBlockingTest{
+    fun getAssistWebUrl_returnsShotUrl() = testCoroutineDispatcher.runBlockingTest {
         // Given a view model with a shot with a known URL
         val url = "https://dribbble.com/shots/2344334-Plaid-Product-Icon"
         val mockShotUiModel = mock<ShotUiModel> { on { this.url } doReturn url }

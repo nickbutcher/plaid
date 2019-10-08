@@ -30,6 +30,7 @@ import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -119,12 +120,24 @@ class ShotActivity : AppCompatActivity() {
         largeAvatarSize = resources.getDimensionPixelSize(io.plaidapp.R.dimen.large_avatar_size)
 
         binding.viewModel = viewModel.also { vm ->
-            vm.openLink.observe(this, EventObserver { openLink(it) })
-            vm.shareShot.observe(this, EventObserver { shareShot(it) })
             vm.shotUiModel.observe(this, Observer {
                 binding.uiModel = it
             })
         }
+
+        lifecycleScope.launchWhenStarted {
+            for(event in viewModel.events) {
+                when(event) {
+                    is ShotViewModel.UserAction.OpenLink -> {
+                        openLink(event.url)
+                    }
+                    is ShotViewModel.UserAction.ShareShot -> {
+                        shareShot(event.info)
+                    }
+                }
+            }
+        }
+
 
         binding.shotLoadListener = shotLoadListener
         binding.apply {
