@@ -185,7 +185,7 @@ val flattendCommentsWithReplies = listOf(parentComment, reply1, reply2)
 
 val flattenedCommentsWithoutReplies = listOf(parentComment)
 
-val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")
+val errorResponseBody = ResponseBody.create(MediaType.parse("text/plain"), "Error")
 
 val storyLinks = StoryLinks(
     user = 123L,

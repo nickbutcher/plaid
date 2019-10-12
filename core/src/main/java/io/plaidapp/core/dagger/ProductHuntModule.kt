@@ -75,7 +75,7 @@ class ProductHuntModule {
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(ProductHuntService.ENDPOINT)
-            .callFactory { okhttpClient.get().newCall(it) }
+            .client(okhttpClient.get())
             .addConverterFactory(deEnvelopingConverter)
             .addConverterFactory(converterFactory)
             .build()
