@@ -12,8 +12,8 @@ Rewriting Plaid using [Android Architecture Components](https://developer.androi
 
 ### Background
 
-Plaid was written with one big goal: showcase material design in Android in a real application. While Plaid successfully achieved its goal, from an architecture point of view, it lacks all features that would make it a modular, scalable, testable and maintainable app: with UI logic in Android classes, no tests and only one module. 
-Plaid represents a great real world app example: it provides a fairly complex set of functionalities, it has technical debt, it has features that have to be dealt with as APIs are being removed.
+Plaid was written with one big goal: showcase material design in Android in a real application. Plaid achieved its goal, but from an architecture point of view it lacks features that would make it a modular, scalable, testable and maintainable app: with UI logic in Android classes, no tests and only one module. 
+Plaid represents a great real world app example: it provides a fairly complex set of functionalities, it has technical debt, and it has features that have to be dealt with as APIs are being removed.
 All of these problems are encountered by many projects in the Android community and therefore, make Plaid a suitable showcase for all the advantages that architecture components bring. 
 
 #### More information
