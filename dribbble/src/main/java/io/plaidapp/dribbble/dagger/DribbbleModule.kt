@@ -17,7 +17,7 @@
 package io.plaidapp.dribbble.dagger
 
 import android.content.Context
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
@@ -42,7 +42,7 @@ class DribbbleModule(private val activity: ShotActivity, private val shotId: Lon
 
     @Provides
     fun shotViewModel(factory: ShotViewModelFactory): ShotViewModel {
-        return ViewModelProviders.of(activity, factory).get(ShotViewModel::class.java)
+        return ViewModelProvider(activity, factory).get(ShotViewModel::class.java)
     }
 
     @Provides

@@ -22,8 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.lifecycle.ViewModelProviders
-import io.plaidapp.R as appR
+import androidx.lifecycle.ViewModelProvider
 import io.plaidapp.about.R
 import io.plaidapp.about.dagger.inject
 import io.plaidapp.about.databinding.ActivityAboutBinding
@@ -57,8 +56,7 @@ class AboutActivity : AppCompatActivity() {
 
         inject()
 
-        val viewModel = ViewModelProviders
-            .of(this, aboutViewModelFactory)
+        val viewModel = ViewModelProvider(this, aboutViewModelFactory)
             .get(AboutViewModel::class.java)
             .apply {
                 navigationTarget.observe(this@AboutActivity, EventObserver { url ->
