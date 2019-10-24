@@ -33,6 +33,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 /**
@@ -82,7 +83,9 @@ class DataManager @Inject constructor(
     init {
         sourcesRepository.registerFilterChangedCallback(filterListener)
         // build a map of source keys to pages initialized to 0
-        pageIndexes = sourcesRepository.getSourcesSync().map { it.key to 0 }.toMap().toMutableMap()
+        runBlocking {
+            pageIndexes = sourcesRepository.getSources().map { it.key to 0 }.toMap().toMutableMap()
+        }
     }
 
     fun setOnDataLoadedCallback(
