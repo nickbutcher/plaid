@@ -20,7 +20,6 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.producthunt.data.api.ProductHuntRepository
 import io.plaidapp.core.producthunt.data.api.model.Post
 import io.plaidapp.core.producthunt.data.api.model.toPost
-import io.plaidapp.core.util.exhaustive
 import javax.inject.Inject
 
 /**
@@ -38,12 +37,12 @@ class LoadPostsUseCase @Inject constructor(
         page: Int
     ): Result<List<Post>> {
         val result = productHuntRepository.loadPosts(page)
-        when (result) {
+        return when (result) {
             is Result.Success -> {
                 val posts = result.data.posts.map { it.toPost() }
-                return Result.Success(posts)
+                Result.Success(posts)
             }
-            is Result.Error -> return result
-        }.exhaustive
+            is Result.Error -> result
+        }
     }
 }
