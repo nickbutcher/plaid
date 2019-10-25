@@ -27,6 +27,7 @@ import io.plaidapp.dribbble.testShot
 import io.plaidapp.dribbble.ui.shot.ShotStyler
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import java.util.Locale
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -36,6 +37,7 @@ import org.junit.Test
 /**
  * Test for [CreateShotUiModelUseCase] mocking all dependencies.
  */
+@ExperimentalCoroutinesApi
 class CreateShotUiModelUseCaseTest {
 
     private val mockHtmlParser: HtmlParser = mock()
