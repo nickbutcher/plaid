@@ -34,7 +34,8 @@ private const val HOST = "https://dribbble.com"
 private const val SHOTS = "/shots/"
 
 private val PATTERN_PLAYER_ID = Pattern.compile("users/(\\d+?)/", Pattern.DOTALL)
-private val DATE_FORMAT = SimpleDateFormat("MMMM d, yyyy")
+// https://docs.oracle.com/javase/tutorial/i18n/format/dateFormat.html
+private val DATE_FORMAT = SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG)
 
 /**
  * Dribbble API does not have a search endpoint so we have to do gross things :(
