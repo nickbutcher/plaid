@@ -20,6 +20,7 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
+import java.io.InputStream
 
 /**
  * Tests for [DribbbleSearchConverter] using static test data
@@ -49,7 +50,7 @@ class DribbbleSearchConverterTest {
     }
 
     private fun loadData(path: String): String {
-        val inputStream = DribbbleSearchConverterTest::class.java.getResourceAsStream(path)
-        return inputStream!!.bufferedReader().use { it.readText() }
+        val inputStream = DribbbleSearchConverterTest::class.java.getResourceAsStream(path) as InputStream
+        return inputStream.bufferedReader().use { it.readText() }
     }
 }
