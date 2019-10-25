@@ -23,11 +23,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import androidx.annotation.ColorInt;
-import androidx.annotation.FloatRange;
 import android.util.AttributeSet;
 import android.util.Property;
-
+import androidx.annotation.ColorInt;
+import androidx.annotation.FloatRange;
 import io.plaidapp.core.R;
 import io.plaidapp.core.util.AnimUtils;
 import io.plaidapp.core.util.ColorUtils;
