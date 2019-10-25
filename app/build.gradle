@@ -40,12 +40,6 @@ android {
         manifestPlaceholders += [
                 crashlyticsEnabled: false
         ]
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments << ['dagger.gradle.incremental': 'true']
-            }
-        }
     }
 
     dataBinding {
