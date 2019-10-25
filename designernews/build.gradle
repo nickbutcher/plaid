@@ -35,7 +35,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments << ['dagger.gradle.incremental': 'true']
+                arguments << ['room.incremental': 'true']
             }
         }
     }
