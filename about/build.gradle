@@ -30,12 +30,6 @@ android {
         targetSdkVersion versions.targetSdk
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments << ['dagger.gradle.incremental': 'true']
-            }
-        }
     }
 
     dataBinding {
