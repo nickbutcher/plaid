@@ -34,6 +34,7 @@ import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
 import java.io.IOException
 import java.util.Date
 import java.util.GregorianCalendar
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -43,6 +44,7 @@ import org.junit.Test
 /**
  * Tests for [StoryViewModel] mocking all the dependencies.
  */
+@ExperimentalCoroutinesApi
 class StoryViewModelTest {
 
     // Executes tasks in the Architecture Components in the same thread

@@ -23,6 +23,7 @@ import io.plaidapp.core.producthunt.data.responseDataSuccess
 import io.plaidapp.core.producthunt.data.responseError
 import io.plaidapp.core.producthunt.data.responseSuccess
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -32,6 +33,7 @@ import retrofit2.Response
 /**
  * Tests for [ProductHuntRepository].
  */
+@ExperimentalCoroutinesApi
 class ProductHuntRepositoryTest {
 
     private val coroutinesDispatcherProvider = provideFakeCoroutinesDispatcherProvider()
