@@ -37,7 +37,7 @@ jobs:
           command: ./gradlew dependencies
       - run:
           name: Run JVM Tests & Lint, assemble app and test APKs for debug and release
-          command: ./gradlew check assemble assembleAndroidTest
+          command: ./gradlew check assemble assembleAndroidTest --stacktrace
       - run:
           name: Gather Lint results
           command: scripts/copy_lint_results.sh
