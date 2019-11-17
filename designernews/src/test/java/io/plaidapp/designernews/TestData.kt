@@ -23,8 +23,8 @@ import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.designernews.domain.model.CommentWithReplies
-import okhttp3.MediaType
-import okhttp3.ResponseBody
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
 import java.util.Date
 import java.util.GregorianCalendar
 
@@ -185,7 +185,7 @@ val flattendCommentsWithReplies = listOf(parentComment, reply1, reply2)
 
 val flattenedCommentsWithoutReplies = listOf(parentComment)
 
-val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")
+val errorResponseBody = "Error".toResponseBody("".toMediaTypeOrNull())
 
 val storyLinks = StoryLinks(
     user = 123L,

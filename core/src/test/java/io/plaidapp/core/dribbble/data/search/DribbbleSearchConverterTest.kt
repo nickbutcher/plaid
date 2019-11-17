@@ -16,7 +16,7 @@
 
 package io.plaidapp.core.dribbble.data.search
 
-import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
@@ -29,7 +29,7 @@ class DribbbleSearchConverterTest {
     @Test
     fun parsesHtml() {
         // Given a response from a dribbble search
-        val response = ResponseBody.create(null, loadData("/dribbble_search.html"))
+        val response = loadData("/dribbble_search.html").toResponseBody(null)
 
         // When we convert this
         val shots = DribbbleSearchConverter.convert(response)

@@ -24,8 +24,8 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.designernews.data.api.DesignerNewsService
 import kotlinx.coroutines.runBlocking
-import okhttp3.MediaType
-import okhttp3.ResponseBody
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -51,7 +51,7 @@ class UserRemoteDataSourceTest {
         portraitUrl = "www"
     )
     private val users = listOf(user1, user2)
-    private val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")
+    private val errorResponseBody = "Error".toResponseBody("".toMediaTypeOrNull())
 
     private val service: DesignerNewsService = mock()
     private val dataSource = UserRemoteDataSource(service)
