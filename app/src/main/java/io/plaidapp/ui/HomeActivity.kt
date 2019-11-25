@@ -511,7 +511,7 @@ class HomeActivity : AppCompatActivity() {
 
                 if (resultCode == Activities.Search.RESULT_CODE_SAVE && data != null) {
                     with(data) {
-                        val query = getStringExtra(Activities.Search.EXTRA_QUERY)
+                        val query = getStringExtra(Activities.Search.EXTRA_QUERY) as String
                         val isDribbble =
                             getBooleanExtra(Activities.Search.EXTRA_SAVE_DRIBBBLE, false)
                         val isDesignerNews =
