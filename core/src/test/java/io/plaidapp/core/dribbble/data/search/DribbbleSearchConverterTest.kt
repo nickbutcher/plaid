@@ -50,6 +50,6 @@ class DribbbleSearchConverterTest {
 
     private fun loadData(path: String): String {
         val inputStream = DribbbleSearchConverterTest::class.java.getResourceAsStream(path)
-        return inputStream.bufferedReader().use { it.readText() }
+        return inputStream!!.bufferedReader().use { it.readText() }
     }
 }
