@@ -18,9 +18,9 @@ buildscript { scriptHandler ->
     apply from: 'repositories.gradle',
             to: scriptHandler
     ext.versions = [
-            'compileSdk'         : 28,
+            'compileSdk'         : 29,
             'minSdk'             : 23,
-            'targetSdk'          : 28,
+            'targetSdk'          : 29,
             'appcompat'          : '1.1.0-rc01',
             'androidx'           : '1.0.0',
             'androidxCollection' : '1.0.0',
@@ -60,7 +60,7 @@ buildscript { scriptHandler ->
     ]
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.0-alpha12'
+        classpath 'com.android.tools.build:gradle:3.6.0-beta03'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         classpath "com.google.gms:google-services:${versions.googleServices}"
         classpath "io.fabric.tools:gradle:${versions.fabric}"
