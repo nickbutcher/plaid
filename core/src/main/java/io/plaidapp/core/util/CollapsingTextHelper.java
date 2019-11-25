@@ -74,6 +74,7 @@ public final class CollapsingTextHelper {
     private CharSequence mText;
     private CharSequence mTextToDraw;
     private boolean mIsRtl;
+    private boolean mUseTexture;
     private Bitmap mExpandedTitleTexture;
     private Paint mTexturePaint;
     private float mTextureAscent;
@@ -117,21 +118,35 @@ public final class CollapsingTextHelper {
         if (mTextToDraw != null && mDrawTitle) {
             float x = mCurrentDrawX;
             float y = mCurrentDrawY;
+            final boolean drawTexture = mUseTexture && mExpandedTitleTexture != null;
             final float ascent;
             final float descent;
             // Update the TextPaint to the current text size
             mTextPaint.setTextSize(mCurrentTextSize);
-            ascent = mTextPaint.ascent() * mScale;
-            descent = mTextPaint.descent() * mScale;
+            if (drawTexture) {
+                ascent = mTextureAscent * mScale;
+                descent = mTextureDescent * mScale;
+            } else {
+                ascent = mTextPaint.ascent() * mScale;
+                descent = mTextPaint.descent() * mScale;
+            }
             if (DEBUG_DRAW) {
                 // Just a debug tool, which drawn a Magneta rect in the text bounds
                 canvas.drawRect(mCurrentBounds.left, y + ascent, mCurrentBounds.right, y + descent,
                         DEBUG_DRAW_PAINT);
             }
+            if (drawTexture) {
+                y += ascent;
+            }
             if (mScale != 1f) {
                 canvas.scale(mScale, mScale, x, y);
             }
-            canvas.drawText(mTextToDraw, 0, mTextToDraw.length(), x, y, mTextPaint);
+            if (drawTexture) {
+                // If we should use a texture, draw it instead of text
+                canvas.drawBitmap(mExpandedTitleTexture, x, y, mTexturePaint);
+            } else {
+                canvas.drawText(mTextToDraw, 0, mTextToDraw.length(), x, y, mTextPaint);
+            }
         }
         canvas.restoreToCount(saveCount);
     }
@@ -458,6 +473,12 @@ public final class CollapsingTextHelper {
                 mTextToDraw = title;
             }
             mIsRtl = calculateIsRtl(mTextToDraw);
+        }
+        // Use our texture if the scale isn't 1.0
+        mUseTexture = mScale != 1f;
+        if (mUseTexture) {
+            // Make sure we have an expanded texture if needed
+            ensureExpandedTexture();
         }
         ViewCompat.postInvalidateOnAnimation(mView);
     }
