@@ -36,11 +36,10 @@ val <T> T.exhaustive: T
     get() = this
 
 /**
- * A for each loop where traversal is backed by an [Iterator] allowing for list modification
- * in place.
+ * A for each loop where traversal is backed by an [MutableIterator] allowing for removal
+ * during iteration.
  */
-inline fun <T> Iterable<T>.modifiableForEach(action: (T) -> Unit) {
-    iterator().apply {
-        while (hasNext()) next().apply(action)
-    }
+inline fun <T> MutableIterable<T>.removableForEach(action: (T) -> Unit) {
+    val iterator = iterator()
+    while (iterator.hasNext()) action(iterator.next())
 }
