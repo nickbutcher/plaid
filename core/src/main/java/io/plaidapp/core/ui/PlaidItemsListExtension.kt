@@ -109,6 +109,7 @@ private fun weighItems(items: MutableList<out PlaidItem>?) {
         StoryWeigher().weigh(this)
     }
     items.filter { it is Post && SOURCE_PRODUCT_HUNT != it.dataSource }.apply {
+        @Suppress("UNCHECKED_CAST")
         PostWeigher().weigh(this as List<Post>)
     }
 }
@@ -133,6 +134,6 @@ private fun deduplicateAndAdd(oldItems: MutableList<PlaidItem>, newItems: List<P
     }
 }
 
-private fun sort(items: MutableList<out PlaidItem>?) {
+private fun sort(items: MutableList<out PlaidItem>) {
     Collections.sort<PlaidItem>(items, PlaidItemSorting.PlaidItemComparator()) // sort by weight
 }

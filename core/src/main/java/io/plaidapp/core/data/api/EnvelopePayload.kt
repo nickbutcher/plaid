@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2019 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.data
+package io.plaidapp.core.data.api
+
+import kotlin.annotation.AnnotationRetention.RUNTIME
 
 /**
- * Base class for all model types.
- * // TODO - make the item immutable (https://github.com/android/plaid/issues/795)
+ * An annotation for identifying the payload that we want to extract from an API response wrapped in
+ * an envelope object.
  */
-abstract class PlaidItem(
-    @Transient open val id: Long,
-    @Transient open val title: String,
-    @Transient open var url: String? = null,
-    @Transient open val page: Int
-) {
-    var dataSource: String? = null
-    var weight: Float = 0F // used for sorting
-    var colspan: Int = 0
-}
+@Target(
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.PROPERTY_SETTER
+)
+@Retention(RUNTIME)
+annotation class EnvelopePayload(val value: String = "")

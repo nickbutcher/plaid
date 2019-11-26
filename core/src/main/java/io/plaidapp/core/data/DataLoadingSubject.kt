@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2019 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,13 @@
 package io.plaidapp.core.data
 
 /**
- * Base class for all model types.
- * // TODO - make the item immutable (https://github.com/android/plaid/issues/795)
+ * An interface for classes offering data loading state to be observed.
  */
-abstract class PlaidItem(
-    @Transient open val id: Long,
-    @Transient open val title: String,
-    @Transient open var url: String? = null,
-    @Transient open val page: Int
-) {
-    var dataSource: String? = null
-    var weight: Float = 0F // used for sorting
-    var colspan: Int = 0
+interface DataLoadingSubject {
+    fun registerCallback(callbacks: DataLoadingCallbacks)
+
+    interface DataLoadingCallbacks {
+        fun dataStartedLoading()
+        fun dataFinishedLoading()
+    }
 }
