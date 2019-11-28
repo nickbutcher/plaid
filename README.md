@@ -97,7 +97,7 @@ Plaid is a UI sample and seeks to demonstrate how to implement material design. 
 
 
 ```
-Copyright 2015 Google, Inc.
+Copyright 2015 Google LLC.
 
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements. See the NOTICE file distributed with this work for
