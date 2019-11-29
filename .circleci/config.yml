@@ -6,7 +6,7 @@ executors:
       - image: circleci/android:api-29
     working_directory: ~/plaid
     environment:
-      JAVA_TOOL_OPTIONS: "-Xmx1536m"
+      JAVA_TOOL_OPTIONS: "-Xmx2048m"
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
       TERM: dumb
 
