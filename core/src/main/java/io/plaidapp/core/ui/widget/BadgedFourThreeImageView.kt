@@ -31,10 +31,10 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import androidx.annotation.ColorInt
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.Gravity
+import androidx.annotation.ColorInt
 import androidx.core.graphics.applyCanvas
 import androidx.core.graphics.createBitmap
 import io.plaidapp.core.R
@@ -139,7 +139,9 @@ class BadgedFourThreeImageView(
         override fun getIntrinsicHeight() = bitmap?.height ?: 0
 
         override fun draw(canvas: Canvas) {
-            canvas.drawBitmap(bitmap, bounds.left.toFloat(), bounds.top.toFloat(), paint)
+            bitmap?.let {
+                canvas.drawBitmap(it, bounds.left.toFloat(), bounds.top.toFloat(), paint)
+            }
         }
 
         override fun setAlpha(alpha: Int) {

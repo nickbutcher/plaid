@@ -18,8 +18,8 @@ package io.plaidapp.core.designernews
 
 import io.plaidapp.core.designernews.data.stories.model.StoryLinks
 import io.plaidapp.core.designernews.data.users.model.User
-import okhttp3.MediaType
-import okhttp3.ResponseBody
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
 
 /**
  * Test data
@@ -33,7 +33,7 @@ val user = User(
     portraitUrl = "www"
 )
 
-val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")!!
+val errorResponseBody = "Error".toResponseBody("".toMediaTypeOrNull())
 
 const val userId = 123L
 

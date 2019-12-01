@@ -44,7 +44,7 @@ class DataModule {
     ): DesignerNewsService {
         return Retrofit.Builder()
             .baseUrl(DesignerNewsService.ENDPOINT)
-            .callFactory { client.get().newCall(it) }
+            .callFactory(client.get())
             .addConverterFactory(DeEnvelopingConverter(gson))
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
