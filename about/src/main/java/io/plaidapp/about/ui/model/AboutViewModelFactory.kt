@@ -34,13 +34,13 @@ class AboutViewModelFactory @Inject constructor(
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass != AboutViewModel::class) {
-            throw IllegalArgumentException("Unknown ViewModel class")
+        if (modelClass.isAssignableFrom(AboutViewModel::class.java)) {
+            return AboutViewModel(
+                aboutStyler,
+                resources,
+                markdown
+            ) as T
         }
-        return AboutViewModel(
-            aboutStyler,
-            resources,
-            markdown
-        ) as T
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
