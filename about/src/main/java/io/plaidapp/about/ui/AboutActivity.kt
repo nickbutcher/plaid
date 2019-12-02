@@ -23,7 +23,6 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import io.plaidapp.about.R
 import io.plaidapp.about.dagger.inject
 import io.plaidapp.about.databinding.ActivityAboutBinding
