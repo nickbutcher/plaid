@@ -38,15 +38,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewStub
 import android.view.WindowInsets
-import android.widget.CheckBox
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -210,7 +210,8 @@ class HomeActivity : AppCompatActivity() {
             or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
 
-        setupToolbar()
+        setSupportActionBar(toolbar)
+
         if (savedInstanceState == null) {
             animateToolbar()
         }
@@ -414,7 +415,7 @@ class HomeActivity : AppCompatActivity() {
         val toggleTheme = toolbar.menu.findItem(R.id.menu_theme)
         val actionView = toggleTheme.actionView
 
-        (actionView as CheckBox?)?.apply {
+        (actionView as AppCompatCheckBox?)?.apply {
             setButtonDrawable(R.drawable.asl_theme)
             isChecked = ColorUtils.isDarkTheme(this@HomeActivity)
             jumpDrawablesToCurrentState()
@@ -435,7 +436,11 @@ class HomeActivity : AppCompatActivity() {
             }
             TooltipCompat.setTooltipText(this, getString(R.string.theme))
         }
-        setActionBar(toolbar)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        setupToolbar()
+        return true
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
