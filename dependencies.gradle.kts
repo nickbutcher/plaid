@@ -1,11 +1,11 @@
 /*
- * Copyright 2018 Google Inc.
+ * Copyright 2019 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-
-import org.gradle.api.Project
-import org.gradle.kotlin.dsl.*
+import org.gradle.kotlin.dsl.dependencies
 
 // this will try to take configuration from existing ones
 val implementation by configurations
@@ -41,7 +39,6 @@ dependencies {
     implementation("androidx.collection:collection:${Versions.androidxCollection}")
     implementation("androidx.legacy:legacy-support-core-utils:${Versions.legacyCoreUtils}")
     implementation("androidx.lifecycle:lifecycle-runtime:${Versions.lifecycle}")
-
 
     testImplementation(project(":test_shared"))
     testImplementation("androidx.arch.core:core-testing:${Versions.androidxArch}")
