@@ -104,6 +104,4 @@ dependencies {
     kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
 }
 
-//kapt {
-//    useBuildCache = true
-//}
+kapt.useBuildCache = true
