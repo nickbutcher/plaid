@@ -20,6 +20,8 @@ plugins {
     kotlin("android")
 }
 
+apply(from = "$rootDir/dependencies.gradle.kts")
+
 android {
     compileSdkVersion(Versions.compileSdk)
 

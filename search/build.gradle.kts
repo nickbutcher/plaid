@@ -21,6 +21,8 @@ plugins {
     kotlin("kapt")
 }
 
+apply(from = "$rootDir/dependencies.gradle.kts")
+
 android {
     compileSdkVersion(Versions.compileSdk)
 
@@ -39,6 +41,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -48,7 +54,6 @@ dependencies {
     implementation("com.github.bumptech.glide:recyclerview-integration:${Versions.glide}")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
     kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
-
 }
 
 kapt.useBuildCache = true
