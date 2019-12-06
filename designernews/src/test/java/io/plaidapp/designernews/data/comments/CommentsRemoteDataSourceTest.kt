@@ -27,13 +27,13 @@ import io.plaidapp.designernews.data.comments.model.PostCommentResponse
 import io.plaidapp.designernews.errorResponseBody
 import io.plaidapp.designernews.repliesResponses
 import io.plaidapp.designernews.replyResponse1
+import java.net.UnknownHostException
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import retrofit2.Response
-import java.net.UnknownHostException
 
 /**
  * Tests for [CommentsRemoteDataSource] that mock the Designer News API

@@ -18,9 +18,9 @@ package io.plaidapp.core.dagger
 
 import com.google.gson.Gson
 import dagger.Component
+import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
 /**
  * Component providing application wide singletons.

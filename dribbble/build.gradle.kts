@@ -21,6 +21,8 @@ plugins {
     kotlin("kapt")
 }
 
+apply(from = "$rootDir/dependencies.gradle.kts")
+
 android {
     compileSdkVersion(Versions.compileSdk)
 
@@ -29,7 +31,7 @@ android {
         targetSdkVersion(Versions.targetSdk)
 
         val filesAuthorityValue = Names.applicationId + ".shareprovider"
-        buildConfigField("String", "FILES_AUTHORITY", "${filesAuthorityValue}")
+        buildConfigField("String", "FILES_AUTHORITY", "\"${filesAuthorityValue}\"")
 
         manifestPlaceholders = mapOf(
                 "filesAuthority" to filesAuthorityValue
@@ -42,16 +44,15 @@ android {
         }
     }
 
-    dataBinding.isEnabled = true
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-}
 
-sharedDependencies()
-testDependencies()
+    buildFeatures {
+        dataBinding = true
+    }
+}
 
 dependencies {
     implementation(project(":app"))

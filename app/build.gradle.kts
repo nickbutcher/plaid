@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
-
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -24,6 +22,8 @@ plugins {
     id("io.fabric")
     id("com.google.gms.google-services")
 }
+
+apply(from = "$rootDir/dependencies.gradle.kts")
 
 android {
     compileSdkVersion(Versions.compileSdk)
@@ -50,8 +50,6 @@ android {
             }
         }
     }
-
-    dataBinding.isEnabled = true
 
     buildTypes {
         getByName("release") {
@@ -84,27 +82,28 @@ android {
             ":dribbble",
             ":search"
     )
-}
 
-sharedDependencies()
-testDependencies()
+    buildFeatures {
+        dataBinding = true
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
 
 dependencies {
     implementation(project(":core"))
     implementation("androidx.appcompat:appcompat:${Versions.appcompat}")
+    implementation("androidx.lifecycle:lifecycle-extensions:${Versions.lifecycle}")
     implementation("com.crashlytics.sdk.android:crashlytics:${Versions.crashlytics}")
-    implementation("com.google.firebase:firebase-core:${Versions.firebase}")
     implementation("com.github.bumptech.glide:glide:${Versions.glide}")
     implementation("com.github.bumptech.glide:recyclerview-integration:${Versions.glide}")
+    implementation("com.google.firebase:firebase-core:${Versions.firebase}")
 
     kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
 }
 
-kapt {
-    useBuildCache = true
-}
-
-//// Must be applied after dependencies. See https://stackoverflow.com/a/38018985
-//plugins {
-//    id("com.google.gms.google-services")
+//kapt {
+//    useBuildCache = true
 //}

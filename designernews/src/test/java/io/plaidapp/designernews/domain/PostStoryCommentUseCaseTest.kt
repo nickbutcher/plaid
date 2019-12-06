@@ -19,16 +19,16 @@ package io.plaidapp.designernews.domain
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
-import io.plaidapp.designernews.data.comments.CommentsRepository
 import io.plaidapp.core.designernews.data.login.LoginRepository
 import io.plaidapp.core.designernews.domain.model.Comment
+import io.plaidapp.designernews.data.comments.CommentsRepository
 import io.plaidapp.designernews.loggedInUser
 import io.plaidapp.designernews.replyResponse1
+import java.io.IOException
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.io.IOException
 
 /**
  * Tests for [PostStoryCommentUseCase] mocking all dependencies.

@@ -22,6 +22,8 @@ plugins {
     kotlin("kapt")
 }
 
+apply(from = "$rootDir/dependencies.gradle.kts")
+
 android {
     compileSdkVersion(Versions.compileSdk)
 
@@ -39,17 +41,16 @@ android {
         }
     }
 
-    dataBinding.isEnabled = true
-
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    buildFeatures {
+        dataBinding = true
+    }
 }
 
-sharedDependencies()
-testDependencies()
 
 dependencies {
     implementation(project(":app"))

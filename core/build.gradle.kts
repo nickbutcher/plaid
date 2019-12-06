@@ -22,6 +22,8 @@ plugins {
     kotlin("kapt")
 }
 
+apply(from = "$rootDir/dependencies.gradle.kts")
+
 android {
     compileSdkVersion(Versions.compileSdk)
 
@@ -49,8 +51,6 @@ android {
         }
     }
 
-    dataBinding.isEnabled = true
-
     buildTypes {
         getByName("release") {
             consumerProguardFiles("proguard-rules.pro")
@@ -65,10 +65,11 @@ android {
     packagingOptions {
         exclude("META-INF/core_debug.kotlin_module")
     }
-}
 
-sharedDependencies()
-testDependencies()
+    buildFeatures {
+        dataBinding = true
+    }
+}
 
 dependencies {
     implementation(project(":bypass"))
@@ -83,8 +84,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:${Versions.okhttp}")
     implementation("com.squareup.okhttp3:logging-interceptor:${Versions.okhttp}")
     implementation("org.jsoup:jsoup:${Versions.jsoup}")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}")
     kapt("com.github.bumptech.glide:compiler:${Versions.glide}")
     kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
 }

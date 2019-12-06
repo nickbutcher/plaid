@@ -24,12 +24,12 @@ import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.storyLinks
 import io.plaidapp.core.designernews.userId
-import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
-import org.junit.Test
 import java.io.IOException
 import java.util.Date
 import java.util.GregorianCalendar
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
+import org.junit.Test
 
 /**
  * Tests for [LoadStoriesUseCase] mocking the dependencies.

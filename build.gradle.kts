@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+plugins {
+    id("com.diffplug.gradle.spotless") version "3.26.1"
+}
+
 buildscript {
 
     Config.run { repositories.deps() }
@@ -27,23 +31,39 @@ buildscript {
 
 }
 
-//plugins {
-//    id 'com.diffplug.gradle.spotless' version '3.14.0'
-//}
 
-//subprojects {
-//    apply plugin: 'com.diffplug.gradle.spotless'
-//    spotless {
-//        kotlin {
-//            target '**/*.kt'
-//            ktlint(versions.ktlint)
-//            licenseHeaderFile project.rootProject.file('scripts/copyright.kt')
-//        }
+spotless {
+    kotlin {
+        target("**/*.kt")
+        ktlint("0.36.0")
+        licenseHeaderFile("$rootDir/scripts/copyright.txt", "(package |import |@file:)")
+//        paddedCell()
+    }
+//    kotlin {
+//        // optionally takes a version
+//        ktlint()
+//        // Optional user arguments can be set as such:
+//        ktlint().userData(['indent_size': '2', 'continuation_indent_size' : '2'])
+//
+//        // also supports license headers
+//        licenseHeader '/* Licensed under Apache-2.0 */'	// License header
+//        licenseHeaderFile 'path-to-license-file'		// License header file
 //    }
-//}
-
+//    kotlinGradle {
+//        // same as kotlin, but for .gradle.kts files (defaults to '*.gradle.kts')
+//        target '*.gradle.kts', 'additionalScripts/*.gradle.kts'
+//
+//        ktlint()
+//
+//        // Optional user arguments can be set as such:
+//        ktlint().userData(['indent_size': '2', 'continuation_indent_size' : '2'])
+//
+//        // doesn't support licenseHeader, because scripts don't have a package statement
+//        // to clearly mark where the license should go
+//    }
+}
 subprojects {
-
-    Config.run { repositories.deps() }
-
+    Config.run {
+        repositories.deps()
+    }
 }
