@@ -17,9 +17,9 @@
 package io.plaidapp.designernews.data.api
 
 import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
+import java.io.IOException
 import okhttp3.Interceptor
 import okhttp3.Response
-import java.io.IOException
 
 /**
  * An {@see Interceptor} that adds an auth token to requests if one is provided, otherwise

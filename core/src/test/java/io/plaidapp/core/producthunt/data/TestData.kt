@@ -16,8 +16,8 @@
 
 package io.plaidapp.core.producthunt.data
 
-import io.plaidapp.core.producthunt.data.api.model.GetPostsResponse
 import io.plaidapp.core.producthunt.data.api.model.GetPostItemResponse
+import io.plaidapp.core.producthunt.data.api.model.GetPostsResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response

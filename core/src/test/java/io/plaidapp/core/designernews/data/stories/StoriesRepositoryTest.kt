@@ -21,14 +21,14 @@ import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.storyLinks
+import java.io.IOException
+import java.util.Date
+import java.util.GregorianCalendar
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.io.IOException
-import java.util.Date
-import java.util.GregorianCalendar
 
 /**
  * Tests for [StoriesRepository] mocking all the dependencies.

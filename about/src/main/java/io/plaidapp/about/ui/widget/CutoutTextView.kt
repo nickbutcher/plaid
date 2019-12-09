@@ -32,8 +32,8 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.applyCanvas
 import androidx.core.graphics.createBitmap
 import io.plaidapp.about.R
-import io.plaidapp.core.util.ViewUtils
 import io.plaidapp.core.R as coreR
+import io.plaidapp.core.util.ViewUtils
 
 /**
  * A view which punches out some text from an opaque color block, allowing you to see through it.

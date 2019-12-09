@@ -28,12 +28,12 @@ import io.plaidapp.designernews.reply1
 import io.plaidapp.designernews.replyResponse1
 import io.plaidapp.designernews.replyResponse2
 import io.plaidapp.designernews.replyWithReplies1
+import java.io.IOException
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.io.IOException
 
 /**
  * Tests for [GetCommentsWithRepliesUseCase] where all the dependencies are mocked.

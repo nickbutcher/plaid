@@ -31,14 +31,14 @@ import io.plaidapp.designernews.flattendCommentsWithReplies
 import io.plaidapp.designernews.reply1
 import io.plaidapp.test.shared.getOrAwaitValue
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
+import java.io.IOException
+import java.util.Date
+import java.util.GregorianCalendar
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Rule
 import org.junit.Test
-import java.io.IOException
-import java.util.Date
-import java.util.GregorianCalendar
 
 /**
  * Tests for [StoryViewModel] mocking all the dependencies.

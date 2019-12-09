@@ -25,13 +25,13 @@ import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.errorResponseBody
 import io.plaidapp.core.dribbble.data.search.SearchRemoteDataSource.SortOrder
 import io.plaidapp.core.dribbble.data.shots
+import java.net.UnknownHostException
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import retrofit2.Response
-import java.net.UnknownHostException
 
 /**
  * Tests for [SearchRemoteDataSource] which mocks the search service dependency.

@@ -16,10 +16,10 @@
 
 package io.plaidapp.core.util
 
-import androidx.annotation.LayoutRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 
 /**
  * An extension which performs an [action] if the view has been measured, otherwise waits for it to

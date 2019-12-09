@@ -16,8 +16,8 @@
 
 package io.plaidapp.dribbble.dagger
 
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
+import androidx.lifecycle.ViewModelProviders
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.data.CoroutinesDispatcherProvider

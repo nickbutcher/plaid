@@ -20,8 +20,8 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.DesignerNewsSearchSourceItem
 import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
-import retrofit2.Response
 import java.io.IOException
+import retrofit2.Response
 
 /**
  * Data source class that handles work with Designer News API.
