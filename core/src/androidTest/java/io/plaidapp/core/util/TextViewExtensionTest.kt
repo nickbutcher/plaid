@@ -18,9 +18,9 @@ package io.plaidapp.core.util
 
 import android.widget.TextView
 import androidx.test.platform.app.InstrumentationRegistry
+import java.util.concurrent.atomic.AtomicBoolean
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.util.concurrent.atomic.AtomicBoolean
 
 class TextViewExtensionTest {
 

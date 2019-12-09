@@ -17,10 +17,10 @@
 package io.plaidapp.designernews.data.comments
 
 import io.plaidapp.core.data.Result
-import io.plaidapp.designernews.data.comments.model.CommentResponse
-import io.plaidapp.designernews.data.comments.model.NewCommentRequest
 import io.plaidapp.core.util.safeApiCall
 import io.plaidapp.designernews.data.api.DesignerNewsService
+import io.plaidapp.designernews.data.comments.model.CommentResponse
+import io.plaidapp.designernews.data.comments.model.NewCommentRequest
 import java.io.IOException
 
 /**

@@ -16,7 +16,7 @@
 
 package io.plaidapp.about.ui.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 
 internal class LibraryIntroHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

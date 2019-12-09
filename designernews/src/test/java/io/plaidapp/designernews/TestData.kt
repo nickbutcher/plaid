@@ -16,17 +16,17 @@
 
 package io.plaidapp.designernews
 
-import io.plaidapp.designernews.data.comments.model.CommentLinksResponse
-import io.plaidapp.designernews.data.comments.model.CommentResponse
-import io.plaidapp.core.designernews.data.stories.model.StoryLinks
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
+import io.plaidapp.core.designernews.data.stories.model.StoryLinks
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.designernews.domain.model.CommentWithReplies
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.ResponseBody.Companion.toResponseBody
+import io.plaidapp.designernews.data.comments.model.CommentLinksResponse
+import io.plaidapp.designernews.data.comments.model.CommentResponse
 import java.util.Date
 import java.util.GregorianCalendar
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
 
 /**
  * Test data for comments

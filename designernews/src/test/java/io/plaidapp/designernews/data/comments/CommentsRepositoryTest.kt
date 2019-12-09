@@ -21,10 +21,10 @@ import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.designernews.repliesResponses
 import io.plaidapp.designernews.replyResponse1
+import java.io.IOException
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.io.IOException
 
 /**
  * Tests for [CommentsRepository] mocking all dependencies

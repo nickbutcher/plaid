@@ -27,8 +27,8 @@ import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.feed.FeedProgressUiModel
 import io.plaidapp.core.feed.FeedUiModel
-import io.plaidapp.search.domain.SearchDataSourceFactoriesRegistry
 import io.plaidapp.search.domain.LoadSearchDataUseCase
+import io.plaidapp.search.domain.SearchDataSourceFactoriesRegistry
 import kotlinx.coroutines.launch
 
 /**

@@ -20,10 +20,10 @@ import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.BuildConfig
+import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
 /**
  * Dagger module to provide core data functionality.

@@ -18,7 +18,6 @@ package io.plaidapp.core.ui.widget
 
 import android.content.Context
 import android.util.AttributeSet
-
 import io.plaidapp.core.util.ViewUtils
 
 /**

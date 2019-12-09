@@ -156,8 +156,8 @@ class BadgedFourThreeImageView(
 
         companion object {
             private const val GIF = "GIF"
-            private const val TEXT_SIZE = 12    // sp
-            private const val PADDING = 4       // dp
+            private const val TEXT_SIZE = 12 // sp
+            private const val PADDING = 4 // dp
             private const val CORNER_RADIUS = 2 // dp
             private const val BACKGROUND_COLOR = Color.WHITE
             private const val TYPEFACE = "sans-serif-black"
