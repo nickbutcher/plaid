@@ -38,7 +38,7 @@ spotless {
     }
     kotlinGradle {
         // same as kotlin, but for .gradle.kts files (defaults to '*.gradle.kts')
-        target("*.gradle.kts")
+        target("**/*.gradle.kts")
 
         ktlint("0.36.0")
 
