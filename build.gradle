@@ -89,5 +89,14 @@ subprojects {
             ktlint(versions.ktlint)
             licenseHeaderFile project.rootProject.file('scripts/copyright.kt')
         }
+        groovyGradle {
+            // same as groovy, but for .gradle (defaults to '*.gradle')
+            target '**/*.gradle'
+            paddedCell() // Avoid cyclic ambiguities
+            // the Groovy Eclipse formatter extends the Java Eclipse formatter,
+            // so it formats Java files by default (unless `excludeJava` is used).
+            greclipse().configFile(project.rootProject.file('scripts/greclipse.properties'))
+            licenseHeaderFile project.rootProject.file('scripts/copyright.kt'), '(buildscript|apply)'
+        }
     }
 }
