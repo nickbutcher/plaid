@@ -15,30 +15,32 @@
  *
  */
 
-apply plugin: 'com.android.dynamic-feature'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
+plugins {
+    id("com.android.dynamic-feature")
+    id("kotlin-android")
+    id("kotlin-kapt")
+}
 
-apply from: '../shared_dependencies.gradle'
-apply from: '../test_dependencies.gradle'
+apply(from = "../shared_dependencies.gradle")
+apply(from = "../test_dependencies.gradle")
 
 android {
-    compileSdkVersion versions.compileSdk
+    compileSdkVersion(Versions.compileSdk)
 
     defaultConfig {
-        minSdkVersion versions.minSdk
-        targetSdkVersion versions.targetSdk
+        minSdkVersion(Versions.minSdk)
+        targetSdkVersion(Versions.targetSdk)
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments << ['dagger.gradle.incremental': 'true']
+                arguments["dagger.gradle.incremental"] = "true"
             }
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
@@ -47,12 +49,12 @@ android {
 }
 
 dependencies {
-    implementation project(':app')
-    implementation project(':core')
+    implementation(project(":app"))
+    implementation(project(":core"))
 
-    implementation "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:${versions.kotlin}"
-    kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
+    implementation("com.github.bumptech.glide:recyclerview-integration:${Versions.glide}")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
+    kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
 
 }
 
