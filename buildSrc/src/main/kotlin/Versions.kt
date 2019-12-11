@@ -4,6 +4,7 @@ object Versions {
     const val targetSdk = 29
     const val appcompat = "1.1.0-rc01"
     const val androidx = "1.0.0"
+    const val androidxCoreRuntime = "1.1.1"
     const val androidxCollection = "1.0.0"
     const val androidxArch = "2.0.0"
     const val constraintLayout = "2.0.0-alpha2"
