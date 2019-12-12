@@ -24,3 +24,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-extensions:${Versions.lifecycle}")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycle}")
 }
+
+fun DependencyHandler.`implementation`(dependencyNotation: Any): Dependency? =
+    add("implementation", dependencyNotation)

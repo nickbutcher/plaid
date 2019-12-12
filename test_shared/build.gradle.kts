@@ -20,7 +20,7 @@ plugins {
     id("kotlin-android")
 }
 
-apply(from = "../shared_dependencies.gradle")
+apply(from = "../shared_dependencies.gradle.kts")
 apply(from = "../test_dependencies.gradle.kts")
 
 android {
