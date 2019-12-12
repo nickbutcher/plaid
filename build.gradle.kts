@@ -15,7 +15,9 @@
  */
 
 buildscript {
-    apply(from = "repositories.gradle", to = this)
+    repositories {
+        addCommonRepositories()
+    }
 
     dependencies {
         classpath("com.android.tools.build:gradle:4.0.0-alpha06")
@@ -30,8 +32,8 @@ plugins {
 }
 
 subprojects {
-    buildscript {
-        apply(from = rootProject.file("repositories.gradle"))
+    repositories {
+        addCommonRepositories()
     }
 
     apply(plugin = "com.diffplug.gradle.spotless")
