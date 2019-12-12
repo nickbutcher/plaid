@@ -21,7 +21,7 @@ plugins {
 }
 
 apply(from = "../shared_dependencies.gradle")
-apply(from = "../test_dependencies.gradle")
+apply(from = "../test_dependencies.gradle.kts")
 
 android {
     compileSdkVersion(Versions.compileSdk)

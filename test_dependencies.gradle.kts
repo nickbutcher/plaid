@@ -36,7 +36,7 @@ dependencies {
     androidTestImplementation("androidx.legacy:legacy-support-core-utils:${Versions.legacyCoreUtils}")
     androidTestImplementation("androidx.lifecycle:lifecycle-runtime:${Versions.lifecycle}")
 
-    androidTestImplementation(project(':test_shared'))
+    androidTestImplementation(project(":test_shared"))
     androidTestImplementation("androidx.arch.core:core-testing:${Versions.androidxArch}")
     androidTestImplementation("androidx.test.espresso:espresso-contrib:${Versions.espresso}")
     androidTestImplementation("androidx.test.espresso:espresso-core:${Versions.espresso}")
@@ -52,3 +52,12 @@ dependencies {
     // without this, it fails on AGP 3.6.x.
     androidTestImplementation("com.google.android.gms:play-services-gcm:16.0.0")
 }
+
+fun DependencyHandler.`implementation`(dependencyNotation: Any): Dependency? =
+    add("implementation", dependencyNotation)
+
+fun DependencyHandler.`testImplementation`(dependencyNotation: Any): Dependency? =
+    add("testImplementation", dependencyNotation)
+
+fun DependencyHandler.`androidTestImplementation`(dependencyNotation: Any): Dependency? =
+    add("androidTestImplementation", dependencyNotation)
