@@ -20,9 +20,8 @@ plugins {
     id("kotlin-android")
 
     id("shared_dependencies")
+    id("test_dependencies")
 }
-
-apply(from = "../test_dependencies.gradle.kts")
 
 android {
     compileSdkVersion(Versions.compileSdk)
