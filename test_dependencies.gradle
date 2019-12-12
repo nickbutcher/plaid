@@ -29,7 +29,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime:${Versions.lifecycle}")
 
     // Workaround for dependency conflict during assembleAndroidTest
-    androidTestImplementation("androidx.arch.core:core-runtime:2.0.1-alpha01")
+    androidTestImplementation("androidx.arch.core:core-runtime:${Versions.androidxCoreRuntime}")
 
     // Work around issue with runtime classpath version conflict
     androidTestImplementation("androidx.arch.core:core-testing:${Versions.androidxArch}")
