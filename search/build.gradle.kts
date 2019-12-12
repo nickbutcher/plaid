@@ -19,9 +19,10 @@ plugins {
     id("com.android.dynamic-feature")
     id("kotlin-android")
     id("kotlin-kapt")
+
+    id("shared_dependencies")
 }
 
-apply(from = "../shared_dependencies.gradle.kts")
 apply(from = "../test_dependencies.gradle.kts")
 
 android {
