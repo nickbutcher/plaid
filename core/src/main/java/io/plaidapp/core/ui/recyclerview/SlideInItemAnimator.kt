@@ -25,7 +25,7 @@ import androidx.dynamicanimation.animation.SpringAnimation.TRANSLATION_Y
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import io.plaidapp.core.util.listenForAllSpringsEnd
-import io.plaidapp.core.util.removableForEach
+import io.plaidapp.core.util.onEach
 import io.plaidapp.core.util.spring
 
 /**
@@ -109,10 +109,10 @@ open class SlideInItemAnimator @JvmOverloads constructor(
     }
 
     override fun endAnimations() {
-        pendingAdds.removableForEach(::endPendingAdd)
-        runningAdds.removableForEach(::endRunningAdd)
-        pendingMoves.removableForEach(::endPendingMove)
-        runningMoves.removableForEach(::endRunningMove)
+        pendingAdds.onEach(::endPendingAdd)
+        runningAdds.onEach(::endRunningAdd)
+        pendingMoves.onEach(::endPendingMove)
+        runningMoves.onEach(::endRunningMove)
         super.endAnimations()
     }
 
