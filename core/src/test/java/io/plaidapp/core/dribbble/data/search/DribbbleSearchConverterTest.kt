@@ -16,11 +16,11 @@
 
 package io.plaidapp.core.dribbble.data.search
 
+import java.io.InputStream
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
-import java.io.InputStream
 
 /**
  * Tests for [DribbbleSearchConverter] using static test data
