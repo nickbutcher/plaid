@@ -27,14 +27,13 @@ import io.plaidapp.core.producthunt.data.ProductHuntSourceItem.Companion.SOURCE_
 import io.plaidapp.core.producthunt.domain.LoadPostsUseCase
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
 import io.plaidapp.core.util.exhaustive
-import java.util.concurrent.atomic.AtomicInteger
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.util.concurrent.atomic.AtomicInteger
+import javax.inject.Inject
 
 /**
  * Data class mapping the key based on which we're requesting data and the page
@@ -83,9 +82,7 @@ class DataManager @Inject constructor(
     init {
         sourcesRepository.registerFilterChangedCallback(filterListener)
         // build a map of source keys to pages initialized to 0
-        runBlocking {
-            pageIndexes = sourcesRepository.getSources().map { it.key to 0 }.toMap().toMutableMap()
-        }
+        pageIndexes = sourcesRepository.getSourcesSync().map { it.key to 0 }.toMap().toMutableMap()
     }
 
     fun setOnDataLoadedCallback(
