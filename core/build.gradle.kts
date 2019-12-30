@@ -36,12 +36,12 @@ android {
         val designer_news_client_secret: String by project
         val product_hunt_developer_token: String by project
 
-        buildConfigField("String", "DESIGNER_NEWS_CLIENT_ID", "\"${designer_news_client_id}\"")
+        buildConfigField("String", "DESIGNER_NEWS_CLIENT_ID", "$designer_news_client_id")
         buildConfigField("String",
-                "DESIGNER_NEWS_CLIENT_SECRET", "\"${designer_news_client_secret}\"")
+                "DESIGNER_NEWS_CLIENT_SECRET", "$designer_news_client_secret")
 
         buildConfigField("String",
-                "PRODUCT_HUNT_DEVELOPER_TOKEN", "\"${product_hunt_developer_token}\"")
+                "PRODUCT_HUNT_DEVELOPER_TOKEN", "$product_hunt_developer_token")
 
         javaCompileOptions {
             annotationProcessorOptions {
