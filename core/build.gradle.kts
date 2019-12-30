@@ -84,6 +84,7 @@ dependencies {
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}")
     kapt("com.github.bumptech.glide:compiler:${Versions.glide}")
+    kapt("com.github.bumptech.glide:glide:${Versions.glide}")
     kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
 }
 
