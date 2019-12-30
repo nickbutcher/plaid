@@ -38,9 +38,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewStub
 import android.view.WindowInsets
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -118,15 +120,15 @@ class HomeActivity : AppCompatActivity() {
 
     private val noFiltersEmptyText by lazy {
         val view = findViewById<ViewStub>(R.id.stub_no_filters).inflate() as TextView
-        noDataEmptyText(R.string.no_filters_selected, view)
+        noFiltersEmptyText(R.string.no_filters_selected, view)
     }
 
-    private val noDataEmptyText by lazy {
-        val view = findViewById<ViewStub>(R.id.stub_no_data).inflate() as TextView
-        noDataEmptyText(R.string.no_data, view)
+    private val noDataView by lazy {
+        val view = findViewById<ViewStub>(R.id.stub_no_data).inflate() as LinearLayout
+        view.apply { findViewById<Button>(R.id.retryButton).setOnClickListener { viewModel.loadData() } }
     }
 
-    private fun HomeActivity.noDataEmptyText(stringId: Int, view: TextView): TextView {
+    private fun HomeActivity.noFiltersEmptyText(stringId: Int, view: TextView): TextView {
         val emptyText = getText(stringId) as SpannedString
         val ssb = SpannableStringBuilder(emptyText)
         val annotations = emptyText.getSpans(0, emptyText.length, Annotation::class.java)
@@ -160,9 +162,7 @@ class HomeActivity : AppCompatActivity() {
 
         return with(view) {
             text = ssb
-            setOnClickListener {
-                drawer.openDrawer(GravityCompat.END)
-            }
+            setOnClickListener { drawer.openDrawer(GravityCompat.END) }
             view
         }
     }
@@ -551,7 +551,7 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setEmptyStateVisibility(progressBar: Int, noData: Int, noFilter: Int) {
         loading.visibility = progressBar
-        noDataEmptyText.visibility = noData
+        noDataView.visibility = noData
         noFiltersEmptyText.visibility = noFilter
     }
 

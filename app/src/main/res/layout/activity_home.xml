@@ -63,11 +63,11 @@
 
         <ViewStub
             android:id="@+id/stub_no_data"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/spacing_huge"
-            android:layout="@layout/no_filters" />
+            android:layout="@layout/no_data" />
 
         <ViewStub
             android:id="@+id/stub_no_filters"
