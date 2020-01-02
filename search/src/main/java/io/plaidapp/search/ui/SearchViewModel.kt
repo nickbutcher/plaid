@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,17 @@ package io.plaidapp.search.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
+import io.plaidapp.core.data.PlaidItem
 import io.plaidapp.core.feed.FeedProgressUiModel
 import io.plaidapp.core.feed.FeedUiModel
-import io.plaidapp.search.domain.SearchDataSourceFactoriesRegistry
 import io.plaidapp.search.domain.LoadSearchDataUseCase
+import io.plaidapp.search.domain.SearchDataSourceFactoriesRegistry
 import kotlinx.coroutines.launch
 
 /**
@@ -43,13 +46,15 @@ class SearchViewModel(
 
     private val searchQuery = MutableLiveData<String>()
 
-    private val results = Transformations.switchMap(searchQuery) {
-        loadSearchData = LoadSearchDataUseCase(factories, it)
-        loadMore()
-        return@switchMap loadSearchData?.searchResult
+    private val results: LiveData<List<PlaidItem>> = searchQuery.switchMap {
+        liveData(viewModelScope.coroutineContext + dispatcherProvider.computation) {
+            loadSearchData = LoadSearchDataUseCase(factories, it)
+            loadMore()
+            emitSource(loadSearchData!!.searchResult)
+        }
     }
 
-    val searchResults: LiveData<FeedUiModel> = Transformations.map(results) {
+    val searchResults: LiveData<FeedUiModel> = results.map {
         FeedUiModel(it)
     }
 

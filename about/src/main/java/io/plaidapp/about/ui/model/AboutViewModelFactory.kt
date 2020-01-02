@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,31 @@
 
 package io.plaidapp.about.ui.model
 
+import `in`.uncod.android.bypass.Markdown
+import android.content.res.Resources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import io.plaidapp.about.ui.AboutStyler
 import javax.inject.Inject
 
 /**
  * Factory to create [AboutViewModel]
  */
-
-internal class AboutViewModelFactory @Inject constructor() : ViewModelProvider.Factory {
-
-    @Inject lateinit var aboutViewModel: AboutViewModel
+class AboutViewModelFactory @Inject constructor(
+    private val aboutStyler: AboutStyler,
+    private val resources: Resources,
+    private val markdown: Markdown
+) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return if (modelClass.isAssignableFrom(AboutViewModel::class.java)) {
-            aboutViewModel as T
-        } else {
-            throw IllegalArgumentException(
-                "Class ${modelClass.name} is not supported in this factory."
-            )
+        if (modelClass != AboutViewModel::class.java) {
+            throw IllegalArgumentException("Unknown ViewModel class")
         }
+        return AboutViewModel(
+            aboutStyler,
+            resources,
+            markdown
+        ) as T
     }
 }

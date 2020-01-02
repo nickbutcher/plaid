@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ fun getDefaultUrl(id: Long) = "https://www.designernews.co/click/stories/$id"
 data class Story(
     @SerializedName("id") override val id: Long,
     @SerializedName("title") override val title: String,
+    @SerializedName("page") override val page: Int,
     @SerializedName("url")
     override var url: String? = getDefaultUrl(id),
     @SerializedName("comment") val comment: String? = null,
@@ -43,4 +44,4 @@ data class Story(
     @Deprecated("Removed in DN API V2")
     @SerializedName("user_portrait_url") val userPortraitUrl: String? = null,
     @SerializedName("user_job") val userJob: String? = null
-) : PlaidItem(id, title, url)
+) : PlaidItem(id, title, url, page)

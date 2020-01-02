@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2019 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 
 package io.plaidapp.core.producthunt.data
 
-import io.plaidapp.core.producthunt.data.api.model.GetPostsResponse
 import io.plaidapp.core.producthunt.data.api.model.GetPostItemResponse
-import okhttp3.MediaType
-import okhttp3.ResponseBody
+import io.plaidapp.core.producthunt.data.api.model.GetPostsResponse
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 
-val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")!!
+val errorResponseBody = "Error".toResponseBody("".toMediaTypeOrNull())
 
 val post1 = GetPostItemResponse(
     id = 345L,
@@ -47,9 +47,9 @@ val post2 = GetPostItemResponse(
 
 val responseDataSuccess = GetPostsResponse(posts = listOf(post1, post2))
 
-val responseSuccess = Response.success(responseDataSuccess)!!
+val responseSuccess = Response.success(responseDataSuccess)
 
 val responseError = Response.error<GetPostsResponse>(
     400,
     errorResponseBody
-)!!
+)

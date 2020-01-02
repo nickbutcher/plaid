@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import androidx.core.content.getSystemService
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -75,7 +75,7 @@ abstract class HomeModule {
             factory: HomeViewModelFactory,
             fragmentActivity: FragmentActivity
         ): HomeViewModel {
-            return ViewModelProviders.of(fragmentActivity, factory).get(HomeViewModel::class.java)
+            return ViewModelProvider(fragmentActivity, factory).get(HomeViewModel::class.java)
         }
 
         @JvmStatic

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright 2016 Google Inc.
+  Copyright 2016 Google LLC.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -18,4 +18,18 @@
 <resources>
     <item type="id" name="tag_reflow_data" />
     <item type="id" name="fab" />
+    <item name="translation_x" type="id"/>
+    <item name="translation_y" type="id"/>
+    <item name="translation_z" type="id"/>
+    <item name="scale_x" type="id"/>
+    <item name="scale_y" type="id"/>
+    <item name="rotation" type="id"/>
+    <item name="rotation_x" type="id"/>
+    <item name="rotation_y" type="id"/>
+    <item name="x" type="id"/>
+    <item name="y" type="id"/>
+    <item name="z" type="id"/>
+    <item name="alpha" type="id"/>
+    <item name="scroll_x" type="id"/>
+    <item name="scroll_y" type="id"/>
 </resources>

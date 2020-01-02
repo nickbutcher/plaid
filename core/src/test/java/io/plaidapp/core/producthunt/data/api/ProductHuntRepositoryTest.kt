@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2019 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import io.plaidapp.core.producthunt.data.responseDataSuccess
 import io.plaidapp.core.producthunt.data.responseError
 import io.plaidapp.core.producthunt.data.responseSuccess
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -32,6 +33,7 @@ import retrofit2.Response
 /**
  * Tests for [ProductHuntRepository].
  */
+@ExperimentalCoroutinesApi
 class ProductHuntRepositoryTest {
 
     private val coroutinesDispatcherProvider = provideFakeCoroutinesDispatcherProvider()

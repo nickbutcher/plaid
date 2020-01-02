@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package io.plaidapp.core.dagger
 
 import com.google.gson.Gson
 import dagger.Component
+import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
 /**
  * Component providing application wide singletons.

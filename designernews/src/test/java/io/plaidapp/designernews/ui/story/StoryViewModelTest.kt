@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,25 +27,24 @@ import io.plaidapp.designernews.domain.GetCommentsWithRepliesAndUsersUseCase
 import io.plaidapp.designernews.domain.GetStoryUseCase
 import io.plaidapp.designernews.domain.PostReplyUseCase
 import io.plaidapp.designernews.domain.PostStoryCommentUseCase
-import io.plaidapp.designernews.domain.UpvoteCommentUseCase
-import io.plaidapp.designernews.domain.UpvoteStoryUseCase
 import io.plaidapp.designernews.flattendCommentsWithReplies
 import io.plaidapp.designernews.reply1
-import io.plaidapp.test.shared.LiveDataTestUtil
+import io.plaidapp.test.shared.getOrAwaitValue
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
-import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
-import org.junit.Rule
-import org.junit.Test
 import java.io.IOException
 import java.util.Date
 import java.util.GregorianCalendar
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Rule
+import org.junit.Test
 
 /**
  * Tests for [StoryViewModel] mocking all the dependencies.
  */
+@ExperimentalCoroutinesApi
 class StoryViewModelTest {
 
     // Executes tasks in the Architecture Components in the same thread
@@ -54,7 +53,6 @@ class StoryViewModelTest {
 
     private val userId = 5L
     private val storyId = 1345L
-    private val commentId = 999L
     private val createdDate: Date = GregorianCalendar(2018, 1, 13).time
     private val commentIds = listOf(11L, 12L)
     private val storyLinks = StoryLinks(
@@ -66,6 +64,7 @@ class StoryViewModelTest {
     private val testStory = Story(
         id = storyId,
         title = "Plaid 2.0 was released",
+        page = 0,
         createdAt = createdDate,
         userId = userId,
         links = storyLinks
@@ -75,8 +74,6 @@ class StoryViewModelTest {
     private val postStoryComment: PostStoryCommentUseCase = mock()
     private val postComment: PostReplyUseCase = mock()
     private val getCommentsWithRepliesAndUsers: GetCommentsWithRepliesAndUsersUseCase = mock()
-    private val upvoteStory: UpvoteStoryUseCase = mock()
-    private val upvoteComment: UpvoteCommentUseCase = mock()
 
     @Test
     fun loadStory_existsInRepo() {
@@ -100,8 +97,6 @@ class StoryViewModelTest {
             postStoryComment,
             postComment,
             getCommentsWithRepliesAndUsers,
-            upvoteStory,
-            upvoteComment,
             provideFakeCoroutinesDispatcherProvider()
         )
         // Then it throws
@@ -114,71 +109,8 @@ class StoryViewModelTest {
         val viewModel = withViewModel()
 
         // Then the correct UI model is created
-        val event = LiveDataTestUtil.getValue(viewModel.uiModel)
-        assertEquals(event!!.comments, flattendCommentsWithReplies)
-    }
-
-    @Test
-    fun upvoteStory_whenUpvoteSuccessful() = runBlocking {
-        // Given that the use case responds with success
-        whenever(upvoteStory(storyId)).thenReturn(Result.Success(Unit))
-        // And the view model is constructed
-        val viewModel = withViewModel()
-        var result: Result<Unit>? = null
-
-        // When upvoting a story
-        viewModel.storyUpvoteRequested(storyId) { result = it }
-
-        // Then the result is successful
-        assertEquals(Result.Success(Unit), result)
-    }
-
-    @Test
-    fun upvoteStory_whenUpvoteFailed() = runBlocking {
-        // Given that the use case responds with error
-        val response = Result.Error(IOException("Error upvoting"))
-        whenever(upvoteStory(storyId)).thenReturn(response)
-        // And the view model is constructed
-        val viewModel = withViewModel()
-        var result: Result<Unit>? = null
-
-        // When upvoting a story
-        viewModel.storyUpvoteRequested(storyId) { result = it }
-
-        // Then the result is an error
-        assertTrue(result is Result.Error)
-    }
-
-    @Test
-    fun upvoteComment_whenUpvoteSuccessful() = runBlocking {
-        // Given that the use case responds with success
-        whenever(upvoteComment(commentId))
-            .thenReturn(Result.Success(Unit))
-        // And the view model is constructed
-        val viewModel = withViewModel()
-        var result: Result<Unit>? = null
-
-        // When upvoting a comment
-        viewModel.commentUpvoteRequested(commentId) { result = it }
-
-        // Then the result is successful
-        assertEquals(Result.Success(Unit), result)
-    }
-
-    @Test
-    fun upvoteComment_whenUpvoteFailed() = runBlocking {
-        // Given that the use case responds with error
-        val response = Result.Error(IOException("Error upvoting"))
-        whenever(upvoteComment(commentId)).thenReturn(response)
-        // And the view model is constructed
-        val viewModel = withViewModel()
-        var result: Result<Unit>? = null
-
-        // When upvoting a comment
-        viewModel.commentUpvoteRequested(commentId) { result = it }
-
-        // Then the result is an error
-        assertTrue(result is Result.Error)
+        val event = viewModel.uiModel.getOrAwaitValue()
+        assertEquals(event.comments, flattendCommentsWithReplies)
     }
 
     @Test
@@ -265,8 +197,6 @@ class StoryViewModelTest {
             postStoryComment,
             postComment,
             getCommentsWithRepliesAndUsers,
-            upvoteStory,
-            upvoteComment,
             provideFakeCoroutinesDispatcherProvider()
         )
     }

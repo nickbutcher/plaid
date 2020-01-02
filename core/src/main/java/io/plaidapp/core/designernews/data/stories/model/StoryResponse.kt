@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,10 @@ import java.util.Date
 
 fun getDefaultStoryUrl(id: Long) = "https://www.designernews.co/click/stories/$id"
 
-fun StoryResponse.toStory() = Story(
+fun StoryResponse.toStory(page: Int) = Story(
     id = id,
     title = title,
+    page = page,
     url = url,
     comment = comment,
     commentHtml = comment_html,

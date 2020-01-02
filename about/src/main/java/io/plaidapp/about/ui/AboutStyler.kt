@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ package io.plaidapp.about.ui
 import android.content.res.ColorStateList
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
+import io.plaidapp.core.R as coreR
 import io.plaidapp.core.util.ColorUtils
 import javax.inject.Inject
-import io.plaidapp.core.R as coreR
 
 /**
  * Provide style colors to links and highlights in [AboutActivity].

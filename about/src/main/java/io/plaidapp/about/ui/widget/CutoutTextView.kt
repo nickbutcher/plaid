@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,15 +25,15 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
-import androidx.core.content.res.ResourcesCompat
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.applyCanvas
 import androidx.core.graphics.createBitmap
 import io.plaidapp.about.R
-import io.plaidapp.core.util.ViewUtils
 import io.plaidapp.core.R as coreR
+import io.plaidapp.core.util.ViewUtils
 
 /**
  * A view which punches out some text from an opaque color block, allowing you to see through it.
@@ -71,7 +71,7 @@ class CutoutTextView(context: Context, attrs: AttributeSet) : View(context, attr
             )
         }
         text = if (a.hasValue(R.styleable.CutoutTextView_android_text)) {
-            a.getString(R.styleable.CutoutTextView_android_text)
+            a.getString(R.styleable.CutoutTextView_android_text)!!
         } else {
             ""
         }
@@ -119,7 +119,9 @@ class CutoutTextView(context: Context, attrs: AttributeSet) : View(context, attr
     }
 
     override fun onDraw(canvas: Canvas) {
-        canvas.drawBitmap(cutout, 0f, 0f, null)
+        cutout?.let {
+            canvas.drawBitmap(it, 0f, 0f, null)
+        }
     }
 
     override fun hasOverlappingRendering() = true

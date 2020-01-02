@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ class GetStoryUseCase @Inject constructor(private val storiesRepository: Stories
     operator fun invoke(id: Long): Result<Story> {
         val result = storiesRepository.getStory(id)
         return if (result is Result.Success) {
-            Result.Success(result.data.toStory())
+            Result.Success(result.data.toStory(0))
         } else {
             Result.Error(IllegalStateException("Story $id not cached"))
         }

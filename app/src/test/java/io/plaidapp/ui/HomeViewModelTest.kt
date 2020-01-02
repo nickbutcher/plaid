@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2019 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,9 +42,11 @@ import io.plaidapp.dribbbleSource
 import io.plaidapp.post
 import io.plaidapp.shot
 import io.plaidapp.story
-import io.plaidapp.test.shared.CoroutinesMainDispatcherRule
-import io.plaidapp.test.shared.LiveDataTestUtil
+import io.plaidapp.test.shared.MainCoroutineRule
+import io.plaidapp.test.shared.getOrAwaitValue
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
+import io.plaidapp.test.shared.runBlocking
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -57,10 +59,12 @@ import org.mockito.MockitoAnnotations
 /**
  * Tests for [HomeViewModel], with dependencies mocked.
  */
+@ExperimentalCoroutinesApi
 class HomeViewModelTest {
 
+    // Set the main coroutines dispatcher for unit testing
     @get:Rule
-    var coroutinesMainDispatcherRule = CoroutinesMainDispatcherRule()
+    var coroutinesRule = MainCoroutineRule()
 
     // Executes tasks in the Architecture Components in the same thread
     @get:Rule
@@ -181,13 +185,13 @@ class HomeViewModelTest {
         filtersChangedCallback.value.onFiltersUpdated(listOf(designerNewsSource, dribbbleSource))
 
         // Then ui model sources are emitted
-        val sources = LiveDataTestUtil.getValue(homeViewModel.sources)
+        val sources = homeViewModel.sources.getOrAwaitValue()
         // Then all sources are highlighted
         val sourcesHighlightUiModel = SourcesHighlightUiModel(
             highlightPositions = listOf(0, 1),
             scrollToPosition = 1
         )
-        assertEquals(sourcesHighlightUiModel, sources?.highlightSources!!.peek())
+        assertEquals(sourcesHighlightUiModel, sources.highlightSources!!.peek())
         // The expected sources are retrieved
         assertEquals(2, sources.sourceUiModels.size)
     }
@@ -206,13 +210,13 @@ class HomeViewModelTest {
         filtersChangedCallback.value.onFiltersUpdated(sources)
 
         // Then ui model sources are emitted
-        val sourcesUiModel = LiveDataTestUtil.getValue(homeViewModel.sources)
+        val sourcesUiModel = homeViewModel.sources.getOrAwaitValue()
         // Then all sources are highlighted
         val sourcesHighlightUiModel = SourcesHighlightUiModel(
             highlightPositions = listOf(1),
             scrollToPosition = 1
         )
-        assertEquals(sourcesHighlightUiModel, sourcesUiModel?.highlightSources!!.peek())
+        assertEquals(sourcesHighlightUiModel, sourcesUiModel.highlightSources!!.peek())
         // The expected sources are retrieved
         assertEquals(2, sourcesUiModel.sourceUiModels.size)
     }
@@ -227,7 +231,7 @@ class HomeViewModelTest {
         // Given that filters were updated
         filtersChangedCallback.value.onFiltersUpdated(listOf(designerNewsSource))
         // Given that ui model sources are emitted
-        val sources = LiveDataTestUtil.getValue(homeViewModel.sources)!!
+        val sources = homeViewModel.sources.getOrAwaitValue()
         val uiSource = sources.sourceUiModels[0]
 
         // When calling sourceClicked
@@ -247,8 +251,8 @@ class HomeViewModelTest {
         // Given that filters were updated
         filtersChangedCallback.value.onFiltersUpdated(listOf(designerNewsSource))
         // Given that ui model sources are emitted
-        val sources = LiveDataTestUtil.getValue(homeViewModel.sources)
-        val uiSource = sources!!.sourceUiModels[0]
+        val sources = homeViewModel.sources.getOrAwaitValue()
+        val uiSource = sources.sourceUiModels[0]
 
         // When calling onSourceDismissed
         uiSource.onSourceDismissed(designerNewsSourceUiModel.copy(isSwipeDismissable = true))
@@ -267,8 +271,8 @@ class HomeViewModelTest {
         // Given that filters were updated
         filtersChangedCallback.value.onFiltersUpdated(listOf(designerNewsSource))
         // Given that ui model sources are emitted
-        val sources = LiveDataTestUtil.getValue(homeViewModel.sources)
-        val uiSource = sources!!.sourceUiModels[0]
+        val sources = homeViewModel.sources.getOrAwaitValue()
+        val uiSource = sources.sourceUiModels[0]
 
         // When calling onSourceDismissed
         uiSource.onSourceDismissed(designerNewsSourceUiModel.copy(isSwipeDismissable = false))
@@ -278,7 +282,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun filtersRemoved() {
+    fun filtersRemoved() = coroutinesRule.runBlocking {
         // Given a view model with feed data
         val homeViewModel = createViewModelWithFeedData(listOf(post, shot, story))
         verify(sourcesRepository).registerFilterChangedCallback(
@@ -289,30 +293,30 @@ class HomeViewModelTest {
         filtersChangedCallback.value.onFilterRemoved(dribbbleSource.key)
 
         // Then feed emits a new list, without the removed filter
-        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(columns))
-        assertEquals(listOf(post, story), feed!!.items)
+        val feed = homeViewModel.getFeed(columns).getOrAwaitValue()
+        assertEquals(listOf(post, story), feed.items)
     }
 
     @Test
-    fun filtersChanged_activeSource() {
+    fun filtersChanged_activeSource() = coroutinesRule.runBlocking {
         // Given a view model with feed data
         val homeViewModel = createViewModelWithFeedData(listOf(post, shot, story))
         verify(sourcesRepository).registerFilterChangedCallback(
             capture(filtersChangedCallback)
         )
-        val initialFeed = LiveDataTestUtil.getValue(homeViewModel.getFeed(columns))
+        val initialFeed = homeViewModel.getFeed(columns).getOrAwaitValue()
 
         // When an active source was changed
         val activeSource = DribbbleSourceItem("dribbble", true)
         filtersChangedCallback.value.onFiltersChanged(activeSource)
 
         // Then feed didn't emit a new value
-        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(columns))
+        val feed = homeViewModel.getFeed(columns).getOrAwaitValue()
         assertEquals(initialFeed, feed)
     }
 
     @Test
-    fun filtersChanged_inactiveSource() {
+    fun filtersChanged_inactiveSource() = coroutinesRule.runBlocking {
         // Given a view model with feed data
         val homeViewModel = createViewModelWithFeedData(listOf(post, shot, story))
         verify(sourcesRepository).registerFilterChangedCallback(
@@ -324,8 +328,8 @@ class HomeViewModelTest {
         filtersChangedCallback.value.onFiltersChanged(inactiveSource)
 
         // Then feed emits a new list, without the removed filter
-        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(columns))
-        assertEquals(listOf(post, story), feed!!.items)
+        val feed = homeViewModel.getFeed(columns).getOrAwaitValue()
+        assertEquals(listOf(post, story), feed.items)
     }
 
     @Test
@@ -338,7 +342,7 @@ class HomeViewModelTest {
         dataLoadingCallback.value.dataStartedLoading()
 
         // Then the feedProgress emits true
-        val progress = LiveDataTestUtil.getValue(homeViewModel.feedProgress)
+        val progress = homeViewModel.feedProgress.getOrAwaitValue()
         assertEquals(FeedProgressUiModel(true), progress)
     }
 
@@ -352,12 +356,12 @@ class HomeViewModelTest {
         dataLoadingCallback.value.dataFinishedLoading()
 
         // Then the feedProgress emits false
-        val progress = LiveDataTestUtil.getValue(homeViewModel.feedProgress)
+        val progress = homeViewModel.feedProgress.getOrAwaitValue()
         assertEquals(FeedProgressUiModel(false), progress)
     }
 
     @Test
-    fun dataLoading_atInit() = runBlocking {
+    fun dataLoading_atInit() = coroutinesRule.runBlocking {
         // When creating a view model
         createViewModel()
 
@@ -366,7 +370,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun feed_emitsWhenDataLoaded() {
+    fun feed_emitsWhenDataLoaded() = coroutinesRule.runBlocking {
         // Given a view model
         val homeViewModel = createViewModel()
         verify(dataManager).setOnDataLoadedCallback(capture(dataLoadedCallback))
@@ -375,8 +379,8 @@ class HomeViewModelTest {
         dataLoadedCallback.value.onDataLoaded(listOf(post, shot, story))
 
         // Then feed emits a new list
-        val feed = LiveDataTestUtil.getValue(homeViewModel.getFeed(2))
-        assertEquals(listOf(post, story, shot), feed!!.items)
+        val feed = homeViewModel.getFeed(2).getOrAwaitValue()
+        assertEquals(listOf(post, story, shot), feed.items)
     }
 
     private fun createViewModelWithFeedData(feedData: List<PlaidItem>): HomeViewModel {
@@ -391,13 +395,13 @@ class HomeViewModelTest {
 
     private fun createViewModel(
         list: List<SourceItem> = emptyList()
-    ): HomeViewModel = runBlocking {
-        whenever(sourcesRepository.getSources()).thenReturn(list)
-        return@runBlocking HomeViewModel(
+    ): HomeViewModel {
+        runBlocking { whenever(sourcesRepository.getSources()).thenReturn(list) }
+        return HomeViewModel(
             dataManager,
             loginRepository,
             sourcesRepository,
-            provideFakeCoroutinesDispatcherProvider()
+            provideFakeCoroutinesDispatcherProvider(coroutinesRule.testDispatcher)
         )
     }
 }

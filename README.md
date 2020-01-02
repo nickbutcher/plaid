@@ -41,7 +41,7 @@ Changes to the styles, themes, icons, animations, transitions or any other UI el
 
 ### Android Studio IDE setup
 
-Plaid requires Android Studio version 3.4 or higher.
+Plaid requires Android Studio version 3.6 or higher.
 
 Plaid uses [ktlint](https://ktlint.github.io/) to enforce Kotlin coding styles.
 Here's how to configure it for use with Android Studio (instructions adapted
@@ -97,7 +97,7 @@ Plaid is a UI sample and seeks to demonstrate how to implement material design. 
 
 
 ```
-Copyright 2015 Google, Inc.
+Copyright 2015 Google LLC.
 
 Licensed to the Apache Software Foundation (ASF) under one or more contributor
 license agreements. See the NOTICE file distributed with this work for

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc.
+ * Copyright 2015 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package io.plaidapp.core.ui.widget;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -25,11 +24,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Typeface;
+import android.graphics.text.LineBreaker;
 import android.os.Build;
-import androidx.annotation.FontRes;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -41,6 +37,12 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import androidx.annotation.FontRes;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.GravityCompat;
+import androidx.core.view.ViewCompat;
 
 import io.plaidapp.core.R;
 import io.plaidapp.core.ui.span.TextColorSpan;
@@ -57,7 +59,7 @@ import io.plaidapp.core.util.ViewUtils;
 public class CollapsingTitleLayout extends FrameLayout implements ReflowText.Reflowable {
 
     // constants
-    private static final int BREAK_STRATEGY = Layout.BREAK_STRATEGY_HIGH_QUALITY;
+    private static final int BREAK_STRATEGY = LineBreaker.BREAK_STRATEGY_HIGH_QUALITY;
 
     // configurable attributes
     private int titleInsetStart;
@@ -345,7 +347,7 @@ public class CollapsingTitleLayout extends FrameLayout implements ReflowText.Ref
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.M)
     private void createLayoutM(int width, float lineSpacingAdd) {
         layout = StaticLayout.Builder.obtain(displayText, 0, displayText.length(), paint,
                 width - titleInsetStart - titleInsetEnd)

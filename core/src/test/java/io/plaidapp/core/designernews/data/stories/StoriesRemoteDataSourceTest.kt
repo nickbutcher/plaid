@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,14 +25,14 @@ import io.plaidapp.core.designernews.data.api.DesignerNewsService
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.errorResponseBody
 import io.plaidapp.core.designernews.storyLinks
+import java.net.UnknownHostException
+import java.util.Date
+import java.util.GregorianCalendar
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import retrofit2.Response
-import java.net.UnknownHostException
-import java.util.Date
-import java.util.GregorianCalendar
 
 /**
  * Test for [StoriesRemoteDataSource] mocking all dependencies.

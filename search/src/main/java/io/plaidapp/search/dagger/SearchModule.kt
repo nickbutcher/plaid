@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package io.plaidapp.search.dagger
 import android.app.Activity
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -96,7 +96,7 @@ abstract class SearchModule {
             factory: SearchViewModelFactory,
             activity: AppCompatActivity
         ): SearchViewModel {
-            return ViewModelProviders.of(activity, factory).get(SearchViewModel::class.java)
+            return ViewModelProvider(activity, factory).get(SearchViewModel::class.java)
         }
     }
 }

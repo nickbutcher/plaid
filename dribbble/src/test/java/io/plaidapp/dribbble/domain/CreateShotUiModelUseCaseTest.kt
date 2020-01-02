@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2019 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,16 +26,18 @@ import io.plaidapp.core.util.HtmlParser
 import io.plaidapp.dribbble.testShot
 import io.plaidapp.dribbble.ui.shot.ShotStyler
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
+import java.util.Locale
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.util.Locale
 
 /**
  * Test for [CreateShotUiModelUseCase] mocking all dependencies.
  */
+@ExperimentalCoroutinesApi
 class CreateShotUiModelUseCaseTest {
 
     private val mockHtmlParser: HtmlParser = mock()

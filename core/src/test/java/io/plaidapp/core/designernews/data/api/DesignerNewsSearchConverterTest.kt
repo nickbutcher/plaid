@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package io.plaidapp.core.designernews.data.api
 
-import junit.framework.Assert.assertEquals
-import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /**
@@ -28,7 +28,7 @@ class DesignerNewsSearchConverterTest {
     @Test
     fun parsesHtml() {
         // Given a response from a Designer News search
-        val response = ResponseBody.create(null, loadData("/designernews_search.html"))
+        val response = loadData("/designernews_search.html").toResponseBody(null)
 
         // When we convert this
         val searchResults = DesignerNewsSearchConverter.convert(response)

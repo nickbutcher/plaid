@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015 Google Inc.
+  Copyright 2015 Google LLC.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -26,21 +26,21 @@
         android:id="@+id/menu_search"
         android:title="@string/search"
         android:icon="@drawable/ic_search_24dp"
-        android:showAsAction="always"
+        app:showAsAction="always"
         tools:ignore="AppCompatResource" />
 
     <item
         android:id="@+id/menu_theme"
         android:title="@string/theme"
-        android:actionViewClass="android.widget.CheckBox"
-        android:showAsAction="always"
+        app:actionViewClass="androidx.appcompat.widget.AppCompatCheckBox"
+        app:showAsAction="always"
         tools:ignore="AppCompatResource" />
 
     <item
         android:id="@+id/menu_filter"
         android:title="@string/filter"
         android:icon="@drawable/ic_filter"
-        android:showAsAction="always"
+        app:showAsAction="always"
         tools:ignore="AppCompatResource" />
 
     <item

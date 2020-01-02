@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2019 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
 package io.plaidapp.designernews.data.api
 
 import io.plaidapp.core.designernews.data.login.AuthTokenLocalDataSource
+import java.io.IOException
 import okhttp3.Interceptor
 import okhttp3.Response
-import java.io.IOException
 
 /**
  * An {@see Interceptor} that adds an auth token to requests if one is provided, otherwise
@@ -36,7 +36,7 @@ class ClientAuthInterceptor(
             requestBuilder.addHeader("Authorization",
                     "Bearer ${authTokenDataSource.authToken}")
         } else {
-            val url = chain.request().url().newBuilder()
+            val url = chain.request().url.newBuilder()
                     .addQueryParameter("client_id", clientId).build()
             requestBuilder.url(url)
         }

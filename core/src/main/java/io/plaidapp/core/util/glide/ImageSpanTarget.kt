@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,14 @@ package io.plaidapp.core.util.glide
 import `in`.uncod.android.bypass.style.ImageLoadingSpan
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ImageSpan
 import android.transition.TransitionManager
 import android.view.ViewGroup
 import android.widget.TextView
-import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.target.CustomViewTarget
 import com.bumptech.glide.request.transition.Transition
 import java.lang.ref.WeakReference
 
@@ -36,8 +37,7 @@ import java.lang.ref.WeakReference
 class ImageSpanTarget(
     textView: TextView,
     private val loadingSpan: ImageLoadingSpan
-) : SimpleTarget<Bitmap>() {
-
+) : CustomViewTarget<TextView, Bitmap>(textView) {
     private val textView: WeakReference<TextView> = WeakReference(textView)
 
     override fun onResourceReady(bitmap: Bitmap, transition: Transition<in Bitmap>?) {
@@ -65,5 +65,13 @@ class ImageSpanTarget(
                 tv.text = this
             }
         }
+    }
+
+    override fun onLoadFailed(errorDrawable: Drawable?) {
+        // I don't think it is useful to set compound drawable to error drawable
+    }
+
+    override fun onResourceCleared(placeholder: Drawable?) {
+        // I don't think it is useful to set compound drawable to placeholder drawable
     }
 }

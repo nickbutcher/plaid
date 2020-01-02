@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2019 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -149,7 +149,7 @@ class FeedAdapter(
         return StoryViewHolder(
             layoutInflater.inflate(R.layout.designer_news_story_item, parent, false),
             pocketIsInstalled,
-            { (_, _, url), position ->
+            { (_, _, _, url), position ->
                 PocketUtils.addToPocket(host, url)
                 // notify changed with a payload asking RV to run the anim
                 notifyItemChanged(position, HomeGridItemAnimator.ADD_TO_POCKET)

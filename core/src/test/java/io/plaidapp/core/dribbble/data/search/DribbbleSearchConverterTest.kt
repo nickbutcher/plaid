@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 
 package io.plaidapp.core.dribbble.data.search
 
-import okhttp3.ResponseBody
+import java.io.InputStream
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
@@ -29,7 +30,7 @@ class DribbbleSearchConverterTest {
     @Test
     fun parsesHtml() {
         // Given a response from a dribbble search
-        val response = ResponseBody.create(null, loadData("/dribbble_search.html"))
+        val response = loadData("/dribbble_search.html").toResponseBody(null)
 
         // When we convert this
         val shots = DribbbleSearchConverter.convert(response)
@@ -49,7 +50,7 @@ class DribbbleSearchConverterTest {
     }
 
     private fun loadData(path: String): String {
-        val inputStream = DribbbleSearchConverterTest::class.java.getResourceAsStream(path)
+        val inputStream = DribbbleSearchConverterTest::class.java.getResourceAsStream(path) as InputStream
         return inputStream.bufferedReader().use { it.readText() }
     }
 }

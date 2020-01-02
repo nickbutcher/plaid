@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,17 @@
 
 package io.plaidapp.designernews
 
-import io.plaidapp.designernews.data.comments.model.CommentLinksResponse
-import io.plaidapp.designernews.data.comments.model.CommentResponse
-import io.plaidapp.core.designernews.data.stories.model.StoryLinks
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
+import io.plaidapp.core.designernews.data.stories.model.StoryLinks
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.core.designernews.domain.model.Comment
 import io.plaidapp.core.designernews.domain.model.CommentWithReplies
-import okhttp3.MediaType
-import okhttp3.ResponseBody
+import io.plaidapp.designernews.data.comments.model.CommentLinksResponse
+import io.plaidapp.designernews.data.comments.model.CommentResponse
 import java.util.Date
 import java.util.GregorianCalendar
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
 
 /**
  * Test data for comments
@@ -185,7 +185,7 @@ val flattendCommentsWithReplies = listOf(parentComment, reply1, reply2)
 
 val flattenedCommentsWithoutReplies = listOf(parentComment)
 
-val errorResponseBody = ResponseBody.create(MediaType.parse(""), "Error")
+val errorResponseBody = "Error".toResponseBody("".toMediaTypeOrNull())
 
 val storyLinks = StoryLinks(
     user = 123L,

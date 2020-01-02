@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ class DribbbleDataModule {
     ): DribbbleSearchService =
         Retrofit.Builder()
             .baseUrl(DribbbleSearchService.ENDPOINT)
-            .callFactory { client.get().newCall(it) }
+            .callFactory(client.get())
             .addConverterFactory(converterFactory)
             .build()
             .create(DribbbleSearchService::class.java)

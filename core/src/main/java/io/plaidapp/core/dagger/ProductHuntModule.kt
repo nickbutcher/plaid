@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ class ProductHuntModule {
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(ProductHuntService.ENDPOINT)
-            .callFactory { okhttpClient.get().newCall(it) }
+            .callFactory(okhttpClient.get())
             .addConverterFactory(deEnvelopingConverter)
             .addConverterFactory(converterFactory)
             .build()

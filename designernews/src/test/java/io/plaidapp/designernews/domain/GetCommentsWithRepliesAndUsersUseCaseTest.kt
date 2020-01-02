@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,12 +32,12 @@ import io.plaidapp.designernews.reply1NoUser
 import io.plaidapp.designernews.replyWithReplies1
 import io.plaidapp.designernews.user1
 import io.plaidapp.designernews.user2
+import java.io.IOException
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.io.IOException
 
 /**
  * Tests for [GetCommentsWithRepliesAndUsersUseCase] where all the dependencies are mocked.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
-import androidx.recyclerview.widget.RecyclerView
 import android.util.Pair
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +28,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.animation.doOnCancel
 import androidx.core.animation.doOnEnd
+import androidx.recyclerview.widget.RecyclerView
 import io.plaidapp.core.R
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.ui.recyclerview.Divided

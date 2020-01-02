@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2019 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package io.plaidapp.designernews.data.votes.model
+package io.plaidapp.core.data
 
-import com.google.gson.annotations.SerializedName
+/**
+ * An interface for classes offering data loading state to be observed.
+ */
+interface DataLoadingSubject {
+    fun registerCallback(callbacks: DataLoadingCallbacks)
 
-class UpvoteStoryRequest(
-    storyId: Long,
-    userId: Long,
-    @SerializedName("upvotes") val upvote: UpvoteStory = UpvoteStory(
-        StoryVoteLinks(storyId, userId)
-    )
-)
-
-data class UpvoteStory(@SerializedName("links") val voteLinks: StoryVoteLinks)
-
-data class StoryVoteLinks(
-    @SerializedName("story") val storyId: Long,
-    @SerializedName("user") val userId: Long
-)
+    interface DataLoadingCallbacks {
+        fun dataStartedLoading()
+        fun dataFinishedLoading()
+    }
+}

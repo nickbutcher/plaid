@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2019 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,9 @@ package io.plaidapp.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.data.DataLoadingSubject
@@ -40,8 +41,8 @@ import io.plaidapp.core.ui.filter.SourcesHighlightUiModel
 import io.plaidapp.core.ui.filter.SourcesUiModel
 import io.plaidapp.core.ui.getPlaidItemsForDisplay
 import io.plaidapp.core.util.event.Event
-import kotlinx.coroutines.launch
 import java.util.Collections
+import kotlinx.coroutines.launch
 
 /**
  * ViewModel for [HomeActivity].
@@ -107,12 +108,10 @@ class HomeViewModel(
         loadData()
     }
 
-    fun getFeed(columns: Int): LiveData<FeedUiModel> {
-        return Transformations.switchMap(feedData) {
-            // TODO move this on a background thread
-            //  https://github.com/nickbutcher/plaid/issues/658
+    fun getFeed(columns: Int) = feedData.switchMap {
+        liveData(viewModelScope.coroutineContext + dispatcherProvider.computation) {
             expandPopularItems(it, columns)
-            return@switchMap MutableLiveData(FeedUiModel(it))
+            emit(FeedUiModel(it))
         }
     }
 

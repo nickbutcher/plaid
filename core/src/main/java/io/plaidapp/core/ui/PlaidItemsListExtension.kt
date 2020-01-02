@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2019 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,13 +102,14 @@ private fun weighItems(items: MutableList<out PlaidItem>?) {
 
     // otherwise use our own weight calculation. We prefer this as it leads to a less
     // regular pattern of items in the grid
-    items.filter { it is Shot }.apply {
-        ShotWeigher().weigh(this as List<Shot>)
+    items.filterIsInstance<Shot>().apply {
+        ShotWeigher().weigh(this)
     }
-    items.filter { it is Story }.apply {
-        StoryWeigher().weigh(this as List<Story>)
+    items.filterIsInstance<Story>().apply {
+        StoryWeigher().weigh(this)
     }
     items.filter { it is Post && SOURCE_PRODUCT_HUNT != it.dataSource }.apply {
+        @Suppress("UNCHECKED_CAST")
         PostWeigher().weigh(this as List<Post>)
     }
 }
@@ -133,6 +134,6 @@ private fun deduplicateAndAdd(oldItems: MutableList<PlaidItem>, newItems: List<P
     }
 }
 
-private fun sort(items: MutableList<out PlaidItem>?) {
+private fun sort(items: MutableList<out PlaidItem>) {
     Collections.sort<PlaidItem>(items, PlaidItemSorting.PlaidItemComparator()) // sort by weight
 }

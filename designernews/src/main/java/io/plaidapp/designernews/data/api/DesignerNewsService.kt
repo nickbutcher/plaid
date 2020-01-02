@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@ package io.plaidapp.designernews.data.api
 
 import io.plaidapp.core.data.api.EnvelopePayload
 import io.plaidapp.core.designernews.data.users.model.User
-import io.plaidapp.designernews.data.votes.model.UpvoteCommentRequest
-import io.plaidapp.designernews.data.votes.model.UpvoteStoryRequest
 import io.plaidapp.designernews.data.comments.model.CommentResponse
 import io.plaidapp.designernews.data.comments.model.NewCommentRequest
 import io.plaidapp.designernews.data.comments.model.PostCommentResponse
@@ -42,10 +40,6 @@ interface DesignerNewsService {
     @GET("api/v2/users/{ids}")
     suspend fun getUsers(@Path("ids") userids: String): Response<List<User>>
 
-    @Headers("Content-Type: application/vnd.api+json")
-    @POST("api/v2/upvotes")
-    suspend fun upvoteStory(@Body request: UpvoteStoryRequest): Response<Unit>
-
     @EnvelopePayload("comments")
     @GET("api/v2/comments/{ids}")
     suspend fun getComments(@Path("ids") commentIds: String): Response<List<CommentResponse>>
@@ -53,10 +47,6 @@ interface DesignerNewsService {
     @Headers("Content-Type: application/vnd.api+json")
     @POST("api/v2/comments")
     suspend fun comment(@Body comment: NewCommentRequest): Response<PostCommentResponse>
-
-    @Headers("Content-Type: application/vnd.api+json")
-    @POST("api/v2/comment_upvotes")
-    suspend fun upvoteComment(@Body request: UpvoteCommentRequest): Response<Unit>
 
     companion object {
         const val ENDPOINT = "https://www.designernews.co/"

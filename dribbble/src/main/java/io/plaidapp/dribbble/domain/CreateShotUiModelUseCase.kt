@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2019 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.util.HtmlParser
 import io.plaidapp.dribbble.ui.shot.ShotStyler
 import io.plaidapp.dribbble.ui.shot.ShotUiModel
-import kotlinx.coroutines.withContext
 import java.text.NumberFormat
 import javax.inject.Inject
+import kotlinx.coroutines.withContext
 
 class CreateShotUiModelUseCase @Inject constructor(
     private val htmlParser: HtmlParser,

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google, Inc.
+ * Copyright 2019 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,6 +65,7 @@ val player = User(
 val shot = Shot(
     id = 1L,
     title = "Foo Nick",
+    page = 0,
     description = "",
     images = Images(),
     user = player
@@ -86,6 +87,7 @@ val storyLinks = StoryLinks(
 val story = Story(
     id = storyId,
     title = "Plaid 2.0 was released",
+    page = 0,
     createdAt = createdDate,
     userId = userId,
     links = storyLinks

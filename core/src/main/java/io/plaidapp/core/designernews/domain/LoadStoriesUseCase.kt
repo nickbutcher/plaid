@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.toStory
-import io.plaidapp.core.util.exhaustive
 import javax.inject.Inject
 
 /**
@@ -32,14 +31,14 @@ class LoadStoriesUseCase @Inject constructor(
 
     suspend operator fun invoke(page: Int): Result<List<Story>> {
         val result = storiesRepository.loadStories(page)
-        when (result) {
+        return when (result) {
             is Result.Success -> {
-                val stories = result.data.map { it.toStory() }
-                return Result.Success(stories)
+                val stories = result.data.map { it.toStory(page) }
+                Result.Success(stories)
             }
             is Result.Error -> {
-                return result
+                result
             }
-        }.exhaustive
+        }
     }
 }

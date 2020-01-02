@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc.
+ * Copyright 2015 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,8 +55,10 @@ import androidx.core.app.ShareCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
+
 import in.uncod.android.bypass.Markdown;
 import io.plaidapp.core.data.Result;
 import io.plaidapp.core.designernews.data.login.LoginRepository;
@@ -82,6 +85,7 @@ import io.plaidapp.ui.widget.PinnedOffsetView;
 import kotlin.Unit;
 
 import javax.inject.Inject;
+
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -191,15 +195,19 @@ public class StoryActivity extends AppCompatActivity {
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         final int stableListPaddingBottom = commentsList.getPaddingBottom();
+        final int stableListPaddingLeft = commentsList.getPaddingLeft();
         final int stableListPaddingRight = commentsList.getPaddingRight();
         final int stableFabMarginBottom = ((MarginLayoutParams) fab.getLayoutParams()).bottomMargin;
-        final int stableFabMarginRight = ((MarginLayoutParams) fab.getLayoutParams()).bottomMargin;
+        final int stableFabMarginRight = ((MarginLayoutParams) fab.getLayoutParams()).rightMargin;
+        final View back = findViewById(R.id.back);
+        final int stableBackMarginLeft = back == null ? 0 :
+                ((MarginLayoutParams) back.getLayoutParams()).leftMargin;
         draggableFrame.setOnApplyWindowInsetsListener((v, insets) -> {
             final MarginLayoutParams listLp = (MarginLayoutParams) v.getLayoutParams();
             listLp.topMargin = insets.getSystemWindowInsetTop();
             v.setLayoutParams(listLp);
             commentsList.setPadding(
-                    commentsList.getPaddingLeft(),
+                    stableListPaddingLeft + commentsList.getPaddingLeft(),
                     commentsList.getPaddingTop(),
                     stableListPaddingRight + insets.getSystemWindowInsetRight(),
                     stableListPaddingBottom + insets.getSystemWindowInsetBottom());
@@ -207,6 +215,10 @@ public class StoryActivity extends AppCompatActivity {
             fabLp.rightMargin = stableFabMarginRight + insets.getSystemWindowInsetRight();
             fabLp.bottomMargin = stableFabMarginBottom + insets.getSystemWindowInsetBottom();
             fab.setLayoutParams(fabLp);
+            if (back != null) {
+                final MarginLayoutParams backLp = (MarginLayoutParams) back.getLayoutParams();
+                backLp.leftMargin = stableBackMarginLeft + insets.getSystemWindowInsetLeft();
+            }
             return insets;
         });
 

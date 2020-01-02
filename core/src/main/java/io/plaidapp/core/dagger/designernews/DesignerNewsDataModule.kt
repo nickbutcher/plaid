@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ class DesignerNewsDataModule {
     ): DesignerNewsService {
         return Retrofit.Builder()
             .baseUrl(DesignerNewsService.ENDPOINT)
-            .callFactory { client.get().newCall(it) }
+            .callFactory(client.get())
             .addConverterFactory(DeEnvelopingConverter(gson))
             .addConverterFactory(DesignerNewsSearchConverter.Factory())
             .addConverterFactory(GsonConverterFactory.create(gson))

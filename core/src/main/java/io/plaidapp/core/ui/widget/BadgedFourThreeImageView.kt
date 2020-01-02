@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,10 +31,10 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import androidx.annotation.ColorInt
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.Gravity
+import androidx.annotation.ColorInt
 import androidx.core.graphics.applyCanvas
 import androidx.core.graphics.createBitmap
 import io.plaidapp.core.R
@@ -139,7 +139,9 @@ class BadgedFourThreeImageView(
         override fun getIntrinsicHeight() = bitmap?.height ?: 0
 
         override fun draw(canvas: Canvas) {
-            canvas.drawBitmap(bitmap, bounds.left.toFloat(), bounds.top.toFloat(), paint)
+            bitmap?.let {
+                canvas.drawBitmap(it, bounds.left.toFloat(), bounds.top.toFloat(), paint)
+            }
         }
 
         override fun setAlpha(alpha: Int) {
@@ -154,8 +156,8 @@ class BadgedFourThreeImageView(
 
         companion object {
             private const val GIF = "GIF"
-            private const val TEXT_SIZE = 12    // sp
-            private const val PADDING = 4       // dp
+            private const val TEXT_SIZE = 12 // sp
+            private const val PADDING = 4 // dp
             private const val CORNER_RADIUS = 2 // dp
             private const val BACKGROUND_COLOR = Color.WHITE
             private const val TYPEFACE = "sans-serif-black"

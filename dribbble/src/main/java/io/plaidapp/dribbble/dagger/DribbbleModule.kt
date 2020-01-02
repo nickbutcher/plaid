@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,12 @@
 
 package io.plaidapp.dribbble.dagger
 
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
+import androidx.lifecycle.ViewModelProvider
 import dagger.Module
 import dagger.Provides
 import io.plaidapp.core.data.CoroutinesDispatcherProvider
 import io.plaidapp.core.dribbble.data.ShotsRepository
-import io.plaidapp.core.ui.widget.ElasticDragDismissFrameLayout
 import io.plaidapp.core.util.FileAuthority
 import io.plaidapp.core.util.HtmlParser
 import io.plaidapp.dribbble.BuildConfig
@@ -43,16 +42,7 @@ class DribbbleModule(private val activity: ShotActivity, private val shotId: Lon
 
     @Provides
     fun shotViewModel(factory: ShotViewModelFactory): ShotViewModel {
-        return ViewModelProviders.of(activity, factory).get(ShotViewModel::class.java)
-    }
-
-    @Provides
-    fun chromeFader(): ElasticDragDismissFrameLayout.SystemChromeFader {
-        return object : ElasticDragDismissFrameLayout.SystemChromeFader(activity) {
-            override fun onDragDismissed() {
-                activity.setResultAndFinish()
-            }
-        }
+        return ViewModelProvider(activity, factory).get(ShotViewModel::class.java)
     }
 
     @Provides

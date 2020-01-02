@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package io.plaidapp.core.designernews.data.stories.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
 import java.util.Date
 import java.util.GregorianCalendar
+import org.junit.Assert.assertEquals
+import org.junit.Test
 
 class StoryResponseTest {
 
@@ -46,12 +46,13 @@ class StoryResponseTest {
         )
 
         // When converting it to a story
-        val story = storyResponse.toStory()
+        val story = storyResponse.toStory(0)
 
         // The story has the expected data
         val expectedStory = Story(
             id = 987,
             title = "My Plaid story",
+            page = 0,
             comment = "This is amazing",
             commentHtml = "www.plaid.com",
             commentCount = 0,

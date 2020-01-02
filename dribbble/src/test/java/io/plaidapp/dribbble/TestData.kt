@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ val player = User(
 val testShot = Shot(
     id = 1L,
     title = "Foo",
+    page = 0,
     description = "Shot Description",
     images = Images(hidpi = "hidpi"),
     user = player,

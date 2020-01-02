@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2019 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package io.plaidapp.designernews.data.votes.model
+package io.plaidapp.core.data.api
 
-import com.google.gson.annotations.SerializedName
+import kotlin.annotation.AnnotationRetention.RUNTIME
 
-class UpvoteCommentRequest(
-    commentId: Long,
-    userId: Long,
-    @SerializedName("comment_upvotes") val upvote: UpvoteComment = UpvoteComment(
-        CommentVoteLinks(commentId, userId)
-    )
+/**
+ * An annotation for identifying the payload that we want to extract from an API response wrapped in
+ * an envelope object.
+ */
+@Target(
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.PROPERTY_SETTER
 )
-
-data class UpvoteComment(@SerializedName("links") val voteLinks: CommentVoteLinks)
-
-data class CommentVoteLinks(
-    @SerializedName("comment") val commentId: Long,
-    @SerializedName("user") val userId: Long
-)
+@Retention(RUNTIME)
+annotation class EnvelopePayload(val value: String = "")

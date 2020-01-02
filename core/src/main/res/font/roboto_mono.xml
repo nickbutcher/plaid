@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (c) 2017 Google Inc.
+  Copyright (c) 2017 Google LLC.
 
   Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
   in compliance with the License. You may obtain a copy of the License at
@@ -15,6 +15,7 @@
 <font-family
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:fontProviderAuthority="com.google.android.gms.fonts"
     app:fontProviderAuthority="com.google.android.gms.fonts"
     android:fontProviderCerts="@array/com_google_android_gms_fonts_certs"
@@ -23,4 +24,5 @@
     app:fontProviderPackage="com.google.android.gms"
     android:fontProviderQuery="Roboto Mono"
     app:fontProviderQuery="Roboto Mono"
-    app:fontProviderFetchStrategy="blocking" />
+    app:fontProviderFetchStrategy="blocking"
+    tools:ignore="FontValidationWarning,UnusedAttribute" />

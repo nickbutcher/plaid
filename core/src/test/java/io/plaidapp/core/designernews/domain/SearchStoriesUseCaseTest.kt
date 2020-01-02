@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,12 @@ import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.core.designernews.storyLinks
 import io.plaidapp.core.designernews.userId
-import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
-import org.junit.Test
 import java.io.IOException
 import java.util.Date
 import java.util.GregorianCalendar
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
+import org.junit.Test
 
 /**
  * Tests for [SearchStoriesUseCase] mocking the dependencies.
@@ -51,6 +51,7 @@ class SearchStoriesUseCaseTest {
     private val story = Story(
         id = 45L,
         title = "Plaid 2.0 was released",
+        page = 1,
         createdAt = createdDate,
         userId = userId,
         links = storyLinks
@@ -58,6 +59,7 @@ class SearchStoriesUseCaseTest {
     private val storySequel = Story(
         id = 876L,
         title = "Plaid 2.0 is bug free",
+        page = 1,
         createdAt = createdDate,
         userId = userId,
         links = storyLinks

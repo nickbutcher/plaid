@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google, Inc.
+ * Copyright 2018 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.util.Date
 data class Shot(
     @SerializedName("id") override val id: Long,
     @SerializedName("title") override val title: String,
+    @SerializedName("page") override val page: Int,
     @SerializedName("description") val description: String,
     @SerializedName("images") val images: Images,
     @SerializedName("views_count") val viewsCount: Int = 0,
@@ -34,7 +35,7 @@ data class Shot(
     @SerializedName("html_url") val htmlUrl: String = "https://dribbble.com/shots/$id",
     @SerializedName("animated") val animated: Boolean = false,
     @SerializedName("user") val user: User
-) : PlaidItem(id, title, htmlUrl) {
+) : PlaidItem(id, title, htmlUrl, page) {
 
     // todo move this into a decorator
     var hasFadedIn = false
