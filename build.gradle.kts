@@ -20,7 +20,9 @@ plugins {
 
 buildscript {
 
-    Config.run { repositories.deps() }
+    repositories {
+        addCommonRepositories()
+    }
 
     dependencies {
         classpath("com.android.tools.build:gradle:${Versions.gradle_plugin}")
@@ -33,20 +35,21 @@ buildscript {
 spotless {
     kotlin {
         target("**/*.kt")
-        ktlint("0.36.0")
-        licenseHeaderFile("$rootDir/scripts/copyright.txt", "(package |import |@file:)")
+        ktlint(Versions.ktlint)
+        licenseHeaderFile("$rootDir/scripts/copyright.txt", "(package |import |@file:|object |@Suppress)")
     }
     kotlinGradle {
         // same as kotlin, but for .gradle.kts files (defaults to '*.gradle.kts')
         target("**/*.gradle.kts")
 
-        ktlint("0.36.0")
+        ktlint(Versions.ktlint)
 
         licenseHeaderFile("$rootDir/scripts/copyright.txt", "(plugins |import |include)")
     }
 }
+
 subprojects {
-    Config.run {
-        repositories.deps()
+    repositories {
+        addCommonRepositories()
     }
 }
