@@ -90,13 +90,15 @@ android {
 }
 
 dependencies {
+    api(platform(project(":depconstraints")))
+
     implementation(project(":core"))
-    implementation("androidx.appcompat:appcompat:${Versions.appcompat}")
-    implementation("androidx.lifecycle:lifecycle-extensions:${Versions.lifecycle}")
-    implementation("com.crashlytics.sdk.android:crashlytics:${Versions.crashlytics}")
-    implementation("com.github.bumptech.glide:glide:${Versions.glide}")
-    implementation("com.github.bumptech.glide:recyclerview-integration:${Versions.glide}")
-    implementation("com.google.firebase:firebase-core:${Versions.firebase}")
+    implementation("androidx.appcompat:appcompat")
+    implementation("androidx.lifecycle:lifecycle-extensions")
+    implementation("com.crashlytics.sdk.android:crashlytics")
+    implementation("com.github.bumptech.glide:glide")
+    implementation("com.github.bumptech.glide:recyclerview-integration")
+    implementation("com.google.firebase:firebase-core")
 
     kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
 }

@@ -49,13 +49,15 @@ android {
 }
 
 dependencies {
+    api(platform(project(":depconstraints")))
+
     implementation(project(":app"))
     implementation(project(":core"))
     implementation(project(":bypass"))
 
-    implementation("androidx.room:room-ktx:${Versions.room}")
-    implementation("com.android.support:customtabs:${Versions.supportLibrary}")
-    implementation("com.github.bumptech.glide:glide:${Versions.glide}")
+    implementation("androidx.room:room-ktx")
+    implementation("com.android.support:customtabs")
+    implementation("com.github.bumptech.glide:glide")
 
     kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
 }

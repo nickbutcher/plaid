@@ -47,13 +47,15 @@ android {
 }
 
 dependencies {
+    api(platform(project(":depconstraints")))
+
     implementation(project(":app"))
     implementation(project(":core"))
     implementation(project(":bypass"))
 
-    implementation("androidx.viewpager2:viewpager2:${Versions.viewPager2}")
-    implementation("com.android.support:customtabs:${Versions.supportLibrary}")
-    implementation("com.github.bumptech.glide:glide:${Versions.glide}")
+    implementation("androidx.viewpager2:viewpager2")
+    implementation("com.android.support:customtabs")
+    implementation("com.github.bumptech.glide:glide")
 
     kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
 }

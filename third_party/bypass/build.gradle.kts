@@ -38,7 +38,9 @@ android {
 }
 
 dependencies {
+    api(platform(project(":depconstraints")))
+
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation("androidx.annotation:annotation:${Versions.androidx}")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}")
+    implementation("androidx.annotation:annotation")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7")
 }

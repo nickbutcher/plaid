@@ -33,16 +33,18 @@ buildscript {
 }
 
 spotless {
+    val ktlintVer by extra("0.36.0")
+
     kotlin {
         target("**/*.kt")
-        ktlint(Versions.ktlint)
+        ktlint(ktlintVer)
         licenseHeaderFile("$rootDir/scripts/copyright.txt", "(package |import |@file:|object |@Suppress)")
     }
     kotlinGradle {
         // same as kotlin, but for .gradle.kts files (defaults to '*.gradle.kts')
         target("**/*.gradle.kts")
 
-        ktlint(Versions.ktlint)
+        ktlint(ktlintVer)
 
         licenseHeaderFile("$rootDir/scripts/copyright.txt", "(plugins |import |include)")
     }

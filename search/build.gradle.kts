@@ -47,11 +47,13 @@ android {
 }
 
 dependencies {
+    api(platform(project(":depconstraints")))
+
     implementation(project(":app"))
     implementation(project(":core"))
 
-    implementation("com.github.bumptech.glide:recyclerview-integration:${Versions.glide}")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}")
+    implementation("com.github.bumptech.glide:recyclerview-integration")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
     kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
 }
 

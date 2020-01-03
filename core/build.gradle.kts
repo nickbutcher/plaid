@@ -69,20 +69,23 @@ android {
 }
 
 dependencies {
+    api(platform(project(":depconstraints")))
+
     implementation(project(":bypass"))
 
-    implementation("com.google.code.gson:gson:${Versions.gson}")
-    implementation("androidx.browser:browser:${Versions.androidx}")
-    implementation("androidx.room:room-runtime:${Versions.room}")
-    implementation("androidx.constraintlayout:constraintlayout:${Versions.constraintLayout}")
-    implementation("com.android.support:palette-v7:${Versions.supportLibrary}")
-    implementation("com.android.support:support-dynamic-animation:${Versions.supportLibrary}")
-    implementation("com.github.bumptech.glide:glide:${Versions.glide}")
-    implementation("com.squareup.okhttp3:okhttp:${Versions.okhttp}")
-    implementation("com.squareup.okhttp3:logging-interceptor:${Versions.okhttp}")
-    implementation("org.jsoup:jsoup:${Versions.jsoup}")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}")
+    implementation("com.google.code.gson:gson")
+    implementation("androidx.browser:browser")
+    implementation("androidx.room:room-runtime")
+    implementation("androidx.constraintlayout:constraintlayout")
+    implementation("com.android.support:palette-v7")
+    implementation("com.android.support:support-dynamic-animation")
+    implementation("com.github.bumptech.glide:glide")
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
+    implementation("org.jsoup:jsoup")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-android")
+
     kapt("com.github.bumptech.glide:compiler:${Versions.glide}")
     kapt("com.github.bumptech.glide:glide:${Versions.glide}")
     kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")

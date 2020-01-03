@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+include("depconstraints")
 include(":app", ":bypass")
 include(":about", ":core", ":dribbble", ":designernews", ":search")
 include(":test_shared")

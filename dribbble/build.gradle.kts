@@ -52,12 +52,14 @@ android {
 }
 
 dependencies {
+    api(platform(project(":depconstraints")))
+
     implementation(project(":app"))
     implementation(project(":core"))
 
-    implementation("com.android.support:customtabs:${Versions.supportLibrary}")
-    implementation("com.android.support:palette-v7:${Versions.supportLibrary}")
-    implementation("com.github.bumptech.glide:recyclerview-integration:${Versions.glide}")
+    implementation("com.android.support:customtabs")
+    implementation("com.android.support:palette-v7")
+    implementation("com.github.bumptech.glide:recyclerview-integration")
 
     kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
 }
