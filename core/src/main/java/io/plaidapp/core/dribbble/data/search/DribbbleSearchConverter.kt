@@ -19,22 +19,23 @@ package io.plaidapp.core.dribbble.data.search
 import io.plaidapp.core.dribbble.data.api.model.Images
 import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.dribbble.data.api.model.User
-import okhttp3.ResponseBody
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Element
-import retrofit2.Converter
-import retrofit2.Retrofit
 import java.lang.reflect.Type
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.regex.Pattern
+import okhttp3.ResponseBody
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
+import retrofit2.Converter
+import retrofit2.Retrofit
 
 private const val HOST = "https://dribbble.com"
 private const val SHOTS = "/shots/"
 
 private val PATTERN_PLAYER_ID = Pattern.compile("users/(\\d+?)/", Pattern.DOTALL)
-private val DATE_FORMAT = SimpleDateFormat("MMMM d, yyyy")
+// https://docs.oracle.com/javase/tutorial/i18n/format/dateFormat.html
+private val DATE_FORMAT = SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG)
 
 /**
  * Dribbble API does not have a search endpoint so we have to do gross things :(

@@ -25,26 +25,22 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
-import android.os.Build;
-import androidx.annotation.FloatRange;
-import com.google.android.material.R;
-import androidx.core.math.MathUtils;
-import androidx.core.text.TextDirectionHeuristicsCompat;
-import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Interpolator;
+import androidx.annotation.FloatRange;
+import androidx.core.math.MathUtils;
+import androidx.core.text.TextDirectionHeuristicsCompat;
+import androidx.core.view.GravityCompat;
+import androidx.core.view.ViewCompat;
+import com.google.android.material.R;
 
 /**
  * Adapted from design support lib.
  */
 public final class CollapsingTextHelper {
-    // Pre-JB-MR2 doesn't support HW accelerated canvas scaled text so we will workaround it
-    // by using our own texture
-    private static final boolean USE_SCALING_TEXTURE = Build.VERSION.SDK_INT < 18;
     private static final boolean DEBUG_DRAW = false;
     private static final Paint DEBUG_DRAW_PAINT;
 
@@ -479,7 +475,7 @@ public final class CollapsingTextHelper {
             mIsRtl = calculateIsRtl(mTextToDraw);
         }
         // Use our texture if the scale isn't 1.0
-        mUseTexture = USE_SCALING_TEXTURE && mScale != 1f;
+        mUseTexture = mScale != 1f;
         if (mUseTexture) {
             // Make sure we have an expanded texture if needed
             ensureExpandedTexture();

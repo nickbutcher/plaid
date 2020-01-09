@@ -20,7 +20,6 @@ import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.toStory
-import io.plaidapp.core.util.exhaustive
 import javax.inject.Inject
 
 /**
@@ -30,12 +29,12 @@ class SearchStoriesUseCase @Inject constructor(private val storiesRepository: St
 
     suspend operator fun invoke(query: String, page: Int): Result<List<Story>> {
         val result = storiesRepository.search(query, page)
-        when (result) {
+        return when (result) {
             is Result.Success -> {
                 val stories = result.data.map { it.toStory(page) }
-                return Result.Success(stories)
+                Result.Success(stories)
             }
-            is Result.Error -> return result
-        }.exhaustive
+            is Result.Error -> result
+        }
     }
 }

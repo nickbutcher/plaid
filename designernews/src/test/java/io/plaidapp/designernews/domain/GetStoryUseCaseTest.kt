@@ -23,12 +23,12 @@ import io.plaidapp.core.designernews.data.stories.StoriesRepository
 import io.plaidapp.core.designernews.data.stories.model.Story
 import io.plaidapp.core.designernews.data.stories.model.StoryResponse
 import io.plaidapp.designernews.storyLinks
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
 import java.lang.Exception
 import java.util.Date
 import java.util.GregorianCalendar
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Test
 
 /**
  * Tests for [GetStoryUseCase] mocking all the dependencies.

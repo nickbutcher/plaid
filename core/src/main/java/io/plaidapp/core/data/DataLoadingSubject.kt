@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC.
+ * Copyright 2019 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.util
+package io.plaidapp.core.data
 
 /**
- * Wrapping the file authority value in a data class, to make it more type safe.
+ * An interface for classes offering data loading state to be observed.
  */
-data class FileAuthority(val authority: String)
+interface DataLoadingSubject {
+    fun registerCallback(callbacks: DataLoadingCallbacks)
+
+    interface DataLoadingCallbacks {
+        fun dataStartedLoading()
+        fun dataFinishedLoading()
+    }
+}

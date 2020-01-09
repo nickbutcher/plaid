@@ -16,9 +16,8 @@
 
 package io.plaidapp.designernews.data.database
 
-import org.junit.Test
-
 import org.junit.Assert.assertEquals
+import org.junit.Test
 
 class ConvertersTest {
 

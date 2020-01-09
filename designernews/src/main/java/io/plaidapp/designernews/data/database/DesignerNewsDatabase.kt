@@ -16,11 +16,11 @@
 
 package io.plaidapp.designernews.data.database
 
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import android.content.Context
 import io.plaidapp.core.designernews.data.login.model.LoggedInUser
 
 /**

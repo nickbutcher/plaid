@@ -18,7 +18,7 @@ package io.plaidapp.core.data
 
 /**
  * Base class for all model types.
- * // TODO - make the item immutable
+ * // TODO - make the item immutable (https://github.com/android/plaid/issues/795)
  */
 abstract class PlaidItem(
     @Transient open val id: Long,

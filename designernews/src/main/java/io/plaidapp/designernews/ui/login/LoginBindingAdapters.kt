@@ -16,11 +16,11 @@
 
 package io.plaidapp.designernews.ui.login
 
-import androidx.databinding.BindingAdapter
-import androidx.annotation.ColorRes
-import androidx.core.content.ContextCompat
 import android.view.Gravity
 import android.view.View
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
+import androidx.databinding.BindingAdapter
 import io.plaidapp.core.util.ScrimUtil
 
 @BindingAdapter("backgroundScrimGradientColor")

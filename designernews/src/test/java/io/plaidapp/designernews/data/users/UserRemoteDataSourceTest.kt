@@ -23,6 +23,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import io.plaidapp.core.data.Result
 import io.plaidapp.core.designernews.data.users.model.User
 import io.plaidapp.designernews.data.api.DesignerNewsService
+import java.net.UnknownHostException
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -30,7 +31,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import retrofit2.Response
-import java.net.UnknownHostException
 
 /**
  * Tests for [UserRemoteDataSource] with mocked dependencies.

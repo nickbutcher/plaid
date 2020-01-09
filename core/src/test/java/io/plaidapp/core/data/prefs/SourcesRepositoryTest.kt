@@ -27,6 +27,7 @@ import io.plaidapp.core.producthunt.data.ProductHuntSourceItem
 import io.plaidapp.core.producthunt.data.ProductHuntSourceItem.Companion.SOURCE_PRODUCT_HUNT
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
 import io.plaidapp.test.shared.provideFakeCoroutinesDispatcherProvider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -35,6 +36,7 @@ import org.junit.Test
 /**
  * Tests for [SourcesRepository] mocking the dependencies.
  */
+@ExperimentalCoroutinesApi
 class SourcesRepositoryTest {
 
     private val dnSourceKey = "DESIGNER_NEWS_QUERY_query"

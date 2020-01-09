@@ -37,13 +37,13 @@ public class PlaidGlideModule extends AppGlideModule {
 
     @Override
     public void applyOptions(Context context, GlideBuilder builder) {
-        final RequestOptions defaultOptions = new RequestOptions();
         // Prefer higher quality images unless we're on a low RAM device
         ActivityManager activityManager =
                 (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
-        defaultOptions.format(activityManager.isLowRamDevice() ? PREFER_RGB_565 : PREFER_ARGB_8888);
-        // Disable hardware bitmaps as they don't play nicely with Palette
-        defaultOptions.disallowHardwareConfig();
+        final RequestOptions defaultOptions = new RequestOptions()
+        .format(activityManager.isLowRamDevice() ? PREFER_RGB_565 : PREFER_ARGB_8888)
+          // Disable hardware bitmaps as they don't play nicely with Palette
+        .disallowHardwareConfig();
         builder.setDefaultRequestOptions(defaultOptions);
     }
 

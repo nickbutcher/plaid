@@ -21,9 +21,9 @@ import io.plaidapp.core.dribbble.data.api.model.Shot
 import io.plaidapp.core.util.HtmlParser
 import io.plaidapp.dribbble.ui.shot.ShotStyler
 import io.plaidapp.dribbble.ui.shot.ShotUiModel
-import kotlinx.coroutines.withContext
 import java.text.NumberFormat
 import javax.inject.Inject
+import kotlinx.coroutines.withContext
 
 class CreateShotUiModelUseCase @Inject constructor(
     private val htmlParser: HtmlParser,

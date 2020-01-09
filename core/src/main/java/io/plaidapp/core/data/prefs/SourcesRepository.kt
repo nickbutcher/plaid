@@ -21,8 +21,8 @@ import io.plaidapp.core.data.SourceItem
 import io.plaidapp.core.designernews.data.DesignerNewsSearchSourceItem
 import io.plaidapp.core.dribbble.data.DribbbleSourceItem
 import io.plaidapp.core.ui.filter.FiltersChangedCallback
-import kotlinx.coroutines.withContext
 import java.util.Collections
+import kotlinx.coroutines.withContext
 
 /**
  * Manage saving and retrieving data sources from disk.

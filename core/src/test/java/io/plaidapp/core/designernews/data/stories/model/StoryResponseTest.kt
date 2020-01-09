@@ -16,10 +16,10 @@
 
 package io.plaidapp.core.designernews.data.stories.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
 import java.util.Date
 import java.util.GregorianCalendar
+import org.junit.Assert.assertEquals
+import org.junit.Test
 
 class StoryResponseTest {
 

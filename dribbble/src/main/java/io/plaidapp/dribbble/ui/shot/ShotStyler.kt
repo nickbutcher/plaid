@@ -21,10 +21,10 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.N
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
+import io.plaidapp.core.R as coreR
 import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.dribbble.R
 import javax.inject.Inject
-import io.plaidapp.core.R as coreR
 
 /**
  * Decorator for a [ShotUiModel]

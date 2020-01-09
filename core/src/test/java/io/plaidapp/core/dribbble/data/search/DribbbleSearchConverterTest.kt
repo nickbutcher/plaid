@@ -16,6 +16,7 @@
 
 package io.plaidapp.core.dribbble.data.search
 
+import java.io.InputStream
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -49,7 +50,7 @@ class DribbbleSearchConverterTest {
     }
 
     private fun loadData(path: String): String {
-        val inputStream = DribbbleSearchConverterTest::class.java.getResourceAsStream(path)
-        return inputStream!!.bufferedReader().use { it.readText() }
+        val inputStream = DribbbleSearchConverterTest::class.java.getResourceAsStream(path) as InputStream
+        return inputStream.bufferedReader().use { it.readText() }
     }
 }

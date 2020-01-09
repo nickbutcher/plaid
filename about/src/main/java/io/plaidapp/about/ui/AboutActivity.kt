@@ -23,6 +23,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
+import io.plaidapp.R as appR
 import io.plaidapp.about.R
 import io.plaidapp.about.dagger.inject
 import io.plaidapp.about.databinding.ActivityAboutBinding
@@ -34,7 +35,6 @@ import io.plaidapp.core.util.customtabs.CustomTabActivityHelper
 import io.plaidapp.core.util.delegates.contentView
 import io.plaidapp.core.util.event.EventObserver
 import javax.inject.Inject
-import io.plaidapp.R as appR
 
 /**
  * About screen. This displays 3 pages in a ViewPager:

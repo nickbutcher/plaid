@@ -16,10 +16,9 @@
 
 package io.plaidapp.core.producthunt.ui
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
-
+import androidx.recyclerview.widget.RecyclerView
 import io.plaidapp.core.R
 import io.plaidapp.core.producthunt.data.api.model.Post
 import io.plaidapp.core.ui.recyclerview.Divided

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC.
+ * Copyright 2019 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package io.plaidapp.core.designernews.data.api
+package io.plaidapp.core.data.api
 
-import org.mockito.Mockito
-
-/**
- * Helper functions that are workarounds to kotlin Runtime Exceptions when using kotlin.
- */
+import kotlin.annotation.AnnotationRetention.RUNTIME
 
 /**
- * Returns Mockito.any() as nullable type to avoid java.lang.IllegalStateException when
- * null is returned.
+ * An annotation for identifying the payload that we want to extract from an API response wrapped in
+ * an envelope object.
  */
-
-fun <T> any(): T {
-    Mockito.any<T>()
-    return uninitialized()
-}
-
-private fun <T> uninitialized(): T = null as T
+@Target(
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.PROPERTY_SETTER
+)
+@Retention(RUNTIME)
+annotation class EnvelopePayload(val value: String = "")
