@@ -72,6 +72,7 @@ dependencies {
         api("com.crashlytics.sdk.android:crashlytics:$crashlytics")
         api("com.github.bumptech.glide:glide:$glide")
         api("com.github.bumptech.glide:recyclerview-integration:$glide")
+        api("com.github.bumptech.glide:compiler:$glide")
         api("com.google.code.gson:gson:$gson")
         api("com.google.firebase:firebase-core:$firebase")
         api("com.squareup.okhttp3:okhttp:$okhttp")
@@ -86,6 +87,7 @@ dependencies {
 
         api("com.google.android.material:material:$material")
         api("com.google.dagger:dagger:$dagger")
+        api("com.google.dagger:dagger-compiler:$dagger")
         api("androidx.arch.core:core-common:$androidxCoreRuntime")
         api("androidx.arch.core:core-runtime:$androidxCoreRuntime")
         api("androidx.core:core-ktx:$coreKtx")

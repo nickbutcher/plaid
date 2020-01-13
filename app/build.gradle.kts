@@ -91,6 +91,7 @@ android {
 
 dependencies {
     api(platform(project(":depconstraints")))
+    kapt(platform(project(":depconstraints")))
 
     implementation(project(":core"))
     implementation("androidx.appcompat:appcompat")
@@ -100,7 +101,7 @@ dependencies {
     implementation("com.github.bumptech.glide:recyclerview-integration")
     implementation("com.google.firebase:firebase-core")
 
-    kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
+    kapt("com.google.dagger:dagger-compiler")
 }
 
 kapt.useBuildCache = true

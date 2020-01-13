@@ -70,6 +70,7 @@ android {
 
 dependencies {
     api(platform(project(":depconstraints")))
+    kapt(platform(project(":depconstraints")))
 
     implementation(project(":bypass"))
 
@@ -86,9 +87,9 @@ dependencies {
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-android")
 
-    kapt("com.github.bumptech.glide:compiler:${Versions.glide}")
-    kapt("com.github.bumptech.glide:glide:${Versions.glide}")
-    kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
+    kapt("com.github.bumptech.glide:compiler")
+    kapt("com.github.bumptech.glide:glide")
+    kapt("com.google.dagger:dagger-compiler")
 }
 
 kapt.useBuildCache = true

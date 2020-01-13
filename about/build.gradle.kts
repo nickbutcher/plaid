@@ -48,6 +48,7 @@ android {
 
 dependencies {
     api(platform(project(":depconstraints")))
+    kapt(platform(project(":depconstraints")))
 
     implementation(project(":app"))
     implementation(project(":core"))
@@ -57,7 +58,7 @@ dependencies {
     implementation("com.android.support:customtabs")
     implementation("com.github.bumptech.glide:glide")
 
-    kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
+    kapt("com.google.dagger:dagger-compiler")
 }
 
 kapt {

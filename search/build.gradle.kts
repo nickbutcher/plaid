@@ -48,13 +48,14 @@ android {
 
 dependencies {
     api(platform(project(":depconstraints")))
+    kapt(platform(project(":depconstraints")))
 
     implementation(project(":app"))
     implementation(project(":core"))
 
     implementation("com.github.bumptech.glide:recyclerview-integration")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
+    kapt("com.google.dagger:dagger-compiler")
 }
 
 kapt.useBuildCache = true

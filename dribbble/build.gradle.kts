@@ -53,6 +53,7 @@ android {
 
 dependencies {
     api(platform(project(":depconstraints")))
+    kapt(platform(project(":depconstraints")))
 
     implementation(project(":app"))
     implementation(project(":core"))
@@ -61,7 +62,7 @@ dependencies {
     implementation("com.android.support:palette-v7")
     implementation("com.github.bumptech.glide:recyclerview-integration")
 
-    kapt("com.google.dagger:dagger-compiler:${Versions.dagger}")
+    kapt("com.google.dagger:dagger-compiler")
 }
 
 kapt.useBuildCache = true
