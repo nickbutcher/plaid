@@ -41,6 +41,6 @@ dependencies {
     api(platform(project(":depconstraints")))
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation("androidx.annotation:annotation")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7")
+    implementation(Libs.AX_ANNOTATION)
+    implementation(Libs.KOTLIN_STDLIB)
 }

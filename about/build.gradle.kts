@@ -20,7 +20,8 @@ plugins {
     kotlin("kapt")
 }
 
-apply(from = "$rootDir/dependencies.gradle.kts")
+apply(from = "$rootDir/shared_dependencies.gradle.kts")
+apply(from = "$rootDir/test_dependencies.gradle.kts")
 
 android {
     compileSdkVersion(Versions.compileSdk)
@@ -54,9 +55,9 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":bypass"))
 
-    implementation("androidx.viewpager2:viewpager2")
-    implementation("com.android.support:customtabs")
-    implementation("com.github.bumptech.glide:glide")
+    implementation(Libs.AX_VIEWPAGER2)
+    implementation(Libs.SUPPORT_CUSTOMTABS)
+    implementation(Libs.GLIDE)
 
     kapt("com.google.dagger:dagger-compiler")
 }

@@ -20,7 +20,8 @@ plugins {
     kotlin("kapt")
 }
 
-apply(from = "$rootDir/dependencies.gradle.kts")
+apply(from = "$rootDir/shared_dependencies.gradle.kts")
+apply(from = "$rootDir/test_dependencies.gradle.kts")
 
 android {
     compileSdkVersion(Versions.compileSdk)
@@ -58,11 +59,11 @@ dependencies {
     implementation(project(":app"))
     implementation(project(":core"))
 
-    implementation("com.android.support:customtabs")
-    implementation("com.android.support:palette-v7")
-    implementation("com.github.bumptech.glide:recyclerview-integration")
+    implementation(Libs.SUPPORT_CUSTOMTABS)
+    implementation(Libs.SUPPORT_PALETTE)
+    implementation(Libs.GLIDE_RECYCLERVIEW)
 
-    kapt("com.google.dagger:dagger-compiler")
+    kapt(Libs.DAGGER_COMPILER)
 }
 
 kapt.useBuildCache = true

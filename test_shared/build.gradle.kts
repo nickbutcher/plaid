@@ -19,7 +19,8 @@ plugins {
     kotlin("android")
 }
 
-apply(from = "$rootDir/dependencies.gradle.kts")
+apply(from = "$rootDir/shared_dependencies.gradle.kts")
+apply(from = "$rootDir/test_dependencies.gradle.kts")
 
 android {
     compileSdkVersion(Versions.compileSdk)
@@ -42,9 +43,9 @@ dependencies {
 
     implementation(project(":core"))
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android")
-    implementation("junit:junit")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
+    implementation(Libs.KOTLIN_STDLIB)
+    implementation(Libs.COROUTINES_CORE)
+    implementation(Libs.COROUTINES_ANDROID)
+    implementation(Libs.TEST_JUNIT)
+    implementation(Libs.TEST_COROUTINES)
 }

@@ -23,7 +23,8 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-apply(from = "$rootDir/dependencies.gradle.kts")
+apply(from = "$rootDir/shared_dependencies.gradle.kts")
+apply(from = "$rootDir/test_dependencies.gradle.kts")
 
 android {
     compileSdkVersion(Versions.compileSdk)
@@ -94,14 +95,14 @@ dependencies {
     kapt(platform(project(":depconstraints")))
 
     implementation(project(":core"))
-    implementation("androidx.appcompat:appcompat")
-    implementation("androidx.lifecycle:lifecycle-extensions")
-    implementation("com.crashlytics.sdk.android:crashlytics")
-    implementation("com.github.bumptech.glide:glide")
-    implementation("com.github.bumptech.glide:recyclerview-integration")
-    implementation("com.google.firebase:firebase-core")
+    implementation(Libs.AX_APPCOMPAT)
+    implementation(Libs.AX_LIFECYCLE_EXTENSION)
+    implementation(Libs.CRASHLYTICS)
+    implementation(Libs.GLIDE)
+    implementation(Libs.GLIDE_RECYCLERVIEW)
+    implementation(Libs.FIREBASE_CORE)
 
-    kapt("com.google.dagger:dagger-compiler")
+    kapt(Libs.DAGGER_COMPILER)
 }
 
 kapt.useBuildCache = true

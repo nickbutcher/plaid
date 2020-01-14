@@ -20,9 +20,6 @@ object Versions {
     val compileSdk = 29
     val targetSdk = 28
     val minSdk = 23
-    val gradle_plugin = "3.6.0-rc01"
 
-    val fabric = "1.28.0"
-    val googleServices = "4.3.0"
     val kotlin = "1.3.61"
 }

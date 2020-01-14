@@ -21,7 +21,8 @@ plugins {
     kotlin("kapt")
 }
 
-apply(from = "$rootDir/dependencies.gradle.kts")
+apply(from = "$rootDir/shared_dependencies.gradle.kts")
+apply(from = "$rootDir/test_dependencies.gradle.kts")
 
 android {
     compileSdkVersion(Versions.compileSdk)
@@ -56,11 +57,11 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":bypass"))
 
-    implementation("androidx.room:room-ktx")
-    implementation("com.android.support:customtabs")
-    implementation("com.github.bumptech.glide:glide")
+    implementation(Libs.AX_ROOM_KTX)
+    implementation(Libs.SUPPORT_CUSTOMTABS)
+    implementation(Libs.GLIDE)
 
-    kapt("com.google.dagger:dagger-compiler")
+    kapt(Libs.DAGGER_COMPILER)
 }
 
 kapt.useBuildCache = true

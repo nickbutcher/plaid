@@ -21,7 +21,8 @@ plugins {
     kotlin("kapt")
 }
 
-apply(from = "$rootDir/dependencies.gradle.kts")
+apply(from = "$rootDir/shared_dependencies.gradle.kts")
+apply(from = "$rootDir/test_dependencies.gradle.kts")
 
 android {
     compileSdkVersion(Versions.compileSdk)
@@ -74,22 +75,22 @@ dependencies {
 
     implementation(project(":bypass"))
 
-    implementation("com.google.code.gson:gson")
-    implementation("androidx.browser:browser")
-    implementation("androidx.room:room-runtime")
-    implementation("androidx.constraintlayout:constraintlayout")
-    implementation("com.android.support:palette-v7")
-    implementation("com.android.support:support-dynamic-animation")
-    implementation("com.github.bumptech.glide:glide")
-    implementation("com.squareup.okhttp3:okhttp")
-    implementation("com.squareup.okhttp3:logging-interceptor")
-    implementation("org.jsoup:jsoup")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-android")
+    implementation(Libs.GOOGLE_GSON)
+    implementation(Libs.AX_BROWSER)
+    implementation(Libs.AX_ROOM_RUNTIME)
+    implementation(Libs.AX_CONSTRAINT_LAYOUT)
+    implementation(Libs.SUPPORT_PALETTE)
+    implementation(Libs.SUPPORT_DYN_ANIMATION)
+    implementation(Libs.GLIDE)
+    implementation(Libs.OKHTTP)
+    implementation(Libs.OKHTTP_LOGGING)
+    implementation(Libs.JSOUP)
+    api(Libs.COROUTINES_CORE)
+    api(Libs.COROUTINES_ANDROID)
 
-    kapt("com.github.bumptech.glide:compiler")
-    kapt("com.github.bumptech.glide:glide")
-    kapt("com.google.dagger:dagger-compiler")
+    kapt(Libs.GLIDE_COMPILER)
+    kapt(Libs.GLIDE)
+    kapt(Libs.DAGGER_COMPILER)
 }
 
 kapt.useBuildCache = true
