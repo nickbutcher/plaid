@@ -70,10 +70,8 @@ fun RepositoryHandler.addCommonRepositories() {
         includeGroup("org.sonatype.oss")
         includeGroup("org.xerial")
         includeGroup("net.ltgt.gradle.incap")
-
         includeGroup("de.undercouch")
         includeGroup("org.jdom")
-
         excludeGroup("com.google.firebase")
         excludeGroup("com.google.android.gms")
         excludeGroup("com.google.android.material")
