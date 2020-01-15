@@ -24,13 +24,13 @@ apply(from = "$rootDir/shared_dependencies.gradle.kts")
 apply(from = "$rootDir/test_dependencies.gradle.kts")
 
 android {
-    compileSdkVersion(Versions.compileSdk)
+    compileSdkVersion(Versions.COMPILE_SDK)
 
     defaultConfig {
-        minSdkVersion(Versions.minSdk)
-        targetSdkVersion(Versions.targetSdk)
+        minSdkVersion(Versions.MIN_SDK)
+        targetSdkVersion(Versions.TARGET_SDK)
 
-        val filesAuthorityValue = Names.applicationId + ".shareprovider"
+        val filesAuthorityValue = Names.APPLICATION_ID + ".shareprovider"
         buildConfigField("String", "FILES_AUTHORITY", "\"${filesAuthorityValue}\"")
 
         manifestPlaceholders = mapOf(

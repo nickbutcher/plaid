@@ -40,9 +40,6 @@ dependencies {
     implementation(Libs.AX_LEGACY_CORE)
     implementation(Libs.AX_LIFECYCLE_RUNTIME)
 
-    // Workaround for dependency conflict during assembleAndroidTest
-    androidTestImplementation(Libs.AX_ARCH_CORE_RUNTIME + "2.0.1-alpha01")
-
     // Work around issue with runtime classpath version conflict
     androidTestImplementation(Libs.TEST_CORE)
     androidTestImplementation(Libs.AX_LEGACY_CORE)
@@ -50,17 +47,14 @@ dependencies {
 
     androidTestImplementation(project(":test_shared"))
     androidTestImplementation(Libs.TEST_CORE)
-    androidTestImplementation(Libs.TEST_ESPRESSO_CONTRIB)
-    androidTestImplementation(Libs.TEST_ESPRESSO_CORE)
-    androidTestImplementation(Libs.TEST_JUNIT_EXT)
-    androidTestImplementation(Libs.TEST_RULES)
-    androidTestImplementation(Libs.TEST_RUNNER)
-    androidTestImplementation(Libs.TEST_UIAUTOMATOR)
+    androidTestImplementation(Libs.TEST_AX_ESPRESSO_CONTRIB)
+    androidTestImplementation(Libs.TEST_AX_ESPRESSO_CORE)
+    androidTestImplementation(Libs.TEST_AX_JUNIT_EXT)
+    androidTestImplementation(Libs.TEST_AX_RULES)
+    androidTestImplementation(Libs.TEST_AX_RUNNER)
+    androidTestImplementation(Libs.TEST_AX_UIAUTOMATOR)
     androidTestImplementation(Libs.TEST_MOCKITO_KT)
     androidTestImplementation(Libs.TEST_RETROFIT_MOCK)
     androidTestImplementation(Libs.TEST_MOCKITO_ANDROID)
     androidTestImplementation(Libs.TEST_MOCKITO_CORE)
-    // Adding this to bring "google_play_services_version" into the test project
-    // without this, it fails on AGP 3.6.x.
-    androidTestImplementation(Libs.GMS_PLAY_SERVICES_GCM + "16.0.0")
 }

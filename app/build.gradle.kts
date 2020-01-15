@@ -16,23 +16,23 @@
 
 plugins {
     id("com.android.application")
+    id("com.google.gms.google-services")
+    id("io.fabric")
     kotlin("android")
     id("kotlin-android-extensions")
     kotlin("kapt")
-    id("io.fabric")
-    id("com.google.gms.google-services")
 }
 
 apply(from = "$rootDir/shared_dependencies.gradle.kts")
 apply(from = "$rootDir/test_dependencies.gradle.kts")
 
 android {
-    compileSdkVersion(Versions.compileSdk)
+    compileSdkVersion(Versions.COMPILE_SDK)
 
     defaultConfig {
-        applicationId = Names.applicationId
-        minSdkVersion(Versions.minSdk)
-        targetSdkVersion(Versions.targetSdk)
+        applicationId = Names.APPLICATION_ID
+        minSdkVersion(Versions.MIN_SDK)
+        targetSdkVersion(Versions.TARGET_SDK)
         versionCode = 100 + (runCmd("git", "rev-list", "--count", "HEAD")?.toIntOrNull() ?: 1)
         versionName = "1.1.0"
 
@@ -41,9 +41,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         resConfig("en")
-        manifestPlaceholders = mapOf(
-                "crashlyticsEnabled" to false
-        )
+        manifestPlaceholders = mapOf("crashlyticsEnabled" to false)
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -56,10 +54,9 @@ android {
         getByName("release") {
             // There's a Dex Splitter issue when enabling DataBinding & proguard in dynamic features
             // The temporary workaround is to disable shrinking
+            // This issue is tracked in: https://issuetracker.google.com/120517460
             isMinifyEnabled = false
-            manifestPlaceholders = mapOf(
-                    "crashlyticsEnabled" to true
-            )
+            manifestPlaceholders = mapOf("crashlyticsEnabled" to true)
 
             proguardFiles(
                     getDefaultProguardFile("proguard-android.txt"),

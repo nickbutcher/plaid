@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-@Suppress("MayBeConstant") // Improve perf when changing values
-
 object Versions {
-    val compileSdk = 29
-    val targetSdk = 28
-    val minSdk = 23
+    const val COMPILE_SDK = 29
+    const val TARGET_SDK = 28
+    const val MIN_SDK = 23
 
-    val kotlin = "1.3.61"
+    const val KOTLIN = "1.3.61"
 }

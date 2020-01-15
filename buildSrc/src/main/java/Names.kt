@@ -15,5 +15,5 @@
  */
 
 object Names {
-    val applicationId = "io.plaidapp"
+    const val APPLICATION_ID = "io.plaidapp"
 }

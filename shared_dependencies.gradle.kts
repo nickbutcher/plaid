@@ -25,13 +25,13 @@ val api by configurations
 dependencies {
     api(platform(project(":depconstraints")))
 
-    implementation(Libs.MATERIAL)
-    implementation(Libs.DAGGER)
     implementation(Libs.AX_CORE_KTX)
-    implementation(Libs.RETROFIT)
-    implementation(Libs.RETROFIT_CONVERTER_GSON)
     implementation(Libs.AX_LIFECYCLE_VM)
     implementation(Libs.AX_LIFECYCLE_LIVEDATA)
     implementation(Libs.AX_LIFECYCLE_EXTENSION)
     implementation(Libs.AX_LIFECYCLE_VM_KTX)
+    implementation(Libs.DAGGER)
+    implementation(Libs.MATERIAL)
+    implementation(Libs.RETROFIT)
+    implementation(Libs.RETROFIT_CONVERTER_GSON)
 }
