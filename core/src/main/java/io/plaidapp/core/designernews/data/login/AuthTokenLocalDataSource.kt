@@ -42,7 +42,7 @@ class AuthTokenLocalDataSource(private val prefs: SharedPreferences) {
 
     companion object {
         const val DESIGNER_NEWS_AUTH_PREF = "DESIGNER_NEWS_AUTH_PREF"
-        private const val KEY_ACCESS_TOKEN = "KEY_ACCESS_TOKEN"
+        internal const val KEY_ACCESS_TOKEN = "KEY_ACCESS_TOKEN"
 
         @Volatile
         private var INSTANCE: AuthTokenLocalDataSource? = null

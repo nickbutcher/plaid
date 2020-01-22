@@ -63,6 +63,6 @@ class AuthTokenLocalDataSourceTest {
 
         // Then the auth token is also cleared
         assertNull(dataSource.authToken)
-        assertNull
+        assertNull(sharedPreferences.getString(AuthTokenLocalDataSource.KEY_ACCESS_TOKEN, null))
     }
 }
