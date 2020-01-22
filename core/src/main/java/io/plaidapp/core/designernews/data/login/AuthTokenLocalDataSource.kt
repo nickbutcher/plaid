@@ -36,7 +36,7 @@ class AuthTokenLocalDataSource(private val prefs: SharedPreferences) {
         }
 
     fun clearData() {
-        prefs.edit { KEY_ACCESS_TOKEN to null }
+        prefs.edit { putString(KEY_ACCESS_TOKEN, null) }
         authToken = null
     }
 

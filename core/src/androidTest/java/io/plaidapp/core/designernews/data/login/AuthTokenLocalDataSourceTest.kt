@@ -63,5 +63,6 @@ class AuthTokenLocalDataSourceTest {
 
         // Then the auth token is also cleared
         assertNull(dataSource.authToken)
+        assertNull
     }
 }
