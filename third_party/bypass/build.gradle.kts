@@ -14,27 +14,33 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+plugins {
+    id("com.android.library")
+    kotlin("android")
+}
 
 android {
-    compileSdkVersion versions.compileSdk
+    compileSdkVersion(Versions.COMPILE_SDK)
 
     defaultConfig {
-        minSdkVersion 23
-        targetSdkVersion versions.targetSdk
-        versionCode 1
-        versionName '1.0'
+        minSdkVersion(Versions.MIN_SDK)
+        targetSdkVersion(Versions.TARGET_SDK)
+        versionCode = 1
+        versionName = "1.0"
     }
     buildTypes {
-        release {
-            minifyEnabled false
+        getByName("release") {
+            // There's a Dex Splitter issue when enabling DataBinding & proguard in dynamic features
+            // The temporary workaround is to disable shrinking
+            isMinifyEnabled = false
         }
     }
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "androidx.annotation:annotation:${versions.androidx}"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
+    api(platform(project(":depconstraints")))
+
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    implementation(Libs.AX_ANNOTATION)
+    implementation(Libs.KOTLIN_STDLIB)
 }
