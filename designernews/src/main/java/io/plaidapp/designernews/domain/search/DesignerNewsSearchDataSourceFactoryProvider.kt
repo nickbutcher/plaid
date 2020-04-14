@@ -17,11 +17,11 @@
 package io.plaidapp.designernews.domain.search
 
 import android.content.Context
+import io.plaidapp.core.dagger.coreComponent
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.core.interfaces.SearchDataSourceFactoryProvider
 import io.plaidapp.designernews.dagger.DaggerDesignerNewsSearchComponent
 import io.plaidapp.designernews.dagger.DesignerNewsPreferencesModule
-import io.plaidapp.ui.PlaidApplication.Companion.coreComponent
 
 /**
  * Provider for DesignerNews implementations of [SearchDataSourceFactory]
@@ -34,7 +34,7 @@ class DesignerNewsSearchDataSourceFactoryProvider : SearchDataSourceFactoryProvi
      */
     override fun getFactory(context: Context): SearchDataSourceFactory {
         return DaggerDesignerNewsSearchComponent.builder()
-            .coreComponent(coreComponent(context))
+            .coreComponent(context.coreComponent)
             .designerNewsPreferencesModule(
                 DesignerNewsPreferencesModule(context)
             )

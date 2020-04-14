@@ -19,16 +19,16 @@
 package io.plaidapp.dagger
 
 import io.plaidapp.core.dagger.SharedPreferencesModule
+import io.plaidapp.core.dagger.coreComponent
 import io.plaidapp.core.designernews.data.login.LoginLocalDataSource
 import io.plaidapp.ui.HomeActivity
-import io.plaidapp.ui.coreComponent
 
 /**
  * Injector for HomeActivity.
  */
 fun inject(activity: HomeActivity) {
     DaggerHomeComponent.builder()
-        .coreComponent(activity.coreComponent())
+        .coreComponent(activity.coreComponent)
         .sharedPreferencesModule(
             SharedPreferencesModule(activity, LoginLocalDataSource.DESIGNER_NEWS_PREF)
         )

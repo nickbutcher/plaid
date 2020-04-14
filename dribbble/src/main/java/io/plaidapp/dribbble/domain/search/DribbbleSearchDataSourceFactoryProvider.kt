@@ -17,10 +17,10 @@
 package io.plaidapp.dribbble.domain.search
 
 import android.content.Context
+import io.plaidapp.core.dagger.coreComponent
 import io.plaidapp.core.interfaces.SearchDataSourceFactory
 import io.plaidapp.core.interfaces.SearchDataSourceFactoryProvider
 import io.plaidapp.dribbble.dagger.DaggerDribbbleSearchComponent
-import io.plaidapp.ui.PlaidApplication.Companion.coreComponent
 
 /**
  * Provider for Dribbble implementations of [SearchDataSourceFactory]
@@ -33,7 +33,7 @@ class DribbbleSearchDataSourceFactoryProvider : SearchDataSourceFactoryProvider 
      */
     override fun getFactory(context: Context): SearchDataSourceFactory {
         return DaggerDribbbleSearchComponent.builder()
-            .coreComponent(coreComponent(context))
+            .coreComponent(context.coreComponent)
             .build().factory()
     }
 }
