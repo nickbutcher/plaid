@@ -83,7 +83,7 @@ abstract class HomeModule {
         fun connectivityChecker(activity: Activity): ConnectivityChecker? {
             val connectivityManager = activity.getSystemService<ConnectivityManager>()
             return if (connectivityManager != null) {
-                ConnectivityChecker(connectivityManager)
+                ConnectivityChecker(connectivityManager,activity.applicationContext)
             } else {
                 null
             }
