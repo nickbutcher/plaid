@@ -114,6 +114,7 @@ class ConnectivityChecker(
                 }
             }
         }
+
         return result
     }
 }
