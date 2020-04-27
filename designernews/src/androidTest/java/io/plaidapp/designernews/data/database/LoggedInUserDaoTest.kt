@@ -58,7 +58,9 @@ class LoggedInUserDaoTest {
     }
 
     @After fun tearDown() {
-        database.close()
+        if (::database.isInitialized) {
+            database.close()
+        }
     }
 
     @Test fun insertAndGetLoggedInUser() = runBlocking {
