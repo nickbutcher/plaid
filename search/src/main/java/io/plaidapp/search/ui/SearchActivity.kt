@@ -232,9 +232,12 @@ class SearchActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         if (intent.hasExtra(SearchManager.QUERY)) {
             val query = intent.getStringExtra(SearchManager.QUERY)
-            if (!TextUtils.isEmpty(query)) {
-                searchView.setQuery(query, false)
-                searchFor(query)
+            query?.apply {
+                if (TextUtils.isEmpty(this)) {
+                    return@apply
+                }
+                searchView.setQuery(this, false)
+                searchFor(this)
             }
         }
     }
