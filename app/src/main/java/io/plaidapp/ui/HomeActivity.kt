@@ -76,7 +76,6 @@ import io.plaidapp.core.util.AnimUtils
 import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.core.util.ViewUtils
 import io.plaidapp.core.util.drawableToBitmap
-import io.plaidapp.core.util.event.Event
 import io.plaidapp.core.util.intentTo
 import io.plaidapp.dagger.inject
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback
