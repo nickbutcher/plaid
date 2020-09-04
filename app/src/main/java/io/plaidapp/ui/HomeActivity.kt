@@ -242,11 +242,10 @@ class HomeActivity : AppCompatActivity() {
     private fun initViewModelObservers() {
         viewModel.sources.observe(this@HomeActivity, Observer<SourcesUiModel> {
             filtersAdapter.submitList(it.sourceUiModels)
-            if (it.highlightSources != null) {
-                val highlightUiModel = (it.highlightSources as Event<SourcesHighlightUiModel>)
-                    .consume()
-                if (highlightUiModel != null) {
-                    highlightPosition(highlightUiModel)
+            it.highlightSources?.let {
+                val highlightUiModel = it.consume()
+                highlightUiModel?.let {
+                    highlightPosition(it)
                 }
             }
         })

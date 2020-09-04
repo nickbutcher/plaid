@@ -36,16 +36,14 @@ class ShotsRepository constructor(private val remoteDataSource: SearchRemoteData
     }
 
     fun getShot(id: Long): Result<Shot> {
-        val shot = shotCache[id]
-        return if (shot != null) {
-            Result.Success(shot)
-        } else {
-            Result.Error(IllegalStateException("Shot $id not cached"))
+        return when (val shot = shotCache[id]) {
+            null -> Result.Error(IllegalStateException("Shot $id not cached"))
+            else -> Result.Success(shot)
         }
     }
 
     private fun cache(shots: List<Shot>) {
-        shots.associateTo(shotCache) { it.id to it }
+        shots.associateByTo(shotCache) { it.id }
     }
 
     companion object {
