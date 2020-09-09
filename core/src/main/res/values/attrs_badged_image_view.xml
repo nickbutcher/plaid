@@ -17,7 +17,7 @@
 
 <resources>
     <declare-styleable name="BadgedImageView">
-        <attr name="badgeGravity">
+        <attr name="badgeImageGravity">
             <!-- Push object to the top of its container, not changing its size. -->
             <flag name="top" value="0x30" />
             <!-- Push object to the bottom of its container, not changing its size. -->
