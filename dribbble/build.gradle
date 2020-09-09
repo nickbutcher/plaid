@@ -32,8 +32,8 @@ android {
         manifestPlaceholders = [filesAuthority: filesAuthorityValue]
     }
 
-    dataBinding {
-        enabled true
+    buildFeatures {
+        dataBinding true
     }
 
     compileOptions {
@@ -50,8 +50,8 @@ dependencies {
     implementation project(':app')
     implementation project(':core')
 
-    implementation "com.android.support:customtabs:${versions.supportLibrary}"
-    implementation "com.android.support:palette-v7:${versions.supportLibrary}"
+    implementation "androidx.browser:browser:${versions.browser}"
+    implementation "androidx.palette:palette:${versions.palette}"
     implementation "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
 
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"

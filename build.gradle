@@ -21,38 +21,40 @@ buildscript { scriptHandler ->
             'compileSdk'         : 29,
             'minSdk'             : 23,
             'targetSdk'          : 29,
-            'appcompat'          : '1.1.0-rc01',
-            'androidx'           : '1.0.0',
+            'appcompat'          : '1.1.0',
+            'androidx'           : '1.1.0',
             'androidxCollection' : '1.0.0',
             'androidxArch'       : '2.0.0',
-            'constraintLayout'   : '2.0.0-alpha2',
-            'coreKtx'            : '1.2.0-alpha03',
+            'browser'            : '1.2.0',
+            'constraintLayout'   : '2.0.1',
+            'coreKtx'            : '1.3.1',
             'coroutines'         : '1.3.0',
             'crashlytics'        : '2.10.1',
             'dagger'             : '2.23.2',
-            'espresso'           : '3.1.0-beta02',
+            'dynamicanimation'   : '1.0.0',
+            'espresso'           : '3.1.0',
             'extJunit'           : '1.1.0',
             'fabric'             : '1.28.0',
-            'firebase'           : '17.0.0',
-            'glide'              : '4.9.0',
+            'firebase'           : '17.5.0',
+            'glide'              : '4.11.0',
             'googleServices'     : '4.3.0',
             'gson'               : '2.8.5',
             'jsoup'              : '1.11.3',
             'junit'              : '4.12',
-            'kotlin'             : '1.3.61',
+            'kotlin'             : '1.4.0',
             'ktlint'             : '0.36.0',
             'legacyCoreUtils'    : '1.0.0',
-            'lifecycle'          : '2.2.0-alpha03',
-            'material'           : '1.1.0-alpha05',
+            'lifecycle'          : '2.2.0',
+            'material'           : '1.1.0',
             'mockito'            : '2.23.0',
-            'mockito_kotlin'     : '2.0.0-RC3',
+            'mockito_kotlin'     : '2.0.0',
             'okhttp'             : '4.0.0',
+            'palette'            : '1.0.0',
             'retrofit'           : '2.6.0',
-            'room'               : '2.2.1',
-            'supportLibrary'     : '28.0.0',
-            'test_rules'         : '1.1.0-beta02',
-            'test_runner'        : '1.1.0-beta02',
-            'ui_automator'       : '2.2.0-beta02',
+            'room'               : '2.2.5',
+            'test_rules'         : '1.1.0',
+            'test_runner'        : '1.1.0',
+            'ui_automator'       : '2.2.0',
             'viewPager2'         : '1.0.0'
     ]
     ext.names = [
@@ -60,7 +62,7 @@ buildscript { scriptHandler ->
     ]
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.0-beta05'
+        classpath 'com.android.tools.build:gradle:4.2.0-alpha08'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         classpath "com.google.gms:google-services:${versions.googleServices}"
         classpath "io.fabric.tools:gradle:${versions.fabric}"
