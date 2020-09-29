@@ -100,6 +100,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var loading: ProgressBar
     private lateinit var feedAdapter: FeedAdapter
     private lateinit var filtersList: RecyclerView
+    private lateinit var mDesignerNewsLogin: MenuItem
 
     // data
     @Inject
@@ -444,14 +445,19 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        menu.findItem(R.id.menu_designer_news_login)
-            .setTitle(
+        mDesignerNewsLogin.setTitle(
                 if (viewModel.isDesignerNewsUserLoggedIn()) {
                     R.string.designer_news_log_out
                 } else {
                     R.string.designer_news_login
                 }
             )
+        return true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main,menu)
+        mDesignerNewsLogin = menu!!.findItem(R.id.menu_designer_news_login)
         return true
     }
 
