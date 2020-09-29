@@ -76,7 +76,6 @@ import io.plaidapp.core.util.AnimUtils
 import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.core.util.ViewUtils
 import io.plaidapp.core.util.drawableToBitmap
-import io.plaidapp.core.util.event.Event
 import io.plaidapp.core.util.intentTo
 import io.plaidapp.dagger.inject
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback
@@ -242,11 +241,10 @@ class HomeActivity : AppCompatActivity() {
     private fun initViewModelObservers() {
         viewModel.sources.observe(this@HomeActivity, Observer<SourcesUiModel> {
             filtersAdapter.submitList(it.sourceUiModels)
-            if (it.highlightSources != null) {
-                val highlightUiModel = (it.highlightSources as Event<SourcesHighlightUiModel>)
-                    .consume()
-                if (highlightUiModel != null) {
-                    highlightPosition(highlightUiModel)
+            it.highlightSources?.let {
+                val highlightUiModel = it.consume()
+                highlightUiModel?.let {
+                    highlightPosition(it)
                 }
             }
         })
