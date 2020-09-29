@@ -7,6 +7,7 @@ repositories {
             includeGroup "android.arch.lifecycle"
             includeGroup "android.arch.core"
             includeGroup "com.google.firebase"
+            includeGroup "com.google.android.datatransport"
             includeGroup "com.google.android.gms"
             includeGroup "com.google.android.material"
             includeGroup "com.google.gms"
@@ -57,14 +58,6 @@ repositories {
             excludeGroup "com.google.firebase"
             excludeGroup "com.google.android.gms"
             excludeGroup "com.google.android.material"
-        }
-    }
-
-    maven {
-        url 'https://maven.fabric.io/public'
-        content {
-            includeGroupByRegex "io\\.fabric.*"
-            includeGroupByRegex "com\\.crashlytics.*"
         }
     }
 
