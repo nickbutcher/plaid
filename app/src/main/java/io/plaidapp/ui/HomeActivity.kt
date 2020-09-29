@@ -35,10 +35,7 @@ import android.transition.TransitionManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewStub
-import android.view.WindowInsets
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -74,11 +71,11 @@ import io.plaidapp.core.ui.recyclerview.InfiniteScrollListener
 import io.plaidapp.core.util.Activities
 import io.plaidapp.core.util.AnimUtils
 import io.plaidapp.core.util.ColorUtils
-import io.plaidapp.core.util.ViewUtils
 import io.plaidapp.core.util.drawableToBitmap
 import io.plaidapp.core.util.event.Event
 import io.plaidapp.core.util.intentTo
 import io.plaidapp.dagger.inject
+import io.plaidapp.databinding.ActivityHomeBinding
 import io.plaidapp.ui.recyclerview.FilterTouchHelperCallback
 import io.plaidapp.ui.recyclerview.GridItemDividerDecoration
 import javax.inject.Inject
@@ -100,6 +97,8 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var loading: ProgressBar
     private lateinit var feedAdapter: FeedAdapter
     private lateinit var filtersList: RecyclerView
+
+    private lateinit var binding: ActivityHomeBinding
 
     // data
     @Inject
@@ -186,7 +185,8 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
+        binding = ActivityHomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         bindResources()
 
         inject(this)
@@ -218,12 +218,6 @@ class HomeActivity : AppCompatActivity() {
         setExitSharedElementCallback(FeedAdapter.createSharedElementReenterCallback(this))
 
         setupGrid()
-
-        // drawer layout treats fitsSystemWindows specially so we have to handle insets ourselves
-        drawer.setOnApplyWindowInsetsListener { _, insets ->
-            handleDrawerInsets(insets)
-            insets.consumeSystemWindowInsets()
-        }
 
         setupTaskDescription()
 
@@ -266,11 +260,11 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun bindResources() {
-        drawer = findViewById(R.id.drawer)
-        toolbar = findViewById(R.id.toolbar)
-        grid = findViewById(R.id.grid)
-        filtersList = findViewById(R.id.filters)
-        loading = findViewById(android.R.id.empty)
+        drawer = binding.drawer
+        toolbar = binding.toolbar
+        grid = binding.grid
+        filtersList = binding.filters
+        loading = binding.empty
 
         columns = resources.getInteger(R.integer.num_columns)
     }
@@ -318,51 +312,6 @@ class HomeActivity : AppCompatActivity() {
             itemAnimator = HomeGridItemAnimator()
             addOnScrollListener(shotPreloader)
         }
-    }
-
-    private fun handleDrawerInsets(insets: WindowInsets) {
-        // inset the toolbar down by the status bar height
-        val lpToolbar = (toolbar.layoutParams as ViewGroup.MarginLayoutParams).apply {
-            topMargin += insets.systemWindowInsetTop
-            leftMargin += insets.systemWindowInsetLeft
-            rightMargin += insets.systemWindowInsetRight
-        }
-        toolbar.layoutParams = lpToolbar
-
-        // inset the grid top by statusbar+toolbar & the bottom by the navbar (don't clip)
-        grid.setPadding(
-            grid.paddingLeft + insets.systemWindowInsetLeft, // landscape
-            insets.systemWindowInsetTop + ViewUtils.getActionBarSize(this@HomeActivity),
-            grid.paddingRight + insets.systemWindowInsetRight, // landscape
-            grid.paddingBottom + insets.systemWindowInsetBottom
-        )
-
-        // we place a background behind the status bar to combine with it's semi-transparent
-        // color to get the desired appearance.  Set it's height to the status bar height
-        val statusBarBackground = findViewById<View>(R.id.status_bar_background)
-        val lpStatus = (statusBarBackground.layoutParams as FrameLayout.LayoutParams).apply {
-            height = insets.systemWindowInsetTop
-        }
-        statusBarBackground.layoutParams = lpStatus
-
-        // inset the filters list for the status bar / navbar
-        // need to set the padding end for landscape case
-        val ltr = filtersList.layoutDirection == View.LAYOUT_DIRECTION_LTR
-        with(filtersList) {
-            setPaddingRelative(
-                paddingStart,
-                paddingTop + insets.systemWindowInsetTop,
-                paddingEnd + if (ltr) {
-                    insets.systemWindowInsetRight
-                } else {
-                    0
-                },
-                paddingBottom + insets.systemWindowInsetBottom
-            )
-        }
-
-        // clear this listener so insets aren't re-applied
-        drawer.setOnApplyWindowInsetsListener(null)
     }
 
     override fun onActivityReenter(resultCode: Int, data: Intent?) {
