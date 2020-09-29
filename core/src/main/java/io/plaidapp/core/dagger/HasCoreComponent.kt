@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Google LLC.
+ * Copyright 2020 Google LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package io.plaidapp.dribbble.dagger
+package io.plaidapp.core.dagger
 
-import io.plaidapp.core.dagger.coreComponent
-import io.plaidapp.dribbble.ui.shot.ShotActivity
+import android.content.Context
 
-/**
- * Inject dependencies into [ShotActivity]
- */
-fun ShotActivity.inject(shotId: Long) {
-    DaggerDribbbleComponent.builder()
-        .coreComponent(coreComponent)
-        .dribbbleModule(DribbbleModule(this, shotId))
-        .build()
-        .inject(this)
+interface HasCoreComponent {
+    val coreComponent: CoreComponent
 }
+
+val Context.coreComponent
+    get() = (this.applicationContext as HasCoreComponent).coreComponent

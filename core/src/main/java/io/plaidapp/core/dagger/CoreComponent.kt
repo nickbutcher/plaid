@@ -24,8 +24,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * Component providing application wide singletons.
- * To call this make use of PlaidApplication.coreComponent or the
- * Activity.coreComponent extension function.
+ * Access [CoreComponent] via any [android.content.Context] instance
+ * using [io.plaidapp.core.dagger.HasCoreComponent.coreComponent]
  */
 @Component(modules = [CoreDataModule::class])
 @Singleton

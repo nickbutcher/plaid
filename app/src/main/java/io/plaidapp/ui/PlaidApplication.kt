@@ -16,20 +16,19 @@
 
 package io.plaidapp.ui
 
-import android.app.Activity
 import android.app.Application
-import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import androidx.core.os.BuildCompat
 import io.plaidapp.core.dagger.CoreComponent
 import io.plaidapp.core.dagger.DaggerCoreComponent
+import io.plaidapp.core.dagger.HasCoreComponent
 
 /**
  * Io and Behold
  */
-class PlaidApplication : Application() {
+class PlaidApplication : Application(), HasCoreComponent {
 
     override fun onCreate() {
         super.onCreate()
@@ -41,15 +40,7 @@ class PlaidApplication : Application() {
         setDefaultNightMode(nightMode)
     }
 
-    private val coreComponent: CoreComponent by lazy {
+    override val coreComponent: CoreComponent by lazy(LazyThreadSafetyMode.NONE) {
         DaggerCoreComponent.create()
     }
-
-    companion object {
-        @JvmStatic
-        fun coreComponent(context: Context) =
-            (context.applicationContext as PlaidApplication).coreComponent
-    }
 }
-
-fun Activity.coreComponent() = PlaidApplication.coreComponent(this)

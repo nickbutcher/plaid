@@ -16,8 +16,8 @@
 
 package io.plaidapp.search.dagger
 
+import io.plaidapp.core.dagger.coreComponent
 import io.plaidapp.search.ui.SearchActivity
-import io.plaidapp.ui.coreComponent
 
 /**
  * Injector for SearchActivity.
@@ -29,7 +29,7 @@ object Injector {
     @JvmStatic
     fun inject(activity: SearchActivity) {
         DaggerSearchComponent.builder()
-            .coreComponent(activity.coreComponent())
+            .coreComponent(activity.coreComponent)
             .searchActivity(activity)
             .build()
             .inject(activity)

@@ -21,11 +21,11 @@ package io.plaidapp.designernews.dagger
 import `in`.uncod.android.bypass.Bypass
 import android.util.TypedValue
 import io.plaidapp.core.dagger.MarkdownModule
+import io.plaidapp.core.dagger.coreComponent
 import io.plaidapp.core.util.ColorUtils
 import io.plaidapp.designernews.R
 import io.plaidapp.designernews.ui.login.LoginActivity
 import io.plaidapp.designernews.ui.story.StoryActivity
-import io.plaidapp.ui.coreComponent
 
 /**
  * Inject [StoryActivity].
@@ -46,7 +46,7 @@ fun inject(storyId: Long, activity: StoryActivity) {
         )
 
     DaggerStoryComponent.builder()
-        .coreComponent(activity.coreComponent())
+        .coreComponent(activity.coreComponent)
         .designerNewsModule(StoryModule(storyId, activity))
         .markdownModule(MarkdownModule(activity.resources.displayMetrics, bypassOptions))
         .sharedPreferencesModule(
@@ -59,7 +59,7 @@ fun inject(storyId: Long, activity: StoryActivity) {
 fun inject(activity: LoginActivity) {
 
     DaggerLoginComponent.builder()
-        .coreComponent(activity.coreComponent())
+        .coreComponent(activity.coreComponent)
         .sharedPreferencesModule(DesignerNewsPreferencesModule(activity))
         .build()
         .inject(activity)
