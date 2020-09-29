@@ -34,6 +34,8 @@ import io.plaidapp.about.ui.AboutStyler
 import io.plaidapp.core.util.event.Event
 import kotlin.LazyThreadSafetyMode.NONE
 
+typealias AppBuildConfig = io.plaidapp.BuildConfig
+
 /**
  * [ViewModel] for the [io.plaidapp.about.ui.AboutActivity].
  */
@@ -66,7 +68,17 @@ internal class AboutViewModel(
                 R.string.about_plaid_2,
                 linksColor, highlightColor
             )
-            spannableFrom(about0, "\n\n", about1, "\n\n", about2)
+
+            val about3 = getSpannableFromMarkdownWithString(
+                resources.getString(
+                    R.string.about_plaid_3,
+                    AppBuildConfig.VERSION_NAME,
+                    AppBuildConfig.VERSION_CODE
+                ),
+                linksColor, highlightColor
+            )
+
+            spannableFrom(about0, "\n\n", about1, "\n\n", about2, "\n\n", about3)
         }
     }
 
@@ -197,9 +209,23 @@ internal class AboutViewModel(
         linksColor: ColorStateList,
         @ColorInt highlightColor: Int
     ): Spannable {
+        return getSpannableFromMarkdownWithString(
+            resources.getString(stringId),
+            linksColor,
+            highlightColor
+        )
+    }
+
+    private fun getSpannableFromMarkdownWithString(
+        string: String,
+        linksColor: ColorStateList,
+        @ColorInt highlightColor: Int
+    ): Spannable {
         return markdown.markdownToSpannable(
-            resources.getString(stringId), linksColor,
-            highlightColor, null
+            string,
+            linksColor,
+            highlightColor,
+            null
         ).toSpannable()
     }
 
