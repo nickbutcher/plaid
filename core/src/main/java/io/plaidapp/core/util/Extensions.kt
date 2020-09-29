@@ -34,3 +34,12 @@ package io.plaidapp.core.util
  */
 val <T> T.exhaustive: T
     get() = this
+
+/**
+ * A for each loop where traversal is backed by an [MutableIterator] allowing for removal
+ * during iteration.
+ */
+inline fun <T> MutableIterable<T>.onEach(action: (T) -> Unit) {
+    val iterator = iterator()
+    while (iterator.hasNext()) action(iterator.next())
+}
