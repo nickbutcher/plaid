@@ -38,8 +38,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewStub
 import android.view.WindowInsets
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -118,9 +120,16 @@ class HomeActivity : AppCompatActivity() {
 
     private val noFiltersEmptyText by lazy {
         val view = findViewById<ViewStub>(R.id.stub_no_filters).inflate() as TextView
-        // create the no filters empty text
+        noFiltersEmptyText(R.string.no_filters_selected, view)
+    }
 
-        val emptyText = getText(R.string.no_filters_selected) as SpannedString
+    private val noDataView by lazy {
+        val view = findViewById<ViewStub>(R.id.stub_no_data).inflate() as LinearLayout
+        view.apply { findViewById<Button>(R.id.retryButton).setOnClickListener { viewModel.loadData() } }
+    }
+
+    private fun HomeActivity.noFiltersEmptyText(stringId: Int, view: TextView): TextView {
+        val emptyText = getText(stringId) as SpannedString
         val ssb = SpannableStringBuilder(emptyText)
         val annotations = emptyText.getSpans(0, emptyText.length, Annotation::class.java)
 
@@ -151,11 +160,9 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
-        with(view) {
+        return with(view) {
             text = ssb
-            setOnClickListener {
-                drawer.openDrawer(GravityCompat.END)
-            }
+            setOnClickListener { drawer.openDrawer(GravityCompat.END) }
             view
         }
     }
@@ -292,6 +299,10 @@ class HomeActivity : AppCompatActivity() {
                 override fun isDataLoading(): Boolean {
                     val uiModel = viewModel.feedProgress.value
                     return uiModel?.isLoading ?: false
+                }
+
+                override fun onStopLoading() {
+                    checkEmptyState()
                 }
             }
 
@@ -528,22 +539,25 @@ class HomeActivity : AppCompatActivity() {
             // if grid is empty check whether we're loading or if no filters are selected
             if (sourcesRepository.getActiveSourcesCount() > 0 && connectivityChecker != null) {
                 connectivityChecker?.connectedStatus?.value?.let {
-                    loading.visibility = View.VISIBLE
-                    setNoFiltersEmptyTextVisibility(View.GONE)
+                    if (filtersAdapter.getEnabledFilterCount() > 0) {
+                        setEmptyStateVisibility(View.GONE, View.VISIBLE, View.GONE)
+                    } else {
+                        setEmptyStateVisibility(View.VISIBLE, View.GONE, View.GONE)
+                    }
                 }
             } else {
-                loading.visibility = View.GONE
-                setNoFiltersEmptyTextVisibility(View.VISIBLE)
+                setEmptyStateVisibility(View.GONE, View.GONE, View.VISIBLE)
             }
             toolbar.translationZ = 0f
         } else {
-            loading.visibility = View.GONE
-            setNoFiltersEmptyTextVisibility(View.GONE)
+            setEmptyStateVisibility(View.GONE, View.GONE, View.GONE)
         }
     }
 
-    private fun setNoFiltersEmptyTextVisibility(visibility: Int) {
-        noFiltersEmptyText.visibility = visibility
+    private fun setEmptyStateVisibility(progressBar: Int, noData: Int, noFilter: Int) {
+        loading.visibility = progressBar
+        noDataView.visibility = noData
+        noFiltersEmptyText.visibility = noFilter
     }
 
     @Suppress("DEPRECATION")
@@ -641,7 +655,7 @@ class HomeActivity : AppCompatActivity() {
 
         TransitionManager.beginDelayedTransition(drawer)
         noConnection.visibility = View.GONE
-        loading.visibility = View.VISIBLE
+        checkEmptyState()
         viewModel.loadData()
     }
 

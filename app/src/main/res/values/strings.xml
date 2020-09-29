@@ -35,8 +35,10 @@
     <string name="add">Add</string>
     <string name="edit">Edit</string>
     <string name="no_filters_selected">No filters selected, press the filter button above (<annotation src="@drawable/ic_filter_small">&#2228;</annotation>)\n<i><annotation foregroundColor="@color/text_secondary_light">or swipe from the&#160;right</annotation></i></string>
+    <string name="no_data">Error loading data</string>
 
     <!--searchable label-->
     <string name="search_hint">Search Dribbble &amp; Designer News</string>
+    <string name="retry">Retry</string>
 
 </resources>
