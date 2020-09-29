@@ -16,11 +16,13 @@
 
 package io.plaidapp.core.ui
 
+import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkInfo
 import android.net.NetworkRequest
+import android.os.Build
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
@@ -39,7 +41,8 @@ import androidx.lifecycle.OnLifecycleEvent
  * connected, we stop listening to connectivity.¬
  */
 class ConnectivityChecker(
-    private val connectivityManager: ConnectivityManager
+    private val connectivityManager: ConnectivityManager,
+    private val context: Context
 ) : LifecycleObserver {
 
     private var monitoringConnectivity = false
@@ -71,8 +74,7 @@ class ConnectivityChecker(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun startMonitoringConnectivity() {
-        val activeNetworkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
-        val connected = activeNetworkInfo != null && activeNetworkInfo.isConnected
+        val connected = isInternetAvailable()
         _connectedStatus.postValue(connected)
         if (!connected) {
             // we don't have internet connection, so we listen to notifications in connection status
@@ -83,5 +85,36 @@ class ConnectivityChecker(
             )
             monitoringConnectivity = true
         }
+    }
+
+    private fun isInternetAvailable(): Boolean {
+        var result = false
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val networkCapabilities = connectivityManager.activeNetwork ?: return false
+            val actNw =
+                connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+            result = when {
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                else -> false
+            }
+        } else {
+            connectivityManager.run {
+                connectivityManager.activeNetworkInfo?.run {
+                    result = when (type) {
+                        ConnectivityManager.TYPE_WIFI -> true
+                        ConnectivityManager.TYPE_MOBILE -> true
+                        ConnectivityManager.TYPE_ETHERNET -> true
+                        else -> false
+                    }
+
+                }
+            }
+        }
+
+        return result
     }
 }
