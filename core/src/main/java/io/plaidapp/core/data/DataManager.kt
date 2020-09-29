@@ -100,7 +100,7 @@ class DataManager @Inject constructor(
     }
 
     fun cancelLoading() {
-        parentJobs.values.forEach { it.cancel() }
+        parentJobs.values.toList().forEach { it.cancel() }
         parentJobs.clear()
     }
 

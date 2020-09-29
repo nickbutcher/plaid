@@ -108,10 +108,10 @@ open class SlideInItemAnimator @JvmOverloads constructor(
     }
 
     override fun endAnimations() {
-        pendingAdds.forEach(::endPendingAdd)
-        runningAdds.forEach(::endRunningAdd)
-        pendingMoves.forEach(::endPendingMove)
-        runningMoves.forEach(::endRunningMove)
+        pendingAdds.toList().forEach(::endPendingAdd)
+        runningAdds.toList().forEach(::endRunningAdd)
+        pendingMoves.toList().forEach(::endPendingMove)
+        runningMoves.toList().forEach(::endRunningMove)
         super.endAnimations()
     }
 
