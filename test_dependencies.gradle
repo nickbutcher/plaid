@@ -29,7 +29,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime:${versions.lifecycle}"
 
     // Workaround for dependency conflict during assembleAndroidTest
-    androidTestImplementation("androidx.arch.core:core-runtime:2.0.1-alpha01")
+    androidTestImplementation("androidx.arch.core:core-runtime:2.0.1")
 
     // Work around issue with runtime classpath version conflict
     androidTestImplementation "androidx.arch.core:core-testing:${versions.androidxArch}"
@@ -50,5 +50,5 @@ dependencies {
     androidTestImplementation "org.mockito:mockito-core:${versions.mockito}"
     // Adding this to bring "google_play_services_version" into the test project
     // without this, it fails on AGP 3.6.x.
-    androidTestImplementation "com.google.android.gms:play-services-gcm:16.0.0"
+    androidTestImplementation "com.google.android.gms:play-services-gcm:17.0.0"
 }

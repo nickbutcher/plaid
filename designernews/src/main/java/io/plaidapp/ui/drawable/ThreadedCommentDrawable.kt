@@ -17,12 +17,15 @@
 package io.plaidapp.ui.drawable
 
 import android.content.res.ColorStateList
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
 import android.graphics.Canvas
 import android.graphics.ColorFilter
 import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.PorterDuff.Mode.SRC_IN
 import android.graphics.drawable.Drawable
+import android.os.Build
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
 
@@ -76,14 +79,19 @@ class ThreadedCommentDrawable(
 
     override fun setTintList(tint: ColorStateList?) {
         if (tint != null) {
-            setColorFilter(tint.defaultColor, SRC_IN)
+            setTint(tint.defaultColor)
         } else {
             clearColorFilter()
         }
     }
 
     override fun setTint(tintColor: Int) {
-        setColorFilter(tintColor, SRC_IN)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            colorFilter = BlendModeColorFilter(tintColor, BlendMode.SRC_IN)
+        } else {
+            @Suppress("DEPRECATION")
+            setColorFilter(tintColor, SRC_IN)
+        }
     }
 
     override fun getOpacity(): Int {

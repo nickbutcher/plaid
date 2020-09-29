@@ -6,8 +6,8 @@ executors:
       - image: circleci/android:api-29
     working_directory: ~/plaid
     environment:
-      JAVA_TOOL_OPTIONS: "-Xmx2048m"
-      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
+      JAVA_TOOL_OPTIONS: "-Xmx4096m"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=4"
       TERM: dumb
 
   plaid-gcloud-executor:

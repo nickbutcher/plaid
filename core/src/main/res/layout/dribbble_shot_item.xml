@@ -24,5 +24,5 @@
     android:elevation="@dimen/z_card"
     android:stateListAnimator="@animator/raise"
     android:foreground="@drawable/mid_grey_ripple"
-    app:badgeGravity="end|bottom"
+    app:badgeImageGravity="end|bottom"
     app:badgePadding="@dimen/padding_normal" />

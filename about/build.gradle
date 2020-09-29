@@ -31,8 +31,8 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
-    dataBinding {
-        enabled true
+    buildFeatures {
+        dataBinding true
     }
 
     compileOptions {
@@ -51,7 +51,7 @@ dependencies {
     implementation project(':bypass')
 
     implementation "androidx.viewpager2:viewpager2:${versions.viewPager2}"
-    implementation "com.android.support:customtabs:${versions.supportLibrary}"
+    implementation "androidx.browser:browser:${versions.browser}"
     implementation "com.github.bumptech.glide:glide:${versions.glide}"
 
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"

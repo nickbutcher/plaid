@@ -197,7 +197,7 @@ class HomeViewModel(
             positions.add(i)
         }
 
-        val scrollToPosition = positions.max()
+        val scrollToPosition = positions.maxOrNull()
         return if (scrollToPosition == null) {
             null
         } else {
