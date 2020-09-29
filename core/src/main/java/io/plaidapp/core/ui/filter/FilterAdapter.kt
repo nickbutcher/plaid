@@ -65,8 +65,8 @@ class FilterAdapter : ListAdapter<SourceUiModel, FilterViewHolder>(sourceUiModel
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): FilterViewHolder {
         val holder = FilterViewHolder(
-                LayoutInflater.from(viewGroup.context)
-                        .inflate(R.layout.filter_item, viewGroup, false)
+            LayoutInflater.from(viewGroup.context)
+                .inflate(R.layout.filter_item, viewGroup, false)
         )
         holder.itemView.setOnClickListener {
             val position = holder.adapterPosition
@@ -108,5 +108,13 @@ class FilterAdapter : ListAdapter<SourceUiModel, FilterViewHolder>(sourceUiModel
     override fun onItemDismiss(position: Int) {
         val uiModel = getItem(position)
         uiModel.onSourceDismissed(uiModel)
+    }
+
+    fun getEnabledFilterCount(): Int {
+        var count = 0
+        currentList.map {
+            if (it.active) count = count.inc()
+        }
+        return count
     }
 }

@@ -57,6 +57,7 @@ class LoadSearchDataUseCase(
                 deferredJobs.add(async { it.loadMore() })
             }
         }
+        if (_searchResult.value == null) _searchResult.postValue(emptyList())
         deferredJobs.awaitAll()
     }
 
