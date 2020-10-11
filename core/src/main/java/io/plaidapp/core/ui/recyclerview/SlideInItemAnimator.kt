@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import io.plaidapp.core.util.listenForAllSpringsEnd
 import io.plaidapp.core.util.spring
+import java.util.concurrent.CopyOnWriteArrayList
 
 /**
  * A [RecyclerView.ItemAnimator] that fades & slides newly added items in from a given
@@ -37,10 +38,10 @@ open class SlideInItemAnimator @JvmOverloads constructor(
 ) : DefaultItemAnimator() {
 
     private val slideFromEdge: Int = Gravity.getAbsoluteGravity(slideFromEdge, layoutDirection)
-    private val pendingAdds = mutableListOf<RecyclerView.ViewHolder>()
-    private val runningAdds = mutableListOf<RecyclerView.ViewHolder>()
-    private val pendingMoves = mutableListOf<RecyclerView.ViewHolder>()
-    private val runningMoves = mutableListOf<RecyclerView.ViewHolder>()
+    private val pendingAdds = CopyOnWriteArrayList<RecyclerView.ViewHolder>()
+    private val runningAdds = CopyOnWriteArrayList<RecyclerView.ViewHolder>()
+    private val pendingMoves = CopyOnWriteArrayList<RecyclerView.ViewHolder>()
+    private val runningMoves = CopyOnWriteArrayList<RecyclerView.ViewHolder>()
 
     @SuppressLint("RtlHardcoded")
     override fun animateAdd(holder: RecyclerView.ViewHolder): Boolean {
