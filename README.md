@@ -64,7 +64,7 @@ from the ktlint [README](https://github.com/shyiko/ktlint/blob/master/README.md)
 
 # Plaid 1.0
 
-<img src="screenshots/plaid_demo.gif" width="300" align="right" hspace="20">
+<img src="screenshots/plaid_demo.gif" width="300">
 
 *Design news and inspiration.*
 
@@ -80,11 +80,16 @@ to create tactile, bold, understandable UIs.
 
 ### Screenshots
 
+<table>
+	<tr>
+		<td><img src="screenshots/home_grid_framed.png"/></td>
+		<td><img src="screenshots/post_story_framed.png"/></td>
+		<td><img src="screenshots/dn_story_framed.png"/></td>
+		<td><img src="screenshots/dribbble_shot_framed.png"/></td>
+	</tr>
+</table>
 
-<img src="screenshots/home_grid_framed.png" width="25%" />
-<img src="screenshots/post_story_framed.png" width="25%" />
-<img src="screenshots/dn_story_framed.png" width="25%" />
-<img src="screenshots/dribbble_shot_framed.png" width="25%" />
+
 
 
 ##### Non-Goals
