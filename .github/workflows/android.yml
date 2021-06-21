@@ -1,0 +1,30 @@
+name: Android Build, Test
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Download Dependencies
+      run: ./gradlew dependencies
+    - name: Build
+      uses: vgaidarji/android-github-actions-build@v1.0.1
+      with:
+        args: "sdkmanager 'platforms;android-26' && ./gradlew assembleDebug -PpreDexEnable=false"
+    - name: Check
+      uses: vgaidarji/android-github-actions-build@v1.0.1
+      with:
+        args: "./gradlew testDebug jacocoTestReport checkstyle pmd jdepend lintDebug buildDashboard -PpreDexEnable=false"
+
+  androidTest:
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Instrumentation Tests
+        uses: reactivecircus/android-emulator-runner@v2
+
+        with:
+          api-level: 29
+          arch: x86
+          disable-animations: true
+          script: ./gradlew connectedAndroidTest --stacktrace
