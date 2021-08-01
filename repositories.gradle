@@ -11,6 +11,7 @@ repositories {
             includeGroup "com.google.android.material"
             includeGroup "com.google.gms"
             includeGroup "zipflinger"
+            includeGroup "com.google.testing.platform"
         }
     }
 

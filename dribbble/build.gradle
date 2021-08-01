@@ -53,6 +53,7 @@ dependencies {
     implementation "com.android.support:customtabs:${versions.supportLibrary}"
     implementation "com.android.support:palette-v7:${versions.supportLibrary}"
     implementation "com.github.bumptech.glide:recyclerview-integration:${versions.glide}"
+    implementation "androidx.constraintlayout:constraintlayout:${versions.constraintLayout}"
 
     kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
 }
